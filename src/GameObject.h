@@ -3,6 +3,8 @@
 #include <string>
 #include <list>
 
+#include <irrlicht.h>
+
 #include "IComponent.h"
 
 class GameObject {
@@ -10,7 +12,7 @@ class GameObject {
 public:
 
 	//Constructor
-	GameObject(const std::string &newId, const core::vector3df &newPos) 
+	GameObject(const std::string &newId, const irr::core::vector3df &newPos) 
 		: id(newId), pos(newPos)  {}
 
 	//Destructor
@@ -35,8 +37,8 @@ public:
 private:
 
 	std::string		id;
-	core::vector3df pos;
+	irr::core::vector3df pos;
 
-	std::list<IComponent&> components;
+	//std::list<IComponent> components;
 
-}
+};

@@ -16,6 +16,6 @@ void GameObject::AddComponent(IComponent& component) {
 }
 
 //Get component
-IComponent& GameObject::GetComponent() {
-	
-}
+//IComponent& GameObject::GetComponent() {
+
+//}

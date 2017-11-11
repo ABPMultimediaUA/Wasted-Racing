@@ -1,19 +1,19 @@
 #pragma once
 
-class GameObject;	//we need to say this class exists in order to store info about it
+#include "GameObject.h"	//we need to say this class exists in order to store info about it
 
 class IComponent {
 
 public:
 
 	//Constructor
-	IComponent(GameObject& newGameObject): gameObject(newGameObject) {}
+	IComponent() {}
 
 	//Destructor
 	virtual ~IComponent() = 0;
 
 	//Get
-	GameObject& GetGameObject() { return gameObject; } 
+	//GameObject GetGameObject() { return gameObject; } 
 
 	//Init
 	virtual void VInit() = 0;
@@ -24,7 +24,7 @@ public:
 
 protected:
 	
-	GameObject& gameObject; //we store the reference to our game Object
+	//GameObject gameObject; //we store the reference to our game Object
 
 
 };
