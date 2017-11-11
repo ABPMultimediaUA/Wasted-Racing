@@ -6,13 +6,15 @@ Target := XKating
 ObjectPath := src/GameObject
 ManagerPath := src/GameManager
 StatePath := src/GameState
+FacadePath := src/GameFacade
 MainPath := src
 # List of source files, separated by spaces
-_SourceObject := GameObject.cpp GameObject.h
+_SourceObject := GameObject.cpp
 _SourceManager := InputManager.cpp 
 _SourceState :=
+_SourceFacade := RenderFacade.cpp
 _SourceMain := main.cpp
-Source := $(patsubst %,$(ObjectPath)/%,$(_SourceObject)) $(patsubst %,$(ManagerPath)/%,$(_SourceManager)) $(patsubst %,$(StatePath)/%,$(_SourceState)) $(patsubst %,$(MainPath)/%,$(_SourceMain))
+Source := $(patsubst %,$(ObjectPath)/%,$(_SourceObject)) $(patsubst %,$(ManagerPath)/%,$(_SourceManager)) $(patsubst %,$(StatePath)/%,$(_SourceState)) $(patsubst %,$(FacadePath)/%,$(_SourceFacade)) $(patsubst %,$(MainPath)/%,$(_SourceMain))
 
 # Path to Irrlicht directory, should contain include/ and lib/
 IrrlichtHome := .
