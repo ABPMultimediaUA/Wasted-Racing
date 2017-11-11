@@ -5,6 +5,7 @@ Target := XKating
 # List of source files, separated by spaces
 Source1 := GameObject.cpp
 Source2 := main.cpp
+Source3 := InputManager.cpp
 # Path to Irrlicht directory, should contain include/ and lib/
 IrrlichtHome := .
 # Path for the executable. Note that Irrlicht.dll should usually also be there for win32 systems
@@ -33,7 +34,7 @@ DESTPATH = $(BinPath)/$(Target)
 
 all_linux:
 	$(warning Building...)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SourcePath)$(Source1) $(SourcePath)$(Source2) -o $(DESTPATH) $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SourcePath)$(Source1) $(SourcePath)$(Source2) $(SourcePath)$(Source3) -o $(DESTPATH) $(LDFLAGS)
 
 clean: clean_linux
 	$(warning Cleaning...)
