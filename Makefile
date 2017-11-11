@@ -2,16 +2,23 @@
 
 # Name of the executable created (.exe will be added automatically if necessary)
 Target := XKating
+#Paths to the source code
+ObjectPath := src/GameObject
+ManagerPath := src/GameManager
+StatePath := src/GameState
+MainPath := src
 # List of source files, separated by spaces
-Source1 := GameObject.cpp
-Source2 := main.cpp
-Source3 := InputManager.cpp
+_SourceObject := GameObject.cpp GameObject.h
+_SourceManager := InputManager.cpp 
+_SourceState :=
+_SourceMain := main.cpp
+Source := $(patsubst %,$(ObjectPath)/%,$(_SourceObject)) $(patsubst %,$(ManagerPath)/%,$(_SourceManager)) $(patsubst %,$(StatePath)/%,$(_SourceState)) $(patsubst %,$(MainPath)/%,$(_SourceMain))
+
 # Path to Irrlicht directory, should contain include/ and lib/
 IrrlichtHome := .
 # Path for the executable. Note that Irrlicht.dll should usually also be there for win32 systems
-BinPath = bin
-#Path to the source code
-SourcePath = src/
+BinPath := bin
+
 
 # general compiler settings (might need to be set when compiling the lib, too)
 CPPFLAGS += -I$(IrrlichtHome)/include -I/usr/X11R6/include
@@ -34,7 +41,7 @@ DESTPATH = $(BinPath)/$(Target)
 
 all_linux:
 	$(warning Building...)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SourcePath)$(Source1) $(SourcePath)$(Source2) $(SourcePath)$(Source3) -o $(DESTPATH) $(LDFLAGS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Source) -o $(DESTPATH) $(LDFLAGS)
 
 clean: clean_linux
 	$(warning Cleaning...)
