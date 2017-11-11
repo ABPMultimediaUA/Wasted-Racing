@@ -12,14 +12,14 @@ public:
 	//Destructor
 	virtual ~IComponent() = 0;
 
+	//Get
+	GameObject& GetGameObject() { return gameObject; } 
+
 	//Init
 	virtual void VInit() = 0;
 
 	//Update
 	virtual void VUpdate(float dTime) = 0;
-
-	//Get
-	GameObject& getGameObject() { return gameObject; } 
 
 
 protected:
