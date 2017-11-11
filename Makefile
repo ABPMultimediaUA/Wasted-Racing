@@ -6,7 +6,7 @@ Target := XKating
 Source1 := GameObject.cpp
 Source2 := main.cpp
 # Path to Irrlicht directory, should contain include/ and lib/
-IrrlichtHome := /usr/local
+IrrlichtHome := .
 # Path for the executable. Note that Irrlicht.dll should usually also be there for win32 systems
 BinPath = bin
 #Path to the source code
