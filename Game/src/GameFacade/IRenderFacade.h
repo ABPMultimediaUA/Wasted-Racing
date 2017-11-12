@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "../GameManager/InputManager.h"
+
 class GameObject;
 
 class IRenderFacade{
@@ -19,13 +21,15 @@ public:
     virtual ~IRenderFacade() {}
 
     //Initializer
-    void Init(int x, int y, bool fScreen, bool vsync) {
+    void init(int x, int y, bool fScreen, bool vsync) {
 
         window.size.x = x;
         window.size.y = y;
 
         window.fullscreen = fScreen;
         window.vsync = vsync;
+
+        inputManager = &InputManager::getInstance();
 
     }
 
@@ -113,4 +117,6 @@ protected:
 
     //Window declaration
     Window window;
+    //InputManager declaration
+    InputManager* inputManager;
 };

@@ -10,3 +10,13 @@ bool InputManager::OnEvent(const SEvent& event){
 bool InputManager::IsKeyDown(EKEY_CODE keyCode) const{
     return InputManager::KeyIsDown[keyCode];
 }
+
+InputManager& InputManager::getInstance() {
+    static InputManager instance;
+    return instance;
+}
+
+void InputManager::init(){
+    for(u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
+            InputManager::KeyIsDown[i] = false;
+}

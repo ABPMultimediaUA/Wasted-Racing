@@ -23,15 +23,34 @@ public:
     //==============================================================
 
     //Creates a window depending on the engine
-    override void openWindow();
+    virtual void openWindow();
 
     //Updates window info in the engine
-    override void updateWindow();
+    virtual void updateWindow();
 
     //Closes engine window
-    override void closeWindow();
+    virtual void closeWindow();
+
+    //==============================================================
+    // Render Related functions
+    //==============================================================
+
+    //Renders a single object
+    virtual void renderObject(std::string id);
+
+    //Renders all the scene
+    virtual void renderDraw();
 
 private: 
+
+    //Irrlicht own window
+    IrrlichtDevice* device;
+
+    //Irrlicht scene manager
+    scene::ISceneManager* sceneManager;
+
+    //Irrlicht video manager
+    video::IVideoDriver* videoDriver;
 
 
 };

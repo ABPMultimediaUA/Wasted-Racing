@@ -1,6 +1,4 @@
-#include "GameObject/GameObject.h"
-#include "GameObject/IComponent.h"
-#include "GameManager/InputManager.h"
+#include "Game.h"
 
 #include <iostream>
 
@@ -8,7 +6,13 @@
 
 int main(){
 
-	std::cout << "El main va" << std::endl;
+	std::cout << "Starting game..." << std::endl;
+
+	Game game;
+
+	game.Run();
+
+	std::cout << "Exiting game..." << std::endl;
 
 	return 0;  
 

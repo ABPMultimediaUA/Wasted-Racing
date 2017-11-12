@@ -9,16 +9,19 @@ class InputManager : public IEventReceiver {
 public:
 
     //Constructor
-    InputManager() {
-        for(u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
-            KeyIsDown[i] = false;
-    }
+    InputManager() {}
+
+    //Initializer
+    void init();
 
     //Key event catcher
     virtual bool OnEvent(const SEvent& event);
 
     //Key event checker
     virtual bool IsKeyDown(EKEY_CODE keyCode) const;
+
+    //Static class getter
+    static InputManager& getInstance();
 
 private: 
 
