@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <irrlicht.h>
 
 class GameObject;
 
@@ -20,7 +19,15 @@ public:
     virtual ~IRenderFacade() {}
 
     //Initializer
-    void Init(int x, int y, bool fScreen, bool sync);
+    void Init(int x, int y, bool fScreen, bool vsync) {
+
+        window.size.x = x;
+        window.size.y = y;
+
+        window.fullscreen = fScreen;
+        window.vsync = vsync;
+
+    }
 
     //==============================================================
     // Engine Related functions
@@ -55,13 +62,39 @@ public:
     //==============================================================
 
     //Resizes the window
-    void resizeWindow(int x, int y);
+    void resizeWindow(int x, int y) {
+        window.size.x = x;
+        window.size.y = y;
+
+        updateWindow();
+    }
 
     //Changes fullscreen state and returns it
-    bool fullscreenWindow();
+    bool fullscreenWindow() {
+         
+        if(window.fullscreen)
+            window.fullscreen = false;
+        else 
+            window.fullscreen = true;
+
+        updateWindow();
+
+        return window.fullscreen;
+
+    }
 
     //Changes sync state and return it
-    bool syncWindow();
+    bool syncWindow() {
+
+        if(window.vsync)
+            window.vsync = false;
+        else 
+            window.vsync = true;
+
+        updateWindow();
+
+        return window.vsync;
+    }
 
 
 protected:
