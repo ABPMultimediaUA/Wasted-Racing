@@ -11,7 +11,7 @@ MainPath := src
 # List of source files, separated by spaces
 _SourceObject := GameObject.cpp
 _SourceManager := InputManager.cpp RenderManager.cpp
-_SourceState :=
+_SourceState := IntroState.cpp MenuState.cpp PauseState.cpp MatchState.cpp
 _SourceFacade := RenderIrrlicht.cpp AudioFMOD.cpp
 _SourceMain := main.cpp Game.cpp
 Source := $(patsubst %,$(ObjectPath)/%,$(_SourceObject)) $(patsubst %,$(ManagerPath)/%,$(_SourceManager)) $(patsubst %,$(StatePath)/%,$(_SourceState)) $(patsubst %,$(FacadePath)/%,$(_SourceFacade)) $(patsubst %,$(MainPath)/%,$(_SourceMain))
