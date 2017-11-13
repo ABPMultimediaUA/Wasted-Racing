@@ -10,7 +10,7 @@ FacadePath := src/GameFacade
 MainPath := src
 # List of source files, separated by spaces
 _SourceObject := GameObject.cpp
-_SourceManager := InputManager.cpp RenderManager.cpp
+_SourceManager := InputManager.cpp RenderManager.cpp NetworkManager.cpp ResourceManager.cpp AudioManager.cpp LevelManager.cpp AIManager.cpp PhysicsManager.cpp ObjectManager.cpp
 _SourceState := IntroState.cpp MenuState.cpp PauseState.cpp MatchState.cpp
 _SourceFacade := RenderIrrlicht.cpp AudioFMOD.cpp
 _SourceMain := main.cpp Game.cpp
