@@ -13,7 +13,7 @@ public:
 	virtual ~IComponent() = 0;
 
 	//Get
-	//GameObject GetGameObject() { return gameObject; } 
+	//GameObject* GetGameObject() { return &gameObject; } 
 
 	//Init
 	virtual void VInit() = 0;

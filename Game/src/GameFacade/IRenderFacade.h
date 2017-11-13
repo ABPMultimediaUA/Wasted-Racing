@@ -57,8 +57,8 @@ public:
     virtual void renderDraw() = 0;
 
     //Gets camera object
-    GameObject& getCamera() {
-    }
+    //GameObject& getCamera() {
+    //}
     
 
     //==============================================================

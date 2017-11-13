@@ -12,7 +12,7 @@ MainPath := src
 _SourceObject := GameObject.cpp
 _SourceManager := InputManager.cpp RenderManager.cpp
 _SourceState :=
-_SourceFacade := RenderIrrlicht.cpp
+_SourceFacade := RenderIrrlicht.cpp AudioFMOD.cpp
 _SourceMain := main.cpp Game.cpp
 Source := $(patsubst %,$(ObjectPath)/%,$(_SourceObject)) $(patsubst %,$(ManagerPath)/%,$(_SourceManager)) $(patsubst %,$(StatePath)/%,$(_SourceState)) $(patsubst %,$(FacadePath)/%,$(_SourceFacade)) $(patsubst %,$(MainPath)/%,$(_SourceMain))
 

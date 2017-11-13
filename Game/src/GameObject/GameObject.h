@@ -31,7 +31,7 @@ public:
 	void AddComponent(IComponent& component);
 
 	//Get component
-	IComponent& GetComponent();
+	IComponent* GetComponent();
 
 
 private:
@@ -41,6 +41,6 @@ private:
 	irr::core::vector3df rot;
 	irr::core::vector3df sca;
 
-	//std::list<IComponent> components;
+	std::list<IComponent*> components;
 
 };
