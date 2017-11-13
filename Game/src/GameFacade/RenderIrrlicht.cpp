@@ -26,5 +26,5 @@ void RenderIrrlicht::renderObject(std::string id) {
 }
 
 void RenderIrrlicht::renderDraw() {
-
+ 
 }
