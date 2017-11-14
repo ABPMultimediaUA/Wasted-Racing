@@ -38,6 +38,8 @@ private:
 
 	std::string		id;
 	irr::core::vector3df pos;
+	irr::core::vector3df rot;
+	irr::core::vector3df sca;
 
 	//std::list<IComponent> components;
 
