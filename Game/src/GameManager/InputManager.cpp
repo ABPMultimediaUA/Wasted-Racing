@@ -20,3 +20,11 @@ void InputManager::init(){
     for(u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
             InputManager::KeyIsDown[i] = false;
 }
+
+void InputManager::close(){
+
+}
+
+void InputManager::update(){
+
+}

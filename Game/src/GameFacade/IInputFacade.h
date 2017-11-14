@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
-
-class IAudioFacade{
+class IInputFacade{
 
 public:
 
@@ -11,10 +9,10 @@ public:
     //==============================================================
 
     //Constructor
-    IAudioFacade() {}
+    IInputFacade() {}
 
     //Destructor
-    virtual ~IAudioFacade() {}
+    virtual ~IInputFacade() {}
 
     //Initializer
     void init() {
@@ -31,23 +29,13 @@ public:
     //==============================================================
 
     //Creates a window depending on the engine
-    virtual void openAudioEngine() = 0;
+    virtual void openInputEngine() = 0;
 
     //Updates window info in the engine
-    virtual void updateAudioEngine() = 0;
+    virtual void updateInputEngine() = 0;
 
     //Closes engine window
-    virtual void closeAudioEngine() = 0;
-
-    //==============================================================
-    // Audio Related functions
-    //==============================================================
-
-    //Renders a single object
-    virtual void playObject(int id) = 0;
-
-    //Renders all the scene
-    virtual void playSound() = 0;
+    virtual void closeInputEngine() = 0;
 
 protected:
 

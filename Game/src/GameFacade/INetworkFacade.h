@@ -1,10 +1,6 @@
 #pragma once
 
-#include <irrlicht.h>
-
-#include "IRenderFacade.h"
-
-class RenderIrrlicht : public IRenderFacade {
+class INetworkFacade{
 
 public:
 
@@ -13,44 +9,44 @@ public:
     //==============================================================
 
     //Constructor
-    RenderIrrlicht() : IRenderFacade() {}
+    INetworkFacade() {}
 
     //Destructor
-    virtual ~RenderIrrlicht() {}
+    virtual ~INetworkFacade() {}
+
+    //Initializer
+    void init() {
+
+    }
+
+    //Closer
+    void close() {
+
+    }
 
     //==============================================================
     // Engine Related functions
     //==============================================================
 
     //Creates a window depending on the engine
-    virtual void openWindow();
+    virtual void openNetworkEngine() = 0;
 
     //Updates window info in the engine
-    virtual void updateWindow();
+    virtual void updateNetworkEngine() = 0;
 
     //Closes engine window
-    virtual void closeWindow();
+    virtual void closeNetworkEngine() = 0;
 
     //==============================================================
-    // Render Related functions
+    // Network Related functions
     //==============================================================
 
     //Renders a single object
-    virtual void renderObject(int id);
+    virtual void updateObject(int id) = 0;
 
     //Renders all the scene
-    virtual void renderDraw();
+    virtual void updateObjects() = 0;
 
-private: 
-
-    //Irrlicht own window
-    IrrlichtDevice* device;
-
-    //Irrlicht scene manager
-    scene::ISceneManager* sceneManager;
-
-    //Irrlicht video manager
-    video::IVideoDriver* videoDriver;
-
+protected:
 
 };

@@ -1,10 +1,8 @@
 #pragma once
 
-#include <irrlicht.h>
+#include "IPhysicsFacade.h"
 
-#include "IRenderFacade.h"
-
-class RenderIrrlicht : public IRenderFacade {
+class PhysicsIrrlicht : public IPhysicsFacade {
 
 public:
 
@@ -13,44 +11,34 @@ public:
     //==============================================================
 
     //Constructor
-    RenderIrrlicht() : IRenderFacade() {}
+    PhysicsIrrlicht() : IPhysicsFacade() {}
 
     //Destructor
-    virtual ~RenderIrrlicht() {}
+    virtual ~PhysicsIrrlicht() {}
 
     //==============================================================
     // Engine Related functions
     //==============================================================
 
     //Creates a window depending on the engine
-    virtual void openWindow();
+    virtual void openPhysics();
 
     //Updates window info in the engine
-    virtual void updateWindow();
+    virtual void updatePhysics();
 
     //Closes engine window
-    virtual void closeWindow();
+    virtual void closePhysics();
 
     //==============================================================
-    // Render Related functions
+    // Physics Related functions
     //==============================================================
 
     //Renders a single object
-    virtual void renderObject(int id);
+    virtual void updateObject(int id);
 
     //Renders all the scene
-    virtual void renderDraw();
+    virtual void updateObjects();
 
 private: 
-
-    //Irrlicht own window
-    IrrlichtDevice* device;
-
-    //Irrlicht scene manager
-    scene::ISceneManager* sceneManager;
-
-    //Irrlicht video manager
-    video::IVideoDriver* videoDriver;
-
 
 };
