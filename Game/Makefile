@@ -8,7 +8,6 @@ IrrlichtHome := .
 # Path for the executable. Note that Irrlicht.dll should usually also be there for win32 systems
 BIN_PATH := bin/
 OBJ_PATH := obj/
-#
 
 
 # general compiler settings (might need to be set when compiling the lib, too)
@@ -43,12 +42,9 @@ all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lI
 all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
 all_linux clean_linux: SYSTEM=Linux
 
-_OBJECTS := $(shell ls $(BIN_PATH)$(OBJ_PATH))
-OBJECTS := $(addprefix $(BIN_PATH)$(OBJ_PATH),$(_OBJECTS))
-
 all_linux:
 	$(warning Compilation done!)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
 
 $(BIN_DIR)$(OBJ_DIR)%.o:
 
@@ -60,7 +56,7 @@ clean_linux:
 	rm -r $(BIN_PATH)$(OBJ_PATH)
 
 info:
-	$(info $(OBJECTS))
+	$(info $(shell ls $(BIN_PATH)$(OBJ_PATH)))
 
 .PHONY: all clean clean_linux info
 
