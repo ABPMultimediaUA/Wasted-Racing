@@ -1,13 +1,11 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 namespace LAPAL{
 
     //3d float point
-    struct vec3f{
-        float x; //positive to the right
-        float y; //positive to the top
-        float z; //positive to you
-    };
+    typedef glm::vec3 vec3f;
 
     //3d 4 point plane
     struct plane3f{
