@@ -14,7 +14,7 @@ int main(){
 
         std::cout << mData.vel << " " << mData.acc << std::endl;
     }
-    std::cout << std::endl;
+    std::cout << std::endl; 
 
     LAPAL::movementData mData1 = {0, 50, 0, 5, -1};
 
@@ -42,8 +42,8 @@ int main(){
     std::cout << std::endl;
 
     std::cout << "Circle Collision Test 0" << std::endl;
-    LAPAL::vec3f obj1 = {0,0,0};
-    LAPAL::vec3f obj2 = {0,0,1};
+    LAPAL::vec3f obj1(0,0,0);
+    LAPAL::vec3f obj2(0,0,1);
     float r1 = 0.5;
     float r2 = 0.25;
 
@@ -79,8 +79,8 @@ int main(){
     std::cout << std::endl;
 
     std::cout << "Elastic Collision Test 0" << std::endl;
-    LAPAL::vec3f vel1 = {1, 0, 1};
-    LAPAL::vec3f vel2 = {0, 0, 0};
+    LAPAL::vec3f vel1(1, 0, 1);
+    LAPAL::vec3f vel2(0, 0, 0);
     float mass1 = 0.1;
     float mass2 = 1000;
     LAPAL::calculateElasticCollision(vel1, mass1, vel2, mass2);

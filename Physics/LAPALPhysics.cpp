@@ -15,7 +15,7 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData,const float dTime) {
     //Update velocity
     mData.vel += mData.acc*dTime; 
 
-    //Check velocity limits
+    //Check velocity limits 
     if(abs(mData.vel)>abs(mData.max_vel)){
         mData.vel = copysign(mData.max_vel, mData.vel);
     }
