@@ -30,7 +30,7 @@ int main(){
 
     std::cout << "Linear Velocity Test 2" << std::endl;
     for(int i=0; i<25; i++){
-
+ 
         //impulse changes from 1 to -1 at 7
         if(i==7)
             mData2.imp = -1;
@@ -60,7 +60,37 @@ int main(){
     std::cout << LAPAL::checkCircleCircleCollision(obj1, r1, obj2, r2) << std::endl; //should be true
     std::cout << std::endl;
 
+    std::cout << "Spin and Angle Test 0" << std::endl;
+    LAPAL::movementData mData3 = {0, 5, 0, 1, 0.01};
+    mData3.spin_inc = 0.01; mData3.max_spin = 1; mData3.angle = 0;
 
+    for(int i=0; i<30; i++){
+ 
+        //impulse changes from 1 to -1 at 15
+        if(i==15)
+            mData3.spin_inc = -0.1;
+
+        LAPAL::updateLinearVelocity(mData3, 1);
+        LAPAL::updateSpin(mData3, 1);
+        LAPAL::update2DVelocity(mData3);
+
+        std::cout << mData3.angle << " " << mData3.spin << " | " << mData3.vel2d.x << " " << mData3.vel2d.z << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::cout << "Elastic Collision Test 0" << std::endl;
+    LAPAL::vec3f vel1 = {1, 0, 1};
+    LAPAL::vec3f vel2 = {0, 0, 0};
+    float mass1 = 0.1;
+    float mass2 = 1000;
+    LAPAL::calculateElasticCollision(vel1, mass1, vel2, mass2);
+    std::cout << vel1.x << " " << vel1.z << std::endl;
+    vel1.z = 0; 
+    LAPAL::calculateElasticCollision(vel1, mass1, vel2, mass2);
+    std::cout << vel1.x << " " << vel1.z << std::endl;
+    mass2 = 1; vel1.z = 3; vel1.x = 3;
+    LAPAL::calculateElasticCollision(vel1, mass1, vel2, mass2);
+    std::cout << vel1.x << " " << vel1.z << std::endl;
     
 
 

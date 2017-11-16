@@ -24,6 +24,12 @@ namespace LAPAL{
         float acc;
         float max_acc;
         float imp;
+        float angle;
+        float spin;
+        float spin_inc;
+        float max_spin;
+        vec3f vel2d;
+        vec3f force;
     };
 
 }
