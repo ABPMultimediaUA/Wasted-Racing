@@ -1,17 +1,17 @@
 #include "GameObject.h"
 
 //Init
-void GameObject::Init() {
+void GameObject::init() {
 
 }
 
 //Update
-void GameObject::Update(float dTime) {
+void GameObject::update(float dTime) {
 
 }
 
 //Add component
-void GameObject::AddComponent(IComponent& component) {
+void GameObject::addComponent(IComponent& component) {
 
 }
 

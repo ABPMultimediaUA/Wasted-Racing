@@ -19,19 +19,19 @@ public:
 	~GameObject() {}
 
 	//GetID
-	std::string GetID() { return id; }
+	std::string getId() { return id; }
 
 	//Init
-	void Init();
+	void init();
 
 	//Update
-	void Update(float dTime);
+	void update(float dTime);
 
 	//Add component
-	void AddComponent(IComponent& component);
+	void addComponent(IComponent& component);
 
 	//Get component
-	IComponent& GetComponent();
+	IComponent* getComponent();
 
 
 private:
@@ -41,6 +41,6 @@ private:
 	irr::core::vector3df rot;
 	irr::core::vector3df sca;
 
-	//std::list<IComponent> components;
+	std::list<IComponent*> components;
 
 };

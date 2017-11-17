@@ -1,5 +1,8 @@
 #include "Game.h"
 
+//====================================================
+//  GAME INITIALIZATION
+//====================================================
 void Game::init() {
 
     Game::stay = true;
@@ -14,25 +17,37 @@ void Game::init() {
 
 }
 
+//====================================================
+//  GAME UPDATE
+//====================================================
 void Game::update() {
-    
-    if(inputManager->IsKeyDown(irr::EKEY_CODE::KEY_ESCAPE))
-        Game::close();
 
+    renderManager->update();
+    
+    //if(inputManager->IsKeyDown(irr::EKEY_CODE::KEY_ESCAPE))
+    //    Game::close();
 }
 
+//====================================================
+//  GAME DRAW
+//====================================================
 void Game::draw() {
 
 }
 
+//====================================================
+//  GAME CLOSE
+//====================================================
 void Game::close() {
 
     renderManager->close();
-
-    Game::stay = false;
+    inputManager->close();
 
 }
 
+//====================================================
+//  GAME LOOP
+//====================================================
 void Game::Run() {
 
     Game::init();
@@ -42,4 +57,5 @@ void Game::Run() {
         Game::draw();
     }
 
+    Game::close();
 }

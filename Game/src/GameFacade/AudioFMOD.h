@@ -1,10 +1,8 @@
-#pragma once
+#pragma once 
 
-#include <irrlicht.h>
+#include "IAudioFacade.h"
 
-#include "IRenderFacade.h"
-
-class RenderIrrlicht : public IRenderFacade {
+class AudioFMOD : public IAudioFacade {
 
 public:
 
@@ -13,44 +11,34 @@ public:
     //==============================================================
 
     //Constructor
-    RenderIrrlicht() : IRenderFacade() {}
+    AudioFMOD() : IAudioFacade() {}
 
     //Destructor
-    virtual ~RenderIrrlicht() {}
+    virtual ~AudioFMOD() {}
 
     //==============================================================
     // Engine Related functions
     //==============================================================
 
     //Creates a window depending on the engine
-    virtual void openWindow();
+    virtual void openAudioEngine();
 
     //Updates window info in the engine
-    virtual void updateWindow();
+    virtual void updateAudioEngine();
 
     //Closes engine window
-    virtual void closeWindow();
+    virtual void closeAudioEngine();
 
     //==============================================================
-    // Render Related functions
+    // Audio Related functions
     //==============================================================
 
     //Renders a single object
-    virtual void renderObject(int id);
+    virtual void playObject(std::string id);
 
     //Renders all the scene
-    virtual void renderDraw();
+    virtual void playSound();
 
 private: 
-
-    //Irrlicht own window
-    IrrlichtDevice* device;
-
-    //Irrlicht scene manager
-    scene::ISceneManager* sceneManager;
-
-    //Irrlicht video manager
-    video::IVideoDriver* videoDriver;
-
 
 };

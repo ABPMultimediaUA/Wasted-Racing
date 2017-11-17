@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include <irrlicht.h>
-
 int main(){
 
 	std::cout << "Starting game..." << std::endl;

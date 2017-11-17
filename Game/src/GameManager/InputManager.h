@@ -14,6 +14,12 @@ public:
     //Initializer
     void init();
 
+    //Updater
+    void update();
+
+    //Closer
+    void close();
+
     //Key event catcher
     virtual bool OnEvent(const SEvent& event);
 

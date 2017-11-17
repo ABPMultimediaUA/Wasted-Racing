@@ -57,6 +57,5 @@ private:
     //Stay in the main loop
     bool stay;
 
-
 };
 
