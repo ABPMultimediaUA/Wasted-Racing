@@ -19,7 +19,7 @@ CXXFLAGS += -O3
 endif
 
 #default target is Linux
-all: make_src make_gameF make_gameM make_gameS make_gameO all_linux
+all: make_src make_gameF make_gameM make_gameS make_gameO make_gameE all_linux
 
 #Makes to execute
 make_src:
@@ -36,6 +36,9 @@ make_gameS:
 
 make_gameO:
 	$(MAKE) -C src/GameObject
+	
+make_gameE:
+	$(MAKE) -C src/GameEvent
 
 # target specific settings
 all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
