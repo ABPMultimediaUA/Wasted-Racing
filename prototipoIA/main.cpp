@@ -280,15 +280,6 @@ int main()
 		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
 			node2Position.X += 20.f * frameDeltaTime;
 
-			
-			
-		core::vector3df way1 = waypoint1->getPosition();
-		core::vector3df way2 = waypoint2->getPosition();
-		
-
-		core::vector3df raceLineVector = way1 - nodePosition;
-		core::vector3df raceLineVector2 = way2 - nodePosition;
-
 		/*
 		int decision = MyFuzzyLogic::acelerar_frenar(distance);
 
