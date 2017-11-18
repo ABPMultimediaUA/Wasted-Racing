@@ -55,7 +55,7 @@ make_gameE:
 	$(MAKE) -C src/GameEvent
 
 # target specific settings
-all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -L/usr/lib -lfmod
+all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -L/usr/lib -lfmod -lgainput
 all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
 all_linux clean_linux: SYSTEM=Linux
 
@@ -80,6 +80,8 @@ install_linux:
 	$(shell sudo cp lib/fsbank/lib/x86_64/* /usr/lib/)
 	$(shell sudo cp lib/lowlevel/lib/x86_64/* /usr/lib/)
 	$(shell sudo cp lib/studio/lib/x86_64/* /usr/lib/)
+	$(warning Installing Gainput...)
+	$(shell sudo cp lib/gainput/* /usr/lib/)
 
 .PHONY: all clean clean_linux info install
 
