@@ -23,14 +23,6 @@ and tell the linker to link with the .lib file.
 
 using namespace irr;
 
-/*
-To receive events like mouse and keyboard input, or GUI events like "the OK
-button has been clicked", we need an object which is derived from the
-irr::IEventReceiver object. There is only one method to override:
-irr::IEventReceiver::OnEvent(). This method will be called by the engine once
-when an event happens. What we really want to know is whether a key is being
-held down, and so we will remember the current state of each key.
-*/
 class MyEventReceiver : public IEventReceiver
 {
 public:
@@ -62,23 +54,6 @@ private:
 };
 
 //OWN CODE
-/*
-class WayPoint
-{
-	private:
-		core::vector3df* position;
-	public:
-
-	WayPoint(float x, float y, float z){
-		position = new core::vector3df(x, y, z);
-	}
-
-	core::vector3df* getPos()
-	{
-		return position;
-	}
-};
-*/
 
 class MyFuzzyLogic
 {
@@ -203,27 +178,6 @@ public:
 			accelerate_pertenency=distance/(END_ACCEL-INIT_ACCEL);
 		}
 
-		//NONE PERTENENCY
-		/*if(distance>END_NONE2)
-		{
-			none_pertenency=0;
-		}else if(distance>INIT_NONE2)
-		{
-			none_pertenency = distance/(END_NONE2-INIT_NONE2);
-			none_pertenency = 1-none_pertenency;
-		}else if(distance>END_NONE1)
-		{
-			none_pertenency=1;
-		}
-		else if(distance>INIT_NONE1)
-		{
-			none_pertenency = distance/(END_NONE1-INIT_NONE1);
-		}
-		else
-		{
-			none_pertenency=0;
-		}*/
-
 		//BRAKE_PERTENENCY
 		if(distance>END_BRAKE)
 		{
@@ -256,15 +210,6 @@ public:
 
 };
 
-
-
-/*
-The event receiver for keeping the pressed keys is ready, the actual responses
-will be made inside the render loop, right before drawing the scene. So lets
-just create an irr::IrrlichtDevice and the scene node we want to move. We also
-create some other additional scene nodes, to show that there are also some
-different possibilities to move and animate scene nodes.
-*/
 int main()
 {
 	// ask user for driver
@@ -284,13 +229,7 @@ int main()
 	video::IVideoDriver* driver = device->getVideoDriver();
 	scene::ISceneManager* smgr = device->getSceneManager();
 
-	/*
-	Create the node which will be moved with the WSAD keys. We create a
-	sphere node, which is a built-in geometry primitive. We place the node
-	at (0,0,30) and assign a texture to it to let it look a little bit more
-	interesting. Because we have no dynamic lights in this scene we disable
-	lighting for each model (otherwise the models would be black).
-	*/
+
 	scene::ISceneNode * node = smgr->addSphereSceneNode();
 	if (node)
 	{
@@ -299,43 +238,6 @@ int main()
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
 	}
 
-	scene::ISceneNode * waypoint1 = smgr->addSphereSceneNode();
-	if(waypoint1)
-	{
-		waypoint1->setPosition(core::vector3df (200, 0, 10));
-	}
-
-	scene::ISceneNode * waypoint2 = smgr->addSphereSceneNode();
-	if(waypoint2)
-	{
-		waypoint2->setPosition(core::vector3df (300, 0, 30));
-	}
-	/*
-	Now we create another node, movable using a scene node animator. Scene
-	node animators modify scene nodes and can be attached to any scene node
-	like mesh scene nodes, billboards, lights and even camera scene nodes.
-	Scene node animators are not only able to modify the position of a
-	scene node, they can also animate the textures of an object for
-	example. We create a cube scene node and attach a 'fly circle' scene
-	node animator to it, letting this node fly around our sphere scene node.
-	*/
-
-	/*
-	scene::ISceneNode* n = smgr->addCubeSceneNode();
-
-	if (n)
-	{
-		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
-		n->setMaterialFlag(video::EMF_LIGHTING, false);
-		scene::ISceneNodeAnimator* anim =
-			smgr->createFlyCircleAnimator(core::vector3df(0,0,30), 20.0f);
-		if (anim)
-		{
-			n->addAnimator(anim);
-			anim->drop();
-		}
-	}*/
-
 	scene::ISceneNode* n = smgr->addCubeSceneNode();
 
 	if (n)
@@ -343,76 +245,10 @@ int main()
 		n->setPosition(core::vector3df(200, 0, 30));
 		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));		
 	}
-	/*
-	The last scene node we add to show possibilities of scene node animators is
-	a b3d model, which uses a 'fly straight' animator to run between to points.
-	*/
-
-	/*
-	scene::IAnimatedMeshSceneNode* anms =
-		smgr->addAnimatedMeshSceneNode(smgr->getMesh("../../media/ninja.b3d"));
-
-	if (anms)
-	{
-		scene::ISceneNodeAnimator* anim =
-			smgr->createFlyStraightAnimator(core::vector3df(100,0,60),
-			core::vector3df(-100,0,60), 3500, true);
-		if (anim)
-		{
-			anms->addAnimator(anim);
-			anim->drop();
-		}
-	*/
-		/*
-		To make the model look right we disable lighting, set the
-		frames between which the animation should loop, rotate the
-		model around 180 degrees, and adjust the animation speed and
-		the texture. To set the right animation (frames and speed), we
-		would also be able to just call
-		"anms->setMD2Animation(scene::EMAT_RUN)" for the 'run'
-		animation instead of "setFrameLoop" and "setAnimationSpeed",
-		but this only works with MD2 animations, and so you know how to
-		start other animations. But a good advice is to not use
-		hardcoded frame-numbers...
-		*/
-
-		/*
-		anms->setMaterialFlag(video::EMF_LIGHTING, false);
-
-		anms->setFrameLoop(0, 13);
-		anms->setAnimationSpeed(15);
-//		anms->setMD2Animation(scene::EMAT_RUN);
-
-		anms->setScale(core::vector3df(2.f,2.f,2.f));
-		anms->setRotation(core::vector3df(0,-90,0));
-//		anms->setMaterialTexture(0, driver->getTexture("../../media/sydney.bmp"));
-
-	}
-
-*/
-	/*
-	To be able to look at and move around in this scene, we create a first
-	person shooter style camera and make the mouse cursor invisible.
-	*/
+	
 	smgr->addCameraSceneNodeFPS();
 	device->getCursorControl()->setVisible(false);
 
-	/*
-	Add a colorful irrlicht logo
-	*/
-	device->getGUIEnvironment()->addImage(
-		driver->getTexture("../../media/irrlichtlogoalpha2.tga"),
-		core::position2d<s32>(10,20));
-
-	gui::IGUIStaticText* diagnostics = device->getGUIEnvironment()->addStaticText(
-		L"", core::rect<s32>(10, 10, 400, 20));
-	diagnostics->setOverrideColor(video::SColor(255, 255, 255, 0));
-
-	/*
-	We have done everything, so lets draw it. We also write the current
-	frames per second and the name of the driver to the caption of the
-	window.
-	*/
 	int lastFPS = -1;
 
 	// In order to do framerate independent movement, we have to know
@@ -435,24 +271,17 @@ int main()
 		const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 		then = now;
 
-		/* Check if keys W, S, A or D are being held down, and move the
-		sphere node around respectively. */
+        //OUR OWN CODE	
 		core::vector3df nodePosition = node->getPosition();
 		core::vector3df node2Position = n->getPosition();
 
-		/*
-		if(receiver.IsKeyDown(irr::KEY_KEY_W))
-			nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
-		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-			nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
-		*/
 		if(receiver.IsKeyDown(irr::KEY_KEY_A))
 			node2Position.X -= 20.f * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
 			node2Position.X += 20.f * frameDeltaTime;
 
 			
-		//OUR OWN CODE		
+			
 		core::vector3df way1 = waypoint1->getPosition();
 		core::vector3df way2 = waypoint2->getPosition();
 		
@@ -497,6 +326,9 @@ int main()
 		node->setPosition(nodePosition);
 		n->setPosition(node2Position);
 
+        //---------------------------------------------------------------------------
+        
+        
 		driver->beginScene(true, true, video::SColor(255,113,113,133));
 
 		smgr->drawAll(); // draw the 3d scene
