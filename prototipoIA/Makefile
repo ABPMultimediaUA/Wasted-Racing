@@ -5,10 +5,10 @@ CPPFLAGS += -I./../Game/ -I/usr/X11R6/include -I./../Game/include
 
 
 ejecutable: $(OBJECTS)
-	g++ -o $@ $^
+	g++ -o $@ $^ -L/usr/X11R6/lib64 -lIrrlicht -lGL -lXxf86vm -lXext -lX11 -lXcursor
 
 %.o: %.cpp
-	 g++ -c $^ -I. $(CPPFLAGS)
+	 g++ -c $^ $(CPPFLAGS) -I.
 
 info:
 		$(info $(SOURCES))

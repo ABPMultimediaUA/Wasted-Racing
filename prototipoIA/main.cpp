@@ -14,46 +14,19 @@ and tell the linker to link with the .lib file.
 #ifdef _MSC_VER
 // We'll also define this to stop MSVC complaining about sprintf().
 #define _CRT_SECURE_NO_WARNINGS
-#pragma comment(lib, "Irrlicht.lib")
+#pragma comment(../Game/lib, "Irrlicht.lib")
 #endif
 
 #include <irrlicht.h>
 #include "driverChoice.h"
 #include <irrMath.h>
+#include <LAPALPhysics.h>
+#include <glm/glm.hpp>
 
 using namespace irr;
 
-class MyEventReceiver : public IEventReceiver
-{
-public:
-	// This is the one method that we have to implement
-	virtual bool OnEvent(const SEvent& event)
-	{
-		// Remember whether each key is down or up
-		if (event.EventType == irr::EET_KEY_INPUT_EVENT)
-			KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
-
-		return false;
-	}
-
-	// This is used to check whether a key is being held down
-	virtual bool IsKeyDown(EKEY_CODE keyCode) const
-	{
-		return KeyIsDown[keyCode];
-	}
-	
-	MyEventReceiver()
-	{
-		for (u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
-			KeyIsDown[i] = false;
-	}
-
-private:
-	// We use this array to store the current state of each key
-	bool KeyIsDown[KEY_KEY_CODES_COUNT];
-};
-
 //OWN CODE
+//_______TESTING
 
 class MyFuzzyLogic
 {
@@ -210,141 +183,132 @@ public:
 
 };
 
+class Sensor{
+public:
+    
+    core::vector3df position;
+    double angleVision = 0;
+    float maxRadius = 0;
+    
+    Sensor( core::vector3df p, double ang, float maxR){
+        position = p;
+        angleVision = ang;
+        maxRadius = maxR;
+    }
+    
+    ~Sensor(){
+    };
+    
+    //Detect if point is in the field of view
+    bool detectFieldVision( core::vector3df vel,  core::vector3df p){
+        //Calculate field of view left and right vectores, given the angle apart of the velocity vector and the position of the object
+        core::vector3df sensorLeft = position + core::vector3df(vel.X * sin(angleVision), vel.Y, vel.Z * cos(angleVision));
+        core::vector3df sensorRight = position + core::vector3df(vel.X * sin(-angleVision), vel.Y, vel.Z * cos(-angleVision));
+        
+        
+        //calculate a and b coefficients, to compose the point
+        double a = 0, b = 0;
+        if(sensorRight.X*sensorLeft.X != sensorRight.Z) 
+           b =  (p.X * sensorLeft.X - p.Z ) / (sensorRight.X*sensorLeft.X - sensorRight.Z);
+        if(sensorLeft.Z != 0)
+            a = (p.Z - b * sensorRight.Z / sensorLeft.Z );
+        
+        //Analyze conditions to not be in sensor field of view
+        if(a < 0 || b < 0) return false;
+        if( a+b > maxRadius) return false;
+            
+        return true;
+    }
+    
+    void updatePosition( core::vector3df pos){
+        position = pos;
+    }
+};
+
 int main()
 {
-	// ask user for driver
-	video::E_DRIVER_TYPE driverType=driverChoiceConsole();
-	if (driverType==video::EDT_COUNT)
-		return 1;
-
-	// create device
-	MyEventReceiver receiver;
-
-	IrrlichtDevice* device = createDevice(driverType,
-			core::dimension2d<u32>(640, 480), 16, false, false, false, &receiver);
-
-	if (device == 0)
-		return 1; // could not create selected driver.
-
-	video::IVideoDriver* driver = device->getVideoDriver();
-	scene::ISceneManager* smgr = device->getSceneManager();
-
-
-	scene::ISceneNode * node = smgr->addSphereSceneNode();
-	if (node)
-	{
-		node->setPosition(core::vector3df(0,0,30));
-		node->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
-		node->setMaterialFlag(video::EMF_LIGHTING, false);
-	}
-
-	scene::ISceneNode* n = smgr->addCubeSceneNode();
-
-	if (n)
-	{
-		n->setPosition(core::vector3df(200, 0, 30));
-		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));		
-	}
-	
-	smgr->addCameraSceneNodeFPS();
-	device->getCursorControl()->setVisible(false);
-
-	int lastFPS = -1;
-
-	// In order to do framerate independent movement, we have to know
-	// how long it was since the last frame
-	u32 then = device->getTimer()->getTime();
-
 	// This is the movemen speed in units per second.
 	f32 MOVEMENT_SPEED = 20.f;
-	
-	f32 angle = 0.0f;
 
+    int angle = 30; //angle in º
+    
+    float maxRadius = 2.f;
+    
+    const f32 pi = 3.141592653f;
+    
 	const f32 ACCELERATION_SPEED = 0.1f;
 
 	const f32 BRAKE_SPEED = -0.5f;
 
-	while(device->run())
-	{
-		// Work out a frame delta time.
-		const u32 now = device->getTimer()->getTime();
-		const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
-		then = now;
-
-        //OUR OWN CODE	
-		core::vector3df nodePosition = node->getPosition();
-		core::vector3df node2Position = n->getPosition();
-
-		if(receiver.IsKeyDown(irr::KEY_KEY_A))
-			node2Position.X -= 20.f * frameDeltaTime;
-		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-			node2Position.X += 20.f * frameDeltaTime;
-
-		/*
-		int decision = MyFuzzyLogic::acelerar_frenar(distance);
-
-		switch(decision)
-		{
-		case 0: if(MOVEMENT_SPEED<=0)
-				{
-					MOVEMENT_SPEED=0;
-				}
-				else
-				{
-					MOVEMENT_SPEED+=BRAKE_SPEED;
-				}
-				break;
-		case 1: MOVEMENT_SPEED+=ACCELERATION_SPEED;
-				break;
-		case 2: break;
-		}
-		
-
-		int decision2 = MyFuzzyLogic::girar(distance);
-
-		switch(decision2)
-		{
-			case 0: break;
-			case 1: angle+=0.005f;
-					break;
-			case 2: angle+=0.01f;
-					break;
-		}
-		*/
-
-		nodePosition += core::vector3df(MOVEMENT_SPEED * frameDeltaTime * cos(double(angle)), 0, (MOVEMENT_SPEED * frameDeltaTime * sin(double(angle))));
-
-		node->setPosition(nodePosition);
-		n->setPosition(node2Position);
-
-        //---------------------------------------------------------------------------
+    //OUR OWN CODE
+    //_______TESTING PHYSICS________-
+    //Create points in space
+    core::vector3df point(0.3f ,0.f ,0.5f);
+     core::vector3df point2(0.f ,0.f ,1.f);
+    core::vector3df point3(0.f ,0.f ,-1.f);
+    
+    //Previous calculus
+    double angleRad = angle * pi / 180;
+    
+    //Object data
+    core::vector3df position(0.f,0.f,0.f);
+    core::vector3df velocity(MOVEMENT_SPEED*sin(angleRad) ,0.f ,MOVEMENT_SPEED*cos(angleRad));
         
-        
-		driver->beginScene(true, true, video::SColor(255,113,113,133));
+    //Initializing sensor
+    Sensor s(position, angleRad, maxRadius);
+    
+    //DETECTING IF POINT
+    bool inside1 = s.detectFieldVision(velocity,point);
+    //bool inside2 = s.detectFieldVision(velocity,point2);
+   // bool inside3 = s.detectFieldVision(velocity,point3);
+    
+    //OUTPUTS
+    if(inside1)
+        std::cout << "punto 1 dentro del área" <<std::endl;
+   /* if(inside2)
+        std::cout << "punto 2 dentro del área" <<std::endl;
+    if(inside3)
+        std::cout << "punto 3 dentro del área" <<std::endl;*/
+    
+    /*core::vector3df nodePosition = node->getPosition();
+    core::vector3df node2Position = n->getPosition();
 
-		smgr->drawAll(); // draw the 3d scene
-		device->getGUIEnvironment()->drawAll(); // draw the gui environment (the logo)
+    if(receiver.IsKeyDown(irr::KEY_KEY_A))
+        node2Position.X -= 20.f * frameDeltaTime;
+    else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+        node2Position.X += 20.f * frameDeltaTime;
 
-		driver->endScene();
+    /*
+    int decision = MyFuzzyLogic::acelerar_frenar(distance);
 
-		int fps = driver->getFPS();
+    switch(decision)
+    {
+    case 0: if(MOVEMENT_SPEED<=0)
+            {
+                MOVEMENT_SPEED=0;
+            }
+            else
+            {
+                MOVEMENT_SPEED+=BRAKE_SPEED;
+            }
+            break;
+    case 1: MOVEMENT_SPEED+=ACCELERATION_SPEED;
+            break;
+    case 2: break;
+    }
+    
 
-		if (lastFPS != fps)
-		{
-			core::stringw tmp(L"Movement Example - Irrlicht Engine [");
-			tmp += driver->getName();
-			tmp += L"] fps: ";
-			tmp += fps;
+    int decision2 = MyFuzzyLogic::girar(distance);
 
-			device->setWindowCaption(tmp.c_str());
-			lastFPS = fps;
-		}
-	}
-
-	/*
-	In the end, delete the Irrlicht device.
-	*/
-	device->drop();
+    switch(decision2)
+    {
+        case 0: break;
+        case 1: angle+=0.005f;
+                break;
+        case 2: angle+=0.01f;
+                break;
+    }
+    */
 	
 	return 0;
 }
