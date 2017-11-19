@@ -68,41 +68,37 @@ class MyFuzzyLogic
 {
 public:
 
-	static int girar(int distance)
+	static double girar(int distance, double a, double b)
 	{	
 		int decision = 0;
 
 		//Markers
-		float INIT_BRAKE = 0;
-		float END_BRAKE = 40;
-		float INIT_NONE1 = 30;
-		float END_NONE1 = 50;
-		float INIT_NONE2 = 100;
-		float END_NONE2 = 120;
-		float INIT_ACCEL = 110;
-		float END_ACCEL = 130;		
+		float INIT_GIRO = 0;
+		float END_GIRO = 100;
+		float INIT_NONE = 80;
+		float END_NONE = 120;	
 
 		//Pertenencys
-		float noturn_pertenency=0;
-		float softturn_pertenency=0;
-		float hardturn_pertenency=0;
+		float no_turn_pertenency=0;
+		float turn_pertenency=0;
 
 		//No turn pertenency
-		if(distance>END_ACCEL)
+		if(distance>END_GIRO)
 		{
-			noturn_pertenency=1;
+			turn_pertenency=0;
 		}
-		else if(distance<INIT_ACCEL)
+		else if(distance<INIT_GIRO)
 		{
-			noturn_pertenency=0;
+			turn_pertenency=1;
 		}
 		else
 		{
-			noturn_pertenency=distance/(END_ACCEL-INIT_ACCEL);
+			turn_pertenency=distance/(END_GIRO-INIT_GIRO);
+			turn_pertenency=1-turn_pertenency;
 		}
 
 		//Soft turn PERTENENCY
-		if(distance>END_NONE2)
+		/*if(distance>END_NONE2)
 		{
 			softturn_pertenency=0;
 		}else if(distance>INIT_NONE2)
@@ -120,32 +116,34 @@ public:
 		else
 		{
 			softturn_pertenency=0;
-		}
+		}*/
 
 		//hard turn pertenency
-		if(distance>END_BRAKE)
+		if(distance>END_NONE)
 		{
-			hardturn_pertenency=0;
+			no_turn_pertenency=1;
+		}
+		else if(distance<INIT_NONE){
+			no_turn_pertenency = 0;
 		}
 		else
 		{
-			hardturn_pertenency=distance/(END_BRAKE-INIT_BRAKE);
-			hardturn_pertenency=1-hardturn_pertenency;
+			no_turn_pertenency=distance/(END_NONE-INIT_NONE);
 		}
 
 
 		//Defuzzyfier
-		if(noturn_pertenency>softturn_pertenency)
+		if(no_turn_pertenency>turn_pertenency)
 		{
 			decision=0;
 		}
-		else if(softturn_pertenency>noturn_pertenency && softturn_pertenency>hardturn_pertenency)
+		else
 		{
-			decision=1;
-		}
-		else if(hardturn_pertenency>softturn_pertenency)
-		{
-			decision=2;
+			if(a>b){
+				decision=turn_pertenency;
+			}else{
+				decision=-turn_pertenency;
+			}
 		}
 	
 		return decision;
@@ -226,6 +224,7 @@ public:
     double angleVision = 0;
 	double angInitial = 0;
     float maxRadius = 0;
+	double a = 0, b = 0;
     
     Sensor( core::vector3df p, double ang, float maxR, double angInit){
         position = p;
@@ -248,7 +247,6 @@ public:
         core::vector3df relativeP = p - position;
 
         //calculate a and b coefficients, to compose the point
-		double a = 0, b = 0;
         if(sensorRight.X*sensorLeft.Z != sensorRight.Z*sensorLeft.X) 
 			b = (relativeP.Z * sensorLeft.X - relativeP.X*sensorLeft.Z) /(sensorRight.Z * sensorLeft.X - sensorRight.X*sensorLeft.Z);
         if(sensorLeft.X != 0){
@@ -264,7 +262,7 @@ public:
 		//std::cout<<"A y B: "<<a<<","<<b<<std::endl;
         //Analyze conditions to not be in sensor field of viewanglevision
 		//#####################################################################################################################
-		
+
         if(a < 0 || b < 0) return false;
 		
         return true;
@@ -452,9 +450,12 @@ int main()
 	//OWN VARIABLES
 	//----------------------------------------------------
 	float MOVEMENT_SPEED = 20.f;
-	const f32 CUBE_SPEED = 20.f;
+	const f32 CUBE_SPEED = 30.f;
+	const f32 ROTATE_SPEED = 0.01f;
+
 
 	int angle = 55; //angle in º
+	int anglePlayer = 0;
 
 	float maxRadius = 40.f;
 	
@@ -490,8 +491,6 @@ int main()
 
 		//Own Code
 		//----------------------------------------------------
-
-
 		//Move the cube for testing
 		if(receiver.IsKeyDown(irr::KEY_KEY_W))
 			nodePos2.X -= CUBE_SPEED * frameDeltaTime;
@@ -503,20 +502,26 @@ int main()
 			nodePos2.Z += CUBE_SPEED * frameDeltaTime;
 		
 		//Object data
-		core::vector3df velocity(MOVEMENT_SPEED*frameDeltaTime ,0.f,0.f);
-			
+		core::vector3df velocity(MOVEMENT_SPEED*frameDeltaTime*cos(anglePlayer) ,0.f,MOVEMENT_SPEED*frameDeltaTime*sin(anglePlayer));
 		
-		
-		//DETECTING IF POINT
+		//DETECTING IF POINT IS NOT IN FRONT
 		bool inside1 = s.detectFieldVision(velocity,nodePos2);
 		//bool inside2 = s.detectFieldVision(velocity,point2);
 		// bool inside3 = s.detectFieldVision(velocity,point3);
 		
+		//DETECTING WHICH SIDE TO TURN AND HOW MUCH
+		double giroPorcentaje = MyFuzzyLogic::girar(sqrt((nodePos2.X-nodePosition.X)*(nodePos2.X-nodePosition.X) 
+									+ (nodePos2.Z-nodePosition.Z) * (nodePos2.Z-nodePosition.Z) ), s.a, s.b);
+
+
 		//MOVE
 		if(inside1){
 			nodePosition += velocity;
 		}
 
+		//ROTATE
+		anglePlayer += giroPorcentaje * ROTATE_SPEED;
+		s.updateAngle(giroPorcentaje*ROTATE_SPEED);
 
 		//set positions
 		node->setPosition(nodePosition);
