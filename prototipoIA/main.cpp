@@ -70,7 +70,7 @@ public:
 
 	static double girar(int distance, double a, double b)
 	{	
-		int decision = 0;
+		double decision = 0;
 
 		//Markers
 		float INIT_GIRO = 0;
@@ -140,9 +140,9 @@ public:
 		else
 		{
 			if(a>b){
-				decision=turn_pertenency;
-			}else{
 				decision=-turn_pertenency;
+			}else{
+				decision=turn_pertenency;
 			}
 		}
 	
@@ -450,14 +450,14 @@ int main()
 	//OWN VARIABLES
 	//----------------------------------------------------
 	float MOVEMENT_SPEED = 20.f;
-	const f32 CUBE_SPEED = 30.f;
+	const f32 CUBE_SPEED = 50.f;
 	const f32 ROTATE_SPEED = 0.01f;
 
 
 	int angle = 55; //angle in º
-	int anglePlayer = 0;
+	double anglePlayer = 0;
 
-	float maxRadius = 40.f;
+	float maxRadius = 150.f;
 	
 	const f32 pi = 3.141592653f;
 	
@@ -503,7 +503,7 @@ int main()
 		
 		//Object data
 		core::vector3df velocity(MOVEMENT_SPEED*frameDeltaTime*cos(anglePlayer) ,0.f,MOVEMENT_SPEED*frameDeltaTime*sin(anglePlayer));
-		
+
 		//DETECTING IF POINT IS NOT IN FRONT
 		bool inside1 = s.detectFieldVision(velocity,nodePos2);
 		//bool inside2 = s.detectFieldVision(velocity,point2);
@@ -514,22 +514,29 @@ int main()
 									+ (nodePos2.Z-nodePosition.Z) * (nodePos2.Z-nodePosition.Z) ), s.a, s.b);
 
 
-		//MOVE
-		if(inside1){
+		//decide to move
+		if(inside1){		
+			//ROTATE
+			anglePlayer += giroPorcentaje * ROTATE_SPEED;
+
+			std::cout<<"Angulo: "<<anglePlayer<<" con porcentaje "<<giroPorcentaje<<std::endl;
+
+			s.updateAngle(giroPorcentaje*ROTATE_SPEED);
+
+			//MOVE
 			nodePosition += velocity;
 		}
 
-		//ROTATE
-		anglePlayer += giroPorcentaje * ROTATE_SPEED;
-		s.updateAngle(giroPorcentaje*ROTATE_SPEED);
+
 
 		//set positions
 		node->setPosition(nodePosition);
 		n->setPosition(nodePos2);
 		s.updatePosition(nodePosition);
 
-		bola1->setPosition(nodePosition+maxRadius*core::vector3df(sin(-angleRad+pi/2), 0.f, cos(-angleRad+pi/2)));
-      	bola2->setPosition(nodePosition+maxRadius*core::vector3df(sin(angleRad+pi/2), 0.f, cos(angleRad+pi/2)));
+		//VISUAL DEBUG
+		bola1->setPosition(nodePosition+maxRadius*core::vector3df(sin(-angleRad+pi/2-anglePlayer), 0.f, cos(-angleRad+pi/2-anglePlayer)));
+      	bola2->setPosition(nodePosition+maxRadius*core::vector3df(sin(angleRad+pi/2-anglePlayer), 0.f, cos(angleRad+pi/2-anglePlayer)));
         
 
 
