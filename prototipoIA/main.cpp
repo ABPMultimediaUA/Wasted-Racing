@@ -18,8 +18,8 @@ and tell the linker to link with the .lib file.
 #endif
 
 #include <irrlicht.h>
+#include <glm/glm.hpp>
 #include "driverChoice.h"
-#include <irrMath.h>
 
 using namespace irr;
 
@@ -61,64 +61,44 @@ private:
 	bool KeyIsDown[KEY_KEY_CODES_COUNT];
 };
 
-//OWN CODE
-/*
-class WayPoint
-{
-	private:
-		core::vector3df* position;
-	public:
-
-	WayPoint(float x, float y, float z){
-		position = new core::vector3df(x, y, z);
-	}
-
-	core::vector3df* getPos()
-	{
-		return position;
-	}
-};
-*/
+/////////////////////Altered code
+//_______TESTING
 
 class MyFuzzyLogic
 {
 public:
 
-	static int girar(int distance)
+	static double girar(int distance, double a, double b)
 	{	
 		int decision = 0;
 
 		//Markers
-		float INIT_BRAKE = 0;
-		float END_BRAKE = 40;
-		float INIT_NONE1 = 30;
-		float END_NONE1 = 50;
-		float INIT_NONE2 = 100;
-		float END_NONE2 = 120;
-		float INIT_ACCEL = 110;
-		float END_ACCEL = 130;		
+		float INIT_GIRO = 0;
+		float END_GIRO = 100;
+		float INIT_NONE = 80;
+		float END_NONE = 120;	
 
 		//Pertenencys
-		float noturn_pertenency=0;
-		float softturn_pertenency=0;
-		float hardturn_pertenency=0;
+		float no_turn_pertenency=0;
+		float turn_pertenency=0;
 
 		//No turn pertenency
-		if(distance>END_ACCEL)
+		if(distance>END_GIRO)
 		{
-			noturn_pertenency=1;
+			turn_pertenency=0;
 		}
-		else if(distance<INIT_ACCEL)
+		else if(distance<INIT_GIRO)
 		{
-			noturn_pertenency=0;
+			turn_pertenency=1;
 		}
 		else
 		{
-			noturn_pertenency=distance/(END_ACCEL-INIT_ACCEL);
+			turn_pertenency=distance/(END_GIRO-INIT_GIRO);
+			turn_pertenency=1-turn_pertenency;
 		}
 
 		//Soft turn PERTENENCY
-		if(distance>END_NONE2)
+		/*if(distance>END_NONE2)
 		{
 			softturn_pertenency=0;
 		}else if(distance>INIT_NONE2)
@@ -136,32 +116,34 @@ public:
 		else
 		{
 			softturn_pertenency=0;
-		}
+		}*/
 
 		//hard turn pertenency
-		if(distance>END_BRAKE)
+		if(distance>END_NONE)
 		{
-			hardturn_pertenency=0;
+			no_turn_pertenency=1;
+		}
+		else if(distance<INIT_NONE){
+			no_turn_pertenency = 0;
 		}
 		else
 		{
-			hardturn_pertenency=distance/(END_BRAKE-INIT_BRAKE);
-			hardturn_pertenency=1-hardturn_pertenency;
+			no_turn_pertenency=distance/(END_NONE-INIT_NONE);
 		}
 
 
 		//Defuzzyfier
-		if(noturn_pertenency>softturn_pertenency)
+		if(no_turn_pertenency>turn_pertenency)
 		{
 			decision=0;
 		}
-		else if(softturn_pertenency>noturn_pertenency && softturn_pertenency>hardturn_pertenency)
+		else
 		{
-			decision=1;
-		}
-		else if(hardturn_pertenency>softturn_pertenency)
-		{
-			decision=2;
+			if(a>b){
+				decision=turn_pertenency;
+			}else{
+				decision=-turn_pertenency;
+			}
 		}
 	
 		return decision;
@@ -203,27 +185,6 @@ public:
 			accelerate_pertenency=distance/(END_ACCEL-INIT_ACCEL);
 		}
 
-		//NONE PERTENENCY
-		/*if(distance>END_NONE2)
-		{
-			none_pertenency=0;
-		}else if(distance>INIT_NONE2)
-		{
-			none_pertenency = distance/(END_NONE2-INIT_NONE2);
-			none_pertenency = 1-none_pertenency;
-		}else if(distance>END_NONE1)
-		{
-			none_pertenency=1;
-		}
-		else if(distance>INIT_NONE1)
-		{
-			none_pertenency = distance/(END_NONE1-INIT_NONE1);
-		}
-		else
-		{
-			none_pertenency=0;
-		}*/
-
 		//BRAKE_PERTENENCY
 		if(distance>END_BRAKE)
 		{
@@ -256,7 +217,65 @@ public:
 
 };
 
+class Sensor{
+public:
+    
+    core::vector3df position;
+    double angleVision = 0;
+	double angInitial = 0;
+    float maxRadius = 0;
+	double a = 0, b = 0;
+    
+    Sensor( core::vector3df p, double ang, float maxR, double angInit){
+        position = p;
+        angleVision = ang;
+        maxRadius = maxR;
+		angInitial = angInit;
+    }
+    
+    ~Sensor(){
+    };
+    
+    //Detect if point is in the field of view
+    bool detectFieldVision( core::vector3df vel,  core::vector3df p){
+		//First we check the distance (avoiding squared root)
+		if((p.X-position.X)*(p.X-position.X) + (p.Z-position.Z)*(p.Z-position.Z) > maxRadius*maxRadius) return false;
+		
+        //Calculate field of view left and right vectores, given the angle apart of the velocity vector and the position of the object
+        core::vector3df sensorLeft =core::vector3df(sin(-angleVision-angInitial), 0.f, cos(-angleVision-angInitial));
+        core::vector3df sensorRight =core::vector3df(sin(angleVision-angInitial), 0.f, cos(angleVision-angInitial));
+        core::vector3df relativeP = p - position;
 
+        //calculate a and b coefficients, to compose the point
+        if(sensorRight.X*sensorLeft.Z != sensorRight.Z*sensorLeft.X) 
+			b = (relativeP.Z * sensorLeft.X - relativeP.X*sensorLeft.Z) /(sensorRight.Z * sensorLeft.X - sensorRight.X*sensorLeft.Z);
+        if(sensorLeft.X != 0){
+			a = (relativeP.Z - b * sensorRight.Z) / sensorLeft.Z;
+		}
+		
+
+		//TESTING COUTS
+		//#####################################################################################################################
+		//std::cout<<"distancia jeje: "<<glm::sqrt((p.X-position.X)*(p.X-position.X) 
+		//						+ (p.Z-position.Z)*(p.Z-position.Z))<<std::endl;
+		//std::cout<<"vectores: "<<sensorLeft.X<<","<<sensorLeft.Z<<" - "<<sensorRight.X<<","<<sensorRight.Z<<std::endl;
+		//std::cout<<"A y B: "<<a<<","<<b<<std::endl;
+        //Analyze conditions to not be in sensor field of viewanglevision
+		//#####################################################################################################################
+
+        if(a < 0 || b < 0) return false;
+		
+        return true;
+    }
+    
+    void updatePosition( core::vector3df pos){
+        position = pos;
+    }
+
+	 void updateAngle(double angle){
+        angInitial += angle;
+    }
+};
 
 /*
 The event receiver for keeping the pressed keys is ready, the actual responses
@@ -298,18 +317,26 @@ int main()
 		node->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
 	}
-
-	scene::ISceneNode * waypoint1 = smgr->addSphereSceneNode();
-	if(waypoint1)
+	
+	scene::ISceneNode * bola1 = smgr->addSphereSceneNode();
+	if (bola1)
 	{
-		waypoint1->setPosition(core::vector3df (200, 0, 10));
+		bola1->setPosition(core::vector3df(0,0,30));
+		bola1->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
+		bola1->setMaterialFlag(video::EMF_LIGHTING, false);
+		bola1->setScale(core::vector3df(0.2f,0.2f,0.2f));
 	}
 
-	scene::ISceneNode * waypoint2 = smgr->addSphereSceneNode();
-	if(waypoint2)
+	scene::ISceneNode * bola2 = smgr->addSphereSceneNode();
+	if (bola2)
 	{
-		waypoint2->setPosition(core::vector3df (300, 0, 30));
+		bola2->setPosition(core::vector3df(0,0,30));
+		bola2->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
+		bola2->setMaterialFlag(video::EMF_LIGHTING, false);
+		bola2->setScale(core::vector3df(0.2f,0.2f,0.2f));
 	}
+
+
 	/*
 	Now we create another node, movable using a scene node animator. Scene
 	node animators modify scene nodes and can be attached to any scene node
@@ -319,9 +346,7 @@ int main()
 	example. We create a cube scene node and attach a 'fly circle' scene
 	node animator to it, letting this node fly around our sphere scene node.
 	*/
-
-	/*
-	scene::ISceneNode* n = smgr->addCubeSceneNode();
+	/*scene::ISceneNode* n = smgr->addCubeSceneNode();
 
 	if (n)
 	{
@@ -336,20 +361,11 @@ int main()
 		}
 	}*/
 
-	scene::ISceneNode* n = smgr->addCubeSceneNode();
-
-	if (n)
-	{
-		n->setPosition(core::vector3df(200, 0, 30));
-		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));		
-	}
 	/*
 	The last scene node we add to show possibilities of scene node animators is
 	a b3d model, which uses a 'fly straight' animator to run between to points.
 	*/
-
-	/*
-	scene::IAnimatedMeshSceneNode* anms =
+	/*scene::IAnimatedMeshSceneNode* anms =
 		smgr->addAnimatedMeshSceneNode(smgr->getMesh("../../media/ninja.b3d"));
 
 	if (anms)
@@ -362,7 +378,7 @@ int main()
 			anms->addAnimator(anim);
 			anim->drop();
 		}
-	*/
+
 		/*
 		To make the model look right we disable lighting, set the
 		frames between which the animation should loop, rotate the
@@ -375,9 +391,7 @@ int main()
 		start other animations. But a good advice is to not use
 		hardcoded frame-numbers...
 		*/
-
-		/*
-		anms->setMaterialFlag(video::EMF_LIGHTING, false);
+	/*	anms->setMaterialFlag(video::EMF_LIGHTING, false);
 
 		anms->setFrameLoop(0, 13);
 		anms->setAnimationSpeed(15);
@@ -387,9 +401,9 @@ int main()
 		anms->setRotation(core::vector3df(0,-90,0));
 //		anms->setMaterialTexture(0, driver->getTexture("../../media/sydney.bmp"));
 
-	}
+	}*/
 
-*/
+
 	/*
 	To be able to look at and move around in this scene, we create a first
 	person shooter style camera and make the mouse cursor invisible.
@@ -419,14 +433,50 @@ int main()
 	// how long it was since the last frame
 	u32 then = device->getTimer()->getTime();
 
-	// This is the movemen speed in units per second.
-	f32 MOVEMENT_SPEED = 20.f;
-	
-	f32 angle = 0.0f;
 
+	///Own Code
+	//-------------------------------------------------------------------------------
+	scene::ISceneNode* n = smgr->addCubeSceneNode();
+	if (n)
+	{
+		n->setPosition(core::vector3df(200,0,30));
+		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
+		n->setMaterialFlag(video::EMF_LIGHTING, false);
+	}
+	//-------------------------------------------------------------------------------
+
+	// This is the movemen speed in units per second.
+
+	//OWN VARIABLES
+	//----------------------------------------------------
+	float MOVEMENT_SPEED = 20.f;
+	const f32 CUBE_SPEED = 30.f;
+	const f32 ROTATE_SPEED = 0.01f;
+
+
+	int angle = 55; //angle in º
+	int anglePlayer = 0;
+
+	float maxRadius = 40.f;
+	
+	const f32 pi = 3.141592653f;
+	
 	const f32 ACCELERATION_SPEED = 0.1f;
 
 	const f32 BRAKE_SPEED = -0.5f;
+
+
+	//Previous calculus
+	double angleRad = angle * pi / 180;
+
+	//get position
+	core::vector3df nodePosition = node->getPosition();
+	core::vector3df nodePos2 = n->getPosition();
+
+	//Initializing sensor
+	Sensor s(nodePosition, angleRad, maxRadius,-pi/2);
+
+	//----------------------------------------------------
 
 	while(device->run())
 	{
@@ -434,68 +484,57 @@ int main()
 		const u32 now = device->getTimer()->getTime();
 		const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 		then = now;
+		
 
 		/* Check if keys W, S, A or D are being held down, and move the
 		sphere node around respectively. */
-		core::vector3df nodePosition = node->getPosition();
-		core::vector3df node2Position = n->getPosition();
 
-		/*
+		//Own Code
+		//----------------------------------------------------
+		//Move the cube for testing
 		if(receiver.IsKeyDown(irr::KEY_KEY_W))
-			nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
+			nodePos2.X -= CUBE_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-			nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
-		*/
+			nodePos2.X += CUBE_SPEED * frameDeltaTime;
 		if(receiver.IsKeyDown(irr::KEY_KEY_A))
-			node2Position.X -= 20.f * frameDeltaTime;
+			nodePos2.Z -= CUBE_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-			node2Position.X += 20.f * frameDeltaTime;
-
-			
-		//OUR OWN CODE		
-		core::vector3df way1 = waypoint1->getPosition();
-		core::vector3df way2 = waypoint2->getPosition();
+			nodePos2.Z += CUBE_SPEED * frameDeltaTime;
 		
-
-		core::vector3df raceLineVector = way1 - nodePosition;
-		core::vector3df raceLineVector2 = way2 - nodePosition;
-
-		/*
-		int decision = MyFuzzyLogic::acelerar_frenar(distance);
-
-		switch(decision)
-		{
-		case 0: if(MOVEMENT_SPEED<=0)
-				{
-					MOVEMENT_SPEED=0;
-				}
-				else
-				{
-					MOVEMENT_SPEED+=BRAKE_SPEED;
-				}
-				break;
-		case 1: MOVEMENT_SPEED+=ACCELERATION_SPEED;
-				break;
-		case 2: break;
-		}
+		//Object data
+		core::vector3df velocity(MOVEMENT_SPEED*frameDeltaTime*cos(anglePlayer) ,0.f,MOVEMENT_SPEED*frameDeltaTime*sin(anglePlayer));
 		
+		//DETECTING IF POINT IS NOT IN FRONT
+		bool inside1 = s.detectFieldVision(velocity,nodePos2);
+		//bool inside2 = s.detectFieldVision(velocity,point2);
+		// bool inside3 = s.detectFieldVision(velocity,point3);
+		
+		//DETECTING WHICH SIDE TO TURN AND HOW MUCH
+		double giroPorcentaje = MyFuzzyLogic::girar(sqrt((nodePos2.X-nodePosition.X)*(nodePos2.X-nodePosition.X) 
+									+ (nodePos2.Z-nodePosition.Z) * (nodePos2.Z-nodePosition.Z) ), s.a, s.b);
 
-		int decision2 = MyFuzzyLogic::girar(distance);
 
-		switch(decision2)
-		{
-			case 0: break;
-			case 1: angle+=0.005f;
-					break;
-			case 2: angle+=0.01f;
-					break;
+		//MOVE
+		if(inside1){
+			nodePosition += velocity;
 		}
-		*/
 
-		nodePosition += core::vector3df(MOVEMENT_SPEED * frameDeltaTime * cos(double(angle)), 0, (MOVEMENT_SPEED * frameDeltaTime * sin(double(angle))));
+		//ROTATE
+		anglePlayer += giroPorcentaje * ROTATE_SPEED;
+		s.updateAngle(giroPorcentaje*ROTATE_SPEED);
 
+		//set positions
 		node->setPosition(nodePosition);
-		n->setPosition(node2Position);
+		n->setPosition(nodePos2);
+		s.updatePosition(nodePosition);
+
+		bola1->setPosition(nodePosition+maxRadius*core::vector3df(sin(-angleRad+pi/2), 0.f, cos(-angleRad+pi/2)));
+      	bola2->setPosition(nodePosition+maxRadius*core::vector3df(sin(angleRad+pi/2), 0.f, cos(angleRad+pi/2)));
+        
+
+
+		//----------------------------------------------------
+
 
 		driver->beginScene(true, true, video::SColor(255,113,113,133));
 
@@ -525,7 +564,6 @@ int main()
 	
 	return 0;
 }
-
 
 /*
 That's it. Compile and play around with the program.
