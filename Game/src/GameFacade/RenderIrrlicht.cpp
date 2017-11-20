@@ -14,17 +14,19 @@ void RenderIrrlicht::openWindow(){
 }
 
 void RenderIrrlicht::updateWindow() {
-
+    if(!RenderIrrlicht::device->run()){
+        
+    }
 }
 
 void RenderIrrlicht::closeWindow() {
 
 }
 
-void RenderIrrlicht::renderObject(std::string id) {
+void RenderIrrlicht::renderObject(int id) {
 
 }
 
 void RenderIrrlicht::renderDraw() {
-
+ 
 }

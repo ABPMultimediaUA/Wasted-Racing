@@ -36,7 +36,7 @@ public:
     //==============================================================
 
     //Renders a single object
-    virtual void renderObject(std::string id);
+    virtual void renderObject(int id);
 
     //Renders all the scene
     virtual void renderDraw();
