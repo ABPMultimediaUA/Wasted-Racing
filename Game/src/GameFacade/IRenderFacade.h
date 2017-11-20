@@ -6,6 +6,18 @@
 
 class GameObject;
 
+//Window data structures
+struct vec2d {
+    int x;
+    int y;
+};
+
+struct Window {
+    vec2d size;
+    bool fullscreen;
+    bool vsync;
+};
+
 class IRenderFacade{
 
 public:
@@ -100,20 +112,12 @@ public:
         return window.vsync;
     }
 
+    Window& getWindow(){
+        return window;
+    }
+
 
 protected:
-
-    //Window data structures
-    struct vec2d {
-        int x;
-        int y;
-    };
-
-    struct Window {
-        vec2d size;
-        bool fullscreen;
-        bool vsync;
-    };
 
     //Window declaration
     Window window;
