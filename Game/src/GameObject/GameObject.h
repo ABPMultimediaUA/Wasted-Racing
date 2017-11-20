@@ -21,6 +21,11 @@ public:
 	//GetID
 	std::string GetID() { return id; }
 
+	//Get position
+	irr::core::vector3df getPosition(){
+		return pos;
+	}
+
 	//Init
 	void Init();
 
