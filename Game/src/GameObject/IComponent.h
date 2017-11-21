@@ -1,5 +1,8 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
+
 class GameObject;
 
 class IComponent {
@@ -24,6 +27,6 @@ public:
 
 protected:
 	
-	GameObject& gameObject; //we store the reference to our game Object
+	GameObject& gameObject; //we store the reference to our game Object	
 
 };
