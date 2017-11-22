@@ -11,5 +11,11 @@ class FuzzyLogic{
         
         //Makes NPC accelerate or brake based on data
         static int acelerar_frenar(int distance);
+
+        //Constructor
+        FuzzyLogic();
+
+        //Destructor
+        ~FuzzyLogic();
 };
 
