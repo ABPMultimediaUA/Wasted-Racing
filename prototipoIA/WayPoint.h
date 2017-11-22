@@ -1,19 +1,15 @@
 #include <irrlicht.h>
-#include <glm/glm.hpp>
-
+#include <glm/ext.hpp>
 
 class WayPoint{
 private:
         class Node{
         private:
                 double radius;
-                irr::core::vector3df pos;
+                glm::vec3 position;
 
-                Node next;
-        public:
-                double radius;
-                Node next;
-                
+                Node* next;
+        public:                
                 Node();
                 ~Node();
                 Node getNext();
@@ -21,13 +17,12 @@ private:
                 double getRadius();
                 irr::core::vector3df getPos();
                 bool inside(irr::core::vector3df pos);
-        }
-
+        };
 public:
-        Node startPoint;
+        Node* startPoint;
 
         //Constructor
-        WayPoint();
+        WayPoint(glm::vec3);
 
         //Destructor
         ~WayPoint();
