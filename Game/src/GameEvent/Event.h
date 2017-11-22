@@ -9,7 +9,12 @@ enum EventType {
     ObjectCreate,
     ObjectDelete,
     RenderComponentCreate,
-    RenderComponentDelete
+    RenderComponentDelete,
+    KeyAdvance,
+    KeyBrake,
+    KeyIncSpin,
+    KeyDecSpin,
+    KeySelect
 };
 
 //Vector containing a vector with pointers to objects

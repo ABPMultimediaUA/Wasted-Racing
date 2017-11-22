@@ -1,24 +1,31 @@
 #include "InputManager.h"
+#include "../GameFacade/InputGainput.h"
 
-bool InputManager::OnEvent(const SEvent& event){
-    if(event.EventType == irr::EET_KEY_INPUT_EVENT)
-        InputManager::KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
+#include <iostream>
 
-    return false;
-}
+//==============================================
+// DELEGATES DECLARATIONS
+//==============================================
+void selected(EventData eData);
 
-bool InputManager::IsKeyDown(EKEY_CODE keyCode) const{
-    return InputManager::KeyIsDown[keyCode];
-}
-
+//==============================================
+// INPUT MANAGER FUNCTIONS
+//==============================================
 InputManager& InputManager::getInstance() {
     static InputManager instance;
     return instance;
 }
 
 void InputManager::init(){
-    for(u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
-            InputManager::KeyIsDown[i] = false;
+
+    //Initialize our facade
+    inputFacade = new InputGainput();
+
+    inputFacade->openInput();
+
+    //Bind functions
+    EventManager::getInstance().addListener(EventListener {EventType::KeySelect, selected});
+
 }
 
 void InputManager::close(){
@@ -27,4 +34,13 @@ void InputManager::close(){
 
 void InputManager::update(){
 
+    inputFacade->updateInput();
+
+}
+
+//==============================================
+// DELEGATES
+//==============================================
+void selected(EventData eData){
+    std::cout << "EventType::KeySelected triggered!" << std::endl;
 }

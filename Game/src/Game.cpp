@@ -5,15 +5,22 @@
 //====================================================
 void Game::init() {
 
+    //Say game loop is active
     Game::stay = true;
+
+    //Set engine to default
+    Game::engineSetter(0);
+
+    //Initilize managers
+    eventManager = &EventManager::getInstance();
+    eventManager->init();
+
+    renderManager = &RenderManager::getInstance();
+    renderManager->init(Game::engine);
     
     inputManager = &InputManager::getInstance();
     inputManager->init();
 
-    Game::engineSetter(0);
-
-    renderManager = &RenderManager::getInstance();
-    renderManager->init(Game::engine);
 
 }
 
@@ -22,10 +29,10 @@ void Game::init() {
 //====================================================
 void Game::update() {
 
+    inputManager->update();
     renderManager->update();
+    eventManager->update();
     
-    //if(inputManager->IsKeyDown(irr::EKEY_CODE::KEY_ESCAPE))
-    //    Game::close();
 }
 
 //====================================================

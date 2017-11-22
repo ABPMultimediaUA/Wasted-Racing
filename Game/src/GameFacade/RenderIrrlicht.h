@@ -44,13 +44,12 @@ public:
 private: 
 
     //Irrlicht own window
-    IrrlichtDevice* device;
+    irr::IrrlichtDevice* device;
 
     //Irrlicht scene manager
-    scene::ISceneManager* sceneManager;
+    irr::scene::ISceneManager* sceneManager;
 
     //Irrlicht video manager
-    video::IVideoDriver* videoDriver;
-
+    irr::video::IVideoDriver* videoDriver;
 
 };

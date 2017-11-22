@@ -3,20 +3,18 @@
 
 void RenderIrrlicht::openWindow(){
 
-    video::E_DRIVER_TYPE driverType = video::E_DRIVER_TYPE::EDT_OPENGL;
+    irr::video::E_DRIVER_TYPE driverType = irr::video::E_DRIVER_TYPE::EDT_OPENGL;
 
-    RenderIrrlicht::device = createDevice(driverType, core::dimension2d<u32>(window.size.x, window.size.y),
-        16, window.fullscreen, false, window.vsync, inputManager);
+    device = irr::createDevice(driverType, irr::core::dimension2d<irr::u32>(window.size.x, window.size.y),
+        16, window.fullscreen, false, window.vsync, NULL);
 
-    RenderIrrlicht::videoDriver = device->getVideoDriver();
-    RenderIrrlicht::sceneManager = device->getSceneManager();
+    videoDriver = device->getVideoDriver();
+    sceneManager = device->getSceneManager();
 
 }
 
 void RenderIrrlicht::updateWindow() {
-    if(!RenderIrrlicht::device->run()){
-        
-    }
+    device->run();
 }
 
 void RenderIrrlicht::closeWindow() {

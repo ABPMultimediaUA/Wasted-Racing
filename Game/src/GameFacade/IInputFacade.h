@@ -29,13 +29,13 @@ public:
     //==============================================================
 
     //Creates a window depending on the engine
-    virtual void openInputEngine() = 0;
+    virtual void openInput() = 0;
 
     //Updates window info in the engine
-    virtual void updateInputEngine() = 0;
+    virtual void updateInput() = 0;
 
     //Closes engine window
-    virtual void closeInputEngine() = 0;
+    virtual void closeInput() = 0;
 
 protected:
 
