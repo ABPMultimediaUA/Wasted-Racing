@@ -6,11 +6,11 @@
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
-void selected(EventData eData);
+void selected(EventData eData); 
 
 //==============================================
 // INPUT MANAGER FUNCTIONS
-//==============================================
+//============================================== 
 InputManager& InputManager::getInstance() {
     static InputManager instance;
     return instance;
@@ -18,14 +18,13 @@ InputManager& InputManager::getInstance() {
 
 void InputManager::init(int engine){
 
-   //Initialize our facade
-   inputFacade = new InputIrrlicht();
-
-   inputFacade->openInput();
-
-   //Bind functions
-   EventManager::getInstance().addListener(EventListener {EventType::Key_Select, selected});
-
+    //InputFacade is already initialized in RenderIrrlicht
+    //Important!!! Once we swich to our own render engine, we have to init input also from there
+    inputFacade->openInput(device);
+ 
+    //Bind functions
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Select, selected});
+ 
 }
 
 void InputManager::close(){

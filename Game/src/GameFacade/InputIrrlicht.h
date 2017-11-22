@@ -6,31 +6,18 @@
 
 #include <irrlicht.h>
 
-class InputIrrlicht : public IInputFacade, irr::IEventReceiver {
+class InputIrrlicht : public IInputFacade, public irr::IEventReceiver {
 
 public:
-
-
-    struct SMouseState
-    {
-        irr::core::position2di Position;
-        bool LeftButtonDown;
-        bool RightButtonDown;
-    };
 
     //==============================================================
     // Class Related functions
     //==============================================================
 
     //Constructor
-    InputIrrlicht() : IInputFacade() {
-
+    InputIrrlicht() {
         for (irr::u32 i=0; i<irr::KEY_KEY_CODES_COUNT; ++i)
             KeyIsDown[i] = false;
-        MouseState.Position.X = 0;
-        MouseState.Position.Y = 0;
-        MouseState.LeftButtonDown = false;
-        MouseState.RightButtonDown = false;
     }
 
     //Destructor
@@ -43,7 +30,7 @@ public:
     //==============================================================
 
     //Creates a window depending on the engine
-    virtual void openInput();
+    virtual void openInput(uintptr_t device);
 
     //Updates window info in the engine
     virtual void updateInput();
@@ -55,7 +42,14 @@ public:
     // Irrlicht Related functions
     //==============================================================
 
-    virtual bool OnEvent(const irr::SEvent& event);
+    virtual bool OnEvent(const irr::SEvent& event)
+    {
+        // Remember whether each key is down or up
+        if (event.EventType == irr::EET_KEY_INPUT_EVENT)
+            KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
+
+        return false;
+    }
 
     // This is used to check whether a key is being held down
     virtual bool IsKeyDown(irr::EKEY_CODE keyCode) const
@@ -66,7 +60,6 @@ public:
 private: 
 
     bool KeyIsDown[irr::KEY_KEY_CODES_COUNT];
-    SMouseState MouseState;
     
     irr::IrrlichtDevice *device;
 

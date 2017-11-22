@@ -21,7 +21,7 @@ public:
     //==============================================================
 
     //Creates a window depending on the engine
-    virtual void openInput() = 0;
+    virtual void openInput(uintptr_t device) = 0;
 
     //Updates window info in the engine
     virtual void updateInput() = 0;

@@ -26,8 +26,19 @@ public:
     //Static class getter
     static InputManager& getInstance();
 
+    void setInputFacade(IInputFacade* facade){
+        inputFacade = facade;
+    }
+
+    void setDevice(uintptr_t dev){
+        device = dev;
+    }
+
 private: 
 
     IInputFacade* inputFacade;
+
+    //This variable is only used when we choose to use irrlicht
+    uintptr_t device;
 
 };

@@ -14,7 +14,9 @@ enum EventType {
     Key_DecSpin,
     Key_Select,
     Game_Start,
-    Game_Close
+    Game_Close,
+    IrrlichtDevice_Start,
+    IrrlichtInput_Start
 };
 
 //Vector containing a vector with pointers to objects

@@ -33,9 +33,9 @@ void Game::init() {
 //====================================================
 void Game::update() {
 
-    //inputManager->update();
-    //renderManager->update();
-    //eventManager->update();
+    inputManager->update();
+    renderManager->update();
+    eventManager->update();
     
 }
 
