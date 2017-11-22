@@ -36,9 +36,15 @@ private:
     void close();
 
     //Engine setter
-    void engineSetter(int n){
-        engine = n;
+    void renderEngineSetter(int n){
+        renderEngine = n;
     }
+
+    //Engine setter
+    void inputEngineSetter(int n){
+        inputEngine = n;
+    }
+
 
     //==============================================================
     // Private data
@@ -53,8 +59,11 @@ private:
     //Event manager
     EventManager* eventManager;
 
-    //Selected engine
-    int engine;
+    //Selected renderEngine
+    int renderEngine;
+
+    //Selected inputEngine
+    int inputEngine;
 
     //Stay in the main loop
     bool stay;

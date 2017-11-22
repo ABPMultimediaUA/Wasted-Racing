@@ -9,18 +9,22 @@ void Game::init() {
     Game::stay = true;
 
     //Set engine to default
-    Game::engineSetter(0);
+    Game::renderEngineSetter(0);
+    Game::inputEngineSetter(0);
 
     //Initilize managers
     eventManager = &EventManager::getInstance();
     eventManager->init();
 
+    //First we initialize renderManager, who creates a device and passes 
+    //this reference to the inputManager
     renderManager = &RenderManager::getInstance();
-    renderManager->init(Game::engine);
-    
+    renderManager->init(Game::renderEngine);
+//
+    ////Once we've initialized the renderManager, we can do the same with
+    ////our inputManager
     inputManager = &InputManager::getInstance();
-    inputManager->init();
-
+    inputManager->init(Game::inputEngine);
 
 }
 
@@ -29,9 +33,9 @@ void Game::init() {
 //====================================================
 void Game::update() {
 
-    inputManager->update();
-    renderManager->update();
-    eventManager->update();
+    //inputManager->update();
+    //renderManager->update();
+    //eventManager->update();
     
 }
 

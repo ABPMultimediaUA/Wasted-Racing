@@ -1,5 +1,5 @@
 #include "InputManager.h"
-#include "../GameFacade/InputGainput.h"
+#include "../GameFacade/InputIrrlicht.h"
 
 #include <iostream>
 
@@ -16,15 +16,15 @@ InputManager& InputManager::getInstance() {
     return instance;
 }
 
-void InputManager::init(){
+void InputManager::init(int engine){
 
-    //Initialize our facade
-    inputFacade = new InputGainput();
+   //Initialize our facade
+   inputFacade = new InputIrrlicht();
 
-    inputFacade->openInput();
+   inputFacade->openInput();
 
-    //Bind functions
-    EventManager::getInstance().addListener(EventListener {EventType::KeySelect, selected});
+   //Bind functions
+   EventManager::getInstance().addListener(EventListener {EventType::Key_Select, selected});
 
 }
 
@@ -42,5 +42,5 @@ void InputManager::update(){
 // DELEGATES
 //==============================================
 void selected(EventData eData){
-    std::cout << "EventType::KeySelected triggered!" << std::endl;
+    std::cout << "EventType::Key_Selected triggered!" << std::endl;
 }

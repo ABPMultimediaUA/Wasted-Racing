@@ -6,15 +6,15 @@
 
 //Enumeration of possible events
 enum EventType {
-    ObjectCreate,
-    ObjectDelete,
-    RenderComponentCreate,
-    RenderComponentDelete,
-    KeyAdvance,
-    KeyBrake,
-    KeyIncSpin,
-    KeyDecSpin,
-    KeySelect
+    Object_Create,
+    Object_Delete,
+    Key_Advance,
+    Key_Brake,
+    Key_IncSpin,
+    Key_DecSpin,
+    Key_Select,
+    Game_Start,
+    Game_Close
 };
 
 //Vector containing a vector with pointers to objects

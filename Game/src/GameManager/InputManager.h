@@ -15,7 +15,7 @@ public:
     }
 
     //Initializer
-    void init();
+    void init(int engine);
 
     //Updater
     void update();

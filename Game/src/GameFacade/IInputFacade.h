@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 class IInputFacade{
 
 public:
@@ -13,16 +15,6 @@ public:
 
     //Destructor
     virtual ~IInputFacade() {}
-
-    //Initializer
-    void init() {
-
-    }
-
-    //Closer
-    void close() {
-
-    }
 
     //==============================================================
     // Engine Related functions

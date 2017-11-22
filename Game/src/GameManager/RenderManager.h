@@ -26,11 +26,6 @@ public:
     //Static class getter
     static RenderManager& getInstance();
 
-    //RenderFacade getter
-    IRenderFacade* getRenderFacade(){
-        return renderFacade;
-    }
-
 private:
 
     IRenderFacade* renderFacade;
