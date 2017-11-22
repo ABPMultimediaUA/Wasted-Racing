@@ -2,17 +2,17 @@
 
 #include <string>
 #include <list>
-
-#include <irrlicht.h>
+#include <glm/glm.hpp>
 
 #include "IComponent.h"
+
 
 class GameObject {
 
 public:
 
 	//Constructor
-	GameObject(const std::string &newId, const irr::core::vector3df &newPos) 
+	GameObject(const std::string &newId, const glm::vec3 &newPos) 
 		: id(newId), pos(newPos)  {}
 
 	//Destructor
@@ -20,6 +20,11 @@ public:
 
 	//GetID
 	std::string getId() { return id; }
+
+	//Get position
+	glm::vec3 getPosition(){
+		return pos;
+	}
 
 	//Init
 	void init();
@@ -37,9 +42,9 @@ public:
 private:
 
 	std::string		id;
-	irr::core::vector3df pos;
-	irr::core::vector3df rot;
-	irr::core::vector3df sca;
+	glm::vec3 pos;
+	glm::vec3 rot;
+	glm::vec3 sca;
 
 	std::list<IComponent*> components;
 
