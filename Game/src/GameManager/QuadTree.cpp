@@ -5,7 +5,7 @@
 //@parameter entityList: the list of entities to sort into the quadtree
 //@parameters int qx0, qx1, qy0, qy1: the position of the corners of the nodes
 //@parameter type: the type of the pointers of the entityList
-void QuadTree::init(int max, std::vector<IComponent*> &componentList, int qx0, int qx1, int qy0, int qy1){
+void QuadTree::init(unsigned int max, std::vector<IComponent*> &componentList, int qx0, int qx1, int qy0, int qy1){
 
     components = &componentList;
 
@@ -43,7 +43,7 @@ void QuadTree::divide(){
         northEast.init(maxEntity, aux4, x01, x1, y01, y1);
 
         //Inserting the entities into the children nodes
-        for (int i = 0; i< components->size(); i++){
+        for (unsigned int i = 0; i< components->size(); i++){
 
 
             GameObject object = components->at(i)->getGameObject();
@@ -74,7 +74,7 @@ void QuadTree::divide(){
         nodes.push_back(southWest);
         nodes.push_back(southEast);
 
-        for (int i = 0; i < nodes.size(); i++){//We keep dividing the children in case they're full of objects
+        for (unsigned int i = 0; i < nodes.size(); i++){//We keep dividing the children in case they're full of objects
             nodes.at(i).divide();
         }
 
@@ -90,7 +90,7 @@ void QuadTree::update(float dTime, glm::vec3 position){
     int y01 = (y0 + y1) / 2;
 
 
-    for(int i=0; i<components->size(); i++){
+    for(unsigned int i=0; i<components->size(); i++){
         components->at(i)->update(dTime); //calls the Update function from each
     }
 
@@ -115,7 +115,7 @@ void QuadTree::clear(){
 
     components->clear();
 
-    for(int i=0; i<nodes.size(); i++){
+    for(unsigned int i=0; i<nodes.size(); i++){
             nodes.at(i).clear();
     }
 }
