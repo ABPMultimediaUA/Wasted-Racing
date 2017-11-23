@@ -15,9 +15,6 @@ void InputIrrlicht::updateInput() {
     if(!device->run())
         EventManager::getInstance().addEvent(Event {EventType::Game_Close});
 
-    if(IsKeyDown(irr::KEY_KEY_W))
-        EventManager::getInstance().addEvent(Event {EventType::Key_Select});
-
 }
 
 void InputIrrlicht::closeInput() {

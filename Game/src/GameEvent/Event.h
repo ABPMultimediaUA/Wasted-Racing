@@ -6,17 +6,33 @@
 
 //Enumeration of possible events
 enum EventType {
+    //Object related events
     Object_Create,
     Object_Delete,
-    Key_Advance,
-    Key_Brake,
-    Key_IncSpin,
-    Key_DecSpin,
-    Key_Select,
+    //PLAYER: Basic control keys
+    Key_Advance_Down,
+    Key_Advance_Up,
+    Key_Brake_Down,
+    Key_Brake_Up,
+    Key_TurnLeft_Down,
+    Key_TurnLeft_Up,
+    Key_TurnRight_Down,
+    Key_TurnRight_Up,
+    //PLAYER: Control keys
+    Key_UseItem_Down,
+    Key_UseItem_Up,
+    Key_Jump_Down,
+    Key_Jump_Up,
+    Key_Kneel_Down,
+    Key_Kneel_Up,
+    //PLAYER: Menu control keys
+    Key_Select_Down,
+    Key_Select_Up,
+    Key_Back_Down,
+    Key_Back_Up,
+    //Game related events
     Game_Start,
-    Game_Close,
-    IrrlichtDevice_Start,
-    IrrlichtInput_Start
+    Game_Close
 };
 
 //Vector containing a vector with pointers to objects
