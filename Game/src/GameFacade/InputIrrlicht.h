@@ -21,6 +21,11 @@
         } \
     };
 
+struct SMouseState
+{
+        irr::core::position2di Position;
+};
+
 
 
 class InputIrrlicht : public IInputFacade, public irr::IEventReceiver {
@@ -72,6 +77,31 @@ public:
         }
 
         if(event.EventType == irr::EET_MOUSE_INPUT_EVENT){
+            switch(event.MouseInput.Event)
+            {
+            case irr::EMIE_LMOUSE_PRESSED_DOWN:
+                EventManager::getInstance().addEvent(Event {EventType::Key_Select_Down});
+                break;
+
+            case irr::EMIE_LMOUSE_LEFT_UP:
+                EventManager::getInstance().addEvent(Event {EventType::Key_Select_Up});
+                break;
+
+            case irr::EMIE_RMOUSE_PRESSED_DOWN:
+                EventManager::getInstance().addEvent(Event {EventType::Key_Back_Down});
+                break;
+
+            case irr::EMIE_RMOUSE_LEFT_UP:
+                EventManager::getInstance().addEvent(Event {EventType::Key_Back_Up});
+                break;
+
+            case irr::EMIE_MOUSE_MOVED:
+                MouseState.Position.X = event.MouseInput.X;
+                MouseState.Position.Y = event.MouseInput.Y;
+                break;
+
+            default: break;
+            }
         }
 
         return false;
@@ -86,6 +116,7 @@ public:
 private: 
 
     bool KeyIsDown[irr::KEY_KEY_CODES_COUNT];
+    SMouseState MouseState;
     
     irr::IrrlichtDevice *device;
 

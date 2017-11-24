@@ -19,4 +19,4 @@ void InputIrrlicht::updateInput() {
 
 void InputIrrlicht::closeInput() {
        
-}  
+}    
