@@ -7,8 +7,8 @@
 //Enumeration of possible events
 enum EventType {
     //Object related events
-    Object_Create,
-    Object_Delete,
+    GameObject_Create,
+    GameObject_Delete,
     //PLAYER: Basic control keys
     Key_Advance_Down,
     Key_Advance_Up,

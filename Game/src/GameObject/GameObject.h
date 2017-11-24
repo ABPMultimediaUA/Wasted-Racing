@@ -1,30 +1,44 @@
 #pragma once
 
-#include <string>
+#include <cstdint>
 #include <list>
 #include <glm/glm.hpp>
+#include <memory>
 
 #include "IComponent.h"
-
 
 class GameObject {
 
 public:
 
+	struct TransformationData {
+		glm::vec3 position;
+		glm::vec3 rotation;
+		glm::vec3 scale;
+	};
+
+	//===========================================
+	// BASIC FUNCTIONS
+	//===========================================
+
 	//Constructor
-	GameObject(const std::string &newId, const glm::vec3 &newPos) 
-		: id(newId), pos(newPos)  {}
+	GameObject(const u_int16_t newId, const TransformationData &newPos) 
+		: id(newId), transformData(newPos)  {}
 
 	//Destructor
 	~GameObject() {}
 
 	//GetID
-	std::string getId() { return id; }
+	u_int16_t getId() { return id; }
 
 	//Get position
-	glm::vec3 getPosition(){
-		return pos;
+	TransformationData& getTransformData(){
+		return transformData;
 	}
+
+	//===========================================
+	// SPECIFIC FUNCTIONS
+	//===========================================
 
 	//Init
 	void init();
@@ -33,19 +47,29 @@ public:
 	void update(float dTime);
 
 	//Add component
-	void addComponent(IComponent& component);
+	void addComponent(IComponent* component);
 
 	//Get component
-	IComponent* getComponent();
+	template<typename Component>
+	Component* GetComponent() {
+		for (auto comp: components) {
+			if (Component cmp = std::dynamic_pointer_cast<Component>(comp)) {
+				return cmp;
+			}
+		}
+		return nullptr;
+	}
 
 
 private:
 
-	std::string		id;
-	glm::vec3 pos;
-	glm::vec3 rot;
-	glm::vec3 sca;
+	//ObjectID
+	u_int16_t  id;
 
+	//Object Transformation Data
+	TransformationData transformData;
+
+	//Object Components
 	std::list<IComponent*> components;
 
 };

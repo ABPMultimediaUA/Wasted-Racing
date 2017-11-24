@@ -47,7 +47,7 @@ void QuadTree::divide(){
 
 
             GameObject object = components->at(i)->getGameObject();
-            glm::vec3 position = object.getPosition();
+            glm::vec3 position = object.getTransformData().position;
 
             //ARREGLAR LA POSICION Y TODO DONE LALALAL
 

@@ -24,6 +24,9 @@ public:
 	//Update
 	virtual void update(float dTime) = 0;
 
+	//Closer
+	virtual void close() = 0;
+
 
 protected:
 	
