@@ -34,6 +34,12 @@ void Game::init() {
 
     addObjects();
 
+    //Update to distribute all creation events
+    eventManager->update();
+
+    //Split renderManager static QuadTree
+    renderManager->splitQuadTree();
+
 }
 
 //====================================================
@@ -87,6 +93,7 @@ void addObjects(){
     uint16_t id = 1;
     GameObject::TransformationData transform;
     
+    transform.position = glm::vec3(0,0,0);
     std::cout << std::endl;
     ObjectManager::getInstance().createObject(id, transform);
     ObjectManager::getInstance().createObject(id, transform);
@@ -94,6 +101,7 @@ void addObjects(){
     id = 2;
     ObjectManager::getInstance().createObject(id, transform);
     id = 3;
+    transform.position = glm::vec3(4,0,4);
     ObjectManager::getInstance().createObject(id, transform);
 
     EventManager::getInstance().update();
@@ -141,5 +149,26 @@ void addObjects(){
         1
         3
         */
+
+    //Create and add some new random objects
+    id = 4;
+    transform.position = glm::vec3(1,0,1);
+    auto ob1 = ObjectManager::getInstance().createObject(id, transform);
+    id = 5;
+    transform.position = glm::vec3(2,0,2);
+    auto ob2 = ObjectManager::getInstance().createObject(id, transform);
+    id = 6;
+    transform.position = glm::vec3(3,0,3);
+    auto ob3 = ObjectManager::getInstance().createObject(id, transform);
+    id = 7;
+    transform.position = glm::vec3(5,0,5);
+    auto ob4 = ObjectManager::getInstance().createObject(id, transform);
+    id = 8;
+    transform.position = glm::vec3(6,0,6);
+    auto ob5 = ObjectManager::getInstance().createObject(id, transform);
+
+    std::shared_ptr<IComponent> cp1 = std::make_shared<ObjectRenderComponent>(*ob1.get());
+    //data.Component = cp1;
+    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
     
 }

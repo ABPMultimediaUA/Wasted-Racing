@@ -34,7 +34,7 @@ void ObjectManager::close() {
 
 }
 
-void ObjectManager::createObject(uint16_t id, GameObject::TransformationData transform) {
+GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::TransformationData transform) {
 
     GameObject::Pointer object = std::make_shared<GameObject>(id, transform);
 
@@ -42,6 +42,8 @@ void ObjectManager::createObject(uint16_t id, GameObject::TransformationData tra
     data.Object = object;
 
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
+
+    return object;
 }
 
 

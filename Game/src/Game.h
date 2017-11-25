@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject/GameObject.h"
+#include "GameObject/ObjectRenderComponent.h"
 #include "GameManager/InputManager.h"
 #include "GameManager/RenderManager.h"
 #include "GameManager/ObjectManager.h"

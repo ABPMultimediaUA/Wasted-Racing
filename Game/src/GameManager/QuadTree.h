@@ -20,7 +20,7 @@ class QuadTree {
         ~QuadTree() {};
 
         //Initializer
-        void init(unsigned int max, std::vector<IComponent*> &componentList, int qx0, int qx1, int qy0, int qy1);
+        void init(unsigned int max, int rang, std::vector<IComponent::Pointer> &componentList, int qx0, int qx1, int qy0, int qy1);
 
         //Splits a node in 4 and distributes its children between the subnodes if
         //the number of children it's more than the maximum
@@ -32,12 +32,16 @@ class QuadTree {
         //Clears all the nodes in the QuadTree
         void clear();
 
+        //Debug QuadTree structure
+	    void debugStructure(int n);
+
+private:
         //==============================================================
         // Class related Data
         //==============================================================
 
         //List of entities to insert into the QuadTree
-        std::vector<IComponent*> *components;
+        std::vector<IComponent::Pointer> components;
 
         //Children of the quadtree
         std::vector<QuadTree> nodes;
@@ -47,6 +51,9 @@ class QuadTree {
 
         //Quadrants in division
         int x0, x1, y0, y1;
+
+        //Default range for updating
+        int range;
 
 };
 

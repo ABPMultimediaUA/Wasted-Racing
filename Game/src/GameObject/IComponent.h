@@ -16,7 +16,7 @@ public:
 	IComponent(GameObject& newGameObject) : gameObject(newGameObject) {}
 
 	//Destructor
-	virtual ~IComponent() = 0;
+	virtual ~IComponent() = default;
 
 	//Getter
 	GameObject& getGameObject() { return gameObject; } 
