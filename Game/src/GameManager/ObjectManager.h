@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../GameObject/GameObject.h"
+#include <map>
+
 class ObjectManager{
 
 public: 
@@ -13,15 +16,30 @@ public:
     //Initialization
     void init();
 
-    //Update
-    void update();
-
     //Shutdown
     void close();
+
+    //Add an object
+    void addObject(GameObject::Pointer ptr);
+
+    //Delete an object
+    void deleteObject(uint16_t id);
+
+    //Get an object
+    GameObject::Pointer getObject(uint16_t id);
+
+    //Show the ids of the current objects
+    void showObjects();
+
+    //Init all objects
+    void initObjects();
 
     //Static class getter
     static ObjectManager& getInstance();
 
 private:
+
+    //Map of objects
+    std::map<uint16_t, GameObject::Pointer> objectsMap;
 
 };

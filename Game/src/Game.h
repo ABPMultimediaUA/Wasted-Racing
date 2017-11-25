@@ -1,7 +1,9 @@
 #pragma once
 
+#include "GameObject/GameObject.h"
 #include "GameManager/InputManager.h"
 #include "GameManager/RenderManager.h"
+#include "GameManager/ObjectManager.h"
 #include "GameEvent/EventManager.h"
 
 class Game {
@@ -50,18 +52,17 @@ private:
     // Private data
     //==============================================================
 
+    //Object manager
+    ObjectManager* objectManager;
     //Input manager
     InputManager* inputManager;
-
     //Render manager
     RenderManager* renderManager;
-
     //Event manager
     EventManager* eventManager;
 
     //Selected renderEngine
     int renderEngine;
-
     //Selected inputEngine
     int inputEngine;
 

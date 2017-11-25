@@ -1,13 +1,16 @@
 #pragma once
 
 #include <glm/glm.hpp>
-
+#include <memory>
 
 class GameObject;
 
 class IComponent {
 
 public:
+
+	//Define shared pointer type
+	typedef std::shared_ptr<IComponent> Pointer;
 
 	//Constructor
 	IComponent(GameObject& newGameObject) : gameObject(newGameObject) {}

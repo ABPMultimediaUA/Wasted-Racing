@@ -7,9 +7,14 @@
 
 #include "IComponent.h"
 
+#include "../GameEvent/EventManager.h"
+
 class GameObject {
 
 public:
+
+	//Define shared pointer type
+	typedef std::shared_ptr<GameObject> Pointer;
 
 	struct TransformationData {
 		glm::vec3 position;
@@ -47,13 +52,13 @@ public:
 	void update(float dTime);
 
 	//Add component
-	void addComponent(IComponent* component);
+	void addComponent(IComponent::Pointer component);
 
 	//Get component
 	template<typename Component>
-	Component* GetComponent() {
+	std::shared_ptr<Component> GetComponent() {
 		for (auto comp: components) {
-			if (Component cmp = std::dynamic_pointer_cast<Component>(comp)) {
+			if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(comp)) {
 				return cmp;
 			}
 		}
@@ -70,6 +75,6 @@ private:
 	TransformationData transformData;
 
 	//Object Components
-	std::list<IComponent*> components;
+	std::list<IComponent::Pointer> components;
 
 };

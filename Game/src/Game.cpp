@@ -1,5 +1,9 @@
 #include "Game.h"
 
+#include <memory>
+
+void addObjects();
+
 //====================================================
 //  GAME INITIALIZATION
 //====================================================
@@ -16,15 +20,18 @@ void Game::init() {
     eventManager = &EventManager::getInstance();
     eventManager->init();
 
-    //First we initialize renderManager, who creates a device and passes 
-    //this reference to the inputManager
+    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
     renderManager = &RenderManager::getInstance();
     renderManager->init(Game::renderEngine);
-//
-    ////Once we've initialized the renderManager, we can do the same with
-    ////our inputManager
+
+    //Once we've initialized the renderManager, we can do the same with our inputManager
     inputManager = &InputManager::getInstance();
     inputManager->init(Game::inputEngine);
+
+    objectManager = &ObjectManager::getInstance();
+    objectManager->init();
+
+    addObjects();
 
 }
 
@@ -69,4 +76,11 @@ void Game::Run() {
     }
 
     Game::close();
+}
+
+
+void addObjects(){
+
+    //Send an event saying object has been created
+    //EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, vec});
 }
