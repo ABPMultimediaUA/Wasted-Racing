@@ -7,6 +7,8 @@
 //==============================================
 //An event of creation or deletion will contain the shared pointer 
 //pointing to the created/deleted object
+//When an object is created or deleted, they are automatically added
+//or deleted to the objectMap
 void objectCreated(EventData eData); 
 void objectDeleted(EventData eData); 
 
@@ -32,6 +34,16 @@ void ObjectManager::close() {
 
 }
 
+void ObjectManager::createObject(uint16_t id, GameObject::TransformationData transform) {
+
+    GameObject::Pointer object = std::make_shared<GameObject>(id, transform);
+
+    EventData data;
+    data.Object = object;
+
+    EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
+}
+
 
 void ObjectManager::addObject(GameObject::Pointer ptr) {
 
@@ -45,7 +57,8 @@ void ObjectManager::addObject(GameObject::Pointer ptr) {
 
 void ObjectManager::deleteObject(uint16_t id) {
 
-    objectsMap.erase(id);
+    if(objectsMap.erase(id) == 0)
+        std::cerr << "Couldn't erase object. ID: " << id << " doesn't exist." << std::endl;
 
 }
 
@@ -64,7 +77,7 @@ GameObject::Pointer ObjectManager::getObject(uint16_t id) {
 
 void ObjectManager::showObjects() {
     for(auto obj : objectsMap)
-        std::cout << obj.second.get()->getId();
+        std::cout << obj.second.get()->getId() << std::endl;
 }
 
 void ObjectManager::initObjects() {
@@ -77,16 +90,11 @@ void ObjectManager::initObjects() {
 //============================================== 
 void objectCreated(EventData eData) {
 
-    uintptr_t ptr = eData.at(0);
-    GameObject::Pointer* object = reinterpret_cast<GameObject::Pointer*>(ptr);
-
-    ObjectManager::getInstance().addObject(*object);
+    ObjectManager::getInstance().addObject(eData.Object);
 
 }
 void objectDeleted(EventData eData) {
 
-    GameObject::Pointer* object = reinterpret_cast<GameObject::Pointer*>(eData.at(0));
-
-    ObjectManager::getInstance().deleteObject(object->get()->getId());
+    ObjectManager::getInstance().deleteObject(eData.Object.get()->getId());
 
 }

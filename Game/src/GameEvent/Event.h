@@ -3,6 +3,10 @@
 #include <vector>
 #include <list>
 #include <cstdint>
+#include <memory>
+
+class GameObject;
+class IComponent;
 
 //Enumeration of possible events
 enum EventType {
@@ -35,8 +39,13 @@ enum EventType {
     Game_Close
 };
 
-//Vector containing a vector with pointers to objects
-typedef std::vector<uintptr_t> EventData;
+//Struct containg diferent types of data
+struct EventData {
+
+    std::shared_ptr<GameObject> Object;
+    std::shared_ptr<IComponent> Component;
+
+};
 
 //A event contains a type and the data related to the object
 struct Event {

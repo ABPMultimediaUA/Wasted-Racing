@@ -19,6 +19,9 @@ public:
     //Shutdown
     void close();
 
+    //Create an object and fire creation event
+    void createObject(uint16_t id, GameObject::TransformationData transform);
+
     //Add an object
     void addObject(GameObject::Pointer ptr);
 
