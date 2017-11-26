@@ -1,25 +1,34 @@
 #include <irrlicht.h>
-#include <glm/glm.hpp>
+#include <iostream>
+#include <glm/ext.hpp>
+#include "VObject.h"
 class Sensor{
      public:
-        irr::core::vector3df position;
-        double angleVision = 0;
-        double angInitial = 0;
-        float maxRadius = 0;
-        double a = 0, b = 0;
+        glm::vec3 position;
+        double angleVision;
+        double angleInitial;
+        float maxRadius;
+        double a, b;
 
         //Constructor
-        Sensor(irr::core::vector3df p, double ang, float maxR, double angInit);
+        Sensor(glm::vec3 p, double ang, float maxR, double angInit);
+        Sensor();
         
         //Destructor
         ~Sensor();
 
         //Detects collisions in field of vision
-        bool detectFieldVision(irr::core::vector3df vel, irr::core::vector3df p);
+        bool detectFieldVision(glm::vec3 vel, glm::vec3 p);
+
+        //Detects all the objects in the field of vision
+        VObject** getAllFieldVisionObjects(irr::scene::ISceneNode** list, int size);
 
         //updates Sensor position
-        void updatePosition(irr::core::vector3df pos);
+        void updatePosition(glm::vec3 pos);
 
         //updates facing angle of Sensor
         void updateAngle(double angle);
+
+        irr::core::vector3df getSensorLeft();
+        irr::core::vector3df getSensorRight();
  };

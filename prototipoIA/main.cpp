@@ -23,6 +23,7 @@ and tell the linker to link with the .lib file.
 #include "FuzzyLogic.h"
 #include "Sensor.h"
 #include "WayPoint.h"
+#include "Environment.h"
 
 using namespace irr;
 
@@ -76,6 +77,7 @@ int main()
 
 	// create device
 	MyEventReceiver receiver;
+	Environment* en = new Environment();
 
 	IrrlichtDevice* device = createDevice(driverType,
 			core::dimension2d<u32>(640, 480), 16, false, false, false, &receiver);
@@ -96,6 +98,7 @@ int main()
 	scene::ISceneNode * node = smgr->addSphereSceneNode();
 	if (node)
 	{
+		en->addNode(node);
 		node->setPosition(core::vector3df(0,0,30));
 		node->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
@@ -104,19 +107,21 @@ int main()
 	scene::ISceneNode * bola1 = smgr->addSphereSceneNode();
 	if (bola1)
 	{
+		en->addNode(bola1);
 		bola1->setPosition(core::vector3df(0,0,30));
 		bola1->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
 		bola1->setMaterialFlag(video::EMF_LIGHTING, false);
-		bola1->setScale(core::vector3df(0.2f,0.2f,0.2f));
+		bola1->setScale(core::vector3df(2.f,2.f,2.f));
 	}
 
 	scene::ISceneNode * bola2 = smgr->addSphereSceneNode();
 	if (bola2)
 	{
+		en->addNode(bola2);
 		bola2->setPosition(core::vector3df(0,0,30));
 		bola2->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
 		bola2->setMaterialFlag(video::EMF_LIGHTING, false);
-		bola2->setScale(core::vector3df(0.2f,0.2f,0.2f));
+		bola2->setScale(core::vector3df(2.f,2.f,2.f));
 	}
 
 
@@ -228,6 +233,7 @@ int main()
 	scene::ISceneNode* n = smgr->addCubeSceneNode();
 	if (n)
 	{
+		en->addNode(n);
 		n->setPosition(core::vector3df(200,0,30));
 		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
 		n->setMaterialFlag(video::EMF_LIGHTING, false);
@@ -259,11 +265,11 @@ int main()
 	double angleRad = angle * pi / 180;
 
 	//get position
-	core::vector3df nodePosition = node->getPosition();
-	core::vector3df nodePos2 = n->getPosition();
+	glm::vec3 nodePosition = glm::vec3(node->getPosition().X, node->getPosition().Y, node->getPosition().Z);
+	glm::vec3 nodePos2 = glm::vec3(n->getPosition().X, n->getPosition().Y, n->getPosition().Z);
 
 	//Initializing sensor
-	Sensor s(nodePosition, angleRad, maxRadius,-pi/2);
+	Sensor s(nodePosition, angleRad, maxRadius,(double)-pi/2);
 
 	//----------------------------------------------------
 
@@ -282,16 +288,16 @@ int main()
 		//----------------------------------------------------
 		//Move the cube for testing
 		if(receiver.IsKeyDown(irr::KEY_KEY_W))
-			nodePos2.X -= CUBE_SPEED * frameDeltaTime;
+			nodePos2.x -= CUBE_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-			nodePos2.X += CUBE_SPEED * frameDeltaTime;
+			nodePos2.x += CUBE_SPEED * frameDeltaTime;
 		if(receiver.IsKeyDown(irr::KEY_KEY_A))
-			nodePos2.Z -= CUBE_SPEED * frameDeltaTime;
+			nodePos2.z -= CUBE_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-			nodePos2.Z += CUBE_SPEED * frameDeltaTime;
+			nodePos2.z += CUBE_SPEED * frameDeltaTime;
 		
 		//Object data
-		core::vector3df velocity(MOVEMENT_SPEED*frameDeltaTime*cos(anglePlayer) ,0.f,MOVEMENT_SPEED*frameDeltaTime*sin(anglePlayer));
+		glm::vec3 velocity(MOVEMENT_SPEED*frameDeltaTime*cos(anglePlayer) ,0.f,MOVEMENT_SPEED*frameDeltaTime*sin(anglePlayer));
 
 		//DETECTING IF POINT IS NOT IN FRONT
 		bool inside1 = s.detectFieldVision(velocity,nodePos2);
@@ -299,16 +305,15 @@ int main()
 		// bool inside3 = s.detectFieldVision(velocity,point3);
 		
 		//DETECTING WHICH SIDE TO TURN AND HOW MUCH
-		double giroPorcentaje = FuzzyLogic::girar(sqrt((nodePos2.X-nodePosition.X)*(nodePos2.X-nodePosition.X) 
-									+ (nodePos2.Z-nodePosition.Z) * (nodePos2.Z-nodePosition.Z) ), s.a, s.b, maxRadius);
-
+		double giroPorcentaje = FuzzyLogic::girar(sqrt((nodePos2.x-nodePosition.x)*(nodePos2.x-nodePosition.x) 
+									+ (nodePos2.z-nodePosition.z) * (nodePos2.z-nodePosition.z) ), s.a, s.b, maxRadius);
 
 		//decide to move
 		if(inside1){		
 			//ROTATE
 			anglePlayer += giroPorcentaje * ROTATE_SPEED;
 
-			//std::cout<<"Angulo: "<<anglePlayer<<" con porcentaje "<<giroPorcentaje<<std::endl;
+			std::cout<<"Angulo: "<<anglePlayer<<" con porcentaje "<<giroPorcentaje<<std::endl;
 
 			s.updateAngle(giroPorcentaje*ROTATE_SPEED);
 
@@ -319,14 +324,15 @@ int main()
 
 
 		//set positions
-		node->setPosition(nodePosition);
-		n->setPosition(nodePos2);
+		node->setPosition(irr::core::vector3df(nodePosition.x, nodePosition.y, nodePosition.z));
+		n->setPosition(irr::core::vector3df(nodePos2.x, nodePos2.y, nodePos2.z));
 		s.updatePosition(nodePosition);
 
 		//VISUAL DEBUG
-		bola1->setPosition(nodePosition+maxRadius*core::vector3df(sin(-angleRad+pi/2-anglePlayer), 0.f, cos(-angleRad+pi/2-anglePlayer)));
-      	bola2->setPosition(nodePosition+maxRadius*core::vector3df(sin(angleRad+pi/2-anglePlayer), 0.f, cos(angleRad+pi/2-anglePlayer)));
-        
+		//bola1->setPosition(core::vector3df(nodePosition.x, nodePosition.y, nodePosition.z)+maxRadius*core::vector3df(sin(-angleRad+pi/2-anglePlayer), 0.f, cos(-angleRad+pi/2-anglePlayer)));
+      	//bola2->setPosition(core::vector3df(nodePosition.x, nodePosition.y, nodePosition.z)+maxRadius*core::vector3df(sin(angleRad+pi/2-anglePlayer), 0.f, cos(angleRad+pi/2-anglePlayer)));
+        bola1->setPosition(irr::core::vector3df(s.getSensorLeft().X, s.getSensorLeft().Y, s.getSensorLeft().Z));
+		bola2->setPosition(irr::core::vector3df(s.getSensorRight().X, s.getSensorRight().Y, s.getSensorRight().Z));
 
 
 		//----------------------------------------------------

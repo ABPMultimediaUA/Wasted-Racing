@@ -1,5 +1,4 @@
 #include "FuzzyLogic.h"
-#include "VObject.h"
 #include <iostream>
 
 double FuzzyLogic::girar(int distance, double a, double b, float maxR)
@@ -170,12 +169,4 @@ int FuzzyLogic::acelerar_frenar(int distance)
 	}
 
 	return decision;
-}
-
-FuzzyLogic::FuzzyLogic(){
-
-}
-
-FuzzyLogic::~FuzzyLogic(){
-
 }
