@@ -18,8 +18,22 @@ else
 CXXFLAGS += -O3
 endif
 
+# Instruction to create directories
+MKDIR_P = mkdir -p
+
 #default target is Linux
-all: make_src make_gameF make_gameM make_gameS make_gameO make_gameE all_linux
+all: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP all_linux
+	$(warning Linking done!)
+	
+create_dir: make_bin_dir make_obj_dir
+
+make_bin_dir:
+	$(warning Creating bin directory... (if it doesn't exist))
+	$(MKDIR_P) $(BIN_PATH)
+
+make_obj_dir:
+	$(warning Creating obj directory... (if it doesn't exist))
+	$(MKDIR_P) $(BIN_PATH)$(OBJ_PATH)
 
 #Makes to execute
 make_src:
@@ -39,18 +53,17 @@ make_gameO:
 	
 make_gameE:
 	$(MAKE) -C src/GameEvent
+	
+make_gameP:
+	$(MAKE) -C src/GamePhysics
 
 # target specific settings
-all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht
+all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -L/usr/lib -lfmod -lgainput
 all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
 all_linux clean_linux: SYSTEM=Linux
 
 all_linux:
-	$(warning Compilation done!)
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
-
-$(BIN_DIR)$(OBJ_DIR)%.o:
-
 
 clean: clean_linux
 	$(warning Cleaned!)
@@ -61,7 +74,19 @@ clean_linux:
 info:
 	$(info $(shell ls $(BIN_PATH)$(OBJ_PATH)))
 
-.PHONY: all clean clean_linux info
+install: install_linux
+
+install_linux:
+	$(warning Installing Irrlicht...)
+	$(shell sudo cp lib/libIrrlicht.a /usr/lib/)
+	$(warning Installing FMOD...)
+	$(shell sudo cp lib/fsbank/lib/x86_64/* /usr/lib/)
+	$(shell sudo cp lib/lowlevel/lib/x86_64/* /usr/lib/)
+	$(shell sudo cp lib/studio/lib/x86_64/* /usr/lib/)
+	$(warning Installing Gainput...)
+	$(shell sudo cp lib/gainput/* /usr/lib/)
+
+.PHONY: all clean clean_linux info install
 
 #multilib handling
 ifeq ($(HOSTTYPE), x86_64)

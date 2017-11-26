@@ -1,22 +1,27 @@
 #include "RenderIrrlicht.h"
-
+#include "InputIrrlicht.h"
+#include "../GameEvent/EventManager.h"
 
 void RenderIrrlicht::openWindow(){
 
-    video::E_DRIVER_TYPE driverType = video::E_DRIVER_TYPE::EDT_OPENGL;
+    irr::video::E_DRIVER_TYPE driverType = irr::video::E_DRIVER_TYPE::EDT_OPENGL;
 
-    RenderIrrlicht::device = createDevice(driverType, core::dimension2d<u32>(window.size.x, window.size.y),
-        16, window.fullscreen, false, window.vsync, inputManager);
+    InputIrrlicht* receiver = new InputIrrlicht();
 
-    RenderIrrlicht::videoDriver = device->getVideoDriver();
-    RenderIrrlicht::sceneManager = device->getSceneManager();
+    device = irr::createDevice(driverType, irr::core::dimension2d<irr::u32>(window.size.x, window.size.y),
+        16, window.fullscreen, false, window.vsync, receiver);
+
+    videoDriver = device->getVideoDriver();
+    sceneManager = device->getSceneManager();
+
+    uintptr_t aux = reinterpret_cast<uintptr_t>(device);
+    InputManager::getInstance().setDevice(aux);
+    InputManager::getInstance().setInputFacade(receiver);
 
 }
 
 void RenderIrrlicht::updateWindow() {
-    if(!RenderIrrlicht::device->run()){
-        
-    }
+
 }
 
 void RenderIrrlicht::closeWindow() {

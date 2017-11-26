@@ -1,25 +1,49 @@
 #pragma once
 
-#include <string>
+#include <cstdint>
 #include <list>
-
-#include <irrlicht.h>
+#include <glm/glm.hpp>
+#include <memory>
 
 #include "IComponent.h"
+
+#include "../GameEvent/EventManager.h"
 
 class GameObject {
 
 public:
 
+	//Define shared pointer type
+	typedef std::shared_ptr<GameObject> Pointer;
+
+	struct TransformationData {
+		glm::vec3 position;
+		glm::vec3 rotation;
+		glm::vec3 scale;
+	};
+
+	//===========================================
+	// BASIC FUNCTIONS
+	//===========================================
+
 	//Constructor
-	GameObject(const std::string &newId, const irr::core::vector3df &newPos) 
-		: id(newId), pos(newPos)  {}
+	GameObject(const u_int16_t newId, const TransformationData &newPos) 
+		: id(newId), transformData(newPos)  {}
 
 	//Destructor
 	~GameObject() {}
 
 	//GetID
-	std::string getId() { return id; }
+	u_int16_t getId() { return id; }
+
+	//Get position
+	TransformationData& getTransformData(){
+		return transformData;
+	}
+
+	//===========================================
+	// SPECIFIC FUNCTIONS
+	//===========================================
 
 	//Init
 	void init();
@@ -28,19 +52,29 @@ public:
 	void update(float dTime);
 
 	//Add component
-	void addComponent(IComponent& component);
+	void addComponent(IComponent::Pointer component);
 
 	//Get component
-	IComponent* getComponent();
+	template<typename Component>
+	std::shared_ptr<Component> getComponent() {
+		for (auto comp: components) {
+			if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(comp)) {
+				return cmp;
+			}
+		}
+		return nullptr;
+	}
 
 
 private:
 
-	std::string		id;
-	irr::core::vector3df pos;
-	irr::core::vector3df rot;
-	irr::core::vector3df sca;
+	//ObjectID
+	u_int16_t  id;
 
-	std::list<IComponent*> components;
+	//Object Transformation Data
+	TransformationData transformData;
+
+	//Object Components
+	std::list<IComponent::Pointer> components;
 
 };

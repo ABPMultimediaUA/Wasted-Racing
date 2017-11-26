@@ -18,19 +18,8 @@ else
 CXXFLAGS += -O3
 endif
 
-# Instruction to create directories
-MKDIR_P = mkdir -p
-
 #default target is Linux
-all: make_bin_dir make_obj_dir all_linux
-
-make_bin_dir:
-	$(warning Creating bin directory... (if it doesn't exist))
-	$(MKDIR_P) $(BIN_DIR)
-
-make_obj_dir:
-	$(warning Creating obj directory... (if it doesn't exist))
-	$(MKDIR_P) $(BIN_DIR)$(OBJ_DIR)
+all: all_linux
 
 all_linux: $(OBJECTS)
 	$(warning Compilation done!)
