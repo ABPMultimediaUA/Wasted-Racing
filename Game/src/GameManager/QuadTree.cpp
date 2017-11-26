@@ -101,16 +101,16 @@ void QuadTree::update(float dTime, glm::vec3 position){
 
      //We check the entities around the position of our entity to see if they have to update
     if(components.size() != 0){ 
-        if(x0-range <= position.x && x01+range >= position.x && y0-range <= position.y && y01+range >= position.y){
+        if(x0-range <= position.x && x01+range >= position.x && y0-range <= position.z && y01+range >= position.z){
             nodes.at(0).update(dTime, position); //updating the entities inside the node northwest
         }
-        if(x01-range <= position.x && x1+range >= position.x && y0-range <= position.y && y01+range >= position.y){
+        if(x01-range <= position.x && x1+range >= position.x && y0-range <= position.z && y01+range >= position.z){
             nodes.at(1).update(dTime, position); //updating the entities inside the node northeast
          }
-         if(x0-range <= position.x && x01+range >= position.x && y01-range <= position.y && y1+range >= position.y){
+         if(x0-range <= position.x && x01+range >= position.x && y01-range <= position.z && y1+range >= position.z){
             nodes.at(2).update(dTime, position); //updating the entities inside the node southwest
         }
-        if(x01-range <= position.x && x1+range >= position.x && y01-range <= position.y && y1+range >= position.y){
+        if(x01-range <= position.x && x1+range >= position.x && y01-range <= position.z && y1+range >= position.z){
             nodes.at(3).update(dTime, position); //updating the entities inside the node southeast
         }
     }
