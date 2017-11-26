@@ -8,7 +8,7 @@ class FuzzyLogic{
     public:
 
         //Makes NPC turn a fixated angle based on data
-        static float girar(VObject[] collisions, glm::vec3 waypoint, int distance, double a, double b, float maxR);
+        static float girar(glm::vec3 waypoint, float distance, float a, float b, float maxR);
         
         //Makes NPC accelerate or brake based on data
         static float acelerar_frenar(int distance);

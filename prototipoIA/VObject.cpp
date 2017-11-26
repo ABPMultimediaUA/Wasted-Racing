@@ -4,7 +4,10 @@
 //Constructors
 VObject::VObject()
 {
-
+    a=0;
+    b=0;
+    radius=0;
+    type=0;
 }
 
 VObject::VObject(glm::vec3 p, double x, double y, double r, int t)

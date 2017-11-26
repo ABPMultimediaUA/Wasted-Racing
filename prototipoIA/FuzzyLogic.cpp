@@ -2,7 +2,7 @@
 #include <iostream>
 
 //Decides where to turn and in which grade (with a percentage of 0 to 1)
-float FuzzyLogic::girar(VObject[] collisions, glm::vec3 waypoint, int distance, double a, double b, float maxR)
+float FuzzyLogic::girar(glm::vec3 waypoint, float distance, float a, float b, float maxR)
 {	
 	//final turn decision
 	float decision = 0;
@@ -24,69 +24,19 @@ float FuzzyLogic::girar(VObject[] collisions, glm::vec3 waypoint, int distance, 
 	float a_pertenency = 0;
 	float b_pertenency = 0;
 
-	//No turn pertenency
-	if(distance>END_GIRO)
-	{
-		turn_pertenency=0;
-	}
-	else if(distance<INIT_GIRO)
-	{
-		turn_pertenency=1;
-	}
-	else
-	{
-		turn_pertenency=distance/(END_GIRO-INIT_GIRO);
-		turn_pertenency=1-turn_pertenency;
-	}
-
-
-	//hard turn pertenency
-	if(distance>END_NONE)
-	{
-		no_turn_pertenency=1;
-	}
-	else if(distance<INIT_NONE){
-		no_turn_pertenency = 0;
-	}
-	else
-	{
-		no_turn_pertenency=distance/(END_NONE-INIT_NONE);
-	}
+	//Turn or not to turn
+	turn_pertenency = inferL(distance, INIT_GIRO, END_GIRO, 1);
+	no_turn_pertenency = inferL(distance, INIT_NONE, END_NONE, 0);
 
 	//USE A AND B AS TURN REGULATORS
 	//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
 	//from the center
 
-	//Left turn expectance
-	if(distance>END_A)
-	{
-		a_pertenency=0;
-	}
-	else if(distance<=INIT_A)
-	{
-		a_pertenency=1;
-	}
-	else
-	{
-		
-		float a_cos=distance/(END_A-INIT_A);
-		a_pertenency=sqrt(1-a_cos*a_cos);
-	}
-
-	//Right turn expectancy
-	if(distance>END_B)
-	{
-		b_pertenency=0;
-	}
-	else if(distance<=INIT_B)
-	{
-		b_pertenency=1;
-	}
-	else
-	{
-		float b_cos=distance/(END_B-INIT_B);
-		b_pertenency=sqrt(1-b_cos*b_cos);
-	}
+	//Left turn
+	a_pertenency = inferL(a, INIT_A, END_A, 2);
+	
+	//Right turn
+	b_pertenency = inferL(b, INIT_B, END_B, 2);
 
 	//Defuzzyfier
 	if(no_turn_pertenency>turn_pertenency)
@@ -174,16 +124,95 @@ float FuzzyLogic::acelerar_frenar(int distance)
 }
 
 //Inferes the fuzzy value in a line with the type given
-float FuzzyLogic::inferL(float value, float limit1, float limit2, int type);
+float FuzzyLogic::inferL(float value, float limit1, float limit2, int type){
+	//Switching the type
+	switch(type){
+		//Lineal case
+		case 0:
+			if(value>limit2)
+			{
+				return 1;
+			}
+			else if(value<limit1)
+			{
+				return 0;
+			}
+			else
+			{
+				return (value/(limit2-limit1));
+			}
+			break;
+
+		//Inverse line case
+		case 1:
+			if(value>limit2)
+			{
+				return 0;
+			}
+			else if(value<limit1)
+			{
+				return 1;
+			}
+			else
+			{
+				return (1-value/(limit2-limit1));
+			}
+			break;
+
+		//Circular line case
+		case 2:
+			if(value>limit2)
+			{
+				return 1;
+			}
+			else if(value<limit1)
+			{
+				return 0;
+			}
+			else
+			{
+				
+				float cos=value/(limit2-limit1);
+				return sqrt(1-cos*cos);
+			}
+
+			break;
+		//Inverse circular line case
+		case 3:
+			if(value>limit2)
+			{
+				return 0;
+			}
+			else if(value<limit1)
+			{
+				return 1;
+			}
+			else
+			{
+				
+				float cos=1-value/(limit2-limit1);
+				return sqrt(1-cos*cos);
+			}
+
+			break;
+
+	}
+}
 
 //Inferes the fuzzy value in a triangular function given the parameters
-float FuzzyLogic::inferT(float value, float limit1, float limit2, float limit3);
+float FuzzyLogic::inferT(float value, float limit1, float limit2, float limit3){
+
+}
 
 //Inferes the fuzzy value in a trapeizodal function
-float FuzzyLogic::inferT2(float value, float limit1, float limit2, float limit3, float limit4);
+float FuzzyLogic::inferT2(float value, float limit1, float limit2, float limit3, float limit4){
+
+}
 
 //Inferes the fuzzy value with a circular inference
-float FuzzyLogic::inferC(float value, float limit1, float limit2, float limit3);
+float FuzzyLogic::inferC(float value, float limit1, float limit2, float limit3){
+
+}
 
 FuzzyLogic::FuzzyLogic(){
 
