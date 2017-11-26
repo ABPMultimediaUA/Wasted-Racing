@@ -18,6 +18,7 @@ void turnLeftDown(EventData eData);
 void turnLeftUp(EventData eData); 
 void turnRightDown(EventData eData); 
 void turnRightUp(EventData eData); 
+void addInputComponent(EventData data);
 
 //==============================================
 // INPUT MANAGER FUNCTIONS
@@ -46,6 +47,7 @@ void InputManager::init(int engine){
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnLeft_Up, turnLeftUp});
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Down, turnRightDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Up, turnRightUp});
+    EventManager::getInstance().addListener(EventListener {EventType::InputComponent_Create, addInputComponent});
   
 }
 
@@ -97,4 +99,8 @@ void turnRightDown(EventData eData) {
 }
 void turnRightUp(EventData eData) {
     std::cout << "Right turn button released!" << std::endl;
+}
+void addInputComponent(EventData data) {
+    InputManager::getInstance().setComponent(data.Component);
+    data.Component.get()->init();
 }

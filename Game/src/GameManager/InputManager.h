@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../GameFacade/IInputFacade.h"
+#include "../GameObject/IComponent.h"
 
 class InputManager{
 
@@ -34,11 +35,18 @@ public:
         device = dev;
     }
 
+    void setComponent(IComponent::Pointer ptr){
+        inputComponent = ptr;
+    }
+
 private: 
 
     IInputFacade* inputFacade;
 
     //This variable is only used when we choose to use irrlicht
     uintptr_t device;
+
+    //Input component is managed from inputManager
+    IComponent::Pointer inputComponent;
 
 };

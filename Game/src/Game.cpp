@@ -143,7 +143,9 @@ void addObjects(){
         3
         */
 
-    //Create and add some new random objects
+    //===============================================================
+    // CREATE FIVE POSITIONED OBJECTS
+    //===============================================================
     id = 4;
     transform.position = glm::vec3(1,0,1);
     auto ob1 = ObjectManager::getInstance().createObject(id, transform);
@@ -160,6 +162,9 @@ void addObjects(){
     transform.position = glm::vec3(6,0,6);
     auto ob5 = ObjectManager::getInstance().createObject(id, transform);
 
+    //===============================================================
+    // CREATE FIVE RENDER COMPONENTS
+    //===============================================================
     std::shared_ptr<IComponent> cp1 = std::make_shared<ObjectRenderComponent>(*ob1.get());
     ob1.get()->addComponent(cp1);
     data.Component = cp1;
@@ -185,10 +190,23 @@ void addObjects(){
     ob5.get()->addComponent(cp5);
     EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
 
-    //Update to distribute all creation events
+    //===============================================================
+    // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
+    //===============================================================
+    std::shared_ptr<IComponent> iCP = std::make_shared<InputComponent>(*ob1.get());
+    ob1.get()->addComponent(iCP);
+    data.Component = iCP;
+    EventManager::getInstance().addEvent(Event {EventType::InputComponent_Create, data});
+
+
+    //===============================================================
+    // Update to distribute all creation events
+    //===============================================================
     EventManager::getInstance().update();
 
-    //Split renderManager static QuadTree
+    //===============================================================
+    // Split renderManager static QuadTree
+    //===============================================================
     RenderManager::getInstance().splitQuadTree();
     RenderManager::getInstance().getComponentTree().debugStructure(1);
     

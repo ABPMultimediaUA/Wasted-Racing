@@ -12,9 +12,6 @@ public:
 	//Destructor
 	virtual ~ObjectRenderComponent() {};
 
-	//Getter
-	GameObject& getGameObject() { return gameObject; } 
-
 	//Initilizer
 	virtual void init();
 

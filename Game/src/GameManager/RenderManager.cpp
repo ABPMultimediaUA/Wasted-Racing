@@ -4,7 +4,7 @@
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
-void addComponent(EventData data);
+void addRenderComponent(EventData data);
 
 //==============================================
 // RENDER MANAGER FUNCTIONS
@@ -34,7 +34,7 @@ void RenderManager::init(int engine) {
     x0 = 0; x1 = 10; y0 = 0;  y1 = 10; //Map dimensions
 
     //Bind listeners
-    EventManager::getInstance().addListener(EventListener {EventType::RenderComponent_Create, addComponent});
+    EventManager::getInstance().addListener(EventListener {EventType::RenderComponent_Create, addRenderComponent});
 }
 
 void RenderManager::update() {
@@ -53,6 +53,6 @@ void RenderManager::splitQuadTree(){
 //==============================================
 // DELEGATES
 //============================================== 
-void addComponent(EventData data) {
+void addRenderComponent(EventData data) {
     RenderManager::getInstance().getComponentList().push_back(data.Component);
 }
