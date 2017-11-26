@@ -32,8 +32,13 @@ public:
     static RenderManager& getInstance();
 
     //Component list getter
-    std::vector<IComponent::Pointer> getComponentList() {
+    std::vector<IComponent::Pointer>& getComponentList() {
         return renderComponentList;
+    }
+
+    //QuadTree getter
+    QuadTree& getComponentTree() {
+        return renderComponentTree;
     }
 
 private:

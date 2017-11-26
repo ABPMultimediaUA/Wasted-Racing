@@ -33,13 +33,6 @@ void Game::init() {
     objectManager->init();
 
     addObjects();
-
-    //Update to distribute all creation events
-    eventManager->update();
-
-    //Split renderManager static QuadTree
-    renderManager->splitQuadTree();
-
 }
 
 //====================================================
@@ -168,7 +161,35 @@ void addObjects(){
     auto ob5 = ObjectManager::getInstance().createObject(id, transform);
 
     std::shared_ptr<IComponent> cp1 = std::make_shared<ObjectRenderComponent>(*ob1.get());
-    //data.Component = cp1;
+    ob1.get()->addComponent(cp1);
+    data.Component = cp1;
     EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+
+    std::shared_ptr<IComponent> cp2 = std::make_shared<ObjectRenderComponent>(*ob2.get());
+    data.Component = cp2;
+    ob2.get()->addComponent(cp2);
+    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+
+    std::shared_ptr<IComponent> cp3 = std::make_shared<ObjectRenderComponent>(*ob3.get());
+    data.Component = cp3;
+    ob3.get()->addComponent(cp3);
+    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+
+    std::shared_ptr<IComponent> cp4 = std::make_shared<ObjectRenderComponent>(*ob4.get());
+    data.Component = cp4;
+    ob4.get()->addComponent(cp4);
+    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+
+    std::shared_ptr<IComponent> cp5 = std::make_shared<ObjectRenderComponent>(*ob5.get());
+    data.Component = cp5;
+    ob5.get()->addComponent(cp5);
+    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+
+    //Update to distribute all creation events
+    EventManager::getInstance().update();
+
+    //Split renderManager static QuadTree
+    RenderManager::getInstance().splitQuadTree();
+    RenderManager::getInstance().getComponentTree().debugStructure(1);
     
 }

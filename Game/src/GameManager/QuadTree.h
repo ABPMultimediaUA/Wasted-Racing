@@ -20,7 +20,7 @@ class QuadTree {
         ~QuadTree() {};
 
         //Initializer
-        void init(unsigned int max, int rang, std::vector<IComponent::Pointer> &componentList, int qx0, int qx1, int qy0, int qy1);
+        void init(unsigned int max, int rang, std::vector<IComponent::Pointer> &componentList, float qx0, float qx1, float qy0, float qy1);
 
         //Splits a node in 4 and distributes its children between the subnodes if
         //the number of children it's more than the maximum
@@ -50,7 +50,7 @@ private:
         unsigned int maxEntity;
 
         //Quadrants in division
-        int x0, x1, y0, y1;
+        float x0, x1, y0, y1;
 
         //Default range for updating
         int range;

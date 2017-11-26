@@ -47,6 +47,7 @@ void RenderManager::close(){
 
 void RenderManager::splitQuadTree(){
     renderComponentTree.init(maxObjPerNode, updateRange, renderComponentList, x0, x1, y0, y1);
+    renderComponentTree.divide();
 }
 
 //==============================================

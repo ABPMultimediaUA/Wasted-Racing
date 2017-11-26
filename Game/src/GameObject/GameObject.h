@@ -56,7 +56,7 @@ public:
 
 	//Get component
 	template<typename Component>
-	std::shared_ptr<Component> GetComponent() {
+	std::shared_ptr<Component> getComponent() {
 		for (auto comp: components) {
 			if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(comp)) {
 				return cmp;
