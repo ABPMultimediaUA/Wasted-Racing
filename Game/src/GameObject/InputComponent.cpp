@@ -48,33 +48,41 @@ void InputComponent::close(){
 //==============================================
 void advanceDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp.get()->changeImpulse(0.1);
+    if (comp != nullptr)
+        comp.get()->changeImpulse(0.1);
 }
 void advanceUpI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp.get()->changeImpulse(0.0);
+   if (comp != nullptr)
+        comp.get()->changeImpulse(0.0);
 }
 void brakeDownI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp.get()->changeImpulse(-0.1);
+   if (comp != nullptr)
+        comp.get()->changeImpulse(-0.1);
 }
 void brakeUpI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp.get()->changeImpulse(0.0);
+   if (comp != nullptr)
+        comp.get()->changeImpulse(0.0);
 }
 void turnLeftDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp.get()->changeSpinIncrement(-0.1);
+    if (comp != nullptr)
+        comp.get()->changeSpinIncrement(-0.1);
 }
 void turnLeftUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp.get()->changeSpinIncrement(0.0);
+    if (comp != nullptr)
+        comp.get()->changeSpinIncrement(0.0);
 }
 void turnRightDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp.get()->changeSpinIncrement(0.1);
+    if (comp != nullptr)
+        comp.get()->changeSpinIncrement(0.1);
 }
 void turnRightUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp.get()->changeSpinIncrement(0.0);
+    if (comp != nullptr)
+        comp.get()->changeSpinIncrement(0.0);
 }

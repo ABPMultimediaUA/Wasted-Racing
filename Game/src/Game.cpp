@@ -44,14 +44,14 @@ void Game::update() {
     renderManager->update();
     eventManager->update();
 
-    uint16_t id = 4;
-    auto obj = objectManager->getObject(id).get();
-    obj->getComponent<MoveComponent>().get()->update(0.1);
-    float a = obj->getTransformData().position.x;
-    float b = obj->getTransformData().position.z;
-    std::cout << a << " " << b << std::endl;
-    for(int i=0; i<100000000; i++);
-    
+    //uint16_t id = 4;
+    //auto obj = objectManager->getObject(id).get();
+    //obj->getComponent<MoveComponent>().get()->update(0.1);
+    //float a = obj->getTransformData().position.x;
+    //float b = obj->getTransformData().position.z;
+    //std::cout << a << " " << b << std::endl;
+    //for(int i=0; i<100000000; i++);
+    //
 }
 
 //====================================================
@@ -209,11 +209,11 @@ void addObjects(){
     //===============================================================
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
     //===============================================================
-    LAPAL::movementData mData {0,10,0,5,0,0,0,0,1};
-    std::shared_ptr<IComponent> moveCP = std::make_shared<MoveComponent>(*ob1.get(), mData);
-    ob1.get()->addComponent(moveCP);
-    data.Component = moveCP;
-    EventManager::getInstance().addEvent(Event {EventType::MoveComponent_Create, data});
+    //LAPAL::movementData mData {0,10,0,5,0,0,0,0,1};
+    //std::shared_ptr<IComponent> moveCP = std::make_shared<MoveComponent>(*ob1.get(), mData);
+    //ob1.get()->addComponent(moveCP);
+    //data.Component = moveCP;
+    //EventManager::getInstance().addEvent(Event {EventType::MoveComponent_Create, data});
 
 
     //===============================================================
