@@ -4,6 +4,8 @@
 
 #include "IRenderFacade.h"
 
+#include "../GameManager/InputManager.h"
+
 class RenderIrrlicht : public IRenderFacade {
 
 public:

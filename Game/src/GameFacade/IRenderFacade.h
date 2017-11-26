@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 
 #include "../GameManager/InputManager.h"
 
@@ -67,11 +68,6 @@ public:
 
     //Renders all the scene
     virtual void renderDraw() = 0;
-
-    //Gets camera object
-    //GameObject& getCamera() {
-    //}
-    
 
     //==============================================================
     // Window Related functions
