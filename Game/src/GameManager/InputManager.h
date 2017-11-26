@@ -39,6 +39,10 @@ public:
         inputComponent = ptr;
     }
 
+    IComponent::Pointer getComponent(){
+        return inputComponent;
+    }
+
 private: 
 
     IInputFacade* inputFacade;

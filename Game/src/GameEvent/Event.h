@@ -17,6 +17,8 @@ enum EventType {
     RenderComponent_Delete,
     InputComponent_Create,
     InputComponent_Delete,
+    MoveComponent_Create,
+    MoveComponent_Delete,
     //PLAYER: Basic control keys
     Key_Advance_Down,
     Key_Advance_Up,

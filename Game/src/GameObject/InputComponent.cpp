@@ -1,5 +1,8 @@
 #include "InputComponent.h"
 #include "../GameEvent/EventManager.h"
+#include "../GameManager/InputManager.h"
+#include "GameObject.h"
+#include "MoveComponent.h"
 #include <iostream>
 
 //==============================================
@@ -44,26 +47,34 @@ void InputComponent::close(){
 // DELEGATES
 //==============================================
 void advanceDownI(EventData eData) {
-    std::cout << "Advance button pressed!" << std::endl;
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp.get()->changeImpulse(0.1);
 }
 void advanceUpI(EventData eData) {
-    std::cout << "Advance button released!" << std::endl;
+   auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp.get()->changeImpulse(0.0);
 }
 void brakeDownI(EventData eData) {
-    std::cout << "Brake button pressed!" << std::endl;
+   auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp.get()->changeImpulse(-0.1);
 }
 void brakeUpI(EventData eData) {
-    std::cout << "Brake button released!" << std::endl;
+   auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp.get()->changeImpulse(0.0);
 }
 void turnLeftDownI(EventData eData) {
-    std::cout << "Left turn button pressed!" << std::endl;
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp.get()->changeSpinIncrement(-0.1);
 }
 void turnLeftUpI(EventData eData) {
-    std::cout << "Left turn button released!" << std::endl;
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp.get()->changeSpinIncrement(0.0);
 }
 void turnRightDownI(EventData eData) {
-    std::cout << "Right turn button pressed!" << std::endl;
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp.get()->changeSpinIncrement(0.1);
 }
 void turnRightUpI(EventData eData) {
-    std::cout << "Right turn button released!" << std::endl;
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp.get()->changeSpinIncrement(0.0);
 }
