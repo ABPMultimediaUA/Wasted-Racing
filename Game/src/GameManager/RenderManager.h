@@ -10,7 +10,9 @@ public:
     RenderManager() {}
 
     //Destructor
-    ~RenderManager() {}
+    ~RenderManager() {
+        delete renderFacade;
+    }
 
     //Initialization
     void init(int engine);
@@ -23,6 +25,11 @@ public:
 
     //Static class getter
     static RenderManager& getInstance();
+
+    //RenderFacade getter
+    IRenderFacade* getRenderFacade(){
+        return renderFacade;
+    }
 
 private:
 

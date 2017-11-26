@@ -1,9 +1,8 @@
 #pragma once
 
-#include <string>
-
 #include "GameManager/InputManager.h"
 #include "GameManager/RenderManager.h"
+#include "GameEvent/EventManager.h"
 
 class Game {
 
@@ -50,6 +49,9 @@ private:
 
     //Render manager
     RenderManager* renderManager;
+
+    //Event manager
+    EventManager* eventManager;
 
     //Selected engine
     int engine;
