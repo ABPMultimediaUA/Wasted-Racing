@@ -1,10 +1,11 @@
 #include "FuzzyLogic.h"
-#include "VObject.h"
 #include <iostream>
 
-double FuzzyLogic::girar(int distance, double a, double b, float maxR)
+//Decides where to turn and in which grade (with a percentage of 0 to 1)
+float FuzzyLogic::girar(VObject[] collisions, glm::vec3 waypoint, int distance, double a, double b, float maxR)
 {	
-	double decision = 0;
+	//final turn decision
+	float decision = 0;
 
 	//Markers
 	float INIT_GIRO = 0;
@@ -107,9 +108,9 @@ double FuzzyLogic::girar(int distance, double a, double b, float maxR)
 
 }
 
-int FuzzyLogic::acelerar_frenar(int distance)
+float FuzzyLogic::acelerar_frenar(int distance)
 {
-	int decision = 2;
+	float decision = 2;
 
 	//Markers
 	float INIT_BRAKE = 0;
@@ -171,6 +172,18 @@ int FuzzyLogic::acelerar_frenar(int distance)
 
 	return decision;
 }
+
+//Inferes the fuzzy value in a line with the type given
+float FuzzyLogic::inferL(float value, float limit1, float limit2, int type);
+
+//Inferes the fuzzy value in a triangular function given the parameters
+float FuzzyLogic::inferT(float value, float limit1, float limit2, float limit3);
+
+//Inferes the fuzzy value in a trapeizodal function
+float FuzzyLogic::inferT2(float value, float limit1, float limit2, float limit3, float limit4);
+
+//Inferes the fuzzy value with a circular inference
+float FuzzyLogic::inferC(float value, float limit1, float limit2, float limit3);
 
 FuzzyLogic::FuzzyLogic(){
 
