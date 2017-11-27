@@ -41,6 +41,10 @@ void RenderManager::update() {
     RenderManager::renderFacade->updateWindow();
 }
 
+void RenderManager::draw() {
+    renderFacade->renderDraw();
+}
+
 void RenderManager::close(){
     
 }
