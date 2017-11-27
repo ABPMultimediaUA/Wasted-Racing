@@ -1,3 +1,5 @@
+#pragma once
+
 #include <irrlicht.h>
 #include <glm/ext.hpp>
 
@@ -7,25 +9,32 @@ private:
         private:
                 double radius;
                 glm::vec3 position;
-
-                Node* next;
         public:                
                 Node();
                 ~Node();
-                Node getNext();
-                Node setNext();
                 double getRadius();
-                irr::core::vector3df getPos();
-                bool inside(irr::core::vector3df pos);
+                double setRadius(double rad);
+                glm::vec3 getPos();
+                glm::vec3 setPos(glm::vec3 pos);
         };
 public:
         Node* startPoint;
 
+        WayPoint* next;
+
         //Constructor
-        WayPoint(glm::vec3);
+        WayPoint(glm::vec3 pos, double rad);
 
         //Destructor
         ~WayPoint();
+
+        glm::vec3 getPos();
+
+        bool inside(glm::vec3 pos);
+        
+        WayPoint* getNext();
+        
+        void setNext(WayPoint* n);
 
 
 };
