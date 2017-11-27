@@ -1,7 +1,12 @@
 #pragma once
 
+#include "GameObject/GameObject.h"
+#include "GameObject/ObjectRenderComponent.h"
+#include "GameObject/InputComponent.h"
+#include "GameObject/MoveComponent.h"
 #include "GameManager/InputManager.h"
 #include "GameManager/RenderManager.h"
+#include "GameManager/ObjectManager.h"
 #include "GameEvent/EventManager.h"
 
 class Game {
@@ -36,25 +41,33 @@ private:
     void close();
 
     //Engine setter
-    void engineSetter(int n){
-        engine = n;
+    void renderEngineSetter(int n){
+        renderEngine = n;
     }
+
+    //Engine setter
+    void inputEngineSetter(int n){
+        inputEngine = n;
+    }
+
 
     //==============================================================
     // Private data
     //==============================================================
 
+    //Object manager
+    ObjectManager* objectManager;
     //Input manager
     InputManager* inputManager;
-
     //Render manager
     RenderManager* renderManager;
-
     //Event manager
     EventManager* eventManager;
 
-    //Selected engine
-    int engine;
+    //Selected renderEngine
+    int renderEngine;
+    //Selected inputEngine
+    int inputEngine;
 
     //Stay in the main loop
     bool stay;

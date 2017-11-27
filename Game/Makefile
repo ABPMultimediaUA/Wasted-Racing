@@ -22,7 +22,7 @@ endif
 MKDIR_P = mkdir -p
 
 #default target is Linux
-all: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE all_linux
+all: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP all_linux
 	$(warning Linking done!)
 	
 create_dir: make_bin_dir make_obj_dir
@@ -53,6 +53,9 @@ make_gameO:
 	
 make_gameE:
 	$(MAKE) -C src/GameEvent
+	
+make_gameP:
+	$(MAKE) -C src/GamePhysics
 
 # target specific settings
 all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -L/usr/lib -lfmod -lgainput
