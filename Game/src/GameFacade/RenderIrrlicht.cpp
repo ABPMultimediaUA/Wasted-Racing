@@ -26,6 +26,8 @@ void RenderIrrlicht::updateWindow() {
 
 void RenderIrrlicht::closeWindow() {
 
+    device->drop();
+
 }
 
 void RenderIrrlicht::renderObject(int id) {
@@ -33,5 +35,9 @@ void RenderIrrlicht::renderObject(int id) {
 }
 
 void RenderIrrlicht::renderDraw() {
+
+    videoDriver->beginScene(true, true, irr::video::SColor(255,113,113,133));
+    //sceneManager->drawAll();
+    videoDriver->endScene();
  
 }

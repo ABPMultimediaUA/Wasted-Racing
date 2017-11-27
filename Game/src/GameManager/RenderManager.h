@@ -22,6 +22,9 @@ public:
     //Update
     void update();
 
+    //Draw
+    void draw();
+
     //Shutdown
     void close();
 

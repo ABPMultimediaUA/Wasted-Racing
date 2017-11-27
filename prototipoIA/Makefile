@@ -2,7 +2,7 @@
 # It's usually sufficient to change just the target name and source file list
 # and be sure that CXX is set to a valid compiler
 Target = 04.Movement
-Sources = main.cpp
+Sources = main.cpp FuzzyLogic.cpp Sensor.cpp WayPoint.cpp VObject.cpp Environment.cpp PathPlanning.cpp
 
 # general compiler settings
 CPPFLAGS = -I../../include -I/usr/X11R6/include
@@ -24,7 +24,7 @@ all_win32: CPPFLAGS += -D__GNUWIN32__ -D_WIN32 -DWIN32 -D_WINDOWS -D_MBCS -D_USR
 all_win32 clean_win32: SYSTEM=Win32-gcc
 all_win32 clean_win32: SUF=.exe
 # name of the binary - only valid for targets which set SYSTEM
-DESTPATH = ../../bin/$(SYSTEM)/$(Target)$(SUF)
+DESTPATH = /$(Target)$(SUF)
 
 all_linux all_win32:
 	$(warning Building...)

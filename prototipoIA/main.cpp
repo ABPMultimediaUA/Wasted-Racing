@@ -18,8 +18,11 @@ and tell the linker to link with the .lib file.
 #endif
 
 #include <irrlicht.h>
+#include <glm/glm.hpp>
 #include "driverChoice.h"
-#include <irrMath.h>
+#include "FuzzyLogic.h"
+#include "Sensor.h"
+#include "PathPlanning.h"
 
 using namespace irr;
 
@@ -61,210 +64,9 @@ private:
 	bool KeyIsDown[KEY_KEY_CODES_COUNT];
 };
 
-//OWN CODE
-/*
-class WayPoint
-{
-	private:
-		core::vector3df* position;
-	public:
+/////////////////////Altered code
+//_______TESTING
 
-	WayPoint(float x, float y, float z){
-		position = new core::vector3df(x, y, z);
-	}
-
-	core::vector3df* getPos()
-	{
-		return position;
-	}
-};
-*/
-
-class MyFuzzyLogic
-{
-public:
-
-	static int girar(int distance)
-	{	
-		int decision = 0;
-
-		//Markers
-		float INIT_BRAKE = 0;
-		float END_BRAKE = 40;
-		float INIT_NONE1 = 30;
-		float END_NONE1 = 50;
-		float INIT_NONE2 = 100;
-		float END_NONE2 = 120;
-		float INIT_ACCEL = 110;
-		float END_ACCEL = 130;		
-
-		//Pertenencys
-		float noturn_pertenency=0;
-		float softturn_pertenency=0;
-		float hardturn_pertenency=0;
-
-		//No turn pertenency
-		if(distance>END_ACCEL)
-		{
-			noturn_pertenency=1;
-		}
-		else if(distance<INIT_ACCEL)
-		{
-			noturn_pertenency=0;
-		}
-		else
-		{
-			noturn_pertenency=distance/(END_ACCEL-INIT_ACCEL);
-		}
-
-		//Soft turn PERTENENCY
-		if(distance>END_NONE2)
-		{
-			softturn_pertenency=0;
-		}else if(distance>INIT_NONE2)
-		{
-			softturn_pertenency = distance/(END_NONE2-INIT_NONE2);
-			softturn_pertenency = 1-softturn_pertenency;
-		}else if(distance>END_NONE1)
-		{
-			softturn_pertenency=1;
-		}
-		else if(distance>INIT_NONE1)
-		{
-			softturn_pertenency = distance/(END_NONE1-INIT_NONE1);
-		}
-		else
-		{
-			softturn_pertenency=0;
-		}
-
-		//hard turn pertenency
-		if(distance>END_BRAKE)
-		{
-			hardturn_pertenency=0;
-		}
-		else
-		{
-			hardturn_pertenency=distance/(END_BRAKE-INIT_BRAKE);
-			hardturn_pertenency=1-hardturn_pertenency;
-		}
-
-
-		//Defuzzyfier
-		if(noturn_pertenency>softturn_pertenency)
-		{
-			decision=0;
-		}
-		else if(softturn_pertenency>noturn_pertenency && softturn_pertenency>hardturn_pertenency)
-		{
-			decision=1;
-		}
-		else if(hardturn_pertenency>softturn_pertenency)
-		{
-			decision=2;
-		}
-	
-		return decision;
-
-	}
-
-	static int acelerar_frenar(int distance)
-	{
-		int decision = 2;
-
-		//Markers
-		float INIT_BRAKE = 0;
-		float END_BRAKE = 40;
-		float INIT_NONE1 = 30;
-		float END_NONE1 = 50;
-		float INIT_NONE2 = 100;
-		float END_NONE2 = 120;
-		float INIT_ACCEL = 40;
-		float END_ACCEL = 130;
-
-		//Pertenencys
-		float brake_pertenency=0;
-		float accelerate_pertenency=0;
-		float none_pertenency=0;
-
-
-
-		//ACCELERATION PERTENENCY
-		if(distance>END_ACCEL)
-		{
-			accelerate_pertenency=1;
-		}
-		else if(distance<INIT_ACCEL)
-		{
-			accelerate_pertenency=0;
-		}
-		else
-		{
-			accelerate_pertenency=distance/(END_ACCEL-INIT_ACCEL);
-		}
-
-		//NONE PERTENENCY
-		/*if(distance>END_NONE2)
-		{
-			none_pertenency=0;
-		}else if(distance>INIT_NONE2)
-		{
-			none_pertenency = distance/(END_NONE2-INIT_NONE2);
-			none_pertenency = 1-none_pertenency;
-		}else if(distance>END_NONE1)
-		{
-			none_pertenency=1;
-		}
-		else if(distance>INIT_NONE1)
-		{
-			none_pertenency = distance/(END_NONE1-INIT_NONE1);
-		}
-		else
-		{
-			none_pertenency=0;
-		}*/
-
-		//BRAKE_PERTENENCY
-		if(distance>END_BRAKE)
-		{
-			brake_pertenency=0;
-		}
-		else
-		{
-			brake_pertenency=distance/(END_BRAKE-INIT_BRAKE);
-			brake_pertenency=1-brake_pertenency;
-		}
-
-
-		//defuzzyfier
-
-		if(accelerate_pertenency>none_pertenency)
-		{
-			decision=1;
-		}
-		else if(none_pertenency>accelerate_pertenency && none_pertenency>brake_pertenency)
-		{
-			decision=2;
-		}
-		else if(brake_pertenency>none_pertenency)
-		{
-			decision=0;
-		}
-	
-		return decision;
-	}
-
-};
-
-
-
-/*
-The event receiver for keeping the pressed keys is ready, the actual responses
-will be made inside the render loop, right before drawing the scene. So lets
-just create an irr::IrrlichtDevice and the scene node we want to move. We also
-create some other additional scene nodes, to show that there are also some
-different possibilities to move and animate scene nodes.
-*/
 int main()
 {
 	// ask user for driver
@@ -298,18 +100,26 @@ int main()
 		node->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
 	}
-
-	scene::ISceneNode * waypoint1 = smgr->addSphereSceneNode();
-	if(waypoint1)
+	
+	scene::ISceneNode * bola1 = smgr->addSphereSceneNode();
+	if (bola1)
 	{
-		waypoint1->setPosition(core::vector3df (200, 0, 10));
+		bola1->setPosition(core::vector3df(0,0,30));
+		bola1->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
+		bola1->setMaterialFlag(video::EMF_LIGHTING, false);
+		bola1->setScale(core::vector3df(0.2f,0.2f,0.2f));
 	}
 
-	scene::ISceneNode * waypoint2 = smgr->addSphereSceneNode();
-	if(waypoint2)
+	scene::ISceneNode * bola2 = smgr->addSphereSceneNode();
+	if (bola2)
 	{
-		waypoint2->setPosition(core::vector3df (300, 0, 30));
+		bola2->setPosition(core::vector3df(0,0,30));
+		bola2->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
+		bola2->setMaterialFlag(video::EMF_LIGHTING, false);
+		bola2->setScale(core::vector3df(0.2f,0.2f,0.2f));
 	}
+
+
 	/*
 	Now we create another node, movable using a scene node animator. Scene
 	node animators modify scene nodes and can be attached to any scene node
@@ -319,9 +129,13 @@ int main()
 	example. We create a cube scene node and attach a 'fly circle' scene
 	node animator to it, letting this node fly around our sphere scene node.
 	*/
+	/*scene::ISceneNode* n = smgr->addCubeSceneNode();
 
-	/*
-	scene::ISceneNode* n = smgr->addCubeSceneNode();
+	if (n)
+	{
+	node animator to it, letting this node fly around our sphere scene node.
+	*/
+	/*scene::ISceneNode* n = smgr->addCubeSceneNode();
 
 	if (n)
 	{
@@ -336,20 +150,11 @@ int main()
 		}
 	}*/
 
-	scene::ISceneNode* n = smgr->addCubeSceneNode();
-
-	if (n)
-	{
-		n->setPosition(core::vector3df(200, 0, 30));
-		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));		
-	}
 	/*
 	The last scene node we add to show possibilities of scene node animators is
 	a b3d model, which uses a 'fly straight' animator to run between to points.
 	*/
-
-	/*
-	scene::IAnimatedMeshSceneNode* anms =
+	/*scene::IAnimatedMeshSceneNode* anms =
 		smgr->addAnimatedMeshSceneNode(smgr->getMesh("../../media/ninja.b3d"));
 
 	if (anms)
@@ -362,7 +167,7 @@ int main()
 			anms->addAnimator(anim);
 			anim->drop();
 		}
-	*/
+
 		/*
 		To make the model look right we disable lighting, set the
 		frames between which the animation should loop, rotate the
@@ -375,9 +180,7 @@ int main()
 		start other animations. But a good advice is to not use
 		hardcoded frame-numbers...
 		*/
-
-		/*
-		anms->setMaterialFlag(video::EMF_LIGHTING, false);
+	/*	anms->setMaterialFlag(video::EMF_LIGHTING, false);
 
 		anms->setFrameLoop(0, 13);
 		anms->setAnimationSpeed(15);
@@ -387,9 +190,9 @@ int main()
 		anms->setRotation(core::vector3df(0,-90,0));
 //		anms->setMaterialTexture(0, driver->getTexture("../../media/sydney.bmp"));
 
-	}
+	}*/
 
-*/
+
 	/*
 	To be able to look at and move around in this scene, we create a first
 	person shooter style camera and make the mouse cursor invisible.
@@ -419,83 +222,163 @@ int main()
 	// how long it was since the last frame
 	u32 then = device->getTimer()->getTime();
 
-	// This is the movemen speed in units per second.
-	f32 MOVEMENT_SPEED = 20.f;
-	
-	f32 angle = 0.0f;
 
+	///Own Code
+	//-------------------------------------------------------------------------------
+	scene::ISceneNode* n = smgr->addCubeSceneNode();
+	if (n)
+	{
+		n->setPosition(core::vector3df(200,0,30));
+		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
+		n->setMaterialFlag(video::EMF_LIGHTING, false);
+	}
+	//-------------------------------------------------------------------------------
+
+	// This is the movemen speed in units per second.
+
+	//OWN VARIABLES
+	//----------------------------------------------------
+	float MOVEMENT_SPEED = 1.0f;
+	const f32 CUBE_SPEED = 50.f;
+	const f32 ROTATE_SPEED = 0.01f;
+
+
+	int angle = 55; //angle in º
+	double anglePlayer = 0;
+
+	float maxRadius = 150.f;
+	
+	const f32 pi = 3.141592653f;
+	
 	const f32 ACCELERATION_SPEED = 0.1f;
 
 	const f32 BRAKE_SPEED = -0.5f;
+
+
+	//Previous calculus
+	double angleRad = angle * pi / 180;
+
+	//get position
+	core::vector3df nodePosition = node->getPosition();
+	core::vector3df nodePos2 = n->getPosition();
+
+	//Waypoints
+	PathPlanning* p = new PathPlanning();
+	WayPoint* w1 = new WayPoint(glm::vec3(240.f, 0.f, 30.f), 10.f);
+	WayPoint* w2 = new WayPoint(glm::vec3(280.f, 0.f, 30.f), 10.f);
+	WayPoint* w3 = new WayPoint(glm::vec3(280.f, 0.f, 80.f), 10.f);
+	WayPoint* w4 = new WayPoint(glm::vec3(240.f, 0.f, 80.f), 10.f);
+	p->addWayPoint(w1);
+	p->addWayPoint(w2);
+	p->addWayPoint(w3);
+	p->addWayPoint(w4);
+	//Initializing sensor
+	Sensor s(nodePosition, angleRad, maxRadius,-pi/2);
+
+	//----------------------------------------------------
 
 	while(device->run())
 	{
 		// Work out a frame delta time.
 		const u32 now = device->getTimer()->getTime();
-		const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
+		double frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 		then = now;
+		
 
 		/* Check if keys W, S, A or D are being held down, and move the
 		sphere node around respectively. */
-		core::vector3df nodePosition = node->getPosition();
-		core::vector3df node2Position = n->getPosition();
 
-		/*
+		//Own Code
+		//----------------------------------------------------
+		//Move the cube for testing
+		glm::vec3 speed(0.f,0.f,0.f);
+
 		if(receiver.IsKeyDown(irr::KEY_KEY_W))
-			nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
+			nodePos2.X -= CUBE_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-			nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
-		*/
+			nodePos2.X += CUBE_SPEED * frameDeltaTime;
 		if(receiver.IsKeyDown(irr::KEY_KEY_A))
-			node2Position.X -= 20.f * frameDeltaTime;
+			nodePos2.Z -= CUBE_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-			node2Position.X += 20.f * frameDeltaTime;
-
-			
-		//OUR OWN CODE		
-		core::vector3df way1 = waypoint1->getPosition();
-		core::vector3df way2 = waypoint2->getPosition();
+			nodePos2.Z += CUBE_SPEED * frameDeltaTime;
 		
+		//Object data
+		core::vector3df velocity(MOVEMENT_SPEED*frameDeltaTime*cos(anglePlayer) ,0.f,MOVEMENT_SPEED*frameDeltaTime*sin(anglePlayer));
+		//DETECTING IF POINT IS NOT IN FRONT
+		bool inside1 = s.detectFieldVision(velocity,nodePos2);
+		//bool inside2 = s.detectFieldVision(velocity,point2);
+		// bool inside3 = s.detectFieldVision(velocity,point3);
+		
+		//DETECTING WHICH SIDE TO TURN AND HOW MUCH
+		double giroPorcentaje;
+		//giroPorcentaje = FuzzyLogic::girar(sqrt((nodePos2.X-nodePosition.X)*(nodePos2.X-nodePosition.X) 
+		//							+ (nodePos2.Z-nodePosition.Z) * (nodePos2.Z-nodePosition.Z) ), s.a, s.b, maxRadius);
 
-		core::vector3df raceLineVector = way1 - nodePosition;
-		core::vector3df raceLineVector2 = way2 - nodePosition;
 
-		/*
-		int decision = MyFuzzyLogic::acelerar_frenar(distance);
+		//decide to move
+		if(inside1){		
+			//ROTATE
+			anglePlayer += giroPorcentaje * ROTATE_SPEED;
 
-		switch(decision)
+			//std::cout<<"Angulo: "<<anglePlayer<<" con porcentaje "<<giroPorcentaje<<std::endl;
+
+			s.updateAngle(giroPorcentaje*ROTATE_SPEED);
+
+			//MOVE
+			nodePosition += velocity;
+		}
+
+		//Pruebas Waypoint
+		glm::vec3 posCubo;
+		posCubo.x = nodePos2.X;
+		posCubo.y = nodePos2.Y;
+		posCubo.z = nodePos2.Z;
+		
+		p->setMaxSpeed(100.f);
+		p->setFrame(frameDeltaTime);
+
+
+		glm::vec3 aux = p->getNextPoint(posCubo, speed);
+		std::cout<<"Pos: "<<aux.x<<"\n";
+		std::cout<<"Pos: "<<aux.z<<"\n";
+
+		if(posCubo.x < aux.x)
 		{
-		case 0: if(MOVEMENT_SPEED<=0)
-				{
-					MOVEMENT_SPEED=0;
-				}
-				else
-				{
-					MOVEMENT_SPEED+=BRAKE_SPEED;
-				}
-				break;
-		case 1: MOVEMENT_SPEED+=ACCELERATION_SPEED;
-				break;
-		case 2: break;
+			posCubo.x += MOVEMENT_SPEED;
+		}
+		else if(posCubo.x > aux.x)
+		{
+			posCubo.x -= MOVEMENT_SPEED;
 		}
 		
-
-		int decision2 = MyFuzzyLogic::girar(distance);
-
-		switch(decision2)
+		if(posCubo.z < aux.z)
 		{
-			case 0: break;
-			case 1: angle+=0.005f;
-					break;
-			case 2: angle+=0.01f;
-					break;
+			posCubo.z += MOVEMENT_SPEED;
 		}
-		*/
+		else if(posCubo.z > aux.z)
+		{
+			posCubo.z -= MOVEMENT_SPEED;
+		}
+		
+		
+		
+		nodePos2.X = posCubo.x;
+		nodePos2.Y = posCubo.y;
+		nodePos2.Z = posCubo.z;
 
-		nodePosition += core::vector3df(MOVEMENT_SPEED * frameDeltaTime * cos(double(angle)), 0, (MOVEMENT_SPEED * frameDeltaTime * sin(double(angle))));
-
+		//set positions
 		node->setPosition(nodePosition);
-		n->setPosition(node2Position);
+		n->setPosition(nodePos2);
+		s.updatePosition(nodePosition);
+
+		//VISUAL DEBUG
+		bola1->setPosition(nodePosition+maxRadius*core::vector3df(sin(-angleRad+pi/2-anglePlayer), 0.f, cos(-angleRad+pi/2-anglePlayer)));
+      	bola2->setPosition(nodePosition+maxRadius*core::vector3df(sin(angleRad+pi/2-anglePlayer), 0.f, cos(angleRad+pi/2-anglePlayer)));
+        
+
+
+		//----------------------------------------------------
+
 
 		driver->beginScene(true, true, video::SColor(255,113,113,133));
 
@@ -525,7 +408,6 @@ int main()
 	
 	return 0;
 }
-
 
 /*
 That's it. Compile and play around with the program.
