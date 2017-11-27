@@ -1,3 +1,5 @@
+#pragma once
+
 #include <irrlicht.h>
 #include <glm/ext.hpp>
 
