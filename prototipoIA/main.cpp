@@ -181,7 +181,7 @@ int main()
 	//----------------------------------------------------
 	float MOVEMENT_SPEED = 50.0f;
 	const f32 CUBE_SPEED = 50.f;
-	const f32 ROTATE_SPEED = 0.05f;
+	const f32 ROTATE_SPEED = 0.10f;
 
 
 	int angle = 30; //angle in º
@@ -207,15 +207,48 @@ int main()
     
 	//Waypoints
 	PathPlanning* p = new PathPlanning();
-	WayPoint* w1 = new WayPoint(glm::vec3(240.f, 0.f, 30.f), 10.f);
-	WayPoint* w2 = new WayPoint(glm::vec3(280.f, 0.f, 30.f), 10.f);
-	WayPoint* w3 = new WayPoint(glm::vec3(280.f, 0.f, 80.f), 10.f);
-	WayPoint* w4 = new WayPoint(glm::vec3(240.f, 0.f, 80.f), 10.f);
-	p->addWayPoint(w1);
+	WayPoint* w1 = new WayPoint(glm::vec3(600.f, 0.f, 10.f), 30.f);
+	WayPoint* w2 = new WayPoint(glm::vec3(320.f, 0.f, 10.f), 30.f);
+	WayPoint* w3 = new WayPoint(glm::vec3(320.f, 0.f, 500.f), 30.f);
+	WayPoint* w4 = new WayPoint(glm::vec3(600.f, 0.f, 500.f), 30.f);
 	p->addWayPoint(w2);
+	p->addWayPoint(w1);
 	p->addWayPoint(w3);
 	p->addWayPoint(w4);
-    
+    scene::ISceneNode* way1 = smgr->addCubeSceneNode();
+	if (way1)
+	{
+		way1->setPosition(core::vector3df(600,0,10));
+		way1->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way1->setMaterialFlag(video::EMF_LIGHTING, false);
+		way1->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+    scene::ISceneNode* way2 = smgr->addCubeSceneNode();
+	if (way2)
+	{
+		way2->setPosition(core::vector3df(320,0,10));
+		way2->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way2->setMaterialFlag(video::EMF_LIGHTING, false);
+		way2->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+	    scene::ISceneNode* way3 = smgr->addCubeSceneNode();
+	if (way3)
+	{
+		way3->setPosition(core::vector3df(320,0,500));
+		way3->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way3->setMaterialFlag(video::EMF_LIGHTING, false);
+		way3->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+	    scene::ISceneNode* way4 = smgr->addCubeSceneNode();
+	if (way4)
+	{
+		way4->setPosition(core::vector3df(600,0,500));
+		way4->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way4->setMaterialFlag(video::EMF_LIGHTING, false);
+		way4->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+
+
 	//Initializing sensor
 	Sensor s(glm::vec3(nodePosition.X,nodePosition.Y,nodePosition.Z), angleRad, maxRadius,-pi/2);
 
@@ -298,10 +331,10 @@ int main()
 		std::vector<VObject*> array;
 
 		array = s.getAllFieldVisionObjects(list, size);
-		
+		array = std::vector<VObject*>();
 
 		//---Waypoint info
-		glm::vec3 aux = p->getNextPoint(glm::vec3(nodePosition.X, nodePosition.Y, nodePosition.Z), velocity);
+		glm::vec3 aux = p->getNextPoint(glm::vec3(nodePosition.X, nodePosition.Y, nodePosition.Z), velocity, MOVEMENT_SPEED);
 		std::cout<<"WayPoint pos X: "<<aux.x<<"\n";
 		std::cout<<"WayPoint pos Z: "<<aux.z<<"\n";
 

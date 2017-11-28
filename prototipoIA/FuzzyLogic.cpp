@@ -74,9 +74,18 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 			//from the center
 
 			//Left and right turn in waypoint
-			aWP = inferL(a, INIT_A, END_A, 1);
-			bWP = inferL(b, INIT_B, END_B, 1);
-
+			std::cout<<"WayPoint direction: "<<b<<","<<a<<"\n";
+			if(a <= 0 || b<=0){
+				if(a<b){
+					aWP = 1;
+				}else{
+					bWP = 1;
+				}
+			}else if(a>b){
+				bWP = inferL(b/a, 0, 1, 1);
+			}else{
+				aWP = inferL(a/b, 0, 1, 1);
+			}
 			//------------Analize all obstacles
 			for(unsigned i = 0; i<array.size(); i++){
 				a_pertenency += inferL(array.at(i)->getA(), INIT_A, END_A, 0)/array.size();
@@ -98,8 +107,18 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 			//from the center
 
 			//Left and right turn in waypoint
-			aWP = inferL(a, INIT_A, END_A, 1);
-			bWP = inferL(b, INIT_B, END_B, 1);
+			std::cout<<"WayPoint direction: "<<b<<","<<a<<"\n";
+			if(a <= 0 || b<=0){
+				if(a<b){
+					aWP = 1;
+				}else{
+					bWP = 1;
+				}
+			}else if(a>b){
+				bWP = inferL(b/a, 0, 1, 1);
+			}else{
+				aWP = inferL(a/b, 0, 1, 1);
+			}
 
 			//------------Analize all obstacles
 			for(unsigned i = 0; i<array.size(); i++){
@@ -122,10 +141,19 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 			//from the center
 			
 			//------------Analize waypoint
-
-			aWP = inferL(a, INIT_A, END_A, 1);
-			bWP = inferL(b, INIT_B, END_B, 1);
-			
+			//Left and right turn in waypoint
+			std::cout<<"WayPoint direction: "<<b<<","<<a<<"\n";
+			if(a <= 0 || b<=0){
+				if(a<b){
+					aWP = 1;
+				}else{
+					bWP = 1;
+				}
+			}else if(a>b){
+				bWP = inferL(b/a, 0, 1, 1);
+			}else{
+				aWP = inferL(a/b, 0, 1, 1);
+			}
 			
 			//------------Analize all obstacles
 
@@ -157,8 +185,8 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 	
 
 	std::cout<<"Probando modelo: "<<decision<<" con la aproximacion "<<aproximation<<std::endl;
-	std::cout<<"wayPoint: "<<aWP<<" , "<<bWP<<std::endl;
-	std::cout<<"Colisiones: "<<a_pertenency<<" , "<<b_pertenency<<std::endl;
+	std::cout<<"wayPoint: "<<bWP<<" , "<<aWP<<std::endl;
+	//std::cout<<"Colisiones: "<<a_pertenency<<" , "<<b_pertenency<<std::endl;
 	return decision;
 
 }

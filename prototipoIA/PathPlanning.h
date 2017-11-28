@@ -16,9 +16,9 @@ class PathPlanning{
 
         int totalWayPoints = 0;
         
-        double maxSpeed;
+        float maxSpeed;
 
-        double frameDeltaTime;
+        float frameDeltaTime;
 
     public:
         PathPlanning();
@@ -27,11 +27,11 @@ class PathPlanning{
 
         void addWayPoint(WayPoint* way);
 
-        void setMaxSpeed(double speed);
+        void setMaxSpeed(float speed);
 
-        void setFrame(double frame);
+        void setFrame(float frame);
 
-        glm::vec3 getNextPoint(glm::vec3 vel, glm::vec3 pos);
+        glm::vec3 getNextPoint(glm::vec3 vel, glm::vec3 pos, float modSpeed);
 
        
 };

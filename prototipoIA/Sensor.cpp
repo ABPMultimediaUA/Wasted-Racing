@@ -27,12 +27,6 @@ Sensor::~Sensor()
 
 //Detect if point is in the field of view
 bool Sensor::detectFieldVision(glm::vec3 vel, glm::vec3 p){
-    //First check the distance (avoiding squared root)
-    if((p.x-position.x)*(p.x-position.x) + (p.z-position.z)*(p.z-position.z) > maxRadius*maxRadius)
-    {
-        return false;
-    }
-    
     //Calculate field of view left and right vectores, given the angle apart of the velocity vector and the position of the object
     irr::core::vector3df sensorLeft =irr::core::vector3df(sin(-angleVision-angleInitial), 0.f, cos(-angleVision-angleInitial));
     irr::core::vector3df sensorRight =irr::core::vector3df(sin(angleVision-angleInitial), 0.f, cos(angleVision-angleInitial));
