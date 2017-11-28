@@ -13,12 +13,12 @@ WayPoint::Node::~Node()
 
 }
 
-double WayPoint::Node::getRadius()
+float WayPoint::Node::getRadius()
 {
     return radius;
 }
 
-double WayPoint::Node::setRadius(double rad)
+float WayPoint::Node::setRadius(float rad)
 {
     radius = rad;
 }
@@ -35,7 +35,7 @@ glm::vec3 WayPoint::Node::setPos(glm::vec3 pos)
 
 ////////WayPoint////////
 
-WayPoint::WayPoint(glm::vec3 pos, double rad)
+WayPoint::WayPoint(glm::vec3 pos, float rad)
 {
     startPoint = new Node();
     startPoint->setPos(pos);
@@ -52,13 +52,19 @@ glm::vec3 WayPoint::getPos()
     return startPoint->getPos();
 }
 
-bool WayPoint::inside(glm::vec3 pos)
+bool WayPoint::checkNext(glm::vec3 pos, glm::vec3 nextPos)
 {
-    int distance = glm::sqrt((pos.x-startPoint->getPos().x)*(pos.x-startPoint->getPos().x) + 
+    float distWay = (pos.x-startPoint->getPos().x)*(pos.x-startPoint->getPos().x) + 
                     (pos.z-startPoint->getPos().z)*(pos.z-startPoint->getPos().z) +
-                    (pos.y-startPoint->getPos().y)*(pos.y-startPoint->getPos().y));
+                    (pos.y-startPoint->getPos().y)*(pos.y-startPoint->getPos().y);
 
-    if(distance <= startPoint->getRadius())
+    float distNextPos = (pos.x-nextPos.x)*(pos.x-nextPos.x) + 
+                        (pos.z-nextPos.z)*(pos.z-nextPos.z) +
+                        (pos.y-nextPos.y)*(pos.y-nextPos.y);
+
+        std::cout<<"distWay: "<<distWay<<"\n";
+        std::cout<<"distNextPos: "<<distNextPos<<"\n";
+    if((distWay <= (startPoint->getRadius() * startPoint->getRadius())) || distNextPos < distWay)
     {
         return true;
     }
@@ -73,4 +79,12 @@ WayPoint* WayPoint::getNext()
 void WayPoint::setNext(WayPoint* n)
 {
     next = n;
+    distNextWay = ((startPoint->getPos().x - n->getPos().x) * (startPoint->getPos().x - n->getPos().x)) + 
+                  ((startPoint->getPos().y - n->getPos().y) * (startPoint->getPos().y - n->getPos().y)) +
+                  ((startPoint->getPos().z - n->getPos().z) * (startPoint->getPos().z - n->getPos().z));
+}
+
+float WayPoint::getDistNextWays()
+{
+    return distNextWay;
 }
