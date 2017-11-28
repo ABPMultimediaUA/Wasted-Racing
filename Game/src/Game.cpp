@@ -59,6 +59,8 @@ void Game::update() {
 //====================================================
 void Game::draw() {
 
+    renderManager->draw();
+
 }
 
 //====================================================
@@ -155,63 +157,78 @@ void addObjects(){
     // CREATE FIVE POSITIONED OBJECTS
     //===============================================================
     id = 4;
-    transform.position = glm::vec3(1,0,1);
+    transform.position = glm::vec3(0,-5,0);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(100,0.01,100);
     auto ob1 = ObjectManager::getInstance().createObject(id, transform);
     id = 5;
-    transform.position = glm::vec3(2,0,2);
+    transform.position = glm::vec3(20,0,20);
+    transform.rotation = glm::vec3(45,45,45);
+    transform.scale    = glm::vec3(0.5,0.5,0.5);
     auto ob2 = ObjectManager::getInstance().createObject(id, transform);
     id = 6;
-    transform.position = glm::vec3(3,0,3);
+    transform.position = glm::vec3(30,0,30);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(1,1,1);
     auto ob3 = ObjectManager::getInstance().createObject(id, transform);
     id = 7;
-    transform.position = glm::vec3(5,0,5);
+    transform.position = glm::vec3(50,50,50);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(1,1,1);
     auto ob4 = ObjectManager::getInstance().createObject(id, transform);
     id = 8;
-    transform.position = glm::vec3(6,0,6);
+    transform.position = glm::vec3(60,0,60);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(1,1,1);
     auto ob5 = ObjectManager::getInstance().createObject(id, transform);
 
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
     //===============================================================
-    std::shared_ptr<IComponent> cp1 = std::make_shared<ObjectRenderComponent>(*ob1.get());
+    std::shared_ptr<IComponent> cp1 = std::make_shared<ObjectRenderComponent>(*ob1.get(), ObjectRenderComponent::Shape::Cube);
     ob1.get()->addComponent(cp1);
     data.Component = cp1;
     EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+    cp1.get()->init();
 
-    std::shared_ptr<IComponent> cp2 = std::make_shared<ObjectRenderComponent>(*ob2.get());
+    std::shared_ptr<IComponent> cp2 = std::make_shared<ObjectRenderComponent>(*ob2.get(), ObjectRenderComponent::Shape::Cube);
     data.Component = cp2;
     ob2.get()->addComponent(cp2);
     EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+    cp2.get()->init();
 
-    std::shared_ptr<IComponent> cp3 = std::make_shared<ObjectRenderComponent>(*ob3.get());
+    std::shared_ptr<IComponent> cp3 = std::make_shared<ObjectRenderComponent>(*ob3.get(), ObjectRenderComponent::Shape::Sphere);
     data.Component = cp3;
     ob3.get()->addComponent(cp3);
     EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+    cp3.get()->init();
 
-    std::shared_ptr<IComponent> cp4 = std::make_shared<ObjectRenderComponent>(*ob4.get());
+    std::shared_ptr<IComponent> cp4 = std::make_shared<ObjectRenderComponent>(*ob4.get(), ObjectRenderComponent::Shape::Cube);
     data.Component = cp4;
     ob4.get()->addComponent(cp4);
     EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+    cp4.get()->init();
 
-    std::shared_ptr<IComponent> cp5 = std::make_shared<ObjectRenderComponent>(*ob5.get());
+    std::shared_ptr<IComponent> cp5 = std::make_shared<ObjectRenderComponent>(*ob5.get(), ObjectRenderComponent::Shape::Cube);
     data.Component = cp5;
     ob5.get()->addComponent(cp5);
     EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
+    cp5.get()->init();
 
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
     //===============================================================
-    std::shared_ptr<IComponent> iCP = std::make_shared<InputComponent>(*ob1.get());
-    ob1.get()->addComponent(iCP);
+    std::shared_ptr<IComponent> iCP = std::make_shared<InputComponent>(*ob2.get());
+    ob2.get()->addComponent(iCP);
     data.Component = iCP;
     EventManager::getInstance().addEvent(Event {EventType::InputComponent_Create, data});
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
     //===============================================================
-    //LAPAL::movementData mData {0,10,0,5,0,0,0,0,1};
-    //std::shared_ptr<IComponent> moveCP = std::make_shared<MoveComponent>(*ob1.get(), mData);
-    //ob1.get()->addComponent(moveCP);
+    LAPAL::movementData mData;
+    std::shared_ptr<IComponent> moveCP = std::make_shared<MoveComponent>(*ob2.get(), mData);
+    ob2.get()->addComponent(moveCP);
     //data.Component = moveCP;
     //EventManager::getInstance().addEvent(Event {EventType::MoveComponent_Create, data});
 

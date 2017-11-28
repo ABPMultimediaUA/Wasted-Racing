@@ -22,6 +22,9 @@ public:
     //Update
     void update();
 
+    //Draw
+    void draw();
+
     //Shutdown
     void close();
 
@@ -39,6 +42,10 @@ public:
     //QuadTree getter
     QuadTree& getComponentTree() {
         return renderComponentTree;
+    }
+
+    IRenderFacade* getRenderFacade() {
+        return renderFacade;
     }
 
 private:

@@ -20,6 +20,9 @@ and tell the linker to link with the .lib file.
 #include <irrlicht.h>
 #include <glm/glm.hpp>
 #include "driverChoice.h"
+#include "FuzzyLogic.h"
+#include "Sensor.h"
+#include "PathPlanning.h"
 
 using namespace irr;
 
@@ -64,226 +67,6 @@ private:
 /////////////////////Altered code
 //_______TESTING
 
-class MyFuzzyLogic
-{
-public:
-
-	static double girar(int distance, double a, double b)
-	{	
-		int decision = 0;
-
-		//Markers
-		float INIT_GIRO = 0;
-		float END_GIRO = 100;
-		float INIT_NONE = 80;
-		float END_NONE = 120;	
-
-		//Pertenencys
-		float no_turn_pertenency=0;
-		float turn_pertenency=0;
-
-		//No turn pertenency
-		if(distance>END_GIRO)
-		{
-			turn_pertenency=0;
-		}
-		else if(distance<INIT_GIRO)
-		{
-			turn_pertenency=1;
-		}
-		else
-		{
-			turn_pertenency=distance/(END_GIRO-INIT_GIRO);
-			turn_pertenency=1-turn_pertenency;
-		}
-
-		//Soft turn PERTENENCY
-		/*if(distance>END_NONE2)
-		{
-			softturn_pertenency=0;
-		}else if(distance>INIT_NONE2)
-		{
-			softturn_pertenency = distance/(END_NONE2-INIT_NONE2);
-			softturn_pertenency = 1-softturn_pertenency;
-		}else if(distance>END_NONE1)
-		{
-			softturn_pertenency=1;
-		}
-		else if(distance>INIT_NONE1)
-		{
-			softturn_pertenency = distance/(END_NONE1-INIT_NONE1);
-		}
-		else
-		{
-			softturn_pertenency=0;
-		}*/
-
-		//hard turn pertenency
-		if(distance>END_NONE)
-		{
-			no_turn_pertenency=1;
-		}
-		else if(distance<INIT_NONE){
-			no_turn_pertenency = 0;
-		}
-		else
-		{
-			no_turn_pertenency=distance/(END_NONE-INIT_NONE);
-		}
-
-
-		//Defuzzyfier
-		if(no_turn_pertenency>turn_pertenency)
-		{
-			decision=0;
-		}
-		else
-		{
-			if(a>b){
-				decision=turn_pertenency;
-			}else{
-				decision=-turn_pertenency;
-			}
-		}
-	
-		return decision;
-
-	}
-
-	static int acelerar_frenar(int distance)
-	{
-		int decision = 2;
-
-		//Markers
-		float INIT_BRAKE = 0;
-		float END_BRAKE = 40;
-		float INIT_NONE1 = 30;
-		float END_NONE1 = 50;
-		float INIT_NONE2 = 100;
-		float END_NONE2 = 120;
-		float INIT_ACCEL = 40;
-		float END_ACCEL = 130;
-
-		//Pertenencys
-		float brake_pertenency=0;
-		float accelerate_pertenency=0;
-		float none_pertenency=0;
-
-
-
-		//ACCELERATION PERTENENCY
-		if(distance>END_ACCEL)
-		{
-			accelerate_pertenency=1;
-		}
-		else if(distance<INIT_ACCEL)
-		{
-			accelerate_pertenency=0;
-		}
-		else
-		{
-			accelerate_pertenency=distance/(END_ACCEL-INIT_ACCEL);
-		}
-
-		//BRAKE_PERTENENCY
-		if(distance>END_BRAKE)
-		{
-			brake_pertenency=0;
-		}
-		else
-		{
-			brake_pertenency=distance/(END_BRAKE-INIT_BRAKE);
-			brake_pertenency=1-brake_pertenency;
-		}
-
-
-		//defuzzyfier
-
-		if(accelerate_pertenency>none_pertenency)
-		{
-			decision=1;
-		}
-		else if(none_pertenency>accelerate_pertenency && none_pertenency>brake_pertenency)
-		{
-			decision=2;
-		}
-		else if(brake_pertenency>none_pertenency)
-		{
-			decision=0;
-		}
-	
-		return decision;
-	}
-
-};
-
-class Sensor{
-public:
-    
-    core::vector3df position;
-    double angleVision = 0;
-	double angInitial = 0;
-    float maxRadius = 0;
-	double a = 0, b = 0;
-    
-    Sensor( core::vector3df p, double ang, float maxR, double angInit){
-        position = p;
-        angleVision = ang;
-        maxRadius = maxR;
-		angInitial = angInit;
-    }
-    
-    ~Sensor(){
-    };
-    
-    //Detect if point is in the field of view
-    bool detectFieldVision( core::vector3df vel,  core::vector3df p){
-		//First we check the distance (avoiding squared root)
-		if((p.X-position.X)*(p.X-position.X) + (p.Z-position.Z)*(p.Z-position.Z) > maxRadius*maxRadius) return false;
-		
-        //Calculate field of view left and right vectores, given the angle apart of the velocity vector and the position of the object
-        core::vector3df sensorLeft =core::vector3df(sin(-angleVision-angInitial), 0.f, cos(-angleVision-angInitial));
-        core::vector3df sensorRight =core::vector3df(sin(angleVision-angInitial), 0.f, cos(angleVision-angInitial));
-        core::vector3df relativeP = p - position;
-
-        //calculate a and b coefficients, to compose the point
-        if(sensorRight.X*sensorLeft.Z != sensorRight.Z*sensorLeft.X) 
-			b = (relativeP.Z * sensorLeft.X - relativeP.X*sensorLeft.Z) /(sensorRight.Z * sensorLeft.X - sensorRight.X*sensorLeft.Z);
-        if(sensorLeft.X != 0){
-			a = (relativeP.Z - b * sensorRight.Z) / sensorLeft.Z;
-		}
-		
-
-		//TESTING COUTS
-		//#####################################################################################################################
-		//std::cout<<"distancia jeje: "<<glm::sqrt((p.X-position.X)*(p.X-position.X) 
-		//						+ (p.Z-position.Z)*(p.Z-position.Z))<<std::endl;
-		//std::cout<<"vectores: "<<sensorLeft.X<<","<<sensorLeft.Z<<" - "<<sensorRight.X<<","<<sensorRight.Z<<std::endl;
-		//std::cout<<"A y B: "<<a<<","<<b<<std::endl;
-        //Analyze conditions to not be in sensor field of viewanglevision
-		//#####################################################################################################################
-
-        if(a < 0 || b < 0) return false;
-		
-        return true;
-    }
-    
-    void updatePosition( core::vector3df pos){
-        position = pos;
-    }
-
-	 void updateAngle(double angle){
-        angInitial += angle;
-    }
-};
-
-/*
-The event receiver for keeping the pressed keys is ready, the actual responses
-will be made inside the render loop, right before drawing the scene. So lets
-just create an irr::IrrlichtDevice and the scene node we want to move. We also
-create some other additional scene nodes, to show that there are also some
-different possibilities to move and animate scene nodes.
-*/
 int main()
 {
 	// ask user for driver
@@ -344,6 +127,12 @@ int main()
 	Scene node animators are not only able to modify the position of a
 	scene node, they can also animate the textures of an object for
 	example. We create a cube scene node and attach a 'fly circle' scene
+	node animator to it, letting this node fly around our sphere scene node.
+	*/
+	/*scene::ISceneNode* n = smgr->addCubeSceneNode();
+
+	if (n)
+	{
 	node animator to it, letting this node fly around our sphere scene node.
 	*/
 	/*scene::ISceneNode* n = smgr->addCubeSceneNode();
@@ -449,15 +238,15 @@ int main()
 
 	//OWN VARIABLES
 	//----------------------------------------------------
-	float MOVEMENT_SPEED = 20.f;
-	const f32 CUBE_SPEED = 30.f;
+	float MOVEMENT_SPEED = 1.0f;
+	const f32 CUBE_SPEED = 50.f;
 	const f32 ROTATE_SPEED = 0.01f;
 
 
 	int angle = 55; //angle in º
-	int anglePlayer = 0;
+	double anglePlayer = 0;
 
-	float maxRadius = 40.f;
+	float maxRadius = 150.f;
 	
 	const f32 pi = 3.141592653f;
 	
@@ -473,6 +262,16 @@ int main()
 	core::vector3df nodePosition = node->getPosition();
 	core::vector3df nodePos2 = n->getPosition();
 
+	//Waypoints
+	PathPlanning* p = new PathPlanning();
+	WayPoint* w1 = new WayPoint(glm::vec3(240.f, 0.f, 30.f), 10.f);
+	WayPoint* w2 = new WayPoint(glm::vec3(280.f, 0.f, 30.f), 10.f);
+	WayPoint* w3 = new WayPoint(glm::vec3(280.f, 0.f, 80.f), 10.f);
+	WayPoint* w4 = new WayPoint(glm::vec3(240.f, 0.f, 80.f), 10.f);
+	p->addWayPoint(w1);
+	p->addWayPoint(w2);
+	p->addWayPoint(w3);
+	p->addWayPoint(w4);
 	//Initializing sensor
 	Sensor s(nodePosition, angleRad, maxRadius,-pi/2);
 
@@ -482,7 +281,7 @@ int main()
 	{
 		// Work out a frame delta time.
 		const u32 now = device->getTimer()->getTime();
-		const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
+		double frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 		then = now;
 		
 
@@ -492,6 +291,8 @@ int main()
 		//Own Code
 		//----------------------------------------------------
 		//Move the cube for testing
+		glm::vec3 speed(0.f,0.f,0.f);
+
 		if(receiver.IsKeyDown(irr::KEY_KEY_W))
 			nodePos2.X -= CUBE_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
@@ -503,33 +304,76 @@ int main()
 		
 		//Object data
 		core::vector3df velocity(MOVEMENT_SPEED*frameDeltaTime*cos(anglePlayer) ,0.f,MOVEMENT_SPEED*frameDeltaTime*sin(anglePlayer));
-		
 		//DETECTING IF POINT IS NOT IN FRONT
 		bool inside1 = s.detectFieldVision(velocity,nodePos2);
 		//bool inside2 = s.detectFieldVision(velocity,point2);
 		// bool inside3 = s.detectFieldVision(velocity,point3);
 		
 		//DETECTING WHICH SIDE TO TURN AND HOW MUCH
-		double giroPorcentaje = MyFuzzyLogic::girar(sqrt((nodePos2.X-nodePosition.X)*(nodePos2.X-nodePosition.X) 
-									+ (nodePos2.Z-nodePosition.Z) * (nodePos2.Z-nodePosition.Z) ), s.a, s.b);
+		double giroPorcentaje;
+		//giroPorcentaje = FuzzyLogic::girar(sqrt((nodePos2.X-nodePosition.X)*(nodePos2.X-nodePosition.X) 
+		//							+ (nodePos2.Z-nodePosition.Z) * (nodePos2.Z-nodePosition.Z) ), s.a, s.b, maxRadius);
 
 
-		//MOVE
-		if(inside1){
+		//decide to move
+		if(inside1){		
+			//ROTATE
+			anglePlayer += giroPorcentaje * ROTATE_SPEED;
+
+			//std::cout<<"Angulo: "<<anglePlayer<<" con porcentaje "<<giroPorcentaje<<std::endl;
+
+			s.updateAngle(giroPorcentaje*ROTATE_SPEED);
+
+			//MOVE
 			nodePosition += velocity;
 		}
 
-		//ROTATE
-		anglePlayer += giroPorcentaje * ROTATE_SPEED;
-		s.updateAngle(giroPorcentaje*ROTATE_SPEED);
+		//Pruebas Waypoint
+		glm::vec3 posCubo;
+		posCubo.x = nodePos2.X;
+		posCubo.y = nodePos2.Y;
+		posCubo.z = nodePos2.Z;
+		
+		p->setMaxSpeed(100.f);
+		p->setFrame(frameDeltaTime);
+
+
+		glm::vec3 aux = p->getNextPoint(posCubo, speed);
+		std::cout<<"Pos: "<<aux.x<<"\n";
+		std::cout<<"Pos: "<<aux.z<<"\n";
+
+		if(posCubo.x < aux.x)
+		{
+			posCubo.x += MOVEMENT_SPEED;
+		}
+		else if(posCubo.x > aux.x)
+		{
+			posCubo.x -= MOVEMENT_SPEED;
+		}
+		
+		if(posCubo.z < aux.z)
+		{
+			posCubo.z += MOVEMENT_SPEED;
+		}
+		else if(posCubo.z > aux.z)
+		{
+			posCubo.z -= MOVEMENT_SPEED;
+		}
+		
+		
+		
+		nodePos2.X = posCubo.x;
+		nodePos2.Y = posCubo.y;
+		nodePos2.Z = posCubo.z;
 
 		//set positions
 		node->setPosition(nodePosition);
 		n->setPosition(nodePos2);
 		s.updatePosition(nodePosition);
 
-		bola1->setPosition(nodePosition+maxRadius*core::vector3df(sin(-angleRad+pi/2), 0.f, cos(-angleRad+pi/2)));
-      	bola2->setPosition(nodePosition+maxRadius*core::vector3df(sin(angleRad+pi/2), 0.f, cos(angleRad+pi/2)));
+		//VISUAL DEBUG
+		bola1->setPosition(nodePosition+maxRadius*core::vector3df(sin(-angleRad+pi/2-anglePlayer), 0.f, cos(-angleRad+pi/2-anglePlayer)));
+      	bola2->setPosition(nodePosition+maxRadius*core::vector3df(sin(angleRad+pi/2-anglePlayer), 0.f, cos(angleRad+pi/2-anglePlayer)));
         
 
 

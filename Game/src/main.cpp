@@ -1,7 +1,6 @@
 #include "Game.h"
 
 #include <iostream>
-#include <gainput/gainput.h>
 
 int main(){
 
