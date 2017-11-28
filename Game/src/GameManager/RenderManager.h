@@ -44,6 +44,10 @@ public:
         return renderComponentTree;
     }
 
+    IRenderFacade* getRenderFacade() {
+        return renderFacade;
+    }
+
 private:
 
     IRenderFacade* renderFacade;
