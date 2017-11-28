@@ -33,41 +33,9 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 	float totalA = 0.0f;
 	float totalB = 0.0f;
 
-
 	switch(aproximation){
-		//One collision, no waypoints
-		case 0:
-			//Turn or not to turn
-			turn_pertenency = inferL(distance, INIT_GIRO, END_GIRO, 1);
-			no_turn_pertenency = inferL(distance, INIT_NONE, END_NONE, 0);
-
-			//USE A AND B AS TURN REGULATORS
-			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
-			//from the center
-
-			//Left turn
-			a_pertenency = inferL(a, INIT_A, END_A, 2);
-			
-			//Right turn
-			b_pertenency = inferL(b, INIT_B, END_B, 2);
-
-			//Defuzzyfier
-			if(no_turn_pertenency>turn_pertenency)
-			{
-				decision=0;
-			}
-			else
-			{
-				if(a>b){
-					decision=-turn_pertenency*a_pertenency;
-				}else{
-					decision=turn_pertenency*b_pertenency;
-				}
-			}
-			break;
-
 		//Various collisions, a waypoint. All Collisions' A-B equal 50%, Waypoint 50% too. Linear approach.
-		case 1:
+		case 0:
 			//------------Analize waypoint
 			//USE A AND B AS TURN REGULATORS
 			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
@@ -82,9 +50,9 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 					bWP = 1;
 				}
 			}else if(a>b){
-				bWP = inferL(b/a, 0, 1, 1);
+				bWP = 1-b/a;
 			}else{
-				aWP = inferL(a/b, 0, 1, 1);
+				aWP = 1-a/b;
 			}
 			//------------Analize all obstacles
 			for(unsigned i = 0; i<array.size(); i++){
@@ -100,7 +68,7 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 			break;
 
 		//Various collisions, a waypoint. All Collisions' A-B equal 50%, Waypoint 50% too. Circular approach.
-		case 2:
+		case 1:
 			//------------Analize waypoint
 			//USE A AND B AS TURN REGULATORS
 			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
@@ -115,9 +83,9 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 					bWP = 1;
 				}
 			}else if(a>b){
-				bWP = inferL(b/a, 0, 1, 1);
+				bWP = 1-b/a;
 			}else{
-				aWP = inferL(a/b, 0, 1, 1);
+				aWP = 1-a/b;
 			}
 
 			//------------Analize all obstacles
@@ -134,7 +102,7 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 			break;
 		
 		//Various collisions, a waypoint. Priority list based on distance to object. Waypoint also in the list.
-		case 3:
+		case 2:
 
 			//USE A AND B AS TURN REGULATORS
 			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
@@ -180,9 +148,6 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 
 			break;
 	}
-
-
-	
 
 	std::cout<<"Probando modelo: "<<decision<<" con la aproximacion "<<aproximation<<std::endl;
 	std::cout<<"wayPoint: "<<bWP<<" , "<<aWP<<std::endl;
