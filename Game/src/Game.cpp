@@ -44,14 +44,9 @@ void Game::update() {
     renderManager->update();
     eventManager->update();
 
-    //uint16_t id = 4;
-    //auto obj = objectManager->getObject(id).get();
-    //obj->getComponent<MoveComponent>().get()->update(0.1);
-    //float a = obj->getTransformData().position.x;
-    //float b = obj->getTransformData().position.z;
-    //std::cout << a << " " << b << std::endl;
-    //for(int i=0; i<100000000; i++);
-    //
+    uint16_t id = 5;
+    auto obj = objectManager->getObject(id).get();
+    obj->getComponent<MoveComponent>().get()->update(0.02);
 }
 
 //====================================================
@@ -227,7 +222,17 @@ void addObjects(){
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
     //===============================================================
     LAPAL::movementData mData;
-    std::shared_ptr<IComponent> moveCP = std::make_shared<MoveComponent>(*ob2.get(), mData);
+    mData.vel = 0;
+    mData.max_vel = 100;
+    mData.acc = 0;
+    mData.max_acc = 10;
+    mData.dAcc = 0;
+    mData.angle = 0;
+    mData.spin = 0;
+    mData.spin_inc = 0.1;
+    mData.max_spin = 0.01;
+
+    std::shared_ptr<IComponent> moveCP = std::make_shared<MoveComponent>(*ob2.get(), mData, 1);
     ob2.get()->addComponent(moveCP);
     //data.Component = moveCP;
     //EventManager::getInstance().addEvent(Event {EventType::MoveComponent_Create, data});

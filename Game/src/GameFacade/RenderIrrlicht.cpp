@@ -43,7 +43,8 @@ void RenderIrrlicht::renderDraw() {
 }
 
 void RenderIrrlicht::addCamera() {
-    camera = sceneManager->addCameraSceneNodeFPS();
+    camera = sceneManager->addCameraSceneNode();
+    camera->setPosition(irr::core::vector3df(0,0,-30));
 }
 
 void RenderIrrlicht::addLight() {
