@@ -1,6 +1,7 @@
 #include "InputComponent.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/InputManager.h"
+#include "../GameManager/RenderManager.h"
 #include "GameObject.h"
 #include "MoveComponent.h"
 #include <iostream>
@@ -48,41 +49,49 @@ void InputComponent::close(){
 //==============================================
 void advanceDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    if (comp != nullptr)
-        comp.get()->changeImpulse(0.1);
+    auto id = comp->getGameObject().getId();
+    auto trans = comp->getGameObject().getTransformData();
+    if (comp != nullptr);
+    InputManager::getInstance().getComponent().get()->getGameObject().getTransformData().position.z += 5;
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
 }
 void advanceUpI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   if (comp != nullptr)
-        comp.get()->changeImpulse(0.0);
+   if (comp != nullptr);
 }
 void brakeDownI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   if (comp != nullptr)
-        comp.get()->changeImpulse(-0.1);
+   auto id = comp->getGameObject().getId();
+    auto trans = comp->getGameObject().getTransformData();
+    if (comp != nullptr);
+    InputManager::getInstance().getComponent().get()->getGameObject().getTransformData().position.z -= 5;
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
 }
 void brakeUpI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   if (comp != nullptr)
-        comp.get()->changeImpulse(0.0);
+   if (comp != nullptr);
 }
 void turnLeftDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    if (comp != nullptr)
-        comp.get()->changeSpinIncrement(-0.1);
+    auto id = comp->getGameObject().getId();
+    auto trans = comp->getGameObject().getTransformData();
+    if (comp != nullptr);
+    InputManager::getInstance().getComponent().get()->getGameObject().getTransformData().position.x -= 5;
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
 }
 void turnLeftUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    if (comp != nullptr)
-        comp.get()->changeSpinIncrement(0.0);
+    if (comp != nullptr);
 }
 void turnRightDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    if (comp != nullptr)
-        comp.get()->changeSpinIncrement(0.1);
+    auto id = comp->getGameObject().getId();
+    auto trans = comp->getGameObject().getTransformData();
+    if (comp != nullptr);
+    InputManager::getInstance().getComponent().get()->getGameObject().getTransformData().position.x += 5;
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
 }
 void turnRightUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    if (comp != nullptr)
-        comp.get()->changeSpinIncrement(0.0);
+    if (comp != nullptr);
 }
