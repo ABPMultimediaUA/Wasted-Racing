@@ -58,9 +58,6 @@ glm::vec3 PathPlanning::getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpee
 
     float tour = (modSpeed * seconds)*(modSpeed * seconds);
 
-    std::cout<<"DISTANCE: "<<distance<<"\n";
-    std::cout<<"TOUR: "<<tour<<"\n";
-
     if(tour <= distance)
     {
         nextPos = actualWayPoint->getPos();
@@ -79,8 +76,6 @@ glm::vec3 PathPlanning::getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpee
     {
         actualWayPoint = actualWayPoint->getNext();
     }
-    std::cout<<"XXXX: "<<nextPos.x<<"\n";
-    std::cout<<"ZZZZ: "<<nextPos.z<<"\n";
 
     return nextPos;
 }
