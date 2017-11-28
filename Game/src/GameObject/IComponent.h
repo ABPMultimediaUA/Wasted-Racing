@@ -1,30 +1,39 @@
 #pragma once
 
-#include "GameObject.h"	//we need to say this class exists in order to store info about it
+#include <glm/glm.hpp>
+#include <memory>
 
-class IComponent {
+class GameObject;
+
+				   //Allows to use this to create a shared pointer
+class IComponent : public std::enable_shared_from_this<IComponent> {
 
 public:
 
+	//Define shared pointer type
+	typedef std::shared_ptr<IComponent> Pointer;
+
 	//Constructor
-	IComponent() {}
+	IComponent(GameObject& newGameObject) : gameObject(newGameObject) {}
 
 	//Destructor
-	virtual ~IComponent() = 0;
+	virtual ~IComponent() = default;
 
-	//Get
-	//GameObject GetGameObject() { return gameObject; } 
+	//Getter
+	GameObject& getGameObject() { return gameObject; } 
 
-	//Init
-	virtual void VInit() = 0;
+	//Initilizer
+	virtual void init() = 0;
 
 	//Update
-	virtual void VUpdate(float dTime) = 0;
+	virtual void update(float dTime) = 0;
+
+	//Closer
+	virtual void close() = 0;
 
 
 protected:
 	
-	//GameObject gameObject; //we store the reference to our game Object
-
+	GameObject& gameObject; //we store the reference to our game Object	
 
 };

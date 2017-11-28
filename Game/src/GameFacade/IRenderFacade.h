@@ -1,10 +1,25 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 
 #include "../GameManager/InputManager.h"
+#include "../GameObject/ObjectRenderComponent.h"
+#include "../GameObject/GameObject.h"
 
 class GameObject;
+
+//Window data structures
+struct vec2d {
+    int x;
+    int y;
+};
+
+struct Window {
+    vec2d size;
+    bool fullscreen;
+    bool vsync;
+};
 
 class IRenderFacade{
 
@@ -50,16 +65,20 @@ public:
     // Render Related functions
     //==============================================================
 
-    //Renders a single object
-    virtual void renderObject(std::string id) = 0;
-
     //Renders all the scene
     virtual void renderDraw() = 0;
 
-    //Gets camera object
-    GameObject& getCamera() {
-    }
-    
+    //Add a camera to the game
+    virtual void addCamera() = 0;
+
+    //Add an object to the game
+    virtual void addObject(IComponent::Pointer ptr) = 0;
+
+    //Add a light to the game
+    virtual void addLight() = 0;
+
+    //Change the position of an object in-game
+    virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
 
     //==============================================================
     // Window Related functions
@@ -100,23 +119,16 @@ public:
         return window.vsync;
     }
 
+    Window& getWindow(){
+        return window;
+    }
+
 
 protected:
-
-    //Window data structures
-    struct vec2d {
-        int x;
-        int y;
-    };
-
-    struct Window {
-        vec2d size;
-        bool fullscreen;
-        bool vsync;
-    };
 
     //Window declaration
     Window window;
     //InputManager declaration
     InputManager* inputManager;
+
 };

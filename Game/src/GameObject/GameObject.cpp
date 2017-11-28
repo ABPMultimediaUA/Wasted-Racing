@@ -1,21 +1,18 @@
 #include "GameObject.h"
 
 //Init
-void GameObject::Init() {
-
+void GameObject::init() {
+    //Initilize all components
+    for (auto comp : components)
+		comp->init();
 }
 
 //Update
-void GameObject::Update(float dTime) {
+void GameObject::update(float dTime) {
 
 }
 
 //Add component
-void GameObject::AddComponent(IComponent& component) {
-
-}
-
-//Get component
-//IComponent& GameObject::GetComponent() {
-
-//}
+void GameObject::addComponent(IComponent::Pointer component) {
+    components.push_back(component);
+} 

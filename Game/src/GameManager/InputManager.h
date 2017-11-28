@@ -1,31 +1,56 @@
 #pragma once
 
-#include <irrlicht.h>
+#include "../GameFacade/IInputFacade.h"
+#include "../GameObject/IComponent.h"
 
-using namespace irr;
-
-class InputManager : public IEventReceiver {
+class InputManager{
 
 public:
 
     //Constructor
     InputManager() {}
 
+    //Destructor
+    ~InputManager() {
+        delete inputFacade;
+    }
+
     //Initializer
-    void init();
+    void init(int engine);
 
-    //Key event catcher
-    virtual bool OnEvent(const SEvent& event);
+    //Updater
+    void update();
 
-    //Key event checker
-    virtual bool IsKeyDown(EKEY_CODE keyCode) const;
+    //Closer
+    void close();
 
     //Static class getter
     static InputManager& getInstance();
 
+    void setInputFacade(IInputFacade* facade){
+        inputFacade = facade;
+    }
+
+    void setDevice(uintptr_t dev){
+        device = dev;
+    }
+
+    void setComponent(IComponent::Pointer ptr){
+        inputComponent = ptr;
+    }
+
+    IComponent::Pointer getComponent(){
+        return inputComponent;
+    }
+
 private: 
 
-    //Variable to save every key state
-    bool KeyIsDown[KEY_KEY_CODES_COUNT];
+    IInputFacade* inputFacade;
+
+    //This variable is only used when we choose to use irrlicht
+    uintptr_t device;
+
+    //Input component is managed from inputManager
+    IComponent::Pointer inputComponent;
 
 };
