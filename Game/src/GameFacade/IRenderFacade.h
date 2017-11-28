@@ -4,6 +4,8 @@
 #include <cstdint>
 
 #include "../GameManager/InputManager.h"
+#include "../GameObject/ObjectRenderComponent.h"
+#include "../GameObject/GameObject.h"
 
 class GameObject;
 
@@ -63,11 +65,20 @@ public:
     // Render Related functions
     //==============================================================
 
-    //Renders a single object
-    virtual void renderObject(int id) = 0;
-
     //Renders all the scene
     virtual void renderDraw() = 0;
+
+    //Add a camera to the game
+    virtual void addCamera() = 0;
+
+    //Add an object to the game
+    virtual void addObject(IComponent::Pointer ptr) = 0;
+
+    //Add a light to the game
+    virtual void addLight() = 0;
+
+    //Change the position of an object in-game
+    virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
 
     //==============================================================
     // Window Related functions
@@ -119,4 +130,5 @@ protected:
     Window window;
     //InputManager declaration
     InputManager* inputManager;
+
 };

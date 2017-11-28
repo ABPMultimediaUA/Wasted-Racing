@@ -6,8 +6,14 @@ class ObjectRenderComponent : public IRenderComponent {
 
 public:
 
+	enum Shape {
+		Cube,
+		Sphere,
+		Mesh
+	};
+
     //Constructor
-	ObjectRenderComponent(GameObject& newGameObject) : IRenderComponent(newGameObject) {}
+	ObjectRenderComponent(GameObject& newGameObject, Shape newShape) : IRenderComponent(newGameObject), objectShape(newShape) {}
 
 	//Destructor
 	virtual ~ObjectRenderComponent() {};
@@ -24,7 +30,13 @@ public:
     //Drawer
 	virtual void draw();
 
+	Shape getObjectShape() {
+		return objectShape;
+	}
+
 
 private:
+
+	Shape objectShape;
 
 };
