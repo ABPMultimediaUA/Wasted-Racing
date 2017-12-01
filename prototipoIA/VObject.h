@@ -6,29 +6,29 @@
 class VObject{
     private:
         glm::vec3 position;
-        double a, b, radius;
+        float a, b, radius;
         int type;
 
     public:
 
         //Constructors
         VObject();
-        VObject(glm::vec3 p, double x, double y, double r, int t);
+        VObject(glm::vec3 p, float x, float y, float r, int t);
 
         //Destructor
         ~VObject();
 
         //Getters
         glm::vec3 getPosition();
-        double getA();
-        double getB();
-        double getRadius();
+        float getA();
+        float getB();
+        float getRadius();
         int getType();
 
         //Setters
         void setPosition(glm::vec3 p);
-        void setA(double x);
-        void setB(double y);
-        void setRadius(double r);
+        void setA(float x);
+        void setB(float y);
+        void setRadius(float r);
         void setType(int t);
 };

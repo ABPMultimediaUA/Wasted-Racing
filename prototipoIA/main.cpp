@@ -1,16 +1,4 @@
-/** Example 004 Movement
 
-This Tutorial shows how to move and animate SceneNodes. The
-basic concept of SceneNodeAnimators is shown as well as manual
-movement of nodes using the keyboard.  We'll demonstrate framerate
-independent movement, which means moving by an amount dependent
-on the duration of the last run of the Irrlicht loop.
-
-Example 19.MouseAndJoystick shows how to handle those kinds of input.
-
-As always, I include the header files, use the irr namespace,
-and tell the linker to link with the .lib file.
-*/
 #ifdef _MSC_VER
 // We'll also define this to stop MSVC complaining about sprintf().
 #define _CRT_SECURE_NO_WARNINGS
@@ -23,6 +11,7 @@ and tell the linker to link with the .lib file.
 #include "FuzzyLogic.h"
 #include "Sensor.h"
 #include "PathPlanning.h"
+#include "Environment.h"
 
 using namespace irr;
 
@@ -78,7 +67,7 @@ int main()
 	MyEventReceiver receiver;
 
 	IrrlichtDevice* device = createDevice(driverType,
-			core::dimension2d<u32>(640, 480), 16, false, false, false, &receiver);
+			core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
 
 	if (device == 0)
 		return 1; // could not create selected driver.
@@ -93,11 +82,17 @@ int main()
 	interesting. Because we have no dynamic lights in this scene we disable
 	lighting for each model (otherwise the models would be black).
 	*/
+    
+    //---------------------------------------------
+    //OWN CODE
+    //---------------------------------------------
+    Environment env;
+    
 	scene::ISceneNode * node = smgr->addSphereSceneNode();
 	if (node)
 	{
 		node->setPosition(core::vector3df(0,0,30));
-		node->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
+		node->setMaterialTexture(0, driver->getTexture("media/wall.bmp"));
 		node->setMaterialFlag(video::EMF_LIGHTING, false);
 	}
 	
@@ -105,111 +100,34 @@ int main()
 	if (bola1)
 	{
 		bola1->setPosition(core::vector3df(0,0,30));
-		bola1->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
+		bola1->setMaterialTexture(0, driver->getTexture("media/wall.bmp"));
 		bola1->setMaterialFlag(video::EMF_LIGHTING, false);
-		bola1->setScale(core::vector3df(0.2f,0.2f,0.2f));
+		bola1->setScale(core::vector3df(0.4f,0.4f,0.4f));
 	}
 
 	scene::ISceneNode * bola2 = smgr->addSphereSceneNode();
 	if (bola2)
 	{
 		bola2->setPosition(core::vector3df(0,0,30));
-		bola2->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
+		bola2->setMaterialTexture(0, driver->getTexture("media/wall.bmp"));
 		bola2->setMaterialFlag(video::EMF_LIGHTING, false);
-		bola2->setScale(core::vector3df(0.2f,0.2f,0.2f));
+		bola2->setScale(core::vector3df(0.4f,0.4f,0.4f));
 	}
 
+    env.addNode(node);
+    env.addNode(bola1);
+    env.addNode(bola2);
+	
+	
+	//---------------------------------------------
+	//---------------------------------------------
 
 	/*
-	Now we create another node, movable using a scene node animator. Scene
-	node animators modify scene nodes and can be attached to any scene node
-	like mesh scene nodes, billboards, lights and even camera scene nodes.
-	Scene node animators are not only able to modify the position of a
-	scene node, they can also animate the textures of an object for
-	example. We create a cube scene node and attach a 'fly circle' scene
-	node animator to it, letting this node fly around our sphere scene node.
-	*/
-	/*scene::ISceneNode* n = smgr->addCubeSceneNode();
-
-	if (n)
-	{
-	node animator to it, letting this node fly around our sphere scene node.
-	*/
-	/*scene::ISceneNode* n = smgr->addCubeSceneNode();
-
-	if (n)
-	{
-		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
-		n->setMaterialFlag(video::EMF_LIGHTING, false);
-		scene::ISceneNodeAnimator* anim =
-			smgr->createFlyCircleAnimator(core::vector3df(0,0,30), 20.0f);
-		if (anim)
-		{
-			n->addAnimator(anim);
-			anim->drop();
-		}
-	}*/
-
-	/*
-	The last scene node we add to show possibilities of scene node animators is
-	a b3d model, which uses a 'fly straight' animator to run between to points.
-	*/
-	/*scene::IAnimatedMeshSceneNode* anms =
-		smgr->addAnimatedMeshSceneNode(smgr->getMesh("../../media/ninja.b3d"));
-
-	if (anms)
-	{
-		scene::ISceneNodeAnimator* anim =
-			smgr->createFlyStraightAnimator(core::vector3df(100,0,60),
-			core::vector3df(-100,0,60), 3500, true);
-		if (anim)
-		{
-			anms->addAnimator(anim);
-			anim->drop();
-		}
-
-		/*
-		To make the model look right we disable lighting, set the
-		frames between which the animation should loop, rotate the
-		model around 180 degrees, and adjust the animation speed and
-		the texture. To set the right animation (frames and speed), we
-		would also be able to just call
-		"anms->setMD2Animation(scene::EMAT_RUN)" for the 'run'
-		animation instead of "setFrameLoop" and "setAnimationSpeed",
-		but this only works with MD2 animations, and so you know how to
-		start other animations. But a good advice is to not use
-		hardcoded frame-numbers...
-		*/
-	/*	anms->setMaterialFlag(video::EMF_LIGHTING, false);
-
-		anms->setFrameLoop(0, 13);
-		anms->setAnimationSpeed(15);
-//		anms->setMD2Animation(scene::EMAT_RUN);
-
-		anms->setScale(core::vector3df(2.f,2.f,2.f));
-		anms->setRotation(core::vector3df(0,-90,0));
-//		anms->setMaterialTexture(0, driver->getTexture("../../media/sydney.bmp"));
-
-	}*/
-
-
-	/*
-	To be able to look at and move around in this scene, we create a first
+/*	To be able to look at and move around in this scene, we create a first
 	person shooter style camera and make the mouse cursor invisible.
 	*/
 	smgr->addCameraSceneNodeFPS();
 	device->getCursorControl()->setVisible(false);
-
-	/*
-	Add a colorful irrlicht logo
-	*/
-	device->getGUIEnvironment()->addImage(
-		driver->getTexture("../../media/irrlichtlogoalpha2.tga"),
-		core::position2d<s32>(10,20));
-
-	gui::IGUIStaticText* diagnostics = device->getGUIEnvironment()->addStaticText(
-		L"", core::rect<s32>(10, 10, 400, 20));
-	diagnostics->setOverrideColor(video::SColor(255, 255, 255, 0));
 
 	/*
 	We have done everything, so lets draw it. We also write the current
@@ -222,28 +140,51 @@ int main()
 	// how long it was since the last frame
 	u32 then = device->getTimer()->getTime();
 
-
+    
+    //-------------------------------------------------------------------------------
 	///Own Code
 	//-------------------------------------------------------------------------------
 	scene::ISceneNode* n = smgr->addCubeSceneNode();
 	if (n)
 	{
 		n->setPosition(core::vector3df(200,0,30));
-		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
+		n->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
 		n->setMaterialFlag(video::EMF_LIGHTING, false);
 	}
+
+	scene::ISceneNode* obs1 = smgr->addCubeSceneNode();
+	if (obs1)
+	{
+		obs1->setPosition(core::vector3df(100,0,40));
+		obs1->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		obs1->setMaterialFlag(video::EMF_LIGHTING, false);
+	}
+
+	scene::ISceneNode* obs2 = smgr->addCubeSceneNode();
+	if (obs2)
+	{
+		obs2->setPosition(core::vector3df(150,0,27));
+		obs2->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		obs2->setMaterialFlag(video::EMF_LIGHTING, false);
+	}
+	
+	
+    env.addNode(n);
+    env.addNode(obs1);
+    env.addNode(obs2);
 	//-------------------------------------------------------------------------------
+     //-------------------------------------------------------------------------------
 
 	// This is the movemen speed in units per second.
 
 	//OWN VARIABLES
 	//----------------------------------------------------
-	float MOVEMENT_SPEED = 1.0f;
+	float MOVEMENT_SPEED = 162.0f;
 	const f32 CUBE_SPEED = 50.f;
-	const f32 ROTATE_SPEED = 0.01f;
+	const f32 ROTATE_SPEED = 0.10f;
 
 
-	int angle = 55; //angle in º
+	int angle = 30; //angle in º
 	double anglePlayer = 0;
 
 	float maxRadius = 150.f;
@@ -261,20 +202,81 @@ int main()
 	//get position
 	core::vector3df nodePosition = node->getPosition();
 	core::vector3df nodePos2 = n->getPosition();
-
+	core::vector3df obs1Pos = obs1->getPosition();
+	core::vector3df obs2Pos = obs2->getPosition();
+    
 	//Waypoints
 	PathPlanning* p = new PathPlanning();
-	WayPoint* w1 = new WayPoint(glm::vec3(240.f, 0.f, 30.f), 10.f);
-	WayPoint* w2 = new WayPoint(glm::vec3(280.f, 0.f, 30.f), 10.f);
-	WayPoint* w3 = new WayPoint(glm::vec3(280.f, 0.f, 80.f), 10.f);
-	WayPoint* w4 = new WayPoint(glm::vec3(240.f, 0.f, 80.f), 10.f);
+	WayPoint* w1 = new WayPoint(glm::vec3(320.f, 0.f, 10.f), 20.f);
+	WayPoint* w2 = new WayPoint(glm::vec3(1000.f, 0.f, 10.f), 20.f);
+	WayPoint* w3 = new WayPoint(glm::vec3(1000.f, 0.f, 500.f), 20.f);
+	WayPoint* w4 = new WayPoint(glm::vec3(320.f, 0.f, 500.f), 20.f);
+	WayPoint* w5 = new WayPoint(glm::vec3(1300.f, 0.f, 250.f), 20.f);
+	WayPoint* w6 = new WayPoint(glm::vec3(200.f, 0.f, 250.f), 20.f);
 	p->addWayPoint(w1);
-	p->addWayPoint(w2);
 	p->addWayPoint(w3);
+	p->addWayPoint(w5);
+	p->addWayPoint(w2);
 	p->addWayPoint(w4);
-	//Initializing sensor
-	Sensor s(nodePosition, angleRad, maxRadius,-pi/2);
+	p->addWayPoint(w6);
+    scene::ISceneNode* way1 = smgr->addCubeSceneNode();
+	if (way1)
+	{
+		way1->setPosition(core::vector3df(320,0,10));
+		way1->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way1->setMaterialFlag(video::EMF_LIGHTING, false);
+		way1->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+    scene::ISceneNode* way2 = smgr->addCubeSceneNode();
+	if (way2)
+	{
+		way2->setPosition(core::vector3df(1000,0,10));
+		way2->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way2->setMaterialFlag(video::EMF_LIGHTING, false);
+		way2->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+	    scene::ISceneNode* way3 = smgr->addCubeSceneNode();
+	if (way3)
+	{
+		way3->setPosition(core::vector3df(1000,0,500));
+		way3->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way3->setMaterialFlag(video::EMF_LIGHTING, false);
+		way3->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+	    scene::ISceneNode* way4 = smgr->addCubeSceneNode();
+	if (way4)
+	{
+		way4->setPosition(core::vector3df(320,0,500));
+		way4->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way4->setMaterialFlag(video::EMF_LIGHTING, false);
+		way4->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+    	scene::ISceneNode* way5 = smgr->addCubeSceneNode();
+	if (way5)
+	{
+		way5->setPosition(core::vector3df(1300,0,250));
+		way5->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way5->setMaterialFlag(video::EMF_LIGHTING, false);
+		way5->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+    	scene::ISceneNode* way6 = smgr->addCubeSceneNode();
+	if (way6)
+	{
+		way6->setPosition(core::vector3df(200,0,250));
+		way6->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way6->setMaterialFlag(video::EMF_LIGHTING, false);
+		way6->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
 
+	//Initializing sensor
+	Sensor s(glm::vec3(nodePosition.X,nodePosition.Y,nodePosition.Z), angleRad, maxRadius,-pi/2);
+
+	//Initalizing Environment
+	int size = 3;
+	irr::scene::ISceneNode** list = new irr::scene::ISceneNode*[size];
+	list[0] = n;
+	list[1] = obs1;
+	list[2] = obs2;
 	//----------------------------------------------------
 
 	while(device->run())
@@ -291,7 +293,8 @@ int main()
 		//Own Code
 		//----------------------------------------------------
 		//Move the cube for testing
-		glm::vec3 speed(0.f,0.f,0.f);
+		glm::vec3 velocity(MOVEMENT_SPEED*frameDeltaTime*cos(anglePlayer) ,0.f,MOVEMENT_SPEED*frameDeltaTime*sin(anglePlayer));
+
 
 		if(receiver.IsKeyDown(irr::KEY_KEY_W))
 			nodePos2.X -= CUBE_SPEED * frameDeltaTime;
@@ -302,21 +305,65 @@ int main()
 		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
 			nodePos2.Z += CUBE_SPEED * frameDeltaTime;
 		
-		//Object data
-		core::vector3df velocity(MOVEMENT_SPEED*frameDeltaTime*cos(anglePlayer) ,0.f,MOVEMENT_SPEED*frameDeltaTime*sin(anglePlayer));
-		//DETECTING IF POINT IS NOT IN FRONT
-		bool inside1 = s.detectFieldVision(velocity,nodePos2);
-		//bool inside2 = s.detectFieldVision(velocity,point2);
-		// bool inside3 = s.detectFieldVision(velocity,point3);
-		
-		//DETECTING WHICH SIDE TO TURN AND HOW MUCH
-		double giroPorcentaje;
-		//giroPorcentaje = FuzzyLogic::girar(sqrt((nodePos2.X-nodePosition.X)*(nodePos2.X-nodePosition.X) 
-		//							+ (nodePos2.Z-nodePosition.Z) * (nodePos2.Z-nodePosition.Z) ), s.a, s.b, maxRadius);
+        //----------------------------------
+		//ADVANCED DETECTING TECHNIQUE
+		//----------------------------------
 
+		//---VObject array
+		/*VObject** array = new VObject*[2];
+		int sizeArray = 0;
 
-		//decide to move
-		if(inside1){		
+		//---Collisions info
+		bool inside1 = s.detectFieldVision(velocity,glm::vec3(obs1Pos.X, obs1Pos.Y, obs1Pos.Z));
+
+		if(inside1){
+
+			array[0] = new VObject(glm::vec3(obs1Pos.X, obs1Pos.Y, obs1Pos.Z), s.a, s.b, 30.0f, 0);
+
+			++sizeArray;
+
+		} 
+		bool inside2 = s.detectFieldVision(velocity,glm::vec3(obs2Pos.X, obs2Pos.Y, obs2Pos.Z));
+		if(inside2){
+			if(!inside1){
+				array[0] = new VObject(glm::vec3(obs2Pos.X, obs2Pos.Y, obs2Pos.Z), s.a, s.b, 30.0f, 0);
+			}else{
+				array[1] = new VObject(glm::vec3(obs2Pos.X, obs2Pos.Y, obs2Pos.Z), s.a, s.b, 30.0f, 0);
+			}
+			++sizeArray;
+		} 
+
+		//---Waypoint info
+		s.detectFieldVision(velocity,glm::vec3(nodePos2.X, nodePos2.Y, nodePos2.Z));*/
+        
+        
+		//----------------------------------
+		//ADVANCED DETECTING TECHNIQUE
+		//----------------------------------
+
+        
+        //PathPlanning assignations
+    	p->setMaxSpeed(100.f);
+        p->setFrame(frameDeltaTime);
+        p->setSeconds(0.8f);
+    
+		//---VObject array
+		std::vector<VObject*> array;
+
+		array = s.getAllFieldVisionObjects(list, size);
+
+		//---Waypoint info
+		glm::vec3 aux = p->getNextPoint(glm::vec3(nodePosition.X, nodePosition.Y, nodePosition.Z), velocity, MOVEMENT_SPEED);
+		std::cout<<"WayPoint pos X: "<<aux.x<<"\n";
+		std::cout<<"WayPoint pos Z: "<<aux.z<<"\n";
+
+		s.detectFieldVision(velocity, aux);
+
+		float giroPorcentaje = FuzzyLogic::girar(array, aux, 100.0f, s.a, s.b, maxRadius);
+
+		//float giroPorcentaje = 0.0f;
+		//ROTATE AND MOVE CONDITIONALLY
+		if(receiver.IsKeyDown(irr::KEY_KEY_F)){	
 			//ROTATE
 			anglePlayer += giroPorcentaje * ROTATE_SPEED;
 
@@ -325,90 +372,30 @@ int main()
 			s.updateAngle(giroPorcentaje*ROTATE_SPEED);
 
 			//MOVE
-			nodePosition += velocity;
+			nodePosition += irr::core::vector3df(velocity.x,velocity.y,velocity.z);
+
+			std::cout<<"Speed: "<<velocity.x<<","<<velocity.y<<","<<velocity.z<<std::endl;
 		}
 
-		//Pruebas Waypoint
-		glm::vec3 posCubo;
-		posCubo.x = nodePos2.X;
-		posCubo.y = nodePos2.Y;
-		posCubo.z = nodePos2.Z;
-		
-		p->setMaxSpeed(100.f);
-		p->setFrame(frameDeltaTime);
-
-
-		glm::vec3 aux = p->getNextPoint(posCubo, speed);
-		std::cout<<"Pos: "<<aux.x<<"\n";
-		std::cout<<"Pos: "<<aux.z<<"\n";
-
-		if(posCubo.x < aux.x)
-		{
-			posCubo.x += MOVEMENT_SPEED;
-		}
-		else if(posCubo.x > aux.x)
-		{
-			posCubo.x -= MOVEMENT_SPEED;
-		}
-		
-		if(posCubo.z < aux.z)
-		{
-			posCubo.z += MOVEMENT_SPEED;
-		}
-		else if(posCubo.z > aux.z)
-		{
-			posCubo.z -= MOVEMENT_SPEED;
-		}
-		
-		
-		
-		nodePos2.X = posCubo.x;
-		nodePos2.Y = posCubo.y;
-		nodePos2.Z = posCubo.z;
 
 		//set positions
 		node->setPosition(nodePosition);
 		n->setPosition(nodePos2);
-		s.updatePosition(nodePosition);
+		s.updatePosition(glm::vec3(nodePosition.X, nodePosition.Y, nodePosition.Z));
 
 		//VISUAL DEBUG
 		bola1->setPosition(nodePosition+maxRadius*core::vector3df(sin(-angleRad+pi/2-anglePlayer), 0.f, cos(-angleRad+pi/2-anglePlayer)));
       	bola2->setPosition(nodePosition+maxRadius*core::vector3df(sin(angleRad+pi/2-anglePlayer), 0.f, cos(angleRad+pi/2-anglePlayer)));
-        
-
-
+     
 		//----------------------------------------------------
-
 
 		driver->beginScene(true, true, video::SColor(255,113,113,133));
 
 		smgr->drawAll(); // draw the 3d scene
-		device->getGUIEnvironment()->drawAll(); // draw the gui environment (the logo)
-
 		driver->endScene();
-
-		int fps = driver->getFPS();
-
-		if (lastFPS != fps)
-		{
-			core::stringw tmp(L"Movement Example - Irrlicht Engine [");
-			tmp += driver->getName();
-			tmp += L"] fps: ";
-			tmp += fps;
-
-			device->setWindowCaption(tmp.c_str());
-			lastFPS = fps;
-		}
 	}
-
-	/*
-	In the end, delete the Irrlicht device.
-	*/
+    
 	device->drop();
 	
 	return 0;
 }
-
-/*
-That's it. Compile and play around with the program.
-**/

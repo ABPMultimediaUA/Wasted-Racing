@@ -12,13 +12,15 @@ class PathPlanning{
         std::list<WayPoint*> *listWay;
 
         WayPoint* startPoint;
-        WayPoint* nextWayPoint;
+        WayPoint* actualWayPoint;
 
         int totalWayPoints = 0;
         
-        double maxSpeed;
+        float maxSpeed;
 
-        double frameDeltaTime;
+        float frameDeltaTime;
+
+        float seconds;
 
     public:
         PathPlanning();
@@ -27,11 +29,13 @@ class PathPlanning{
 
         void addWayPoint(WayPoint* way);
 
-        void setMaxSpeed(double speed);
+        void setMaxSpeed(float speed);
 
-        void setFrame(double frame);
+        void setFrame(float frame);
 
-        glm::vec3 getNextPoint(glm::vec3 vel, glm::vec3 pos);
+        void setSeconds(float sec);
+
+        glm::vec3 getNextPoint(glm::vec3 vel, glm::vec3 pos, float modSpeed);
 
        
 };

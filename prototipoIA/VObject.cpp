@@ -10,7 +10,7 @@ VObject::VObject()
     type=0;
 }
 
-VObject::VObject(glm::vec3 p, double x, double y, double r, int t)
+VObject::VObject(glm::vec3 p, float x, float y, float r, int t)
 {
     position=p;
     a=x;
@@ -31,17 +31,17 @@ glm::vec3 VObject::getPosition()
     return position;
 }
 
-double VObject::getA()
+float VObject::getA()
 {
     return a;
 }
 
-double VObject::getB()
+float VObject::getB()
 {
     return b;
 }
 
-double VObject::getRadius()
+float VObject::getRadius()
 {
     return radius;
 }
@@ -57,17 +57,17 @@ void VObject::setPosition(glm::vec3 p)
     position=p;
 }
 
-void VObject::setA(double x)
+void VObject::setA(float x)
 {
     a=x;
 }
 
-void VObject::setB(double y)
+void VObject::setB(float y)
 {
     b=y;
 }
 
-void VObject::setRadius(double r)
+void VObject::setRadius(float r)
 {
     radius=r;
 }
