@@ -8,6 +8,7 @@
 #include "GameManager/RenderManager.h"
 #include "GameManager/ObjectManager.h"
 #include "GameEvent/EventManager.h"
+#include "GameFacade/AudioFMOD.h"
 
 class Game {
 
@@ -63,6 +64,8 @@ private:
     RenderManager* renderManager;
     //Event manager
     EventManager* eventManager;
+
+    AudioFMOD* audioManager;
 
     //Selected renderEngine
     int renderEngine;

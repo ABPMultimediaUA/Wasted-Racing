@@ -17,6 +17,10 @@ void Game::init() {
     Game::renderEngineSetter(0);
     Game::inputEngineSetter(0);
 
+    audioManager = new AudioFMOD();
+    audioManager->openAudioEngine();
+
+
     //Initilize managers
     eventManager = &EventManager::getInstance();
     eventManager->init();
@@ -44,6 +48,10 @@ void Game::update() {
     renderManager->update();
     eventManager->update();
 
+    audioManager->playSound();
+
+    
+
     //uint16_t id = 4;
     //auto obj = objectManager->getObject(id).get();
     //obj->getComponent<MoveComponent>().get()->update(0.1);
@@ -60,7 +68,6 @@ void Game::update() {
 void Game::draw() {
 
     renderManager->draw();
-
 }
 
 //====================================================
@@ -80,6 +87,7 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
+    audioManager->playSound();
 
     while(Game::stay){
         Game::update();
