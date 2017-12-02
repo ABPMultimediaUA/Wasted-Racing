@@ -67,7 +67,7 @@ int main()
 	MyEventReceiver receiver;
 
 	IrrlichtDevice* device = createDevice(driverType,
-			core::dimension2d<u32>(1024,800), 16, false, false, false, &receiver);
+		core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
 
 	if (device == 0)
 		return 1; // could not create selected driver.
@@ -179,7 +179,7 @@ int main()
 
 	//OWN VARIABLES
 	//----------------------------------------------------
-	float MOVEMENT_SPEED = 50.0f;
+	float MOVEMENT_SPEED = 162.0f;
 	const f32 CUBE_SPEED = 50.f;
 	const f32 ROTATE_SPEED = 0.10f;
 
@@ -207,18 +207,22 @@ int main()
     
 	//Waypoints
 	PathPlanning* p = new PathPlanning();
-	WayPoint* w1 = new WayPoint(glm::vec3(600.f, 0.f, 10.f), 30.f);
-	WayPoint* w2 = new WayPoint(glm::vec3(320.f, 0.f, 10.f), 30.f);
-	WayPoint* w3 = new WayPoint(glm::vec3(320.f, 0.f, 500.f), 30.f);
-	WayPoint* w4 = new WayPoint(glm::vec3(600.f, 0.f, 500.f), 30.f);
-	p->addWayPoint(w2);
+	WayPoint* w1 = new WayPoint(glm::vec3(320.f, 0.f, 10.f), 20.f);
+	WayPoint* w2 = new WayPoint(glm::vec3(1000.f, 0.f, 10.f), 20.f);
+	WayPoint* w3 = new WayPoint(glm::vec3(1000.f, 0.f, 500.f), 20.f);
+	WayPoint* w4 = new WayPoint(glm::vec3(320.f, 0.f, 500.f), 20.f);
+	WayPoint* w5 = new WayPoint(glm::vec3(1300.f, 0.f, 250.f), 20.f);
+	WayPoint* w6 = new WayPoint(glm::vec3(200.f, 0.f, 250.f), 20.f);
 	p->addWayPoint(w1);
 	p->addWayPoint(w3);
+	p->addWayPoint(w5);
+	p->addWayPoint(w2);
 	p->addWayPoint(w4);
+	p->addWayPoint(w6);
     scene::ISceneNode* way1 = smgr->addCubeSceneNode();
 	if (way1)
 	{
-		way1->setPosition(core::vector3df(600,0,10));
+		way1->setPosition(core::vector3df(320,0,10));
 		way1->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
 		way1->setMaterialFlag(video::EMF_LIGHTING, false);
 		way1->setScale(core::vector3df(0.4f,3.0f,0.4f));
@@ -226,7 +230,7 @@ int main()
     scene::ISceneNode* way2 = smgr->addCubeSceneNode();
 	if (way2)
 	{
-		way2->setPosition(core::vector3df(320,0,10));
+		way2->setPosition(core::vector3df(1000,0,10));
 		way2->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
 		way2->setMaterialFlag(video::EMF_LIGHTING, false);
 		way2->setScale(core::vector3df(0.4f,3.0f,0.4f));
@@ -234,7 +238,7 @@ int main()
 	    scene::ISceneNode* way3 = smgr->addCubeSceneNode();
 	if (way3)
 	{
-		way3->setPosition(core::vector3df(320,0,500));
+		way3->setPosition(core::vector3df(1000,0,500));
 		way3->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
 		way3->setMaterialFlag(video::EMF_LIGHTING, false);
 		way3->setScale(core::vector3df(0.4f,3.0f,0.4f));
@@ -242,10 +246,26 @@ int main()
 	scene::ISceneNode* way4 = smgr->addCubeSceneNode();
 	if (way4)
 	{
-		way4->setPosition(core::vector3df(600,0,500));
+		way4->setPosition(core::vector3df(320,0,500));
 		way4->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
 		way4->setMaterialFlag(video::EMF_LIGHTING, false);
 		way4->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+    	scene::ISceneNode* way5 = smgr->addCubeSceneNode();
+	if (way5)
+	{
+		way5->setPosition(core::vector3df(1300,0,250));
+		way5->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way5->setMaterialFlag(video::EMF_LIGHTING, false);
+		way5->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+    	scene::ISceneNode* way6 = smgr->addCubeSceneNode();
+	if (way6)
+	{
+		way6->setPosition(core::vector3df(200,0,250));
+		way6->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		way6->setMaterialFlag(video::EMF_LIGHTING, false);
+		way6->setScale(core::vector3df(0.4f,3.0f,0.4f));
 	}
 
 	//Initializing sensor
@@ -293,12 +313,12 @@ int main()
         //PathPlanning assignations
     	p->setMaxSpeed(100.f);
         p->setFrame(frameDeltaTime);
+        p->setSeconds(0.8f);
     
 		//---VObject array
 		std::vector<VObject*> array;
 
 		array = s.getAllFieldVisionObjects(list, size);
-		//array = std::vector<VObject*>();
 
 		//---Waypoint info
 		glm::vec3 aux = p->getNextPoint(glm::vec3(nodePosition.X, nodePosition.Y, nodePosition.Z), velocity, MOVEMENT_SPEED);

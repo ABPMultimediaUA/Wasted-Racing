@@ -10,7 +10,7 @@
 
 PathPlanning::~PathPlanning()
 {
-    delete nextWayPoint;
+    delete actualWayPoint;
     delete startPoint;
     delete listWay;
 }
@@ -20,7 +20,7 @@ void PathPlanning::addWayPoint(WayPoint* way)
     if (totalWayPoints == 0)
     {
         startPoint = way;
-        nextWayPoint = way;
+        actualWayPoint = way;
     }
     else
     {
@@ -43,60 +43,39 @@ void PathPlanning::setFrame(float frame)
     frameDeltaTime = frame;
 }
 
+void PathPlanning::setSeconds(float sec)
+{
+    seconds = sec;
+}
+
 glm::vec3 PathPlanning::getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed)
 {
-    if(nextWayPoint->inside(pos))
-    {
-        nextWayPoint = nextWayPoint->getNext();
-    }
-    if(nextWayPoint->getNext()->inside(pos))
-    {
-        nextWayPoint = nextWayPoint->getNext()->getNext();
-    }
-    if(nextWayPoint->getNext()->getNext()->inside(pos))
-    {
-        nextWayPoint = nextWayPoint->getNext()->getNext()->getNext();
-    }
-
     glm::vec3 nextPos;
 
-    if(modSpeed <= 0)
+    float distance = (actualWayPoint->getPos().x - pos.x) * (actualWayPoint->getPos().x - pos.x) +
+                     (actualWayPoint->getPos().y - pos.y) * (actualWayPoint->getPos().y - pos.y) +
+                     (actualWayPoint->getPos().z - pos.z) * (actualWayPoint->getPos().z - pos.z);
+
+    float tour = (modSpeed * seconds)*(modSpeed * seconds);
+
+    if(tour <= distance)
     {
-        nextPos = nextWayPoint->getPos(); 
-        std::cout<<"Way1: "<<nextWayPoint->getPos().z<<"\n";
+        nextPos = actualWayPoint->getPos();
     }
-    else if((modSpeed > 0) && (modSpeed <= (maxSpeed * 0.5)))
+    else
     {
-
-        nextPos.x = (modSpeed * (nextWayPoint->getNext()->getPos().x - nextWayPoint->getPos().x)) / (maxSpeed * 0.5);
-        nextPos.y = (modSpeed * (nextWayPoint->getNext()->getPos().y - nextWayPoint->getPos().y)) / (maxSpeed * 0.5);
-        nextPos.z = (modSpeed * (nextWayPoint->getNext()->getPos().z - nextWayPoint->getPos().z)) / (maxSpeed * 0.5);
-
-        std::cout<<"Way3: "<<nextWayPoint->getNext()->getPos().z<<"\n";
-        std::cout<<"Way2: "<<nextWayPoint->getPos().z<<"\n";
-
-        nextPos += nextWayPoint->getPos();
-    }
-    else if((modSpeed > (maxSpeed * 0.5)) && (modSpeed < maxSpeed))
-    {
-        nextPos.x = ((modSpeed * (nextWayPoint->getNext()->getNext()->getPos().x - nextWayPoint->getNext()->getPos().x)) / (maxSpeed * 0.5)) -
-                    (nextWayPoint->getNext()->getNext()->getPos().x - nextWayPoint->getNext()->getPos().x);
-        nextPos.y = ((modSpeed * (nextWayPoint->getNext()->getNext()->getPos().y - nextWayPoint->getNext()->getPos().y)) / (maxSpeed * 0.5)) -
-                    (nextWayPoint->getNext()->getNext()->getPos().y - nextWayPoint->getNext()->getPos().y);
-        nextPos.z = ((modSpeed * (nextWayPoint->getNext()->getNext()->getPos().z - nextWayPoint->getNext()->getPos().z)) / (maxSpeed * 0.5)) -
-                    (nextWayPoint->getNext()->getNext()->getPos().z - nextWayPoint->getNext()->getPos().z);
-
-        std::cout<<"Way5: "<<nextWayPoint->getNext()->getNext()->getPos().z<<"\n";
-        std::cout<<"Way4: "<<nextWayPoint->getNext()->getPos().z<<"\n";
-
-        nextPos += nextWayPoint->getNext()->getPos();
-    }
-    else if(modSpeed >= maxSpeed)
-    {
-        nextPos = nextWayPoint->getNext()->getNext()->getPos();
-
-        std::cout<<"Way6: "<<nextWayPoint->getNext()->getNext()->getPos().z<<"\n";
+        tour -= distance;
+        for(std::list<WayPoint*>::iterator it = listWay->begin(); it != listWay->end() && tour >= actualWayPoint->getDistNextWays(); ++it){
+            tour -= actualWayPoint->getDistNextWays();
+            actualWayPoint = actualWayPoint->getNext();
+        }
+        nextPos = (tour/actualWayPoint->getDistNextWays()) * (actualWayPoint->getNext()->getPos() - actualWayPoint->getPos()) + actualWayPoint->getPos();
     }
 
-    return nextPos;;
+    if(actualWayPoint->checkNext(pos, nextPos))
+    {
+        actualWayPoint = actualWayPoint->getNext();
+    }
+
+    return nextPos;
 }

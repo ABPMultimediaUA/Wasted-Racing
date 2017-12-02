@@ -5,7 +5,8 @@
 
 class GameObject;
 
-class IComponent {
+				   //Allows to use this to create a shared pointer
+class IComponent : public std::enable_shared_from_this<IComponent> {
 
 public:
 

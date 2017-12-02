@@ -28,7 +28,19 @@ class FuzzyLogic{
         //Inferes the fuzzy value with a circular inference
         static float inferC(float value, float limit1, float limit2, float limit3);
 
+        //--------------------------------------------
+        //DEFUZZING FORMULAE OF HELL: .h edition
+        //--------------------------------------------
+        
+        //Returns in Cx and Cy, and the area of the triangle's X,Y positions of its centroid, given the height h
+        static void centroidT(float* cx, float* cy, float* area, float h, float limit1, float limit2, float limit3);
 
+        //Returns in Cx and Cy. and the area of the trapezoid's X,Y positions of its centroid, given the height h
+        static void centroidT2(float* cx, float* cy, float* area, float h, float limit1, float limit2, float limit3, float limit4);
+
+        //--------------------------------------------
+        //Initializing and stuff
+        //--------------------------------------------
         //Constructor
         FuzzyLogic();
 
