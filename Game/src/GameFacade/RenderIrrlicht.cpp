@@ -51,9 +51,9 @@ void RenderIrrlicht::updateCamera() {
     auto pos = cameraTarget->getTransformData().position;
 
     camera->setTarget(irr::core::vector3df(pos.x, pos.y, pos.z));
-    //RESTORE VALUES IMPORTAAAAAAAAANT camera->setPosition(irr::core::vector3df(pos.x - 30, pos.y + 5, pos.z - 30));
+    camera->setPosition(irr::core::vector3df(pos.x - 30, pos.y + 5, pos.z - 30));
 
-    camera->setPosition(irr::core::vector3df(0, 50, -50));
+    //camera->setPosition(irr::core::vector3df(0, 50, -50));
 
 
     //std::cout << pos.x << " " << pos.z << std::endl;
