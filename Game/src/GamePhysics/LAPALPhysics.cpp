@@ -7,7 +7,29 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime) 
 
     //The approach is that we define a base acceleration for every object and it does not change when it reaches the max acceleration
     //then, we calculate how the different forces affect the acceleration and, therefore, the velocity
-    mData.acc += mData.dAcc*dTime; //increment of acceleration * increment of time
+
+    if(mData.dAcc == 0){
+        if(mData.dir == 1){//we check the movement direction
+            if (mData.acc <= 0 && mData.mov == false){
+            mData.acc = 0;
+        }
+            else{
+                mData.acc = mData.acc - 0.1;
+            }
+        }
+        else if(mData.dir == -1) {
+            if (mData.acc >= 0 && mData.mov == false){
+            mData.acc = 0;
+        }
+            else{
+                mData.acc = mData.acc + 0.1;
+            }
+        }
+    }
+    else{
+        mData.acc += mData.dAcc*dTime; //increment of acceleration * increment of time
+    }
+
 
     //Check acceleration limits
     if(abs(mData.acc)>abs(mData.max_acc)){
@@ -242,17 +264,23 @@ void LAPAL::updateAccDif(LAPAL::movementData& mData, float& objMass){
 //Updates the difference of velocity
 void LAPAL::updateVelDif(LAPAL::movementData& mData, const float& dTime){
 
-    mData.velDif.x = mData.accDif.x*dTime;
-    mData.velDif.y = mData.accDif.y*dTime;
-    mData.velDif.z = mData.accDif.z*dTime;
+    if(mData.dAcc <= 0){
+        mData.velDif.x = (-1)*mData.accDif.x*dTime;
+        mData.velDif.y = (-1)*mData.accDif.y*dTime;
+        mData.velDif.z = (-1)*mData.accDif.z*dTime;
+    }
+    else{
+        mData.velDif.x = mData.accDif.x*dTime;
+        mData.velDif.y = mData.accDif.y*dTime;
+        mData.velDif.z = mData.accDif.z*dTime;
+
+    }
 
 }
 
 //Updates the velocity in a 3D world
 void LAPAL::update3DVelocity(LAPAL::movementData& mData){
 
-    //Here we sum the base velocity (without forces acting over it) with the difference of velocity caused by
-    //the gravity force and the friction force
     mData.vel3d.x = mData.vel2d.x + mData.velDif.x;
     mData.vel3d.y = mData.vel2d.y + mData.velDif.y;
     mData.vel3d.z = mData.vel2d.z + mData.velDif.z; 

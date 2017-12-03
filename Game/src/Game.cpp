@@ -219,6 +219,8 @@ void addObjects(){
     mData.spin = 0;
     mData.spin_inc = 0.1;
     mData.max_spin = 0.01;
+    mData.mov = false;
+    mData.dir = 0;
 
     std::shared_ptr<IComponent> moveCP = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, 1);
 
