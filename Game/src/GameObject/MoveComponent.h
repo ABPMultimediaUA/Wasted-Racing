@@ -8,7 +8,7 @@ class MoveComponent : public IComponent {
 public:
 
     //Constructor
-	MoveComponent(GameObject& newGameObject, LAPAL::movementData newMData) : IComponent(newGameObject), mData(newMData) {}
+	MoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, float newMass) : IComponent(newGameObject), mData(newMData), mass(newMass) {}
 
 	//Destructor
 	virtual ~MoveComponent() {};
@@ -25,11 +25,12 @@ public:
     //==========================================
     // PHYSICS RELATED FUNCTIONS
     //==========================================
-    void changeImpulse(float n);
+    void changeAccInc(float n);
     void changeSpinIncrement(float n);
 
 private:
 
     LAPAL::movementData mData;
+	float mass;
 
 };
