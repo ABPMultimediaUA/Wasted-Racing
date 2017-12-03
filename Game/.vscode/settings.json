@@ -33,7 +33,6 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "typeinfo": "cpp",
-        "utility": "cpp",
-        "memory": "cpp"
+        "utility": "cpp"
     }
 }

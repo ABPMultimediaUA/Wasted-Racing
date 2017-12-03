@@ -65,17 +65,17 @@ void brakeUpI(EventData eData) {
 }
 void turnLeftDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp->changeAngle(1);
+    comp->changeSpinIncrement(0.1);
 }
 void turnLeftUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp->changeAngle(0.0);
+    comp->changeSpinIncrement(0.0);
 }
 void turnRightDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp->changeAngle(-1);
+    comp->changeSpinIncrement(-0.1);
 }
 void turnRightUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp->changeAngle(0.0);
+    comp->changeSpinIncrement(0.0);
 }
