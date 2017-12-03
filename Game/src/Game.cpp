@@ -188,6 +188,12 @@ void addObjects(){
     transform.scale    = glm::vec3(1,1,1);
     auto ob5 = ObjectManager::getInstance().createObject(id, transform);
 
+    id = 9;
+    transform.position = glm::vec3(0,0,0);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob6 = ObjectManager::getInstance().createObject(id, transform);
+
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
     //===============================================================
