@@ -67,7 +67,7 @@ int main()
 	MyEventReceiver receiver;
 
 	IrrlichtDevice* device = createDevice(driverType,
-			core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
+		core::dimension2d<u32>(1280, 720), 16, false, false, false, &receiver);
 
 	if (device == 0)
 		return 1; // could not create selected driver.
@@ -243,7 +243,7 @@ int main()
 		way3->setMaterialFlag(video::EMF_LIGHTING, false);
 		way3->setScale(core::vector3df(0.4f,3.0f,0.4f));
 	}
-	    scene::ISceneNode* way4 = smgr->addCubeSceneNode();
+	scene::ISceneNode* way4 = smgr->addCubeSceneNode();
 	if (way4)
 	{
 		way4->setPosition(core::vector3df(320,0,500));
@@ -304,39 +304,7 @@ int main()
 			nodePos2.Z -= CUBE_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
 			nodePos2.Z += CUBE_SPEED * frameDeltaTime;
-		
-        //----------------------------------
-		//ADVANCED DETECTING TECHNIQUE
-		//----------------------------------
-
-		//---VObject array
-		/*VObject** array = new VObject*[2];
-		int sizeArray = 0;
-
-		//---Collisions info
-		bool inside1 = s.detectFieldVision(velocity,glm::vec3(obs1Pos.X, obs1Pos.Y, obs1Pos.Z));
-
-		if(inside1){
-
-			array[0] = new VObject(glm::vec3(obs1Pos.X, obs1Pos.Y, obs1Pos.Z), s.a, s.b, 30.0f, 0);
-
-			++sizeArray;
-
-		} 
-		bool inside2 = s.detectFieldVision(velocity,glm::vec3(obs2Pos.X, obs2Pos.Y, obs2Pos.Z));
-		if(inside2){
-			if(!inside1){
-				array[0] = new VObject(glm::vec3(obs2Pos.X, obs2Pos.Y, obs2Pos.Z), s.a, s.b, 30.0f, 0);
-			}else{
-				array[1] = new VObject(glm::vec3(obs2Pos.X, obs2Pos.Y, obs2Pos.Z), s.a, s.b, 30.0f, 0);
-			}
-			++sizeArray;
-		} 
-
-		//---Waypoint info
-		s.detectFieldVision(velocity,glm::vec3(nodePos2.X, nodePos2.Y, nodePos2.Z));*/
-        
-        
+	
 		//----------------------------------
 		//ADVANCED DETECTING TECHNIQUE
 		//----------------------------------

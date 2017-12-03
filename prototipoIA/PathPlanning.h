@@ -39,8 +39,5 @@ class PathPlanning{
         void setSeconds(float sec);
 
         glm::vec3 getNextPoint(glm::vec3 vel, glm::vec3 pos, float modSpeed);
-
-        void checkLists();
-
        
 };

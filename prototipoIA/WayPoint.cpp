@@ -123,7 +123,8 @@ bool WayPoint::checkNext(glm::vec3 pos, glm::vec3 nextPos)
                         (pos.z-nextPos.z)*(pos.z-nextPos.z) +
                         (pos.y-nextPos.y)*(pos.y-nextPos.y);
 
-    if(distWay <= (startPoint->getRadius() * startPoint->getRadius()) || distNextPos < distWay)
+                        
+    if((distWay <= (startPoint->getRadius() * startPoint->getRadius())) || distNextPos < distWay)
     {
         return true;
     }

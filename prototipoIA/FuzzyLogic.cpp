@@ -5,7 +5,7 @@
 float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float distance, float a, float b, float maxR)
 {	
 	//APROXIMATION:
-	int aproximation = 2;
+	int aproximation = 3;
 
 	//final turn decision
 	float decision = 0.0f;
@@ -33,41 +33,9 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 	float totalA = 0.0f;
 	float totalB = 0.0f;
 
-
 	switch(aproximation){
-		//One collision, no waypoints
-		case 0:
-			//Turn or not to turn
-			turn_pertenency = inferL(distance, INIT_GIRO, END_GIRO, 1);
-			no_turn_pertenency = inferL(distance, INIT_NONE, END_NONE, 0);
-
-			//USE A AND B AS TURN REGULATORS
-			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
-			//from the center
-
-			//Left turn
-			a_pertenency = inferL(a, INIT_A, END_A, 2);
-			
-			//Right turn
-			b_pertenency = inferL(b, INIT_B, END_B, 2);
-
-			//Defuzzyfier
-			if(no_turn_pertenency>turn_pertenency)
-			{
-				decision=0;
-			}
-			else
-			{
-				if(a>b){
-					decision=-turn_pertenency*a_pertenency;
-				}else{
-					decision=turn_pertenency*b_pertenency;
-				}
-			}
-			break;
-
 		//Various collisions, a waypoint. All Collisions' A-B equal 50%, Waypoint 50% too. Linear approach.
-		case 1:
+		case 0:
 			//------------Analize waypoint
 			//USE A AND B AS TURN REGULATORS
 			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
@@ -82,9 +50,9 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 					bWP = 1;
 				}
 			}else if(a>b){
-				bWP = inferL(b/a, 0, 1, 1);
+				bWP = 1-b/a;
 			}else{
-				aWP = inferL(a/b, 0, 1, 1);
+				aWP = 1-a/b;
 			}
 			//------------Analize all obstacles
 			for(unsigned i = 0; i<array.size(); i++){
@@ -100,10 +68,10 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 			break;
 
 		//Various collisions, a waypoint. All Collisions' A-B equal 50%, Waypoint 50% too. Circular approach.
-		case 2:
+		case 1:
 			//------------Analize waypoint
 			//USE A AND B AS TURN REGULATORS
-			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
+			//We use the circular aproximation, since the turn mulst be sharper the closer to 0 the value is, and soften the turn the further away
 			//from the center
 
 			//Left and right turn in waypoint
@@ -115,9 +83,9 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 					bWP = 1;
 				}
 			}else if(a>b){
-				bWP = inferL(b/a, 0, 1, 1);
+				bWP = 1-b/a;
 			}else{
-				aWP = inferL(a/b, 0, 1, 1);
+				aWP = 1-a/b;
 			}
 
 			//------------Analize all obstacles
@@ -134,7 +102,7 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 			break;
 		
 		//Various collisions, a waypoint. Priority list based on distance to object. Waypoint also in the list.
-		case 3:
+		case 2:
 
 			//USE A AND B AS TURN REGULATORS
 			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
@@ -179,13 +147,90 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 			}
 
 			break;
+
+		//Real Fuzzy Logic - Cheap aproximation with angles, tangents and regret
+		case 3:
+			float steeringNone, steeringLeft, steeringRight;
+
+			//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
+			float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
+
+			//fuzzifier and inference
+			//---------------GENERALIZE--v-------v----v
+			//waypoints
+			float wp_left = inferT(atan_w,0.25f,0.375f,0.51f);
+			float wp_center = inferT(atan_w,0.2f,0.25f,0.3f);
+			float wp_right = inferT(atan_w,-0.01f,0.125f,0.25f);
+
+			if(atan_w<0 || atan_w>0.51){
+				if(a<b){
+					wp_right = 1.f;
+				}else{
+					wp_left = 1.f;
+				}
+			}
+
+			if(array.size()>0){
+				float atan_obs = 0.0f;
+				for(unsigned i = 0; i<array.size(); i++){
+					atan_obs += (glm::atan(array.at(i)->getA(),array.at(i)->getB()) / 3.14159265358979323846264338327f )/array.size();
+				}
+
+				//collisions
+				float obs_left = inferT(atan_obs,0.25f,0.375f,0.51f);
+				float obs_center = inferT(atan_obs,0.2f,0.25f,0.3f);
+				float obs_right = inferT(atan_obs,-0.01f,0.125f,0.25f);
+
+				if(atan_obs<0 || atan_obs>0.51){
+					if(a<b){
+						obs_right = 1.f;
+					}else{
+						obs_left = 1.f;
+					}
+				}
+
+				steeringLeft  = wp_center > obs_center ? wp_center : obs_center;
+				steeringRight = wp_center > obs_left   ? wp_center : obs_left;
+				steeringLeft  = wp_center > obs_right  ? wp_center : obs_right;
+				steeringLeft  = wp_left   > obs_center ? wp_left   : obs_center;
+				steeringNone  = wp_left   > obs_left   ? wp_left   : obs_left;
+				steeringLeft  = wp_left   > obs_right  ? wp_left   : obs_right;
+				steeringRight = wp_right  > obs_center ? wp_right  : obs_center;
+				steeringRight = wp_right  > obs_left   ? wp_right  : obs_left;
+				steeringNone  = wp_right  > obs_right  ? wp_right  : obs_right;
+
+			}else{
+				//ruleset
+				//---------------GENERALIZE----conjunction and function result
+
+				steeringLeft = wp_left;
+				steeringNone = wp_center;
+				steeringRight = wp_right;
+			}
+
+			//defuzzifier inference
+			//Here we use the centroid point between the defuzzified inferences, to pinpoint the crisp steering value
+			//---------------GENERALIZE---everything
+			float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
+
+			centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.2f, 0.f, 0.2f);
+			centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.95f, -0.05f);
+			centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.05f, 0.95f, 1.0f);
+
+			std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
+			std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
+
+			//adding all the centroids and crisping end result
+			float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
+			float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
+
+			std::cout<<"Donde vas payo: "<<cx<<std::endl;
+			
+			decision = cx;
+
+			break;
 	}
 
-
-	
-
-	std::cout<<"Probando modelo: "<<decision<<" con la aproximacion "<<aproximation<<std::endl;
-	std::cout<<"wayPoint: "<<bWP<<" , "<<aWP<<std::endl;
 	//std::cout<<"Colisiones: "<<a_pertenency<<" , "<<b_pertenency<<std::endl;
 	return decision;
 
@@ -273,7 +318,7 @@ float FuzzyLogic::inferL(float value, float limit1, float limit2, int type){
 			}
 			else
 			{
-				return (value/(limit2-limit1));
+				return ((value-limit1)/(limit2-limit1));
 			}
 			break;
 
@@ -289,7 +334,7 @@ float FuzzyLogic::inferL(float value, float limit1, float limit2, int type){
 			}
 			else
 			{
-				return (1-value/(limit2-limit1));
+				return 1-(value-limit1)/(limit2-limit1);
 			}
 			break;
 
@@ -306,7 +351,7 @@ float FuzzyLogic::inferL(float value, float limit1, float limit2, int type){
 			else
 			{
 				
-				float cos=value/(limit2-limit1);
+				float cos=(value-limit1)/(limit2-limit1);
 				return sqrt(1-cos*cos);
 			}
 
@@ -324,7 +369,7 @@ float FuzzyLogic::inferL(float value, float limit1, float limit2, int type){
 			else
 			{
 				
-				float cos=1-value/(limit2-limit1);
+				float cos=1-(value-limit1)/(limit2-limit1);
 				return sqrt(1-cos*cos);
 			}
 
@@ -336,13 +381,13 @@ float FuzzyLogic::inferL(float value, float limit1, float limit2, int type){
 //Inferes the fuzzy value in a triangular function given the parameters
 float FuzzyLogic::inferT(float value, float limit1, float limit2, float limit3){
 	if(value<limit1){
-		return 0;
+		return 0.0f;
 	}else if(value>limit3){
-		return 0;
-	}else if(limit1<=value<limit2){
-		return value/(limit2-limit1);
-	}else if(limit2<=value<=limit3){
-		return 1-value/(limit3-limit2);
+		return 0.0f;
+	}else if(limit1<=value && value<limit2){
+		return (value-limit1)/(limit2-limit1);
+	}else if(limit2<=value && value<=limit3){
+		return 1-(value-limit2)/(limit3-limit2);
 	}
 }
 
@@ -352,12 +397,12 @@ float FuzzyLogic::inferT2(float value, float limit1, float limit2, float limit3,
 		return 0;
 	}else if(value>limit4){
 		return 0;
-	}else if(limit1<=value<limit2){
-		return value/(limit2-limit1);
-	}else if(limit2<=value<limit3){
+	}else if(limit1<=value && value<limit2){
+		return (value-limit1)/(limit2-limit1);
+	}else if(limit2<=value && value<limit3){
 		return 1;
-	}else if(limit3<=value<=limit4){
-		return 1-value/(limit4-limit3);
+	}else if(limit3<=value && value<=limit4){
+		return 1-(value-limit3)/(limit4-limit3);
 	}
 }
 
@@ -367,15 +412,88 @@ float FuzzyLogic::inferC(float value, float limit1, float limit2, float limit3){
 			return 0;
 		}else if(value>limit3){
 			return 0;
-		}else if(limit1<=value<limit2){
-			float cos=value/(limit2-limit1);
+		}else if(limit1<=value && value<limit2){
+			float cos=(value-limit1)/(limit2-limit1);
 			return sqrt(1-cos*cos);
-		}else if(limit2<=value<=limit3){
-			float cos=1-value/(limit2-limit1);
+		}else if(limit2<=value && value<=limit3){
+			float cos=1-(value-limit1)/(limit2-limit1);
 			return sqrt(1-cos*cos);
 		}
 }
 
+//--------------------------------------------
+//DEFUZZING FORMULAE OF HELL: TRAPEZOIDS REILM
+//--------------------------------------------
+
+//Returns in Cx and Cy the triangle's X,Y positions of its centroid, given the height h
+void FuzzyLogic::centroidT(float* cx, float* cy, float* area, float h, float limit1, float limit2, float limit3){
+	//if the height is 1, then it shall be a triangle
+	if(h == 0.0f){
+		*cx = 0.0f;
+		*cy = 0.0f;
+		*area = 0.0f;
+	}else{
+		if(h == 1.f){
+			
+			float y1 = 0.f, y3 = 0.f, y2 = 0.5f, y4= 0.5f;
+			float x1 = limit1, x3 = limit3, x4 = (limit1+limit2)*0.5f, x2=(limit3+limit2)*0.5f;
+			
+			float m = 0.5f / ((limit3+limit2)*0.5f-limit1);
+			float m2 = 0.5f / ((limit1+limit2)*0.5f-limit3);
+			float n = - m * limit1;
+			float n2 = -m2 * limit3;
+			
+			//Triangle Cx
+			*cx = (n - n2) /(m2 - m);;
+
+			//Triangle Cy
+			*cy = m * (*cx) + n;
+
+			//triangle area
+			*area = (1+limit3-limit1)*0.5f;
+
+
+
+		//if not, it is a trapezoid, and it shall be treated as one
+		}else{
+			float c = limit2 - (limit2-limit1) * (1 - h);
+			float a = (limit3-limit2) * (1 - h ) + limit2 - c;
+			float b = limit3-limit1;
+
+			//Friggin' trapezoid Cx
+			*cx = limit1 + (2*a*c + a*a + c*b + a*b + b*b) / (3*(a+b));
+			
+			//Friggin' trapezoid Cy
+			*cy = h * (2*a + b) / (3*(a + b));
+
+			//Trapezoid Area
+			*area = h * (a + b)*0.5f;
+		}
+	}
+}
+
+//Returns in Cx and Cy the trapezoid's X,Y positions of its centroid, given the height h
+void FuzzyLogic::centroidT2(float* cx, float* cy, float* area, float h, float limit1, float limit2, float limit3, float limit4){
+	if(h == 0.0f){
+		*cx = 0.0f;
+		*cy = 0.0f;
+		*area = 0.0f;
+	}else{
+		float c = limit2-limit1;
+		float a = limit3-limit2;
+		float b = limit4-limit1;
+
+		*cx = limit1 + (2*a*c + a*a + c*b + a*b + b*b) / (3*(a+b));
+		*cy = h * (2*a + b) / (3*(a + b));
+		*area = h * (a + b)*0.5f;
+	}
+}
+
+
+
+//--------------------------------------------
+//Let them exist, shall they fuzzily breath
+//--------------------------------------------
 FuzzyLogic::FuzzyLogic(){
 
 }
