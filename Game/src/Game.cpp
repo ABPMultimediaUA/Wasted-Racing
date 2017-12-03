@@ -20,7 +20,6 @@ void Game::init() {
     audioManager = new AudioFMOD();
     audioManager->openAudioEngine();
 
-
     //Initilize managers
     eventManager = &EventManager::getInstance();
     eventManager->init();
@@ -33,8 +32,13 @@ void Game::init() {
     inputManager = &InputManager::getInstance();
     inputManager->init(Game::inputEngine);
 
+    //Initialize object manager
     objectManager = &ObjectManager::getInstance();
     objectManager->init();
+
+    //Initialize physics manager
+    physicsManager = &PhysicsManager::getInstance();
+    physicsManager->init();
 
     addObjects();
 }
@@ -44,25 +48,15 @@ void Game::init() {
 //====================================================
 void Game::update() {
 
+    //Input manager has to be the first to be updated
     inputManager->update();
+
+    physicsManager->update(0.02);
+    //audioManager->playSound();
     renderManager->update();
+    //Event manager has to be the last to be updated
     eventManager->update();
-
-    audioManager->playSound();
-
     
-
-    //uint16_t id = 4;
-    //auto obj = objectManager->getObject(id).get();
-    //obj->getComponent<MoveComponent>().get()->update(0.1);
-    //float a = obj->getTransformData().position.x;
-    //float b = obj->getTransformData().position.z;
-    //std::cout << a << " " << b << std::endl;
-    //for(int i=0; i<100000000; i++);
-    //
-    uint16_t id = 5;
-    auto obj = objectManager->getObject(id).get();
-    obj->getComponent<MoveComponent>().get()->update(0.02);
 }
 
 //====================================================
@@ -196,43 +190,19 @@ void addObjects(){
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
     //===============================================================
-    std::shared_ptr<IComponent> cp1 = std::make_shared<ObjectRenderComponent>(*ob1.get(), ObjectRenderComponent::Shape::Cube);
-    ob1.get()->addComponent(cp1);
-    data.Component = cp1;
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp1.get()->init();
+    std::shared_ptr<IComponent> cp1 = RenderManager::getInstance().createObjectRenderComponent(*ob1.get(), ObjectRenderComponent::Shape::Cube);
 
-    std::shared_ptr<IComponent> cp2 = std::make_shared<ObjectRenderComponent>(*ob2.get(), ObjectRenderComponent::Shape::Cube);
-    data.Component = cp2;
-    ob2.get()->addComponent(cp2);
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp2.get()->init();
+    std::shared_ptr<IComponent> cp2 = RenderManager::getInstance().createObjectRenderComponent(*ob2.get(), ObjectRenderComponent::Shape::Cube);
 
-    std::shared_ptr<IComponent> cp3 = std::make_shared<ObjectRenderComponent>(*ob3.get(), ObjectRenderComponent::Shape::Sphere);
-    data.Component = cp3;
-    ob3.get()->addComponent(cp3);
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp3.get()->init();
+    std::shared_ptr<IComponent> cp3 = RenderManager::getInstance().createObjectRenderComponent(*ob3.get(), ObjectRenderComponent::Shape::Sphere);
 
-    std::shared_ptr<IComponent> cp4 = std::make_shared<ObjectRenderComponent>(*ob4.get(), ObjectRenderComponent::Shape::Cube);
-    data.Component = cp4;
-    ob4.get()->addComponent(cp4);
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp4.get()->init();
+    std::shared_ptr<IComponent> cp4 = RenderManager::getInstance().createObjectRenderComponent(*ob4.get(), ObjectRenderComponent::Shape::Cube);
 
-    std::shared_ptr<IComponent> cp5 = std::make_shared<ObjectRenderComponent>(*ob5.get(), ObjectRenderComponent::Shape::Cube);
-    data.Component = cp5;
-    ob5.get()->addComponent(cp5);
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp5.get()->init();
-
+    std::shared_ptr<IComponent> cp5 = RenderManager::getInstance().createObjectRenderComponent(*ob5.get(), ObjectRenderComponent::Shape::Cube);
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
     //===============================================================
-    std::shared_ptr<IComponent> iCP = std::make_shared<InputComponent>(*ob2.get());
-    ob2.get()->addComponent(iCP);
-    data.Component = iCP;
-    EventManager::getInstance().addEvent(Event {EventType::InputComponent_Create, data});
+    std::shared_ptr<IComponent> iCP = InputManager::getInstance().createInputComponent(*ob2.get());
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
@@ -248,11 +218,7 @@ void addObjects(){
     mData.spin_inc = 0.1;
     mData.max_spin = 0.01;
 
-    std::shared_ptr<IComponent> moveCP = std::make_shared<MoveComponent>(*ob2.get(), mData, 1);
-    ob2.get()->addComponent(moveCP);
-    //data.Component = moveCP;
-    //EventManager::getInstance().addEvent(Event {EventType::MoveComponent_Create, data});
-
+    std::shared_ptr<IComponent> moveCP = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, 1);
 
     //===============================================================
     // Update to distribute all creation events

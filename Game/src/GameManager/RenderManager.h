@@ -48,6 +48,8 @@ public:
         return renderFacade;
     }
 
+    IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape);
+
 private:
 
     IRenderFacade* renderFacade;

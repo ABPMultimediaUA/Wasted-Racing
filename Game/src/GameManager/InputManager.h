@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../GameFacade/IInputFacade.h"
-#include "../GameObject/IComponent.h"
+#include "../GameObject/InputComponent.h"
 
 class InputManager{
 
@@ -42,6 +42,9 @@ public:
     IComponent::Pointer getComponent(){
         return inputComponent;
     }
+
+    //InputComponent creator
+	IComponent::Pointer createInputComponent(GameObject& newGameObject);
 
 private: 
 

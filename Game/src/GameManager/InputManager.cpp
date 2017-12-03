@@ -61,6 +61,21 @@ void InputManager::update(){
 
 }
 
+IComponent::Pointer InputManager::createInputComponent(GameObject& newGameObject) {
+
+    IComponent::Pointer component = std::make_shared<InputComponent>(newGameObject);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::InputComponent_Create, data});
+
+    return component;
+}
+
+
 //==============================================
 // DELEGATES
 //==============================================

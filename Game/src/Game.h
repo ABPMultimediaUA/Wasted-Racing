@@ -7,6 +7,7 @@
 #include "GameManager/InputManager.h"
 #include "GameManager/RenderManager.h"
 #include "GameManager/ObjectManager.h"
+#include "GameManager/PhysicsManager.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
 
@@ -64,6 +65,8 @@ private:
     RenderManager* renderManager;
     //Event manager
     EventManager* eventManager;
+    //Physics manager
+    PhysicsManager* physicsManager;
 
     AudioFMOD* audioManager;
 

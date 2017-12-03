@@ -4,7 +4,7 @@
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
-void addRenderComponent(EventData data);
+void addObjectRenderComponent(EventData data);
 
 //==============================================
 // RENDER MANAGER FUNCTIONS
@@ -34,7 +34,7 @@ void RenderManager::init(int engine) {
     x0 = 0; x1 = 10; y0 = 0;  y1 = 10; //Map dimensions
 
     //Bind listeners
-    EventManager::getInstance().addListener(EventListener {EventType::RenderComponent_Create, addRenderComponent});
+    EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Create, addObjectRenderComponent});
 }
 
 void RenderManager::update() {
@@ -54,9 +54,25 @@ void RenderManager::splitQuadTree(){
     renderComponentTree.divide();
 }
 
+IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape) {
+
+    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
+
+    return component;
+}
+
+
 //==============================================
 // DELEGATES
 //============================================== 
-void addRenderComponent(EventData data) {
+void addObjectRenderComponent(EventData data) {
     RenderManager::getInstance().getComponentList().push_back(data.Component);
+    data.Component.get()->init();
 }
