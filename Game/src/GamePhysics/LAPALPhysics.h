@@ -8,7 +8,7 @@ namespace LAPAL {
     void updateLinearVelocity(LAPAL::movementData& mData, const float dTime);//done
 
     //Updates spin velocity and spin
-    void updateSpin(LAPAL::movementData& mData, const float dTime);//done
+   // void updateSpin(LAPAL::movementData& mData, const float dTime);//done
 
     //Updates the gravity force W (gravity*mass)
     void updateGravityForce(LAPAL::movementData& mData, float& objMass, const float& gravity, LAPAL::plane3f& terrain, const LAPAL::vec3f& position); //done
