@@ -39,9 +39,33 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime) 
     }
 
     //Update velocity
-    
-    mData.vel += mData.acc*dTime; 
 
+    if(mData.dAcc == 0){
+        if(mData.dir == 1){//we check the movement direction
+            if (mData.acc == 0 && mData.mov == false){
+            mData.acc = 0;
+            mData.dir = 0;
+        }
+            else{
+                mData.acc = mData.acc - 0.1;
+            }
+        }
+        else if(mData.dir == -1) {
+            if (mData.acc >= 0 && mData.mov == false){
+            mData.acc = 0;
+            mData.dir = 0;
+        }
+            else{
+                mData.acc = mData.acc + 0.1;
+            }
+        }
+    }
+    else{
+        mData.vel += mData.acc*dTime; 
+
+    }
+    
+    
     //Check velocity limits 
     if(abs(mData.vel)>abs(mData.max_vel)){
         mData.vel = copysign(mData.max_vel, mData.vel);
