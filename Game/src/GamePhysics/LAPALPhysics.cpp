@@ -314,10 +314,17 @@ void LAPAL::updateVelDif(LAPAL::movementData& mData, const float& dTime){
 //Updates the velocity in a 3D world
 void LAPAL::update3DVelocity(LAPAL::movementData& mData){
 
-    mData.vel3d.x = mData.vel2d.x + mData.velDif.x;
-    mData.vel3d.y = mData.vel2d.y + mData.velDif.y;
-    mData.vel3d.z = mData.vel2d.z + mData.velDif.z; 
-    
+    if(mData.vel == 0){
+        mData.vel3d.x = 0;
+        mData.vel3d.y = 0;
+        mData.vel3d.z = 0; 
+    }
+    else{
+        mData.vel3d.x = mData.vel2d.x + mData.velDif.x;
+        mData.vel3d.y = mData.vel2d.y + mData.velDif.y;
+        mData.vel3d.z = mData.vel2d.z + mData.velDif.z; 
+    }
+ 
 }
 
 
