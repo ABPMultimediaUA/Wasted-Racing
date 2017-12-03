@@ -48,7 +48,6 @@ void Game::update() {
     renderManager->update();
     eventManager->update();
 
-<<<<<<< HEAD
     audioManager->playSound();
 
     
@@ -61,11 +60,9 @@ void Game::update() {
     //std::cout << a << " " << b << std::endl;
     //for(int i=0; i<100000000; i++);
     //
-=======
     uint16_t id = 5;
     auto obj = objectManager->getObject(id).get();
     obj->getComponent<MoveComponent>().get()->update(0.02);
->>>>>>> ef0b2ebd3f5fc93ddc5806cc10d7846490665356
 }
 
 //====================================================
