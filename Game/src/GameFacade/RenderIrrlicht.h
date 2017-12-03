@@ -44,6 +44,9 @@ public:
     //Add a camera to the game
     virtual void addCamera();
 
+    //Update the current camera
+    virtual void updateCamera();
+
     //Add an object to the game
     virtual void addObject(IComponent::Pointer ptr);
 
@@ -68,6 +71,6 @@ private:
     std::map<uint16_t, irr::scene::ISceneNode*> nodeMap;
 
     //Irrlicht camera
-    irr::scene::ISceneNode* camera;
+    irr::scene::ICameraSceneNode* camera;
 
 };

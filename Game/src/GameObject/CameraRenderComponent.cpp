@@ -3,7 +3,7 @@
 
 //Initilizer
 void CameraRenderComponent::init() {
-    //RenderManager::getInstance().getRenderFacade()->addObject(shared_from_this());
+    RenderManager::getInstance().getRenderFacade()->setCameraTarget(gameObject);
 }
 
 //Update

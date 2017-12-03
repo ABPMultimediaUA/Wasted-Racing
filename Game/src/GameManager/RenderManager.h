@@ -49,6 +49,11 @@ public:
     }
 
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape);
+    IComponent::Pointer createCameraRenderComponent(GameObject& newGameObject);
+
+    //Camera component getter and setter
+    IComponent::Pointer getCameraComponent() { return cameraComponent; }
+    void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
 
 private:
 
@@ -63,5 +68,8 @@ private:
     unsigned int maxObjPerNode;
     int          updateRange;
     int          x0, x1, y0, y1; //Map dimensions
+
+    //We store just one camera component, so we can't have more than 1
+    IComponent::Pointer cameraComponent;
 
 };

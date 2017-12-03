@@ -7,6 +7,7 @@
 // DELEGATES DECLARATIONS
 //==============================================
 void addMoveComponent(EventData eData); 
+void addCollisionComponent(EventData eData); 
 
 //==============================================
 // PHYSICS MANAGER FUNCTIONS
@@ -49,10 +50,56 @@ IComponent::Pointer PhysicsManager::createMoveComponent(GameObject& newGameObjec
     return component;
 }
 
+IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameObject, LAPAL::plane3f newPlane) {
+
+    IComponent::Pointer component = std::make_shared<TerrainComponent>(newGameObject, newPlane);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::TerrainComponent_Create, data});
+
+    return component;
+}
+
+
+IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject) {
+
+    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::CollisionComponent_Create, data});
+
+    return component;
+}
+
+//Create and add a new updateable character to the movingCharacterList
+void PhysicsManager::createMovingCharacter(IComponent::Pointer moveComponent, IComponent::Pointer terrainComponent) {
+
+    MovingCharacter mChar;
+
+    mChar.moveComponent = std::dynamic_pointer_cast<MoveComponent>(moveComponent);
+    mChar.terrainComponent = std::dynamic_pointer_cast<TerrainComponent>(terrainComponent);
+
+    movingCharacterList.push_back(mChar);
+
+}
+
 //==============================================
 // DELEGATES
 //============================================== 
 void addMoveComponent(EventData data) {
     PhysicsManager::getInstance().getMoveComponentList().push_back(data.Component);
+    data.Component.get()->init();
+}
+
+void addCollisionComponent(EventData data) {
+    PhysicsManager::getInstance().getCollisionComponentList().push_back(data.Component);
     data.Component.get()->init();
 }

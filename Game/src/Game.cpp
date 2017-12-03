@@ -56,7 +56,7 @@ void Game::update() {
     renderManager->update();
     //Event manager has to be the last to be updated
     eventManager->update();
-    
+
 }
 
 //====================================================
@@ -72,6 +72,7 @@ void Game::draw() {
 //====================================================
 void Game::close() {
 
+    physicsManager->close();
     renderManager->close();
     inputManager->close();
     eventManager->close();
@@ -199,6 +200,7 @@ void addObjects(){
     std::shared_ptr<IComponent> cp4 = RenderManager::getInstance().createObjectRenderComponent(*ob4.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp5 = RenderManager::getInstance().createObjectRenderComponent(*ob5.get(), ObjectRenderComponent::Shape::Cube);
+
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
     //===============================================================
@@ -219,6 +221,12 @@ void addObjects(){
     mData.max_spin = 0.01;
 
     std::shared_ptr<IComponent> moveCP = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, 1);
+
+    //===============================================================
+    // ADD A CAMERA COMPONENT TO THE FIRST OBJECT
+    //===============================================================
+    std::shared_ptr<IComponent> cameraCP = RenderManager::getInstance().createCameraRenderComponent(*ob2.get());
+
 
     //===============================================================
     // Update to distribute all creation events
