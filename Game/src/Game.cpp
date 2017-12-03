@@ -217,9 +217,9 @@ void addObjects(){
     //===============================================================
     LAPAL::movementData mData;
     mData.vel = 0;
-    mData.max_vel = 50;
+    mData.max_vel = 5;
     mData.acc = 0;
-    mData.max_acc = 10;
+    mData.max_acc = 1;
     mData.dAcc = 0;
     mData.angle = 0;
     mData.spin = 0;

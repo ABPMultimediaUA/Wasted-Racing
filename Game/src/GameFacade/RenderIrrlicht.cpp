@@ -57,16 +57,7 @@ void RenderIrrlicht::updateCamera() {
     float radianAngle = (angle*M_PI)/180;
 
     camera->setTarget(irr::core::vector3df(pos.x, pos.y, pos.z));
-<<<<<<< HEAD
     camera->setPosition(irr::core::vector3df(pos.x - 30*cos(radianAngle), pos.y + 5, pos.z + 30*sin(radianAngle)));
-=======
-    camera->setPosition(irr::core::vector3df(pos.x - 30, pos.y + 5, pos.z - 30));
-
-    //camera->setPosition(irr::core::vector3df(0, 50, -50));
-
-
-    //std::cout << pos.x << " " << pos.z << std::endl;
->>>>>>> bc209748ffa4dc2f1d8fb55e8d019564b33dfa6f
 }
 
 void RenderIrrlicht::addLight() {

@@ -35,7 +35,6 @@ void MoveComponent::update(float dTime) {
     
    
     auto trans = getGameObject().getTransformData();
-<<<<<<< HEAD
 
     //Change position
     trans.position += mData.vel3d;
@@ -43,10 +42,6 @@ void MoveComponent::update(float dTime) {
     //Change rotation
     float degreeAngle = (mData.angle*180)/M_PI;
     trans.rotation.y = -degreeAngle;
-=======
-    
-    trans.position += mData.vel3d;
->>>>>>> bc209748ffa4dc2f1d8fb55e8d019564b33dfa6f
     
     getGameObject().setTransformData(trans);
     
