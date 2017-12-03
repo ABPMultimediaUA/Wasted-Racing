@@ -52,9 +52,6 @@ void RenderIrrlicht::updateCamera() {
 
     camera->setTarget(irr::core::vector3df(pos.x, pos.y, pos.z));
     camera->setPosition(irr::core::vector3df(pos.x - 30, pos.y + 5, pos.z - 30));
-
-
-    std::cout << pos.x << " " << pos.z << std::endl;
 }
 
 void RenderIrrlicht::addLight() {
