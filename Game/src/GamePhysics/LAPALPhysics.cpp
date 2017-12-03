@@ -253,6 +253,22 @@ void LAPAL::update3DVelocity(LAPAL::movementData& mData){
 
     //Here we sum the base velocity (without forces acting over it) with the difference of velocity caused by
     //the gravity force and the friction force
+    
+    if(mData.dAcc == 0){
+        mData.vel3d.x = mData.vel3d.x + mData.velDif.x;
+        mData.vel3d.y = mData.vel3d.y + mData.velDif.y;
+        mData.vel3d.z = mData.vel3d.z + mData.velDif.z; 
+        if(mData.vel3d.x == 0){
+            mData.vel3d.x = 0;
+        }
+        if(mData.vel3d.y == 0){
+            mData.vel3d.y = 0;
+        }
+        if(mData.vel3d.z == 0){
+            mData.vel3d.z = 0;
+        }
+    }
+
     mData.vel3d.x = mData.vel2d.x + mData.velDif.x;
     mData.vel3d.y = mData.vel2d.y + mData.velDif.y;
     mData.vel3d.z = mData.vel2d.z + mData.velDif.z; 
