@@ -20,6 +20,8 @@ namespace LAPAL{
 
     //Movement data
     struct movementData{
+        bool mov;
+        int dir;
         float vel;
         float max_vel;
         float acc;

@@ -23,7 +23,7 @@ void MoveComponent::update(float dTime) {
     auto position = getGameObject().getTransformData().position;
 
     LAPAL::updateLinearVelocity(mData, dTime);
-    LAPAL::updateSpin(mData, dTime);
+   // LAPAL::updateSpin(mData, dTime);
     LAPAL::update2DVelocity(mData);
     LAPAL::updateFrictionForce(mData, terrain, mass, 9.8, position);
     LAPAL::updateGravityForce(mData, mass, 9.8, terrain, position);
@@ -32,10 +32,12 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateVelDif(mData, dTime);
     LAPAL::update3DVelocity(mData);
 
-    std::cout << mData.vel3d.x << " | " << mData.vel3d.z << std::endl;
+    std::cout << mData.vel3d.x << " | " << mData.vel3d.z << " dAcc " << mData.dAcc << " vel " << mData.vel << " Acc " << mData.acc  << "movement " << mData.mov << std::endl;
+
 
     auto trans = getGameObject().getTransformData();
     trans.position += mData.vel3d;
+    trans.position = mData.vel3d;
     auto id = getGameObject().getId();
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
 
@@ -52,4 +54,12 @@ void MoveComponent::changeAccInc(float n) {
 
 void MoveComponent::changeSpinIncrement(float n) {
     mData.spin_inc = n;
+}
+
+void MoveComponent::isMoving(bool m){
+    (mData.mov = m);
+}
+
+void MoveComponent::changeDir(int i){
+    mData.dir = i;
 }
