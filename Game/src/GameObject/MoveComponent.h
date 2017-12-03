@@ -26,7 +26,7 @@ public:
     // PHYSICS RELATED FUNCTIONS
     //==========================================
     void changeAccInc(float n);
-    void changeSpinIncrement(float n);
+    void changeAngle(float n);
 
 private:
 

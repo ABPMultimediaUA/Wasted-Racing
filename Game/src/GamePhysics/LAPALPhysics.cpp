@@ -32,7 +32,7 @@ bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& rad
 } 
 
 //Updates all spin related variables
-void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
+/*void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
 
     mData.spin += mData.vel*mData.spin_inc*dTime; //Spin depends on vel and spin_inc
 
@@ -42,7 +42,7 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
 
     mData.angle += mData.spin;
 
-}
+}*/
 
 //Updates the velocity only in the components x and z
 void LAPAL::update2DVelocity(LAPAL::movementData& mData) {

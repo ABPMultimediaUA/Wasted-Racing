@@ -50,6 +50,6 @@ void MoveComponent::changeAccInc(float n) {
     mData.dAcc = n;
 }
 
-void MoveComponent::changeSpinIncrement(float n) {
-    mData.spin_inc = n;
+void MoveComponent::changeAngle(float n) {
+    mData.angle = n;
 }
