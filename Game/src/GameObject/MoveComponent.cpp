@@ -32,6 +32,7 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateAccDif(mData, mass);
     LAPAL::updateVelDif(mData, dTime);
     LAPAL::update3DVelocity(mData);
+    LAPAL::correctTerrainCollision(terrain, position);
     
    
     auto trans = getGameObject().getTransformData();
@@ -49,7 +50,7 @@ void MoveComponent::update(float dTime) {
     system("clear");
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
     std::cout << " VEL X " << mData.vel3d.x << " VEL Z " << mData.vel3d.z << std::endl;
-    std::cout << " INCR ANGLE " << mData.angInc << std::endl;
+    std::cout << " INCR ANGLE " << mData.spin << std::endl;
     std::cout << " ANGULO GIRO " << mData.angle << std::endl;
     std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
     std::cout << " Aceleración " << mData.acc << std::endl;
@@ -75,13 +76,9 @@ void MoveComponent::changeSpinIncrement(float n) {
 }
 
 void MoveComponent::isMoving(bool m){
-    (mData.mov = m);
+    mData.mov = m;
 }
 
-void MoveComponent::changeDir(int i){
-    mData.dir = i;
-}
-
-void MoveComponent::changeAngleInc(float i){
-    mData.angInc = i;
+void MoveComponent::isSpinning(bool s){
+    mData.spi = s;
 }

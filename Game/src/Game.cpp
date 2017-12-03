@@ -217,17 +217,15 @@ void addObjects(){
     //===============================================================
     LAPAL::movementData mData;
     mData.vel = 0;
-    mData.max_vel = 5;
+    mData.max_vel = 2.5;
     mData.acc = 0;
-    mData.max_acc = 1;
+    mData.max_acc = 0.5;
     mData.dAcc = 0;
     mData.angle = 0;
     mData.spin = 0;
-    mData.spin_inc = 0.1;
+    mData.spin_inc = 0.00001;
     mData.max_spin = 0.01;
     mData.mov = false;
-    mData.dir = 0;
-    mData.angInc = 0;
 
     std::shared_ptr<IComponent> moveCP = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, 1);
 
