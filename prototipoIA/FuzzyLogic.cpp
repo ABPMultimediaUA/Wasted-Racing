@@ -315,10 +315,13 @@ float FuzzyLogic::acelerar_frenar(std::vector<VObject*> array, float direction, 
 		none =  glm::min(glm::max(glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)), glm::max(obs_mediumRange,obs_farRange)); //No aumentar la velocidad cuando estamos en el rumbo de colisión pero están lejos o a media distancia
 		braking = glm::min(glm::max(glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)), obs_closeRange);; //Frenar cuando vamos en rumbo de colisión y están cerca los objetos
 
+		accelerating = 1.f;
+		none = 0.f;
+		braking = 0.f;
 
 		std::cout<<"Min_value: "<<min_value<<std::endl;
 		std::cout<<"Values: "<<accelerating<<","<<none<<","<<braking<<std::endl;
-
+		std::cout<<"Values objects: "<<obs_left<<","<<obs_center<<","<<obs_right<<std::endl;
 
 	//if there are no objects to collide with
 	}else{
