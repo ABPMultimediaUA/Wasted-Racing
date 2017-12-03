@@ -23,7 +23,7 @@ void MoveComponent::update(float dTime) {
     auto position = getGameObject().getTransformData().position;
 
     LAPAL::updateLinearVelocity(mData, dTime);
-    //LAPAL::updateSpin(mData, dTime);
+    LAPAL::updateSpin(mData, dTime);
     LAPAL::update2DVelocity(mData);
     LAPAL::updateFrictionForce(mData, terrain, mass, 9.8, position);
     LAPAL::updateGravityForce(mData, mass, 9.8, terrain, position);
