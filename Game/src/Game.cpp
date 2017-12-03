@@ -249,6 +249,7 @@ void addObjects(){
     mData.max_spin = 0.01;
     mData.mov = false;
     mData.dir = 0;
+    mData.angInc = 0;
 
     std::shared_ptr<IComponent> moveCP = std::make_shared<MoveComponent>(*ob2.get(), mData, 1);
     ob2.get()->addComponent(moveCP);

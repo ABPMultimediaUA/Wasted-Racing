@@ -54,9 +54,9 @@ void advanceDownI(EventData eData) {
     comp->changeDir(1);
 }
 void advanceUpI(EventData eData) {
-   auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   comp->changeAccInc(0.0);
-   comp->isMoving(false);
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp->changeAccInc(0.0);
+    comp->isMoving(false);
 }
 void brakeDownI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
@@ -72,20 +72,25 @@ void brakeUpI(EventData eData) {
 void turnLeftDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
    // comp->changeSpinIncrement(0.1);
+   comp->changeAngleInc(0.01);
    comp->isMoving(true);
 }
 void turnLeftUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
   //  comp->changeSpinIncrement(0.0);
-  comp->isMoving(false);
+    comp->changeAngleInc(0);
+    comp->isMoving(false);
+
 }
 void turnRightDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
     //comp->changeSpinIncrement(-0.1);
+    comp->changeAngleInc(-0.01);
     comp->isMoving(true);
 }
 void turnRightUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp->changeSpinIncrement(0.0);
+    //comp->changeSpinIncrement(0.0);
+    comp->changeAngleInc(0);
     comp->isMoving(false);
 }

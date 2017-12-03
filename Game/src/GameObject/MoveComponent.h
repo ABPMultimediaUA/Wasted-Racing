@@ -29,6 +29,8 @@ public:
     void changeSpinIncrement(float n);
 	void isMoving(bool m);
 	void changeDir(int i);
+	void changeAngleInc(float i);
+
 
 private:
 

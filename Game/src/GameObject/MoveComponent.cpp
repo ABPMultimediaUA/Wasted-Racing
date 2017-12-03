@@ -32,7 +32,11 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateVelDif(mData, dTime);
     LAPAL::update3DVelocity(mData);
 
-    std::cout << mData.vel3d.x << " | " << mData.vel3d.z << " dAcc " << mData.dAcc << " vel " << mData.vel << " Acc " << mData.acc  << "movement " << mData.mov << std::endl;
+    std::cout << " VEL X " << mData.vel3d.x << " VEL Z " << mData.vel3d.z << std::endl;
+    std::cout << " INCR ANGLE " << mData.angInc << std::endl;
+    std::cout << " ANGULO GIRO " << mData.angle << std::endl;
+    std::cout << " Aceleración " << mData.acc << std::endl;
+    std::cout << " Velocidad " << mData.vel << std::endl;
 
 
     auto trans = getGameObject().getTransformData();
@@ -62,4 +66,8 @@ void MoveComponent::isMoving(bool m){
 
 void MoveComponent::changeDir(int i){
     mData.dir = i;
+}
+
+void MoveComponent::changeAngleInc(float i){
+    mData.angInc = i;
 }

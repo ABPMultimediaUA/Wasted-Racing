@@ -12,6 +12,7 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime) 
         if(mData.dir == 1){//we check the movement direction
             if (mData.acc <= 0 && mData.mov == false){
             mData.acc = 0;
+            mData.dir = 0;
         }
             else{
                 mData.acc = mData.acc - 0.1;
@@ -20,6 +21,7 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime) 
         else if(mData.dir == -1) {
             if (mData.acc >= 0 && mData.mov == false){
             mData.acc = 0;
+            mData.dir = 0;
         }
             else{
                 mData.acc = mData.acc + 0.1;
@@ -37,13 +39,15 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime) 
     }
 
     //Update velocity
+    
     mData.vel += mData.acc*dTime; 
 
     //Check velocity limits 
     if(abs(mData.vel)>abs(mData.max_vel)){
         mData.vel = copysign(mData.max_vel, mData.vel);
-    }
 
+    }
+    
 }
 
 //Checks 2D collision between circles
@@ -56,20 +60,25 @@ bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& rad
 //Updates all spin related variables
 void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
 
-    mData.spin += mData.vel*mData.spin_inc*dTime; //Spin depends on vel and spin_inc
+ /*   mData.spin += mData.vel*mData.spin_inc*dTime; //Spin depends on vel and spin_inc
 
     if(abs(mData.spin)>abs(mData.max_spin)){
         mData.spin = copysign(mData.max_spin, mData.spin);
     }
 
     mData.angle += mData.spin;
+    */
 
 }
 
 //Updates the velocity only in the components x and z
 void LAPAL::update2DVelocity(LAPAL::movementData& mData) {
-    mData.vel2d.x = mData.vel*cos(mData.angle);
-    mData.vel2d.z = mData.vel*sin(mData.angle);
+
+    mData.angle += mData.angInc;
+
+        mData.vel2d.x = mData.vel*cos(mData.angle);
+        mData.vel2d.z = mData.vel*sin(mData.angle);
+
 }
 
 //Assuming there's collision, changes velocity of every object after collision
