@@ -39,9 +39,33 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime) 
     }
 
     //Update velocity
-    
-    mData.vel += mData.acc*dTime; 
 
+    if(mData.dAcc == 0){
+        if(mData.dir == 1){//we check the movement direction
+            if (mData.acc <= 0 && mData.mov == false){
+            mData.vel = 0;
+            mData.dir = 0;
+        }
+            else{
+                mData.vel = mData.vel - 0.1;
+            }
+        }
+        else if(mData.dir == -1) {
+            if (mData.acc >= 0 && mData.mov == false){
+            mData.vel = 0;
+            mData.dir = 0;
+        }
+            else{
+                mData.vel = mData.vel + 0.1;
+            }
+        }
+    }
+    else{
+        mData.vel += mData.acc*dTime; 
+
+    }
+    
+    
     //Check velocity limits 
     if(abs(mData.vel)>abs(mData.max_vel)){
         mData.vel = copysign(mData.max_vel, mData.vel);
@@ -290,10 +314,17 @@ void LAPAL::updateVelDif(LAPAL::movementData& mData, const float& dTime){
 //Updates the velocity in a 3D world
 void LAPAL::update3DVelocity(LAPAL::movementData& mData){
 
-    mData.vel3d.x = mData.vel2d.x + mData.velDif.x;
-    mData.vel3d.y = mData.vel2d.y + mData.velDif.y;
-    mData.vel3d.z = mData.vel2d.z + mData.velDif.z; 
-    
+    if(mData.vel == 0){
+        mData.vel3d.x = 0;
+        mData.vel3d.y = 0;
+        mData.vel3d.z = 0; 
+    }
+    else{
+        mData.vel3d.x = mData.vel2d.x + mData.velDif.x;
+        mData.vel3d.y = mData.vel2d.y + mData.velDif.y;
+        mData.vel3d.z = mData.vel2d.z + mData.velDif.z; 
+    }
+ 
 }
 
 
