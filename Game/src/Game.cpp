@@ -169,7 +169,7 @@ void addObjects(){
     auto ob1 = ObjectManager::getInstance().createObject(id, transform);
     id = 5;
     transform.position = glm::vec3(20,0,20);
-    transform.rotation = glm::vec3(45,45,45);
+    transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(0.5,0.5,0.5);
     auto ob2 = ObjectManager::getInstance().createObject(id, transform);
     id = 6;
@@ -184,7 +184,7 @@ void addObjects(){
     auto ob4 = ObjectManager::getInstance().createObject(id, transform);
     id = 8;
     transform.position = glm::vec3(60,0,60);
-    transform.rotation = glm::vec3(0,0,0);
+    transform.rotation = glm::vec3(45,45,45);
     transform.scale    = glm::vec3(1,1,1);
     auto ob5 = ObjectManager::getInstance().createObject(id, transform);
 
@@ -211,7 +211,7 @@ void addObjects(){
     //===============================================================
     LAPAL::movementData mData;
     mData.vel = 0;
-    mData.max_vel = 100;
+    mData.max_vel = 50;
     mData.acc = 0;
     mData.max_acc = 10;
     mData.dAcc = 0;
@@ -230,7 +230,6 @@ void addObjects(){
     //===============================================================
     std::shared_ptr<IComponent> cameraCP = RenderManager::getInstance().createCameraRenderComponent(*ob2.get());
 
-
     //===============================================================
     // Update to distribute all creation events
     //===============================================================
@@ -240,6 +239,6 @@ void addObjects(){
     // Split renderManager static QuadTree
     //===============================================================
     RenderManager::getInstance().splitQuadTree();
-    RenderManager::getInstance().getComponentTree().debugStructure(1);
+    //RenderManager::getInstance().getComponentTree().debugStructure(1);
     
 }

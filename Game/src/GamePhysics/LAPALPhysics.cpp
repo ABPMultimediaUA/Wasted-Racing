@@ -42,21 +42,21 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime) 
 
     if(mData.dAcc == 0){
         if(mData.dir == 1){//we check the movement direction
-            if (mData.acc == 0 && mData.mov == false){
-            mData.acc = 0;
+            if (mData.acc <= 0 && mData.mov == false){
+            mData.vel = 0;
             mData.dir = 0;
         }
             else{
-                mData.acc = mData.acc - 0.1;
+                mData.vel = mData.vel - 0.1;
             }
         }
         else if(mData.dir == -1) {
             if (mData.acc >= 0 && mData.mov == false){
-            mData.acc = 0;
+            mData.vel = 0;
             mData.dir = 0;
         }
             else{
-                mData.acc = mData.acc + 0.1;
+                mData.vel = mData.vel + 0.1;
             }
         }
     }
