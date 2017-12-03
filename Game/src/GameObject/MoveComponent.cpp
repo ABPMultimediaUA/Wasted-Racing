@@ -5,7 +5,6 @@
 
 //Initilizer
 void MoveComponent::init() {
-
 }
 
 //Update
@@ -23,7 +22,7 @@ void MoveComponent::update(float dTime) {
     auto position = getGameObject().getTransformData().position;
 
     LAPAL::updateLinearVelocity(mData, dTime);
-   // LAPAL::updateSpin(mData, dTime);
+    LAPAL::updateSpin(mData, dTime);
     LAPAL::update2DVelocity(mData);
     LAPAL::updateFrictionForce(mData, terrain, mass, 9.8, position);
     LAPAL::updateGravityForce(mData, mass, 9.8, terrain, position);
@@ -31,17 +30,22 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateAccDif(mData, mass);
     LAPAL::updateVelDif(mData, dTime);
     LAPAL::update3DVelocity(mData);
-
+    /*
     std::cout << " VEL X " << mData.vel3d.x << " VEL Z " << mData.vel3d.z << std::endl;
     std::cout << " INCR ANGLE " << mData.angInc << std::endl;
     std::cout << " ANGULO GIRO " << mData.angle << std::endl;
     std::cout << " Aceleración " << mData.acc << std::endl;
     std::cout << " Velocidad " << mData.vel << std::endl;
-
+    */
+    //auto obj = getGameObject();
+    //std::cout << &obj << std::endl;
 
     auto trans = getGameObject().getTransformData();
     trans.position += mData.vel3d;
-    trans.position = mData.vel3d;
+    getGameObject().setTransformData(trans);
+    //std::cout << trans.position.x << " " << trans.position.z << std::endl;
+     
+
     auto id = getGameObject().getId();
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
 
