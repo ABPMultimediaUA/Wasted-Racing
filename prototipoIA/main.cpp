@@ -328,12 +328,19 @@ int main()
 		s.detectFieldVision(velocity, aux);
 
 		float giroPorcentaje = FuzzyLogic::girar(array, aux, 100.0f, s.a, s.b, maxRadius);
+		float aceleraPorcentaje = FuzzyLogic::acelerar_frenar(array, giroPorcentaje, MOVEMENT_SPEED);
 
 		//float giroPorcentaje = 0.0f;
 		//ROTATE AND MOVE CONDITIONALLY
 		if(receiver.IsKeyDown(irr::KEY_KEY_F)){	
 			//ROTATE
 			anglePlayer += giroPorcentaje * ROTATE_SPEED;
+
+			//CHANGE ACCELERATION
+			if(MOVEMENT_SPEED <= 100.f){
+				MOVEMENT_SPEED += aceleraPorcentaje*ACCELERATION_SPEED;
+			}
+			
 
 			//std::cout<<"Angulo: "<<anglePlayer<<" con porcentaje "<<giroPorcentaje<<std::endl;
 

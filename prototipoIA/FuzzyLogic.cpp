@@ -1,7 +1,18 @@
 #include "FuzzyLogic.h"
 #include <iostream>
 
+
+
 //Decides where to turn and in which grade (with a percentage of 0 to 1)
+
+/*//APARTADO DE MEJORAS//////
+>Decidir si girar según los enemigos cercanos
+>Diferenciar entre tipos de objetos
+>Tener en cuenta físicas del terreno
+>Personalidad agresiva o precavida
+
+
+//---------------------------*/
 float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float distance, float a, float b, float maxR)
 {	
 	//APROXIMATION:
@@ -150,7 +161,7 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 
 		//Real Fuzzy Logic - Cheap aproximation with angles, tangents and regret
 		case 3:
-			float steeringNone, steeringLeft, steeringRight;
+			float steeringNone = 0.0f, steeringLeft = 0.0f, steeringRight = 0.0f;
 
 			//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
 			float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
@@ -189,6 +200,10 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 					}
 				}
 
+				//Apply ruleset.
+				/*
+				ORIGINAL APPROACH
+				
 				steeringLeft  = wp_center > obs_center ? wp_center : obs_center;
 				steeringRight = wp_center > obs_left   ? wp_center : obs_left;
 				steeringLeft  = wp_center > obs_right  ? wp_center : obs_right;
@@ -198,6 +213,12 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 				steeringRight = wp_right  > obs_center ? wp_right  : obs_center;
 				steeringRight = wp_right  > obs_left   ? wp_right  : obs_left;
 				steeringNone  = wp_right  > obs_right  ? wp_right  : obs_right;
+				*/
+
+				//New Iteration approach
+				steeringLeft = glm::min( glm::max(wp_left, wp_center), glm::max(obs_center, obs_right) );
+				steeringNone = glm::min( glm::max(1-wp_left, wp_center, 1-wp_right), glm::max(obs_left, obs_right) );
+				steeringRight = glm::min( glm::max(wp_right, wp_center), glm::max(obs_center,obs_left) );
 
 			}else{
 				//ruleset
@@ -217,15 +238,18 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 			centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.95f, -0.05f);
 			centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.05f, 0.95f, 1.0f);
 
-			std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
-			std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
+
 
 			//adding all the centroids and crisping end result
 			float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
-			float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
+			//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
 
-			std::cout<<"Donde vas payo: "<<cx<<std::endl;
-			
+			//-----------_TESTS_-----------
+			//std::cout<<"Donde vas payo: "<<cx<<std::endl;
+			//std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
+			//std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
+			//-----------_TESTS_-----------
+
 			decision = cx;
 
 			break;
@@ -236,68 +260,92 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 
 }
 
-float FuzzyLogic::acelerar_frenar(std::vector<VObject*> array, glm::vec3 waypoint, float a, float b, float maxR)
+
+//Decides wheter the NPC should brake, do nothing or accelerate, and in which proportion. Takes in account where objects are, distance to closest one, and where
+//are is the NPC going.
+/*//APARTADO DE MEJORAS//////
+>Añadir que si tienes que girar demasiado a la derecha o izquierda para llegar a tu objetivo, que frenes
+
+
+//---------------------------*/
+float FuzzyLogic::acelerar_frenar(std::vector<VObject*> array, float direction, float speed)
 {
 	//final turn decision
 	float decision = 0.0f;
 
-	//Markers
-	float INIT_BRAKE = 0;
-	float END_BRAKE = 40;
-	float INIT_NONE1 = 30;
-	float END_NONE1 = 50;
-	float INIT_NONE2 = 100;
-	float END_NONE2 = 120;
-	float INIT_ACCEL = 40;
-	float END_ACCEL = 130;
+	float accelerating, none, braking;
 
-	//Pertenencys
-	float brake_pertenency=0;
-	float accelerate_pertenency=0;
-	float none_pertenency=0;
+	//fuzzifier and inference
+	//---------------GENERALIZE--v-------v----v
+	//waypoints inference
+	float going_left = inferT(direction,0.2f,0.6f,1.0f);
+	float going_center = inferT(direction,-0.3f,0.0f,0.3f);
+	float going_right = inferT(direction,-1.0f,-0.6f,-0.2f);
+
+	//If there are objects to collide with
+	if(array.size()>0 && speed!=0.0f){
+
+		//Previous calculus
+		float atan_obs = 0.0f, min_value = FLT_MAX;
+		for(unsigned i = 0; i<array.size(); i++){
+			atan_obs += (glm::atan(array.at(i)->getA(),array.at(i)->getB()) / 3.14159265358979323846264338327f )/array.size();
+			min_value = glm::min(min_value,array.at(i)->getA()+array.at(i)->getB());
+		}
+
+		//Dividing between speed to get a time of impact
+		min_value = min_value / speed;
+		
+		//collisions
+		//-----------------------------------
+		float obs_left = inferT(atan_obs,0.25f,0.375f,0.51f);
+		float obs_center = inferT(atan_obs,0.2f,0.25f,0.3f);
+		float obs_right = inferT(atan_obs,-0.01f,0.125f,0.25f);
+
+		//-----------------------------------
+
+		//distance
+		//-----------------------------------
+		float obs_closeRange = inferT(min_value,0.0f,0.3f,1.f);
+		float obs_mediumRange = inferT(min_value,0.5f,1.f,2.f);
+		float obs_farRange = inferT(min_value,1.8f,3.f,10.f);
+
+		//Ruleset
+
+		accelerating = glm::min(obs_farRange, glm::max(glm::min(obs_left,1-going_left), glm::min(obs_right, 1-going_right))); //Acelerar cuando no hay objetos cerca y no estamos en su rumbo de colisión
+		none =  glm::min(glm::max(glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)), glm::max(obs_mediumRange,obs_farRange)); //No aumentar la velocidad cuando estamos en el rumbo de colisión pero están lejos o a media distancia
+		braking = glm::min(glm::max(glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)), obs_closeRange);; //Frenar cuando vamos en rumbo de colisión y están cerca los objetos
 
 
+		std::cout<<"Min_value: "<<min_value<<std::endl;
+		std::cout<<"Values: "<<accelerating<<","<<none<<","<<braking<<std::endl;
 
-	//ACCELERATION PERTENENCY
-	/*if(distance>END_ACCEL)
-	{
-		accelerate_pertenency=1;
+
+	//if there are no objects to collide with
+	}else{
+		//Ruleset
+
+		accelerating = 1.0f;
+		none = 0.0f;
+		braking = 0.0f;
+
 	}
-	else if(distance<INIT_ACCEL)
-	{
-		accelerate_pertenency=0;
-	}
-	else
-	{
-		accelerate_pertenency=distance/(END_ACCEL-INIT_ACCEL);
-	}
 
-	//BRAKE_PERTENENCY
-	if(distance>END_BRAKE)
-	{
-		brake_pertenency=0;
-	}
-	else
-	{
-		brake_pertenency=distance/(END_BRAKE-INIT_BRAKE);
-		brake_pertenency=1-brake_pertenency;
-	}
+	//defuzzifier inference
+	//Here we use the centroid point between the defuzzified inferences, to pinpoint the crisp steering value
+	//---------------GENERALIZE---everything
+	float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
 
+	centroidT(&op1_cx, &op1_cy, &op1_area, none, -0.3f, 0.f, 0.3f);
+	centroidT(&op2_cx, &op2_cy, &op2_area, braking, -1.f, -0.99f, -0.05f);
+	centroidT(&op3_cx, &op3_cy, &op3_area, accelerating, 0.2f, 0.99f, 1.0f);
 
-	//defuzzyfier
+	//adding all the centroids and crisping end result
+	float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
+	//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
 
-	if(accelerate_pertenency>none_pertenency)
-	{
-		decision=1;
-	}
-	else if(none_pertenency>accelerate_pertenency && none_pertenency>brake_pertenency)
-	{
-		decision=2;
-	}
-	else if(brake_pertenency>none_pertenency)
-	{
-		decision=0;
-	}*/
+	std::cout<<"Cuanto de rapidiño vas: "<<cx<<std::endl;
+	
+	decision = cx;
 
 	return decision;
 }
@@ -435,8 +483,8 @@ void FuzzyLogic::centroidT(float* cx, float* cy, float* area, float h, float lim
 	}else{
 		if(h == 1.f){
 			
-			float y1 = 0.f, y3 = 0.f, y2 = 0.5f, y4= 0.5f;
-			float x1 = limit1, x3 = limit3, x4 = (limit1+limit2)*0.5f, x2=(limit3+limit2)*0.5f;
+			//float y1 = 0.f, y3 = 0.f, y2 = 0.5f, y4= 0.5f;
+			//float x1 = limit1, x3 = limit3, x4 = (limit1+limit2)*0.5f, x2=(limit3+limit2)*0.5f;
 			
 			float m = 0.5f / ((limit3+limit2)*0.5f-limit1);
 			float m2 = 0.5f / ((limit1+limit2)*0.5f-limit3);

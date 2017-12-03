@@ -10,11 +10,20 @@ using namespace irr;
 class FuzzyLogic{
     public:
 
+        //--------------------------------------------
+        //DRIVING THE NPC NUTS
+        //--------------------------------------------
+
         //Makes NPC turn a fixated angle based on data
         static float girar(std::vector<VObject*>, glm::vec3 waypoint, float distance, float a, float b, float maxR);
         
         //Makes NPC accelerate or brake based on data
-        static float acelerar_frenar(std::vector<VObject*>, glm::vec3 waypoint, float a, float b, float maxR);
+        static float acelerar_frenar(std::vector<VObject*>, float direction, float speed);
+
+
+        //--------------------------------------------
+        //INFERENCE MAGIC
+        //--------------------------------------------
 
         //Inferes the fuzzy value in a line with the type given
         static float inferL(float value, float limit1, float limit2, int type);
