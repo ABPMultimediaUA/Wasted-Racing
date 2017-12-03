@@ -1,10 +1,13 @@
 #include "RenderManager.h"
 #include "../GameFacade/RenderIrrlicht.h"
+#include "../GameObject/ObjectRenderComponent.h"
+#include "../GameObject/CameraRenderComponent.h"
 
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
-void addRenderComponent(EventData data);
+void addObjectRenderComponent(EventData data);
+void addCameraRenderComponent(EventData data);
 
 //==============================================
 // RENDER MANAGER FUNCTIONS
@@ -34,7 +37,8 @@ void RenderManager::init(int engine) {
     x0 = 0; x1 = 10; y0 = 0;  y1 = 10; //Map dimensions
 
     //Bind listeners
-    EventManager::getInstance().addListener(EventListener {EventType::RenderComponent_Create, addRenderComponent});
+    EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Create, addObjectRenderComponent});
+    EventManager::getInstance().addListener(EventListener {EventType::CameraRenderComponent_Create, addCameraRenderComponent});
 }
 
 void RenderManager::update() {
@@ -54,9 +58,43 @@ void RenderManager::splitQuadTree(){
     renderComponentTree.divide();
 }
 
+IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape) {
+
+    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
+
+    return component;
+}
+
+IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGameObject) {
+
+    IComponent::Pointer component = std::make_shared<CameraRenderComponent>(newGameObject);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
+
+    return component;
+}
+
+
 //==============================================
 // DELEGATES
 //============================================== 
-void addRenderComponent(EventData data) {
+void addObjectRenderComponent(EventData data) {
     RenderManager::getInstance().getComponentList().push_back(data.Component);
+    data.Component.get()->init();
+}
+void addCameraRenderComponent(EventData data) {
+    RenderManager::getInstance().setCameraComponent(data.Component);
+    data.Component.get()->init();
 }

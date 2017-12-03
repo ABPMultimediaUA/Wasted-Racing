@@ -25,7 +25,7 @@ void RenderIrrlicht::openWindow(){
 }
 
 void RenderIrrlicht::updateWindow() {
-
+    updateCamera();
 }
 
 void RenderIrrlicht::closeWindow() {
@@ -44,7 +44,18 @@ void RenderIrrlicht::renderDraw() {
 
 void RenderIrrlicht::addCamera() {
     camera = sceneManager->addCameraSceneNode();
+<<<<<<< HEAD
     camera->setPosition(irr::core::vector3df(0,30,-50));
+=======
+    camera->setPosition(irr::core::vector3df(0,0,0));
+}
+
+void RenderIrrlicht::updateCamera() {
+    auto pos = cameraTarget->getTransformData().position;
+
+    camera->setTarget(irr::core::vector3df(pos.x, pos.y, pos.z));
+    camera->setPosition(irr::core::vector3df(pos.x, pos.y, pos.z - 30));
+>>>>>>> 4d694946d46767255572d491b9a8b51f11fe4d1e
 }
 
 void RenderIrrlicht::addLight() {
