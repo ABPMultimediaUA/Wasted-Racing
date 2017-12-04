@@ -65,21 +65,18 @@ std::vector<VObject*> Sensor::getAllFieldVisionObjects(irr::scene::ISceneNode** 
     {
         if(list[i])
         {
-             glm::vec3 p(list[i]->getPosition().X, list[i]->getPosition().Y, list[i]->getPosition().Z);
-            if(!((p.x-position.x)*(p.x-position.x) + (p.z-position.z)*(p.z-position.z) > maxRadius*maxRadius))
-            {
-                relativeP = p - position;
-                if(sensorRight.x*sensorLeft.z != sensorRight.z*sensorLeft.x) 
-                    b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
-                if(sensorLeft.x != 0){
-                    a = (relativeP.z - b * sensorRight.z) / sensorLeft.z;
-                }
+            glm::vec3 p(list[i]->getPosition().X, list[i]->getPosition().Y, list[i]->getPosition().Z);
+            relativeP = p - position;
+            if(sensorRight.x*sensorLeft.z != sensorRight.z*sensorLeft.x) 
+                b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
+            if(sensorLeft.x != 0){
+                a = (relativeP.z - b * sensorRight.z) / sensorLeft.z;
+            }
 
-                if(a >= 0 && b >= 0)
-                {
-                    VObject* object = new VObject(p, a, b, 1.f, 1);
-                    objects.push_back(object);
-                }
+            if(a >= 0 && b >= 0)
+            {
+                VObject* object = new VObject(p, a, b, 1.f, 1);
+                objects.push_back(object);
             }
         }
     }

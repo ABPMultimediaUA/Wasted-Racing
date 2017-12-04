@@ -192,9 +192,9 @@ int main()
 	
 	const f32 pi = 3.141592653f;
 	
-	const f32 ACCELERATION_SPEED = 4.1f;
+	const f32 ACCELERATION_SPEED = 0.5f;
 
-	const f32 BRAKE_SPEED = -0.5f;
+	const f32 BRAKE_SPEED = 5.f;
 
 
 	//Previous calculus
@@ -354,7 +354,7 @@ int main()
 		s.detectFieldVision(velocity, aux);
 
 		float giroPorcentaje = FuzzyLogic::girar(array, aux, maxSpeed, s.a, s.b, maxRadius);
-		float aceleraPorcentaje = FuzzyLogic::acelerar_frenar(array, giroPorcentaje, MOVEMENT_SPEED);
+		float aceleraPorcentaje = FuzzyLogic::acelerar_frenar(array, giroPorcentaje, maxSpeed, s.b, s.a);
 
 		std::cout<<"ACELERA FRENA: "<<aceleraPorcentaje<<"\n";
 
@@ -365,10 +365,15 @@ int main()
 			anglePlayer += giroPorcentaje * ROTATE_SPEED;
 
 			//CHANGE ACCELERATION
-			if(MOVEMENT_SPEED <= maxSpeed){
+			if(MOVEMENT_SPEED <= maxSpeed && aceleraPorcentaje>0){
 				MOVEMENT_SPEED += aceleraPorcentaje*ACCELERATION_SPEED;
 			}
-			
+			if(aceleraPorcentaje<0 && MOVEMENT_SPEED>=0.f){
+				MOVEMENT_SPEED += aceleraPorcentaje*BRAKE_SPEED;
+				if(MOVEMENT_SPEED < 0){
+					MOVEMENT_SPEED = 0;
+				}
+			}
 
 			//std::cout<<"Angulo: "<<anglePlayer<<" con porcentaje "<<giroPorcentaje<<std::endl;
 
@@ -377,7 +382,7 @@ int main()
 			//MOVE
 			nodePosition += irr::core::vector3df(velocity.x,velocity.y,velocity.z);
 
-			std::cout<<"Speed: "<<velocity.x<<","<<velocity.y<<","<<velocity.z<<std::endl;
+			std::cout<<"Speed: "<<MOVEMENT_SPEED<<std::endl;
 		}
 
 
