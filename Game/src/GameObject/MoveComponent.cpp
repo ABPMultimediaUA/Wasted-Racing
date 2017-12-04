@@ -40,6 +40,7 @@ void MoveComponent::update(float dTime) {
     ///*
     system("clear");
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
+    std::cout << " POS Y " << trans.position.y << std::endl;
     std::cout << " VEL X " << mData.vel3d.x << " VEL Z " << mData.vel3d.z << std::endl;
     std::cout << " INCR ANGLE " << mData.spin << std::endl;
     std::cout << " ANGULO GIRO " << mData.angle << std::endl;

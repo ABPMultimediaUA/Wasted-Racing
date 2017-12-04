@@ -194,6 +194,12 @@ void addObjects(){
     transform.scale    = glm::vec3(1,1,1);
     auto ob6 = ObjectManager::getInstance().createObject(id, transform);
 
+    id = 10;
+    transform.position = glm::vec3(500,38,0);
+    transform.rotation = glm::vec3(0,0,10);
+    transform.scale    = glm::vec3(50,0.01,50);
+    auto ob7 = ObjectManager::getInstance().createObject(id, transform);
+
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
     //===============================================================
@@ -206,6 +212,8 @@ void addObjects(){
     //std::shared_ptr<IComponent> cp4 = RenderManager::getInstance().createObjectRenderComponent(*ob4.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp5 = RenderManager::getInstance().createObjectRenderComponent(*ob5.get(), ObjectRenderComponent::Shape::Cube);
+
+    std::shared_ptr<IComponent> cp6 = RenderManager::getInstance().createObjectRenderComponent(*ob7.get(), ObjectRenderComponent::Shape::Cube);
 
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
@@ -229,6 +237,7 @@ void addObjects(){
     //===============================================================
     // ADD TERRAIN COMPONENT
     //===============================================================
+    EventManager::getInstance().update();
     LAPAL::plane3f terrain;
     terrain.p1 = (LAPAL::vec3f(-250,0,250));
     terrain.p2 = (LAPAL::vec3f(250,0,250));
@@ -238,6 +247,17 @@ void addObjects(){
     terrain.incAngle = 0;
     terrain.rotAngle = 0;
     std::shared_ptr<IComponent> terrainCP1 = PhysicsManager::getInstance().createTerrainComponent(*ob1.get(), terrain);
+    terrain.p1 = (LAPAL::vec3f(-750,80,250));
+    terrain.p2 = (LAPAL::vec3f(750,80,250));
+    terrain.p3 = (LAPAL::vec3f(750,0,-250));
+    terrain.p4 = (LAPAL::vec3f(-750,0,-250));
+    terrain.fric = 0.2;
+    terrain.incAngle = -0.17;
+    terrain.rotAngle = 0;
+    std::shared_ptr<IComponent> terrainCP2 = PhysicsManager::getInstance().createTerrainComponent(*ob7.get(), terrain);
+    auto terrainCP2_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP2);
+    uint16_t idd = 4;
+    terrainCP2_0.get()->connectPrevNext(idd);
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
