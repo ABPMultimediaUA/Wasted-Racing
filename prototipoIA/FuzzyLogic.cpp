@@ -268,7 +268,7 @@ float FuzzyLogic::girar(std::vector<VObject*> array, glm::vec3 waypoint, float d
 
 
 //---------------------------*/
-float FuzzyLogic::acelerar_frenar(std::vector<VObject*> array, float direction, float speed)
+float FuzzyLogic::acelerar_frenar(std::vector<VObject*> array, float direction, float speed, float b_w, float a_w)
 {
 	//final turn decision
 	float decision = 0.0f;
@@ -278,9 +278,14 @@ float FuzzyLogic::acelerar_frenar(std::vector<VObject*> array, float direction, 
 	//fuzzifier and inference
 	//---------------GENERALIZE--v-------v----v
 	//waypoints inference
-	float going_left = inferT(direction,0.2f,0.6f,1.0f);
+	float going_left = inferL(direction,0.2f,1.0f,0);
 	float going_center = inferT(direction,-0.3f,0.0f,0.3f);
-	float going_right = inferT(direction,-1.0f,-0.6f,-0.2f);
+	float going_right = inferL(direction,-1.0f,-0.2f,1);
+
+	//Correlation between how much more do I need to rotate to arrive and my current speed
+	/*float more_turn_left = inferT();
+	float no_more_turn = inferT();
+	float more_turn_right = inferT();*/
 
 	//If there are objects to collide with
 	if(array.size()>0 && speed!=0.0f){
@@ -297,27 +302,43 @@ float FuzzyLogic::acelerar_frenar(std::vector<VObject*> array, float direction, 
 		
 		//collisions
 		//-----------------------------------
-		float obs_left = inferT(atan_obs,0.25f,0.375f,0.51f);
-		float obs_center = inferT(atan_obs,0.2f,0.25f,0.3f);
-		float obs_right = inferT(atan_obs,-0.01f,0.125f,0.25f);
+		float obs_left = inferL(atan_obs,0.3f,0.51f, 0);
+		float obs_center = inferT(atan_obs,0.1f,0.25f,0.4f);
+		float obs_right = inferL(atan_obs,-0.01f,0.2f, 1);
 
 		//-----------------------------------
 
 		//distance
 		//-----------------------------------
-		float obs_closeRange = inferT(min_value,0.0f,0.3f,1.f);
+		float obs_closeRange = inferL(min_value,0.0f,1.f, 1);
 		float obs_mediumRange = inferT(min_value,0.5f,1.f,2.f);
-		float obs_farRange = inferT(min_value,1.8f,3.f,10.f);
+		float obs_farRange = inferL(min_value,1.8f,10.f,1);
 
 		//Ruleset
 
-		accelerating = glm::max(obs_farRange, glm::max(glm::min(obs_left,1-going_left), glm::min(obs_right, 1-going_right))); //Acelerar cuando no hay objetos cerca y no estamos en su rumbo de colisión
-		none =  glm::min(glm::max(glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)), glm::max(obs_mediumRange,obs_farRange)); //No aumentar la velocidad cuando estamos en el rumbo de colisión pero están lejos o a media distancia
-		braking = glm::min(glm::max(glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)), obs_closeRange);; //Frenar cuando vamos en rumbo de colisión y están cerca los objetos
+		accelerating = glm::min(
+							obs_farRange, 
+							glm::max(
+								glm::min(obs_left,1-going_left), glm::min(obs_right, 1-going_right)
+							)
+					   ); //Acelerar cuando no hay objetos cerca y no estamos en su rumbo de colisión
+
+		none =  glm::min(
+					glm::max(
+						glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)
+					), 
+					glm::max(obs_mediumRange,obs_farRange)
+				); //No aumentar la velocidad cuando estamos en el rumbo de colisión pero están lejos o a media distancia
+
+		braking = glm::min(
+						glm::max(
+							glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)
+						), 
+						obs_closeRange
+				); //Frenar cuando vamos en rumbo de colisión y están cerca los objetos
 
 		std::cout<<"Min_value: "<<min_value<<std::endl;
-		std::cout<<"Values: "<<accelerating<<","<<none<<","<<braking<<std::endl;
-		std::cout<<"Values objects: "<<obs_left<<","<<obs_center<<","<<obs_right<<std::endl;
+		std::cout<<"Decision values: "<<accelerating<<","<<none<<","<<braking<<std::endl;
 	
 		if(accelerating == 0 && none == 0 && braking == 0){
 			accelerating = 1.f;

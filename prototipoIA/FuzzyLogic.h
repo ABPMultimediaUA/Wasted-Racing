@@ -18,7 +18,7 @@ class FuzzyLogic{
         static float girar(std::vector<VObject*>, glm::vec3 waypoint, float distance, float a, float b, float maxR);
         
         //Makes NPC accelerate or brake based on data
-        static float acelerar_frenar(std::vector<VObject*>, float direction, float speed);
+        static float acelerar_frenar(std::vector<VObject*>, float direction, float speed, float b_w, float a_w);
 
 
         //--------------------------------------------
