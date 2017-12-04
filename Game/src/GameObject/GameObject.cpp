@@ -13,7 +13,7 @@ void GameObject::update(float dTime) {
 }
 
 //Add component
-void GameObject::addComponent(IComponent* component) {
+void GameObject::addComponent(IComponent::Pointer component) {
     components.push_back(component);
 } 
 

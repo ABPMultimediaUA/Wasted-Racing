@@ -249,7 +249,7 @@ void addObjects(){
     //===============================================================
     // Split renderManager static QuadTree
     //===============================================================
-    RenderManager::getInstance().splitQuadTree();
-    RenderManager::getInstance().getComponentTree().debugStructure(1);
+    //RenderManager::getInstance().splitQuadTree();
+    //RenderManager::getInstance().getComponentTree().debugStructure(1);
     
 }

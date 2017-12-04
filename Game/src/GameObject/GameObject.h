@@ -9,10 +9,6 @@
 
 #include "../GameEvent/EventManager.h"
 
-class IComponent;
-
-struct TransformationData;
-
 class GameObject {
 
 public:
@@ -56,7 +52,7 @@ public:
 	void update(float dTime);
 
 	//Add component
-	void addComponent(IComponent* component);
+	void addComponent(IComponent::Pointer component);
 
 	//Get component
 	
@@ -80,6 +76,6 @@ private:
 	TransformationData transformData;
 
 	//Object Components
-	std::list<IComponent*> components;
+	std::list<IComponent::Pointer> components;
 
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IComponent.h"
+#include "GameObject.h"
 
 class WaypointComponent : public IComponent {
     private:

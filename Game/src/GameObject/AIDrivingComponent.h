@@ -20,6 +20,7 @@ class AIDrivingComponent : public IAIComponent{
         float frameDeltaTime;
 
         float seconds;
+        
     public:
         AIDrivingComponent(GameObject& newGameObject);
 

@@ -1,4 +1,6 @@
 #include "AIDrivingComponent.h"
+#include "WaypointComponent.h"
+#include <memory>
 
 AIDrivingComponent::AIDrivingComponent(GameObject& newGameObject) : IAIComponent(newGameObject)
  {
@@ -74,12 +76,15 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 		*/
 	}
 
-	/*
-    if(actualWayPoint->checkNext(pos, nextPos))
-    {
-        actualWayPoint = actualWayPoint->getNext();
+	std::shared_ptr<WaypointComponent> wpComponent = actualWayPoint->getComponent<WaypointComponent>();
+	//auto wpComponent = actualWayPoint->getComponent<WaypointComponent>();
+	if( wpComponent != nullptr ){
+    	if(wpComponent->checkNext(pos, nextPos))
+    	{
+			actualWayPoint = wpComponent->getNext();
+		}
     }
-	*/
+	
 
     return nextPos;
 }
