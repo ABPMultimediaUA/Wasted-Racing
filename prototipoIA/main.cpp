@@ -179,7 +179,8 @@ int main()
 
 	//OWN VARIABLES
 	//----------------------------------------------------
-	float MOVEMENT_SPEED = 162.0f;
+	float MOVEMENT_SPEED = 0.0f;
+	float maxSpeed = 100.f;
 	const f32 CUBE_SPEED = 50.f;
 	const f32 ROTATE_SPEED = 0.10f;
 
@@ -191,7 +192,7 @@ int main()
 	
 	const f32 pi = 3.141592653f;
 	
-	const f32 ACCELERATION_SPEED = 0.1f;
+	const f32 ACCELERATION_SPEED = 4.1f;
 
 	const f32 BRAKE_SPEED = -0.5f;
 
@@ -212,13 +213,36 @@ int main()
 	WayPoint* w3 = new WayPoint(glm::vec3(1000.f, 0.f, 500.f), 20.f);
 	WayPoint* w4 = new WayPoint(glm::vec3(320.f, 0.f, 500.f), 20.f);
 	WayPoint* w5 = new WayPoint(glm::vec3(1300.f, 0.f, 250.f), 20.f);
-	WayPoint* w6 = new WayPoint(glm::vec3(200.f, 0.f, 250.f), 20.f);
+	WayPoint* w6 = new WayPoint(glm::vec3(0.f, 0.f, 250.f), 20.f);
+
 	p->addWayPoint(w1);
-	p->addWayPoint(w3);
-	p->addWayPoint(w5);
-	p->addWayPoint(w2);
-	p->addWayPoint(w4);
-	p->addWayPoint(w6);
+	w1->addSubNodes(glm::vec3(100.f, 0.f, -50.f), 20.f, 0);
+	w1->addSubNodes(glm::vec3(300.f, 0.f, 100.f), 20.f, 0);
+	w1->addSubNodes(glm::vec3(1000.f, 0.f, 500.f), 20.f, 1);
+	w1->addSubNodes(glm::vec3(1300.f, 0.f, 250.f), 20.f, 2);
+	w1->addSubNodes(glm::vec3(1000.f, 0.f, 10.f), 20.f, 3);
+	w1->addSubNodes(glm::vec3(320.f, 0.f, 500.f), 20.f, 4);
+	w1->addSubNodes(glm::vec3(0.f, 0.f, 250.f), 20.f, 5);
+	w1->addSubNodes(glm::vec3(0.f, 0.f, 250.f), 20.f, 6);
+	
+	
+	scene::ISceneNode* node4 = smgr->addCubeSceneNode();
+	if (node4)
+	{
+		node4->setPosition(core::vector3df(300.f, 0.f, 100.f));
+		node4->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		node4->setMaterialFlag(video::EMF_LIGHTING, false);
+		node4->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
+
+	scene::ISceneNode* node3 = smgr->addCubeSceneNode();
+	if (node3)
+	{
+		node3->setPosition(core::vector3df(100.f, 0.f, -50.f));
+		node3->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
+		node3->setMaterialFlag(video::EMF_LIGHTING, false);
+		node3->setScale(core::vector3df(0.4f,3.0f,0.4f));
+	}
     scene::ISceneNode* way1 = smgr->addCubeSceneNode();
 	if (way1)
 	{
@@ -227,6 +251,7 @@ int main()
 		way1->setMaterialFlag(video::EMF_LIGHTING, false);
 		way1->setScale(core::vector3df(0.4f,3.0f,0.4f));
 	}
+	
     scene::ISceneNode* way2 = smgr->addCubeSceneNode();
 	if (way2)
 	{
@@ -243,7 +268,7 @@ int main()
 		way3->setMaterialFlag(video::EMF_LIGHTING, false);
 		way3->setScale(core::vector3df(0.4f,3.0f,0.4f));
 	}
-	scene::ISceneNode* way4 = smgr->addCubeSceneNode();
+	    scene::ISceneNode* way4 = smgr->addCubeSceneNode();
 	if (way4)
 	{
 		way4->setPosition(core::vector3df(320,0,500));
@@ -262,11 +287,12 @@ int main()
     	scene::ISceneNode* way6 = smgr->addCubeSceneNode();
 	if (way6)
 	{
-		way6->setPosition(core::vector3df(200,0,250));
+		way6->setPosition(core::vector3df(0,0,250));
 		way6->setMaterialTexture(0, driver->getTexture("media/t351sml.jpg"));
 		way6->setMaterialFlag(video::EMF_LIGHTING, false);
 		way6->setScale(core::vector3df(0.4f,3.0f,0.4f));
 	}
+
 
 	//Initializing sensor
 	Sensor s(glm::vec3(nodePosition.X,nodePosition.Y,nodePosition.Z), angleRad, maxRadius,-pi/2);
@@ -311,7 +337,7 @@ int main()
 
         
         //PathPlanning assignations
-    	p->setMaxSpeed(100.f);
+    	p->setMaxSpeed(maxSpeed);
         p->setFrame(frameDeltaTime);
         p->setSeconds(0.8f);
     
@@ -327,8 +353,10 @@ int main()
 
 		s.detectFieldVision(velocity, aux);
 
-		float giroPorcentaje = FuzzyLogic::girar(array, aux, 100.0f, s.a, s.b, maxRadius);
+		float giroPorcentaje = FuzzyLogic::girar(array, aux, maxSpeed, s.a, s.b, maxRadius);
 		float aceleraPorcentaje = FuzzyLogic::acelerar_frenar(array, giroPorcentaje, MOVEMENT_SPEED);
+
+		std::cout<<"ACELERA FRENA: "<<aceleraPorcentaje<<"\n";
 
 		//float giroPorcentaje = 0.0f;
 		//ROTATE AND MOVE CONDITIONALLY
@@ -337,7 +365,7 @@ int main()
 			anglePlayer += giroPorcentaje * ROTATE_SPEED;
 
 			//CHANGE ACCELERATION
-			if(MOVEMENT_SPEED <= 100.f){
+			if(MOVEMENT_SPEED <= maxSpeed){
 				MOVEMENT_SPEED += aceleraPorcentaje*ACCELERATION_SPEED;
 			}
 			
