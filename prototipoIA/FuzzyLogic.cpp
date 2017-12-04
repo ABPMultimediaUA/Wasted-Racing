@@ -293,7 +293,7 @@ float FuzzyLogic::acelerar_frenar(std::vector<VObject*> array, float direction, 
 		}
 
 		//Dividing between speed to get a time of impact
-		min_value = min_value / speed;
+		min_value = (min_value >0 && speed > 0) ? min_value / speed : 0.f;
 		
 		//collisions
 		//-----------------------------------
@@ -311,17 +311,19 @@ float FuzzyLogic::acelerar_frenar(std::vector<VObject*> array, float direction, 
 
 		//Ruleset
 
-		accelerating = glm::min(obs_farRange, glm::max(glm::min(obs_left,1-going_left), glm::min(obs_right, 1-going_right))); //Acelerar cuando no hay objetos cerca y no estamos en su rumbo de colisión
+		accelerating = glm::max(obs_farRange, glm::max(glm::min(obs_left,1-going_left), glm::min(obs_right, 1-going_right))); //Acelerar cuando no hay objetos cerca y no estamos en su rumbo de colisión
 		none =  glm::min(glm::max(glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)), glm::max(obs_mediumRange,obs_farRange)); //No aumentar la velocidad cuando estamos en el rumbo de colisión pero están lejos o a media distancia
 		braking = glm::min(glm::max(glm::max(glm::min(obs_left,going_left), glm::min(obs_right, going_right)), glm::min(obs_center,going_center)), obs_closeRange);; //Frenar cuando vamos en rumbo de colisión y están cerca los objetos
-
-		accelerating = 1.f;
-		none = 0.f;
-		braking = 0.f;
 
 		std::cout<<"Min_value: "<<min_value<<std::endl;
 		std::cout<<"Values: "<<accelerating<<","<<none<<","<<braking<<std::endl;
 		std::cout<<"Values objects: "<<obs_left<<","<<obs_center<<","<<obs_right<<std::endl;
+	
+		if(accelerating == 0 && none == 0 && braking == 0){
+			accelerating = 1.f;
+			none = 0.f;
+			braking = 0.f;
+		}
 
 	//if there are no objects to collide with
 	}else{
