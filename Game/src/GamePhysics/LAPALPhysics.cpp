@@ -315,9 +315,25 @@ void LAPAL::updateVelDif(LAPAL::movementData& mData, const float& dTime){
 void LAPAL::update3DVelocity(LAPAL::movementData& mData){
 
     if(mData.vel == 0){
+          if(mData.jump == true){
+              if(mData.vel3d.y<=10){
+                mData.vel3d.y += 1;
+              }
+              else{
+                mData.vel3d.y = mData.vel3d.y;
+                mData.jump = false;
+              }
+             }
+             else{
+                 if(mData.vel3d.y>0){
+                    mData.vel3d.y -= mData.velDif.y;
+                 }
+                 else{
+                    mData.vel3d.y = 0;
+                 }
+             }
         mData.vel3d.x = 0;
-        mData.vel3d.y = 0;
-        mData.vel3d.z = 0; 
+        mData.vel3d.z = 0;    
     }
     else{
         mData.vel3d.x = mData.vel2d.x + mData.velDif.x;
@@ -326,6 +342,7 @@ void LAPAL::update3DVelocity(LAPAL::movementData& mData){
     }
  
 }
+
 
 
 

@@ -30,6 +30,7 @@ public:
 	void isMoving(bool m);
 	void changeDir(int i);
 	void changeAngleInc(float i);
+	void isJumping(bool j);
 
 
 private:

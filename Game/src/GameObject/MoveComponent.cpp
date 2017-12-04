@@ -31,7 +31,6 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateAccDif(mData, mass);
     LAPAL::updateVelDif(mData, dTime);
     LAPAL::update3DVelocity(mData);
-    
    
     auto trans = getGameObject().getTransformData();
     
@@ -47,6 +46,15 @@ void MoveComponent::update(float dTime) {
     std::cout << " ANGULO GIRO " << mData.angle << std::endl;
     std::cout << " Aceleración " << mData.acc << std::endl;
     std::cout << " Velocidad " << mData.vel << std::endl;
+    std::cout << " Gravity force on y " << mData.gravityForce.y << std::endl;
+
+    if (mData.jump == false){
+        std::cout << " No estoy saltando " << std::endl;
+    }
+    else{
+        std::cout << " Sí estoy saltando " << std::endl;
+    }
+    
      
 
     auto id = getGameObject().getId();
@@ -77,4 +85,8 @@ void MoveComponent::changeDir(int i){
 
 void MoveComponent::changeAngleInc(float i){
     mData.angInc = i;
+}
+
+void MoveComponent::isJumping(bool j){
+    mData.jump = j;
 }

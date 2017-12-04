@@ -222,6 +222,7 @@ void addObjects(){
     mData.mov = false;
     mData.dir = 0;
     mData.angInc = 0;
+    mData.jump = false;
 
     std::shared_ptr<IComponent> moveCP = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, 1);
 
