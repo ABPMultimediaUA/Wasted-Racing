@@ -30,20 +30,25 @@ void PhysicsManager::update(const float dTime) {
 
     for(unsigned int i=0; i<movingCharacterList.size(); ++i){
 
-        //Move character
+        //Get components in variables
         auto ourMove = movingCharacterList.at(i).moveComponent.get();
-        ourMove->update(dTime);
-        //Get our collision component
+        auto ourTerr = movingCharacterList.at(i).terrainComponent.get();
         auto ourColl = movingCharacterList.at(i).collisionComponent.get();
 
-        //Check collisions with character
+        //==============================================================================
+        // Move character
+        //==============================================================================
+        ourMove->update(dTime);
+        
+        //==============================================================================
+        // Check collisions with character
+        //==============================================================================
         for(unsigned int j=0; j<collisionComponentList.size(); ++j) {
             CollisionComponent* hisColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList.at(j)).get();
             if( hisColl != ourColl ) { //If the collider is different to the one of ourselves
 
                 bool collision = LAPAL::checkCircleCircleCollision(  ourColl->getGameObject().getTransformData().position, ourColl->getRadius(), 
                                                     hisColl->getGameObject().getTransformData().position, hisColl->getRadius());
-                //std::cout << collision << std::endl;
 
                 if(collision){
 
@@ -51,43 +56,104 @@ void PhysicsManager::update(const float dTime) {
                     auto hisMove = hisColl->getGameObject().getComponent<MoveComponent>();
 
                     if(hisMove == nullptr) {    //If the object doesn't have move component, it's static
-                        float ourMass = ourMove->getMass();
-                        float hisMass = 5;
-
-                        auto ourMData = ourMove->getMovemententData();
-
-                        LAPAL::vec3f ourVel = ourMData.vel2d;
-                        LAPAL::vec3f hisVel = glm::vec3(0,0,0);
-
-                        //Calculate new velocity after collision
-                        LAPAL::calculateElasticCollision(ourVel, ourMass, hisVel, hisMass);
-                        ourMData.vel2d = ourVel;
-
-                        //Calculate new velocity module
-                        float newVel    = -sqrt(ourVel.x*ourVel.x + ourVel.z*ourVel.z);
-                        ourMData.vel    = newVel;
-
-                        //Set new movement
-                        ourMove->setMovementData(ourMData);
+                        
+                        calculateStaticCollision(ourMove);
 
                     }
                     else {  //The object is not static
-
+                        //***** CODE FOR COLLISIONS WHERE BOTH OBJECTS ARE MOVING *****//
                     }
                 }
             }
         }
-    }
 
+        //==============================================================================
+        // Check collisions with terrain
+        //==============================================================================
+        auto terrain    = ourMove->getTerrain();
+        auto ourMData   = ourMove->getGameObject().getTransformData();
+        float radius    = ourColl->getRadius();
+        float distance  = 0;
+
+        //Check if we are out of front bounds
+        distance = LAPAL::distance2DLinePoint(terrain.p1, terrain.p2, ourMData.position);
+        if( distance-radius < 0 ) {
+            if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
+                calculateStaticCollision(ourMove);
+            }
+            else if (distance < 0 ) {
+                ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
+                movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getNext()); //Set new terrain component
+            }
+        }
+        //Check if we are out of right bounds
+        distance = LAPAL::distance2DLinePoint(terrain.p2, terrain.p3, ourMData.position);
+        if( distance-radius < 0 ) {
+            if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
+                calculateStaticCollision(ourMove);
+            }
+            else if (distance < 0 ) {
+                ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
+                movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getRight()); //Set new terrain component
+            }
+        }
+        //Check if we are out of back bounds
+        distance = LAPAL::distance2DLinePoint(terrain.p3, terrain.p4, ourMData.position);
+        if( distance-radius < 0 ) {
+            if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
+                calculateStaticCollision(ourMove);
+            }
+            else if (distance < 0 ) {
+                ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
+                movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getPrev()); //Set new terrain component
+            }
+        }
+        //Check if we are out of left bounds
+        distance = LAPAL::distance2DLinePoint(terrain.p4, terrain.p1, ourMData.position);
+        if( distance-radius < 0 ) {
+            if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
+                calculateStaticCollision(ourMove);
+            }
+            else if (distance < 0 ) {
+                ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
+                movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getLeft()); //Set new terrain component
+            }
+        }
+    }
+}
+
+void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
+
+    float ourMass = ourMove->getMass();
+    float hisMass = 2;
+
+    auto ourMData = ourMove->getMovemententData();
+
+    LAPAL::vec3f ourVel = ourMData.vel2d;
+    LAPAL::vec3f hisVel = glm::vec3(0,0,0);
+
+    //Calculate new velocity after collision
+    LAPAL::calculateElasticCollision(ourVel, ourMass, hisVel, hisMass);
+    ourMData.vel2d = ourVel;
+
+    //Calculate new velocity module
+    float newVel    = -sqrt(ourVel.x*ourVel.x + ourVel.z*ourVel.z);
+    ourMData.vel    = newVel;
+
+    //Set new movement
+    ourMove->setMovementData(ourMData);
+    auto tData = ourMove->getGameObject().getTransformData();
+    tData.position += ourVel+ourVel;
+    ourMove->getGameObject().setTransformData(tData);
 }
 
 void PhysicsManager::close() {
 
 }
 
-IComponent::Pointer PhysicsManager::createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, float newMass) {
+IComponent::Pointer PhysicsManager::createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass) {
 
-    IComponent::Pointer component = std::make_shared<MoveComponent>(newGameObject, newMData, newMass);
+    IComponent::Pointer component = std::make_shared<MoveComponent>(newGameObject, newMData, newPlane, newMass);
 
     newGameObject.addComponent(component);
 

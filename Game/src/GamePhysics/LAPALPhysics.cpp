@@ -306,5 +306,21 @@ void LAPAL::update3DVelocity(LAPAL::movementData& mData){
  
 }
 
+//Calculates the distance between a line defined by two points (l1,l2) and a point (p1)
+float LAPAL::distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1) {
+
+    LAPAL::vec3f lineVec = l2-l1;
+    LAPAL::vec3f circVec = l2-p1;
+
+    float lineVecMod = sqrt(lineVec.x*lineVec.x + lineVec.z*lineVec.z);
+    float circVecMod = sqrt(circVec.x*circVec.x + circVec.z*circVec.z);
+
+    float vectorCos = (lineVec.x*circVec.x + lineVec.z*circVec.z)/(lineVecMod*circVecMod);
+
+    float distance = vectorCos*circVecMod;
+
+    return distance;
+
+}
 
 

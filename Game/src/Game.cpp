@@ -165,7 +165,7 @@ void addObjects(){
     id = 4;
     transform.position = glm::vec3(0,-5,0);
     transform.rotation = glm::vec3(0,0,0);
-    transform.scale    = glm::vec3(100,0.01,100);
+    transform.scale    = glm::vec3(50,0.01,50);
     auto ob1 = ObjectManager::getInstance().createObject(id, transform);
     id = 5;
     transform.position = glm::vec3(20,0,20);
@@ -213,24 +213,6 @@ void addObjects(){
     std::shared_ptr<IComponent> iCP = InputManager::getInstance().createInputComponent(*ob2.get());
 
     //===============================================================
-    // ADD A MOVE COMPONENT TO THE FIRST OBJECT
-    //===============================================================
-    LAPAL::movementData mData;
-    mData.vel = 0;
-    mData.max_vel = 2.5;
-    mData.acc = 0;
-    mData.max_acc = 0.5;
-    mData.dAcc = 0;
-    mData.angle = 0;
-    mData.spin = 0;
-    mData.spin_inc = 0.00001;
-    mData.max_spin = 0.01;
-    mData.mov = false;
-    mData.vel2d = glm::vec3(0,0,0);
-
-    std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, 1);
-
-    //===============================================================
     // ADD A CAMERA COMPONENT TO THE FIRST OBJECT
     //===============================================================
     std::shared_ptr<IComponent> cameraCP = RenderManager::getInstance().createCameraRenderComponent(*ob2.get());
@@ -248,14 +230,32 @@ void addObjects(){
     // ADD TERRAIN COMPONENT
     //===============================================================
     LAPAL::plane3f terrain;
-    terrain.p1 = (LAPAL::vec3f(-100,0,-100));
-    terrain.p2 = (LAPAL::vec3f(100,0,100));
-    terrain.p3 = (LAPAL::vec3f(100,0,-100));
-    terrain.p4 = (LAPAL::vec3f(-100,0,100));
+    terrain.p1 = (LAPAL::vec3f(-250,0,250));
+    terrain.p2 = (LAPAL::vec3f(250,0,250));
+    terrain.p3 = (LAPAL::vec3f(250,0,-250));
+    terrain.p4 = (LAPAL::vec3f(-250,0,-250));
     terrain.fric = 0.2;
     terrain.incAngle = 0;
     terrain.rotAngle = 0;
     std::shared_ptr<IComponent> terrainCP1 = PhysicsManager::getInstance().createTerrainComponent(*ob1.get(), terrain);
+
+    //===============================================================
+    // ADD A MOVE COMPONENT TO THE FIRST OBJECT
+    //===============================================================
+    LAPAL::movementData mData;
+    mData.vel = 0;
+    mData.max_vel = 2.5;
+    mData.acc = 0;
+    mData.max_acc = 0.5;
+    mData.dAcc = 0;
+    mData.angle = 0;
+    mData.spin = 0;
+    mData.spin_inc = 0.00001;
+    mData.max_spin = 0.01;
+    mData.mov = false;
+    mData.vel2d = glm::vec3(0,0,0);
+
+    std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
 
     //===============================================================
     // SETS A MOVING CHARACTER

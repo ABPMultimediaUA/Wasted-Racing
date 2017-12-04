@@ -12,15 +12,6 @@ void MoveComponent::init() {
 //Update
 void MoveComponent::update(float dTime) {
 
-    LAPAL::plane3f terrain;
-    terrain.p1 = (LAPAL::vec3f(-100,0,-100));
-    terrain.p2 = (LAPAL::vec3f(100,0,100));
-    terrain.p3 = (LAPAL::vec3f(100,0,-100));
-    terrain.p4 = (LAPAL::vec3f(-100,0,100));
-    terrain.fric = 0.2;
-    terrain.incAngle = 0;
-    terrain.rotAngle = 0;
-
     auto position = getGameObject().getTransformData().position;
 
     LAPAL::updateLinearVelocity(mData, dTime);
