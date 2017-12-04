@@ -30,6 +30,12 @@ public:
 	void isMoving(bool m);
 	void isSpinning(bool s);
 
+	//Mass and Data getters and setters
+	LAPAL::movementData getMovemententData() 						{ return mData; 	}
+	const float 		getMass()									{ return mass;  	}
+	void 				setMovementData(LAPAL::movementData data) 	{ mData = data;   	}
+	void 				setMass(const float newMass)				{ mass = newMass; 	}
+
 
 private:
 
