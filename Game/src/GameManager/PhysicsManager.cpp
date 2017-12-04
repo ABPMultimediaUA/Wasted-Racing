@@ -74,7 +74,7 @@ void PhysicsManager::update(const float dTime) {
         auto ourMData   = ourMove->getGameObject().getTransformData();
         float radius    = ourColl->getRadius();
         float distance  = 0;
-
+        //We could have an error for not using shared_ptrs inside TerrainComponent(?)
         //Check if we are out of front bounds
         distance = LAPAL::distance2DLinePoint(terrain.p1, terrain.p2, ourMData.position);
         if( distance-radius < 0 ) {
