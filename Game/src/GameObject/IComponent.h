@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <memory>
+#include "GameObject.h"
 
 class GameObject;
 

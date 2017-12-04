@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../GameObject/IAIComponent.h"
+#include <vector>
+
 class AIManager{
 
 public: 
@@ -23,5 +26,8 @@ public:
     static AIManager& getInstance();
 
 private:
+    std::vector<IAIComponent::Pointer> objectsAI;
+    
+
 
 };

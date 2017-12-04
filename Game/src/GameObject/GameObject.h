@@ -9,6 +9,10 @@
 
 #include "../GameEvent/EventManager.h"
 
+class IComponent;
+
+struct TransformationData;
+
 class GameObject {
 
 public:
@@ -21,6 +25,8 @@ public:
 		glm::vec3 rotation;
 		glm::vec3 scale;
 	};
+
+	TransformationData t;
 
 	//===========================================
 	// BASIC FUNCTIONS
@@ -37,9 +43,7 @@ public:
 	u_int16_t getId() { return id; }
 
 	//Get position
-	TransformationData& getTransformData(){
-		return transformData;
-	}
+	TransformationData& getTransformData();
 
 	//===========================================
 	// SPECIFIC FUNCTIONS
@@ -52,18 +56,19 @@ public:
 	void update(float dTime);
 
 	//Add component
-	void addComponent(IComponent::Pointer component);
+	void addComponent(IComponent* component);
 
 	//Get component
-	template<typename Component>
-	std::shared_ptr<Component> getComponent() {
-		for (auto comp: components) {
-			if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(comp)) {
-				return cmp;
-			}
+	
+template<typename Component>
+std::shared_ptr<Component> getComponent() {
+	for (auto comp: components) {
+		if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(comp)) {
+			return cmp;
 		}
-		return nullptr;
 	}
+	return nullptr;
+}
 
 
 private:
@@ -75,6 +80,6 @@ private:
 	TransformationData transformData;
 
 	//Object Components
-	std::list<IComponent::Pointer> components;
+	std::list<IComponent*> components;
 
 };
