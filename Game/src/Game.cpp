@@ -203,7 +203,7 @@ void addObjects(){
 
     std::shared_ptr<IComponent> cp3 = RenderManager::getInstance().createObjectRenderComponent(*ob3.get(), ObjectRenderComponent::Shape::Sphere);
 
-    std::shared_ptr<IComponent> cp4 = RenderManager::getInstance().createObjectRenderComponent(*ob4.get(), ObjectRenderComponent::Shape::Cube);
+    //std::shared_ptr<IComponent> cp4 = RenderManager::getInstance().createObjectRenderComponent(*ob4.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp5 = RenderManager::getInstance().createObjectRenderComponent(*ob5.get(), ObjectRenderComponent::Shape::Cube);
 
@@ -226,13 +226,41 @@ void addObjects(){
     mData.spin_inc = 0.00001;
     mData.max_spin = 0.01;
     mData.mov = false;
+    mData.vel2d = glm::vec3(0,0,0);
 
-    std::shared_ptr<IComponent> moveCP = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, 1);
+    std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, 1);
 
     //===============================================================
     // ADD A CAMERA COMPONENT TO THE FIRST OBJECT
     //===============================================================
     std::shared_ptr<IComponent> cameraCP = RenderManager::getInstance().createCameraRenderComponent(*ob2.get());
+
+    //===============================================================
+    // ADD COLLISION COMPONENTS TO ALL OBJECTS
+    //===============================================================
+    std::shared_ptr<IComponent> collisionCP1 = PhysicsManager::getInstance().createCollisionComponent(*ob2.get(), 5);
+    std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5);
+    std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5);
+    std::cout << std::endl;
+    std::cout << collisionCP3.get() << std::endl;
+
+    //===============================================================
+    // ADD TERRAIN COMPONENT
+    //===============================================================
+    LAPAL::plane3f terrain;
+    terrain.p1 = (LAPAL::vec3f(-100,0,-100));
+    terrain.p2 = (LAPAL::vec3f(100,0,100));
+    terrain.p3 = (LAPAL::vec3f(100,0,-100));
+    terrain.p4 = (LAPAL::vec3f(-100,0,100));
+    terrain.fric = 0.2;
+    terrain.incAngle = 0;
+    terrain.rotAngle = 0;
+    std::shared_ptr<IComponent> terrainCP1 = PhysicsManager::getInstance().createTerrainComponent(*ob1.get(), terrain);
+
+    //===============================================================
+    // SETS A MOVING CHARACTER
+    //===============================================================
+    PhysicsManager::getInstance().createMovingCharacter(moveCP1, terrainCP1, collisionCP1);
 
     //===============================================================
     // Update to distribute all creation events

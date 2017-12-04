@@ -15,8 +15,3 @@ void CollisionComponent::update(float dTime) {
 void CollisionComponent::close() {
 
 } 
-
-//Setter
-void CollisionComponent::setMovementData(uint16_t id) {
-
-}

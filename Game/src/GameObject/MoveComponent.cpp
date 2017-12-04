@@ -46,7 +46,7 @@ void MoveComponent::update(float dTime) {
     
     getGameObject().setTransformData(trans);
     
-    
+    ///*
     system("clear");
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
     std::cout << " VEL X " << mData.vel3d.x << " VEL Z " << mData.vel3d.z << std::endl;
@@ -55,6 +55,7 @@ void MoveComponent::update(float dTime) {
     std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
     std::cout << " Aceleración " << mData.acc << std::endl;
     std::cout << " Velocidad " << mData.vel << std::endl;
+    //*/
      
 
     auto id = getGameObject().getId();

@@ -9,9 +9,7 @@ class CollisionComponent : public IComponent {
 public:
 
     //Constructor
-	CollisionComponent(GameObject& newGameObject) : IComponent(newGameObject) {
-        movementData = nullptr;
-    }
+	CollisionComponent(GameObject& newGameObject, const float newRadius) : IComponent(newGameObject), radius(newRadius) {}
 
 	//Destructor
 	virtual ~CollisionComponent() {};
@@ -25,14 +23,12 @@ public:
 	//Closer
 	virtual void close();
 
-    //Setter
-    void setMovementData(uint16_t);
+	//Radius getter
+	const float getRadius() { return radius; }
 
 private:
 
-    std::shared_ptr<MoveComponent> movementData; //A collisionComponent contains a reference to a MoveComponent
-                                                 //If this reference is set to nullptr, it means that the object that has the collision
-                                                 //component is static, so it won't move but can  be collided
+    const float radius;
 
 
 };
