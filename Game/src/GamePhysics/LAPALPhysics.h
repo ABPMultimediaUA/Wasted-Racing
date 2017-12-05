@@ -44,16 +44,12 @@ namespace LAPAL {
     void update2DVelocity(LAPAL::movementData& mData);//done
 
     //Updates the velocity in a 3D world
-    void update3DVelocity(LAPAL::movementData& mData, const float dTime);
+    void update3DVelocity(LAPAL::movementData& mData);
 
     //Checks if terrain is horizontal o it's a pendent
     bool checkTerrain(LAPAL::plane3f& terrain); //done
 
     //Calculates the distance between a line defined by two points (l1,l2) and a point (p1)
     float distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1);
-
-    void updateAcceleration(LAPAL::movementData& mData, LAPAL::plane3f& terrain, const LAPAL::vec3f& position);
-
-    void updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain);
 
 }

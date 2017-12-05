@@ -27,8 +27,6 @@ namespace LAPAL{
         float vel;
         float max_vel;
         float acc;
-        vec3f finalAcc; //final acceleration
-        vec3f velocity; //base velocity in 3d
         float max_acc;
         float dAcc; //acceleration increment
         float angle;
@@ -40,7 +38,7 @@ namespace LAPAL{
         vec3f netForce;
         vec3f frictionForce; //All the forces must be in Newtons
         vec3f gravityForce;
-       // vec3f velDif; //difference of velocity
+        vec3f velDif; //difference of velocity
         vec3f accDif; //difference of acceleration
 
     };
