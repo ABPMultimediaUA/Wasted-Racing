@@ -1,17 +1,17 @@
 #pragma once
 
-#include "../GameObject/IAIComponent.h"
+#include "../GameObject/ISensorComponent.h"
 #include <vector>
 
-class AIManager{
+class SensorManager{
 
 public: 
 
     //Constructor
-    AIManager() {}
+    SensorManager() {}
 
     //Destructor
-    ~AIManager() {}
+    ~SensorManager() {}
 
     //Initialization
     void init();
@@ -23,12 +23,12 @@ public:
     void close();
 
     std::vector<IComponent::Pointer>& getComponentList() {
-        return objectsAI;
+        return sensorComponentList;
     }
 
     //Static class getter
-    static AIManager& getInstance();
+    static SensorManager& getInstance();
 
 private:
-    std::vector<IComponent::Pointer> objectsAI;
+    std::vector<IComponent::Pointer> sensorComponentList;
 };

@@ -1,24 +1,24 @@
-#include "AIManager.h"
+#include "WaypointManager.h"
 
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
 
-AIManager& AIManager::getInstance() {
-    static AIManager instance;
+WaypointManager& WaypointManager::getInstance() {
+    static WaypointManager instance;
     return instance;
 }
 
-void AIManager::init() {
+void WaypointManager::init() {
 
 }
 
-void AIManager::update() {
-    //A update method should be defined by team IA
+void WaypointManager::update() {
+    //I doubt this method should exist in this manager
 
 }
 
-void AIManager::close() {
+void WaypointManager::close() {
 
 }
 

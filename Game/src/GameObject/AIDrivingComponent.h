@@ -11,7 +11,8 @@ class AIDrivingComponent : public IAIComponent{
         std::list<GameObject*> *listWay;
 
         GameObject* startPoint;
-        GameObject* actualWayPoint;
+        GameObject* nextWayPoint;
+        GameObject* lastWayPoint;
 
         int totalWayPoints = 0;
         
@@ -20,6 +21,10 @@ class AIDrivingComponent : public IAIComponent{
         float frameDeltaTime;
 
         float seconds;
+
+        float tour;
+
+        float distTourWay = 0;
         
     public:
         AIDrivingComponent(GameObject& newGameObject);
@@ -34,13 +39,13 @@ class AIDrivingComponent : public IAIComponent{
 
         void setSeconds(float sec);
 
-        glm::vec3 getNextPoint(glm::vec3 vel, glm::vec3 pos, float modSpeed);
+        glm::vec3 getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed);
 
         //Makes NPC turn a fixated angle based on data
         static float girar(std::vector<VObject*>, glm::vec3 waypoint, float distance, float a, float b, float maxR);
         
         //Makes NPC accelerate or brake based on data
-        static float acelerar_frenar(std::vector<VObject*>, glm::vec3 waypoint, float a, float b, float maxR);
+        static float acelerar_frenar(std::vector<VObject*>, float direction, float speed, float b_w, float a_w);
 
         //Inferes the fuzzy value in a line with the type given
         static float inferL(float value, float limit1, float limit2, int type);
@@ -54,7 +59,11 @@ class AIDrivingComponent : public IAIComponent{
         //Inferes the fuzzy value with a circular inference
         static float inferC(float value, float limit1, float limit2, float limit3);
 
+        //Returns in Cx and Cy, and the area of the triangle's X,Y positions of its centroid, given the height h
+        static void centroidT(float* cx, float* cy, float* area, float h, float limit1, float limit2, float limit3);
 
+        //Returns in Cx and Cy. and the area of the trapezoid's X,Y positions of its centroid, given the height h
+        static void centroidT2(float* cx, float* cy, float* area, float h, float limit1, float limit2, float limit3, float limit4);
     
 
 };
