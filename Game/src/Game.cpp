@@ -17,6 +17,9 @@ void Game::init() {
     Game::renderEngineSetter(0);
     Game::inputEngineSetter(0);
 
+    audioManager = new AudioFMOD();
+    audioManager->openAudioEngine();
+
     //Initilize managers
     eventManager = &EventManager::getInstance();
     eventManager->init();
@@ -29,8 +32,13 @@ void Game::init() {
     inputManager = &InputManager::getInstance();
     inputManager->init(Game::inputEngine);
 
+    //Initialize object manager
     objectManager = &ObjectManager::getInstance();
     objectManager->init();
+
+    //Initialize physics manager
+    physicsManager = &PhysicsManager::getInstance();
+    physicsManager->init();
 
     addObjects();
 }
@@ -40,18 +48,15 @@ void Game::init() {
 //====================================================
 void Game::update() {
 
+    //Input manager has to be the first to be updated
     inputManager->update();
+
+    physicsManager->update(0.02);
+    //audioManager->playSound();
     renderManager->update();
+    //Event manager has to be the last to be updated
     eventManager->update();
 
-    //uint16_t id = 4;
-    //auto obj = objectManager->getObject(id).get();
-    //obj->getComponent<MoveComponent>().get()->update(0.1);
-    //float a = obj->getTransformData().position.x;
-    //float b = obj->getTransformData().position.z;
-    //std::cout << a << " " << b << std::endl;
-    //for(int i=0; i<100000000; i++);
-    //
 }
 
 //====================================================
@@ -60,7 +65,6 @@ void Game::update() {
 void Game::draw() {
 
     renderManager->draw();
-
 }
 
 //====================================================
@@ -68,6 +72,7 @@ void Game::draw() {
 //====================================================
 void Game::close() {
 
+    physicsManager->close();
     renderManager->close();
     inputManager->close();
     eventManager->close();
@@ -80,6 +85,7 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
+    audioManager->playSound();
 
     while(Game::stay){
         Game::update();
@@ -159,11 +165,11 @@ void addObjects(){
     id = 4;
     transform.position = glm::vec3(0,-5,0);
     transform.rotation = glm::vec3(0,0,0);
-    transform.scale    = glm::vec3(100,0.01,100);
+    transform.scale    = glm::vec3(50,0.01,50);
     auto ob1 = ObjectManager::getInstance().createObject(id, transform);
     id = 5;
     transform.position = glm::vec3(20,0,20);
-    transform.rotation = glm::vec3(45,45,45);
+    transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(0.5,0.5,0.5);
     auto ob2 = ObjectManager::getInstance().createObject(id, transform);
     id = 6;
@@ -178,60 +184,104 @@ void addObjects(){
     auto ob4 = ObjectManager::getInstance().createObject(id, transform);
     id = 8;
     transform.position = glm::vec3(60,0,60);
-    transform.rotation = glm::vec3(0,0,0);
+    transform.rotation = glm::vec3(45,45,45);
     transform.scale    = glm::vec3(1,1,1);
     auto ob5 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 9;
+    transform.position = glm::vec3(0,0,0);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob6 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 10;
+    transform.position = glm::vec3(500,38,0);
+    transform.rotation = glm::vec3(0,0,10);
+    transform.scale    = glm::vec3(50,0.01,50);
+    auto ob7 = ObjectManager::getInstance().createObject(id, transform);
 
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
     //===============================================================
-    std::shared_ptr<IComponent> cp1 = std::make_shared<ObjectRenderComponent>(*ob1.get(), ObjectRenderComponent::Shape::Cube);
-    ob1.get()->addComponent(cp1);
-    data.Component = cp1;
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp1.get()->init();
+    std::shared_ptr<IComponent> cp1 = RenderManager::getInstance().createObjectRenderComponent(*ob1.get(), ObjectRenderComponent::Shape::Cube);
 
-    std::shared_ptr<IComponent> cp2 = std::make_shared<ObjectRenderComponent>(*ob2.get(), ObjectRenderComponent::Shape::Cube);
-    data.Component = cp2;
-    ob2.get()->addComponent(cp2);
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp2.get()->init();
+    std::shared_ptr<IComponent> cp2 = RenderManager::getInstance().createObjectRenderComponent(*ob2.get(), ObjectRenderComponent::Shape::Cube);
 
-    std::shared_ptr<IComponent> cp3 = std::make_shared<ObjectRenderComponent>(*ob3.get(), ObjectRenderComponent::Shape::Sphere);
-    data.Component = cp3;
-    ob3.get()->addComponent(cp3);
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp3.get()->init();
+    std::shared_ptr<IComponent> cp3 = RenderManager::getInstance().createObjectRenderComponent(*ob3.get(), ObjectRenderComponent::Shape::Sphere);
 
-    std::shared_ptr<IComponent> cp4 = std::make_shared<ObjectRenderComponent>(*ob4.get(), ObjectRenderComponent::Shape::Cube);
-    data.Component = cp4;
-    ob4.get()->addComponent(cp4);
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp4.get()->init();
+    //std::shared_ptr<IComponent> cp4 = RenderManager::getInstance().createObjectRenderComponent(*ob4.get(), ObjectRenderComponent::Shape::Cube);
 
-    std::shared_ptr<IComponent> cp5 = std::make_shared<ObjectRenderComponent>(*ob5.get(), ObjectRenderComponent::Shape::Cube);
-    data.Component = cp5;
-    ob5.get()->addComponent(cp5);
-    EventManager::getInstance().addEvent(Event {EventType::RenderComponent_Create, data});
-    cp5.get()->init();
+    std::shared_ptr<IComponent> cp5 = RenderManager::getInstance().createObjectRenderComponent(*ob5.get(), ObjectRenderComponent::Shape::Cube);
+
+    std::shared_ptr<IComponent> cp6 = RenderManager::getInstance().createObjectRenderComponent(*ob7.get(), ObjectRenderComponent::Shape::Cube);
 
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
     //===============================================================
-    std::shared_ptr<IComponent> iCP = std::make_shared<InputComponent>(*ob2.get());
-    ob2.get()->addComponent(iCP);
-    data.Component = iCP;
-    EventManager::getInstance().addEvent(Event {EventType::InputComponent_Create, data});
+    std::shared_ptr<IComponent> iCP = InputManager::getInstance().createInputComponent(*ob2.get());
+
+    //===============================================================
+    // ADD A CAMERA COMPONENT TO THE FIRST OBJECT
+    //===============================================================
+    std::shared_ptr<IComponent> cameraCP = RenderManager::getInstance().createCameraRenderComponent(*ob2.get());
+
+    //===============================================================
+    // ADD COLLISION COMPONENTS TO ALL OBJECTS
+    //===============================================================
+    std::shared_ptr<IComponent> collisionCP1 = PhysicsManager::getInstance().createCollisionComponent(*ob2.get(), 5);
+    std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5);
+    std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5);
+    std::cout << std::endl;
+    std::cout << collisionCP3.get() << std::endl;
+
+    //===============================================================
+    // ADD TERRAIN COMPONENT
+    //===============================================================
+    EventManager::getInstance().update();
+    LAPAL::plane3f terrain;
+    terrain.p1 = (LAPAL::vec3f(-250,0,250));
+    terrain.p2 = (LAPAL::vec3f(250,0,250));
+    terrain.p3 = (LAPAL::vec3f(250,0,-250));
+    terrain.p4 = (LAPAL::vec3f(-250,0,-250));
+    terrain.fric = 0.2;
+    terrain.incAngle = 0;
+    terrain.rotAngle = 0;
+    std::shared_ptr<IComponent> terrainCP1 = PhysicsManager::getInstance().createTerrainComponent(*ob1.get(), terrain);
+    LAPAL::plane3f terrain1;
+    terrain1.p1 = (LAPAL::vec3f(-750,80,250));
+    terrain1.p2 = (LAPAL::vec3f(750,80,250));
+    terrain1.p3 = (LAPAL::vec3f(750,0,-250));
+    terrain1.p4 = (LAPAL::vec3f(-750,0,-250));
+    terrain1.fric = 0.2;
+    terrain1.incAngle = 20;
+    terrain1.rotAngle = 0;
+    std::shared_ptr<IComponent> terrainCP2 = PhysicsManager::getInstance().createTerrainComponent(*ob7.get(), terrain1);
+    auto terrainCP2_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP2);
+    uint16_t idd = 4;
+    terrainCP2_0.get()->connectPrevNext(idd);
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
     //===============================================================
     LAPAL::movementData mData;
-    std::shared_ptr<IComponent> moveCP = std::make_shared<MoveComponent>(*ob2.get(), mData);
-    ob2.get()->addComponent(moveCP);
-    //data.Component = moveCP;
-    //EventManager::getInstance().addEvent(Event {EventType::MoveComponent_Create, data});
+    mData.vel = 0;
+    mData.max_vel = 2.5;
+    mData.acc = 0;
+    mData.max_acc = 0.5;
+    mData.dAcc = 0;
+    mData.angle = 0;
+    mData.spin = 0;
+    mData.spin_inc = 0.00001;
+    mData.max_spin = 0.01;
+    mData.mov = false;
+    mData.vel2d = glm::vec3(0,0,0);
 
+    std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
+
+    //===============================================================
+    // SETS A MOVING CHARACTER
+    //===============================================================
+    PhysicsManager::getInstance().createMovingCharacter(moveCP1, terrainCP1, collisionCP1);
 
     //===============================================================
     // Update to distribute all creation events
@@ -242,6 +292,6 @@ void addObjects(){
     // Split renderManager static QuadTree
     //===============================================================
     RenderManager::getInstance().splitQuadTree();
-    RenderManager::getInstance().getComponentTree().debugStructure(1);
+    //RenderManager::getInstance().getComponentTree().debugStructure(1);
     
 }

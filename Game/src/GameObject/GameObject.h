@@ -37,8 +37,12 @@ public:
 	u_int16_t getId() { return id; }
 
 	//Get position
-	TransformationData& getTransformData(){
+	TransformationData getTransformData(){
 		return transformData;
+	}
+	//Set position
+	void setTransformData(TransformationData data){
+		transformData = data;
 	}
 
 	//===========================================

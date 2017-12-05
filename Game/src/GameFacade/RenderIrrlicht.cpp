@@ -2,6 +2,7 @@
 #include "InputIrrlicht.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/ObjectRenderComponent.h"
+#include <cmath>
 
 void RenderIrrlicht::openWindow(){
 
@@ -25,7 +26,7 @@ void RenderIrrlicht::openWindow(){
 }
 
 void RenderIrrlicht::updateWindow() {
-
+    updateCamera();
 }
 
 void RenderIrrlicht::closeWindow() {
@@ -43,11 +44,25 @@ void RenderIrrlicht::renderDraw() {
 }
 
 void RenderIrrlicht::addCamera() {
-    camera = sceneManager->addCameraSceneNodeFPS();
+    camera = sceneManager->addCameraSceneNode();
+    camera->setPosition(irr::core::vector3df(0,0,0));
+}
+
+void RenderIrrlicht::updateCamera() {
+    //Get target position
+    auto pos = cameraTarget->getTransformData().position;
+
+    //Get target y angle
+    float angle = cameraTarget->getTransformData().rotation.y;
+    float radianAngle = (angle*M_PI)/180;
+
+    camera->setTarget(irr::core::vector3df(pos.x, pos.y, pos.z));
+    camera->setPosition(irr::core::vector3df(pos.x - 30*cos(radianAngle), pos.y + 5, pos.z + 30*sin(radianAngle)));
 }
 
 void RenderIrrlicht::addLight() {
-    sceneManager->addLightSceneNode();
+    auto node = sceneManager->addLightSceneNode(); 
+    node->setPosition(irr::core::vector3df(0,20,0));
 }
 
 void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
@@ -86,6 +101,11 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
         node->setPosition(irrPos);
         node->setRotation(irrRot);
         node->setScale(irrSca);
+
+        auto var = videoDriver->getTexture("/home/luis/WastedHorchata/Wasted-Racing/Game/media/img/stones.jpg");
+        node->setMaterialTexture(0, var);
+        std::cout << var << std::endl;
+        //while(true);
 
         nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
     }
