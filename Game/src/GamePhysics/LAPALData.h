@@ -20,10 +20,10 @@ namespace LAPAL{
 
     //Movement data
     struct movementData{
-        bool mov;
-        int dir;
         bool jump;
         float angInc;
+        bool mov;   //To know if a movement related key is pressed
+        bool spi;   //To know if a spin related key is pressed
         float vel;
         float max_vel;
         float acc;

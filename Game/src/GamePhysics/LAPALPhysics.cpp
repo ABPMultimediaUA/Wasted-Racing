@@ -8,30 +8,17 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime) 
     //The approach is that we define a base acceleration for every object and it does not change when it reaches the max acceleration
     //then, we calculate how the different forces affect the acceleration and, therefore, the velocity
 
-    if(mData.dAcc == 0){
-        if(mData.dir == 1){//we check the movement direction
-            if (mData.acc <= 0 && mData.mov == false){
-            mData.acc = 0;
-            mData.dir = 0;
-        }
-            else{
-                mData.acc = mData.acc - 0.1;
-            }
-        }
-        else if(mData.dir == -1) {
-            if (mData.acc >= 0 && mData.mov == false){
-            mData.acc = 0;
-            mData.dir = 0;
-        }
-            else{
-                mData.acc = mData.acc + 0.1;
-            }
-        }
-    }
-    else{
-        mData.acc += mData.dAcc*dTime; //increment of acceleration * increment of time
-    }
+    mData.acc += mData.dAcc*dTime; //increment of acceleration * increment of time
 
+    //If we aren't accelerating
+    if(!mData.mov && mData.acc!=0) {
+        if(abs(mData.acc)<0.1) {
+            mData.acc = 0;
+        }
+        else {
+            mData.acc -= mData.acc*0.02;
+        }
+    }
 
     //Check acceleration limits
     if(abs(mData.acc)>abs(mData.max_acc)){
@@ -39,43 +26,27 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime) 
     }
 
     //Update velocity
+    mData.vel += mData.acc*dTime; 
 
-    if(mData.dAcc == 0){
-        if(mData.dir == 1){//we check the movement direction
-            if (mData.acc <= 0 && mData.mov == false){
-            mData.vel = 0;
-            mData.dir = 0;
+    //If we aren't accelerating
+    if(!mData.mov && mData.vel!=0) {
+        if(abs(mData.vel)<0.1) {
+            mData.vel= 0;
         }
-            else{
-                mData.vel = mData.vel - 0.1;
-            }
-        }
-        else if(mData.dir == -1) {
-            if (mData.acc >= 0 && mData.mov == false){
-            mData.vel = 0;
-            mData.dir = 0;
-        }
-            else{
-                mData.vel = mData.vel + 0.1;
-            }
+        else {
+            mData.vel -= mData.vel*0.01;
         }
     }
-    else{
-        mData.vel += mData.acc*dTime; 
 
-    }
-    
-    
     //Check velocity limits 
     if(abs(mData.vel)>abs(mData.max_vel)){
         mData.vel = copysign(mData.max_vel, mData.vel);
-
     }
     
 }
 
 //Checks 2D collision between circles
-bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const LAPAL::vec3f& pos2,const float& radius2){
+bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const LAPAL::vec3f& pos2,const float& radius2) {
     if ( sqrt( ( pos2.x-pos1.x ) * ( pos2.x-pos1.x )  + ( pos2.z-pos1.z ) * ( pos2.z-pos1.z ) ) < ( radius1 + radius2 ) ) // square(x^2+z^2) < total radius
         return true;
     return false;
@@ -84,24 +55,32 @@ bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& rad
 //Updates all spin related variables
 void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
 
- /*   mData.spin += mData.vel*mData.spin_inc*dTime; //Spin depends on vel and spin_inc
+    if(mData.spi) {
 
-    if(abs(mData.spin)>abs(mData.max_spin)){
-        mData.spin = copysign(mData.max_spin, mData.spin);
+        mData.spin += mData.vel*mData.spin_inc*dTime; //Spin depends on vel and spin_inc
+
+        if(abs(mData.spin)>abs(mData.max_spin)){
+            mData.spin = copysign(mData.max_spin, mData.spin);
+        }
+    }
+    else {
+        if(abs(mData.spin) < 0.001) {
+            mData.spin = 0;
+        }
+        else {
+            mData.spin -= mData.spin*0.015;
+        }
     }
 
     mData.angle += mData.spin;
-    */
 
 }
 
 //Updates the velocity only in the components x and z
 void LAPAL::update2DVelocity(LAPAL::movementData& mData) {
 
-    mData.angle += mData.angInc;
-
-        mData.vel2d.x = mData.vel*cos(mData.angle);
-        mData.vel2d.z = mData.vel*sin(mData.angle);
+    mData.vel2d.x = mData.vel*cos(mData.angle);
+    mData.vel2d.z = mData.vel*sin(mData.angle);
 
 }
 
@@ -220,6 +199,8 @@ void LAPAL::correctTerrainCollision(LAPAL::plane3f& terrain, LAPAL::vec3f& posit
         y = (-a*(position.x) -c*(position.z) -d)/b;
         position.y=y;
 
+        std::cout << "Y corregida" << std::endl;
+
     }
 }
 
@@ -315,7 +296,7 @@ void LAPAL::updateVelDif(LAPAL::movementData& mData, const float& dTime){
 void LAPAL::update3DVelocity(LAPAL::movementData& mData){
 
     if(mData.vel == 0){
-          if(mData.jump == true){
+       /*   if(mData.jump == true){
               if(mData.vel3d.y<=10){
                 mData.vel3d.y += 1;
               }
@@ -331,7 +312,7 @@ void LAPAL::update3DVelocity(LAPAL::movementData& mData){
                  else{
                     mData.vel3d.y = 0;
                  }
-             }
+             }*/
         mData.vel3d.x = 0;
         mData.vel3d.z = 0;    
     }
@@ -339,10 +320,26 @@ void LAPAL::update3DVelocity(LAPAL::movementData& mData){
         mData.vel3d.x = mData.vel2d.x + mData.velDif.x;
         mData.vel3d.y = mData.vel2d.y + mData.velDif.y;
         mData.vel3d.z = mData.vel2d.z + mData.velDif.z; 
-    }
+   }
  
 }
 
+//Calculates the distance between a line defined by two points (l1,l2) and a point (p1)
+float LAPAL::distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1) {
+
+    LAPAL::vec3f lineVec = l2-l1;
+    LAPAL::vec3f circVec = l2-p1;
+
+    float lineVecMod = sqrt(lineVec.x*lineVec.x + lineVec.z*lineVec.z);
+    float circVecMod = sqrt(circVec.x*circVec.x + circVec.z*circVec.z);
+
+    float vectorCos = (lineVec.x*circVec.x + lineVec.z*circVec.z)/(lineVecMod*circVecMod);
+
+    float distance = vectorCos*circVecMod;
+
+    return distance;
+
+}
 
 
 

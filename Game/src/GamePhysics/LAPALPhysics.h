@@ -49,4 +49,7 @@ namespace LAPAL {
     //Checks if terrain is horizontal o it's a pendent
     bool checkTerrain(LAPAL::plane3f& terrain); //done
 
+    //Calculates the distance between a line defined by two points (l1,l2) and a point (p1)
+    float distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1);
+
 }

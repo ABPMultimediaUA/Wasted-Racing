@@ -3,6 +3,7 @@
 #include "../GameManager/RenderManager.h"
 #include <iostream>
 #include <stdlib.h>
+#include <math.h>
 
 //Initilizer
 void MoveComponent::init() {
@@ -10,15 +11,6 @@ void MoveComponent::init() {
 
 //Update
 void MoveComponent::update(float dTime) {
-
-    LAPAL::plane3f terrain;
-    terrain.p1 = (LAPAL::vec3f(-100,0,-100));
-    terrain.p2 = (LAPAL::vec3f(100,0,100));
-    terrain.p3 = (LAPAL::vec3f(100,0,-100));
-    terrain.p4 = (LAPAL::vec3f(-100,0,100));
-    terrain.fric = 0.2;
-    terrain.incAngle = 0;
-    terrain.rotAngle = 0;
 
     auto position = getGameObject().getTransformData().position;
 
@@ -31,22 +23,34 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateAccDif(mData, mass);
     LAPAL::updateVelDif(mData, dTime);
     LAPAL::update3DVelocity(mData);
+
+    LAPAL::correctTerrainCollision(terrain, position);
+    
    
     auto trans = getGameObject().getTransformData();
-    
+
+    //Change position
     trans.position += mData.vel3d;
+
+    //Change rotation
+    float degreeAngle = (mData.angle*180)/M_PI;
+    trans.rotation.y = -degreeAngle;
     
     getGameObject().setTransformData(trans);
     
-    
+    ///*
     system("clear");
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
+    std::cout << " POS Y " << trans.position.y << std::endl;
     std::cout << " VEL X " << mData.vel3d.x << " VEL Z " << mData.vel3d.z << std::endl;
-    std::cout << " INCR ANGLE " << mData.angInc << std::endl;
+    std::cout << " INCR ANGLE " << mData.spin << std::endl;
     std::cout << " ANGULO GIRO " << mData.angle << std::endl;
+    std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
     std::cout << " Aceleración " << mData.acc << std::endl;
     std::cout << " Velocidad " << mData.vel << std::endl;
     std::cout << " Gravity force on y " << mData.gravityForce.y << std::endl;
+    std::cout << " VEL Y " << mData.vel3d.y << std::endl;
+    std::cout << "terraincollision" << LAPAL::checkTerrainCollision(terrain, trans.position) << std::endl;
 
     if (mData.jump == false){
         std::cout << " No estoy saltando " << std::endl;
@@ -55,6 +59,7 @@ void MoveComponent::update(float dTime) {
         std::cout << " Sí estoy saltando " << std::endl;
     }
     
+    //*/
      
 
     auto id = getGameObject().getId();
@@ -76,11 +81,7 @@ void MoveComponent::changeSpinIncrement(float n) {
 }
 
 void MoveComponent::isMoving(bool m){
-    (mData.mov = m);
-}
-
-void MoveComponent::changeDir(int i){
-    mData.dir = i;
+    mData.mov = m;
 }
 
 void MoveComponent::changeAngleInc(float i){
@@ -89,4 +90,7 @@ void MoveComponent::changeAngleInc(float i){
 
 void MoveComponent::isJumping(bool j){
     mData.jump = j;
+}
+void MoveComponent::isSpinning(bool s){
+    mData.spi = s;
 }

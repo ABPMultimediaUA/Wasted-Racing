@@ -12,6 +12,7 @@ public:
     struct MovingCharacter {
         std::shared_ptr<MoveComponent> moveComponent;
         std::shared_ptr<TerrainComponent> terrainComponent;
+        std::shared_ptr<CollisionComponent> collisionComponent;
     };
 
     //Constructor
@@ -43,12 +44,14 @@ public:
     }
 
     //Component creators
-    IComponent::Pointer createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, float newMass);
+    IComponent::Pointer createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass);
     IComponent::Pointer createTerrainComponent(GameObject& newGameObject, LAPAL::plane3f newPlane);
-    IComponent::Pointer createCollisionComponent(GameObject& newGameObject);
-    void                createMovingCharacter(IComponent::Pointer moveComponent, IComponent::Pointer terrainComponent);
+    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const float radius);
+    void                createMovingCharacter(IComponent::Pointer moveComponent, IComponent::Pointer terrainComponent, IComponent::Pointer collisionComponent);
 
 private:
+
+    void calculateStaticCollision(MoveComponent* );
 
     std::vector<IComponent::Pointer> moveComponentList;
     std::vector<IComponent::Pointer> collisionComponentList;
