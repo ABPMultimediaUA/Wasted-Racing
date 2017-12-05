@@ -14,26 +14,33 @@ AIDrivingComponent::~AIDrivingComponent()
     delete listWay;
 }
 
-/*
+
 void AIDrivingComponent::addWayPoint(GameObject* way)
 {
+	std::shared_ptr<WaypointComponent> wpComponent = listWay->back()->getComponent<WaypointComponent>();
+
     if (totalWayPoints == 0)
     {
         startPoint = way;
         actualWayPoint = way;
     }
-    else
+    else if(wpComponent != nullptr)
     {
-        listWay->back()->setNext(way);
+		wpComponent->setNext(way);
     }
 
     listWay->push_back(way);
-    listWay->back()->setNext(startPoint);
+
+	std::shared_ptr<WaypointComponent> wpComponent2 = listWay->back()->getComponent<WaypointComponent>();
+	if(wpComponent2 != nullptr)
+	{
+   		wpComponent2->setNext(startPoint);
+	}
 
     totalWayPoints++;
 }
 
-*/
+
 
 void AIDrivingComponent::setMaxSpeed(float speed)
 {
@@ -77,7 +84,6 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 	}
 
 	std::shared_ptr<WaypointComponent> wpComponent = actualWayPoint->getComponent<WaypointComponent>();
-	//auto wpComponent = actualWayPoint->getComponent<WaypointComponent>();
 	if( wpComponent != nullptr ){
     	if(wpComponent->checkNext(pos, nextPos))
     	{
