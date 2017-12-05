@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <iostream>
 #include <cstdint>
 
 #include "../GameManager/InputManager.h"
@@ -71,6 +71,9 @@ public:
     //Add a camera to the game
     virtual void addCamera() = 0;
 
+    //Update the current camera
+    virtual void updateCamera() = 0;
+
     //Add an object to the game
     virtual void addObject(IComponent::Pointer ptr) = 0;
 
@@ -123,6 +126,15 @@ public:
         return window;
     }
 
+    //Sets the gameObject to be targeted by the camera
+    void setCameraTarget(GameObject& newCameraTarget) {
+        cameraTarget = &newCameraTarget;
+    }
+    //Returns the gameObject to be targeted by the camera
+    GameObject& getCameraTarget() {
+        return *cameraTarget;
+    }
+
 
 protected:
 
@@ -130,5 +142,7 @@ protected:
     Window window;
     //InputManager declaration
     InputManager* inputManager;
+    //Camera target
+    GameObject* cameraTarget;
 
 };

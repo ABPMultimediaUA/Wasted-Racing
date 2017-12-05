@@ -8,7 +8,8 @@ class MoveComponent : public IComponent {
 public:
 
     //Constructor
-	MoveComponent(GameObject& newGameObject, LAPAL::movementData newMData) : IComponent(newGameObject), mData(newMData) {}
+	MoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newTerrain, float newMass) 
+		: IComponent(newGameObject), mData(newMData), terrain(newTerrain), mass(newMass) {}
 
 	//Destructor
 	virtual ~MoveComponent() {};
@@ -25,11 +26,27 @@ public:
     //==========================================
     // PHYSICS RELATED FUNCTIONS
     //==========================================
-    void changeImpulse(float n);
+    void changeAccInc(float n);
     void changeSpinIncrement(float n);
+	void isMoving(bool m);
+	void changeDir(int i);
+	void changeAngleInc(float i);
+	void isJumping(bool j);
+	void isSpinning(bool s);
+
+	//Mass and Data getters and setters
+	LAPAL::movementData getMovemententData() 						{ 	return mData; 	}
+	const float 		getMass()									{ 	return mass;  	}
+	LAPAL::plane3f		getTerrain()								{ 	return terrain;   }
+	void 				setMovementData(LAPAL::movementData data) 	{ 	mData = data;   	}
+	void 				setMass(const float newMass)				{ 	mass = newMass; 	}
+	void				setTerrain(LAPAL::plane3f p) 				{ 	terrain = p;		}
+
 
 private:
 
     LAPAL::movementData mData;
+	LAPAL::plane3f		terrain;
+	float mass;
 
 };

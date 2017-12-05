@@ -84,5 +84,13 @@ public:
 
         int getLastLevel();
 
+        //Initilizer
+	virtual void init() {}
+
+	//Update
+	virtual void update(float dTime) {}
+
+	//Closer
+	virtual void close() {}
 
 };

@@ -3,6 +3,7 @@
 #include "../GameObject/WaypointComponent.h"
 #include <vector>
 
+
 class WaypointManager{
 
 public: 
@@ -28,6 +29,10 @@ public:
 
     //Static class getter
     static WaypointManager& getInstance();
+
+    //Create a new Waypoint Component
+    IComponent::Pointer createWaypointComponent(GameObject& newGameObject, glm::vec3 pos, float r);
+
 
     //Component list getter
     std::vector<IComponent::Pointer>& getComponentList() {

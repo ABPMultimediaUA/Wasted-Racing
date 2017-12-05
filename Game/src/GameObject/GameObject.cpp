@@ -16,7 +16,3 @@ void GameObject::update(float dTime) {
 void GameObject::addComponent(IComponent::Pointer component) {
     components.push_back(component);
 } 
-
-GameObject::TransformationData& GameObject::getTransformData(){
-		return t;
-}

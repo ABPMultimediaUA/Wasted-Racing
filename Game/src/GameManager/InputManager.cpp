@@ -18,6 +18,8 @@ void turnLeftDown(EventData eData);
 void turnLeftUp(EventData eData); 
 void turnRightDown(EventData eData); 
 void turnRightUp(EventData eData); 
+void jumpUp(EventData eData);
+void jumpDown(EventData eData);
 void addInputComponent(EventData data);
 
 //==============================================
@@ -47,6 +49,8 @@ void InputManager::init(int engine){
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnLeft_Up, turnLeftUp});
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Down, turnRightDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Up, turnRightUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Down, jumpUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Up, jumpDown});
     EventManager::getInstance().addListener(EventListener {EventType::InputComponent_Create, addInputComponent});
   
 }
@@ -60,6 +64,21 @@ void InputManager::update(){
     inputFacade->updateInput();
 
 }
+
+IComponent::Pointer InputManager::createInputComponent(GameObject& newGameObject) {
+
+    IComponent::Pointer component = std::make_shared<InputComponent>(newGameObject);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::InputComponent_Create, data});
+
+    return component;
+}
+
 
 //==============================================
 // DELEGATES
@@ -99,6 +118,12 @@ void turnRightDown(EventData eData) {
 }
 void turnRightUp(EventData eData) {
     std::cout << "Right turn button released!" << std::endl;
+}
+void jumpDown(EventData eData){
+    std::cout << "Jump button pressed!" << std::endl;
+}
+void jumpUp(EventData eData){
+    std::cout << "Jump button released!" << std::endl;
 }
 void addInputComponent(EventData data) {
     InputManager::getInstance().setComponent(data.Component);
