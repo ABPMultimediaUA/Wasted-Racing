@@ -8,34 +8,13 @@
 
 class AIDrivingComponent : public IAIComponent{
     private:
-        std::list<GameObject*> *listWay;
-
-        GameObject* startPoint;
-        GameObject* nextWayPoint;
-        GameObject* lastWayPoint;
-
-        int totalWayPoints = 0;
-        
-        float maxSpeed;
-
-        float frameDeltaTime;
 
         float seconds;
-
-        float tour;
-
-        float distTourWay = 0;
         
     public:
         AIDrivingComponent(GameObject& newGameObject);
 
         ~AIDrivingComponent();
-
-        void addWayPoint(GameObject* way);
-
-        void setMaxSpeed(float speed);
-
-        void setFrame(float frame);
 
         void setSeconds(float sec);
 
