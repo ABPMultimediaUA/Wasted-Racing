@@ -30,12 +30,23 @@ void EventManager::addEvent(Event event) {
 
 void EventManager::processEvent(Event event){
 
+    auto auxEventListenerList = EventManager::eventListenerMap.find(event.type);
+    
+    if(auxEventListenerList != eventListenerMap.end()) {
+        auto eventListenerList = auxEventListenerList->second;
+
+        for(auto eventListener : eventListenerList) {
+            eventListener.listener(event.data);
+        }
+    }
+
+    /* Old version
     auto eventListenerList = EventManager::eventListenerMap.find(event.type)->second;
 
     for(auto eventListener : eventListenerList) {
         eventListener.listener(event.data);
     }
-
+    */
 }
 
 void EventManager::addListener(EventListener eventListener){

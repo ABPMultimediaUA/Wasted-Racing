@@ -17,6 +17,8 @@ void turnLeftDownI(EventData eData);
 void turnLeftUpI(EventData eData); 
 void turnRightDownI(EventData eData); 
 void turnRightUpI(EventData eData); 
+void jumpUpI(EventData eData);
+void jumpDownI(EventData eData);
 
 //==============================================
 // INPUT COMPONENT FUNCTIONS
@@ -33,7 +35,8 @@ void InputComponent::init(){
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnLeft_Up, turnLeftUpI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Down, turnRightDownI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Up, turnRightUpI});
-  
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Down, jumpDownI});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Up, jumpUpI});
 }
 
 void InputComponent::update(float dTime){
@@ -49,49 +52,49 @@ void InputComponent::close(){
 //==============================================
 void advanceDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    auto id = comp->getGameObject().getId();
-    auto trans = comp->getGameObject().getTransformData();
-    if (comp != nullptr);
-    InputManager::getInstance().getComponent().get()->getGameObject().getTransformData().position.z += 5;
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
+    comp->changeAccInc(0.5);
+    comp->isMoving(true);
 }
 void advanceUpI(EventData eData) {
-   auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   if (comp != nullptr);
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp->changeAccInc(0.0);
+    comp->isMoving(false);
 }
 void brakeDownI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   auto id = comp->getGameObject().getId();
-    auto trans = comp->getGameObject().getTransformData();
-    if (comp != nullptr);
-    InputManager::getInstance().getComponent().get()->getGameObject().getTransformData().position.z -= 5;
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
+   comp->changeAccInc(-0.5);
+   comp->isMoving(true);
 }
 void brakeUpI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   if (comp != nullptr);
+   comp->changeAccInc(0.0);
+   comp->isMoving(false);
 }
 void turnLeftDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    auto id = comp->getGameObject().getId();
-    auto trans = comp->getGameObject().getTransformData();
-    if (comp != nullptr);
-    InputManager::getInstance().getComponent().get()->getGameObject().getTransformData().position.x -= 5;
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
+    comp->changeSpinIncrement(0.1);
+    comp->isSpinning(true);
 }
 void turnLeftUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    if (comp != nullptr);
+    comp->changeSpinIncrement(0.0);
+    comp->isSpinning(false);
 }
 void turnRightDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    auto id = comp->getGameObject().getId();
-    auto trans = comp->getGameObject().getTransformData();
-    if (comp != nullptr);
-    InputManager::getInstance().getComponent().get()->getGameObject().getTransformData().position.x += 5;
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
+    comp->changeSpinIncrement(-0.1);
+    comp->isSpinning(true);
 }
 void turnRightUpI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    if (comp != nullptr);
+    comp->changeSpinIncrement(0.0);
+    comp->isSpinning(false);
+}
+void jumpDownI(EventData eData){
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp->isJumping(true);
+}
+void jumpUpI(EventData eData){
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp->isJumping(false);
 }
