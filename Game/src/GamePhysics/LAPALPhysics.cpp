@@ -35,6 +35,9 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
             }
            
         }
+        else {
+            mData.acc -= mData.acc*0.02;
+        }
     }
 
     //Check acceleration limits
@@ -42,7 +45,7 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
         mData.acc = copysign(mData.max_acc, mData.acc);
     }
 
-    //BASE VELOCITY
+    //Update velocity
     mData.vel += mData.acc*dTime; 
 
     //If we aren't accelerating
@@ -59,6 +62,9 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
                 mData.vel += (mData.brake_vel + terrain.fric)*dTime;
             }
            
+        }
+        else {
+            mData.vel -= mData.vel*0.01;
         }
     }
 
@@ -98,7 +104,12 @@ void LAPAL::updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain){
 void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
 
     if(mData.spi) {
+
         mData.spin += mData.vel*mData.spin_inc*dTime; //Spin depends on vel and spin_inc
+
+        if(abs(mData.spin)>abs(mData.max_spin)){
+            mData.spin = copysign(mData.max_spin, mData.spin);
+        }
     }
     else {
         if(abs(mData.spin) < 0.001) {
@@ -184,14 +195,19 @@ bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& rad
 //Assuming there's collision, changes velocity of every object after collision
 void LAPAL::calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::vec3f& vel2, float& mass2) {
 
-    //vel1 = vel1*(mass1-mass2)/massTotal + vel2*(mass2²)/(massTotal)
-    //vel2 = vel1*(mass1²)/massTotal + vel2*(mass2-mass1)/(massTotal)
+    float mT = mass1 + mass2;
 
-    vel1.x = vel1.x*(mass1 - mass2)/(mass1 + mass2) + vel2.x*(mass2 + mass2)/(mass1 + mass2);
-    vel2.x = vel1.x*(mass1 + mass1)/(mass1 + mass2) + vel2.x*(mass2 - mass1)/(mass1 + mass2);
+    float m1i_1 = (mass1 - mass2)/mT;
+    float m2i_1 = (mass2 + mass2)/mT;
+    
+    float m1i_2 = (mass1 + mass1)/mT;
+    float m2i_2 = (mass2 - mass1)/mT;
 
-    vel1.z = vel1.z*(mass1 - mass2)/(mass1 + mass2) + vel2.z*(mass2 + mass2)/(mass1 + mass2);
-    vel2.z = vel1.z*(mass1 + mass1)/(mass1 + mass2) + vel2.z*(mass2 - mass1)/(mass1 + mass2);
+    vel1.x = vel1.x*m1i_1 + vel2.x*m2i_1;
+    vel2.x = vel1.x*m1i_2 + vel2.x*m2i_2;
+
+    vel1.z = vel1.z*m1i_1 + vel2.z*m2i_1;
+    vel2.z = vel1.z*m1i_2 + vel2.z*m2i_2;
 
 }
 
@@ -225,24 +241,27 @@ LAPAL::vec3f LAPAL::calculateNormal(const LAPAL::plane3f& plane){
 bool LAPAL::checkTerrainCollision(const LAPAL::plane3f& terrain,const LAPAL::vec3f& position){
     
     bool collision=false;
-    LAPAL::vec3f u = calculateNormal(terrain);
+    LAPAL::vec3f u;
+    LAPAL::vec3f v;
     float a, b, c, d, equ; //coeficients of the implicit equation Ax + By + Cz + D = 0
 
     //First we need to get the implicit equation of the plane, we need two vectors and a point of the plane
-    /*u.x = terrain.p1.x - terrain.p3.x;
-    u = terrain.p1 - terrain.p3;
-    v = terrain.p2 - terrain.p3;
+    u.x = terrain.p1.x - terrain.p3.x;
+    u.y = terrain.p1.y - terrain.p3.y;
+    u.z = terrain.p1.z - terrain.p3.z;
+
+    v.x = terrain.p2.x - terrain.p3.x;
     v.y = terrain.p2.y - terrain.p3.y;
     v.z = terrain.p2.z - terrain.p3.z;
+
     //Calculating the equation coeficients
     a = (u.y*v.z) - (u.z*v.y);
     b = (u.x*v.z) - (u.z*v.x);
     c = (u.x*v.y) - (u.x*v.y);
-    d = u.x*(-terrain.p1.x) + u.y*(-terrain.p1.y) + u.z*(-terrain.p1.z);*/
+    d = a*(-terrain.p1.x) + b*(-terrain.p1.y) + c*(-terrain.p1.z);
 
     //To see if there's a collision, the point (the position) of the object must be inside the plane, therefore the equation with that point must be 0
-    //equ = u.x*(position.x) + u.y*(position.y) + u.z*(position.z)+d;
-    equ = u.x*(position.x-terrain.p1.x) + u.y*(position.y-terrain.p1.y) + u.z*(position.z-terrain.p1.z); // 
+    equ = a*(position.x) + b*(position.y) + c*(position.z) + d;
 
     if (equ == 0){
         collision=true;
@@ -287,6 +306,8 @@ void LAPAL::correctTerrainCollision(LAPAL::plane3f& terrain, LAPAL::vec3f& posit
 
         y = (-a*(position.x) -c*(position.z) -d)/b;
         position.y=y;
+
+        std::cout << "Y corregida" << std::endl;
 
     }
 }
@@ -464,22 +485,13 @@ void LAPAL::update2DVelocity(LAPAL::movementData& mData) { //TO ERASE
 void LAPAL::updateFrictionForce(LAPAL::movementData& mData, LAPAL::plane3f& terrain, float& objMass, const float& gravity, const LAPAL::vec3f& position){
 
     //Friction force: F=μ*N
-
-    vec3f u; //unitary vector
    
     //there's no friction on component y
     
         if(LAPAL::checkTerrainCollision(terrain, position)){ //the object is in the terrain
-            if(LAPAL::checkTerrain(terrain)){//the terrain is horizontal
-                mData.frictionForce.x = terrain.fric * objMass * gravity;
-                mData.frictionForce.y = 0;
-                mData.frictionForce.z = terrain.fric * objMass * gravity;
-            }
-            else{
-                mData.frictionForce.x = terrain.fric * objMass * gravity;
-                mData.frictionForce.y = terrain.fric * objMass * gravity;
-                mData.frictionForce.z = terrain.fric * objMass * gravity;
-            }
+        mData.frictionForce.x = (-1)*terrain.fric * objMass * gravity;
+        mData.frictionForce.y = 0;
+        mData.frictionForce.z = (-1)*terrain.fric * objMass * gravity;
         }
         else{ //the object is in the air, in the air there's no friction
             mData.frictionForce.x = 0;
@@ -517,8 +529,8 @@ void LAPAL::updateGravityForce(LAPAL::movementData& mData, float& objMass, const
 
 
 //Updates the difference of velocity
-void LAPAL::updateVelDif(LAPAL::movementData& mData, const float& dTime){ //TO ERASE
-/*
+void LAPAL::updateVelDif(LAPAL::movementData& mData, const float& dTime){
+
     if(mData.dAcc <= 0){
         mData.velDif.x = (-1)*mData.accDif.x*dTime;
         mData.velDif.y = (-1)*mData.accDif.y*dTime;
@@ -529,7 +541,7 @@ void LAPAL::updateVelDif(LAPAL::movementData& mData, const float& dTime){ //TO E
         mData.velDif.y = mData.accDif.y*dTime;
         mData.velDif.z = mData.accDif.z*dTime;
 
-    }*/
+    }
 
 }
 
