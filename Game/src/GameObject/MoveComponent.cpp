@@ -14,43 +14,55 @@ void MoveComponent::update(float dTime) {
 
     auto position = getGameObject().getTransformData().position;
 
-    LAPAL::updateLinearVelocity(mData, dTime);
+    LAPAL::updateLinearVelocity(mData, dTime, terrain);
     LAPAL::updateSpin(mData, dTime);
-    LAPAL::update2DVelocity(mData);
-    LAPAL::updateFrictionForce(mData, terrain, mass, 9.8, position);
-    LAPAL::updateGravityForce(mData, mass, 9.8, terrain, position);
-    LAPAL::calculateNetForce(mData);
-    LAPAL::updateAccDif(mData, mass);
-    LAPAL::updateVelDif(mData, dTime);
-    LAPAL::update3DVelocity(mData);
+    LAPAL::updateVelocity(mData, terrain);
+    LAPAL::updateRotation(mData, terrain, dTime);
+    LAPAL::correctYPosition(mData, dTime, terrain, position);
 
-    LAPAL::correctTerrainCollision(terrain, position);
-    
-   
+
+    //Collision deprecated calculus
+    //LAPAL::correctTerrainCollision(terrain, position);
+
+    //3D deprecated calculus
+    //LAPAL::updateFrictionForce(mData, terrain, mass, 9.8, position);
+    //LAPAL::updateGravityForce(mData, mass, 9.8, terrain, position);
+    //LAPAL::calculateNetForce(mData);
+
+    //LAPAL::updateAccDif(mData, terrain, dTime);
+    //LAPAL::updateFinalAcceleration(mData, position);
+    //LAPAL::update2DVelocity(mData);
+    //LAPAL::update3DVelocity(mData, dTime);
+    //LAPAL::updateVelDif(mData, dTime);
+
     auto trans = getGameObject().getTransformData();
 
     //Change position
-    trans.position += mData.vel3d;
+    //trans.position += mData.vel3d;
+    trans.position = position;
+    trans.position += mData.velocity*dTime;
 
     //Change rotation
     float degreeAngle = (mData.angle*180)/M_PI;
+    float degreeX = (mData.angX*180.f)/M_PI;
     trans.rotation.y = -degreeAngle;
-    
+    trans.rotation.z = degreeX;
     getGameObject().setTransformData(trans);
     
     ///*
     system("clear");
+    std::cout << "GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
     std::cout << " POS Y " << trans.position.y << std::endl;
-    std::cout << " VEL X " << mData.vel3d.x << " VEL Z " << mData.vel3d.z << std::endl;
+    std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
     std::cout << " INCR ANGLE " << mData.spin << std::endl;
     std::cout << " ANGULO GIRO " << mData.angle << std::endl;
     std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
     std::cout << " Aceleración " << mData.acc << std::endl;
     std::cout << " Velocidad " << mData.vel << std::endl;
-    std::cout << " Gravity force on y " << mData.gravityForce.y << std::endl;
-    std::cout << " VEL Y " << mData.vel3d.y << std::endl;
+    std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
     std::cout << "terraincollision" << LAPAL::checkTerrainCollision(terrain, trans.position) << std::endl;
+    std::cout << "Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
 
     if (mData.jump == false){
         std::cout << " No estoy saltando " << std::endl;

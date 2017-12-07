@@ -168,7 +168,7 @@ void addObjects(){
     transform.scale    = glm::vec3(50,0.01,50);
     auto ob1 = ObjectManager::getInstance().createObject(id, transform);
     id = 5;
-    transform.position = glm::vec3(20,0,20);
+    transform.position = glm::vec3(20,30,20);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(0.5,0.5,0.5);
     auto ob2 = ObjectManager::getInstance().createObject(id, transform);
@@ -244,17 +244,19 @@ void addObjects(){
     terrain.p3 = (LAPAL::vec3f(250,0,-250));
     terrain.p4 = (LAPAL::vec3f(-250,0,-250));
     terrain.fric = 0.2;
-    terrain.incAngle = 0;
     terrain.rotAngle = 0;
+    LAPAL::calculateRotationsXZ(terrain);
     std::shared_ptr<IComponent> terrainCP1 = PhysicsManager::getInstance().createTerrainComponent(*ob1.get(), terrain);
+
+
     LAPAL::plane3f terrain1;
-    terrain1.p1 = (LAPAL::vec3f(-750,80,250));
-    terrain1.p2 = (LAPAL::vec3f(750,80,250));
-    terrain1.p3 = (LAPAL::vec3f(750,0,-250));
-    terrain1.p4 = (LAPAL::vec3f(-750,0,-250));
+    terrain1.p1 = (LAPAL::vec3f(250,0,250));
+    terrain1.p2 = (LAPAL::vec3f(750,90,250));
+    terrain1.p3 = (LAPAL::vec3f(750,90,-250));
+    terrain1.p4 = (LAPAL::vec3f(250,0,-250));
     terrain1.fric = 0.2;
-    terrain1.incAngle = 20;
     terrain1.rotAngle = 0;
+    LAPAL::calculateRotationsXZ(terrain1);
     std::shared_ptr<IComponent> terrainCP2 = PhysicsManager::getInstance().createTerrainComponent(*ob7.get(), terrain1);
     auto terrainCP2_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP2);
     uint16_t idd = 4;
@@ -264,18 +266,33 @@ void addObjects(){
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
     //===============================================================
     LAPAL::movementData mData;
-    mData.vel = 0;
-    mData.max_vel = 2.5;
-    mData.acc = 0;
-    mData.max_acc = 0.5;
-    mData.dAcc = 0;
+    mData.mov = false;
+    mData.jump = false;
+    mData.spi = false;
+
+    mData.angInc = 0;
     mData.angle = 0;
     mData.spin = 0;
     mData.spin_inc = 0.00001;
-    mData.max_spin = 0.01;
-    mData.mov = false;
-    mData.vel2d = glm::vec3(0,0,0);
-    mData.jump = false;
+    mData.max_spin = 0.03;
+    mData.brake_spin = 0.2;
+
+    mData.rotateX = 0.f;
+    mData.rotateZ = 0.f;
+    mData.rotate_inc = 0.15f;
+    mData.max_rotate = 3.f;
+
+    mData.vel = 0;
+    mData.max_vel = 50.0f;
+    mData.brake_vel = 5.f;
+
+    mData.acc = 0;
+    mData.max_acc = 10.f;
+    mData.dAcc = 1.f;
+    mData.brake_acc = 0.4;
+
+    
+    mData.velocity = glm::vec3(50,0,0);
 
     std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
 
