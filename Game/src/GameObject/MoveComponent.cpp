@@ -61,7 +61,6 @@ void MoveComponent::update(float dTime) {
     std::cout << " Aceleración " << mData.acc << std::endl;
     std::cout << " Velocidad " << mData.vel << std::endl;
     std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
-    std::cout << "terraincollision" << LAPAL::checkTerrainCollision(terrain, trans.position) << std::endl;
     std::cout << "Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
 
     if (mData.jump == false){
