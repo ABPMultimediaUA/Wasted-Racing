@@ -102,9 +102,9 @@ void PhysicsManager::update(const float dTime) {
                 float a2,b2;
                 LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
 
-                if(!(a>=0 && b>=0 && a+b<1)){      //if the point is not inside the original terrain it means it stepped into the other one
+                if(a2>0 && b2<0 && glm::abs(a2)+glm::abs(b2)>=1){      //if the point is not inside the original terrain it means it stepped into the other one
                     ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getNext()); //Set new terrain component
+                    movingCharacterList.at(i).terrainComponent = ourTerr->getNext(); //Set new terrain component
                 }
             }
         }
@@ -118,9 +118,9 @@ void PhysicsManager::update(const float dTime) {
                 float a2,b2;
                 LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
 
-                if(!(a>=0 && b>=0 && a+b<1)){      //if the point is not inside the original terrain it means it stepped into the other one
+                if(a2>0 && b2>0 && glm::abs(a2)+glm::abs(b2)>=1){      //if the point is not inside the original terrain it means it stepped into the other one
                     ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getRight()); //Set new terrain component
+                    movingCharacterList.at(i).terrainComponent = ourTerr->getRight(); //Set new terrain component
                 }
             }
         }
@@ -134,9 +134,9 @@ void PhysicsManager::update(const float dTime) {
                 float a2,b2;
                 LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
 
-                if(!(a>=0 && b>=0 && a+b<1)){      //if the point is not inside the original terrain it means it stepped into the other one
+                if(a2>0 && b2>0 && a2 - b2<=0){      //if the point is not inside the original terrain it means it stepped into the other one
                     ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getPrev()); //Set new terrain component
+                    movingCharacterList.at(i).terrainComponent = ourTerr->getPrev(); //Set new terrain component
                 }
             }
         }
@@ -150,57 +150,12 @@ void PhysicsManager::update(const float dTime) {
                 float a2,b2;
                 LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
 
-                if(!(a>=0 && b>=0 && a+b<1)){      //if the point is not inside the original terrain it means it stepped into the other one
+                if(a2>0 && b2<0 && a2+b2<=0){      //if the point is not inside the original terrain it means it stepped into the other one
                     ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getLeft()); //Set new terrain component
+                    movingCharacterList.at(i).terrainComponent = ourTerr->getLeft(); //Set new terrain component
                 }
             }
         }
-
-        ///JUST IN CASE
-        /*distance = LAPAL::distance2DLinePoint(terrain.p1, terrain.p2, ourMData.position);
-        if( distance-radius < 0 ) {
-            if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
-            }
-            else if (distance < 0 ) {
-                ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
-                movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getNext()); //Set new terrain component
-            }
-        }
-        //Check if we are out of right bounds
-        distance = LAPAL::distance2DLinePoint(terrain.p2, terrain.p3, ourMData.position);
-        if( distance-radius < 0 ) {
-            if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
-            }
-            else if (distance < 0 ) {
-                ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
-                movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getRight()); //Set new terrain component
-            }
-        }
-        //Check if we are out of back bounds
-        distance = LAPAL::distance2DLinePoint(terrain.p3, terrain.p4, ourMData.position);
-        if( distance-radius < 0 ) {
-            if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
-            }
-            else if (distance < 0 ) {
-                ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
-                movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getPrev()); //Set new terrain component
-            }
-        }
-        //Check if we are out of left bounds
-        distance = LAPAL::distance2DLinePoint(terrain.p4, terrain.p1, ourMData.position);
-        if( distance-radius < 0 ) {
-            if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
-            }
-            else if (distance < 0 ) {
-                ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
-                movingCharacterList.at(i).terrainComponent = std::shared_ptr<TerrainComponent>(ourTerr->getLeft()); //Set new terrain component
-            }
-        }*/
     }
 }
 

@@ -168,7 +168,7 @@ void addObjects(){
     transform.scale    = glm::vec3(50,0.01,50);
     auto ob1 = ObjectManager::getInstance().createObject(id, transform);
     id = 5;
-    transform.position = glm::vec3(20,30,20);
+    transform.position = glm::vec3(20,100,20);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(0.5,0.5,0.5);
     auto ob2 = ObjectManager::getInstance().createObject(id, transform);
@@ -239,10 +239,10 @@ void addObjects(){
     //===============================================================
     EventManager::getInstance().update();
     LAPAL::plane3f terrain;
-    terrain.p1 = (LAPAL::vec3f(-250,0,250));
-    terrain.p2 = (LAPAL::vec3f(250,0,250));
-    terrain.p3 = (LAPAL::vec3f(250,0,-250));
-    terrain.p4 = (LAPAL::vec3f(-250,0,-250));
+    terrain.p1 = (LAPAL::vec3f(-250.f ,0.f ,250.f));
+    terrain.p2 = (LAPAL::vec3f(250.f  ,0.f ,250.f));
+    terrain.p3 = (LAPAL::vec3f(250.f  ,0.f ,-250.f));
+    terrain.p4 = (LAPAL::vec3f(-250.f ,0.f ,-250.f));
     terrain.fric = 0.2;
     terrain.rotAngle = 0;
     LAPAL::calculateRotationsXZ(terrain);
@@ -285,14 +285,12 @@ void addObjects(){
     mData.vel = 0;
     mData.max_vel = 50.0f;
     mData.brake_vel = 5.f;
+    mData.velY = 10.f;
 
     mData.acc = 0;
     mData.max_acc = 10.f;
     mData.dAcc = 1.f;
     mData.brake_acc = 0.4;
-
-    
-    mData.velocity = glm::vec3(50,0,0);
 
     std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
 

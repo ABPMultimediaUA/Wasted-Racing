@@ -5,7 +5,7 @@
 namespace LAPAL{
 
     //Universal constant
-    const float gravity = 50;
+    const float gravity = 98.f;
 
     //3d float point
     typedef glm::vec3 vec3f;
@@ -42,6 +42,7 @@ namespace LAPAL{
         float vel;          //Lineal speed
         float max_vel;      //Maximum lineal speed
         float brake_vel;    //Natural braking speed
+        float velY;         //vertical speed
 
         float acc;          //Linear acceleration
         float max_acc;      //Maximum linear acceleration

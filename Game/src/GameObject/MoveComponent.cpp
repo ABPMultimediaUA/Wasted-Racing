@@ -11,6 +11,8 @@ void MoveComponent::init() {
 
 //Update
 void MoveComponent::update(float dTime) {
+    //Clearing messages and leaving any possible function test message to occur
+    system("clear");
 
     auto position = getGameObject().getTransformData().position;
 
@@ -45,12 +47,14 @@ void MoveComponent::update(float dTime) {
     //Change rotation
     float degreeAngle = (mData.angle*180)/M_PI;
     float degreeX = (mData.angX*180.f)/M_PI;
+    float degreeZ = (mData.angZ*180.f)/M_PI;
     trans.rotation.y = -degreeAngle;
     trans.rotation.z = degreeX;
+    trans.rotation.x = degreeZ;
     getGameObject().setTransformData(trans);
     
     ///*
-    system("clear");
+    
     std::cout << "GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
     std::cout << " POS Y " << trans.position.y << std::endl;

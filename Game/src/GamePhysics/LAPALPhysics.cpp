@@ -123,7 +123,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
 
     //Increasing rotation axis in mData until it matches the terrain. Incremental turn.
     //X axis.
-    if(glm::abs(mData.angX - terrain.rotX)<0.001f){
+    if(glm::abs(mData.angX - terrain.rotX)<0.01f){
         mData.angX = terrain.rotX;
         mData.rotateX = 0.f;
     }else{
@@ -224,20 +224,19 @@ void LAPAL::calculateRotationsXZ(LAPAL::plane3f& terrain){
             //angle = acos(cc / h) acos
             terrain.rotX = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.x-terrain.p1.x));
         }else{
-            terrain.rotX = glm::atan( (terrain.p2.y - terrain.p3.y) / glm::abs(terrain.p2.x-terrain.p3.x));
+            terrain.rotX = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.x-terrain.p2.x));
         }  
         
         if(terrain.p1.z != terrain.p2.z){
             terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.z-terrain.p1.z));
         }else{
-            terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p3.y) / glm::abs(terrain.p2.z-terrain.p3.z));
+            terrain.rotZ = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.z-terrain.p2.z));
         }
     }
 }
 
 //Calculates expected Y for the object given its position
 float LAPAL::calculateExpectedY(LAPAL::plane3f& terrain, LAPAL::vec3f& position ){
-
     if(checkTerrain(terrain)){
         return terrain.p1.y;
     }else{
@@ -256,18 +255,28 @@ float LAPAL::calculateExpectedY(LAPAL::plane3f& terrain, LAPAL::vec3f& position 
 void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPAL::plane3f& terrain, LAPAL::vec3f& position){
     float y = calculateExpectedY(terrain, position);
     
-    //If it's jumping, activate gravity
-    //if(mData.jump){
-        position.y -= gravity * dTime;
+    //check if we are not touching the ground
+    if(position.y>y){
         
-        //Reallocate position always, if the object is under it
-        if(position.y<y){
-            position.y = y;
+        //update vertical speed with gravity
+        mData.velY += gravity*dTime*dTime;
+
+        //Maximum velocity
+        if(mData.velY > gravity){
+            mData.velY = gravity;
         }
 
-   /* }else{
+        //update falling position
+        position.y -= mData.velY* dTime;
+
+
+        if(position.y <= y){
+            position.y = y;
+            mData.velY = 10.f;
+        }
+    }else{
         position.y = y;
-    }*/
+    }
 }
 
 //Calculates values A and B which are the scalars that multiply vector A and B to compose the point C in 2D (X-Z plane) inside the terrain given
