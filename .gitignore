@@ -1,2 +1,5 @@
-bin/
+bin/obj/
+bin/XKating
+bin/XKating.exe
 .vscode/
+Game/.vscode/

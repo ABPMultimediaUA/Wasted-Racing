@@ -17,8 +17,8 @@ void Game::init() {
     Game::renderEngineSetter(0);
     Game::inputEngineSetter(0);
 
-    audioManager = new AudioFMOD();
-    audioManager->openAudioEngine();
+    //audioManager = new AudioFMOD();
+    //audioManager->openAudioEngine();
 
     //Initilize managers
     eventManager = &EventManager::getInstance();
@@ -85,7 +85,7 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
-    audioManager->playSound();
+    //audioManager->playSound();
 
     while(Game::stay){
         Game::update();

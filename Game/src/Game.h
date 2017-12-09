@@ -9,7 +9,7 @@
 #include "GameManager/ObjectManager.h"
 #include "GameManager/PhysicsManager.h"
 #include "GameEvent/EventManager.h"
-#include "GameFacade/AudioFMOD.h"
+//#include "GameFacade/AudioFMOD.h"
 
 class Game {
 
@@ -68,7 +68,7 @@ private:
     //Physics manager
     PhysicsManager* physicsManager;
 
-    AudioFMOD* audioManager;
+    //AudioFMOD* audioManager;
 
     //Selected renderEngine
     int renderEngine;
