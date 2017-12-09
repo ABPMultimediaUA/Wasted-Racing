@@ -40,6 +40,10 @@ void Game::init() {
     physicsManager = &PhysicsManager::getInstance();
     physicsManager->init();
 
+    //Initialize Waypoint Manager
+    waypointManager = &WaypointManager::getInstance();
+    waypointManager->init();
+
     addObjects();
 }
 
@@ -76,6 +80,7 @@ void Game::close() {
     renderManager->close();
     inputManager->close();
     eventManager->close();
+    waypointManager->close();
 
 }
 
@@ -200,6 +205,17 @@ void addObjects(){
     transform.scale    = glm::vec3(50,0.01,50);
     auto ob7 = ObjectManager::getInstance().createObject(id, transform);
 
+    id = 11;
+    transform.position = glm::vec3(100, 0, 0);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob8 = ObjectManager::getInstance().createObject(id, transform);
+
+    //===============================================================
+    // ADD WAYPOINT COMPONENT
+    //===============================================================
+    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(*ob8.get(), 1, 1);
+
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
     //===============================================================
@@ -214,6 +230,8 @@ void addObjects(){
     std::shared_ptr<IComponent> cp5 = RenderManager::getInstance().createObjectRenderComponent(*ob5.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp6 = RenderManager::getInstance().createObjectRenderComponent(*ob7.get(), ObjectRenderComponent::Shape::Cube);
+
+    std::shared_ptr<IComponent> cp7 = RenderManager::getInstance().createObjectRenderComponent(*ob8.get(), ObjectRenderComponent::Shape::Sphere);
 
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT

@@ -8,6 +8,8 @@
 #include "GameManager/RenderManager.h"
 #include "GameManager/ObjectManager.h"
 #include "GameManager/PhysicsManager.h"
+#include "GameManager/WaypointManager.h"
+#include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
 
@@ -67,6 +69,9 @@ private:
     EventManager* eventManager;
     //Physics manager
     PhysicsManager* physicsManager;
+
+    //Waypoint manager
+    WaypointManager* waypointManager;
 
     AudioFMOD* audioManager;
 
