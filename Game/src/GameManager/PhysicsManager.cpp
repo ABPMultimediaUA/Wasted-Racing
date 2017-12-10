@@ -162,7 +162,7 @@ void PhysicsManager::update(const float dTime) {
 void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
 
     float ourMass = ourMove->getMass();
-    float hisMass = 2;
+    float hisMass = 5;
 
     auto ourMData = ourMove->getMovemententData();
 
@@ -183,7 +183,6 @@ void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
     //Set new movement
     ourMove->setMovementData(ourMData);
     auto tData = ourMove->getGameObject().getTransformData();
-    tData.position += ourVel+ourVel;
     ourMove->getGameObject().setTransformData(tData);
 }
 
