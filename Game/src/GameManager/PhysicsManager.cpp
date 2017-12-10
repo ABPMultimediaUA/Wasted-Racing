@@ -41,7 +41,7 @@ void PhysicsManager::update(const float dTime) {
         ourMove->update(dTime);
         
         //==============================================================================
-        // Check collisions with character
+        // Check collisions with other objects
         //==============================================================================
         for(unsigned int j=0; j<collisionComponentList.size(); ++j) {
             CollisionComponent* hisColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList.at(j)).get();
@@ -68,96 +68,21 @@ void PhysicsManager::update(const float dTime) {
         }
 
         //==============================================================================
-        // Check collisions with terrain
+        // Check collisions with terrain limits and terrain change
         //==============================================================================
-        auto terrain    = ourMove->getTerrain();
-        auto ourMData   = ourMove->getGameObject().getTransformData();
-        auto ourMovementData = ourMove ->getMovemententData();
-        float radius    = ourColl->getRadius();
+        calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl);
         
-        //------JUST IN CASE
-        //float distance  = 0;
-
-
-        //We could have an error for not using shared_ptrs inside TerrainComponent(?)
-        
-        //Composition values of the point inside the terrain
-        float a, b;
-
-        //Future position:
-        glm::vec3 nextPosition(
-                                ourMData.position.x + ourMovementData.velocity.x / ourMovementData.vel * radius,
-                                ourMData.position.y + ourMovementData.velocity.y / ourMovementData.vel * radius,
-                                ourMData.position.z + ourMovementData.velocity.z / ourMovementData.vel * radius
-                                );
-
-        //Calculate A and B for the object radius in the direction of its movement
-        LAPAL::calculateConstantAB(terrain, nextPosition, &a, &b);
-
-        //Check if we are out of front bounds
-        if(a>0 && b<0 && glm::abs(a)+glm::abs(b)>=1){
-            if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
-            }else{
-                float a2,b2;
-                LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
-
-                if(a2>0 && b2<0 && glm::abs(a2)+glm::abs(b2)>=1){      //if the point is not inside the original terrain it means it stepped into the other one
-                    ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = ourTerr->getNext(); //Set new terrain component
-                }
-            }
-        }
-
-        //Check if we are out of right bounds
-        if(a>0 && b>0 && glm::abs(a)+glm::abs(b)>=1){
-            if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
-            }
-            else{
-                float a2,b2;
-                LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
-
-                if(a2>0 && b2>0 && glm::abs(a2)+glm::abs(b2)>=1){      //if the point is not inside the original terrain it means it stepped into the other one
-                    ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = ourTerr->getRight(); //Set new terrain component
-                }
-            }
-        }
-        
-        //Check if we are out of back bounds
-        if(a>0 && b>0 && a - b<=0){
-            if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
-            }
-            else{
-                float a2,b2;
-                LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
-
-                if(a2>0 && b2>0 && a2 - b2<=0){      //if the point is not inside the original terrain it means it stepped into the other one
-                    ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = ourTerr->getPrev(); //Set new terrain component
-                }
-            }
-        }
-
-        //Check if we are out of left bounds
-        if(a>0 && b<0 && a+b<=0){
-           if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
-            }
-            else{
-                float a2,b2;
-                LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
-
-                if(a2>0 && b2<0 && a2+b2<=0){      //if the point is not inside the original terrain it means it stepped into the other one
-                    ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = ourTerr->getLeft(); //Set new terrain component
-                }
-            }
-        }
     }
 }
+
+void PhysicsManager::close() {
+
+}
+
+
+//==============================================================================
+// PRIVATE FUNCTIONS
+//==============================================================================
 
 void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
 
@@ -186,9 +111,94 @@ void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
     ourMove->getGameObject().setTransformData(tData);
 }
 
-void PhysicsManager::close() {
+void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, MoveComponent* ourMove, TerrainComponent* ourTerr, CollisionComponent* ourColl) {
 
+        auto terrain    = ourMove->getTerrain();
+        auto ourMData   = ourMove->getGameObject().getTransformData();
+        auto ourMovementData = ourMove ->getMovemententData();
+        float radius    = ourColl->getRadius();
+        
+        //Composition values of the point inside the terrain
+        float a, b;
+
+        //Future position:
+        glm::vec3 nextPosition(
+                                ourMData.position.x + ourMovementData.velocity.x / ourMovementData.vel * radius,
+                                ourMData.position.y + ourMovementData.velocity.y / ourMovementData.vel * radius,
+                                ourMData.position.z + ourMovementData.velocity.z / ourMovementData.vel * radius
+                                );
+
+        //Calculate A and B for the object radius in the direction of its movement
+        LAPAL::calculateConstantAB(terrain, nextPosition, &a, &b);
+
+        //Check if we are out of front bounds
+        if(a>0 && b<0 && glm::abs(a)+glm::abs(b)>=1){
+            if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
+                calculateStaticCollision(ourMove);
+            }else{
+                float a2,b2;
+                LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
+
+                if(a2>0 && b2<0 && glm::abs(a2)+glm::abs(b2)>=1){      //if the point is not inside the original terrain it means it stepped into the other one
+                    ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
+                    movingChar.terrainComponent = ourTerr->getNext(); //Set new terrain component
+                }
+            }
+        }
+
+        //Check if we are out of right bounds
+        if(a>0 && b>0 && glm::abs(a)+glm::abs(b)>=1){
+            if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
+                calculateStaticCollision(ourMove);
+            }
+            else{
+                float a2,b2;
+                LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
+
+                if(a2>0 && b2>0 && glm::abs(a2)+glm::abs(b2)>=1){      //if the point is not inside the original terrain it means it stepped into the other one
+                    ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
+                    movingChar.terrainComponent = ourTerr->getRight(); //Set new terrain component
+                }
+            }
+        }
+        
+        //Check if we are out of back bounds
+        if(a>0 && b>0 && a - b<=0){
+            if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
+                calculateStaticCollision(ourMove);
+            }
+            else{
+                float a2,b2;
+                LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
+
+                if(a2>0 && b2>0 && a2 - b2<=0){      //if the point is not inside the original terrain it means it stepped into the other one
+                    ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
+                    movingChar.terrainComponent = ourTerr->getPrev(); //Set new terrain component
+                }
+            }
+        }
+
+        //Check if we are out of left bounds
+        if(a>0 && b<0 && a+b<=0){
+           if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
+                calculateStaticCollision(ourMove);
+            }
+            else{
+                float a2,b2;
+                LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
+
+                if(a2>0 && b2<0 && a2+b2<=0){      //if the point is not inside the original terrain it means it stepped into the other one
+                    ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
+                    movingChar.terrainComponent = ourTerr->getLeft(); //Set new terrain component
+                }
+            }
+        }
 }
+
+
+//==============================================================================
+// COMPONENT CREATOR FUNCTIONS
+//==============================================================================
 
 IComponent::Pointer PhysicsManager::createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass) {
 

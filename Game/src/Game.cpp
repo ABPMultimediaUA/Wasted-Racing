@@ -244,7 +244,6 @@ void addObjects(){
     terrain.p3 = (LAPAL::vec3f(250.f  ,0.f ,-250.f));
     terrain.p4 = (LAPAL::vec3f(-250.f ,0.f ,-250.f));
     terrain.fric = 0.2;
-    terrain.rotAngle = 0;
     LAPAL::calculateRotationsXZ(terrain);
     std::shared_ptr<IComponent> terrainCP1 = PhysicsManager::getInstance().createTerrainComponent(*ob1.get(), terrain);
 
@@ -255,7 +254,6 @@ void addObjects(){
     terrain1.p3 = (LAPAL::vec3f(750,90,-250));
     terrain1.p4 = (LAPAL::vec3f(250,0,-250));
     terrain1.fric = 0.2;
-    terrain1.rotAngle = 0;
     LAPAL::calculateRotationsXZ(terrain1);
     std::shared_ptr<IComponent> terrainCP2 = PhysicsManager::getInstance().createTerrainComponent(*ob7.get(), terrain1);
     auto terrainCP2_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP2);

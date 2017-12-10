@@ -55,7 +55,7 @@ void MoveComponent::update(float dTime) {
     
     ///*
     
-    std::cout << "GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
+    std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
     std::cout << " POS Y " << trans.position.y << std::endl;
     std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
@@ -65,7 +65,7 @@ void MoveComponent::update(float dTime) {
     std::cout << " Aceleración " << mData.acc << std::endl;
     std::cout << " Velocidad " << mData.vel << std::endl;
     std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
-    std::cout << "Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
+    std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
 
     if (mData.jump == false){
         std::cout << " No estoy saltando " << std::endl;

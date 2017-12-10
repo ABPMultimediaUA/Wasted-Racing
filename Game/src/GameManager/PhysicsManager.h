@@ -54,6 +54,7 @@ public:
 private:
 
     void calculateStaticCollision(MoveComponent* );
+    void calculateTerrainCollision(MovingCharacter&, MoveComponent*, TerrainComponent* , CollisionComponent* );
 
     std::vector<IComponent::Pointer> moveComponentList;
     std::vector<IComponent::Pointer> collisionComponentList;

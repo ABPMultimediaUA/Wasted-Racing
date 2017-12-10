@@ -17,8 +17,6 @@ namespace LAPAL{
         vec3f p3;
         vec3f p4;
         float fric; //friction coeficient !NOT FRICTION FORCE
-        float incAngle; //inclination angle of the plane 
-        float rotAngle; //rotation of the plane
         float rotX;     //rotation on X
         float rotZ;     //rotation on Z
     };
