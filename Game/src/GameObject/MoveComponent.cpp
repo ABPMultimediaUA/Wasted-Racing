@@ -11,31 +11,16 @@ void MoveComponent::init() {
 
 //Update
 void MoveComponent::update(float dTime) {
-    //Clearing messages and leaving any possible function test message to occur
-    system("clear");
 
     auto position = getGameObject().getTransformData().position;
+
+    updateMaxSpeedOverTime(dTime); //Update speed difference over time (for powerups)
 
     LAPAL::updateLinearVelocity(mData, dTime, terrain);
     LAPAL::updateSpin(mData, dTime);
     LAPAL::updateVelocity(mData, terrain);
     LAPAL::updateRotation(mData, terrain, dTime);
     LAPAL::correctYPosition(mData, dTime, terrain, position);
-
-
-    //Collision deprecated calculus
-    //LAPAL::correctTerrainCollision(terrain, position);
-
-    //3D deprecated calculus
-    //LAPAL::updateFrictionForce(mData, terrain, mass, 9.8, position);
-    //LAPAL::updateGravityForce(mData, mass, 9.8, terrain, position);
-    //LAPAL::calculateNetForce(mData);
-
-    //LAPAL::updateAccDif(mData, terrain, dTime);
-    //LAPAL::updateFinalAcceleration(mData, position);
-    //LAPAL::update2DVelocity(mData);
-    //LAPAL::update3DVelocity(mData, dTime);
-    //LAPAL::updateVelDif(mData, dTime);
 
     auto trans = getGameObject().getTransformData();
 
@@ -52,9 +37,13 @@ void MoveComponent::update(float dTime) {
     trans.rotation.z = degreeX;
     trans.rotation.x = degreeZ;
     getGameObject().setTransformData(trans);
+
+    auto id = getGameObject().getId();
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
     
-    ///*
-    
+    ///*===========================================================================================
+    // DEBUG
+    system("clear");
     std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
     std::cout << " POS Y " << trans.position.y << std::endl;
@@ -74,12 +63,7 @@ void MoveComponent::update(float dTime) {
         std::cout << " Sí estoy saltando " << std::endl;
     }
     
-    //*/
-     
-
-    auto id = getGameObject().getId();
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
-
+    //=========================================================================================*/
 }
 
 //Closer
@@ -87,6 +71,7 @@ void MoveComponent::close() {
 
 }
 
+//Physics related functions
 void MoveComponent::changeAccInc(float n) {
     mData.dAcc = n;
 }
@@ -108,4 +93,38 @@ void MoveComponent::isJumping(bool j){
 }
 void MoveComponent::isSpinning(bool s){
     mData.spi = s;
+}
+
+//Functions related with temporal data changes
+void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
+
+    auxData.max_vel         = mData.max_vel;
+    mData.max_vel           = maxSpeed;
+
+    constantAlteredTime     = constTime;
+    decrementalAlteredTime  = decTime;
+    maxDecrementalAT        = decTime;
+}
+
+void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
+
+    if(constantAlteredTime > 0) {
+        //While time is constant, velocity is constant and maximum
+        mData.vel = mData.max_vel;
+        constantAlteredTime -= dTime;
+    }
+    else if (decrementalAlteredTime > 0) {
+        
+        //Calculate velocity decrease depending on dTime
+        float vel_diff = mData.max_vel - auxData.max_vel;
+        float vel      = (dTime*vel_diff)/maxDecrementalAT;
+
+        mData.vel     -= vel; 
+
+        decrementalAlteredTime -= dTime;
+
+        if(decrementalAlteredTime < 0)
+            mData.max_vel = auxData.max_vel;
+    }
+
 }

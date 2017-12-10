@@ -291,6 +291,9 @@ void addObjects(){
     mData.brake_acc = 0.4;
 
     std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
+    auto moveCP1_0 = std::dynamic_pointer_cast<MoveComponent>(moveCP1);
+    moveCP1_0.get()->changeMaxSpeedOverTime(60, 2, 6);
+
 
     //===============================================================
     // SETS A MOVING CHARACTER
