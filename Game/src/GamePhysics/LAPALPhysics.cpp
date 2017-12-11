@@ -96,7 +96,7 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
 
     if(mData.spi) {
 
-        mData.spin += mData.vel*mData.spin_inc*dTime; //Spin depends on vel and spin_inc
+        mData.spin += mData.vel * mData.spin_inc * dTime; //Spin depends on vel and spin_inc
 
         if(abs(mData.spin)>abs(mData.max_spin)){
             mData.spin = copysign(mData.max_spin, mData.spin);
@@ -222,17 +222,17 @@ void LAPAL::calculateRotationsXZ(LAPAL::plane3f& terrain){
         //check which points are at different heights. We only need to check two pairs.
         if(terrain.p1.x != terrain.p2.x){
             //angle = acos(cc / h) acos
-            terrain.rotX = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.x-terrain.p1.x));
+            terrain.rotX = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.x-terrain.p1.x) );
         }else{
-            terrain.rotX = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.x-terrain.p2.x));
+            terrain.rotX = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.x-terrain.p2.x) );
         }  
         
         if(terrain.p1.z != terrain.p2.z){
-            terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.z-terrain.p1.z));
+            terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.z-terrain.p1.z) );
         }else{
-            terrain.rotZ = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.z-terrain.p2.z));
+            terrain.rotZ = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.z-terrain.p2.z) );
         }
-    }
+    } 
 }
 
 //Calculates expected Y for the object given its position

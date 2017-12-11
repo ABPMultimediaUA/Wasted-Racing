@@ -228,7 +228,7 @@ void addObjects(){
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(*ob8.get(), 1, 1);
+    //std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(*ob8.get(), 1, 1);
 
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
@@ -238,8 +238,6 @@ void addObjects(){
     std::shared_ptr<IComponent> cp2 = RenderManager::getInstance().createObjectRenderComponent(*ob2.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp3 = RenderManager::getInstance().createObjectRenderComponent(*ob3.get(), ObjectRenderComponent::Shape::Sphere);
-
-    //std::shared_ptr<IComponent> cp4 = RenderManager::getInstance().createObjectRenderComponent(*ob4.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp5 = RenderManager::getInstance().createObjectRenderComponent(*ob5.get(), ObjectRenderComponent::Shape::Cube);
 
@@ -255,7 +253,7 @@ void addObjects(){
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE AI OBJECTS
     //===============================================================
-    std::shared_ptr<IComponent> iCP2 = InputManager::getInstance().createInputComponent(*ob5.get());
+    //std::shared_ptr<IComponent> iCP2 = InputManager::getInstance().createInputComponent(*ob5.get());
 
 
     //===============================================================
@@ -306,19 +304,21 @@ void addObjects(){
     mData.jump = false;
     mData.spi = false;
 
-    mData.angInc = 0;
-    mData.angle = 0;
-    mData.spin = 0;
-    mData.spin_inc = 0.00001;
-    mData.max_spin = 0.03;
-    mData.brake_spin = 0.2;
+    mData.angInc = 0.f;
+    mData.angle = 0.f;
+    mData.spin = 0.f;
+    mData.spin_inc = 0.1f;
+    mData.max_spin = 0.03f;
+    mData.brake_spin = 0.2f;
+    mData.angX = 0.0f;
+    mData.angZ = 0.0f;
 
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
 
-    mData.vel = 0;
+    mData.vel = 0.f;
     mData.max_vel = 50.0f;
     mData.brake_vel = 5.f;
     mData.velY = 10.f;
@@ -329,14 +329,14 @@ void addObjects(){
     mData.brake_acc = 0.4;
 
     std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
-    auto moveCP1_0 = std::dynamic_pointer_cast<MoveComponent>(moveCP1);
-    moveCP1_0.get()->changeMaxSpeedOverTime(60, 2, 6);
+    /*auto moveCP1_0 = std::dynamic_pointer_cast<MoveComponent>(moveCP1);
+    moveCP1_0.get()->changeMaxSpeedOverTime(60, 2, 6);*/
 
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE AI
     //===============================================================
-    LAPAL::movementData mData2;
+    /*LAPAL::movementData mData2;
     mData2.mov = false;
     mData2.jump = false;
     mData2.spi = false;
@@ -363,18 +363,18 @@ void addObjects(){
     mData2.dAcc = 1.f;
     mData2.brake_acc = 0.4;
 
-    std::shared_ptr<IComponent> moveCP2 = PhysicsManager::getInstance().createMoveComponent(*ob5.get(), mData2, terrain, 1);
+    std::shared_ptr<IComponent> moveCP2 = PhysicsManager::getInstance().createMoveComponent(*ob5.get(), mData2, terrain, 1);*/
 
     //===============================================================
     // SETS ALL MOVING CHARACTERS
     //===============================================================
     PhysicsManager::getInstance().createMovingCharacter(moveCP1, terrainCP1, collisionCP1);
-    PhysicsManager::getInstance().createMovingCharacter(moveCP2, terrainCP1, collisionCP3);
+    //PhysicsManager::getInstance().createMovingCharacter(moveCP2, terrainCP1, collisionCP3);
 
     //===============================================================
     // ADD AI COMPONENTS
     //===============================================================
-    AIManager::getInstance().createAIDrivingComponent(*ob5.get());
+    //AIManager::getInstance().createAIDrivingComponent(*ob5.get());
 
     //===============================================================
     // Update to distribute all creation events

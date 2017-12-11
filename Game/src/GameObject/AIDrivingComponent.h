@@ -25,7 +25,7 @@ class AIDrivingComponent : public IComponent{
         glm::vec3 getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed);
 
         //Makes NPC turn a fixated angle based on data
-        static float girar(std::vector<VObject*>, glm::vec3 waypoint, float distance, float a, float b, float maxR);
+        static float girar(std::vector<VObject*>, glm::vec3 waypoint, float a, float b);
         
         //Makes NPC accelerate or brake based on data
         static float acelerar_frenar(std::vector<VObject*>, float direction, float speed, float b_w, float a_w);

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../GameObject/AIDrivingComponent.h"
+#include "../GameObject/MoveComponent.h"
+#include "../GameObject/VObject.h"
 #include <vector>
 
 class AIManager{

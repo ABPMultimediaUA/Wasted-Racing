@@ -113,7 +113,7 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 
 
 //---------------------------*/
-float AIDrivingComponent::girar(std::vector<VObject*> array, glm::vec3 waypoint, float distance, float a, float b, float maxR)
+float AIDrivingComponent::girar(std::vector<VObject*> array, glm::vec3 waypoint, float a, float b)
 {	
 	//final turn decision
 	float decision = 0.0f;
@@ -215,8 +215,8 @@ float AIDrivingComponent::girar(std::vector<VObject*> array, glm::vec3 waypoint,
 }
 
 
-//Decides wheter the NPC should brake, do nothing or accelerate, and in which proportion. Takes in account where objects are, distance to closest one, and where
-//are is the NPC going.
+//Decides wheter the NPC should brake, do nothing or accelerate, and in which proportion. Takes in account where objects are, distance to closest one, where the NPC
+//is going, and where it is headed to.
 /*//APARTADO DE MEJORAS//////
 >Añadir que si tienes que girar demasiado a la derecha o izquierda para llegar a tu objetivo, que frenes
 
