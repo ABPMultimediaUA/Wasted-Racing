@@ -1,22 +1,26 @@
 #pragma once
 
-#include "IAIComponent.h"
+#include "IComponent.h"
 #include "VObject.h"
 #include <glm/ext.hpp>
 #include <list>
 #include <vector>
 
-class AIDrivingComponent : public IAIComponent{
-    private:
-
-        float seconds;
-        
+class AIDrivingComponent : public IComponent{
     public:
-        AIDrivingComponent(GameObject& newGameObject);
+        AIDrivingComponent(GameObject& newGameObject) : IComponent(newGameObject) {};
 
-        ~AIDrivingComponent();
+        //Destructor
+        virtual ~AIDrivingComponent() {};
 
-        void setSeconds(float sec);
+        //Initilizer
+        virtual void init();
+
+        //Update
+        virtual void update(float dTime);
+
+        //Closer
+        virtual void close();
 
         glm::vec3 getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed);
 
@@ -44,5 +48,10 @@ class AIDrivingComponent : public IAIComponent{
         //Returns in Cx and Cy. and the area of the trapezoid's X,Y positions of its centroid, given the height h
         static void centroidT2(float* cx, float* cy, float* area, float h, float limit1, float limit2, float limit3, float limit4);
     
-
+        //setters
+        void setSeconds(float sec)      {  seconds = sec;   };
+    
+    private:
+        float seconds;
+        
 };

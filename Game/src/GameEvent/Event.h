@@ -25,6 +25,8 @@ enum EventType {
     TerrainComponent_Delete,
     CollisionComponent_Create,
     CollisionComponent_Delete,
+    AIDrivingComponent_Create,
+    AIDrivingComponent_Delete,
     //PLAYER: Basic control keys
     Key_Advance_Down,
     Key_Advance_Up,
@@ -56,7 +58,7 @@ struct EventData {
 
     std::shared_ptr<GameObject> Object;
     std::shared_ptr<IComponent> Component;
-
+    float grade;
 };
 
 //A event contains a type and the data related to the object

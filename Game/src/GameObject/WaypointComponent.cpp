@@ -17,34 +17,6 @@ WaypointComponent::~WaypointComponent()
 
 }
 
-//==============================================
-//Getters
-//==============================================
-
-int WaypointComponent::getLevel()
-{
-    return level;
-}
-
-float WaypointComponent::getRadius()
-{
-    return radius;
-}
-
-//==============================================
-//Setters
-//==============================================
-
-void WaypointComponent::setRadius(float rad)
-{
-    radius = rad;
-}
-
-void WaypointComponent::setLevel(int lvl)
-{
-    level = lvl;
-}
-
 //Functions
 /*
 bool WaypointComponent::checkNext(glm::vec3 pos)

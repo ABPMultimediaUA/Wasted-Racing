@@ -44,6 +44,10 @@ void Game::init() {
     waypointManager = &WaypointManager::getInstance();
     waypointManager->init();
 
+    //Initialize AI manager
+    aiManager = &AIManager::getInstance();
+    aiManager->init();
+
     addObjects();
 }
 
@@ -56,8 +60,13 @@ void Game::update() {
     inputManager->update();
 
     physicsManager->update(0.02);
-    //audioManager->playSound();
+
+    aiManager->update();
+
     renderManager->update();
+
+
+
     //Event manager has to be the last to be updated
     eventManager->update();
 
@@ -81,7 +90,7 @@ void Game::close() {
     inputManager->close();
     eventManager->close();
     waypointManager->close();
-
+    aiManager->close();
 }
 
 //====================================================
@@ -107,7 +116,7 @@ void addObjects(){
     uint16_t id = 1;
     GameObject::TransformationData transform;
     
-    transform.position = glm::vec3(0,0,0);
+    /*transform.position = glm::vec3(0,0,0);
     std::cout << std::endl;
     ObjectManager::getInstance().createObject(id, transform);
     ObjectManager::getInstance().createObject(id, transform);
@@ -141,7 +150,7 @@ void addObjects(){
     EventManager::getInstance().update();
     std::cout << std::endl;
     ObjectManager::getInstance().showObjects();
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 
     //================================================
     // EXPECTED OUTPUT
@@ -167,16 +176,34 @@ void addObjects(){
     //===============================================================
     // CREATE FIVE POSITIONED OBJECTS
     //===============================================================
+    //Planes:
     id = 4;
     transform.position = glm::vec3(0,-5,0);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(50,0.01,50);
     auto ob1 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 10;
+    transform.position = glm::vec3(500,38,0);
+    transform.rotation = glm::vec3(0,0,10);
+    transform.scale    = glm::vec3(50,0.01,50);
+    auto ob7 = ObjectManager::getInstance().createObject(id, transform);
+
+    //Player:
     id = 5;
     transform.position = glm::vec3(20,100,20);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(0.5,0.5,0.5);
     auto ob2 = ObjectManager::getInstance().createObject(id, transform);
+
+    //AI:
+    id = 8;
+    transform.position = glm::vec3(60,0,60);
+    transform.rotation = glm::vec3(45,45,45);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob5 = ObjectManager::getInstance().createObject(id, transform);
+
+    //Obstacles:
     id = 6;
     transform.position = glm::vec3(30,0,30);
     transform.rotation = glm::vec3(0,0,0);
@@ -187,24 +214,11 @@ void addObjects(){
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(1,1,1);
     auto ob4 = ObjectManager::getInstance().createObject(id, transform);
-    id = 8;
-    transform.position = glm::vec3(60,0,60);
-    transform.rotation = glm::vec3(45,45,45);
-    transform.scale    = glm::vec3(1,1,1);
-    auto ob5 = ObjectManager::getInstance().createObject(id, transform);
-
     id = 9;
     transform.position = glm::vec3(0,0,0);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(1,1,1);
     auto ob6 = ObjectManager::getInstance().createObject(id, transform);
-
-    id = 10;
-    transform.position = glm::vec3(500,38,0);
-    transform.rotation = glm::vec3(0,0,10);
-    transform.scale    = glm::vec3(50,0.01,50);
-    auto ob7 = ObjectManager::getInstance().createObject(id, transform);
-
     id = 11;
     transform.position = glm::vec3(100, 0, 0);
     transform.rotation = glm::vec3(0, 0, 0);
@@ -237,6 +251,12 @@ void addObjects(){
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
     //===============================================================
     std::shared_ptr<IComponent> iCP = InputManager::getInstance().createInputComponent(*ob2.get());
+
+    //===============================================================
+    // ADD AN INPUT COMPONENT TO THE AI OBJECTS
+    //===============================================================
+    std::shared_ptr<IComponent> iCP2 = InputManager::getInstance().createInputComponent(*ob5.get());
+
 
     //===============================================================
     // ADD A CAMERA COMPONENT TO THE FIRST OBJECT
@@ -313,9 +333,47 @@ void addObjects(){
     std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
 
     //===============================================================
-    // SETS A MOVING CHARACTER
+    // ADD A MOVE COMPONENT TO THE AI
+    //===============================================================
+    LAPAL::movementData mData2;
+    mData2.mov = false;
+    mData2.jump = false;
+    mData2.spi = false;
+
+    mData2.angInc = 0;
+    mData2.angle = 0;
+    mData2.spin = 0;
+    mData2.spin_inc = 0.00001;
+    mData2.max_spin = 0.03;
+    mData2.brake_spin = 0.2;
+
+    mData2.rotateX = 0.f;
+    mData2.rotateZ = 0.f;
+    mData2.rotate_inc = 0.15f;
+    mData2.max_rotate = 3.f;
+
+    mData2.vel = 0;
+    mData2.max_vel = 50.0f;
+    mData2.brake_vel = 5.f;
+    mData2.velY = 10.f;
+
+    mData2.acc = 0;
+    mData2.max_acc = 10.f;
+    mData2.dAcc = 1.f;
+    mData2.brake_acc = 0.4;
+
+    std::shared_ptr<IComponent> moveCP2 = PhysicsManager::getInstance().createMoveComponent(*ob5.get(), mData2, terrain, 1);
+
+    //===============================================================
+    // SETS ALL MOVING CHARACTERS
     //===============================================================
     PhysicsManager::getInstance().createMovingCharacter(moveCP1, terrainCP1, collisionCP1);
+    PhysicsManager::getInstance().createMovingCharacter(moveCP2, terrainCP1, collisionCP3);
+
+    //===============================================================
+    // ADD AI COMPONENTS
+    //===============================================================
+    AIManager::getInstance().createAIDrivingComponent(*ob5.get());
 
     //===============================================================
     // Update to distribute all creation events
