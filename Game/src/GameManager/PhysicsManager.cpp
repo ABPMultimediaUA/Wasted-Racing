@@ -41,7 +41,7 @@ void PhysicsManager::update(const float dTime) {
         ourMove->update(dTime);
         
         //==============================================================================
-        // Check collisions with character
+        // Check collisions with other objects
         //==============================================================================
         for(unsigned int j=0; j<collisionComponentList.size(); ++j) {
             CollisionComponent* hisColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList.at(j)).get();
@@ -68,18 +68,55 @@ void PhysicsManager::update(const float dTime) {
         }
 
         //==============================================================================
-        // Check collisions with terrain
+        // Check collisions with terrain limits and terrain change
         //==============================================================================
+        calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl);
+        
+    }
+}
+
+void PhysicsManager::close() {
+
+}
+
+
+//==============================================================================
+// PRIVATE FUNCTIONS
+//==============================================================================
+
+void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
+
+    float ourMass = ourMove->getMass();
+    float hisMass = 5;
+
+    auto ourMData = ourMove->getMovemententData();
+
+    LAPAL::vec3f ourVel = ourMData.velocity;
+    LAPAL::vec3f hisVel = glm::vec3(0,0,0);
+
+    //Calculate new velocity after collision
+    LAPAL::calculateElasticCollision(ourVel, ourMass, hisVel, hisMass);
+    ourMData.velocity = ourVel;
+
+    //Calculate new velocity module
+    float newVel    = -sqrt(ourVel.x*ourVel.x + ourVel.z*ourVel.z);
+    ourMData.vel    = newVel;
+
+    //-----_TESTING_------
+    ourMData.spin = -ourMData.spin;
+
+    //Set new movement
+    ourMove->setMovementData(ourMData);
+    auto tData = ourMove->getGameObject().getTransformData();
+    ourMove->getGameObject().setTransformData(tData);
+}
+
+void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, MoveComponent* ourMove, TerrainComponent* ourTerr, CollisionComponent* ourColl) {
+
         auto terrain    = ourMove->getTerrain();
         auto ourMData   = ourMove->getGameObject().getTransformData();
         auto ourMovementData = ourMove ->getMovemententData();
         float radius    = ourColl->getRadius();
-        
-        //------JUST IN CASE
-        //float distance  = 0;
-
-
-        //We could have an error for not using shared_ptrs inside TerrainComponent(?)
         
         //Composition values of the point inside the terrain
         float a, b;
@@ -104,7 +141,7 @@ void PhysicsManager::update(const float dTime) {
 
                 if(a2>0 && b2<0 && glm::abs(a2)+glm::abs(b2)>=1){      //if the point is not inside the original terrain it means it stepped into the other one
                     ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = ourTerr->getNext(); //Set new terrain component
+                    movingChar.terrainComponent = ourTerr->getNext(); //Set new terrain component
                 }
             }
         }
@@ -120,7 +157,7 @@ void PhysicsManager::update(const float dTime) {
 
                 if(a2>0 && b2>0 && glm::abs(a2)+glm::abs(b2)>=1){      //if the point is not inside the original terrain it means it stepped into the other one
                     ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = ourTerr->getRight(); //Set new terrain component
+                    movingChar.terrainComponent = ourTerr->getRight(); //Set new terrain component
                 }
             }
         }
@@ -136,7 +173,7 @@ void PhysicsManager::update(const float dTime) {
 
                 if(a2>0 && b2>0 && a2 - b2<=0){      //if the point is not inside the original terrain it means it stepped into the other one
                     ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = ourTerr->getPrev(); //Set new terrain component
+                    movingChar.terrainComponent = ourTerr->getPrev(); //Set new terrain component
                 }
             }
         }
@@ -152,44 +189,16 @@ void PhysicsManager::update(const float dTime) {
 
                 if(a2>0 && b2<0 && a2+b2<=0){      //if the point is not inside the original terrain it means it stepped into the other one
                     ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
-                    movingCharacterList.at(i).terrainComponent = ourTerr->getLeft(); //Set new terrain component
+                    movingChar.terrainComponent = ourTerr->getLeft(); //Set new terrain component
                 }
             }
         }
-    }
 }
 
-void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
 
-    float ourMass = ourMove->getMass();
-    float hisMass = 2;
-
-    auto ourMData = ourMove->getMovemententData();
-
-    LAPAL::vec3f ourVel = ourMData.velocity;
-    LAPAL::vec3f hisVel = glm::vec3(0,0,0);
-
-    //Calculate new velocity after collision
-    LAPAL::calculateElasticCollision(ourVel, ourMass, hisVel, hisMass);
-    ourMData.velocity = ourVel;
-
-    //Calculate new velocity module
-    float newVel    = -sqrt(ourVel.x*ourVel.x + ourVel.z*ourVel.z);
-    ourMData.vel    = newVel;
-
-    //-----_TESTING_------
-    ourMData.spin = -ourMData.spin;
-
-    //Set new movement
-    ourMove->setMovementData(ourMData);
-    auto tData = ourMove->getGameObject().getTransformData();
-    tData.position += ourVel+ourVel;
-    ourMove->getGameObject().setTransformData(tData);
-}
-
-void PhysicsManager::close() {
-
-}
+//==============================================================================
+// COMPONENT CREATOR FUNCTIONS
+//==============================================================================
 
 IComponent::Pointer PhysicsManager::createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass) {
 
