@@ -25,7 +25,7 @@ void MoveComponent::update(float dTime) {
 
     auto trans = getGameObject().getTransformData();
 
-    updateJump(mData, trans);
+    updateJump(mData, trans, terrain);
 
     /*
      if(mData.jump == true){
@@ -168,10 +168,11 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
 }
 
-void MoveComponent::updateJump(LAPAL::movementData& mData, auto& trans){
+void MoveComponent::updateJump(LAPAL::movementData& mData, auto& trans, LAPAL::plane3f t){
 
     if(mData.jump == true){
-       if(LAPAL::calculateExpectedY(terrain, trans.position) == trans.position.y){ 
+        //if(LAPAL::checkTerrain(t))
+       if(LAPAL::calculateExpectedY(t, trans.position) == trans.position.y){ 
            mData.posY = trans.position.y;
            mData.asc = true;
             //std::cout << "---------------------------------->Estoy entrando en el if" << std::endl;
