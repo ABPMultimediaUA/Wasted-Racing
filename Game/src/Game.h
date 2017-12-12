@@ -13,7 +13,7 @@
 #include "GameManager/AIManager.h"
 #include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
-//#include "GameFacade/AudioFMOD.h"
+#include "GameFacade/AudioFMOD.h"
 
 
 class Game {
