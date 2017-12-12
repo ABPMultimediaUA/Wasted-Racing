@@ -342,7 +342,7 @@ void addObjects(){
     //===============================================================
     // ADD A MOVE COMPONENT TO THE AI
     //===============================================================
-    /*LAPAL::movementData mData2;
+    LAPAL::movementData mData2;
     mData2.mov = false;
     mData2.jump = false;
     mData2.spi = false;
@@ -369,18 +369,18 @@ void addObjects(){
     mData2.dAcc = 1.f;
     mData2.brake_acc = 0.4;
 
-    std::shared_ptr<IComponent> moveCP2 = PhysicsManager::getInstance().createMoveComponent(*ob5.get(), mData2, terrain, 1);*/
+    std::shared_ptr<IComponent> moveCP2 = PhysicsManager::getInstance().createMoveComponent(*ob5.get(), mData2, terrain, 1);
 
     //===============================================================
     // SETS ALL MOVING CHARACTERS
     //===============================================================
     PhysicsManager::getInstance().createMovingCharacter(moveCP1, terrainCP1, collisionCP1);
-    //PhysicsManager::getInstance().createMovingCharacter(moveCP2, terrainCP1, collisionCP3);
+    PhysicsManager::getInstance().createMovingCharacter(moveCP2, terrainCP1, collisionCP3);
 
     //===============================================================
     // ADD AI COMPONENTS
     //===============================================================
-    //AIManager::getInstance().createAIDrivingComponent(*ob5.get());
+    AIManager::getInstance().createAIDrivingComponent(*ob5.get());
 
     //===============================================================
     // Update to distribute all creation events
