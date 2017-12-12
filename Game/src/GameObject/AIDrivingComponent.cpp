@@ -19,9 +19,9 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 {
     glm::vec3 nextPos;
 
-	auto wpComponent = WaypointManager::getInstance();
+	auto wpManager = WaypointManager::getInstance();
 
-    std::vector<GameObject::Pointer> listNodes = wpComponent.getWaypoints(); //Check if i can to use without this
+    std::vector<GameObject::Pointer> listNodes = wpManager.getWaypoints(); //Check if i can to use without this
 
     float tour = (modSpeed * seconds) * (modSpeed * seconds);
 
@@ -32,28 +32,28 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 
     int lvl;
 
-    for (size_t i = wpComponent.getLastPosVector(); i < listNodes.size(); i++)
+    for (size_t i = wpManager.getLastPosVector(); i < listNodes.size(); i++)
 	{
-		lvl = listNodes[wpComponent.getLastPosVector()]->getComponent<WaypointComponent>()->getLevel();
-        if(listNodes[i]->getComponent<WaypointComponent>()->getLevel() >= lvl)
+		lvl = listNodes[wpManager.getLastPosVector()].get()->getComponent<WaypointComponent>()->getLevel();
+        if(listNodes[i].get()->getComponent<WaypointComponent>()->getLevel() >= lvl)
         {
-            wpComponent.setDistLastWay(listNodes[wpComponent.getLastPosVector()], pos);
-            distNode = (listNodes[i]->getTransformData().position.x - pos.x) * (listNodes[i]->getTransformData().position.x - pos.x) +
-                    (listNodes[i]->getTransformData().position.y - pos.y) * (listNodes[i]->getTransformData().position.y - pos.y) +
-                    (listNodes[i]->getTransformData().position.z - pos.z) * (listNodes[i]->getTransformData().position.z - pos.z);
+            wpManager.setDistLastWay(listNodes[wpManager.getLastPosVector()], pos);
+            distNode = (listNodes[i].get()->getTransformData().position.x - pos.x) * (listNodes[i].get()->getTransformData().position.x - pos.x) +
+                    (listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
+                    (listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
 
-            if(lvl == listNodes[i]->getComponent<WaypointComponent>()->getLevel())
+            if(lvl == listNodes[i].get()->getComponent<WaypointComponent>()->getLevel())
             {
-                if(wpComponent.getDistLastWay() == -1 || distNode < wpComponent.getDistLastWay())
+                if(wpManager.getDistLastWay() == -1 || distNode < wpManager.getDistLastWay())
                 {
-                    wpComponent.setLastPosVector(i);
+                    wpManager.setLastPosVector(i);
                 }
             }
-            else if((lvl+1) == listNodes[i]->getComponent<WaypointComponent>()->getLevel())
+            else if((lvl+1) == listNodes[i].get()->getComponent<WaypointComponent>()->getLevel())
             {
-                if(tour-wpComponent.getDistLastWay() < 0)
+                if(tour-wpManager.getDistLastWay() < 0)
                 {
-                    nextPos = ((tour/wpComponent.getDistLastWay()) * (listNodes[wpComponent.getLastPosVector()]->getTransformData().position - pos)) + pos;
+                    nextPos = ((tour/wpManager.getDistLastWay()) * (listNodes[wpManager.getLastPosVector()].get()->getTransformData().position - pos)) + pos;
                     
                     return nextPos;
                 }
@@ -61,43 +61,43 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
                 {
                     if(distNode <= tour)
                     {
-                    	wpComponent.setLastPosVector(i);
+                    	wpManager.setLastPosVector(i);
                     }                        
                 }
             }
         }
 	}
-		lastPosVector = wpComponent.getLastPosVector();
+		lastPosVector = wpManager.getLastPosVector();
         distanceNextNode  = -1;
 
-        for(size_t i = wpComponent.getLastPosVector(); i < listNodes.size(); i++)
+        for(size_t i = wpManager.getLastPosVector(); i < listNodes.size(); i++)
         {  
-			if(listNodes[i]->getComponent<WaypointComponent>()->getLevel() == listNodes[wpComponent.getLastPosVector()]->getComponent<WaypointComponent>()->getLevel()+1)
+			if(listNodes[i]->getComponent<WaypointComponent>()->getLevel() == listNodes[wpManager.getLastPosVector()]->getComponent<WaypointComponent>()->getLevel()+1)
 			{
-				distNode = (listNodes[i]->getTransformData().position.x - pos.x) * (listNodes[i]->getTransformData().position.x - pos.x) +
-                        (listNodes[i]->getTransformData().position.y - pos.y) * (listNodes[i]->getTransformData().position.y - pos.y) +
-                        (listNodes[i]->getTransformData().position.z - pos.z) * (listNodes[i]->getTransformData().position.z - pos.z);
+				distNode = (listNodes[i].get()->getTransformData().position.x - pos.x) * (listNodes[i].get()->getTransformData().position.x - pos.x) +
+                        (listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
+                        (listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
 
 				if(distanceNextNode == -1 || distanceNextNode > distNode)
 				{
 					distanceNextNode = distNode;
-					wpComponent.setLastPosVector(i);
+					wpManager.setLastPosVector(i);
 				}
 			}
         }
 
-        distNode = (pos.x - listNodes[lastPosVector]->getTransformData().position.x) * (pos.x - listNodes[lastPosVector]->getTransformData().position.x) +
-                (pos.y - listNodes[lastPosVector]->getTransformData().position.y) * (pos.y - listNodes[lastPosVector]->getTransformData().position.y) +
-                (pos.z - listNodes[lastPosVector]->getTransformData().position.z) * (pos.z - listNodes[lastPosVector]->getTransformData().position.z);
+        distNode = (pos.x - listNodes[lastPosVector].get()->getTransformData().position.x) * (pos.x - listNodes[lastPosVector]->getTransformData().position.x) +
+                (pos.y - listNodes[lastPosVector].get()->getTransformData().position.y) * (pos.y - listNodes[lastPosVector]->getTransformData().position.y) +
+                (pos.z - listNodes[lastPosVector].get()->getTransformData().position.z) * (pos.z - listNodes[lastPosVector]->getTransformData().position.z);
         
-		dist = ( pos.x - listNodes[wpComponent.getLastPosVector()]->getTransformData().position.x) * ( pos.x - listNodes[wpComponent.getLastPosVector()]->getTransformData().position.x) +
-				( pos.y - listNodes[wpComponent.getLastPosVector()]->getTransformData().position.y) * ( pos.y - listNodes[wpComponent.getLastPosVector()]->getTransformData().position.y) +
-				(pos.z - listNodes[wpComponent.getLastPosVector()]->getTransformData().position.z) * ( pos.z - listNodes[wpComponent.getLastPosVector()]->getTransformData().position.z);
+		dist = ( pos.x - listNodes[wpManager.getLastPosVector()].get()->getTransformData().position.x) * ( pos.x - listNodes[wpManager.getLastPosVector()].get()->getTransformData().position.x) +
+				( pos.y - listNodes[wpManager.getLastPosVector()].get()->getTransformData().position.y) * ( pos.y - listNodes[wpManager.getLastPosVector()].get()->getTransformData().position.y) +
+				(pos.z - listNodes[wpManager.getLastPosVector()].get()->getTransformData().position.z) * ( pos.z - listNodes[wpManager.getLastPosVector()].get()->getTransformData().position.z);
 		
 		tour -= distNode;
 		
 
-        nextPos = ((tour/dist) * (listNodes[wpComponent.getLastPosVector()]->getTransformData().position - listNodes[lastPosVector]->getTransformData().position) + listNodes[lastPosVector]->getTransformData().position);
+        nextPos = ((tour/dist) * (listNodes[wpManager.getLastPosVector()].get()->getTransformData().position - listNodes[lastPosVector].get()->getTransformData().position) + listNodes[lastPosVector].get()->getTransformData().position);
 		
         
     return nextPos;
