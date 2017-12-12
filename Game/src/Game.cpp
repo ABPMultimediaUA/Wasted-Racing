@@ -48,6 +48,10 @@ void Game::init() {
     aiManager = &AIManager::getInstance();
     aiManager->init();
 
+    //Initialize Sensor manager
+    sensorManager = &SensorManager::getInstance();
+    sensorManager->init();
+
     addObjects();
 }
 
@@ -65,6 +69,7 @@ void Game::update() {
 
     renderManager->update();
 
+    sensorManager->update();
 
 
     //Event manager has to be the last to be updated
@@ -94,6 +99,7 @@ void Game::close() {
     eventManager->close();
     waypointManager->close();
     aiManager->close();
+    sensorManager->close();
 }
 
 //====================================================
@@ -381,6 +387,7 @@ void addObjects(){
     // ADD AI COMPONENTS
     //===============================================================
     AIManager::getInstance().createAIDrivingComponent(*ob5.get());
+    SensorManager::getInstance().createVSensorComponent(*ob5.get());
 
     //===============================================================
     // Update to distribute all creation events

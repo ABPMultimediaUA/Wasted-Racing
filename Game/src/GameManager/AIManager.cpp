@@ -34,17 +34,32 @@ void AIManager::init() {
  >Input de los sensores
  >Dividir las llamadas a las funciones en diferentes tempos
  >Implementar con el resource manager
+ >Comprobar que no son null y añadir comportamientos externos
 */
 //------------------------------------
 void AIManager::update() {
     //A update method should be defined by team IA
     for(unsigned int i=0; i<objectsAI.size(); ++i){
         //objectsAI->getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed);
-        auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI.at(i));
-        /*auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
+        auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI.at(i)).get();
+        auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
+        auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
 
+        if(aiDrivingComponent && moveComponent && vSensorComponent){
+            std::vector<VObject::Pointer> seenObjects = vSensorComponent->getSeenObjects();
+
+            //DECIDE STUFF
+            float turnValue = aiDrivingComponent->girar(seenObjects, glm::vec3(200.f,0,-200.f), 0.f, 0.f);
+            float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), 0.f, 0.f);
+            //----------------------------------
+
+            //Send signal of movement
+            moveComponent->isMoving(true);
+            moveComponent->changeAccInc(speedValue);
+            moveComponent->changeAngleInc(turnValue*0.0001f);
+        }
         //Get next waypoint
-        glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
+        /*glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
                                                             moveComponent->getMovemententData().velocity,
                                                             moveComponent->getMovemententData().vel);
 
@@ -67,17 +82,9 @@ void AIManager::update() {
             b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
         if(sensorLeft.x != 0){
             a = (relativeP.z - b * sensorRight.z) / sensorLeft.z;
-        }
+        }*/
 
-        //DECIDE STUFF
-        float turnValue = aiDrivingComponent->girar(objects, objective, a, b);
-        float speedValue = aiDrivingComponent->acelerar_frenar(objects, turnValue, angleInitial, b, a);
-        //----------------------------------
 
-        //Send signal of movement
-        moveComponent->isMoving(true);
-        moveComponent->changeAccInc(speedValue);
-        moveComponent->changeAngleInc(turnValue*0.0001f);*/
     }
 }
 

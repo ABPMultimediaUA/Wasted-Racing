@@ -17,14 +17,24 @@ class VSensorComponent : public ISensorComponent{
         //Destructor
         virtual ~VSensorComponent() {};
 
+        //Initialize
+        virtual void init(){};
+
+        //Close
+        virtual void close(){};
+
+        //update
+        virtual void update(float dTime){};
 
         //Checks the objects receives and stores the ones seen in the seenObjects vector
         void updateSeenObjects(std::vector<GameObject::Pointer> objects);
 
         //Getters and setters
         std::vector<VObject::Pointer> getSeenObjects()           {   return seenObjects;    };
-        glm::vec3 getSensorLeft()                        {   return sensorLeft;     };
-        glm::vec3 getSensorRight()                       {   return sensorRight;    };
+        glm::vec3 getSensorLeft()                                {   return sensorLeft;     };
+        glm::vec3 getSensorRight()                               {   return sensorRight;    };
+        float getAngleInitial()                                  {   return angleInitial;   };
+        float getAngleVision()                                   {   return angleVision;    };
 
     private:
         //Angle of the sensor

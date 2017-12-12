@@ -29,6 +29,8 @@ enum EventType {
     AIDrivingComponent_Delete,
     RampComponent_Create,
     RampComponent_Delete,
+    VSensorComponent_Create,
+    VSensorComponent_Delete,
     //COLLISION: Events triggered to certain collisions
     RampComponent_Collision,
     //PLAYER: Basic control keys

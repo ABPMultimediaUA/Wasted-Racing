@@ -113,7 +113,7 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 
 
 //---------------------------*/
-float AIDrivingComponent::girar(std::vector<VObject*> array, glm::vec3 waypoint, float a, float b)
+float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 waypoint, float a, float b)
 {	
 	//final turn decision
 	float decision = 0.0f;
@@ -142,7 +142,7 @@ float AIDrivingComponent::girar(std::vector<VObject*> array, glm::vec3 waypoint,
 	if(array.size()>0){
 		float atan_obs = 0.0f;
 		for(unsigned i = 0; i<array.size(); i++){
-			atan_obs += (glm::atan(array.at(i)->getA(),array.at(i)->getB()) / 3.14159265358979323846264338327f )/array.size();
+			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
 		}
 
 		//collisions
@@ -222,7 +222,7 @@ float AIDrivingComponent::girar(std::vector<VObject*> array, glm::vec3 waypoint,
 
 
 //---------------------------*/
-float AIDrivingComponent::acelerar_frenar(std::vector<VObject*> array, float direction, float speed, float b_w, float a_w)
+float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, float direction, float speed, float b_w, float a_w)
 {
 	//final turn decision
 	float decision = 0.0f;
@@ -247,8 +247,8 @@ float AIDrivingComponent::acelerar_frenar(std::vector<VObject*> array, float dir
 		//Previous calculus
 		float atan_obs = 0.0f, min_value = FLT_MAX;
 		for(unsigned i = 0; i<array.size(); i++){
-			atan_obs += (glm::atan(array.at(i)->getA(),array.at(i)->getB()) / 3.14159265358979323846264338327f )/array.size();
-			min_value = glm::min(min_value,array.at(i)->getA()+array.at(i)->getB());
+			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
+			min_value = glm::min(min_value,array[i].get()->getA()+array[i].get()->getB());
 		}
 
 		//Dividing between speed to get a time of impact
