@@ -3,7 +3,6 @@
 #include "IComponent.h"
 #include "VObject.h"
 #include <glm/ext.hpp>
-#include <list>
 #include <vector>
 
 class AIDrivingComponent : public IComponent{
