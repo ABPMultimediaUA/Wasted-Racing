@@ -1,4 +1,4 @@
-/*#include "AudioFMOD.h"
+#include "AudioFMOD.h"
 
 void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 {
@@ -57,7 +57,6 @@ void AudioFMOD::playSound(){
     ERRCHECK(acceptInstance->start());
     ERRCHECK(acceptInstance->release());
     */
-/*
+
     ERRCHECK(system->update());
 }
-*/
