@@ -12,64 +12,58 @@ namespace LAPAL{
 
     //3d 4 point plane
     struct plane3f{
-        vec3f p1;
-        vec3f p2;
-        vec3f p3;
-        vec3f p4;
-        float fric; //friction coeficient !NOT FRICTION FORCE
-        float rotX;     //rotation on X
-        float rotZ;     //rotation on Z
+        vec3f p1 = glm::vec3(0,0,0);
+        vec3f p2 = glm::vec3(0,0,0);
+        vec3f p3 = glm::vec3(0,0,0);
+        vec3f p4 = glm::vec3(0,0,0);
+        float fric = 0.0f; //friction coeficient !NOT FRICTION FORCE
+        float rotX = 0.0f;     //rotation on X
+        float rotZ = 0.0f;     //rotation on Z
     };
 
     //Movement data
     struct movementData{
         //conditionals
-        bool jump;  //To know if the object is jumping
-        bool mov;   //To know if a movement related key is pressed
-        bool spi;   //To know if a spin related key is pressed
+        bool jump = false;      //To know if the object is jumping
+        bool mov  = false;      //To know if a movement related key is pressed
+        bool spi  = false;      //To know if a spin related key is pressed
         
         //spin
-        float angInc;       //?
-        float angle;        //Angle faced by object
-        float spin;         //Speed of movement added to angle
-        float spin_inc;     //Increment of the spin
-        float max_spin;     //Maximum spin
-        float brake_spin;   //Spin desaceleration by sheer time
+        float angInc    = 0.0f;         //?
+        float angle     = 0.0f;         //Angle faced by object
+        float spin      = 0.0f;         //Speed of movement added to angle
+        float spin_inc  = 0.0f;         //Increment of the spin
+        float max_spin  = 0.0f;         //Maximum spin
+        float brake_spin= 0.0f;         //Spin desaceleration by sheer time
 
         //Speed variables
-        float vel;          //Lineal speed
-        float max_vel;      //Maximum lineal speed
-        float brake_vel;    //Natural braking speed
-        float velY;         //vertical speed
+        float vel       = 0.0f;         //Lineal speed
+        float max_vel   = 0.0f;         //Maximum lineal speed
+        float brake_vel = 0.0f;         //Natural braking speed
+        float velY      = 0.0f;         //vertical speed
 
-        float acc;          //Linear acceleration
-        float max_acc;      //Maximum linear acceleration
-        float dAcc;         //Acceleration increment
-        float brake_acc;    //Acceleration natural braking
+        float acc       = 0.0f;         //Linear acceleration
+        float max_acc   = 0.0f;         //Maximum linear acceleration
+        float dAcc      = 0.0f;         //Acceleration increment
+        float brake_acc = 0.0f;         //Acceleration natural braking
 
         //Rotation in different axis
-        float angX;         //angle in X axis
-        float angZ;         //angle in Z axis
-        float rotateX;       //rotation speed towards X
-        float rotateZ;       //rotation speed towards X
-        float rotate_inc;   //rotation speed towards those angles
-        float max_rotate;   //maximum rotation speed
+        float angX          = 0.0f;         //angle in X axis
+        float angZ          = 0.0f;         //angle in Z axis
+        float rotateX       = 0.0f;         //rotation speed towards X
+        float rotateZ       = 0.0f;         //rotation speed towards X
+        float rotate_inc    = 0.0f;         //rotation speed towards those angles
+        float max_rotate    = 0.0f;         //maximum rotation speed
 
         //Movement vectors
-        vec3f velocity; //base velocity in 3d
-        vec3f finalAcc; //final acceleration
-        vec3f accDif; //difference of acceleration
+        vec3f velocity  = glm::vec3(0,0,0); //base velocity in 3d
+        vec3f finalAcc  = glm::vec3(0,0,0); //final acceleration
+        vec3f accDif    = glm::vec3(0,0,0); //difference of acceleration
 
         //Force vectors
-        vec3f netForce; 
-        vec3f frictionForce; //All the forces must be in Newtons
-        vec3f gravityForce;
-
-        //vec3f vel2d; //base velocity without minding forces 
-        //vec3f vel3d; //3d velocity
-
-       // vec3f velDif; //difference of velocity
-
+        vec3f netForce          = glm::vec3(0,0,0); 
+        vec3f frictionForce     = glm::vec3(0,0,0); //All the forces must be in Newtons
+        vec3f gravityForce      = glm::vec3(0,0,0);
 
     };
 

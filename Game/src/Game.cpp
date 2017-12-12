@@ -191,7 +191,7 @@ void addObjects(){
 
     //Player:
     id = 5;
-    transform.position = glm::vec3(20,100,20);
+    transform.position = glm::vec3(20,10,20);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(0.5,0.5,0.5);
     auto ob2 = ObjectManager::getInstance().createObject(id, transform);
@@ -300,32 +300,20 @@ void addObjects(){
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
     //===============================================================
     LAPAL::movementData mData;
-    mData.mov = false;
-    mData.jump = false;
-    mData.spi = false;
 
-    mData.angInc = 0.f;
-    mData.angle = 0.f;
-    mData.spin = 0.f;
-    mData.spin_inc = 0.1f;
-    mData.max_spin = 0.03f;
-    mData.brake_spin = 0.2f;
-    mData.angX = 0.0f;
-    mData.angZ = 0.0f;
+    mData.spin_inc = 0.1;
+    mData.max_spin = 0.03;
+    mData.brake_spin = 0.2;
 
-    mData.rotateX = 0.f;
-    mData.rotateZ = 0.f;
-    mData.rotate_inc = 0.15f;
-    mData.max_rotate = 3.f;
+    mData.rotate_inc = 0.15;
+    mData.max_rotate = 3;
 
-    mData.vel = 0.f;
-    mData.max_vel = 50.0f;
-    mData.brake_vel = 5.f;
-    mData.velY = 10.f;
+    mData.max_vel = 50.0;
+    mData.brake_vel = 5;
+    mData.velY = 10;
 
-    mData.acc = 0;
-    mData.max_acc = 10.f;
-    mData.dAcc = 1.f;
+    mData.max_acc = 10;
+    mData.dAcc = 1;
     mData.brake_acc = 0.4;
 
     std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
