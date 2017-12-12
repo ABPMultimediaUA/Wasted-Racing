@@ -21,29 +21,11 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateVelocity(mData, terrain);
     LAPAL::updateRotation(mData, terrain, dTime);
     LAPAL::correctYPosition(mData, dTime, terrain, position);
-    LAPAL::updateJump(mData);
+
 
     auto trans = getGameObject().getTransformData();
 
-    //JUMP UPDATE
-   
-     if(mData.jump == true){
-       if(LAPAL::calculateExpectedY(terrain, trans.position) == trans.position.y){ 
-           mData.posY = trans.position.y;
-           mData.asc = true;
-       }
-       std::cout << "Estoy entrando en el if" << std::endl;
-    }
-    if(mData.asc == true){
-        if(trans.position.y < mData.posY + 10){
-            mData.velocity.y += 10;
-        }
-        else{
-            mData.asc = false;
-            mData.velocity.y = 0;
-            std::cout << "ASCENDING FALSE" << std::endl;
-        }
-    }
+    updateJump(mData, trans);
 
     /*
      if(mData.jump == true){
@@ -63,7 +45,7 @@ void MoveComponent::update(float dTime) {
                 //mData.velocity.y = 0;
                 std::cout << "ASCENDING FALSE" << std::endl;
             }
-       /*  }
+         }
          else{
              if(trans.position.y < mData.posY*cos(degreeAngle) + 100){
                 mData.velocity.y += 100*cos(degreeAngle);
@@ -96,7 +78,7 @@ void MoveComponent::update(float dTime) {
     
     ///*===========================================================================================
     // DEBUG
-    system("clear");
+    //system("clear");
     std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
     std::cout << " POS Y " << trans.position.y << std::endl;
@@ -110,14 +92,8 @@ void MoveComponent::update(float dTime) {
     std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
     std::cout << " Ascending: " << mData.asc << std::endl;
     std::cout << " VEL Y " << mData.velocity.y << " POS Y" << trans.position.y << std::endl;
+    std::cout << " --------------------------->ESTADO DEL SALTO " << mData.jump << std::endl;
 
-
-    if (mData.jump == false){
-        std::cout << " No estoy saltando " << std::endl;
-    }
-    else{
-        std::cout << " Sí estoy saltando " << std::endl;
-    }
     
     //=========================================================================================*/
 }
@@ -145,12 +121,12 @@ void MoveComponent::changeAngleInc(float i){
 }
 
 void MoveComponent::isJumping(bool j){
-    if(mData.asc == false){
+   // if(mData.asc == false){
         mData.jump = j;
-    }
+  /*  }
     else{
         mData.jump = false;
-    }
+    }*/
 }
 void MoveComponent::isSpinning(bool s){
     mData.spi = s;
@@ -190,4 +166,25 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
             mData.max_vel = auxData.max_vel;
     }
 
+}
+
+void MoveComponent::updateJump(LAPAL::movementData& mData, auto& trans){
+
+    if(mData.jump == true){
+       if(LAPAL::calculateExpectedY(terrain, trans.position) == trans.position.y){ 
+           mData.posY = trans.position.y;
+           mData.asc = true;
+            //std::cout << "---------------------------------->Estoy entrando en el if" << std::endl;
+       }
+    }
+    if(mData.asc == true){
+        if(trans.position.y < mData.posY + 10){
+            mData.velocity.y += 20;
+        }
+        else{
+            mData.asc = false;
+            mData.velocity.y = 0;
+            std::cout << "ASCENDING FALSE" << std::endl;
+        }
+    }
 }

@@ -78,10 +78,6 @@ private:
     AudioFMOD* audioManager;
     //AI manager
     AIManager* aiManager;
-<<<<<<< HEAD
-=======
-
->>>>>>> b9cf590754b5e2b60b9b46d2cdbbcbcfd8297c1d
 
     //Selected renderEngine
     int renderEngine;

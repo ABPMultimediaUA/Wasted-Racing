@@ -38,6 +38,7 @@ public:
 	void changeAngleInc(float i);
 	void isJumping(bool j);
 	void isSpinning(bool s);
+	void updateJump(LAPAL::movementData& mData, auto& trans);
 
 	//Functions related with temporal data changes
 	void changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime);
