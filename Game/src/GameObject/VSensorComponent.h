@@ -4,11 +4,13 @@
 #include "VObject.h"
 #include <glm/ext.hpp>
 #include <vector>
+#include "GameObject.h"
+#include <memory>
 
 class VSensorComponent : public ISensorComponent{
     public:
 
-        //Constructor
+        //Constructors
         VSensorComponent(GameObject& newGameObject);
         VSensorComponent(GameObject& newGameObject, float angV, float angI);
         
@@ -16,12 +18,11 @@ class VSensorComponent : public ISensorComponent{
         virtual ~VSensorComponent() {};
 
 
-
         //Checks the objects receives and stores the ones seen in the seenObjects vector
-        void updateSeenObjects(GameObject** objects, int s);
+        void updateSeenObjects(std::vector<GameObject::Pointer> objects);
 
         //Getters and setters
-        std::vector<VObject*> getSeenObjects()           {   return seenObjects;    };
+        std::vector<VObject::Pointer> getSeenObjects()           {   return seenObjects;    };
         glm::vec3 getSensorLeft()                        {   return sensorLeft;     };
         glm::vec3 getSensorRight()                       {   return sensorRight;    };
 
@@ -35,7 +36,7 @@ class VSensorComponent : public ISensorComponent{
         glm::vec3 sensorLeft, sensorRight;
 
         //Objects being seen
-        std::vector<VObject*> seenObjects;
+        std::vector<VObject::Pointer> seenObjects;
 
 
 };
