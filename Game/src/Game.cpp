@@ -70,6 +70,9 @@ void Game::update() {
     //Event manager has to be the last to be updated
     eventManager->update();
 
+    audioManager->playSound();
+    audioManager->update();
+
 }
 
 //====================================================
