@@ -9,7 +9,12 @@ public:
 
     //Constructor
 	MoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newTerrain, float newMass) 
-		: IComponent(newGameObject), mData(newMData), terrain(newTerrain), mass(newMass) {}
+		: IComponent(newGameObject), mData(newMData), terrain(newTerrain), mass(newMass) {
+			
+			constantAlteredTime		= 0.0f;		
+			decrementalAlteredTime	= 0.0f;
+			maxDecrementalAT		= 0.0f;			
+		}
 
 	//Destructor
 	virtual ~MoveComponent() {};
@@ -34,6 +39,10 @@ public:
 	void isJumping(bool j);
 	void isSpinning(bool s);
 
+	//Functions related with temporal data changes
+	void changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime);
+	void updateMaxSpeedOverTime(const float dTime);
+
 	//Mass and Data getters and setters
 	LAPAL::movementData getMovemententData() 						{ 	return mData; 	}
 	const float 		getMass()									{ 	return mass;  	}
@@ -48,5 +57,11 @@ private:
     LAPAL::movementData mData;
 	LAPAL::plane3f		terrain;
 	float mass;
+
+	//Data for movement changes
+	float constantAlteredTime;		//Time during max_speed is constant
+	float decrementalAlteredTime;	//Time during max_speed is reduced to its former value
+	float maxDecrementalAT;			//Complete time interval whitin speed is reduced constantly
+	LAPAL::movementData auxData;
 
 };

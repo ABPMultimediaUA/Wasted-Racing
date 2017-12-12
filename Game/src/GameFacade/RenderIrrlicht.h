@@ -67,6 +67,9 @@ private:
     //Irrlicht video manager
     irr::video::IVideoDriver* videoDriver;
 
+    //Irrlicht geometry creator
+    const irr::scene::IGeometryCreator* geometryCreator;
+
     //Irrlicht node map
     std::map<uint16_t, irr::scene::ISceneNode*> nodeMap;
 

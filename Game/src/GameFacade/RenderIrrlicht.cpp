@@ -15,6 +15,7 @@ void RenderIrrlicht::openWindow(){
 
     videoDriver = device->getVideoDriver();
     sceneManager = device->getSceneManager();
+    geometryCreator = sceneManager->getGeometryCreator();
 
     addCamera();
     addLight();
@@ -94,6 +95,10 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
                 node = sceneManager->addSphereSceneNode();
             }
             break;
+            case ObjectRenderComponent::Shape::Plane: {
+                auto plane = geometryCreator->createPlaneMesh(irr::core::dimension2d<irr::f32>(1,1));
+                node = sceneManager->addMeshSceneNode(plane);
+            }
             default: break;
         }
 
