@@ -18,16 +18,16 @@ class VObject{
         ~VObject();
 
         //Getters
-        glm::vec3 getPosition();
-        float getA();
-        float getB();
-        float getRadius();
-        int getType();
+        glm::vec3 getPosition()     {   return position;    };
+        float getA()                {   return a;           };
+        float getB()                {   return b;           };
+        float getRadius()           {   return radius;      };
+        int getType()               {   return type;        };
 
         //Setters
-        void setPosition(glm::vec3 p);
-        void setA(float x);
-        void setB(float y);
-        void setRadius(float r);
-        void setType(int t);
+        void setPosition(glm::vec3 p)   {   position = p;   };
+        void setA(float x)              {   a = x;          };
+        void setB(float y)              {   b = y;          };
+        void setRadius(float r)         {   radius = r;     };
+        void setType(int t)             {   type = t;       };
 };

@@ -3,8 +3,6 @@
 # Name of the executable created (.exe will be added automatically if necessary)
 TARGET := XKating
 
-# Path to Irrlicht directory, should contain include/ and lib/
-IrrlichtHome := .
 # Path for the executable. Note that Irrlicht.dll should usually also be there for win32 systems
 BIN_PATH := bin/
 OBJ_PATH := obj/
@@ -24,7 +22,11 @@ MKDIR_P = mkdir -p
 #default target is Linux
 all: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP all_linux
 	$(warning Linking done!)
-	
+
+#we can also have Windows
+win: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP all_windows
+	$(warning Linking done!)
+
 create_dir: make_bin_dir make_obj_dir
 
 make_bin_dir:
@@ -58,7 +60,7 @@ make_gameP:
 	$(MAKE) -C src/GamePhysics
 
 # target specific settings
-all_linux all_win32 static_win32: LDFLAGS += -L$(IrrlichtHome)/lib/$(SYSTEM) -lIrrlicht -L/usr/lib -lfmod -lgainput -lfmodstudio 
+all_linux: LDFLAGS += -L./lib/$(SYSTEM) -lIrrlicht -L/usr/lib -lfmod -lfmodstudio 
 all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
 all_linux clean_linux: SYSTEM=Linux
 
@@ -86,7 +88,16 @@ install_linux:
 	$(warning Installing Gainput...)
 	$(shell sudo cp lib/gainput/* /usr/lib/)
 
-.PHONY: all clean clean_linux info install
+################################################################################
+# Windows 
+################################################################################
+all_windows: LDFLAGS += -L./lib/win -lIrrlicht -lopengl32 -lm #-lfmod -lfmodstudio
+all_windows:
+	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
+
+
+
+.PHONY: all clean clean_linux info install win
 
 #multilib handling
 ifeq ($(HOSTTYPE), x86_64)

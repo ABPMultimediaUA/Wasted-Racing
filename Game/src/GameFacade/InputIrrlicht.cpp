@@ -12,8 +12,11 @@ void InputIrrlicht::openInput(uintptr_t dev) {
 
 void InputIrrlicht::updateInput() { 
 
-    if(!device->run())
+    if(!device->run()){
         EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+        device->drop();
+    }
+        
 
 }
 

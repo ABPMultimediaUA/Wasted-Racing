@@ -3,19 +3,16 @@
 #include "../GameManager/WaypointManager.h"
 #include <memory>
 
-AIDrivingComponent::AIDrivingComponent(GameObject& newGameObject) : IAIComponent(newGameObject)
- {
-
- }
-
-AIDrivingComponent::~AIDrivingComponent()
-{
-
+//Initilizer
+void AIDrivingComponent::init() {
 }
 
-void AIDrivingComponent::setSeconds(float sec)
-{
-    seconds = sec;
+//Update
+void AIDrivingComponent::update(float dTime) {
+}
+
+//Closer
+void AIDrivingComponent::close() {
 }
 
 glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed)
@@ -116,255 +113,110 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 
 
 //---------------------------*/
-float AIDrivingComponent::girar(std::vector<VObject*> array, glm::vec3 waypoint, float distance, float a, float b, float maxR)
+float AIDrivingComponent::girar(std::vector<VObject*> array, glm::vec3 waypoint, float a, float b)
 {	
-	//APROXIMATION:
-	int aproximation = 3;
-
 	//final turn decision
 	float decision = 0.0f;
 
-	//Markers
-	/*
-	float INIT_GIRO = 0.0f;
-	float END_GIRO = 100;
-	float INIT_NONE = 80;
-	float END_NONE = 120;
-	*/
+	//Fuzzy decisions
+	float steeringNone = 0.0f, steeringLeft = 0.0f, steeringRight = 0.0f;
 
-	float INIT_A = 0.0f;
-	float END_A = maxR;
-	float INIT_B = 0.0f;
-	float END_B = maxR;
+	//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
+	float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
 
-	//Pertenencys
-	//float no_turn_pertenency = 0.0f;
-	//float turn_pertenency = 0.0f;
-	float a_pertenency = 0.0f;
-	float b_pertenency = 0.0f;
-	float aWP = 0.0f;
-	float bWP = 0.0f;
+	//fuzzifier and inference
+	//---------------GENERALIZE--v-------v----v
+	//waypoints
+	float wp_left = inferT(atan_w,0.25f,0.375f,0.51f);
+	float wp_center = inferT(atan_w,0.2f,0.25f,0.3f);
+	float wp_right = inferT(atan_w,-0.01f,0.125f,0.25f);
 
-	//auxiliar values
-	float totalA = 0.0f;
-	float totalB = 0.0f;
-
-	switch(aproximation){
-		//Various collisions, a waypoint. All Collisions' A-B equal 50%, Waypoint 50% too. Linear approach.
-		case 0:
-			//------------Analize waypoint
-			//USE A AND B AS TURN REGULATORS
-			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
-			//from the center
-
-			//Left and right turn in waypoint
-			if(a <= 0 || b<=0){
-				if(a<b){
-					aWP = 1;
-				}else{
-					bWP = 1;
-				}
-			}else if(a>b){
-				bWP = 1-b/a;
-			}else{
-				aWP = 1-a/b;
-			}
-			//------------Analize all obstacles
-			for(unsigned i = 0; i<array.size(); i++){
-				a_pertenency += inferL(array.at(i)->getA(), INIT_A, END_A, 0)/array.size();
-				b_pertenency += inferL(array.at(i)->getB(), INIT_B, END_B, 0)/array.size();
-			}
-
-			if(aWP>bWP){
-				decision = (-aWP + a_pertenency) * 0.5f;
-			}else{
-				decision = (bWP - b_pertenency) * 0.5f;
-			}
-			break;
-
-		//Various collisions, a waypoint. All Collisions' A-B equal 50%, Waypoint 50% too. Circular approach.
-		case 1:
-			//------------Analize waypoint
-			//USE A AND B AS TURN REGULATORS
-			//We use the circular aproximation, since the turn mulst be sharper the closer to 0 the value is, and soften the turn the further away
-			//from the center
-
-			//Left and right turn in waypoint
-			if(a <= 0 || b<=0){
-				if(a<b){
-					aWP = 1;
-				}else{
-					bWP = 1;
-				}
-			}else if(a>b){
-				bWP = 1-b/a;
-			}else{
-				aWP = 1-a/b;
-			}
-
-			//------------Analize all obstacles
-			for(unsigned i = 0; i<array.size(); i++){
-				a_pertenency += inferL(array.at(i)->getA(), INIT_A, END_A, 2)/array.size();
-				b_pertenency += inferL(array.at(i)->getB(), INIT_B, END_B, 2)/array.size();
-			}
-			
-			if(aWP>bWP){
-				decision = (-aWP + a_pertenency);
-			}else{
-				decision = (bWP - b_pertenency);
-			}
-			break;
-		
-		//Various collisions, a waypoint. Priority list based on distance to object. Waypoint also in the list.
-		case 2:
-
-			//USE A AND B AS TURN REGULATORS
-			//We use the circular aproximation, since the turn must be sharper the closer to 0 the value is, and soften the turn the further away
-			//from the center
-			
-			//------------Analize waypoint
-			//Left and right turn in waypoint
-			if(a <= 0 || b<=0){
-				if(a<b){
-					aWP = 1;
-				}else{
-					bWP = 1;
-				}
-			}else if(a>b){
-				bWP = inferL(b/a, 0, 1, 1);
-			}else{
-				aWP = inferL(a/b, 0, 1, 1);
-			}
-			
-			//------------Analize all obstacles
-
-			for(unsigned i = 0; i<array.size(); i++){
-				a_pertenency += inferL(array.at(i)->getA(), INIT_A, END_A, 1);
-				b_pertenency += inferL(array.at(i)->getB(), INIT_B, END_B, 1);
-			}
-
-			//------------final decision
-			if(totalA>totalB){
-				if(aWP+a_pertenency!=0.0f){
-					decision = (-aWP+a_pertenency)/(aWP+a_pertenency);
-				}else{
-					decision = 0;
-				}
-					
-			}else{
-				if(bWP+b_pertenency!=0.0f){
-					decision = (bWP-b_pertenency)/(bWP+b_pertenency);
-				}else{
-					decision = 0;
-				}
-			}
-
-			break;
-
-		//Real Fuzzy Logic - Cheap aproximation with angles, tangents and regret
-		case 3:
-			float steeringNone = 0.0f, steeringLeft = 0.0f, steeringRight = 0.0f;
-
-			//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
-			float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
-
-			//fuzzifier and inference
-			//---------------GENERALIZE--v-------v----v
-			//waypoints
-			float wp_left = inferT(atan_w,0.25f,0.375f,0.51f);
-			float wp_center = inferT(atan_w,0.2f,0.25f,0.3f);
-			float wp_right = inferT(atan_w,-0.01f,0.125f,0.25f);
-
-			if(atan_w<0 || atan_w>0.51){
-				if(a<b){
-					wp_right = 1.f;
-				}else{
-					wp_left = 1.f;
-				}
-			}
-
-			if(array.size()>0){
-				float atan_obs = 0.0f;
-				for(unsigned i = 0; i<array.size(); i++){
-					atan_obs += (glm::atan(array.at(i)->getA(),array.at(i)->getB()) / 3.14159265358979323846264338327f )/array.size();
-				}
-
-				//collisions
-				float obs_left = inferT(atan_obs,0.25f,0.375f,0.51f);
-				float obs_center = inferT(atan_obs,0.2f,0.25f,0.3f);
-				float obs_right = inferT(atan_obs,-0.01f,0.125f,0.25f);
-
-				if(atan_obs<0 || atan_obs>0.51){
-					if(a<b){
-						obs_right = 1.f;
-					}else{
-						obs_left = 1.f;
-					}
-				}
-
-				//Apply ruleset.
-				/*
-				ORIGINAL APPROACH
-				
-				steeringLeft  = wp_center > obs_center ? wp_center : obs_center;
-				steeringRight = wp_center > obs_left   ? wp_center : obs_left;
-				steeringLeft  = wp_center > obs_right  ? wp_center : obs_right;
-				steeringLeft  = wp_left   > obs_center ? wp_left   : obs_center;
-				steeringNone  = wp_left   > obs_left   ? wp_left   : obs_left;
-				steeringLeft  = wp_left   > obs_right  ? wp_left   : obs_right;
-				steeringRight = wp_right  > obs_center ? wp_right  : obs_center;
-				steeringRight = wp_right  > obs_left   ? wp_right  : obs_left;
-				steeringNone  = wp_right  > obs_right  ? wp_right  : obs_right;
-				*/
-
-				//New Iteration approach
-				steeringLeft = glm::min( glm::max(wp_left, wp_center), glm::max(obs_center, obs_right) );
-				steeringNone = glm::min( glm::max(1-wp_left, wp_center, 1-wp_right), glm::max(obs_left, obs_right) );
-				steeringRight = glm::min( glm::max(wp_right, wp_center), glm::max(obs_center,obs_left) );
-
-			}else{
-				//ruleset
-				//---------------GENERALIZE----conjunction and function result
-
-				steeringLeft = wp_left;
-				steeringNone = wp_center;
-				steeringRight = wp_right;
-			}
-
-			//defuzzifier inference
-			//Here we use the centroid point between the defuzzified inferences, to pinpoint the crisp steering value
-			//---------------GENERALIZE---everything
-			float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
-
-			centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.2f, 0.f, 0.2f);
-			centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.95f, -0.05f);
-			centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.05f, 0.95f, 1.0f);
-
-
-
-			//adding all the centroids and crisping end result
-			float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
-			//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
-
-			//-----------_TESTS_-----------
-			//std::cout<<"Donde vas payo: "<<cx<<std::endl;
-			//std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
-			//std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
-			//-----------_TESTS_-----------
-
-			decision = cx;
-
-			break;
+	if(atan_w<0 || atan_w>0.51){
+		if(a<b){
+			wp_right = 1.f;
+		}else{
+			wp_left = 1.f;
+		}
 	}
 
-	//std::cout<<"Colisiones: "<<a_pertenency<<" , "<<b_pertenency<<std::endl;
+	if(array.size()>0){
+		float atan_obs = 0.0f;
+		for(unsigned i = 0; i<array.size(); i++){
+			atan_obs += (glm::atan(array.at(i)->getA(),array.at(i)->getB()) / 3.14159265358979323846264338327f )/array.size();
+		}
+
+		//collisions
+		float obs_left = inferT(atan_obs,0.25f,0.375f,0.51f);
+		float obs_center = inferT(atan_obs,0.2f,0.25f,0.3f);
+		float obs_right = inferT(atan_obs,-0.01f,0.125f,0.25f);
+
+		if(atan_obs<0 || atan_obs>0.51){
+			if(a<b){
+				obs_right = 1.f;
+			}else{
+				obs_left = 1.f;
+			}
+		}
+
+		//Apply ruleset.
+		/*
+		ORIGINAL APPROACH
+		
+		steeringLeft  = wp_center > obs_center ? wp_center : obs_center;
+		steeringRight = wp_center > obs_left   ? wp_center : obs_left;
+		steeringLeft  = wp_center > obs_right  ? wp_center : obs_right;
+		steeringLeft  = wp_left   > obs_center ? wp_left   : obs_center;
+		steeringNone  = wp_left   > obs_left   ? wp_left   : obs_left;
+		steeringLeft  = wp_left   > obs_right  ? wp_left   : obs_right;
+		steeringRight = wp_right  > obs_center ? wp_right  : obs_center;
+		steeringRight = wp_right  > obs_left   ? wp_right  : obs_left;
+		steeringNone  = wp_right  > obs_right  ? wp_right  : obs_right;
+		*/
+
+		//New Iteration approach
+		steeringLeft = glm::min( glm::max(wp_left, wp_center), glm::max(obs_center, obs_right) );
+		steeringNone = glm::min( glm::max(1-wp_left, wp_center, 1-wp_right), glm::max(obs_left, obs_right) );
+		steeringRight = glm::min( glm::max(wp_right, wp_center), glm::max(obs_center,obs_left) );
+
+	}else{
+		//ruleset
+		//---------------GENERALIZE----conjunction and function result
+
+		steeringLeft = wp_left;
+		steeringNone = wp_center;
+		steeringRight = wp_right;
+	}
+
+	//defuzzifier inference
+	//Here we use the centroid point between the defuzzified inferences, to pinpoint the crisp steering value
+	//---------------GENERALIZE---everything
+	float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
+
+	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.2f, 0.f, 0.2f);
+	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.95f, -0.05f);
+	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.05f, 0.95f, 1.0f);
+
+
+
+	//adding all the centroids and crisping end result
+	float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
+	//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
+
+	//-----------_TESTS_-----------
+	//std::cout<<"Donde vas payo: "<<cx<<std::endl;
+	//std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
+	//std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
+	//-----------_TESTS_-----------
+
+	decision = cx;
+
 	return decision;
 
 }
 
 
-//Decides wheter the NPC should brake, do nothing or accelerate, and in which proportion. Takes in account where objects are, distance to closest one, and where
-//are is the NPC going.
+//Decides wheter the NPC should brake, do nothing or accelerate, and in which proportion. Takes in account where objects are, distance to closest one, where the NPC
+//is going, and where it is headed to.
 /*//APARTADO DE MEJORAS//////
 >Añadir que si tienes que girar demasiado a la derecha o izquierda para llegar a tu objetivo, que frenes
 

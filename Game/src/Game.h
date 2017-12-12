@@ -4,14 +4,17 @@
 #include "GameObject/ObjectRenderComponent.h"
 #include "GameObject/InputComponent.h"
 #include "GameObject/MoveComponent.h"
+#include "GameObject/RampComponent.h"
 #include "GameManager/InputManager.h"
 #include "GameManager/RenderManager.h"
 #include "GameManager/ObjectManager.h"
 #include "GameManager/PhysicsManager.h"
 #include "GameManager/WaypointManager.h"
+#include "GameManager/AIManager.h"
 #include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
+
 
 class Game {
 
@@ -69,11 +72,13 @@ private:
     EventManager* eventManager;
     //Physics manager
     PhysicsManager* physicsManager;
-
     //Waypoint manager
     WaypointManager* waypointManager;
-
+    //Audio FMOD manager
     AudioFMOD* audioManager;
+    //AI manager
+    AIManager* aiManager;
+
 
     //Selected renderEngine
     int renderEngine;

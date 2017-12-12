@@ -10,27 +10,31 @@ class VSensorComponent : public ISensorComponent{
 
         //Constructors
         VSensorComponent(GameObject& newGameObject);
-        VSensorComponent(GameObject& newGameObject, float angV, float maxR, float angI);
+        VSensorComponent(GameObject& newGameObject, float angV, float angI);
         
         //Destructor
         virtual ~VSensorComponent() {};
 
-        //Getters
-        VObject** getSeenObjects();
-        glm::vec3 getSensorLeft();
-        glm::vec3 getSensorRight();
+
 
         //Checks the objects receives and stores the ones seen in the seenObjects vector
         void updateSeenObjects(GameObject** objects, int s);
 
-
+        //Getters and setters
+        std::vector<VObject*> getSeenObjects()           {   return seenObjects;    };
+        glm::vec3 getSensorLeft()                        {   return sensorLeft;     };
+        glm::vec3 getSensorRight()                       {   return sensorRight;    };
 
     private:
-        float maxRadius;
+        //Angle of the sensor
         float angleInitial;
+        //Angle of vision
         float angleVision;
+
+        //Vectors that define the limit of the sensors
         glm::vec3 sensorLeft, sensorRight;
 
+        //Objects being seen
         std::vector<VObject*> seenObjects;
 
 

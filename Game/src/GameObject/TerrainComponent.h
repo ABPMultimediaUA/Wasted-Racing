@@ -30,16 +30,16 @@ public:
 	virtual void close();
 
     //Getters and setters
-    TerrainComponent*   getNext()                       {    return next;           }
-    TerrainComponent*   getPrev()                       {    return prev;           }
-    TerrainComponent*   getLeft()                       {    return leftSibling;    }
-    TerrainComponent*   getRight()                      {    return rightSibling;   }
-    LAPAL::plane3f      getTerrain()                    {    return terrain;        }
-    void                setNext(TerrainComponent* t)    {    next = t;              }
-    void                setPrev(TerrainComponent* t)    {    prev = t;              }
-    void                setLeft(TerrainComponent* t)    {    leftSibling = t;       }
-    void                setRight(TerrainComponent* t)   {    rightSibling = t;      }
-    void                setTerrain(LAPAL::plane3f p)    {    terrain = p;           }
+    std::shared_ptr<TerrainComponent>   getNext()                                       {    return next;           }
+    std::shared_ptr<TerrainComponent>   getPrev()                                       {    return prev;           }
+    std::shared_ptr<TerrainComponent>   getLeft()                                       {    return leftSibling;    }
+    std::shared_ptr<TerrainComponent>   getRight()                                      {    return rightSibling;   }
+    LAPAL::plane3f                      getTerrain()                                    {    return terrain;        }
+    void                                setNext(std::shared_ptr<TerrainComponent> t)    {    next = t;              }
+    void                                setPrev(std::shared_ptr<TerrainComponent> t)    {    prev = t;              }
+    void                                setLeft(std::shared_ptr<TerrainComponent> t)    {    leftSibling = t;       }
+    void                                setRight(std::shared_ptr<TerrainComponent> t)   {    rightSibling = t;      }
+    void                                setTerrain(LAPAL::plane3f p)                    {    terrain = p;           }
     //Connectors
     void connectPrevNext(uint16_t); //receives as input the id of the prev node
     void connectSiblings(uint16_t); //receives as input the id of the left node
@@ -49,9 +49,9 @@ private:
 
     LAPAL::plane3f terrain;
 
-    TerrainComponent* next;
-    TerrainComponent* prev;
-    TerrainComponent* leftSibling;
-    TerrainComponent* rightSibling;
+    std::shared_ptr<TerrainComponent> next;
+    std::shared_ptr<TerrainComponent> prev;
+    std::shared_ptr<TerrainComponent> leftSibling;
+    std::shared_ptr<TerrainComponent> rightSibling;
 
 };

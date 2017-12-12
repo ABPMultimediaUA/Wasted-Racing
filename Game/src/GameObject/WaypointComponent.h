@@ -27,16 +27,14 @@ public:
 	//Closer
 	virtual void close() {}
 
-        //Getters
-        int getLevel();
-        float getRadius();
 
-        //Setters
-        void setRadius(float rad);
-        void setLevel(int lvl);
 
-        //Functions
-        //bool checkNext(glm::vec3 pos); //Check if we are on range with radius
+        //Getters and setters
+        int getLevel()                  {   return level;   };
+        float getRadius()               {   return radius;  };
 
+     
+        void setRadius(float rad)       {   radius = rad;   };
+        void setLevel(int lvl)          {   level  = lvl;   };
 
 };

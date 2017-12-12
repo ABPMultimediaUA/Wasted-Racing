@@ -1,6 +1,8 @@
 #pragma once
 
-#include "../GameObject/IAIComponent.h"
+#include "../GameObject/AIDrivingComponent.h"
+#include "../GameObject/MoveComponent.h"
+#include "../GameObject/VObject.h"
 #include <vector>
 
 class AIManager{
@@ -22,12 +24,16 @@ public:
     //Shutdown
     void close();
 
-    std::vector<IComponent::Pointer>& getComponentList() {
+    std::vector<IComponent::Pointer>& getAIDrivingComponentList() {
         return objectsAI;
     }
 
     //Static class getter
     static AIManager& getInstance();
+
+
+    //Component creators
+    IComponent::Pointer createAIDrivingComponent(GameObject& newGameObject);
 
 private:
     std::vector<IComponent::Pointer> objectsAI;
