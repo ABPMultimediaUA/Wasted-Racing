@@ -299,14 +299,5 @@ void LAPAL::calculateConstantAB(LAPAL::plane3f& terrain, LAPAL::vec3f& position,
 }
 
 void LAPAL::updateJump(LAPAL::movementData& mData){
-      if(mData.jump == true){
-       mData.asc = true;
-       std::cout << "Estoy entrando en el if" << std::endl;
-    }
-    if(mData.asc == true){
-          mData.velocity.y += 10;
-        if(mData.velocity.y == mData.velocity.y + 10){
-            mData.asc = false;
-        }
-    }
+    
 }

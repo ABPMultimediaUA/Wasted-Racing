@@ -9,6 +9,7 @@
 //==============================================
 void addMoveComponent(EventData eData); 
 void addCollisionComponent(EventData eData); 
+void collideRamp(EventData eData);
 
 //==============================================
 // PHYSICS MANAGER FUNCTIONS
@@ -23,6 +24,7 @@ void PhysicsManager::init() {
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::MoveComponent_Create, addMoveComponent});
     EventManager::getInstance().addListener(EventListener {EventType::CollisionComponent_Create, addCollisionComponent});
+    EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
 
 }
 
@@ -43,29 +45,7 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Check collisions with other objects
         //==============================================================================
-        for(unsigned int j=0; j<collisionComponentList.size(); ++j) {
-            CollisionComponent* hisColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList.at(j)).get();
-            if( hisColl != ourColl ) { //If the collider is different to the one of ourselves
-
-                bool collision = LAPAL::checkCircleCircleCollision(  ourColl->getGameObject().getTransformData().position, ourColl->getRadius(), 
-                                                    hisColl->getGameObject().getTransformData().position, hisColl->getRadius());
-
-                if(collision){
-
-                    //Get other object move component
-                    auto hisMove = hisColl->getGameObject().getComponent<MoveComponent>();
-
-                    if(hisMove == nullptr) {    //If the object doesn't have move component, it's static
-                        
-                        calculateStaticCollision(ourMove);
-
-                    }
-                    else {  //The object is not static
-                        //***** CODE FOR COLLISIONS WHERE BOTH OBJECTS ARE MOVING *****//
-                    }
-                }
-            }
-        }
+        calculateObjectsCollision(ourMove, ourColl);
 
         //==============================================================================
         // Check collisions with terrain limits and terrain change
@@ -83,6 +63,57 @@ void PhysicsManager::close() {
 //==============================================================================
 // PRIVATE FUNCTIONS
 //==============================================================================
+
+void PhysicsManager::calculateObjectsCollision(MoveComponent* ourMove, CollisionComponent* ourColl) {
+
+    for(unsigned int j=0; j<collisionComponentList.size(); ++j) {
+
+        CollisionComponent* hisColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList.at(j)).get();
+        if( hisColl != ourColl ) { //If the collider is different to the one of ourselves
+
+            bool collision;
+            
+            if(hisColl->getShape() == CollisionComponent::Shape::Circle) {
+                collision = LAPAL::checkCircleCircleCollision(  ourColl->getGameObject().getTransformData().position, ourColl->getRadius(), 
+                                                                hisColl->getGameObject().getTransformData().position, hisColl->getRadius());
+            } 
+            else if(hisColl->getShape() == CollisionComponent::Shape::Rectangle) {
+                collision = LAPAL::checkCircleRectangleCollision(   hisColl->getRectangle(), 
+                                                                    ourColl->getGameObject().getTransformData().position, ourColl->getRadius());
+            }
+
+            if(collision && hisColl->getKinetic()){
+
+                //Get other object move component
+                auto hisMove = hisColl->getGameObject().getComponent<MoveComponent>();
+
+                if(hisMove == nullptr) {    //If the object doesn't have move component, it's static
+                        
+                    calculateStaticCollision(ourMove);
+
+                }
+                else {  //The object is not static
+                        //***** CODE FOR COLLISIONS WHERE BOTH OBJECTS ARE MOVING *****//
+                }
+            }
+            else if(collision && !hisColl->getKinetic()){
+
+                //if(hisColl->getType() == CollisionComponent::Type::Ramp){
+                //    EventData data;
+                //    data.Component      = std::shared_ptr<IComponent>(ourMove);
+                //    data.CollComponent  = std::shared_ptr<IComponent>(hisColl);
+
+                //    EventManager::getInstance().addEvent(Event {EventType::RampComponent_Collision, data});
+                //}
+                auto ramp = hisColl->getGameObject().getComponent<RampComponent>();
+
+                if(ramp != nullptr) {
+                    ourMove->changeMaxSpeedOverTime(ramp.get()->getSpeed(), ramp.get()->getConstTime(), ramp.get()->getDecTime());
+                }
+            }
+        }
+    }
+}
 
 void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
 
@@ -229,9 +260,23 @@ IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameOb
 }
 
 
-IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const float radius) {
+IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const float radius, const bool kinetic, const CollisionComponent::Type type) {
 
-    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, radius);
+    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, radius, kinetic, type);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::CollisionComponent_Create, data});
+
+    return component;
+}
+
+IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f plane, const bool kinetic, const CollisionComponent::Type type) {
+
+    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, kinetic, type);
 
     newGameObject.addComponent(component);
 
@@ -256,6 +301,20 @@ void PhysicsManager::createMovingCharacter(IComponent::Pointer moveComponent, IC
 
 }
 
+IComponent::Pointer PhysicsManager::createRampComponent(GameObject& newGameObject, const float speed, const float cTime, const float dTime) {
+
+    IComponent::Pointer component = std::make_shared<RampComponent>(newGameObject, speed, cTime, dTime);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::RampComponent_Create, data});
+
+    return component;
+}
+
 //==============================================
 // DELEGATES
 //============================================== 
@@ -267,4 +326,17 @@ void addMoveComponent(EventData data) {
 void addCollisionComponent(EventData data) {
     PhysicsManager::getInstance().getCollisionComponentList().push_back(data.Component);
     data.Component.get()->init();
+}
+
+void collideRamp(EventData eData) {
+
+    auto move = std::dynamic_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::dynamic_pointer_cast<CollisionComponent>(eData.CollComponent);
+
+    auto ramp = coll->getGameObject().getComponent<RampComponent>();
+
+    if(ramp != nullptr) {
+        move->changeMaxSpeedOverTime(ramp.get()->getSpeed(), ramp.get()->getConstTime(), ramp.get()->getDecTime());
+    }
+
 }

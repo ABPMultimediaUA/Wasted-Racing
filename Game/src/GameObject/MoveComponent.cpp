@@ -159,12 +159,15 @@ void MoveComponent::isSpinning(bool s){
 //Functions related with temporal data changes
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
 
-    auxData.max_vel         = mData.max_vel;
-    mData.max_vel           = maxSpeed;
+    if(mData.max_vel != maxSpeed){
+ 
+        auxData.max_vel         = mData.max_vel;
+        mData.max_vel           = maxSpeed;
 
-    constantAlteredTime     = constTime;
-    decrementalAlteredTime  = decTime;
-    maxDecrementalAT        = decTime;
+        constantAlteredTime     = constTime;
+        decrementalAlteredTime  = decTime;
+        maxDecrementalAT        = decTime;
+    }
 }
 
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
@@ -175,7 +178,6 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
         constantAlteredTime -= dTime;
     }
     else if (decrementalAlteredTime > 0) {
-        
         //Calculate velocity decrease depending on dTime
         float vel_diff = mData.max_vel - auxData.max_vel;
         float vel      = (dTime*vel_diff)/maxDecrementalAT;

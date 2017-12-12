@@ -23,6 +23,8 @@ public:
 		glm::vec3 scale;
 	};
 
+	TransformationData t;
+
 	//===========================================
 	// BASIC FUNCTIONS
 	//===========================================
@@ -60,15 +62,16 @@ public:
 	void addComponent(IComponent::Pointer component);
 
 	//Get component
-	template<typename Component>
-	std::shared_ptr<Component> getComponent() {
-		for (auto comp: components) {
-			if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(comp)) {
-				return cmp;
-			}
+	
+template<typename Component>
+std::shared_ptr<Component> getComponent() {
+	for (auto comp: components) {
+		if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(comp)) {
+			return cmp;
 		}
-		return nullptr;
 	}
+	return nullptr;
+}
 
 
 private:
