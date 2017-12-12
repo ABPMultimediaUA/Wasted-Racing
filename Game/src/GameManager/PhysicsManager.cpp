@@ -33,9 +33,9 @@ void PhysicsManager::update(const float dTime) {
     for(unsigned int i=0; i<movingCharacterList.size(); ++i){
 
         //Get components in variables
-        auto ourMove = movingCharacterList.at(i).moveComponent.get();
-        auto ourTerr = movingCharacterList.at(i).terrainComponent.get();
-        auto ourColl = movingCharacterList.at(i).collisionComponent.get();
+        auto ourMove = movingCharacterList.at(i).moveComponent;
+        auto ourTerr = movingCharacterList.at(i).terrainComponent;
+        auto ourColl = movingCharacterList.at(i).collisionComponent;
 
         //==============================================================================
         // Move character
@@ -64,11 +64,14 @@ void PhysicsManager::close() {
 // PRIVATE FUNCTIONS
 //==============================================================================
 
-void PhysicsManager::calculateObjectsCollision(MoveComponent* ourMove, CollisionComponent* ourColl) {
+void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<CollisionComponent> coll) {
+
+    CollisionComponent* ourColl = coll.get();
 
     for(unsigned int j=0; j<collisionComponentList.size(); ++j) {
 
-        CollisionComponent* hisColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList.at(j)).get();
+        std::shared_ptr<CollisionComponent> hColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList.at(j));
+        CollisionComponent* hisColl = hColl.get();
         if( hisColl != ourColl ) { //If the collider is different to the one of ourselves
 
             bool collision;
@@ -89,7 +92,7 @@ void PhysicsManager::calculateObjectsCollision(MoveComponent* ourMove, Collision
 
                 if(hisMove == nullptr) {    //If the object doesn't have move component, it's static
                         
-                    calculateStaticCollision(ourMove);
+                    calculateStaticCollision(move);
 
                 }
                 else {  //The object is not static
@@ -98,24 +101,21 @@ void PhysicsManager::calculateObjectsCollision(MoveComponent* ourMove, Collision
             }
             else if(collision && !hisColl->getKinetic()){
 
-                //if(hisColl->getType() == CollisionComponent::Type::Ramp){
-                //    EventData data;
-                //    data.Component      = std::shared_ptr<IComponent>(ourMove);
-                //    data.CollComponent  = std::shared_ptr<IComponent>(hisColl);
+                if(hisColl->getType() == CollisionComponent::Type::Ramp){
+                    EventData data;
+                    data.Component      = std::static_pointer_cast<IComponent>(move);
+                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 
-                //    EventManager::getInstance().addEvent(Event {EventType::RampComponent_Collision, data});
-                //}
-                auto ramp = hisColl->getGameObject().getComponent<RampComponent>();
-
-                if(ramp != nullptr) {
-                    ourMove->changeMaxSpeedOverTime(ramp.get()->getSpeed(), ramp.get()->getConstTime(), ramp.get()->getDecTime());
+                    EventManager::getInstance().addEvent(Event {EventType::RampComponent_Collision, data});
                 }
             }
         }
     }
 }
 
-void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
+void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> move) {
+
+    MoveComponent* ourMove = move.get();
 
     float ourMass = ourMove->getMass();
     float hisMass = 5;
@@ -142,7 +142,12 @@ void PhysicsManager::calculateStaticCollision(MoveComponent* ourMove) {
     ourMove->getGameObject().setTransformData(tData);
 }
 
-void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, MoveComponent* ourMove, TerrainComponent* ourTerr, CollisionComponent* ourColl) {
+void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll) {
+
+        MoveComponent* ourMove = move.get();
+        TerrainComponent* ourTerr = terr.get();
+        CollisionComponent* ourColl = coll.get();
+    
 
         auto terrain    = ourMove->getTerrain();
         auto ourMData   = ourMove->getGameObject().getTransformData();
@@ -165,7 +170,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, Move
         //Check if we are out of front bounds
         if(a>0 && b<0 && glm::abs(a)+glm::abs(b)>=1){
             if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
+                calculateStaticCollision(move);
             }else{
                 float a2,b2;
                 LAPAL::calculateConstantAB(terrain, ourMData.position, &a2, &b2); //calculate A and B for original position;
@@ -180,7 +185,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, Move
         //Check if we are out of right bounds
         if(a>0 && b>0 && glm::abs(a)+glm::abs(b)>=1){
             if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
+                calculateStaticCollision(move);
             }
             else{
                 float a2,b2;
@@ -196,7 +201,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, Move
         //Check if we are out of back bounds
         if(a>0 && b>0 && a - b<=0){
             if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
+                calculateStaticCollision(move);
             }
             else{
                 float a2,b2;
@@ -212,7 +217,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, Move
         //Check if we are out of left bounds
         if(a>0 && b<0 && a+b<=0){
            if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(ourMove);
+                calculateStaticCollision(move);
             }
             else{
                 float a2,b2;
@@ -330,8 +335,8 @@ void addCollisionComponent(EventData data) {
 
 void collideRamp(EventData eData) {
 
-    auto move = std::dynamic_pointer_cast<MoveComponent>(eData.Component);
-    auto coll = std::dynamic_pointer_cast<CollisionComponent>(eData.CollComponent);
+    auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
 
     auto ramp = coll->getGameObject().getComponent<RampComponent>();
 

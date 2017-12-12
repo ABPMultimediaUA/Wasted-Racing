@@ -56,9 +56,9 @@ public:
 
 private:
 
-    void calculateObjectsCollision(MoveComponent* , CollisionComponent* );
-    void calculateStaticCollision(MoveComponent* );
-    void calculateTerrainCollision(MovingCharacter&, MoveComponent*, TerrainComponent* , CollisionComponent* );
+    void calculateObjectsCollision(std::shared_ptr<MoveComponent> , std::shared_ptr<CollisionComponent> );
+    void calculateStaticCollision(std::shared_ptr<MoveComponent>);
+    void calculateTerrainCollision(MovingCharacter&, std::shared_ptr<MoveComponent>, std::shared_ptr<TerrainComponent> , std::shared_ptr<CollisionComponent> );
 
     std::vector<IComponent::Pointer> moveComponentList;
     std::vector<IComponent::Pointer> collisionComponentList;
