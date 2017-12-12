@@ -13,6 +13,8 @@ public:
         std::shared_ptr<MoveComponent> moveComponent;
         std::shared_ptr<TerrainComponent> terrainComponent;
         std::shared_ptr<CollisionComponent> collisionComponent;
+
+        void setTerrain(std::shared_ptr<TerrainComponent> t){ terrainComponent = t; };
     };
 
     //Constructor
@@ -52,6 +54,7 @@ public:
 private:
 
     void calculateStaticCollision(MoveComponent* );
+    void calculateTerrainCollision(MovingCharacter&, MoveComponent*, TerrainComponent* , CollisionComponent* );
 
     std::vector<IComponent::Pointer> moveComponentList;
     std::vector<IComponent::Pointer> collisionComponentList;
