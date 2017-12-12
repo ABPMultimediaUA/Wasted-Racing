@@ -11,5 +11,5 @@ Year 2500 - The Earth is a sad and lonely place, where living is no longer worth
 
 ## Game Concept
 - Our characters
-![alt text](https://raw.githubusercontent.com/ABPMultimediaUA/Wasted-Racing/master/Docs/RV/Bocetos%20Finales%20Personajes/team.png?token=AOfnb9xn0xp2RgpSsUkcovTnoMqqu2r5ks5aIcGKwA%3D%3D)
+![alt text](https://raw.githubusercontent.com/ABPMultimediaUA/Wasted-Racing/master/Docs/RV/Bocetos%20Finales%20Personajes/team.png?token=AOfnb2aBgR7tuRUETtZZiMqJHhKrgNPGks5aMSBfwA%3D%3D)
 

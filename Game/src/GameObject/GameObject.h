@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <stdint.h>
 #include <list>
 #include <glm/glm.hpp>
 #include <memory>
@@ -29,14 +30,14 @@ public:
 	//===========================================
 
 	//Constructor
-	GameObject(const u_int16_t newId, const TransformationData &newPos) 
+	GameObject(const uint16_t newId, const TransformationData &newPos) 
 		: id(newId), transformData(newPos)  {}
 
 	//Destructor
 	~GameObject() {}
 
 	//GetID
-	u_int16_t getId() { return id; }
+	uint16_t getId() { return id; }
 
 	//Get position
 	TransformationData getTransformData(){
@@ -76,7 +77,7 @@ std::shared_ptr<Component> getComponent() {
 private:
 
 	//ObjectID
-	u_int16_t  id;
+	uint16_t  id;
 
 	//Object Transformation Data
 	TransformationData transformData;
