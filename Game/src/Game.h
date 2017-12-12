@@ -13,7 +13,7 @@
 #include "GameManager/AIManager.h"
 #include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
-//#include "GameFacade/AudioFMOD.h"
+#include "GameFacade/AudioFMOD.h"
 
 
 class Game {
@@ -72,17 +72,12 @@ private:
     EventManager* eventManager;
     //Physics manager
     PhysicsManager* physicsManager;
-<<<<<<< HEAD
-
-    //AudioFMOD* audioManager;
-=======
     //Waypoint manager
     WaypointManager* waypointManager;
     //Audio FMOD manager
     AudioFMOD* audioManager;
     //AI manager
     AIManager* aiManager;
->>>>>>> 775bb5f88f34057146e4fa553547ab26f2f522c3
 
     //Selected renderEngine
     int renderEngine;
@@ -93,4 +88,3 @@ private:
     bool stay;
 
 };
-

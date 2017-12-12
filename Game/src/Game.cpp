@@ -17,8 +17,8 @@ void Game::init() {
     Game::renderEngineSetter(0);
     Game::inputEngineSetter(0);
 
-    //audioManager = new AudioFMOD();
-    //audioManager->openAudioEngine();
+    audioManager = new AudioFMOD();
+    audioManager->openAudioEngine();
 
     //Initilize managers
     eventManager = &EventManager::getInstance();
@@ -99,7 +99,7 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
-    //audioManager->playSound();
+    audioManager->playSound();
 
     while(Game::stay){
         Game::update();
@@ -120,33 +120,26 @@ void addObjects(){
     std::cout << std::endl;
     ObjectManager::getInstance().createObject(id, transform);
     ObjectManager::getInstance().createObject(id, transform);
-
     id = 2;
     ObjectManager::getInstance().createObject(id, transform);
     id = 3;
     transform.position = glm::vec3(4,0,4);
     ObjectManager::getInstance().createObject(id, transform);
-
     EventManager::getInstance().update();
     std::cout << std::endl;
     ObjectManager::getInstance().showObjects();
     std::cout << std::endl;
-
     id = 4;
     ObjectManager::getInstance().getObject(id);
-
     id = 2;
     EventData data;
     data.Object = ObjectManager::getInstance().getObject(id);
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
-
     EventManager::getInstance().update();
     std::cout << std::endl;
     ObjectManager::getInstance().showObjects();
     std::cout << std::endl;
-
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
-
     EventManager::getInstance().update();
     std::cout << std::endl;
     ObjectManager::getInstance().showObjects();
@@ -334,7 +327,7 @@ void addObjects(){
     //===============================================================
     // ADD RAMP COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 100.0f,1.0f,1.0f);
+    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 100.0f,0.01f,2.0f);
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE AI
@@ -343,29 +336,24 @@ void addObjects(){
     mData2.mov = false;
     mData2.jump = false;
     mData2.spi = false;
-
     mData2.angInc = 0;
     mData2.angle = 0;
     mData2.spin = 0;
     mData2.spin_inc = 0.00001;
     mData2.max_spin = 0.03;
     mData2.brake_spin = 0.2;
-
     mData2.rotateX = 0.f;
     mData2.rotateZ = 0.f;
     mData2.rotate_inc = 0.15f;
     mData2.max_rotate = 3.f;
-
     mData2.vel = 0;
     mData2.max_vel = 50.0f;
     mData2.brake_vel = 5.f;
     mData2.velY = 10.f;
-
     mData2.acc = 0;
     mData2.max_acc = 10.f;
     mData2.dAcc = 1.f;
     mData2.brake_acc = 0.4;
-
     std::shared_ptr<IComponent> moveCP2 = PhysicsManager::getInstance().createMoveComponent(*ob5.get(), mData2, terrain, 1);*/
 
     //===============================================================
