@@ -10,7 +10,7 @@ class IComponent;
 
 //Enumeration of possible events
 enum EventType {
-    //Object related events
+    //COMPONENTS: Creation events
     GameObject_Create,
     GameObject_Delete,
     ObjectRenderComponent_Create,
@@ -27,6 +27,10 @@ enum EventType {
     CollisionComponent_Delete,
     AIDrivingComponent_Create,
     AIDrivingComponent_Delete,
+    RampComponent_Create,
+    RampComponent_Delete,
+    //COLLISION: Events triggered to certain collisions
+    RampComponent_Collision,
     //PLAYER: Basic control keys
     Key_Advance_Down,
     Key_Advance_Up,
@@ -48,7 +52,7 @@ enum EventType {
     Key_Select_Up,
     Key_Back_Down,
     Key_Back_Up,
-    //Game related events
+    //GAME: Game related events
     Game_Start,
     Game_Close
 };
@@ -58,6 +62,7 @@ struct EventData {
 
     std::shared_ptr<GameObject> Object;
     std::shared_ptr<IComponent> Component;
+    std::shared_ptr<IComponent> CollComponent;
     float grade;
 };
 

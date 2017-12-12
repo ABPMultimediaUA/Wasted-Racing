@@ -191,7 +191,7 @@ void addObjects(){
 
     //Player:
     id = 5;
-    transform.position = glm::vec3(20,10,20);
+    transform.position = glm::vec3(-30,10,0);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(0.5,0.5,0.5);
     auto ob2 = ObjectManager::getInstance().createObject(id, transform);
@@ -225,6 +225,12 @@ void addObjects(){
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob8 = ObjectManager::getInstance().createObject(id, transform);
 
+    id = 12;
+    transform.position = glm::vec3(0,-4,0);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(10,10,30);
+    auto ob9 = ObjectManager::getInstance().createObject(id, transform);
+
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
@@ -245,6 +251,8 @@ void addObjects(){
 
     std::shared_ptr<IComponent> cp7 = RenderManager::getInstance().createObjectRenderComponent(*ob8.get(), ObjectRenderComponent::Shape::Sphere);
 
+    std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob9.get(), ObjectRenderComponent::Shape::Plane);
+
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
     //===============================================================
@@ -264,11 +272,16 @@ void addObjects(){
     //===============================================================
     // ADD COLLISION COMPONENTS TO ALL OBJECTS
     //===============================================================
-    std::shared_ptr<IComponent> collisionCP1 = PhysicsManager::getInstance().createCollisionComponent(*ob2.get(), 5);
-    std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5);
-    std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5);
-    std::cout << std::endl;
-    std::cout << collisionCP3.get() << std::endl;
+    std::shared_ptr<IComponent> collisionCP1 = PhysicsManager::getInstance().createCollisionComponent(*ob2.get(), 5, true, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5, true, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5, false, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
+    LAPAL::plane3f terrainX;
+    terrainX.p1 = (LAPAL::vec3f( -5 , 0, 15));
+    terrainX.p2 = (LAPAL::vec3f( 5 , 0, 15));
+    terrainX.p3 = (LAPAL::vec3f( 5 , 0, -15));
+    terrainX.p4 = (LAPAL::vec3f( -5 , 0, -15));
+    std::shared_ptr<IComponent> collisionCP5 = PhysicsManager::getInstance().createCollisionComponent(*ob9.get(), terrainX, false, CollisionComponent::Type::Ramp);
 
     //===============================================================
     // ADD TERRAIN COMPONENT
@@ -317,9 +330,11 @@ void addObjects(){
     mData.brake_acc = 0.4;
 
     std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
-    /*auto moveCP1_0 = std::dynamic_pointer_cast<MoveComponent>(moveCP1);
-    moveCP1_0.get()->changeMaxSpeedOverTime(60, 2, 6);*/
 
+    //===============================================================
+    // ADD RAMP COMPONENT
+    //===============================================================
+    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 100.0f,1.0f,1.0f);
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE AI

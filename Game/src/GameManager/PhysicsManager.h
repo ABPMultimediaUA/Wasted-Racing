@@ -3,6 +3,7 @@
 #include "../GameObject/MoveComponent.h"
 #include "../GameObject/CollisionComponent.h"
 #include "../GameObject/TerrainComponent.h"
+#include "../GameObject/RampComponent.h"
 #include <vector>
 
 class PhysicsManager{
@@ -48,11 +49,14 @@ public:
     //Component creators
     IComponent::Pointer createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass);
     IComponent::Pointer createTerrainComponent(GameObject& newGameObject, LAPAL::plane3f newPlane);
-    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const float radius);
+    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const float radius, const bool kinetic, const CollisionComponent::Type type);
+    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f newPlane, const bool kinetic, const CollisionComponent::Type type);
     void                createMovingCharacter(IComponent::Pointer moveComponent, IComponent::Pointer terrainComponent, IComponent::Pointer collisionComponent);
+    IComponent::Pointer createRampComponent(GameObject& newGameObject, const float speed, const float cTime, const float dTime);
 
 private:
 
+    void calculateObjectsCollision(MoveComponent* , CollisionComponent* );
     void calculateStaticCollision(MoveComponent* );
     void calculateTerrainCollision(MovingCharacter&, MoveComponent*, TerrainComponent* , CollisionComponent* );
 

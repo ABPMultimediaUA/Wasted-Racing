@@ -14,7 +14,6 @@ public:
 			constantAlteredTime		= 0.0f;		
 			decrementalAlteredTime	= 0.0f;
 			maxDecrementalAT		= 0.0f;			
-			auxData					= newMData;
 		}
 
 	//Destructor

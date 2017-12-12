@@ -4,6 +4,7 @@
 #include "GameObject/ObjectRenderComponent.h"
 #include "GameObject/InputComponent.h"
 #include "GameObject/MoveComponent.h"
+#include "GameObject/RampComponent.h"
 #include "GameManager/InputManager.h"
 #include "GameManager/RenderManager.h"
 #include "GameManager/ObjectManager.h"

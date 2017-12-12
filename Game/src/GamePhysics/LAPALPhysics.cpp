@@ -296,3 +296,41 @@ void LAPAL::calculateConstantAB(LAPAL::plane3f& terrain, LAPAL::vec3f& position,
         *b = (relativeP.z - (*a) * vec_a.z) / vec_b.z;
 
 }
+
+//Calculates the distance between a line defined by two points (l1,l2) and a point (p1)
+float LAPAL::distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1) {
+
+    LAPAL::vec3f lineVec = l2-l1;
+    LAPAL::vec3f circVec = l2-p1;
+
+    float lineVecMod = sqrt(lineVec.x*lineVec.x + lineVec.z*lineVec.z);
+    float circVecMod = sqrt(circVec.x*circVec.x + circVec.z*circVec.z);
+
+    float vectorCos = (lineVec.x*circVec.x + lineVec.z*circVec.z)/(lineVecMod*circVecMod);
+
+    float distance = vectorCos*circVecMod;
+
+    return distance;
+
+}
+
+//Calculates if a circle is inside a rectangle
+bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, const float radius) {
+
+    float distance;
+
+    distance = LAPAL::distance2DLinePoint(terrain.p1, terrain.p2, position);
+    if( distance+radius < 0 ) return false;
+
+    distance = LAPAL::distance2DLinePoint(terrain.p3, terrain.p4, position);
+    if( distance+radius < 0 ) return false;
+
+    distance = LAPAL::distance2DLinePoint(terrain.p2, terrain.p3, position);
+    if( distance+radius < 0 ) return false;
+
+    distance = LAPAL::distance2DLinePoint(terrain.p4, terrain.p1, position);
+    if( distance+radius < 0 ) return false;
+
+    return true;
+
+}

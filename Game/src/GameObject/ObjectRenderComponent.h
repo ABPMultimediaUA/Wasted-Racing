@@ -9,7 +9,8 @@ public:
 	enum Shape {
 		Cube,
 		Sphere,
-		Mesh
+		Mesh,
+		Plane
 	};
 
     //Constructor
