@@ -8,7 +8,7 @@
 class VSensorComponent : public ISensorComponent{
     public:
 
-        //Constructor
+        //Constructors
         VSensorComponent(GameObject& newGameObject);
         VSensorComponent(GameObject& newGameObject, float angV, float angI);
         
