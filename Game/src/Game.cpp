@@ -217,7 +217,7 @@ void addObjects(){
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(*ob8.get(), ob8.get()->getTransformData().position, 1);
+    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(*ob8.get(), 1, 1);
 
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
