@@ -28,11 +28,6 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
     newGameObject.get()->addComponent(component);
 
-    EventData data;
-    data.Component = component;
-
-    EventManager::getInstance().addEvent(Event {EventType::WaypointComponent_Create, data});
-
     if(listSubNodes->size() == 0)
     {
         listSubNodes->push_back(newGameObject);
