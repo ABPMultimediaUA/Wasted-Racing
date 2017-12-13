@@ -20,13 +20,14 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateSpin(mData, dTime);
     LAPAL::updateVelocity(mData, terrain);
     LAPAL::updateRotation(mData, terrain, dTime);
-    LAPAL::correctYPosition(mData, dTime, terrain, position);
+
 
 
     auto trans = getGameObject().getTransformData();
+    
 
     updateJump(mData, trans, terrain);
-
+    LAPAL::correctYPosition(mData, dTime, terrain, position);
     /*
      if(mData.jump == true){
        if(LAPAL::calculateExpectedY(terrain, trans.position) == trans.position.y){ 
@@ -171,21 +172,28 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 void MoveComponent::updateJump(LAPAL::movementData& mData, auto& trans, LAPAL::plane3f t){
 
     if(mData.jump == true){
-        //if(LAPAL::checkTerrain(t))
-       if(LAPAL::calculateExpectedY(t, trans.position) == trans.position.y){ 
-           mData.posY = trans.position.y;
-           mData.asc = true;
-            //std::cout << "---------------------------------->Estoy entrando en el if" << std::endl;
-       }
+        if(LAPAL::checkTerrain(t)){
+            if(LAPAL::calculateExpectedY(t, trans.position) == trans.position.y){ 
+            mData.posY = trans.position.y;
+            mData.asc = true;
+
+            }
+        }
+        else{
+            if(trans.position.y > LAPAL::calculateExpectedY(t, trans.position) - 0.5 && trans.position.y < LAPAL::calculateExpectedY(t, trans.position) + 0.5){
+            mData.posY = trans.position.y;
+            mData.asc = true;
+            }
+        }
+
     }
     if(mData.asc == true){
-        if(trans.position.y < mData.posY + 10){
-            mData.velocity.y += 20;
+        if(trans.position.y < mData.posY + 15){
+            mData.velocity.y = 50;
         }
         else{
             mData.asc = false;
             mData.velocity.y = 0;
-            std::cout << "ASCENDING FALSE" << std::endl;
         }
     }
 }
