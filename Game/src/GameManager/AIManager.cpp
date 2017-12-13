@@ -59,10 +59,12 @@ void AIManager::update() {
             moveComponent->changeAngleInc(turnValue*0.0001f);
         }
         //Get next waypoint
-        /*glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
+        aiDrivingComponent->setSeconds(1);
+        glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
                                                             moveComponent->getMovemententData().velocity,
                                                             moveComponent->getMovemententData().vel);
-
+        //aiDrivingComponent->checkList();
+        std::cout<<"Waypoint: "<<objective.x<<"\n";
         //Make decisions
 
         //----------------------------------
@@ -82,7 +84,7 @@ void AIManager::update() {
             b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
         if(sensorLeft.x != 0){
             a = (relativeP.z - b * sensorRight.z) / sensorLeft.z;
-        }*/
+        }
 
 
     }

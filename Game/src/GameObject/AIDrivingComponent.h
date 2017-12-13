@@ -23,6 +23,8 @@ class AIDrivingComponent : public IComponent{
 
         glm::vec3 getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed);
 
+        void checkList();
+
         //Makes NPC turn a fixated angle based on data
         static float girar(std::vector<VObject::Pointer>, glm::vec3 waypoint, float a, float b);
         
