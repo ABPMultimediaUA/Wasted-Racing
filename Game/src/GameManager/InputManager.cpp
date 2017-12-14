@@ -20,6 +20,8 @@ void turnRightDown(EventData eData);
 void turnRightUp(EventData eData); 
 void jumpUp(EventData eData);
 void jumpDown(EventData eData);
+void driftUp(EventData eData);
+void driftDown(EventData eData);
 void addInputComponent(EventData data);
 
 //==============================================
@@ -51,6 +53,8 @@ void InputManager::init(int engine){
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Up, turnRightUp});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Down, jumpUp});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Up, jumpDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Down, driftDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Up, driftUp});
     EventManager::getInstance().addListener(EventListener {EventType::InputComponent_Create, addInputComponent});
   
 }
@@ -123,6 +127,12 @@ void jumpDown(EventData eData){
     std::cout << "Jump button pressed!" << std::endl;
 }
 void jumpUp(EventData eData){
+    std::cout << "Jump button released!" << std::endl;
+}
+void driftUp(EventData eData){
+    std::cout << "Jump button pressed!" << std::endl;
+}
+void driftDown(EventData eData){
     std::cout << "Jump button released!" << std::endl;
 }
 void addInputComponent(EventData data) {

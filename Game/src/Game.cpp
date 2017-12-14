@@ -374,7 +374,7 @@ void addObjects(){
     mData2.angInc = 0;
     mData2.angle = 0;
     mData2.spin = 0;
-    mData2.spin_inc = 0.00001;
+    mData2.spin_inc = 0.0005;
     mData2.max_spin = 0.03;
     mData2.brake_spin = 0.2;
 

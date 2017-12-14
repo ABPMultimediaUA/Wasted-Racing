@@ -94,6 +94,9 @@ void MoveComponent::isJumping(bool j){
 void MoveComponent::isSpinning(bool s){
     mData.spi = s;
 }
+void MoveComponent::isDrifting(bool d){
+    mData.drift = d;
+}
 
 //Functions related with temporal data changes
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {

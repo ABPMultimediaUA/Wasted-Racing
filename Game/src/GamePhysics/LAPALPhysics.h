@@ -20,7 +20,7 @@ namespace LAPAL {
     void updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, const float dTime);
 
     //function that moves the vehicle elliptically given its internal radius ratio rotation
-    void elipticMovement(const LAPAL::movementData& mData, float radiusEx, float radiusIn, const float dTime);
+    void elipticMovement( LAPAL::movementData& mData, const float dTime);
 
     //--------------------------------------
     //-------------COLLISIONS---------------

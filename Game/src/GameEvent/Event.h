@@ -49,6 +49,8 @@ enum EventType {
     Key_Jump_Up,
     Key_Kneel_Down,
     Key_Kneel_Up,
+    Key_Drift_Up,
+    Key_Drift_Down,
     //PLAYER: Menu control keys
     Key_Select_Down,
     Key_Select_Up,
