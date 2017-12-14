@@ -21,13 +21,11 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateVelocity(mData, terrain);
     LAPAL::updateRotation(mData, terrain, dTime);
 
-
-
     auto trans = getGameObject().getTransformData();
     
-
-    updateJump(mData, trans, terrain);
+    updateJump(mData, position, terrain);
     LAPAL::correctYPosition(mData, dTime, terrain, position);
+
     /*
      if(mData.jump == true){
        if(LAPAL::calculateExpectedY(terrain, trans.position) == trans.position.y){ 
@@ -133,6 +131,7 @@ void MoveComponent::isSpinning(bool s){
     mData.spi = s;
 }
 
+
 //Functions related with temporal data changes
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
 
@@ -169,26 +168,24 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
 }
 
-void MoveComponent::updateJump(LAPAL::movementData& mData, auto& trans, LAPAL::plane3f t){
+void MoveComponent::updateJump(LAPAL::movementData& mData, glm::vec3& pos, LAPAL::plane3f t){
 
     if(mData.jump == true){
         if(LAPAL::checkTerrain(t)){
-            if(LAPAL::calculateExpectedY(t, trans.position) == trans.position.y){ 
-            mData.posY = trans.position.y;
+            if(LAPAL::calculateExpectedY(t, pos) == pos.y){ 
+            mData.posY = pos.y;
             mData.asc = true;
-
             }
         }
         else{
-            if(trans.position.y > LAPAL::calculateExpectedY(t, trans.position) - 0.5 && trans.position.y < LAPAL::calculateExpectedY(t, trans.position) + 0.5){
-            mData.posY = trans.position.y;
+            if(pos.y > LAPAL::calculateExpectedY(t, pos) - 0.5 && pos.y < LAPAL::calculateExpectedY(t, pos) + 0.5){
+            mData.posY = pos.y;
             mData.asc = true;
             }
         }
-
     }
     if(mData.asc == true){
-        if(trans.position.y < mData.posY + 15){
+        if(pos.y < mData.posY + 15){
             mData.velocity.y = 50;
         }
         else{

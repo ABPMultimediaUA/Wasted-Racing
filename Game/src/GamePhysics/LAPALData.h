@@ -27,7 +27,7 @@ namespace LAPAL{
         bool jump = false;      //To know if the object is jumping
         bool mov  = false;      //To know if a movement related key is pressed
         bool spi  = false;      //To know if a spin related key is pressed
-        bool asc = false;        //To know that the object is ascending
+        bool asc = false;       //To know that the object is ascending
         
         //spin
         float angInc    = 0.0f;         //?
