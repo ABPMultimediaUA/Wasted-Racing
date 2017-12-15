@@ -193,9 +193,34 @@ void addObjects(){
 
     id = 15;
     transform.position = glm::vec3(875,95,-150);
-    transform.rotation = glm::vec3(0,0,180);
+    transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(25,0.01,50);
     auto ob15 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 16;
+    transform.position = glm::vec3(800,95,-500);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(40,0.01,20);
+    auto ob16 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 17;
+    transform.position = glm::vec3(550,0,-500);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(10,0.01,20);
+    auto ob17 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 18;
+    transform.position = glm::vec3(125,75,-500);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(75,0.01,20);
+    auto ob18 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 19;
+    transform.position = glm::vec3(-125,35,-250);
+    transform.rotation = glm::vec3(14.94,0,0);
+    transform.scale    = glm::vec3(25,0.01,31.05);
+    auto ob19 = ObjectManager::getInstance().createObject(id, transform);
+
 
 
     //Player:
@@ -282,6 +307,14 @@ void addObjects(){
 
     std::shared_ptr<IComponent> cp12 = RenderManager::getInstance().createObjectRenderComponent(*ob15.get(), ObjectRenderComponent::Shape::Cube);
 
+    std::shared_ptr<IComponent> cp13 = RenderManager::getInstance().createObjectRenderComponent(*ob16.get(), ObjectRenderComponent::Shape::Cube);
+
+    std::shared_ptr<IComponent> cp14 = RenderManager::getInstance().createObjectRenderComponent(*ob17.get(), ObjectRenderComponent::Shape::Cube);
+
+    std::shared_ptr<IComponent> cp15 = RenderManager::getInstance().createObjectRenderComponent(*ob18.get(), ObjectRenderComponent::Shape::Cube);
+
+    std::shared_ptr<IComponent> cp16 = RenderManager::getInstance().createObjectRenderComponent(*ob19.get(), ObjectRenderComponent::Shape::Cube);
+
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
     //===============================================================
@@ -336,7 +369,7 @@ void addObjects(){
     std::shared_ptr<IComponent> terrainCP2 = PhysicsManager::getInstance().createTerrainComponent(*ob7.get(), terrain1);
     auto terrainCP2_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP2);
     uint16_t idd = 4;
-    terrainCP2_0.get()->connectPrevNext(idd);
+    terrainCP2_0.get()->connectSiblingBack(idd);
 
     LAPAL::plane3f terrain2;
     terrain2.p1 = (LAPAL::vec3f(750,100,100));
@@ -347,8 +380,60 @@ void addObjects(){
     LAPAL::calculateRotationsXZ(terrain2);
     std::shared_ptr<IComponent> terrainCP3 = PhysicsManager::getInstance().createTerrainComponent(*ob15.get(), terrain2);
     auto terrainCP3_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP3);
-    uint16_t iidd = 10;
-    terrainCP3_0.get()->connectPrevNext(iidd);
+    idd = 10;
+    terrainCP3_0.get()->connectSiblingBack(idd);
+
+    LAPAL::plane3f terrain3;
+    terrain3.p1 = (LAPAL::vec3f(600,100,-400));
+    terrain3.p2 = (LAPAL::vec3f(1000,100,-400));
+    terrain3.p3 = (LAPAL::vec3f(1000,100,-600));
+    terrain3.p4 = (LAPAL::vec3f(600,100,-600));
+    terrain3.fric = 0.2;
+    LAPAL::calculateRotationsXZ(terrain3);
+    std::shared_ptr<IComponent> terrainCP4 = PhysicsManager::getInstance().createTerrainComponent(*ob16.get(), terrain3);
+    auto terrainCP4_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP4);
+    idd = 15;
+    terrainCP4_0.get()->connectSiblingLeft(idd);
+
+    LAPAL::plane3f terrain4;
+    terrain4.p1 = (LAPAL::vec3f(500,0,-400));
+    terrain4.p2 = (LAPAL::vec3f(600,0,-400));
+    terrain4.p3 = (LAPAL::vec3f(600,0,-600));
+    terrain4.p4 = (LAPAL::vec3f(500,0,-600));
+    terrain4.fric = 0.2;
+    LAPAL::calculateRotationsXZ(terrain4);
+    std::shared_ptr<IComponent> terrainCP5 = PhysicsManager::getInstance().createTerrainComponent(*ob17.get(), terrain4);
+    auto terrainCP5_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP5);
+    idd = 16;
+    terrainCP5_0.get()->connectSiblingFront(idd);
+
+    LAPAL::plane3f terrain5;
+    terrain5.p1 = (LAPAL::vec3f(-250,80,-400));
+    terrain5.p2 = (LAPAL::vec3f(500,80,-400));
+    terrain5.p3 = (LAPAL::vec3f(500,80,-600));
+    terrain5.p4 = (LAPAL::vec3f(-250,80,-600));
+    terrain5.fric = 0.2;
+    LAPAL::calculateRotationsXZ(terrain5);
+    std::shared_ptr<IComponent> terrainCP6 = PhysicsManager::getInstance().createTerrainComponent(*ob18.get(), terrain5);
+    auto terrainCP6_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP6);
+    idd = 17;
+    terrainCP6_0.get()->connectSiblingFront(idd);
+
+    LAPAL::plane3f terrain6;
+    terrain6.p1 = (LAPAL::vec3f(-250,0,-100));
+    terrain6.p2 = (LAPAL::vec3f(0,0,-100));
+    terrain6.p3 = (LAPAL::vec3f(0,80,-400));
+    terrain6.p4 = (LAPAL::vec3f(-250,80,-400));
+    terrain6.fric = 0.2;
+    LAPAL::calculateRotationsXZ(terrain6);
+    std::shared_ptr<IComponent> terrainCP7 = PhysicsManager::getInstance().createTerrainComponent(*ob19.get(), terrain6);
+    auto terrainCP7_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP7);
+    idd = 18;
+    terrainCP7_0.get()->connectSiblingRight(idd);
+    idd = 4;
+    terrainCP7_0.get()->connectSiblingLeft(idd);
+
+    
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
@@ -362,7 +447,7 @@ void addObjects(){
     mData.rotate_inc = 0.15;
     mData.max_rotate = 3;
 
-    mData.max_vel = 50.0;
+    mData.max_vel = 100.0;
     mData.brake_vel = 5;
     mData.velY = 10;
 
