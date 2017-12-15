@@ -292,7 +292,7 @@ void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPA
 }
 
 //Calculates values A and B which are the scalars that multiply vector A and B to compose the point C in 2D (X-Z plane) inside the terrain given
-void LAPAL::calculateConstantAB(LAPAL::plane3f& terrain, LAPAL::vec3f& position, float* a, float* b){
+void LAPAL::calculateConstantAB(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, float* a, float* b){
     *a = 0.f;
     *b = 0.f;
 

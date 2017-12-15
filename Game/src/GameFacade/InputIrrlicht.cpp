@@ -27,7 +27,6 @@ void InputIrrlicht::closeInput() {
 bool InputIrrlicht::OnEvent(const irr::SEvent& event) {
 
     if(event.EventType == irr::EET_KEY_INPUT_EVENT){
-       // DetectKeyInput(KEY_SPACE,Key_Select_Down,Key_Select_Up)
         DetectKeyInput(KEY_SPACE, Key_Jump_Down, Key_Jump_Up)
         DetectKeyInput(KEY_ESCAPE,Key_Back_Down,Key_Back_Up)
         DetectKeyInput(KEY_KEY_W,Key_Advance_Down,Key_Advance_Up)

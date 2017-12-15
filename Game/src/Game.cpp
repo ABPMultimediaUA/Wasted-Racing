@@ -339,16 +339,16 @@ void addObjects(){
     terrainCP2_0.get()->connectPrevNext(idd);
 
     LAPAL::plane3f terrain2;
-    terrain2.p1 = (LAPAL::vec3f(750,100,-100));
-    terrain2.p2 = (LAPAL::vec3f(1000,100,-100));
-    terrain2.p3 = (LAPAL::vec3f(1000,100,-600));
-    terrain2.p4 = (LAPAL::vec3f(750,100,-600));
+    terrain2.p1 = (LAPAL::vec3f(750,100,100));
+    terrain2.p2 = (LAPAL::vec3f(1000,100,100));
+    terrain2.p3 = (LAPAL::vec3f(1000,100,-400));
+    terrain2.p4 = (LAPAL::vec3f(750,100,-400));
     terrain2.fric = 0.2;
     LAPAL::calculateRotationsXZ(terrain2);
     std::shared_ptr<IComponent> terrainCP3 = PhysicsManager::getInstance().createTerrainComponent(*ob15.get(), terrain2);
     auto terrainCP3_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP3);
-    idd = 10;
-    terrainCP3_0.get()->connectPrevNext(idd);
+    uint16_t iidd = 10;
+    terrainCP3_0.get()->connectPrevNext(iidd);
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE FIRST OBJECT
@@ -375,7 +375,7 @@ void addObjects(){
     //===============================================================
     // ADD RAMP COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 100.0f,0.01f,2.0f);
+    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 200.0f,0.01f,4.0f);
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE AI
