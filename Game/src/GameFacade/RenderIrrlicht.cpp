@@ -63,7 +63,7 @@ void RenderIrrlicht::updateCamera() {
 
 void RenderIrrlicht::addLight() {
     auto node = sceneManager->addLightSceneNode(); 
-    node->setPosition(irr::core::vector3df(0,20,0));
+    node->setPosition(irr::core::vector3df(0,150,0));
 }
 
 void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
@@ -107,7 +107,7 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
         node->setRotation(irrRot);
         node->setScale(irrSca);
 
-        auto var = videoDriver->getTexture("/home/pablo/Wasted-Racing/Game/media/img/stones.jpg");
+        auto var = videoDriver->getTexture("/home/luis/WastedHorchata/Wasted-Racing/Game/media/img/stones.jpg");
         node->setMaterialTexture(0, var);
         std::cout << var << std::endl;
         //while(true);
