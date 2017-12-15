@@ -34,6 +34,8 @@ public:
 
     //Checks if the event is paused. True = paused, false = unpaused
     bool isPaused();
+
+    void checkEvent();
     
 protected:
     FMOD::Studio::EventInstance* soundInstance;
