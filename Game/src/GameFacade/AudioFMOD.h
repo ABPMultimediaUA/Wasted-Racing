@@ -58,11 +58,22 @@ public:
     //Sets the 3D position of the listener
     void setListernerPosition(glm::vec3 pos);
 
+
+    //==============================================================
+    // Audio Test Related functions
+    //==============================================================
+
     //Increases the parameter controlled event
     void IncreaseFlanger();
 
     //Decreases the parameter controlled event
     void DecreaseFlanger();
+
+    //Pauses and unpauses Accept Event
+    void stopA();
+
+    //Pauses and unpauses CocodrileGoodENEvent
+    void stopK();
 
 private: 
 
@@ -86,5 +97,8 @@ private:
 
     AcceptEvent* acceptEvent;
     CocodrileGoodENEvent* cocodrileGoodENEvent;
+
+    bool acceptW;
+    bool crocodileW;
 
 };

@@ -1,4 +1,5 @@
 #include "ISoundEvent.h"
+#include <iostream>
 
 ISoundEvent::ISoundEvent(FMOD::Studio::EventInstance* newEvent)
 {
@@ -19,7 +20,6 @@ void ISoundEvent::start()
     if(soundInstance!=NULL)
     {
         soundInstance->start();
-        soundInstance->release();
     }
 }
 
