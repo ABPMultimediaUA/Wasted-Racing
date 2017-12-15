@@ -76,7 +76,7 @@ private:
     //Waypoint manager
     WaypointManager* waypointManager;
     //Audio FMOD manager
-    //AudioFMOD* audioManager;
+    AudioFMOD* audioManager;
     //AI manager
     AIManager* aiManager;
     //Sensor manager
