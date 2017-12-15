@@ -21,9 +21,43 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateVelocity(mData, terrain);
     LAPAL::updateEllipticMovement(mData, dTime);
     LAPAL::updateRotation(mData, terrain, dTime);
-    LAPAL::correctYPosition(mData, dTime, terrain, position);
 
     auto trans = getGameObject().getTransformData();
+    
+    updateJump(mData, position, terrain);
+    LAPAL::correctYPosition(mData, dTime, terrain, position);
+
+    /*
+     if(mData.jump == true){
+       if(LAPAL::calculateExpectedY(terrain, trans.position) == trans.position.y){ 
+           mData.posY = trans.position.y;
+           mData.asc = true;
+       }
+    }
+    if(mData.asc == true){
+       //  if(LAPAL::checkTerrain(terrain)){
+            if(trans.position.y < mData.posY + 10){
+                mData.velocity.y += 10;
+                std::cout << "TERRENO HORIZ" << std::endl;
+            }
+            else{
+                mData.asc = false;
+                //mData.velocity.y = 0;
+                std::cout << "ASCENDING FALSE" << std::endl;
+            }
+         }
+         else{
+             if(trans.position.y < mData.posY*cos(degreeAngle) + 100){
+                mData.velocity.y += 100*cos(degreeAngle);
+            }
+            else{
+                mData.asc = false;
+                mData.velocity.y = 0;
+                std::cout << "ASCENDING FALSE" << std::endl;
+            }
+         }
+       
+    }*/
 
     //Change position
     //trans.position += mData.vel3d;
@@ -92,7 +126,12 @@ void MoveComponent::changeAngleInc(float i){
 }
 
 void MoveComponent::isJumping(bool j){
-    mData.jump = j;
+   // if(mData.asc == false){
+        mData.jump = j;
+  /*  }
+    else{
+        mData.jump = false;
+    }*/
 }
 void MoveComponent::isSpinning(bool s){
     mData.spi = s;
@@ -107,6 +146,7 @@ void MoveComponent::isDrifting(bool d){
         mData.driftDir=true;
     }
 }
+
 
 //Functions related with temporal data changes
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
@@ -142,4 +182,31 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
             mData.max_vel = auxData.max_vel;
     }
 
+}
+
+void MoveComponent::updateJump(LAPAL::movementData& mData, glm::vec3& pos, LAPAL::plane3f t){
+
+    if(mData.jump == true){
+        if(LAPAL::checkTerrain(t)){
+            if(LAPAL::calculateExpectedY(t, pos) == pos.y){ 
+            mData.posY = pos.y;
+            mData.asc = true;
+            }
+        }
+        else{
+            if(pos.y > LAPAL::calculateExpectedY(t, pos) - 0.5 && pos.y < LAPAL::calculateExpectedY(t, pos) + 0.5){
+            mData.posY = pos.y;
+            mData.asc = true;
+            }
+        }
+    }
+    if(mData.asc == true){
+        if(pos.y < mData.posY + 15){
+            mData.velocity.y = 50;
+        }
+        else{
+            mData.asc = false;
+            mData.velocity.y = 0;
+        }
+    }
 }

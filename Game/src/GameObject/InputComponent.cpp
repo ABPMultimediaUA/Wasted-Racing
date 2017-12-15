@@ -67,13 +67,11 @@ void advanceUpI(EventData eData) {
 }
 void brakeDownI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   comp->changeAccInc(-10);
-   comp->isMoving(true);
+   comp->changeAccInc(-0.5);
 }
 void brakeUpI(EventData eData) {
    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
    comp->changeAccInc(0.0);
-   comp->isMoving(false);
 }
 void turnLeftDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();

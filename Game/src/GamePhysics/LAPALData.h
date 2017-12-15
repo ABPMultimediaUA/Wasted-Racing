@@ -27,6 +27,7 @@ namespace LAPAL{
         bool jump = false;      //To know if the object is jumping
         bool mov  = false;      //To know if a movement related key is pressed
         bool spi  = false;      //To know if a spin related key is pressed
+        bool asc = false;       //To know that the object is ascending
         bool drift = false;     //To know if object is drifting or not
 
         //spin
@@ -71,6 +72,9 @@ namespace LAPAL{
         vec3f netForce          = glm::vec3(0,0,0); 
         vec3f frictionForce     = glm::vec3(0,0,0); //All the forces must be in Newtons
         vec3f gravityForce      = glm::vec3(0,0,0);
+
+        //Jump variables
+        float posY = 0.0;      //Relative position in y when the jump starts
 
     };
 

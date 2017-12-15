@@ -82,7 +82,6 @@ private:
     //Sensor manager
     SensorManager* sensorManager;
 
-
     //Selected renderEngine
     int renderEngine;
     //Selected inputEngine
@@ -92,4 +91,3 @@ private:
     bool stay;
 
 };
-

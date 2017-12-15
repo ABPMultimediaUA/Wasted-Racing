@@ -38,6 +38,7 @@ public:
 	void changeAngleInc(float i);
 	void isJumping(bool j);
 	void isSpinning(bool s);
+	void updateJump(LAPAL::movementData& mData, glm::vec3& trans, LAPAL::plane3f t);
 	void isDrifting(bool d);
 
 	//Functions related with temporal data changes
@@ -51,7 +52,6 @@ public:
 	void 				setMovementData(LAPAL::movementData data) 	{ 	mData = data;   	}
 	void 				setMass(const float newMass)				{ 	mass = newMass; 	}
 	void				setTerrain(LAPAL::plane3f p) 				{ 	terrain = p;		}
-
 
 private:
 
