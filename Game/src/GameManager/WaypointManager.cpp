@@ -10,7 +10,7 @@ WaypointManager& WaypointManager::getInstance() {
 }
 
 void WaypointManager::init() {
-
+    listSubNodes = new std::vector<GameObject::Pointer>;
 }
 
 void WaypointManager::update() {
@@ -53,7 +53,7 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
 WaypointManager::WaypointManager()
 {
-    listSubNodes = new std::vector<GameObject::Pointer>;
+
 }
 
 WaypointManager::~WaypointManager()

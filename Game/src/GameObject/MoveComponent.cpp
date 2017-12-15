@@ -44,25 +44,26 @@ void MoveComponent::update(float dTime) {
     ///*===========================================================================================
     // DEBUG
     system("clear");
-    std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
+    if(id == 8){
+    //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
     std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
-    std::cout << " POS Y " << trans.position.y << std::endl;
+    //std::cout << " POS Y " << trans.position.y << std::endl;
     std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
     std::cout << " INCR ANGLE " << mData.spin << std::endl;
     std::cout << " ANGULO GIRO " << mData.angle << std::endl;
-    std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
-    std::cout << " Aceleración " << mData.acc << std::endl;
-    std::cout << " Velocidad " << mData.vel << std::endl;
-    std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
-    std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
+    //std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
+    //std::cout << " Aceleración " << mData.acc << std::endl;
+    //std::cout << " Velocidad " << mData.vel << std::endl;
+    //std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
+    //std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
 
-    if (mData.jump == false){
+    /*if (mData.jump == false){
         std::cout << " No estoy saltando " << std::endl;
     }
     else{
         std::cout << " Sí estoy saltando " << std::endl;
+    }*/
     }
-    
     //=========================================================================================*/
 }
 
@@ -93,6 +94,9 @@ void MoveComponent::isJumping(bool j){
 }
 void MoveComponent::isSpinning(bool s){
     mData.spi = s;
+}
+void MoveComponent::changeSpin(float n) {
+    mData.angle += mData.max_spin * n;
 }
 
 //Functions related with temporal data changes

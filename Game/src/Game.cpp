@@ -229,7 +229,7 @@ void addObjects(){
     transform.scale    = glm::vec3(1,1,1);
     auto ob6 = ObjectManager::getInstance().createObject(id, transform);
     id = 11;
-    transform.position = glm::vec3(100, 0, 60);
+    transform.position = glm::vec3(100, 0, 20);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob8 = ObjectManager::getInstance().createObject(id, transform);
@@ -405,7 +405,7 @@ void addObjects(){
     // ADD AI COMPONENTS
     //===============================================================
     AIManager::getInstance().createAIDrivingComponent(*ob5.get());
-    SensorManager::getInstance().createVSensorComponent(*ob5.get());
+    SensorManager::getInstance().createVSensorComponent(*ob5.get(), 75.f, ob5.get()->getTransformData().rotation.y);
 
     //===============================================================
     // Update to distribute all creation events
