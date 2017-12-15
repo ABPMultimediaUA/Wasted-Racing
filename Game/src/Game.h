@@ -12,6 +12,7 @@
 #include "GameManager/WaypointManager.h"
 #include "GameManager/AIManager.h"
 #include "GameManager/SensorManager.h"
+#include "GameManager/AudioManager.h"
 #include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
@@ -77,6 +78,8 @@ private:
     WaypointManager* waypointManager;
     //Audio FMOD manager
     AudioFMOD* audioManager;
+    //Generic Audio Manager
+    AudioManager* audioManager2;
     //AI manager
     AIManager* aiManager;
     //Sensor manager

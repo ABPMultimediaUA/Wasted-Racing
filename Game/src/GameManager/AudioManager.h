@@ -10,7 +10,7 @@ public:
     AudioManager() {}
 
     //Destructor
-    ~AudioManager() {}
+    ~AudioManager() {delete audioFacade;}
 
     //Initialization
     void init();
@@ -26,6 +26,11 @@ public:
 
     //Static class getter
     static AudioManager& getInstance();
+
+    //Gets Audio Facade
+    IAudioFacade* getAudioFacade() {
+        return audioFacade;
+    }
 
 private:
 

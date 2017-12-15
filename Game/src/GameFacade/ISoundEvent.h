@@ -35,12 +35,15 @@ public:
     //Checks if the event is paused. True = paused, false = unpaused
     bool isPaused();
 
-    void checkEvent();
+    //Increases and decreases a flanger set as an example parameter
+    void increaseFlanger();
+    void decreaseFlanger();
     
 protected:
     FMOD::Studio::EventInstance* soundInstance;
     bool paused; //Initially set on false
     float volume;
+    float flanger;
 
     //virtual ISoundEvent* newSoundEvent(FMOD::Studio::EventInstance*) = 0;
 };

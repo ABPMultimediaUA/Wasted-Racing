@@ -20,6 +20,10 @@ void Game::init() {
     audioManager = new AudioFMOD();
     audioManager->openAudioEngine();
 
+    //Initialize true audio manager
+    audioManager2 = &AudioManager::getInstance();
+    audioManager2->init();
+
     //Initilize managers
     eventManager = &EventManager::getInstance();
     eventManager->init();
@@ -75,8 +79,10 @@ void Game::update() {
     //Event manager has to be the last to be updated
     eventManager->update();
 
-    audioManager->playSound();
-    audioManager->update();
+    audioManager2->update();
+
+    //audioManager->playSound();
+    //audioManager->update();
 
 }
 

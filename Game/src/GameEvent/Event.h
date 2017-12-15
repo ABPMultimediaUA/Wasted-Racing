@@ -42,6 +42,11 @@ enum EventType {
     Key_TurnLeft_Up,
     Key_TurnRight_Down,
     Key_TurnRight_Up,
+    //Sound keys
+    Key_Flanger_Down,
+    Key_Flanger_Up,
+    Key_Decflanger_Down,
+    Key_Decflanger_Up,
     //PLAYER: Control keys
     Key_UseItem_Down,
     Key_UseItem_Up,
