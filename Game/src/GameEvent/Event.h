@@ -47,6 +47,10 @@ enum EventType {
     Key_Flanger_Up,
     Key_Decflanger_Down,
     Key_Decflanger_Up,
+    Key_ActivateA_Down,
+    Key_ActivateA_Up,
+    Key_ActivateK_Down,
+    Key_ActivateK_Up,
     //PLAYER: Control keys
     Key_UseItem_Down,
     Key_UseItem_Up,

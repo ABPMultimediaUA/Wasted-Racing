@@ -15,6 +15,8 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 
 void FlangerDown(EventData eData);
 void FlangerUp(EventData eData);
+void activateA(EventData eData);
+void activateK(EventData eData);
 
 void AudioFMOD::openAudioEngine() {
     //Initialize FMOD System
@@ -43,6 +45,11 @@ void AudioFMOD::openAudioEngine() {
 
     EventManager::getInstance().addListener(EventListener {EventType::Key_Flanger_Down, FlangerDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Decflanger_Down, FlangerUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_ActivateA_Down, activateA});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_ActivateK_Down, activateK});
+
+    acceptW = true;
+    crocodileW = true;
 
 }
 
@@ -56,27 +63,14 @@ void AudioFMOD::closeAudioEngine() {
 
 void AudioFMOD::playSound(){
 
-    if(!acceptEvent->isPlaying())
+    if(!acceptEvent->isPlaying() && acceptW)
     {
         acceptEvent->start();
     }
-    if(!cocodrileGoodENEvent->isPlaying())
+    if(!cocodrileGoodENEvent->isPlaying() && crocodileW)
     {
         cocodrileGoodENEvent->start();
     }
-/*
-    if(acceptInstance!=NULL)
-    {
-        
-    }
-    FMOD_STUDIO_PLAYBACK_STATE state;
-    acceptInstance->getPlaybackState(&state);
-    if(state!=FMOD_STUDIO_PLAYBACK_PLAYING)
-    {
-        ERRCHECK(acceptInstance->start());
-        ERRCHECK(acceptInstance->release());
-    }
-    */
 }
 
 void AudioFMOD::IncreaseFlanger()
@@ -89,6 +83,16 @@ void AudioFMOD::DecreaseFlanger()
     acceptEvent->decreaseFlanger();
 }
 
+void AudioFMOD::stopA()
+{
+    acceptW = !acceptW;
+}
+
+void AudioFMOD::stopK()
+{
+    crocodileW = !crocodileW;
+}
+
 void FlangerDown(EventData eData)
 {
     AudioManager::getInstance().getAudioFacade()->IncreaseFlanger();
@@ -97,4 +101,14 @@ void FlangerDown(EventData eData)
 void FlangerUp(EventData eData)
 {
     AudioManager::getInstance().getAudioFacade()->DecreaseFlanger();
+}
+
+void activateA(EventData eData)
+{
+    AudioManager::getInstance().getAudioFacade()->stopA();
+}
+
+void activateK(EventData eData)
+{
+    AudioManager::getInstance().getAudioFacade()->stopK();
 }

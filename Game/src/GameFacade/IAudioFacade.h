@@ -51,6 +51,12 @@ public:
 
     //Decreases the flanger of the parameter
     virtual void DecreaseFlanger() = 0;
+
+    //Pauses and unpauses Accept Event
+    virtual void stopA() = 0;
+
+    //Pauses and unpauses Cocodrile Event
+    virtual void stopK() = 0;
 protected:
 
 };
