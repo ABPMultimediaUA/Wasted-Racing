@@ -81,7 +81,7 @@ void AIManager::update() {
 
             //Send signal of movement
             moveComponent->isMoving(true);
-            moveComponent->changeAccInc(2.f);
+            moveComponent->changeAccInc(speedValue);
             moveComponent->changeSpin(turnValue);
             std::cout<<"DATA: "<<turnValue<<"\n";
         }

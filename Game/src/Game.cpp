@@ -229,7 +229,7 @@ void addObjects(){
     transform.scale    = glm::vec3(1,1,1);
     auto ob6 = ObjectManager::getInstance().createObject(id, transform);
     id = 11;
-    transform.position = glm::vec3(100, 0, 20);
+    transform.position = glm::vec3(100, 0, 80);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob8 = ObjectManager::getInstance().createObject(id, transform);
@@ -374,7 +374,7 @@ void addObjects(){
     mData2.angInc = 0;
     mData2.angle = 0;
     mData2.spin = 0;
-    mData2.spin_inc = 0.00001;
+    mData2.spin_inc = 0.0005;
     mData2.max_spin = 0.03;
     mData2.brake_spin = 0.2;
 

@@ -39,6 +39,7 @@ public:
 	void isJumping(bool j);
 	void isSpinning(bool s);
 	void changeSpin(float n);
+	void isDrifting(bool d);
 
 	//Functions related with temporal data changes
 	void changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime);

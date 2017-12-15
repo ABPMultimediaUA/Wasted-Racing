@@ -1,4 +1,5 @@
 #include "ISoundEvent.h"
+#include <iostream>
 
 ISoundEvent::ISoundEvent(FMOD::Studio::EventInstance* newEvent)
 {
@@ -69,4 +70,12 @@ bool ISoundEvent::isPlaying()
 bool ISoundEvent::isPaused()
 {
     return paused;
+}
+
+void ISoundEvent::checkEvent()
+{
+    int* count;
+
+    soundInstance->getParameterCount(count);
+    std::cout << "ParameterCount:" << count << std::endl;
 }

@@ -35,6 +35,7 @@ void AudioFMOD::openAudioEngine() {
 
 void AudioFMOD::update() {
     ERRCHECK(system->update());
+    acceptEvent->checkEvent();
 }
 
 void AudioFMOD::closeAudioEngine() {

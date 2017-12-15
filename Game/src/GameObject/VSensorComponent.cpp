@@ -7,8 +7,10 @@ ISensorComponent(newGameObject)
 {
     angleInitial=0.0;
     angleVision=55.0;
-    sensorLeft = glm::vec3(sin(angleVision+angleInitial+270), 0.f, cos(angleVision+angleInitial));
-    sensorRight = glm::vec3(sin(-angleVision+angleInitial+270), 0.f, cos(-angleVision+angleInitial));
+    //sensorLeft = glm::vec3(cos(angleVision+angleInitial+180), 0.f, sin(angleVision+angleInitial+180));
+    //sensorRight = glm::vec3(cos(-angleVision+angleInitial+180), 0.f, sin(-angleVision+angleInitial+180));
+    sensorLeft = glm::vec3(1+cos(angleInitial),0,1+sin(angleInitial));
+    sensorRight = glm::vec3(1+cos(angleInitial),0,-1+sin(angleInitial));
 }       
 
 VSensorComponent::VSensorComponent(GameObject& newGameObject, float angV, float angI) :
@@ -17,14 +19,18 @@ ISensorComponent(newGameObject)
     angleInitial=angI;
     angleVision=angV;
 
-    sensorLeft = glm::vec3(sin(angleVision+angleInitial), 0.f, cos(angleVision+angleInitial));
-    sensorRight = glm::vec3(sin(-angleVision+angleInitial), 0.f, cos(-angleVision+angleInitial));
+    //sensorLeft = glm::vec3(cos(angleVision+angleInitial+180), 0.f, sin(angleVision+angleInitial+180));
+    //sensorRight = glm::vec3(cos(-angleVision+angleInitial+180), 0.f, sin(-angleVision+angleInitial+180));
+    sensorLeft = glm::vec3(1+cos(angleInitial),0,1+sin(angleInitial));
+    sensorRight = glm::vec3(1+cos(angleInitial),0,-1+sin(angleInitial));
 }
 
 void VSensorComponent::updateSeenObjects(std::vector<GameObject::Pointer> objects)
 {
-    sensorLeft = glm::vec3(cos(angleVision+angleInitial+180), 0.f, sin(angleVision+angleInitial+180));
-    sensorRight = glm::vec3(cos(-angleVision+angleInitial+180), 0.f, sin(-angleVision+angleInitial+180));
+    //sensorLeft = glm::vec3(cos(angleVision+angleInitial+180), 0.f, sin(angleVision+angleInitial+180));
+    //sensorRight = glm::vec3(cos(-angleVision+angleInitial+180), 0.f, sin(-angleVision+angleInitial+180));
+    sensorLeft = glm::vec3(1+cos(angleInitial),0,1+sin(angleInitial));
+    sensorRight = glm::vec3(1+cos(angleInitial),0,-1+sin(angleInitial));
     size_t i;
     glm::vec3 relativeP;
     VObject::Pointer pvo;

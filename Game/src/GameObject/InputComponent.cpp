@@ -19,6 +19,8 @@ void turnRightDownI(EventData eData);
 void turnRightUpI(EventData eData); 
 void jumpUpI(EventData eData);
 void jumpDownI(EventData eData);
+void driftUpI(EventData eData);
+void driftDownI(EventData eData);
 
 //==============================================
 // INPUT COMPONENT FUNCTIONS
@@ -37,6 +39,9 @@ void InputComponent::init(){
     EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Up, turnRightUpI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Down, jumpDownI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Up, jumpUpI});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Down, driftDownI});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Up, driftUpI});
+
 }
 
 void InputComponent::update(float dTime){
@@ -97,4 +102,12 @@ void jumpDownI(EventData eData){
 void jumpUpI(EventData eData){
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
     comp->isJumping(false);
+}
+void driftDownI(EventData eData){
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp->isDrifting(true);
+}
+void driftUpI(EventData eData){
+    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    comp->isDrifting(false);
 }
