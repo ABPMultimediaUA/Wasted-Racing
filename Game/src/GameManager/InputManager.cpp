@@ -130,10 +130,10 @@ void jumpUp(EventData eData){
     std::cout << "Jump button released!" << std::endl;
 }
 void driftUp(EventData eData){
-    std::cout << "Jump button pressed!" << std::endl;
+    std::cout << "Drift button pressed!" << std::endl;
 }
 void driftDown(EventData eData){
-    std::cout << "Jump button released!" << std::endl;
+    std::cout << "Drift button released!" << std::endl;
 }
 void addInputComponent(EventData data) {
     InputManager::getInstance().setComponent(data.Component);
