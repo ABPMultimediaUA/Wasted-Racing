@@ -39,6 +39,7 @@ public:
 	void isJumping(bool j);
 	void isSpinning(bool s);
 	void updateJump(LAPAL::movementData& mData, glm::vec3& trans, LAPAL::plane3f t);
+	void isDrifting(bool d);
 
 	//Functions related with temporal data changes
 	void changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime);

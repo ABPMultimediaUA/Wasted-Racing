@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/ext.hpp>
+#include <memory>
 
 class VObject{
     private:
@@ -9,6 +10,9 @@ class VObject{
         int type;
 
     public:
+
+        //Define shared pointer type
+        typedef std::shared_ptr<VObject> Pointer;
 
         //Constructors
         VObject();

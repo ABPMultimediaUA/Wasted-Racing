@@ -29,6 +29,8 @@ enum EventType {
     AIDrivingComponent_Delete,
     RampComponent_Create,
     RampComponent_Delete,
+    VSensorComponent_Create,
+    VSensorComponent_Delete,
     //COLLISION: Events triggered to certain collisions
     RampComponent_Collision,
     //PLAYER: Basic control keys
@@ -47,6 +49,8 @@ enum EventType {
     Key_Jump_Up,
     Key_Kneel_Down,
     Key_Kneel_Up,
+    Key_Drift_Up,
+    Key_Drift_Down,
     //PLAYER: Menu control keys
     Key_Select_Down,
     Key_Select_Up,

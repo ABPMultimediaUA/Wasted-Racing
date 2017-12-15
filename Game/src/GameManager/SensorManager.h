@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../GameObject/ISensorComponent.h"
+#include "../GameObject/VSensorComponent.h"
+#include "ObjectManager.h"
 #include <vector>
 
 class SensorManager{
@@ -28,6 +30,9 @@ public:
 
     //Static class getter
     static SensorManager& getInstance();
+
+    //Component creators
+    IComponent::Pointer createVSensorComponent(GameObject& newGameObject);
 
 private:
     std::vector<IComponent::Pointer> sensorComponentList;

@@ -96,7 +96,7 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
 
     if(mData.spi) {
 
-        mData.spin += mData.vel * mData.spin_inc * dTime; //Spin depends on vel and spin_inc
+        mData.spin += mData.spin_inc * dTime; //Spin depends on vel and spin_inc
 
         if(abs(mData.spin)>abs(mData.max_spin)){
             mData.spin = copysign(mData.max_spin, mData.spin);
@@ -164,10 +164,22 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
 }
 
 //function that moves the vehicle elliptically given its internal radius ratio rotation
-void LAPAL::elipticMovement(const LAPAL::movementData& mData, float radiusEx, float radiusIn, const float dTime){
-    //testing equations
-    
+void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTime){
+    //Check if drifting is pressed
+    if(mData.drift){
+        //Initial variables
+        float driftIncrement = glm::abs( mData.spin / mData.max_spin );
 
+        //Initial declarations
+        if(mData.driftDir){
+            
+            mData.velocity.x += mData.vel*cos(mData.angle-1.57079632679f) * driftIncrement;
+            mData.velocity.z += mData.vel*sin(mData.angle-1.57079632679f) * driftIncrement;
+        }else{
+            mData.velocity.x += mData.vel*cos(mData.angle+1.57079632679f) * driftIncrement;
+            mData.velocity.z += mData.vel*sin(mData.angle+1.57079632679f) * driftIncrement;
+        }
+    }
 }
 
 //--------------------------------------

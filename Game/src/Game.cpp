@@ -48,6 +48,10 @@ void Game::init() {
     aiManager = &AIManager::getInstance();
     aiManager->init();
 
+    //Initialize Sensor manager
+    sensorManager = &SensorManager::getInstance();
+    sensorManager->init();
+
     addObjects();
 }
 
@@ -65,10 +69,14 @@ void Game::update() {
 
     renderManager->update();
 
+    sensorManager->update();
 
 
     //Event manager has to be the last to be updated
     eventManager->update();
+
+    audioManager->playSound();
+    audioManager->update();
 
 }
 
@@ -91,6 +99,7 @@ void Game::close() {
     eventManager->close();
     waypointManager->close();
     aiManager->close();
+    sensorManager->close();
 }
 
 //====================================================
@@ -213,7 +222,7 @@ void addObjects(){
     transform.scale    = glm::vec3(1,1,1);
     auto ob6 = ObjectManager::getInstance().createObject(id, transform);
     id = 11;
-    transform.position = glm::vec3(100, 0, 0);
+    transform.position = glm::vec3(100, 0, 60);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob8 = ObjectManager::getInstance().createObject(id, transform);
@@ -224,10 +233,24 @@ void addObjects(){
     transform.scale    = glm::vec3(10,10,30);
     auto ob9 = ObjectManager::getInstance().createObject(id, transform);
 
+    id = 13;
+    transform.position = glm::vec3(200, 0, 60);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob10 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 14;
+    transform.position = glm::vec3(300, 0, 60);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob11 = ObjectManager::getInstance().createObject(id, transform);
+
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
-    //std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(*ob8.get(), 1, 1);
+    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(ob8, 1, 1);
+    std::shared_ptr<IComponent> wp2 = WaypointManager::getInstance().createWaypointComponent(ob10, 1, 2);
+    std::shared_ptr<IComponent> wp3 = WaypointManager::getInstance().createWaypointComponent(ob11, 1, 3);
 
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
@@ -245,6 +268,10 @@ void addObjects(){
     std::shared_ptr<IComponent> cp7 = RenderManager::getInstance().createObjectRenderComponent(*ob8.get(), ObjectRenderComponent::Shape::Sphere);
 
     std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob9.get(), ObjectRenderComponent::Shape::Plane);
+
+    std::shared_ptr<IComponent> cp10 = RenderManager::getInstance().createObjectRenderComponent(*ob10.get(), ObjectRenderComponent::Shape::Sphere);
+
+    std::shared_ptr<IComponent> cp11 = RenderManager::getInstance().createObjectRenderComponent(*ob11.get(), ObjectRenderComponent::Shape::Sphere);
 
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
@@ -332,14 +359,14 @@ void addObjects(){
     //===============================================================
     // ADD A MOVE COMPONENT TO THE AI
     //===============================================================
-    /*LAPAL::movementData mData2;
+    LAPAL::movementData mData2;
     mData2.mov = false;
     mData2.jump = false;
     mData2.spi = false;
     mData2.angInc = 0;
     mData2.angle = 0;
     mData2.spin = 0;
-    mData2.spin_inc = 0.00001;
+    mData2.spin_inc = 0.0005;
     mData2.max_spin = 0.03;
     mData2.brake_spin = 0.2;
     mData2.rotateX = 0.f;
@@ -354,18 +381,20 @@ void addObjects(){
     mData2.max_acc = 10.f;
     mData2.dAcc = 1.f;
     mData2.brake_acc = 0.4;
-    std::shared_ptr<IComponent> moveCP2 = PhysicsManager::getInstance().createMoveComponent(*ob5.get(), mData2, terrain, 1);*/
+
+    std::shared_ptr<IComponent> moveCP2 = PhysicsManager::getInstance().createMoveComponent(*ob5.get(), mData2, terrain, 1);
 
     //===============================================================
     // SETS ALL MOVING CHARACTERS
     //===============================================================
     PhysicsManager::getInstance().createMovingCharacter(moveCP1, terrainCP1, collisionCP1);
-    //PhysicsManager::getInstance().createMovingCharacter(moveCP2, terrainCP1, collisionCP3);
+    PhysicsManager::getInstance().createMovingCharacter(moveCP2, terrainCP1, collisionCP3);
 
     //===============================================================
     // ADD AI COMPONENTS
     //===============================================================
-    //AIManager::getInstance().createAIDrivingComponent(*ob5.get());
+    AIManager::getInstance().createAIDrivingComponent(*ob5.get());
+    SensorManager::getInstance().createVSensorComponent(*ob5.get());
 
     //===============================================================
     // Update to distribute all creation events
