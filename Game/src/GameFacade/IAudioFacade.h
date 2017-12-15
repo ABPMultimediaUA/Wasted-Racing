@@ -46,6 +46,11 @@ public:
     //Renders all the scene
     virtual void playSound() = 0;
 
+    //Increases the flanger of the parameter
+    virtual void IncreaseFlanger() = 0;
+
+    //Decreases the flanger of the parameter
+    virtual void DecreaseFlanger() = 0;
 protected:
 
 };

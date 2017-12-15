@@ -32,8 +32,9 @@ public:
     static SensorManager& getInstance();
 
     //Component creators
-    IComponent::Pointer createVSensorComponent(GameObject& newGameObject);
+    IComponent::Pointer createVSensorComponent(GameObject& newGameObject, float angV, float angI);
 
 private:
     std::vector<IComponent::Pointer> sensorComponentList;
+    std::vector<GameObject::Pointer> seenObjects;
 };

@@ -1,4 +1,6 @@
 #include "AudioFMOD.h"
+#include "../GameEvent/EventManager.h"
+#include "../GameManager/AudioManager.h"
 
 void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 {
@@ -10,6 +12,9 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 }
 
 #define ERRCHECK(_result) ERRCHECK_fn(_result, __FILE__, __LINE__)
+
+void FlangerDown(EventData eData);
+void FlangerUp(EventData eData);
 
 void AudioFMOD::openAudioEngine() {
     //Initialize FMOD System
@@ -23,6 +28,7 @@ void AudioFMOD::openAudioEngine() {
     ERRCHECK(system->loadBankFile("lib/audio/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
     ERRCHECK(system->loadBankFile("lib/audio/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
     ERRCHECK(system->loadBankFile("lib/audio/Menu.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &menuBank));
+    ERRCHECK(system->loadBankFile("lib/audio/Crocodile.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &cocodrileBank));
 
     //Initialize Event
     ERRCHECK(system->getEvent("event:/Accept", &acceptDescription));
@@ -30,6 +36,13 @@ void AudioFMOD::openAudioEngine() {
 
     acceptEvent = new AcceptEvent(acceptInstance);
 
+    ERRCHECK(system->getEvent("event:/CrocodileGoodEN", &cocodrileGoodENDescription));
+    ERRCHECK(cocodrileGoodENDescription->createInstance(&cocodrileGoodENInstance));
+
+    cocodrileGoodENEvent = new CocodrileGoodENEvent(cocodrileGoodENInstance);
+
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Flanger_Down, FlangerDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Decflanger_Down, FlangerUp});
 
 }
 
@@ -47,6 +60,10 @@ void AudioFMOD::playSound(){
     {
         acceptEvent->start();
     }
+    if(!cocodrileGoodENEvent->isPlaying())
+    {
+        cocodrileGoodENEvent->start();
+    }
 /*
     if(acceptInstance!=NULL)
     {
@@ -60,4 +77,24 @@ void AudioFMOD::playSound(){
         ERRCHECK(acceptInstance->release());
     }
     */
+}
+
+void AudioFMOD::IncreaseFlanger()
+{
+    acceptEvent->increaseFlanger();
+}
+
+void AudioFMOD::DecreaseFlanger()
+{
+    acceptEvent->decreaseFlanger();
+}
+
+void FlangerDown(EventData eData)
+{
+    AudioManager::getInstance().getAudioFacade()->IncreaseFlanger();
+}
+
+void FlangerUp(EventData eData)
+{
+    AudioManager::getInstance().getAudioFacade()->DecreaseFlanger();
 }

@@ -5,6 +5,7 @@ ISoundEvent::ISoundEvent(FMOD::Studio::EventInstance* newEvent)
     soundInstance = newEvent;
     paused=false;
     soundInstance->getVolume(&volume, 0);
+    flanger=0.f;
 }
 
 ISoundEvent::~ISoundEvent()
@@ -69,4 +70,24 @@ bool ISoundEvent::isPlaying()
 bool ISoundEvent::isPaused()
 {
     return paused;
+}
+
+void ISoundEvent::increaseFlanger()
+{
+    char f[10]="Flanger";
+    if(flanger<1)
+    {
+        flanger+=0.1f;
+    }
+    soundInstance->setParameterValue(f, flanger);
+}
+
+void ISoundEvent::decreaseFlanger()
+{   
+    char f[10]="Flanger";
+    if(flanger>0)
+    {
+        flanger-=0.1f;
+    }
+    soundInstance->setParameterValue(f, flanger);
 }
