@@ -164,30 +164,22 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
 }
 
 //function that moves the vehicle elliptically given its internal radius ratio rotation
-void LAPAL::elipticMovement( LAPAL::movementData& mData, const float dTime){
+void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTime){
     //Check if drifting is pressed
-    //if(mData.drift){
+    if(mData.drift){
+        //Initial variables
+        float driftIncrement = glm::abs( mData.spin / mData.max_spin );
+
         //Initial declarations
-        mData.radius_ex = mData.vel;
-        if(mData.radius_in == 0){
-            mData.radius_in = mData.vel;
+        if(mData.driftDir){
+            
+            mData.velocity.x += mData.vel*cos(mData.angle-1.57079632679f) * driftIncrement;
+            mData.velocity.z += mData.vel*sin(mData.angle-1.57079632679f) * driftIncrement;
+        }else{
+            mData.velocity.x += mData.vel*cos(mData.angle+1.57079632679f) * driftIncrement;
+            mData.velocity.z += mData.vel*sin(mData.angle+1.57079632679f) * driftIncrement;
         }
-        
-        //Incremental directions inside the elliptic movement
-        float tAngle_inc = mData.vel * dTime;
-        float x_inc = mData.radius_ex * ( glm::cos(mData.tAngle * (1 + tAngle_inc) ) * glm::cos(mData.tAngle) );
-        float z_inc = mData.radius_in * ( glm::sin(mData.tAngle * (1 + tAngle_inc) ) * glm::sin(mData.tAngle) );
-
-        //Adding the elliptic angulus
-        mData.tAngle += tAngle_inc;
-
-        //Adding to speed direction
-        mData.velocity += glm::vec3( x_inc * glm::cos(mData.angle) , 0.f , z_inc * glm::sin(mData.angle) );
-
-        
-
-    //}
-
+    }
 }
 
 //--------------------------------------
