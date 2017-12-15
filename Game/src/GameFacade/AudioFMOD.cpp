@@ -1,4 +1,4 @@
-/*#include "AudioFMOD.h"
+#include "AudioFMOD.h"
 
 void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 {
@@ -26,38 +26,38 @@ void AudioFMOD::openAudioEngine() {
 
     //Initialize Event
     ERRCHECK(system->getEvent("event:/Accept", &acceptDescription));
-    acceptInstance = new FMOD::Studio::EventInstance*[10];
+    ERRCHECK(acceptDescription->createInstance(&acceptInstance));
+
+    acceptEvent = new AcceptEvent(acceptInstance);
+
 
 }
 
-void AudioFMOD::updateAudioEngine() {
-
+void AudioFMOD::update() {
+    ERRCHECK(system->update());
 }
 
 void AudioFMOD::closeAudioEngine() {
     
 }
 
-void AudioFMOD::playObject(int i) {
-
-}
-
 void AudioFMOD::playSound(){
 
-    
-    if(i<10)
+    if(!acceptEvent->isPlaying())
     {
-        ERRCHECK(acceptDescription->createInstance(&acceptInstance[i]));
-        ERRCHECK(acceptInstance[i]->start());
-        ERRCHECK(acceptInstance[i]->release());
-        i++;
+        acceptEvent->start();
     }
-    /*
-    ERRCHECK(acceptDescription->createInstance(&acceptInstance));
-    ERRCHECK(acceptInstance->start());
-    ERRCHECK(acceptInstance->release());
-    */
 /*
-    ERRCHECK(system->update());
+    if(acceptInstance!=NULL)
+    {
+        
+    }
+    FMOD_STUDIO_PLAYBACK_STATE state;
+    acceptInstance->getPlaybackState(&state);
+    if(state!=FMOD_STUDIO_PLAYBACK_PLAYING)
+    {
+        ERRCHECK(acceptInstance->start());
+        ERRCHECK(acceptInstance->release());
+    }
+    */
 }
-*/

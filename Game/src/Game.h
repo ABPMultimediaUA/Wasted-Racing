@@ -11,9 +11,10 @@
 #include "GameManager/PhysicsManager.h"
 #include "GameManager/WaypointManager.h"
 #include "GameManager/AIManager.h"
+#include "GameManager/SensorManager.h"
 #include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
-//#include "GameFacade/AudioFMOD.h"
+#include "GameFacade/AudioFMOD.h"
 
 
 class Game {
@@ -78,7 +79,8 @@ private:
     //AudioFMOD* audioManager;
     //AI manager
     AIManager* aiManager;
-
+    //Sensor manager
+    SensorManager* sensorManager;
 
     //Selected renderEngine
     int renderEngine;
@@ -89,4 +91,3 @@ private:
     bool stay;
 
 };
-

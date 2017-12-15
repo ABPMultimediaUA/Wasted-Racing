@@ -4,26 +4,37 @@
 #include "VObject.h"
 #include <glm/ext.hpp>
 #include <vector>
+#include "GameObject.h"
+#include <memory>
 
 class VSensorComponent : public ISensorComponent{
     public:
 
-        //Constructor
+        //Constructors
         VSensorComponent(GameObject& newGameObject);
         VSensorComponent(GameObject& newGameObject, float angV, float angI);
         
         //Destructor
         virtual ~VSensorComponent() {};
 
+        //Initialize
+        virtual void init(){};
 
+        //Close
+        virtual void close(){};
+
+        //update
+        virtual void update(float dTime){};
 
         //Checks the objects receives and stores the ones seen in the seenObjects vector
-        void updateSeenObjects(GameObject** objects, int s);
+        void updateSeenObjects(std::vector<GameObject::Pointer> objects);
 
         //Getters and setters
-        std::vector<VObject*> getSeenObjects()           {   return seenObjects;    };
-        glm::vec3 getSensorLeft()                        {   return sensorLeft;     };
-        glm::vec3 getSensorRight()                       {   return sensorRight;    };
+        std::vector<VObject::Pointer> getSeenObjects()           {   return seenObjects;    };
+        glm::vec3 getSensorLeft()                                {   return sensorLeft;     };
+        glm::vec3 getSensorRight()                               {   return sensorRight;    };
+        float getAngleInitial()                                  {   return angleInitial;   };
+        float getAngleVision()                                   {   return angleVision;    };
 
     private:
         //Angle of the sensor
@@ -35,7 +46,7 @@ class VSensorComponent : public ISensorComponent{
         glm::vec3 sensorLeft, sensorRight;
 
         //Objects being seen
-        std::vector<VObject*> seenObjects;
+        std::vector<VObject::Pointer> seenObjects;
 
 
 };

@@ -29,7 +29,7 @@ public:
     static WaypointManager& getInstance();
 
     //Create a new Waypoint Component
-    IComponent::Pointer createWaypointComponent(GameObject& newGameObject, float r, int lvl);
+    IComponent::Pointer createWaypointComponent(GameObject::Pointer newGameObject, float r, int lvl);
 
 
     //Component list getter
@@ -44,7 +44,6 @@ public:
     int getLastPosVector();
 
     //Setters
-    void addWaypoints(GameObject::Pointer newGameObject);
     void setDistLastWay(GameObject::Pointer n, glm::vec3 pos);
     void setLastPosVector(int lvl);
 

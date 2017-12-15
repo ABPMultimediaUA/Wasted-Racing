@@ -1,10 +1,19 @@
-/*#pragma once 
+#pragma once 
 
 #include "IAudioFacade.h"
 #include <fmod_studio.hpp>
 #include "fmod.hpp"
 #include "fmod_errors.h"
 #include <iostream>
+#include <string>
+#include <glm/ext.hpp>
+
+#include "ISoundEvent.h"
+#include "AcceptEvent.h"
+
+class ISoundEvent;
+
+class AcceptEvent;
 
 class AudioFMOD : public IAudioFacade {
 
@@ -24,29 +33,33 @@ public:
     // Engine Related functions
     //==============================================================
 
-    //Creates a window depending on the engine
+    //Creates the basic stuff needed on the engine
     virtual void openAudioEngine();
 
-    //Updates window info in the engine
-    virtual void updateAudioEngine();
+    //Updates the engine
+    virtual void update();
 
-    //Closes engine window
+    //Closes engine related variables
     virtual void closeAudioEngine();
 
     //==============================================================
     // Audio Related functions
     //==============================================================
 
-    //Renders a single object
-    virtual void playObject(int id);
+    //Sets the basic volume of the game. Expected value between 0 and 1;
+    void setVolume(float vol);
 
     //Renders all the scene
     virtual void playSound();
 
+    //Sets the 3D position of the listener
+    void setListernerPosition(glm::vec3 pos);
+
 private: 
 
-    FMOD::Studio::System* system;
-    FMOD::System* lowLevelSystem;
+    std::string banksPath;
+    FMOD::Studio::System* system = NULL;
+    FMOD::System* lowLevelSystem = NULL;
     //Banks
     FMOD::Studio::Bank* masterBank;
     FMOD::Studio::Bank* stringsBank;
@@ -57,8 +70,8 @@ private:
     FMOD::Studio::EventDescription* acceptDescription;
 
     //Events
-    FMOD::Studio::EventInstance** acceptInstance;
-    int i;
+    FMOD::Studio::EventInstance* acceptInstance;
+
+    AcceptEvent* acceptEvent;
 
 };
-*/

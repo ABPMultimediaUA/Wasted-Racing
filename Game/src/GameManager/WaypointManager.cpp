@@ -22,12 +22,22 @@ void WaypointManager::close() {
 
 }
 
-IComponent::Pointer WaypointManager::createWaypointComponent(GameObject& newGameObject, float r, int lvl)
+IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer newGameObject, float r, int lvl)
 {
-    IComponent::Pointer component = std::make_shared<WaypointComponent>(newGameObject, r, lvl);
+    IComponent::Pointer component = std::make_shared<WaypointComponent>(*newGameObject.get(), r, lvl);
 
-    newGameObject.addComponent(component);
+    newGameObject.get()->addComponent(component);
 
+    if(listSubNodes->size() == 0)
+    {
+        listSubNodes->push_back(newGameObject);
+        listSubNodes->push_back(newGameObject);
+    }
+    else
+    {
+        listSubNodes->insert(listSubNodes->end()-1,newGameObject);
+    }
+    
     return component;
 }
 
@@ -75,16 +85,11 @@ int WaypointManager::getLastPosVector()
 //Setters
 //==============================================
 
-void WaypointManager::addWaypoints(GameObject::Pointer newGameObject)
-{
-    listSubNodes->push_back(newGameObject);
-}
-
 void WaypointManager::setDistLastWay(GameObject::Pointer n, glm::vec3 pos)
 {
-    distLastWay = (n->getTransformData().position.x - pos.x) * (n->getTransformData().position.x - pos.x) +
-                (n->getTransformData().position.y - pos.y) * (n->getTransformData().position.y - pos.y) +
-                (n->getTransformData().position.z - pos.z) * (n->getTransformData().position.z - pos.z);
+    distLastWay = (n.get()->getTransformData().position.x - pos.x) * (n.get()->getTransformData().position.x - pos.x) +
+                (n.get()->getTransformData().position.y - pos.y) * (n.get()->getTransformData().position.y - pos.y) +
+                (n.get()->getTransformData().position.z - pos.z) * (n.get()->getTransformData().position.z - pos.z);
 }
 
 void WaypointManager::setLastPosVector(int lvl)
