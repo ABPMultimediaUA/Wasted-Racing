@@ -5,12 +5,14 @@
 #include "../GameObject/ItemHolderComponent.h"
 
 enum ItemType{
+
     redShell,      
     blueShell,      
     banana,      
     mushroom,      
     star
-}
+    
+};
 
 class ItemManager {
 
