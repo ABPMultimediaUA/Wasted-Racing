@@ -10,10 +10,13 @@
 
 #include "ISoundEvent.h"
 #include "AcceptEvent.h"
+#include "CocodrileGoodENEvent.h"
 
 class ISoundEvent;
 
 class AcceptEvent;
+
+class CocodrileGoodENEvent;
 
 class AudioFMOD : public IAudioFacade {
 
@@ -55,6 +58,23 @@ public:
     //Sets the 3D position of the listener
     void setListernerPosition(glm::vec3 pos);
 
+
+    //==============================================================
+    // Audio Test Related functions
+    //==============================================================
+
+    //Increases the parameter controlled event
+    void IncreaseFlanger();
+
+    //Decreases the parameter controlled event
+    void DecreaseFlanger();
+
+    //Pauses and unpauses Accept Event
+    void stopA();
+
+    //Pauses and unpauses CocodrileGoodENEvent
+    void stopK();
+
 private: 
 
     std::string banksPath;
@@ -64,14 +84,21 @@ private:
     FMOD::Studio::Bank* masterBank;
     FMOD::Studio::Bank* stringsBank;
     FMOD::Studio::Bank* menuBank;
+    FMOD::Studio::Bank* cocodrileBank;
 
     //Events should go on another Fachade
     //Events descriptions
     FMOD::Studio::EventDescription* acceptDescription;
+    FMOD::Studio::EventDescription* cocodrileGoodENDescription;
 
     //Events
     FMOD::Studio::EventInstance* acceptInstance;
+    FMOD::Studio::EventInstance* cocodrileGoodENInstance;
 
     AcceptEvent* acceptEvent;
+    CocodrileGoodENEvent* cocodrileGoodENEvent;
+
+    bool acceptW;
+    bool crocodileW;
 
 };

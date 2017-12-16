@@ -47,31 +47,54 @@ void AIManager::update() {
 
         if(aiDrivingComponent && moveComponent && vSensorComponent){
             std::vector<VObject::Pointer> seenObjects = vSensorComponent->getSeenObjects();
+            float a=0,b=0;
+            
+            vSensorComponent->setAngleInitial(objectsAI[i]->getGameObject().getTransformData().rotation.y);
+            
+            glm::vec3 sensorLeft = vSensorComponent->getSensorLeft();
+            glm::vec3 sensorRight = vSensorComponent->getSensorRight();
+            glm::vec3 relativeP;
+
+            std::cout<<"Angle: "<<vSensorComponent->getAngleInitial()<<"\n";
+  
+            //Get next waypoint
+            aiDrivingComponent->setSeconds(1);
+            glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
+                                                            moveComponent->getMovemententData().velocity,
+                                                            moveComponent->getMovemententData().vel);
+
+
+            relativeP = objective - objectsAI.at(i)->getGameObject().getTransformData().position;
+            if(sensorRight.x*sensorLeft.z != sensorRight.z*sensorLeft.x) 
+                b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
+            if(sensorLeft.x != 0)
+                a = (relativeP.z - b * sensorRight.z) / sensorLeft.z;
+
+            //aiDrivingComponent->checkList();
+            std::cout<<"Tamaño array: "<<seenObjects.size()<<"\n";
+            std::cout<<"Valors A y B: "<<a<<","<<b<<"\n";
 
             //DECIDE STUFF
-            float turnValue = aiDrivingComponent->girar(seenObjects, glm::vec3(200.f,0,-200.f), 0.f, 0.f);
-            float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), 0.f, 0.f);
+            float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);
+            float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), b, a);
             //----------------------------------
 
             //Send signal of movement
             moveComponent->isMoving(true);
             moveComponent->changeAccInc(speedValue);
-            moveComponent->changeAngleInc(turnValue*0.0001f);
+            moveComponent->changeSpin(turnValue);
+            std::cout<<"DATA: "<<turnValue<<"\n";
         }
-        //Get next waypoint
-        aiDrivingComponent->setSeconds(1);
-        glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
-                                                            moveComponent->getMovemententData().velocity,
-                                                            moveComponent->getMovemententData().vel);
+        
         //aiDrivingComponent->checkList();
-        std::cout<<"Waypoint: "<<objective.x<<"\n";
+        //std::cout<<"Waypoint: "<<objective.x<<"\n";
         //Make decisions
 
         //----------------------------------
         //-----------_TESTING_--------------
         //----------------------------------
         //THIS FUNCTION IS OF THE SENSOR; COPIED HERE FOR TESTING USE; COPYRIGHT BIIIIAH
-        float angleVision = 55*3.14159265358979323846264432737f/180.f;
+        /*float angleVision = 55*3.14159265358979323846264432737f/180.f;
         float angleInitial =  moveComponent->getMovemententData().angle;
         float a=0,b=0;
         std::vector<VObject*> objects;
@@ -84,8 +107,7 @@ void AIManager::update() {
             b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
         if(sensorLeft.x != 0){
             a = (relativeP.z - b * sensorRight.z) / sensorLeft.z;
-        }
-
+        }*/
 
     }
 }

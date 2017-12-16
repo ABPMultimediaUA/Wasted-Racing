@@ -73,8 +73,8 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 				{
 					if(tour-wpManager->getDistLastWay() < 0)
 					{
-						nextPos = ((tour/wpManager->getDistLastWay()) * (listNodes[wpManager->getLastPosVector()].get()->getTransformData().position - pos)) + pos;
-						
+						//nextPos = ((tour/wpManager->getDistLastWay()) * (listNodes[wpManager->getLastPosVector()].get()->getTransformData().position - pos)) + pos;
+						nextPos = listNodes[wpManager->getLastPosVector()].get()->getTransformData().position;
 						return nextPos;
 					}
 					else

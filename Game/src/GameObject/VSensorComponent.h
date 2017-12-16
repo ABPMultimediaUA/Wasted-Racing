@@ -36,6 +36,9 @@ class VSensorComponent : public ISensorComponent{
         float getAngleInitial()                                  {   return angleInitial;   };
         float getAngleVision()                                   {   return angleVision;    };
 
+        void setAngleInitial(float a)                            {   angleInitial = a;      };
+        void setAngleVision(float a)                             {   angleVision = a;       };
+
     private:
         //Angle of the sensor
         float angleInitial;
