@@ -31,7 +31,7 @@ void Behaviour::Stop()
 {
     if(b_state == BehaviourState::RUNNING)
     {
-        b_state = BehaviourState::StopED;
+        b_state = BehaviourState::ABORTED;
         OnTerminated();
     }
 }
@@ -40,7 +40,7 @@ void Behaviour::Reset()
 {
     if(b_state == BehaviourState::RUNNING)
     {
-        b_state = BehaviourState::StopED;
+        b_state = BehaviourState::ABORTED;
         OnTerminated();
     }
 
