@@ -22,7 +22,20 @@ void TerrainComponent::close() {
 
 
 //Connectors
-void TerrainComponent::connectPrevNext(uint16_t id) {
+void TerrainComponent::connectSiblingFront(uint16_t id) {
+
+    std::shared_ptr<TerrainComponent> nextTerrain;
+
+    //Get terrain component of the object we want to link with
+    auto auxTerrain = ObjectManager::getInstance().getObject(id).get()->getComponent<TerrainComponent>();
+    if(auxTerrain!=nullptr){
+        nextTerrain = auxTerrain;
+        nextTerrain.get()->setPrev(std::shared_ptr<TerrainComponent>(this));   //make the next of previous terrain point to us
+        setNext(nextTerrain);           //make our prev point to the previous terrain
+    }
+}
+
+void TerrainComponent::connectSiblingBack(uint16_t id) {
 
     std::shared_ptr<TerrainComponent> prevTerrain;
 
@@ -35,7 +48,7 @@ void TerrainComponent::connectPrevNext(uint16_t id) {
     }
 }
 
-void TerrainComponent::connectSiblings(uint16_t id) {
+void TerrainComponent::connectSiblingLeft(uint16_t id) {
 
     std::shared_ptr<TerrainComponent> leftTerrain;
 
@@ -43,8 +56,22 @@ void TerrainComponent::connectSiblings(uint16_t id) {
     auto auxTerrain = ObjectManager::getInstance().getObject(id).get()->getComponent<TerrainComponent>();
     if(auxTerrain!=nullptr){
         leftTerrain = auxTerrain;
-        leftTerrain.get()->setNext(std::shared_ptr<TerrainComponent>(this));   //make the next of previous terrain point to us
-        setPrev(leftTerrain);           //make our prev point to the previous terrain
+        leftTerrain.get()->setRight(std::shared_ptr<TerrainComponent>(this));   //make the next of previous terrain point to us
+        setLeft(leftTerrain);           //make our prev point to the previous terrain
+    }
+
+}
+
+void TerrainComponent::connectSiblingRight(uint16_t id) {
+
+    std::shared_ptr<TerrainComponent> rightTerrain;
+
+    //Get terrain component of the object we want to link with
+    auto auxTerrain = ObjectManager::getInstance().getObject(id).get()->getComponent<TerrainComponent>();
+    if(auxTerrain!=nullptr){
+        rightTerrain = auxTerrain;
+        rightTerrain.get()->setLeft(std::shared_ptr<TerrainComponent>(this));   //make the next of previous terrain point to us
+        setRight(rightTerrain);           //make our prev point to the previous terrain
     }
 
 }
