@@ -9,4 +9,12 @@ class IItemComponent : public IComponent {
 
     IItemComponent(GameObject& newGameObject) : IComponent(newGameObject) {}
 
+    ~IItemComponent() {}
+
+    virtual void init();
+
+    virtual void update(float dTime);
+
+    virtual void close();
+
 };

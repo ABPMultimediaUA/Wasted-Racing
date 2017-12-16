@@ -4,24 +4,35 @@
 #include "../GameObject/IItemComponent.h"
 #include "../GameObject/ItemHolderComponent.h"
 
- class ItemManager {
+enum ItemType{
+    redShell,      
+    blueShell,      
+    banana,      
+    mushroom,      
+    star
+}
+
+class ItemManager {
 
     private:
 
-        std::vector<ItemHolderComponent> ItemHolders;
-        std::vector<IItemComponent> ItemComponents;
+        std::vector<GameObject::Pointer> ItemHolders;
+        std::vector<GameObject::Pointer> ItemComponents;
 
     public:
 
         ItemManager();
 
-        virtual ~ItemManager();
+        ~ItemManager() {};
 
-        virtual void init();
+        void init();
 
-        virtual void update();
+        void update();
 
-        IComponent::Pointer createItemHolderComponent(GameObject& obj);
+        void close();
+
+        IComponent::Pointer createItemHolderComponent(GameObject::Pointer newGameObject);
+
 
         static ItemManager& getInstance();
 

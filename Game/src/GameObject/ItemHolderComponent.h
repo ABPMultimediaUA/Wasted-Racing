@@ -1,16 +1,19 @@
 #pragma once
 
-#include "GameObject.h"
 #include "IComponent.h"
+#include "GameObject.h"
 
 class ItemHolderComponent : public IComponent {
 
-    ItemHolderComponent(GameObject& newGameObject) : IComponent(newGameObject) {}
+    public:
+        ItemHolderComponent(GameObject& newGameObject);
 
-    virtual ~ItemHolderComponent() {};
+        ~ItemHolderComponent() {}
 
-    virtual void init();
+        virtual void init();
 
-    virtual void update();
+        virtual void update(float dTime);
+
+        virtual void close();
 
 };
