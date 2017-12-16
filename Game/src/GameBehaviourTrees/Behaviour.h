@@ -8,7 +8,7 @@ enum class BehaviourState
     RUNNING,
     SUCCEEDED,
     FAILED,
-    StopED,
+    ABORTED,
 };
 
 class Behaviour
@@ -20,7 +20,7 @@ class Behaviour
         virtual void OnTerminated();
 
         BehaviourState b_state;
-        
+
     public:
         typedef std::shared_ptr<Behaviour> Pointer;
         Behaviour() : b_state(BehaviourState::INVALID) {};
