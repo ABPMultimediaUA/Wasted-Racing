@@ -60,9 +60,9 @@ make_gameP:
 	$(MAKE) -C src/GamePhysics
 
 # target specific settings
-all_linux: LDFLAGS += -L./lib/$(SYSTEM) -lIrrlicht -L/usr/lib -lfmod -lfmodstudio 
 all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
-all_linux clean_linux: SYSTEM=Linux
+all_linux: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=./lib/linux/irrlicht
+all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=./lib/linux/fmod
 
 all_linux:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
@@ -75,18 +75,6 @@ clean_linux:
 
 info:
 	$(info $(shell ls $(BIN_PATH)$(OBJ_PATH)))
-
-install: install_linux
-
-install_linux:
-	$(warning Installing Irrlicht...)
-	$(shell sudo cp lib/libIrrlicht.a /usr/lib/)
-	$(warning Installing FMOD...)
-	$(shell sudo cp lib/fsbank/lib/x86_64/* /usr/lib/)
-	$(shell sudo cp lib/lowlevel/lib/x86_64/* /usr/lib/)
-	$(shell sudo cp lib/studio/lib/x86_64/* /usr/lib/)
-	$(warning Installing Gainput...)
-	$(shell sudo cp lib/gainput/* /usr/lib/)
 
 ################################################################################
 # Windows 
