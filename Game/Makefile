@@ -20,11 +20,11 @@ endif
 MKDIR_P = mkdir -p
 
 #default target is Linux
-all: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP all_linux
+all: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP make_gameB all_linux
 	$(warning Linking done!)
 
 #we can also have Windows
-win: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP all_windows
+win: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP make_gameB all_windows
 	$(warning Linking done!)
 
 create_dir: make_bin_dir make_obj_dir
@@ -58,6 +58,9 @@ make_gameE:
 	
 make_gameP:
 	$(MAKE) -C src/GamePhysics
+
+make_gameB:
+	$(MAKE) -C src/GameBehaviourTrees
 
 # target specific settings
 all_linux: LDFLAGS += -L./lib/$(SYSTEM) -lIrrlicht -L/usr/lib -lfmod -lfmodstudio 
