@@ -44,7 +44,7 @@ namespace LAPAL {
     void correctYPosition(LAPAL::movementData& mData, const float dTime, LAPAL::plane3f& terrain, LAPAL::vec3f& position);
 
     //Calculates values A and B which are the scalars that multiply vector A and B to compose the point C in 2D (X-Z plane) inside the terrain given
-    void calculateConstantAB(LAPAL::plane3f& terrain, LAPAL::vec3f& position, float* a, float* b);
+    void calculateConstantAB(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, float* a, float* b);
 
     //Calculates the distance between a line defined by two points (l1,l2) and a point (p1)
     float distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1);
