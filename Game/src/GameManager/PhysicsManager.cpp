@@ -59,6 +59,7 @@ void PhysicsManager::update(const float dTime) {
         calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl);
         
     }
+    
 }
 
 void PhysicsManager::close() {
