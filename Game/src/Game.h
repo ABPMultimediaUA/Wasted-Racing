@@ -76,10 +76,8 @@ private:
     PhysicsManager* physicsManager;
     //Waypoint manager
     WaypointManager* waypointManager;
-    //Audio FMOD manager
-    AudioFMOD* audioManager;
-    //Generic Audio Manager
-    AudioManager* audioManager2;
+    //Audio Manager
+    AudioManager* audioManager;
     //AI manager
     AIManager* aiManager;
     //Sensor manager
