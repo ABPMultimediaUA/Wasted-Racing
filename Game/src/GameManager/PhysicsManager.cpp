@@ -11,6 +11,8 @@ void addMoveComponent(EventData eData);
 void addCollisionComponent(EventData eData); 
 void collideRamp(EventData eData);
 void collideBanana(EventData eData);
+void objectDeletedCollide(EventData eData);   
+void objectDeletedMove(EventData eData);
 
 //==============================================
 // PHYSICS MANAGER FUNCTIONS
@@ -27,6 +29,8 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::CollisionComponent_Create, addCollisionComponent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
     EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, collideBanana});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCollide});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMove});
 
 }
 
@@ -382,4 +386,28 @@ void collideBanana(EventData eData) {
         move->changeMaxSpeedOverTime(banana.get()->getSpeed(), banana.get()->getConsTime(), banana.get()->getDecTime());
     }
 
+}
+
+void objectDeletedCollide(EventData eData) {
+
+    auto collisionComponentList = PhysicsManager::getInstance().getCollisionComponentList();
+
+    for(unsigned int i = 0; i<collisionComponentList.size(); ++i) {
+        if(eData.Id == collisionComponentList.at(i).get()->getGameObject().getId()) {
+            collisionComponentList.erase(collisionComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeletedMove(EventData eData) {
+
+    auto moveComponentList = PhysicsManager::getInstance().getMoveComponentList();
+
+    for(unsigned int i = 0; i<moveComponentList.size(); ++i) {
+        if(eData.Id == moveComponentList.at(i).get()->getGameObject().getId()) {
+            moveComponentList.erase(moveComponentList.begin() + i);
+            return;
+        }
+    }
 }

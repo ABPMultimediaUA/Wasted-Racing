@@ -77,6 +77,9 @@ public:
     //Add an object to the game
     virtual void addObject(IComponent::Pointer ptr) = 0;
 
+    //Delete an object of the game
+    virtual void deleteObject(IComponent::Pointer ptr) = 0;
+
     //Add a light to the game
     virtual void addLight() = 0;
 
