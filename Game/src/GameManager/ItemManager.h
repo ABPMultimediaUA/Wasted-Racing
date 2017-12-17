@@ -9,6 +9,8 @@
 #include "../GameObject/ItemBananaComponent.h"
 #include "../GameObject/ItemMushroomComponent.h"
 #include "../GameObject/ItemStarComponent.h"
+#include "RenderManager.h"
+#include "PhysicsManager.h"
 
 
 class ItemManager {
