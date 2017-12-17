@@ -5,16 +5,29 @@
 
 class IItemComponent : public IComponent {
 
+
+
     public:
 
-    IItemComponent(GameObject& newGameObject) : IComponent(newGameObject) {}
+        enum ItemType{
 
-    ~IItemComponent() {}
+            redShell = 0,      
+            blueShell = 1,      
+            banana = 2,      
+            mushroom = 3,      
+            star = 4
+        
+        };
 
-    virtual void init();
 
-    virtual void update(float dTime);
+    IItemComponent(GameObject& newGameObject) : IComponent(newGameObject) {};
 
-    virtual void close();
+    virtual ~IItemComponent() {};
+
+    virtual void init() = 0;
+
+    virtual void update(float dTime) = 0;
+
+    virtual void close() = 0;
 
 };

@@ -348,7 +348,7 @@ void addObjects(){
     std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5, true, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5, false, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
-    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, true, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, false, CollisionComponent::Type::Default);
     LAPAL::plane3f terrainX;
     terrainX.p1 = (LAPAL::vec3f( -5 , 0, 15));
     terrainX.p2 = (LAPAL::vec3f( 5 , 0, 15));
@@ -513,6 +513,11 @@ void addObjects(){
     //===============================================================
     AIManager::getInstance().createAIDrivingComponent(*ob5.get());
     SensorManager::getInstance().createVSensorComponent(*ob5.get(), 75.f, ob5.get()->getTransformData().rotation.y);
+
+    //===============================================================
+    // ADD ITEMBOX COMPONENT
+    //===============================================================
+    std::shared_ptr<IComponent> itemboxCP20 = ItemManager::getInstance().createItemBox(*ob25.get());
 
     //===============================================================
     // Update to distribute all creation events

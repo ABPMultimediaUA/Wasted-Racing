@@ -10,6 +10,7 @@
 void addMoveComponent(EventData eData); 
 void addCollisionComponent(EventData eData); 
 void collideRamp(EventData eData);
+void collideItemBox(EventData eData);
 
 //==============================================
 // PHYSICS MANAGER FUNCTIONS
@@ -25,6 +26,7 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::MoveComponent_Create, addMoveComponent});
     EventManager::getInstance().addListener(EventListener {EventType::CollisionComponent_Create, addCollisionComponent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
+    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, collideItemBox});
 
 }
 
@@ -361,3 +363,17 @@ void collideRamp(EventData eData) {
     }
 
 }
+
+void collideItemBox(EventData eData){
+
+    auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
+
+    auto itemBox = coll->getGameObject().getComponent<ItemBoxComponent>();
+
+    if(itemBox != nullptr){
+        std::cout << "Estoy colisionando con la caja" << std::endl;
+    }
+
+}
+

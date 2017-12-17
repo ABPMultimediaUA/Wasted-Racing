@@ -20,7 +20,7 @@ class ItemBoxComponent : public IComponent{
         virtual void close();
 
         //Update
-        virtual void update();
+        virtual void update(float dTime);
 
     
     //==========================================

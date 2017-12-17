@@ -3,21 +3,21 @@
 #include <vector>
 #include "../GameObject/IItemComponent.h"
 #include "../GameObject/ItemHolderComponent.h"
+#include "ObjectManager.h"
+#include "../GameObject/ItemRedShellComponent.h"
+#include "../GameObject/ItemBlueShellComponent.h"
+#include "../GameObject/ItemBananaComponent.h"
+#include "../GameObject/ItemMushroomComponent.h"
+#include "../GameObject/ItemStarComponent.h"
+#include "../GameObject/ItemBoxComponent.h"
 
-enum ItemType{
-    redShell,      
-    blueShell,      
-    banana,      
-    mushroom,      
-    star
-};
 
 class ItemManager {
 
     private:
 
-        std::vector<GameObject::Pointer> ItemHolders;
-        std::vector<GameObject::Pointer> ItemComponents;
+        std::vector<std::shared_ptr<ItemHolderComponent>> ItemHolders;
+        std::vector<std::shared_ptr<IItemComponent>> ItemComponents;
 
     public:
 
@@ -31,9 +31,20 @@ class ItemManager {
 
         void close();
 
-        IComponent::Pointer createItemHolderComponent(GameObject::Pointer newGameObject);
-
+        IComponent::Pointer createItemHolderComponent(GameObject& newGameObject);
+        IComponent::Pointer createItem(GameObject::Pointer obj);
+        IComponent::Pointer createItemBox(GameObject& obj);
 
         static ItemManager& getInstance();
+
+        //Item Create
+        IComponent::Pointer createRedShell(GameObject::Pointer obj);
+        IComponent::Pointer createBlueShell(GameObject::Pointer obj);
+        IComponent::Pointer createBanana(GameObject::Pointer obj);
+        IComponent::Pointer createMushroom(GameObject::Pointer obj);
+        IComponent::Pointer createStar(GameObject::Pointer obj);
+        
+
+
 
  };

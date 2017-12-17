@@ -16,6 +16,9 @@
 #include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
+#include "GameObject/ItemBoxComponent.h"
+#include "GameManager/ItemManager.h"
+
 
 
 class Game {

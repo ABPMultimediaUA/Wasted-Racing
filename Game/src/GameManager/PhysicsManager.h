@@ -4,6 +4,7 @@
 #include "../GameObject/CollisionComponent.h"
 #include "../GameObject/TerrainComponent.h"
 #include "../GameObject/RampComponent.h"
+#include "../GameObject/ItemBoxComponent.h"
 #include <vector>
 
 class PhysicsManager{
