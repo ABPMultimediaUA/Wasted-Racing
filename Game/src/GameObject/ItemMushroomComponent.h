@@ -1,24 +1,30 @@
 #pragma once
 
 #include "IItemComponent.h"
+#include "GameObject.h"
+#include "MoveComponent.h"
 
 class ItemMushroomComponent : public IItemComponent
 {
 
     private:
 
+        GameObject::Pointer player;
+        float speed;
+        float consTime;
+        float decTime;
 
     public:
 
-        ItemMushroomComponent(GameObject& newGameObject);
+        ItemMushroomComponent(GameObject& newGameObject, GameObject::Pointer obj);
 
-        ~ItemMushroomComponent();
+        virtual ~ItemMushroomComponent();
 
-        void init();
+        virtual void init();
 
-        void update(float dTime);
+        virtual void update(float dTime);
 
-        void close();
+        virtual void close();
 
 };
  

@@ -10,6 +10,7 @@
 void addMoveComponent(EventData eData); 
 void addCollisionComponent(EventData eData); 
 void collideRamp(EventData eData);
+void collideBanana(EventData eData);
 void collideItemBox(EventData eData);
 
 //==============================================
@@ -27,6 +28,7 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::CollisionComponent_Create, addCollisionComponent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, collideItemBox});
+    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, collideBanana});
 
 }
 
@@ -109,6 +111,14 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 
                     EventManager::getInstance().addEvent(Event {EventType::RampComponent_Collision, data});
+                }
+                else if(hisColl->getType() == CollisionComponent::Type::Banana){
+                    std::cout<<"PUEDE QUE ENTRE"<<"\n";
+                    EventData data;
+                    data.Component      = std::static_pointer_cast<IComponent>(move);
+                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                    EventManager::getInstance().addEvent(Event {EventType::BananaComponent_Collision, data});
                 }
             }
         }
@@ -360,6 +370,18 @@ void collideRamp(EventData eData) {
 
     if(ramp != nullptr) {
         move->changeMaxSpeedOverTime(ramp.get()->getSpeed(), ramp.get()->getConstTime(), ramp.get()->getDecTime());
+    }
+}
+
+void collideBanana(EventData eData) {
+    std::cout<<"CLARO QUE ENTRA"<<"\n";
+    auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
+
+    auto banana = coll->getGameObject().getComponent<ItemBananaComponent>();
+
+    if(banana != nullptr) {
+        move->changeMaxSpeedOverTime(banana.get()->getSpeed(), banana.get()->getConsTime(), banana.get()->getDecTime());
     }
 
 }

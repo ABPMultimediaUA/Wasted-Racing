@@ -87,6 +87,8 @@ private:
     AIManager* aiManager;
     //Sensor manager
     SensorManager* sensorManager;
+    //Item manager
+    ItemManager* itemManager;
 
     //Selected renderEngine
     int renderEngine;

@@ -17,6 +17,7 @@ public:
 		Default,
 		Ramp,
 		ItemBox,
+		Banana
 	};
 
     //Constructor

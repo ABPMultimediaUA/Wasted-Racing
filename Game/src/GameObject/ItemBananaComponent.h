@@ -7,6 +7,9 @@ class ItemBananaComponent : public IItemComponent
 
     private:
 
+        float speed;
+        float consTime;
+        float decTime;
 
     public:
 
@@ -19,6 +22,11 @@ class ItemBananaComponent : public IItemComponent
         virtual void update(float dTime);
 
         virtual void close();
+
+        //Getters
+        float getSpeed()        {       return speed;       };
+        float getConsTime()     {       return consTime;    };
+        float getDecTime()      {       return decTime;     };
 
 };
  

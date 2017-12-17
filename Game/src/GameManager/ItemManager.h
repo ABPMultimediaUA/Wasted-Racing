@@ -10,6 +10,8 @@
 #include "../GameObject/ItemMushroomComponent.h"
 #include "../GameObject/ItemStarComponent.h"
 #include "../GameObject/ItemBoxComponent.h"
+#include "RenderManager.h"
+#include "PhysicsManager.h"
 
 
 class ItemManager {

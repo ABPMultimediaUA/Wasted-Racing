@@ -5,6 +5,7 @@
 #include "../GameObject/TerrainComponent.h"
 #include "../GameObject/RampComponent.h"
 #include "../GameObject/ItemBoxComponent.h"
+#include "../GameObject/ItemBananaComponent.h"
 #include <vector>
 
 class PhysicsManager{
