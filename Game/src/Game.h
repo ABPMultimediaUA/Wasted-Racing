@@ -16,6 +16,7 @@
 #include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
+#include "GameManager/ItemManager.h"
 
 
 class Game {
@@ -82,6 +83,8 @@ private:
     AIManager* aiManager;
     //Sensor manager
     SensorManager* sensorManager;
+    //Item manager
+    ItemManager* itemManager;
 
     //Selected renderEngine
     int renderEngine;
