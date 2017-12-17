@@ -91,6 +91,13 @@ void LAPAL::updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain){
     }
 }
 
+
+////---------------_______----------------
+////---------------MEJORAS----------------
+////---------------_______--------------
+/*
+ >Más lento el giro cuanto más rápido el vehículo
+*/
 //Updates all spin related variables
 void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
 
@@ -118,6 +125,13 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     mData.angle += mData.spin;
 }
 
+
+////---------------_______----------------
+////---------------MEJORAS----------------
+////---------------_______--------------
+/*
+ >Rotar bien cuando el plano es horizontal
+*/
 //Updates rotation of the vehicle to match the terrain's. Do it smoothly.
 void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, const float dTime){
 
@@ -143,7 +157,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
     }
 
     //Z axis
-    if(glm::abs(mData.angZ - terrain.rotZ)<0.001f){
+    if(glm::abs(mData.angZ - terrain.rotZ)<0.01f){
         mData.angZ = terrain.rotZ;
         mData.rotateZ = 0.f;
     }else{
@@ -161,8 +175,16 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
             mData.angZ -= mData.rotateZ*dTime;
         }
     }
+
+    //std::cout<<"Rotacion X: "<<mData.angX<<","<<" Rotacion Z: "<<mData.angZ<<std::endl;
 }
 
+////---------------_______----------------
+////---------------MEJORAS----------------
+////---------------_______--------------
+/*
+ >Girar en la dirección opuesta reduce la velocidad en esa dirección, no cambia el sentido
+*/
 //function that moves the vehicle elliptically given its internal radius ratio rotation
 void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTime){
     //Check if drifting is pressed
@@ -172,7 +194,6 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
 
         //Initial declarations
         if(mData.driftDir){
-            
             mData.velocity.x += mData.vel*cos(mData.angle-1.57079632679f) * driftIncrement;
             mData.velocity.z += mData.vel*sin(mData.angle-1.57079632679f) * driftIncrement;
         }else{

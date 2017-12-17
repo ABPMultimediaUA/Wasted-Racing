@@ -140,7 +140,7 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 >Diferenciar entre tipos de objetos
 >Tener en cuenta físicas del terreno
 >Personalidad agresiva o precavida
-
+>Añadir para hacer drifting
 
 //---------------------------*/
 float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 waypoint, float a, float b)
@@ -154,12 +154,22 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
 	float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
 
+	std::cout<<"Waypoint: "<<waypoint.x<<","<<waypoint.z<<std::endl;
+	std::cout<<"Left side: "<<a<<std::endl;
+	std::cout<<"Right side: "<<b<<std::endl;
+	std::cout<<"ATAN: "<<atan_w<<std::endl;
+
 	//fuzzifier and inference
 	//---------------GENERALIZE--v-------v----v
 	//waypoints
+	/*
 	float wp_left = inferT(atan_w,0.25f,0.375f,0.51f);
 	float wp_center = inferT(atan_w,0.2f,0.25f,0.3f);
 	float wp_right = inferT(atan_w,-0.01f,0.125f,0.25f);
+	*/
+	float wp_left 	= inferL(atan_w,  0.f  	,1.0f 	,0   	);
+	float wp_center = inferT(atan_w, -0.3f	,0.0f 	,0.3f	);
+	float wp_right 	= inferL(atan_w, -1.0f	,0.f  	,1   	);
 
 	if(atan_w<0 || atan_w>0.51){
 		if(a<b){
@@ -249,10 +259,10 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 //is going, and where it is headed to.
 /*//APARTADO DE MEJORAS//////
 >Añadir que si tienes que girar demasiado a la derecha o izquierda para llegar a tu objetivo, que frenes
-
+>Añadir para hacer drifting
 
 //---------------------------*/
-float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, float direction, float speed, float b_w, float a_w)
+float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, float direction, float speed, float a_W, float b_w)
 {
 	//final turn decision
 	float decision = 0.0f;
@@ -261,10 +271,10 @@ float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, f
 
 	//fuzzifier and inference
 	//---------------GENERALIZE--v-------v----v
-	//waypoints inference
-	float going_left = inferL(direction,0.2f,1.0f,0);
-	float going_center = inferT(direction,-0.3f,0.0f,0.3f);
-	float going_right = inferL(direction,-1.0f,-0.2f,1);
+	//Where am I going
+	float going_left 	= inferL(direction,	0.2f,	1.0f,	0		);
+	float going_center 	= inferT(direction,-0.3f,	0.0f,	0.3f	);
+	float going_right 	= inferL(direction,-1.0f,	-0.2f,	1		);
 
 	//Correlation between how much more do I need to rotate to arrive and my current speed
 	/*float more_turn_left = inferT();

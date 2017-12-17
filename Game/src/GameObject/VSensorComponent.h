@@ -29,6 +29,9 @@ class VSensorComponent : public ISensorComponent{
         //Checks the objects receives and stores the ones seen in the seenObjects vector
         void updateSeenObjects(std::vector<GameObject::Pointer> objects);
 
+        //Auxiliar function to calculate A and B of given objective
+        void calculateAB(glm::vec3& objective, float* a, float* b);
+
         //Getters and setters
         std::vector<VObject::Pointer> getSeenObjects()           {   return seenObjects;    };
         glm::vec3 getSensorLeft()                                {   return sensorLeft;     };

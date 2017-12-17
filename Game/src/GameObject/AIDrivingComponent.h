@@ -29,7 +29,7 @@ class AIDrivingComponent : public IComponent{
         static float girar(std::vector<VObject::Pointer>, glm::vec3 waypoint, float a, float b);
         
         //Makes NPC accelerate or brake based on data
-        static float acelerar_frenar(std::vector<VObject::Pointer>, float direction, float speed, float b_w, float a_w);
+        static float acelerar_frenar(std::vector<VObject::Pointer>, float direction, float speed, float a_w, float b_w);
 
         //Inferes the fuzzy value in a line with the type given
         static float inferL(float value, float limit1, float limit2, int type);

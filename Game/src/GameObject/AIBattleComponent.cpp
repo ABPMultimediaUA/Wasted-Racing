@@ -56,7 +56,7 @@ class ConditionHasItem5Action : public Behaviour {
 void AIBattleComponent::init()
 {
     //Selector is already declared in the header
-    selector = std::shared_ptr<Selector>(new Selector());
+    /*selector = std::shared_ptr<Selector>(new Selector());
 
     //Initialice all the nodes
     auto sequence = std::shared_ptr<Sequence>(new Sequence());
@@ -127,7 +127,7 @@ void AIBattleComponent::init()
     sequence31->addChild(std::shared_ptr<Behaviour>(new ConditionEnemyBehindAction()));
     sequence31->addChild(std::shared_ptr<Behaviour>(new UseItemAction()));
 
-
+*/
 }
 
 void AIBattleComponent::update(float dTime)
