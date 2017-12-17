@@ -279,11 +279,11 @@ void addObjects(){
 
     //ItemBox:
   
-    id = 44;
+    id = 25;
     transform.position = glm::vec3(10, 0, 70);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
-    auto ob44 = ObjectManager::getInstance().createObject(id, transform);
+    auto ob25 = ObjectManager::getInstance().createObject(id, transform);
 
     //===============================================================
     // ADD WAYPOINT COMPONENT
@@ -323,7 +323,7 @@ void addObjects(){
 
     std::shared_ptr<IComponent> cp16 = RenderManager::getInstance().createObjectRenderComponent(*ob19.get(), ObjectRenderComponent::Shape::Cube);
 
-    std::shared_ptr<IComponent> cp21 = RenderManager::getInstance().createObjectRenderComponent(*ob44.get(), ObjectRenderComponent::Shape::Cube);
+    std::shared_ptr<IComponent> cp25 = RenderManager::getInstance().createObjectRenderComponent(*ob25.get(), ObjectRenderComponent::Shape::Cube);
 
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
@@ -348,7 +348,7 @@ void addObjects(){
     std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5, true, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5, false, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
-    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob44.get(), 5, true, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, true, CollisionComponent::Type::Default);
     LAPAL::plane3f terrainX;
     terrainX.p1 = (LAPAL::vec3f( -5 , 0, 15));
     terrainX.p2 = (LAPAL::vec3f( 5 , 0, 15));
