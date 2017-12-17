@@ -258,6 +258,7 @@ void addObjects(){
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob8 = ObjectManager::getInstance().createObject(id, transform);
 
+    //acceleration ramp
     id = 12;
     transform.position = glm::vec3(0,-4,0);
     transform.rotation = glm::vec3(0,0,0);
@@ -275,6 +276,14 @@ void addObjects(){
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob11 = ObjectManager::getInstance().createObject(id, transform);
+
+    //ItemBox:
+  
+    id = 44;
+    transform.position = glm::vec3(10, 0, 70);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob44 = ObjectManager::getInstance().createObject(id, transform);
 
     //===============================================================
     // ADD WAYPOINT COMPONENT
@@ -314,6 +323,8 @@ void addObjects(){
 
     std::shared_ptr<IComponent> cp16 = RenderManager::getInstance().createObjectRenderComponent(*ob19.get(), ObjectRenderComponent::Shape::Cube);
 
+    std::shared_ptr<IComponent> cp21 = RenderManager::getInstance().createObjectRenderComponent(*ob44.get(), ObjectRenderComponent::Shape::Cube);
+
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
     //===============================================================
@@ -337,12 +348,14 @@ void addObjects(){
     std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5, true, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5, false, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob44.get(), 5, true, CollisionComponent::Type::Default);
     LAPAL::plane3f terrainX;
     terrainX.p1 = (LAPAL::vec3f( -5 , 0, 15));
     terrainX.p2 = (LAPAL::vec3f( 5 , 0, 15));
     terrainX.p3 = (LAPAL::vec3f( 5 , 0, -15));
     terrainX.p4 = (LAPAL::vec3f( -5 , 0, -15));
     std::shared_ptr<IComponent> collisionCP5 = PhysicsManager::getInstance().createCollisionComponent(*ob9.get(), terrainX, false, CollisionComponent::Type::Ramp);
+    
 
     //===============================================================
     // ADD TERRAIN COMPONENT

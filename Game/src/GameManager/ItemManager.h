@@ -10,7 +10,7 @@ enum ItemType{
     banana,      
     mushroom,      
     star
-}
+};
 
 class ItemManager {
 

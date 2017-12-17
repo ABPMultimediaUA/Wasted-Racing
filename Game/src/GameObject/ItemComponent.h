@@ -7,14 +7,14 @@ class ItemComponent : public IItemComponent {
 
     public:
 
-    ItemComponent(GameObject& newGameObject) : IItemComponent(newGameObject) {}
+        ItemComponent(GameObject& newGameObject) : IItemComponent(newGameObject) {}
 
-    virtual ~ItemComponent() {};
+        virtual ~ItemComponent() {};
 
-    virtual void init();
+        virtual void init();
 
-    virtual void update();
+        virtual void update();
 
-    private:
+        private:
 
 };
