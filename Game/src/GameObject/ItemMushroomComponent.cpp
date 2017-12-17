@@ -2,9 +2,9 @@
 
 
 
-ItemMushroomComponent::ItemMushroomComponent(GameObject& newGameObject) : IItemComponent(newGameObject)
+ItemMushroomComponent::ItemMushroomComponent(GameObject& newGameObject, GameObject::Pointer obj) : IItemComponent(newGameObject)
 {
-
+    player = obj;
 }
 
 ItemMushroomComponent::~ItemMushroomComponent()
@@ -14,7 +14,7 @@ ItemMushroomComponent::~ItemMushroomComponent()
 
 void ItemMushroomComponent::init()
 {
-
+    player->getComponent<MoveComponent>()->changeMaxSpeedOverTime(200.f, 0.1f, 2.f);
 }
 
 void ItemMushroomComponent::update(float dTime)

@@ -53,6 +53,10 @@ void Game::init() {
     sensorManager = &SensorManager::getInstance();
     sensorManager->init();
 
+    //Initialize Sensor manager
+    itemManager = &ItemManager::getInstance();
+    itemManager->init();
+
     addObjects();
 }
 
@@ -72,6 +76,8 @@ void Game::update() {
 
     sensorManager->update();
 
+    itemManager->update();
+    
 
     //Event manager has to be the last to be updated
     eventManager->update();
@@ -100,6 +106,7 @@ void Game::close() {
     waypointManager->close();
     aiManager->close();
     sensorManager->close();
+    itemManager->close();
 }
 
 //====================================================
@@ -108,12 +115,10 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
-
     while(Game::stay){
         Game::update();
         Game::draw();
     }
-
     Game::close();
 }
 

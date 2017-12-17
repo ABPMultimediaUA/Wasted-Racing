@@ -2,6 +2,7 @@
 
 
 
+void createItemEvent(EventData eData);
 
 ItemManager::ItemManager()
 {
@@ -15,6 +16,8 @@ ItemManager& ItemManager::getInstance(){
 }
 
 void ItemManager::init(){
+
+    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, createItemEvent});
 
 }
 
@@ -42,8 +45,8 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
 //Create Item
 IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
 
-    int random = rand() % 5;
-
+    //int random = rand() % 5;
+    int random = 3;
     if(random == IItemComponent::ItemType::redShell)
     {
         return createRedShell(obj);
@@ -58,7 +61,9 @@ IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
     }
     else if(random == IItemComponent::ItemType::mushroom)
     {
-        return createMushroom(obj);
+        auto component = createMushroom(obj);
+        std::dynamic_pointer_cast<ItemMushroomComponent>(component)->init();
+        return component;
     }
     else if(random == IItemComponent::ItemType::star)
     {
@@ -147,7 +152,7 @@ IComponent::Pointer ItemManager::createMushroom(GameObject::Pointer obj)
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
-    IComponent::Pointer component = std::make_shared<ItemMushroomComponent>(*ob.get());
+    IComponent::Pointer component = std::make_shared<ItemMushroomComponent>(*ob.get(), obj);
 
     ob.get()->addComponent(component);
 
@@ -176,4 +181,9 @@ IComponent::Pointer ItemManager::createStar(GameObject::Pointer obj)
     ItemComponents.push_back(std::dynamic_pointer_cast<ItemStarComponent>(component));
 
     return component;
+}
+
+void createItemEvent(EventData eData)
+{
+    ItemManager::getInstance().createItem(eData.Object);
 }
