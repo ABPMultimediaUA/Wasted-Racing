@@ -3,7 +3,7 @@
 
 //This class defines the usage of a generic item in the Battle System
 class UseItemAction : public Behaviour{
-    public:
+    protected:
         BehaviourState Update(float d)
         {
 			return BehaviourState::FAILED;
@@ -14,16 +14,34 @@ class UseItemAction : public Behaviour{
 //This class defines the waiting action, when the player decides not to use the item
 class WaitAction : public Behaviour{
     public:
+        WaitAction(float w) :
+        wTime(w) {}
+        
+    protected:
+        void Initialized() override
+        {
+            aTime=0.f;
+        }
         BehaviourState Update(float d)
         {
-			return BehaviourState::FAILED;
+            aTime+=d;
+            if(aTime>wTime)
+            {
+                return BehaviourState::SUCCEEDED;
+            }
+			return BehaviourState::RUNNING;
         }
 
+    private:
+        //Total time to wait
+        float wTime;
+        //Acumulated time
+        float aTime;
 };
 
 //Condition that checks if the player is first or not
 class ConditionFirstAction : public Behaviour {
-    public:
+    protected:
         BehaviourState Update(float d)
         {
             return BehaviourState::FAILED;
@@ -33,7 +51,7 @@ class ConditionFirstAction : public Behaviour {
 
 //Condition that checks if an enemy is behind or not
 class ConditionEnemyBehindAction : public Behaviour {
-    public:
+    protected:
         BehaviourState Update(float d)
         {
             return BehaviourState::FAILED;
@@ -43,7 +61,7 @@ class ConditionEnemyBehindAction : public Behaviour {
 
 //Condition that checks if the player has an item or not
 class ConditionHasItemAction : public Behaviour {
-    public:
+    protected:
         BehaviourState Update(float d)
         {
             return BehaviourState::FAILED;
@@ -53,7 +71,7 @@ class ConditionHasItemAction : public Behaviour {
 
 //Condition that checks if the player has the item 1 or not
 class ConditionHasItem1Action : public Behaviour {
-    public:
+    protected:
         BehaviourState Update(float d)
         {
             return BehaviourState::FAILED;
@@ -63,7 +81,7 @@ class ConditionHasItem1Action : public Behaviour {
 
 //Condition that checks if the player has the item 2 or not
 class ConditionHasItem2Action : public Behaviour {
-    public:
+    protected:
         BehaviourState Update(float d)
         {
             return BehaviourState::FAILED;
@@ -73,7 +91,7 @@ class ConditionHasItem2Action : public Behaviour {
 
 //Condition that checks if the player has the item 3 or not
 class ConditionHasItem3Action : public Behaviour {
-    public:
+    protected:
         BehaviourState Update(float d)
         {
             return BehaviourState::FAILED;
@@ -83,7 +101,7 @@ class ConditionHasItem3Action : public Behaviour {
 
 //Condition that checks if the player has the item 4 or not
 class ConditionHasItem4Action : public Behaviour {
-    public:
+    protected:
         BehaviourState Update(float d)
         {
             return BehaviourState::FAILED;
@@ -93,7 +111,7 @@ class ConditionHasItem4Action : public Behaviour {
 
 //Condition that checks if the player has the item 5 or not
 class ConditionHasItem5Action : public Behaviour {
-    public:
+    protected:
         BehaviourState Update(float d)
         {
             return BehaviourState::FAILED;
@@ -104,8 +122,8 @@ class ConditionHasItem5Action : public Behaviour {
 //Initialize the tree
 void AIBattleComponent::init()
 {
-    //Selector is already declared in the header
-    selector = std::shared_ptr<Selector>(new Selector());
+    //Main selector of the tree
+    auto selector = std::shared_ptr<Selector>(new Selector());
 
     //Initialice all the nodes
     auto sequence = std::shared_ptr<Sequence>(new Sequence());
@@ -129,7 +147,7 @@ void AIBattleComponent::init()
 
     //First selector. Chooses between having an object or not. If not, Waits.
     selector->AddChild(sequence);
-    selector->AddChild(std::shared_ptr<Behaviour>(new WaitAction()));
+    selector->AddChild(std::shared_ptr<Behaviour>(new WaitAction(1.0f)));
 
     //Checks if we have an item, if not, we go back and wait is activated. If we have it, we active selector2
     sequence->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItemAction()));
@@ -167,11 +185,11 @@ void AIBattleComponent::init()
     DS2->AddChild(std::shared_ptr<Behaviour>(new UseItemAction()));
 
     sequence21->AddChild(std::shared_ptr<Behaviour>(new ConditionFirstAction));
-    sequence21->AddChild(std::shared_ptr<Behaviour>(new WaitAction()));
+    sequence21->AddChild(std::shared_ptr<Behaviour>(new WaitAction(1.0f)));
 
     //Dynamic selector of item 3. If we have an enemy behind, use it, elsewhere wait
     DS3->AddChild(sequence31);
-    DS3->AddChild(std::shared_ptr<Behaviour>(new WaitAction()));
+    DS3->AddChild(std::shared_ptr<Behaviour>(new WaitAction(1.0f)));
 
     sequence31->AddChild(std::shared_ptr<Behaviour>(new ConditionEnemyBehindAction()));
     sequence31->AddChild(std::shared_ptr<Behaviour>(new UseItemAction()));
@@ -181,6 +199,7 @@ void AIBattleComponent::init()
 
 void AIBattleComponent::update(float dTime)
 {
+    root->Tick(dTime);
 
 }
 
