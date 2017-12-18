@@ -36,17 +36,17 @@ class ItemManager {
         void close();
 
         IComponent::Pointer createItemHolderComponent(GameObject& newGameObject);
-        IComponent::Pointer createItem(GameObject::Pointer obj);
+        IComponent::Pointer createItem(GameObject& obj);
         IComponent::Pointer createItemBox(GameObject& obj);
 
         static ItemManager& getInstance();
 
         //Item Create
-        IComponent::Pointer createRedShell(GameObject::Pointer obj);
-        IComponent::Pointer createBlueShell(GameObject::Pointer obj);
-        IComponent::Pointer createBanana(GameObject::Pointer obj);
-        IComponent::Pointer createMushroom(GameObject::Pointer obj);
-        IComponent::Pointer createStar(GameObject::Pointer obj);
+        IComponent::Pointer createRedShell(GameObject& obj);
+        IComponent::Pointer createBlueShell(GameObject& obj);
+        IComponent::Pointer createBanana(GameObject& obj);
+        IComponent::Pointer createMushroom(GameObject& obj);
+        IComponent::Pointer createStar(GameObject& obj);
         
 
         //Getters
