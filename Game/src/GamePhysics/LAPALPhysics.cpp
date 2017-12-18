@@ -145,7 +145,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
     }
 
     //Z axis
-    if(glm::abs(mData.angZ - terrain.rotZ)<0.001f){
+    if(glm::abs(mData.angZ - terrain.rotZ)<0.01f){
         mData.angZ = terrain.rotZ;
         mData.rotateZ = 0.f;
     }else{
@@ -291,6 +291,7 @@ void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPA
     }else{
         position.y = y;
     }
+    mData.jump = false;
 }
 
 //Calculates values A and B which are the scalars that multiply vector A and B to compose the point C in 2D (X-Z plane) inside the terrain given
