@@ -12,55 +12,27 @@ void MoveComponent::init() {
 //Update
 void MoveComponent::update(float dTime) {
 
+    //get transform data
     auto position = getGameObject().getTransformData().position;
 
+    //Update all movement conditions and visuals
     updateMaxSpeedOverTime(dTime); //Update speed difference over time (for powerups)
+    LAPAL::updateRotation(mData, terrain, dTime);       //Updates rotation of object (axis and visual)
 
-    LAPAL::updateLinearVelocity(mData, dTime, terrain);
-    LAPAL::updateSpin(mData, dTime);
-    LAPAL::updateVelocity(mData, terrain);
-    LAPAL::updateEllipticMovement(mData, dTime);
-    LAPAL::updateRotation(mData, terrain, dTime);
+    //Update horizontal movement
+    LAPAL::updateLinearVelocity(mData, dTime, terrain); //Update linear velocity
+    LAPAL::updateSpin(mData, dTime);                    //Update spin (turning)
+    LAPAL::updateVelocity(mData, terrain);              //Update velocity (vector)
+    LAPAL::updateEllipticMovement(mData, dTime);        //Update elliptic movement (if object is drifting)
 
-    auto trans = getGameObject().getTransformData();
-    
+    //Correct vertical movement
     updateJump(mData, position, terrain);
     LAPAL::correctYPosition(mData, dTime, terrain, position);
 
-    /*
-     if(mData.jump == true){
-       if(LAPAL::calculateExpectedY(terrain, trans.position) == trans.position.y){ 
-           mData.posY = trans.position.y;
-           mData.asc = true;
-       }
-    }
-    if(mData.asc == true){
-       //  if(LAPAL::checkTerrain(terrain)){
-            if(trans.position.y < mData.posY + 10){
-                mData.velocity.y += 10;
-                std::cout << "TERRENO HORIZ" << std::endl;
-            }
-            else{
-                mData.asc = false;
-                //mData.velocity.y = 0;
-                std::cout << "ASCENDING FALSE" << std::endl;
-            }
-         }
-         else{
-             if(trans.position.y < mData.posY*cos(degreeAngle) + 100){
-                mData.velocity.y += 100*cos(degreeAngle);
-            }
-            else{
-                mData.asc = false;
-                mData.velocity.y = 0;
-                std::cout << "ASCENDING FALSE" << std::endl;
-            }
-         }
-       
-    }*/
-
+    //Get transform data
+    auto trans = getGameObject().getTransformData(); 
+    
     //Change position
-    //trans.position += mData.vel3d;
     trans.position = position;
     trans.position += mData.velocity*dTime;
 
@@ -71,6 +43,8 @@ void MoveComponent::update(float dTime) {
     trans.rotation.y = -degreeAngle;
     trans.rotation.z = degreeX;
     trans.rotation.x = degreeZ;
+
+    //Set final transform of position
     getGameObject().setTransformData(trans);
 
     auto id = getGameObject().getId();
@@ -78,28 +52,28 @@ void MoveComponent::update(float dTime) {
     
     ///*===========================================================================================
     // DEBUG
-    if(id == 5){
+    if(id == 8){
         system("clear");
-        std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
+        //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
         std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
-        std::cout << " POS Y " << trans.position.y << std::endl;
+        //std::cout << " POS Y " << trans.position.y << std::endl;
         std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
         std::cout << " INCR ANGLE " << mData.spin << std::endl;
         std::cout << " ANGULO GIRO " << mData.angle << std::endl;
         std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
-        std::cout << " Aceleración " << mData.acc << std::endl;
+        //std::cout << " Aceleración " << mData.acc << std::endl;
         std::cout << " Velocidad " << mData.vel << std::endl;
         std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
         std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
         std::cout << " VEL Y " << mData.velY << std::endl;
 
 
-        if (mData.jump == false){
+        /*if (mData.jump == false){
             std::cout << " No estoy saltando " << std::endl;
         }
         else{
             std::cout << " Sí estoy saltando " << std::endl;
-        }
+        }*/
     }
 
     //=========================================================================================*/
@@ -133,9 +107,15 @@ void MoveComponent::isJumping(bool j){
 void MoveComponent::isSpinning(bool s){
     mData.spi = s;
 }
+
 void MoveComponent::changeSpin(float n) {
-    mData.angle += mData.max_spin * n;
+    mData.spin = mData.max_spin * n;
 }
+
+void MoveComponent::changeAcc(float a){
+    mData.acc  = mData.max_acc  * a;
+}
+
 void MoveComponent::isDrifting(bool d){
     mData.drift = d;
     

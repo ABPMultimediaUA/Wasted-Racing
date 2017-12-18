@@ -2,6 +2,7 @@
 
 #include "../GameObject/ISensorComponent.h"
 #include "../GameObject/VSensorComponent.h"
+#include "../GameObject/MSensorComponent.h"
 #include "ObjectManager.h"
 #include <vector>
 
@@ -24,8 +25,12 @@ public:
     //Shutdown
     void close();
 
-    std::vector<IComponent::Pointer>& getComponentList() {
+    std::vector<IComponent::Pointer>& getComponentList() { //Visual sensors
         return sensorComponentList;
+    }
+
+    std::vector<IComponent::Pointer>& getMComponentList() {//Map sensors
+        return sensorMComponentList;
     }
 
     //Static class getter
@@ -33,8 +38,10 @@ public:
 
     //Component creators
     IComponent::Pointer createVSensorComponent(GameObject& newGameObject, float angV, float angI);
+    IComponent::Pointer createMSensorComponent(GameObject& newGameObject, float angV, float angI);
 
 private:
     std::vector<IComponent::Pointer> sensorComponentList;
+    std::vector<IComponent::Pointer> sensorMComponentList;
     std::vector<GameObject::Pointer> seenObjects;
 };
