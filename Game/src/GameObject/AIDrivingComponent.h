@@ -21,15 +21,13 @@ class AIDrivingComponent : public IComponent{
         //Closer
         virtual void close();
 
-        glm::vec3 getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed);
-
         void checkList();
 
         //Makes NPC turn a fixated angle based on data
         static float girar(std::vector<VObject::Pointer>, glm::vec3 waypoint, float a, float b);
         
         //Makes NPC accelerate or brake based on data
-        static float acelerar_frenar(std::vector<VObject::Pointer>, float direction, float speed, float b_w, float a_w);
+        static float acelerar_frenar(std::vector<VObject::Pointer>, float direction, float speed, float a_w, float b_w);
 
         //Inferes the fuzzy value in a line with the type given
         static float inferL(float value, float limit1, float limit2, int type);
@@ -50,9 +48,7 @@ class AIDrivingComponent : public IComponent{
         static void centroidT2(float* cx, float* cy, float* area, float h, float limit1, float limit2, float limit3, float limit4);
     
         //setters
-        void setSeconds(float sec)      {  seconds = sec;   };
     
     private:
-        float seconds;
         
 };
