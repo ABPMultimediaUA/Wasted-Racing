@@ -60,6 +60,9 @@ public:
 	//Update
 	void update(float dTime);
 
+	//Close
+	void close();
+
 	//Add component
 	void addComponent(IComponent::Pointer component);
 

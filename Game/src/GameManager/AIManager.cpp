@@ -57,10 +57,15 @@ void AIManager::update() {
             vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
             
             //Get next waypoint
+<<<<<<< HEAD
             aiDrivingComponent->setSeconds(1);  //Set in how many seconds we want the object to predict its position
             glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
+=======
+            //aiDrivingComponent->setSeconds(1);
+            glm::vec3 objective; /*= aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
+>>>>>>> 41c98c51345f79bc3ff937fd0c9f62d13d558a0c
                                                             moveComponent->getMovemententData().velocity,
-                                                            moveComponent->getMovemententData().vel);
+                                                            moveComponent->getMovemententData().vel);*/
 
 
             //Update A and B of the objective

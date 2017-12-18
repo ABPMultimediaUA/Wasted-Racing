@@ -5,7 +5,7 @@
 namespace LAPAL{
 
     //Universal constant
-    const float gravity = 98.f;
+    const float gravity = 15.f;
 
     //3d float point
     typedef glm::vec3 vec3f;
@@ -29,6 +29,7 @@ namespace LAPAL{
         bool spi  = false;      //To know if a spin related key is pressed
         bool asc = false;       //To know that the object is ascending
         bool drift = false;     //To know if object is drifting or not
+        bool braking = false;
 
         //spin
         float angInc            = 0.0f;         //?

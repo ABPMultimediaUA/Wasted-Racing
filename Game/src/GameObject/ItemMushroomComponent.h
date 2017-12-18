@@ -10,6 +10,9 @@ class ItemMushroomComponent : public IItemComponent
     private:
 
         GameObject::Pointer player;
+        float speed;
+        float consTime;
+        float decTime;
 
     public:
 

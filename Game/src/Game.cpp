@@ -76,7 +76,7 @@ void Game::update() {
 
     sensorManager->update();
 
-    itemManager->update();
+    itemManager->update(1.0);
     
 
     //Event manager has to be the last to be updated
@@ -273,6 +273,7 @@ void addObjects(){
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob100 = ObjectManager::getInstance().createObject(id, transform);
 
+<<<<<<< HEAD
     id = 101;
     transform.position = glm::vec3(400, 40, 0);
     transform.rotation = glm::vec3(0, 0, 0);
@@ -290,6 +291,14 @@ void addObjects(){
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob103 = ObjectManager::getInstance().createObject(id, transform);
+=======
+    //acceleration ramp
+    id = 12;
+    transform.position = glm::vec3(0,-4,0);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(10,10,30);
+    auto ob9 = ObjectManager::getInstance().createObject(id, transform);
+>>>>>>> 41c98c51345f79bc3ff937fd0c9f62d13d558a0c
 
     id = 104;
     transform.position = glm::vec3(0, 95, -450);
@@ -308,6 +317,14 @@ void addObjects(){
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob106 = ObjectManager::getInstance().createObject(id, transform);*/
+
+    //ItemBox:
+  
+    id = 25;
+    transform.position = glm::vec3(10, 0, 70);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob25 = ObjectManager::getInstance().createObject(id, transform);
 
     //===============================================================
     // ADD WAYPOINT COMPONENT
@@ -345,6 +362,7 @@ void addObjects(){
 
     std::shared_ptr<IComponent> cp16 = RenderManager::getInstance().createObjectRenderComponent(*ob19.get(), ObjectRenderComponent::Shape::Cube);
 
+<<<<<<< HEAD
     //WAYPOINT
     std::shared_ptr<IComponent> cp100 = RenderManager::getInstance().createObjectRenderComponent(*ob100.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp101 = RenderManager::getInstance().createObjectRenderComponent(*ob101.get(), ObjectRenderComponent::Shape::Sphere);
@@ -353,6 +371,9 @@ void addObjects(){
     std::shared_ptr<IComponent> cp104 = RenderManager::getInstance().createObjectRenderComponent(*ob104.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp105 = RenderManager::getInstance().createObjectRenderComponent(*ob105.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp106 = RenderManager::getInstance().createObjectRenderComponent(*ob106.get(), ObjectRenderComponent::Shape::Sphere);*/
+=======
+    std::shared_ptr<IComponent> cp25 = RenderManager::getInstance().createObjectRenderComponent(*ob25.get(), ObjectRenderComponent::Shape::Cube);
+>>>>>>> 41c98c51345f79bc3ff937fd0c9f62d13d558a0c
 
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
@@ -376,12 +397,18 @@ void addObjects(){
     std::shared_ptr<IComponent> collisionCP1 = PhysicsManager::getInstance().createCollisionComponent(*ob2.get(), 5, true, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5, true, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5, false, CollisionComponent::Type::Default);
+<<<<<<< HEAD
+=======
+    std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, false, CollisionComponent::Type::ItemBox);
+>>>>>>> 41c98c51345f79bc3ff937fd0c9f62d13d558a0c
     LAPAL::plane3f terrainX;
     terrainX.p1 = (LAPAL::vec3f( -5 , 0, 15));
     terrainX.p2 = (LAPAL::vec3f( 5 , 0, 15));
     terrainX.p3 = (LAPAL::vec3f( 5 , 0, -15));
     terrainX.p4 = (LAPAL::vec3f( -5 , 0, -15));
     std::shared_ptr<IComponent> collisionCP5 = PhysicsManager::getInstance().createCollisionComponent(*ob9.get(), terrainX, false, CollisionComponent::Type::Ramp);
+    
 
     //===============================================================
     // ADD TERRAIN COMPONENT
@@ -450,7 +477,7 @@ void addObjects(){
     terrain5.p2 = (LAPAL::vec3f(500,80,-400));
     terrain5.p3 = (LAPAL::vec3f(500,80,-600));
     terrain5.p4 = (LAPAL::vec3f(-250,80,-600));
-    terrain5.fric = 0.2;
+    terrain5.fric = 0.5;
     LAPAL::calculateRotationsXZ(terrain5);
     std::shared_ptr<IComponent> terrainCP6 = PhysicsManager::getInstance().createTerrainComponent(*ob18.get(), terrain5);
     auto terrainCP6_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP6);
@@ -486,19 +513,19 @@ void addObjects(){
     mData.max_rotate = 3;
 
     mData.max_vel = 100.0;
-    mData.brake_vel = 5;
+    mData.brake_vel = 10;
     mData.velY = 10;
 
-    mData.max_acc = 10;
-    mData.dAcc = 1;
-    mData.brake_acc = 0.4;
+    mData.max_acc = 20;
+    mData.dAcc = 5;
+    mData.brake_acc = 5;
 
     std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
 
     //===============================================================
     // ADD RAMP COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 200.0f,0.01f,4.0f);
+    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 200.0f,2.f,2.0f);
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE AI
@@ -540,6 +567,16 @@ void addObjects(){
     AIManager::getInstance().createAIDrivingComponent(*ob5.get());
     SensorManager::getInstance().createVSensorComponent(*ob5.get(), 55.f, mData2.angle);
     SensorManager::getInstance().createMSensorComponent(*ob5.get(), 5.f, mData2.angle);
+
+    //===============================================================
+    // ADD ITEMBOX COMPONENT
+    //===============================================================
+    std::shared_ptr<IComponent> itemboxCP20 = ItemManager::getInstance().createItemBox(*ob25.get());
+
+    //===============================================================
+    // ADD ITEM HOLDER COMPONENT
+    //===============================================================
+    std::shared_ptr<IComponent> itemholderCP2 = ItemManager::getInstance().createItemHolderComponent(*ob2.get());
 
     //===============================================================
     // Update to distribute all creation events

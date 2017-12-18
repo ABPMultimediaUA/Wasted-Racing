@@ -33,8 +33,12 @@ enum EventType {
     VSensorComponent_Delete,
     MSensorComponent_Create,
     MSensorComponent_Delete,
+    ItemBoxComponent_Create,
+    ItemBoxComponent_Delete,
     //COLLISION: Events triggered to certain collisions
     RampComponent_Collision,
+    ItemBoxComponent_Collision,
+    BananaComponent_Collision,
     //PLAYER: Basic control keys
     Key_Advance_Down,
     Key_Advance_Up,

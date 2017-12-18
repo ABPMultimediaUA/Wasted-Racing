@@ -4,7 +4,7 @@
 
 ItemRedShellComponent::ItemRedShellComponent(GameObject& newGameObject) : IItemComponent(newGameObject)
 {
-
+    speed = 200.f;
 }
 
 ItemRedShellComponent::~ItemRedShellComponent()
@@ -14,7 +14,7 @@ ItemRedShellComponent::~ItemRedShellComponent()
 
 void ItemRedShellComponent::init()
 {
-
+    
 }
 
 void ItemRedShellComponent::update(float dTime)

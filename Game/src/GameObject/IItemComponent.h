@@ -10,12 +10,13 @@ class IItemComponent : public IComponent {
     public:
 
         enum ItemType{
-
-            redShell = 0,      
-            blueShell = 1,      
-            banana = 2,      
-            mushroom = 3,      
-            star = 4
+            
+            none        = -1,
+            redShell    = 0,      
+            blueShell   = 1,      
+            banana      = 2,      
+            mushroom    = 3,      
+            star        = 4
         
         };
 
