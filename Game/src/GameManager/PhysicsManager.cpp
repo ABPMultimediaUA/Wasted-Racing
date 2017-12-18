@@ -53,12 +53,12 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Check collisions with other objects
         //==============================================================================
-        calculateObjectsCollision(ourMove, ourColl);
+        calculateObjectsCollision(ourMove, ourColl, dTime);
 
         //==============================================================================
         // Check collisions with terrain limits and terrain change
         //==============================================================================
-        calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl);
+        calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl, dTime);
         
     }
 
@@ -73,7 +73,7 @@ void PhysicsManager::close() {
 // PRIVATE FUNCTIONS
 //==============================================================================
 
-void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<CollisionComponent> coll) {
+void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
     CollisionComponent* ourColl = coll.get();
 
@@ -101,7 +101,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
                 if(hisMove == nullptr) {    //If the object doesn't have move component, it's static
                         
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
 
                 }
                 else {  //The object is not static
@@ -137,7 +137,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
     }
 }
 
-void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> move) {
+void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> move, const float dTime) {
 
     MoveComponent* ourMove = move.get();
 
@@ -167,9 +167,11 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
     ourMove->setMovementData(ourMData);
     auto tData = ourMove->getGameObject().getTransformData();
     ourMove->getGameObject().setTransformData(tData);
+    ourMove->update(dTime);
+    ourMove->update(dTime);
 }
 
-void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll) {
+void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
         MoveComponent* ourMove = move.get();
         TerrainComponent* ourTerr = terr.get();
@@ -197,7 +199,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of front bounds within our next movement
         if(a>0 && b<0 && glm::abs(a)+glm::abs(b)>=1){
             if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move);
+                calculateStaticCollision(move, dTime);
                 return;
             }else{
                 //Check if we are inside the next terrain. If not, still collide.
@@ -207,7 +209,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getNext(); //Set new terrain component
                 }else{
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
                 }
             }
         }
@@ -215,7 +217,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of right bounds
         if(a>0 && b>0 && glm::abs(a)+glm::abs(b)>=1){
             if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move);
+                calculateStaticCollision(move, dTime);
                 return;
             }
             else{
@@ -226,7 +228,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getRight(); //Set new terrain component
                 }else{
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
                 }
             }
         }
@@ -234,7 +236,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of back bounds
         if(a>0 && b>0 && a - b<=0){
             if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move);
+                calculateStaticCollision(move, dTime);
                 return;
             }
             else{
@@ -245,7 +247,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getPrev(); //Set new terrain component
                 }else{
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
                 }
                 
             }
@@ -254,7 +256,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of left bounds
         if(a>0 && b<0 && a+b<=0){
            if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move);
+                calculateStaticCollision(move, dTime);
                 return;
             }
             else{
@@ -265,7 +267,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getLeft(); //Set new terrain component
                 }else{
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
                 }
             }
         }

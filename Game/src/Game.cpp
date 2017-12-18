@@ -477,7 +477,7 @@ void addObjects(){
     //===============================================================
     // ADD RAMP COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 200.0f,0.01f,4.0f);
+    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 200.0f,2.f,2.0f);
 
     //===============================================================
     // ADD A MOVE COMPONENT TO THE AI
