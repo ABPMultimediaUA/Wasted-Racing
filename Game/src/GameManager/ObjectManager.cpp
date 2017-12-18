@@ -97,6 +97,6 @@ void objectCreated(EventData eData) {
 }
 void objectDeleted(EventData eData) {
 
-    ObjectManager::getInstance().deleteObject(eData.Object.get()->getId());
+    ObjectManager::getInstance().deleteObject(eData.Id);
 
 }

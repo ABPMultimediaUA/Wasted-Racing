@@ -31,20 +31,26 @@ public:
     //==========================================
     // PHYSICS RELATED FUNCTIONS
     //==========================================
+	//Keyboard functions
     void changeAccInc(float n);
     void changeSpinIncrement(float n);
-	void isMoving(bool m);
-	void changeDir(int i);
 	void changeAngleInc(float i);
+
+	//Joystick functions
+	void changeSpin(float n);
+	void changeAcc(float n);
+
+	//Checker functions
+	void isMoving(bool m);
 	void isJumping(bool j);
 	void isSpinning(bool s);
-	void updateJump(LAPAL::movementData& mData, glm::vec3& trans, LAPAL::plane3f t);
-	void changeSpin(float n);
 	void isDrifting(bool d);
+	void changeDir(int i);
 
 	//Functions related with temporal data changes
 	void changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime);
 	void updateMaxSpeedOverTime(const float dTime);
+	void updateJump(LAPAL::movementData& mData, glm::vec3& trans, LAPAL::plane3f t);
 
 	//Mass and Data getters and setters
 	LAPAL::movementData getMovemententData() 						{ 	return mData; 	}

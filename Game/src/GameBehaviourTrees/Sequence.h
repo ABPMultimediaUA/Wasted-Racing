@@ -10,5 +10,5 @@ class Sequence : public Composite
     protected: 
         int s_currentIdx;
         virtual void OnInitialized();
-        virtual BehaviourState OnUpdate(float d);      
+        virtual BehaviourState Update(float d);      
 };

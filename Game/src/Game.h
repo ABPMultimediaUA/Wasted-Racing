@@ -16,6 +16,7 @@
 #include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
+#include "GameManager/ItemManager.h"
 
 
 class Game {
@@ -76,14 +77,14 @@ private:
     PhysicsManager* physicsManager;
     //Waypoint manager
     WaypointManager* waypointManager;
-    //Audio FMOD manager
-    AudioFMOD* audioManager;
-    //Generic Audio Manager
-    AudioManager* audioManager2;
+    //Audio Manager
+    AudioManager* audioManager;
     //AI manager
     AIManager* aiManager;
     //Sensor manager
     SensorManager* sensorManager;
+    //Item manager
+    ItemManager* itemManager;
 
     //Selected renderEngine
     int renderEngine;

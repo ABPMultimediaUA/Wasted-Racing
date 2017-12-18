@@ -78,9 +78,24 @@ void AIManager::update() {
             //-------------------
 
             //Send signal of movement
-            moveComponent->isMoving(true);
-            moveComponent->changeAccInc(speedValue);
+            //Turn
             moveComponent->changeSpin(turnValue);
+
+            //Accelerate and brake
+            if(speedValue > 0){
+                moveComponent->isMoving(true);
+                moveComponent->changeAcc(speedValue);
+            }
+            if(speedValue < 0){
+                moveComponent->isMoving(false);
+                moveComponent->changeAcc(speedValue);
+            }
+            if(speedValue == 0){
+                moveComponent->isMoving(false);
+            }
+           
+           
+            
         }
         
         //aiDrivingComponent->checkList();

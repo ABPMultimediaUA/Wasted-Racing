@@ -73,8 +73,8 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 				{
 					if(tour-wpManager->getDistLastWay() < 0)
 					{
-						//nextPos = ((tour/wpManager->getDistLastWay()) * (listNodes[wpManager->getLastPosVector()].get()->getTransformData().position - pos)) + pos;
-						nextPos = listNodes[wpManager->getLastPosVector()].get()->getTransformData().position;
+						nextPos = ((tour/wpManager->getDistLastWay()) * (listNodes[wpManager->getLastPosVector()].get()->getTransformData().position - pos)) + pos;
+						//nextPos = listNodes[wpManager->getLastPosVector()].get()->getTransformData().position;
 						return nextPos;
 					}
 					else
@@ -154,49 +154,41 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
 	float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
 
+	//-----------_TESTS_-----------
+	/*
 	std::cout<<"Waypoint: "<<waypoint.x<<","<<waypoint.z<<std::endl;
 	std::cout<<"Left side: "<<a<<std::endl;
 	std::cout<<"Right side: "<<b<<std::endl;
 	std::cout<<"ATAN: "<<atan_w<<std::endl;
+	*/
+	//-----------_TESTS_-----------
 
 	//fuzzifier and inference
 	//---------------GENERALIZE--v-------v----v
 	//waypoints
-	/*
-	float wp_left = inferT(atan_w,0.25f,0.375f,0.51f);
-	float wp_center = inferT(atan_w,0.2f,0.25f,0.3f);
-	float wp_right = inferT(atan_w,-0.01f,0.125f,0.25f);
-	*/
-	float wp_left 	= inferL(atan_w,  0.f  	,1.0f 	,0   	);
-	float wp_center = inferT(atan_w, -0.3f	,0.0f 	,0.3f	);
-	float wp_right 	= inferL(atan_w, -1.0f	,0.f  	,1   	);
-
-	if(atan_w<0 || atan_w>0.51){
-		if(a<b){
-			wp_right = 1.f;
-		}else{
-			wp_left = 1.f;
-		}
+	if(atan_w <=-0.75){ //Since the value of the atan 0.25 corresponds to the center, from 1 to 0.25 is left, from 0.25 to -0.75 is right, and -0.75 to -1 is left.
+		atan_w += 2.f; 	//that's why we add this
 	}
+	float wp_left 	= inferL(atan_w		,0.25f  ,1.25f 	,0   	);
+	float wp_center = inferT(atan_w		,0.23f	,0.25f 	,0.27f	);
+	float wp_right 	= inferL(atan_w		,-0.75f	,0.25f  ,1   	);
 
+	//If we have collisions to collide with
 	if(array.size()>0){
 		float atan_obs = 0.0f;
+
+		//Accumulate the mean atan value of them all to pickpoint a medium point of no collisions
 		for(unsigned i = 0; i<array.size(); i++){
 			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
 		}
 
 		//collisions
-		float obs_left = inferT(atan_obs,0.25f,0.375f,0.51f);
-		float obs_center = inferT(atan_obs,0.2f,0.25f,0.3f);
-		float obs_right = inferT(atan_obs,-0.01f,0.125f,0.25f);
-
-		if(atan_obs<0 || atan_obs>0.51){
-			if(a<b){
-				obs_right = 1.f;
-			}else{
-				obs_left = 1.f;
-			}
+		if(atan_w <=-0.75){ 	//Same process as the waypoint
+			atan_w += 2.f;
 		}
+		float obs_left	 	= inferL(atan_w		,0.25f  ,1.25f 	,0   	);
+		float obs_center 	= inferT(atan_w		,0.23f	,0.25f 	,0.27f	);
+		float obs_right 	= inferL(atan_w		,-0.75f	,0.25f  ,1   	);
 
 		//Apply ruleset.
 		/*
@@ -232,20 +224,20 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	//---------------GENERALIZE---everything
 	float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
 
-	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.2f, 0.f, 0.2f);
-	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.95f, -0.05f);
-	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.05f, 0.95f, 1.0f);
-
-
+	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.15f, 0.f, 0.15f);
+	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.995f, -0.05f);
+	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.05f, 0.995f, 1.0f);
 
 	//adding all the centroids and crisping end result
 	float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
 	//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
 
 	//-----------_TESTS_-----------
-	//std::cout<<"Donde vas payo: "<<cx<<std::endl;
-	//std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
-	//std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
+	/*
+	std::cout<<"Donde vas payo: "<<cx<<std::endl;
+	std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
+	std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
+	*/
 	//-----------_TESTS_-----------
 
 	decision = cx;

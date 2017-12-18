@@ -109,9 +109,15 @@ void MoveComponent::isJumping(bool j){
 void MoveComponent::isSpinning(bool s){
     mData.spi = s;
 }
+
 void MoveComponent::changeSpin(float n) {
-    mData.angle += mData.max_spin * n;
+    mData.spin = mData.max_spin * n;
 }
+
+void MoveComponent::changeAcc(float a){
+    mData.acc  = mData.max_acc  * a;
+}
+
 void MoveComponent::isDrifting(bool d){
     mData.drift = d;
     

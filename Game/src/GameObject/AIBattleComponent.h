@@ -27,7 +27,5 @@ class AIBattleComponent : public IComponent {
 
     private:
         std::shared_ptr<Behaviour> root;
-        std::shared_ptr<Selector> selector;
-
 
 };

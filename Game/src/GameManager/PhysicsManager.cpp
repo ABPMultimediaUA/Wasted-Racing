@@ -33,9 +33,9 @@ void PhysicsManager::update(const float dTime) {
     for(unsigned int i=0; i<movingCharacterList.size(); ++i){
 
         //Get components in variables
-        auto ourMove = movingCharacterList.at(i).moveComponent;
-        auto ourTerr = movingCharacterList.at(i).terrainComponent;
-        auto ourColl = movingCharacterList.at(i).collisionComponent;
+        auto ourMove = movingCharacterList[i].moveComponent;
+        auto ourTerr = movingCharacterList[i].terrainComponent;
+        auto ourColl = movingCharacterList[i].collisionComponent;
 
         //==============================================================================
         // Move character
@@ -361,3 +361,7 @@ void collideRamp(EventData eData) {
     }
 
 }
+
+//==============================================
+// PUBLIC FUNCTIONS
+//============================================== 

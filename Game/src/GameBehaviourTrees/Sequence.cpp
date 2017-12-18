@@ -5,7 +5,7 @@ void Sequence::OnInitialized()
     s_currentIdx = 0;
 } 
 
-BehaviourState Sequence::OnUpdate(float d)
+BehaviourState Sequence::Update(float d)
 {
     for(size_t i = s_currentIdx; i < c_children.size(); i++)
     {
