@@ -23,13 +23,11 @@ glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, floa
 	float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
 	if(distaneActualWay <= radius*radius)
 	{
-		std::cout<<"Last Vector: "<<lastVector<<"\n";
-		std::cout<<"Size: "<<listNodes.size()<<"\n";
 		if(lastVector < listNodes.size()-1)
 		{
 			lastVector++;
 		}
-		else if(lastVector == listNodes.size())
+		else if(lastVector == listNodes.size()-1)
 		{
 			lastVector = 0;
 		}
