@@ -386,7 +386,6 @@ void collideRamp(EventData eData) {
 }
 
 void collideBanana(EventData eData) {
-    std::cout<<"CLARO QUE ENTRA"<<"\n";
     auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
     auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
 

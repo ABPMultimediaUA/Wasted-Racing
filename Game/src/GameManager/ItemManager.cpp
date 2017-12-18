@@ -85,23 +85,30 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 /////
 //////////////////////////////////////////////////////
 
+
 IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
 
-    int random = rand() % 5;
+    auto itemHolder = obj.get()->getComponent<ItemHolderComponent>();
+    int random = itemHolder->getItemType();
+    
     if(random == IItemComponent::ItemType::redShell)
     {
+        itemHolder->setItemType(-1);
         return createRedShell(obj);
     }
     else if(random == IItemComponent::ItemType::blueShell)
     {
+        itemHolder->setItemType(-1);
         return createBlueShell(obj);
     }
     else if(random == IItemComponent::ItemType::banana)
     {
+        itemHolder->setItemType(-1);
         return createBanana(obj);
     }
     else if(random == IItemComponent::ItemType::mushroom)
     {
+        itemHolder->setItemType(-1);
         auto component = createMushroom(obj);
         std::dynamic_pointer_cast<ItemMushroomComponent>(component)->init();
         deleteMushroom(component);
@@ -109,6 +116,7 @@ IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
     }
     else if(random == IItemComponent::ItemType::star)
     {
+        itemHolder->setItemType(-1);
         auto component = createStar(obj);
         std::dynamic_pointer_cast<ItemStarComponent>(component)->init();
         deleteStar(component);
@@ -116,6 +124,7 @@ IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
     }
     return nullptr;
 }
+
 
 
 //////////////////////////////////////////////////////
