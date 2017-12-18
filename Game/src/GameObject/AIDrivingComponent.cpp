@@ -62,14 +62,8 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 						(listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
 						(listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
 
-				if(lvl == listNodes[i].get()->getComponent<WaypointComponent>()->getLevel())
-				{
-					if(wpManager->getDistLastWay() == -1 || distNode < wpManager->getDistLastWay())
-					{
-						wpManager->setLastPosVector(i);
-					}
-				}
-				else if((lvl+1) == listNodes[i].get()->getComponent<WaypointComponent>()->getLevel())
+				
+				if((lvl+1) == listNodes[i].get()->getComponent<WaypointComponent>()->getLevel())
 				{
 					if(tour-wpManager->getDistLastWay() < 0)
 					{
@@ -107,7 +101,7 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 							(listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
 							(listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
 
-					if(distanceNextNode == -1 || distanceNextNode > distNode)
+					if(distanceNextNode == -1)
 					{
 						distanceNextNode = distNode;
 						wpManager->setLastPosVector(i);

@@ -7,10 +7,11 @@ class ItemRedShellComponent : public IItemComponent
 
     private:
 
+        float speed;
 
     public:
 
-        ItemRedShellComponent(GameObject& newGameObject);
+        ItemRedShellComponent(GameObject& newGameObject, GameObject::Pointer obj);
 
         ~ItemRedShellComponent();
 
