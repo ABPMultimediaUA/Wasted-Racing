@@ -6,6 +6,8 @@
 #include "../GameBehaviourTrees/Repeat.h"
 #include "../GameBehaviourTrees/Selector.h"
 #include "../GameBehaviourTrees/Sequence.h"
+#include "../GameManager/ItemManager.h"
+#include "../GameObject/ScoreComponent.h"
 #include <memory>
 
 class AIBattleComponent : public IComponent {

@@ -37,6 +37,7 @@ void AIManager::init() {
  >Dividir las llamadas a las funciones en diferentes tempos
  >Implementar con el resource manager
  >Comprobar que no son null y añadir comportamientos externos
+ >Dejar que otro limpie el codigo
 */
 //------------------------------------
 void AIManager::update() {
