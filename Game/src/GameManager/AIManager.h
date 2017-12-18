@@ -3,7 +3,12 @@
 #include "../GameObject/AIDrivingComponent.h"
 #include "../GameObject/MoveComponent.h"
 #include "../GameObject/VSensorComponent.h"
+#include "../GameObject/MSensorComponent.h"
 #include "../GameObject/VObject.h"
+#include "../GameObject/GameObject.h"
+#include "../GameEvent/EventManager.h"
+#include <memory>
+#include <iostream>
 #include <vector>
 
 class AIManager{

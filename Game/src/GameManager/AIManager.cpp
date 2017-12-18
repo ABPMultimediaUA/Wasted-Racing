@@ -1,8 +1,5 @@
 #include "AIManager.h"
-#include "../GameObject/GameObject.h"
-#include "../GameEvent/EventManager.h"
-#include <memory>
-#include <iostream>
+
 
 //==============================================
 // DELEGATES DECLARATIONS
@@ -46,24 +43,24 @@ void AIManager::update() {
         auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI.at(i)).get();
         auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
         auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
+        auto mSensorComponent = aiDrivingComponent->getGameObject().getComponent<MSensorComponent>().get();
 
         //If they all exist
-        if(aiDrivingComponent && moveComponent && vSensorComponent){
+        if(aiDrivingComponent && moveComponent && vSensorComponent && mSensorComponent){
            
             //get all objects that are seen to the visual sensor
-            std::vector<VObject::Pointer> seenObjects = vSensorComponent->getSeenObjects();
+            std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
+            std::vector<VObject::Pointer> seenObjects2 = mSensorComponent->getSeenObjects();
+            for(uint32_t i = 0; i < seenObjects2.size(); ++i){
+                seenObjects.push_back(seenObjects2[i]);
+            }
             
             //Set angle of the sensor to the NPC one
             vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
             
             //Get next waypoint
-<<<<<<< HEAD
-            aiDrivingComponent->setSeconds(1);  //Set in how many seconds we want the object to predict its position
-            glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
-=======
             //aiDrivingComponent->setSeconds(1);
             glm::vec3 objective; /*= aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
->>>>>>> 41c98c51345f79bc3ff937fd0c9f62d13d558a0c
                                                             moveComponent->getMovemententData().velocity,
                                                             moveComponent->getMovemententData().vel);*/
 
@@ -87,45 +84,18 @@ void AIManager::update() {
             moveComponent->changeSpin(turnValue);
 
             //Accelerate and brake
-            if(speedValue > 0){
+            //if(speedValue > 0){
                 moveComponent->isMoving(true);
-                moveComponent->changeAcc(speedValue);
-            }
-            if(speedValue < 0){
+                moveComponent->changeAcc(1.f);
+            //}
+            /*if(speedValue < 0){
                 moveComponent->isMoving(false);
                 moveComponent->changeAcc(speedValue);
-            }
+            }*/
             if(speedValue == 0){
                 moveComponent->isMoving(false);
-            }
-           
-           
-            
+            }     
         }
-        
-        //aiDrivingComponent->checkList();
-        //std::cout<<"Waypoint: "<<objective.x<<"\n";
-        //Make decisions
-
-        //----------------------------------
-        //-----------_TESTING_--------------
-        //----------------------------------
-        //THIS FUNCTION IS OF THE SENSOR; COPIED HERE FOR TESTING USE; COPYRIGHT BIIIIAH
-        /*float angleVision = 55*3.14159265358979323846264432737f/180.f;
-        float angleInitial =  moveComponent->getMovemententData().angle;
-        float a=0,b=0;
-        std::vector<VObject*> objects;
-        glm::vec3 sensorLeft(sin(-angleVision-angleInitial), 0.f, cos(-angleVision-angleInitial));
-        glm::vec3 sensorRight(sin(angleVision-angleInitial), 0.f, cos(angleVision-angleInitial));
-        glm::vec3 relativeP;
-
-        relativeP = objective - objectsAI.at(i)->getGameObject().getTransformData().position;
-        if(sensorRight.x*sensorLeft.z != sensorRight.z*sensorLeft.x) 
-            b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
-        if(sensorLeft.x != 0){
-            a = (relativeP.z - b * sensorRight.z) / sensorLeft.z;
-        }*/
-
     }
 }
 

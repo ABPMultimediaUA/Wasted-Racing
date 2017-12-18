@@ -273,7 +273,6 @@ void addObjects(){
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob100 = ObjectManager::getInstance().createObject(id, transform);
 
-<<<<<<< HEAD
     id = 101;
     transform.position = glm::vec3(400, 40, 0);
     transform.rotation = glm::vec3(0, 0, 0);
@@ -291,14 +290,6 @@ void addObjects(){
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob103 = ObjectManager::getInstance().createObject(id, transform);
-=======
-    //acceleration ramp
-    id = 12;
-    transform.position = glm::vec3(0,-4,0);
-    transform.rotation = glm::vec3(0,0,0);
-    transform.scale    = glm::vec3(10,10,30);
-    auto ob9 = ObjectManager::getInstance().createObject(id, transform);
->>>>>>> 41c98c51345f79bc3ff937fd0c9f62d13d558a0c
 
     id = 104;
     transform.position = glm::vec3(0, 95, -450);
@@ -362,7 +353,6 @@ void addObjects(){
 
     std::shared_ptr<IComponent> cp16 = RenderManager::getInstance().createObjectRenderComponent(*ob19.get(), ObjectRenderComponent::Shape::Cube);
 
-<<<<<<< HEAD
     //WAYPOINT
     std::shared_ptr<IComponent> cp100 = RenderManager::getInstance().createObjectRenderComponent(*ob100.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp101 = RenderManager::getInstance().createObjectRenderComponent(*ob101.get(), ObjectRenderComponent::Shape::Sphere);
@@ -371,9 +361,7 @@ void addObjects(){
     std::shared_ptr<IComponent> cp104 = RenderManager::getInstance().createObjectRenderComponent(*ob104.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp105 = RenderManager::getInstance().createObjectRenderComponent(*ob105.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp106 = RenderManager::getInstance().createObjectRenderComponent(*ob106.get(), ObjectRenderComponent::Shape::Sphere);*/
-=======
     std::shared_ptr<IComponent> cp25 = RenderManager::getInstance().createObjectRenderComponent(*ob25.get(), ObjectRenderComponent::Shape::Cube);
->>>>>>> 41c98c51345f79bc3ff937fd0c9f62d13d558a0c
 
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
@@ -397,11 +385,7 @@ void addObjects(){
     std::shared_ptr<IComponent> collisionCP1 = PhysicsManager::getInstance().createCollisionComponent(*ob2.get(), 5, true, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5, true, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5, false, CollisionComponent::Type::Default);
-<<<<<<< HEAD
-=======
-    std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, false, CollisionComponent::Type::ItemBox);
->>>>>>> 41c98c51345f79bc3ff937fd0c9f62d13d558a0c
     LAPAL::plane3f terrainX;
     terrainX.p1 = (LAPAL::vec3f( -5 , 0, 15));
     terrainX.p2 = (LAPAL::vec3f( 5 , 0, 15));
@@ -420,6 +404,7 @@ void addObjects(){
     terrain.p3 = (LAPAL::vec3f(250.f  ,0.f ,-100.f));
     terrain.p4 = (LAPAL::vec3f(-250.f ,0.f ,-100.f));
     terrain.fric = 0.2;
+    terrain.direction = 0;
     LAPAL::calculateRotationsXZ(terrain);
     std::shared_ptr<IComponent> terrainCP1 = PhysicsManager::getInstance().createTerrainComponent(*ob1.get(), terrain);
 
@@ -430,6 +415,7 @@ void addObjects(){
     terrain1.p3 = (LAPAL::vec3f(750,100,-100));
     terrain1.p4 = (LAPAL::vec3f(250,0,-100));
     terrain1.fric = 0.2;
+    terrain.direction = 0;
     LAPAL::calculateRotationsXZ(terrain1);
     std::shared_ptr<IComponent> terrainCP2 = PhysicsManager::getInstance().createTerrainComponent(*ob7.get(), terrain1);
     auto terrainCP2_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP2);
@@ -442,6 +428,7 @@ void addObjects(){
     terrain2.p3 = (LAPAL::vec3f(1000,100,-400));
     terrain2.p4 = (LAPAL::vec3f(750,100,-400));
     terrain2.fric = 0.2;
+    terrain.direction = 1;
     LAPAL::calculateRotationsXZ(terrain2);
     std::shared_ptr<IComponent> terrainCP3 = PhysicsManager::getInstance().createTerrainComponent(*ob15.get(), terrain2);
     auto terrainCP3_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP3);
@@ -454,6 +441,7 @@ void addObjects(){
     terrain3.p3 = (LAPAL::vec3f(1000,100,-600));
     terrain3.p4 = (LAPAL::vec3f(600,100,-600));
     terrain3.fric = 0.2;
+    terrain.direction = 2;
     LAPAL::calculateRotationsXZ(terrain3);
     std::shared_ptr<IComponent> terrainCP4 = PhysicsManager::getInstance().createTerrainComponent(*ob16.get(), terrain3);
     auto terrainCP4_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP4);
@@ -466,6 +454,7 @@ void addObjects(){
     terrain4.p3 = (LAPAL::vec3f(600,0,-600));
     terrain4.p4 = (LAPAL::vec3f(500,0,-600));
     terrain4.fric = 0.2;
+    terrain.direction = 2;
     LAPAL::calculateRotationsXZ(terrain4);
     std::shared_ptr<IComponent> terrainCP5 = PhysicsManager::getInstance().createTerrainComponent(*ob17.get(), terrain4);
     auto terrainCP5_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP5);
@@ -478,6 +467,7 @@ void addObjects(){
     terrain5.p3 = (LAPAL::vec3f(500,80,-600));
     terrain5.p4 = (LAPAL::vec3f(-250,80,-600));
     terrain5.fric = 0.5;
+    terrain.direction = 2;
     LAPAL::calculateRotationsXZ(terrain5);
     std::shared_ptr<IComponent> terrainCP6 = PhysicsManager::getInstance().createTerrainComponent(*ob18.get(), terrain5);
     auto terrainCP6_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP6);
@@ -490,6 +480,7 @@ void addObjects(){
     terrain6.p3 = (LAPAL::vec3f(0,80,-400));
     terrain6.p4 = (LAPAL::vec3f(-250,80,-400));
     terrain6.fric = 0.2;
+    terrain.direction = 3;
     LAPAL::calculateRotationsXZ(terrain6);
     std::shared_ptr<IComponent> terrainCP7 = PhysicsManager::getInstance().createTerrainComponent(*ob19.get(), terrain6);
     auto terrainCP7_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP7);
