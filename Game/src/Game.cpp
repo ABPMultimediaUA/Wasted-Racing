@@ -115,24 +115,12 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
-    int temp = 600;
     while(Game::stay){
         Game::update();
         Game::draw();
-        temp--;
-        if(temp == 0)
-        {
-            EventData data;
-            data.Object = ObjectManager::getInstance().getObject(5);
-
-            EventManager::getInstance().addEvent(Event {EventType::Key_UseItem_Down, data});
-            temp = 600;
-        }
     }
-
     Game::close();
-} 
-
+}
 
 
 void addObjects(){

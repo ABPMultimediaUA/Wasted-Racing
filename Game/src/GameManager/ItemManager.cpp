@@ -62,8 +62,7 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
 
 IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
 
-    //int random = rand() % 5;
-    int random = 3;
+    int random = rand() % 5;
     if(random == IItemComponent::ItemType::redShell)
     {
         return createRedShell(obj);
