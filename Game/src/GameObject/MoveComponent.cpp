@@ -91,6 +91,8 @@ void MoveComponent::update(float dTime) {
         std::cout << " Velocidad " << mData.vel << std::endl;
         std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
         std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
+        std::cout << " VEL Y " << mData.velY << std::endl;
+
 
         if (mData.jump == false){
             std::cout << " No estoy saltando " << std::endl;
