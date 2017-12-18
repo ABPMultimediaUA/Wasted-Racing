@@ -2,7 +2,7 @@
 
 
 
-ItemRedShellComponent::ItemRedShellComponent(GameObject& newGameObject, GameObject::Pointer obj) : IItemComponent(newGameObject)
+ItemRedShellComponent::ItemRedShellComponent(GameObject& newGameObject) : IItemComponent(newGameObject)
 {
     speed = 200.f;
 }

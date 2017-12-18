@@ -58,10 +58,10 @@ void AIManager::update() {
             std::cout<<"Angle: "<<vSensorComponent->getAngleInitial()<<"\n";
   
             //Get next waypoint
-            aiDrivingComponent->setSeconds(1);
-            glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
+            //aiDrivingComponent->setSeconds(1);
+            glm::vec3 objective; /*= aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
                                                             moveComponent->getMovemententData().velocity,
-                                                            moveComponent->getMovemententData().vel);
+                                                            moveComponent->getMovemententData().vel);*/
 
 
             relativeP = objective - objectsAI.at(i)->getGameObject().getTransformData().position;

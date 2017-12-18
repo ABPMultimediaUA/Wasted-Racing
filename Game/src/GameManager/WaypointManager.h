@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../GameObject/WaypointComponent.h"
+#include "../GameObject/PathPlanningComponent.h"
 #include <vector>
 
 class WaypointManager{
@@ -27,6 +28,7 @@ public:
 
     //Create a new Waypoint Component
     IComponent::Pointer createWaypointComponent(GameObject::Pointer newGameObject, float r, int lvl);
+    IComponent::Pointer createPathPlanningComponent(GameObject::Pointer newGameObject);
 
 
     //Component list getter
@@ -37,12 +39,8 @@ public:
 
     //Getters
     std::vector<GameObject::Pointer> getWaypoints();
-    float getDistLastWay();
-    int getLastPosVector();
 
     //Setters
-    void setDistLastWay(GameObject::Pointer n, glm::vec3 pos);
-    void setLastPosVector(int lvl);
 
 
 
@@ -52,7 +50,5 @@ private:
 
     std::vector<GameObject::Pointer> *listSubNodes;
 
-    float distLastWay = -1;
-    int lastPosVector = 0;
 
 };
