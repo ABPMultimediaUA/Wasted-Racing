@@ -251,21 +251,21 @@ bool LAPAL::checkTerrain(LAPAL::plane3f& terrain){
 void LAPAL::calculateRotationsXZ(LAPAL::plane3f& terrain){
     //check if terrain is horizontal or not
     if(checkTerrain(terrain)){
-        terrain.rotX = 0.f;
         terrain.rotZ = 0.f;
+        terrain.rotX = 0.f;
     }else{
         //check which points are at different heights. We only need to check two pairs.
         if(terrain.p1.x != terrain.p2.x){
             //angle = acos(cc / h) acos
-            terrain.rotX = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.x-terrain.p1.x) );
+            terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.x-terrain.p1.x) );
         }else{
-            terrain.rotX = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.x-terrain.p2.x) );
+            terrain.rotZ = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.x-terrain.p2.x) );
         }  
         
         if(terrain.p1.z != terrain.p2.z){
-            terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.z-terrain.p1.z) );
+            terrain.rotX = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.z-terrain.p1.z) );
         }else{
-            terrain.rotZ = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.z-terrain.p2.z) );
+            terrain.rotX = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.z-terrain.p2.z) );
         }
     } 
 }
