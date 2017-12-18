@@ -59,7 +59,7 @@ void PhysicsManager::update(const float dTime) {
         calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl);
         
     }
-    
+
 }
 
 void PhysicsManager::close() {
@@ -385,6 +385,11 @@ void collideBanana(EventData eData) {
 
     if(banana != nullptr) {
         move->changeMaxSpeedOverTime(banana.get()->getSpeed(), banana.get()->getConsTime(), banana.get()->getDecTime());
+
+        EventData data;
+        data.Id = banana->getGameObject().getId();
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
 
 }

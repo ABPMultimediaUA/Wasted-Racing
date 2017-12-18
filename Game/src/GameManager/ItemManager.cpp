@@ -3,6 +3,9 @@
 
 
 void createItemEvent(EventData eData);
+void objectDeletedBanana(EventData eData);
+void objectDeletedMushroom(EventData eData);
+void objectDeletedStar(EventData eData);
 
 ItemManager::ItemManager()
 {
@@ -18,6 +21,9 @@ ItemManager& ItemManager::getInstance(){
 void ItemManager::init(){
 
     EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, createItemEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedBanana});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMushroom});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedStar});
 
 }
 
@@ -30,7 +36,12 @@ void ItemManager::close(){
 }
 
 
-//ItemHolderComponent Creator
+//////////////////////////////////////////////////////
+/////
+/////       ItemHolderComponent DELETE
+/////
+//////////////////////////////////////////////////////
+
 IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameObject){
 
     IComponent::Pointer component = std::make_shared<ItemHolderComponent>(newGameObject);
@@ -42,10 +53,17 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
     return component;
 }
 
-//Create Item
+
+//////////////////////////////////////////////////////
+/////
+/////       ITEM CREATOR
+/////
+//////////////////////////////////////////////////////
+
 IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
 
-    int random = rand() % 5;
+    //int random = rand() % 5;
+    int random = 3;
     if(random == IItemComponent::ItemType::redShell)
     {
         return createRedShell(obj);
@@ -62,16 +80,25 @@ IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
     {
         auto component = createMushroom(obj);
         std::dynamic_pointer_cast<ItemMushroomComponent>(component)->init();
+        deleteMushroom(component);
         return component;
     }
     else if(random == IItemComponent::ItemType::star)
     {
         auto component = createStar(obj);
         std::dynamic_pointer_cast<ItemStarComponent>(component)->init();
+        deleteStar(component);
         return component;
     }
     return nullptr;
 }
+
+
+//////////////////////////////////////////////////////
+/////
+/////       ITEM CREATE
+/////
+//////////////////////////////////////////////////////
 
 
 IComponent::Pointer ItemManager::createRedShell(GameObject::Pointer obj)
@@ -136,8 +163,8 @@ IComponent::Pointer ItemManager::createBanana(GameObject::Pointer obj)
 
     ob.get()->addComponent(component);
 
-    std::shared_ptr<IComponent> renderBanana = RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> collionBanana = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Banana);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Banana);
 
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
@@ -189,7 +216,77 @@ IComponent::Pointer ItemManager::createStar(GameObject::Pointer obj)
     return component;
 }
 
+//////////////////////////////////////////////////////
+/////
+/////       ITEM DELETE
+/////
+//////////////////////////////////////////////////////
+
+void ItemManager::deleteMushroom(IComponent::Pointer component)
+{
+
+    EventData data;
+    data.Id = component->getGameObject().getId();
+
+    EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+
+}
+
+void ItemManager::deleteStar(IComponent::Pointer component)
+{
+
+    EventData data;
+    data.Id = component->getGameObject().getId();
+
+    EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+
+}
+
+
+//////////////////////////////////////////////////////
+/////
+/////       DELEGATES
+/////
+//////////////////////////////////////////////////////
+
 void createItemEvent(EventData eData)
 {
     ItemManager::getInstance().createItem(eData.Object);
 }
+
+void objectDeletedBanana(EventData eData) {
+
+    auto bananaComponentList = ItemManager::getInstance().getItemComponents();
+
+    for(unsigned int i = 0; i<bananaComponentList.size(); ++i) {
+        if(eData.Id == bananaComponentList.at(i).get()->getGameObject().getId()) {
+            bananaComponentList.erase(bananaComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeletedMushroom(EventData eData) {
+
+    auto mushroomComponentList = ItemManager::getInstance().getItemComponents();
+
+    for(unsigned int i = 0; i<mushroomComponentList.size(); ++i) {
+        if(eData.Id == mushroomComponentList.at(i).get()->getGameObject().getId()) {
+            mushroomComponentList.erase(mushroomComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeletedStar(EventData eData) {
+
+    auto starComponentList = ItemManager::getInstance().getItemComponents();
+
+    for(unsigned int i = 0; i<starComponentList.size(); ++i) {
+        if(eData.Id == starComponentList.at(i).get()->getGameObject().getId()) {
+            starComponentList.erase(starComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
