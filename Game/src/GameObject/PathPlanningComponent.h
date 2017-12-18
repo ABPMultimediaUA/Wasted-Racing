@@ -7,13 +7,13 @@ class PathPlanningComponent : public IComponent{
 private:
 
     float seconds;
-    float distLastWay = -1;
-    int lastPosVector = 0;
+    float distLastWay;
+    int lastPosVector;
         
 public:
 
         //Constructor
-    PathPlanningComponent(GameObject& newGameObject) : IComponent(newGameObject) {};
+    PathPlanningComponent(GameObject& newGameObject);
 
         //Destructor
     ~PathPlanningComponent() {};

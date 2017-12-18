@@ -31,6 +31,8 @@ enum EventType {
     RampComponent_Delete,
     VSensorComponent_Create,
     VSensorComponent_Delete,
+    MSensorComponent_Create,
+    MSensorComponent_Delete,
     ItemBoxComponent_Create,
     ItemBoxComponent_Delete,
     //COLLISION: Events triggered to certain collisions

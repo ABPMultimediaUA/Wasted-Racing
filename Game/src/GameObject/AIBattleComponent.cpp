@@ -193,8 +193,6 @@ void AIBattleComponent::init()
 
     sequence31->AddChild(std::shared_ptr<Behaviour>(new ConditionEnemyBehindAction()));
     sequence31->AddChild(std::shared_ptr<Behaviour>(new UseItemAction()));
-
-
 }
 
 void AIBattleComponent::update(float dTime)
