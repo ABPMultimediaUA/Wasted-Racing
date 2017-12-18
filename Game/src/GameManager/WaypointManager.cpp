@@ -48,8 +48,6 @@ IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Poi
 
     newGameObject.get()->addComponent(component);
 
-    
-    
     return component;
 }
 

@@ -44,6 +44,7 @@ void AIManager::update() {
         auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI.at(i)).get();
         auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
         auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
+        auto pathPlanningComponent = aiDrivingComponent->getGameObject().getComponent<PathPlanningComponent>().get();
 
         if(aiDrivingComponent && moveComponent && vSensorComponent){
             std::vector<VObject::Pointer> seenObjects = vSensorComponent->getSeenObjects();
@@ -58,10 +59,10 @@ void AIManager::update() {
             std::cout<<"Angle: "<<vSensorComponent->getAngleInitial()<<"\n";
   
             //Get next waypoint
-            //aiDrivingComponent->setSeconds(1);
-            glm::vec3 objective; /*= aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
+            pathPlanningComponent->setSeconds(1);
+            glm::vec3 objective = pathPlanningComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
                                                             moveComponent->getMovemententData().velocity,
-                                                            moveComponent->getMovemententData().vel);*/
+                                                            moveComponent->getMovemententData().vel);
 
 
             relativeP = objective - objectsAI.at(i)->getGameObject().getTransformData().position;

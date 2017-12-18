@@ -518,6 +518,7 @@ void addObjects(){
     //===============================================================
     AIManager::getInstance().createAIDrivingComponent(*ob5.get());
     SensorManager::getInstance().createVSensorComponent(*ob5.get(), 75.f, ob5.get()->getTransformData().rotation.y);
+    WaypointManager::getInstance().createPathPlanningComponent(ob5);
 
     //===============================================================
     // ADD ITEMBOX COMPONENT
