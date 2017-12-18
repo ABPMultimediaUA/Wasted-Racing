@@ -3,6 +3,7 @@
 #include "../GameObject/AIDrivingComponent.h"
 #include "../GameObject/MoveComponent.h"
 #include "../GameObject/VSensorComponent.h"
+#include "../GameObject/PathPlanningComponent.h"
 #include "../GameObject/VObject.h"
 #include <vector>
 

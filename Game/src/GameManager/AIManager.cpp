@@ -26,6 +26,8 @@ void AIManager::init() {
     //No delete by the moment
 
 }
+
+
 ////---------------_______----------------
 ////---------------MEJORAS----------------
 ////---------------_______--------------
@@ -40,50 +42,61 @@ void AIManager::init() {
 void AIManager::update() {
     //A update method should be defined by team IA
     for(unsigned int i=0; i<objectsAI.size(); ++i){
-        //objectsAI->getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed);
+        //Get components needed for the movement
         auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI.at(i)).get();
         auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
         auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
+        auto pathPlanningComponent = aiDrivingComponent->getGameObject().getComponent<PathPlanningComponent>().get();
 
+        //If they all exist
         if(aiDrivingComponent && moveComponent && vSensorComponent){
+           
+            //get all objects that are seen to the visual sensor
             std::vector<VObject::Pointer> seenObjects = vSensorComponent->getSeenObjects();
-            float a=0,b=0;
             
-            vSensorComponent->setAngleInitial(objectsAI[i]->getGameObject().getTransformData().rotation.y);
+            //Set angle of the sensor to the NPC one
+            vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
             
-            glm::vec3 sensorLeft = vSensorComponent->getSensorLeft();
-            glm::vec3 sensorRight = vSensorComponent->getSensorRight();
-            glm::vec3 relativeP;
-
-            std::cout<<"Angle: "<<vSensorComponent->getAngleInitial()<<"\n";
-  
             //Get next waypoint
-            aiDrivingComponent->setSeconds(1);
-            glm::vec3 objective = aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
+            pathPlanningComponent->setSeconds(1);
+            glm::vec3 objective = pathPlanningComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
                                                             moveComponent->getMovemententData().velocity,
                                                             moveComponent->getMovemententData().vel);
 
 
-            relativeP = objective - objectsAI.at(i)->getGameObject().getTransformData().position;
-            if(sensorRight.x*sensorLeft.z != sensorRight.z*sensorLeft.x) 
-                b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
-            if(sensorLeft.x != 0)
-                a = (relativeP.z - b * sensorRight.z) / sensorLeft.z;
-
-            //aiDrivingComponent->checkList();
-            std::cout<<"Tamaño array: "<<seenObjects.size()<<"\n";
-            std::cout<<"Valors A y B: "<<a<<","<<b<<"\n";
+            //Update A and B of the objective
+            float a=0,b=0;
+            vSensorComponent->calculateAB(objective, &a, &b);
 
             //DECIDE STUFF
             float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);
-            float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), b, a);
+            float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
             //----------------------------------
 
+            //------------Testing
+            std::cout<<"Turn values: "<<turnValue<<std::endl;
+            std::cout<<"Speed value: "<<speedValue<<std::endl;
+            //-------------------
+
             //Send signal of movement
-            moveComponent->isMoving(true);
-            moveComponent->changeAccInc(speedValue);
+            //Turn
             moveComponent->changeSpin(turnValue);
-            std::cout<<"DATA: "<<turnValue<<"\n";
+
+            //Accelerate and brake
+            if(speedValue > 0){
+                moveComponent->isMoving(true);
+                moveComponent->changeAcc(speedValue);
+            }
+            if(speedValue < 0){
+                moveComponent->isMoving(false);
+                moveComponent->changeAcc(speedValue);
+            }
+            if(speedValue == 0){
+                moveComponent->isMoving(false);
+            }
+           
+           
+            
         }
         
         //aiDrivingComponent->checkList();

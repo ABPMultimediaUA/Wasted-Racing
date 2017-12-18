@@ -7,6 +7,7 @@ class ItemRedShellComponent : public IItemComponent
 
     private:
 
+        float speed;
 
     public:
 

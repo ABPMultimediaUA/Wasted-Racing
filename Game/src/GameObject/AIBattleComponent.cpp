@@ -301,7 +301,7 @@ void AIBattleComponent::init()
     DS3->AddChild(sequence31);
     DS3->AddChild(std::shared_ptr<Behaviour>(new WaitAction(1.0f)));
 
-    sequence31->AddChild(std::shared_ptr<Behaviour>(new ConditionEnemyBehindAction(target)));
+    sequence31->AddChild(std::shared_ptr<Behaviour>(new ConditionEnemyBehindAction()));
     sequence31->AddChild(std::shared_ptr<Behaviour>(new UseItemAction(target)));
 
 
