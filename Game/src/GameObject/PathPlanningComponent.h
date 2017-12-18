@@ -8,7 +8,7 @@ private:
 
     float seconds;
     float distLastWay;
-    int lastPosVector;
+    int lastVector;
         
 public:
 
@@ -39,6 +39,8 @@ public:
 
     float getDistLastWay();
     int getLastPosVector();
+    int getActualLevel();
+    float getActualDistance();
 
     //Functions
     glm::vec3 getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed);    

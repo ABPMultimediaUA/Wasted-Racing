@@ -326,9 +326,9 @@ void addObjects(){
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(ob100, 1, 1);
-    std::shared_ptr<IComponent> wp2 = WaypointManager::getInstance().createWaypointComponent(ob101, 1, 2);
-    std::shared_ptr<IComponent> wp3 = WaypointManager::getInstance().createWaypointComponent(ob102, 1, 3);
+    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(ob100, 20, 1);
+    std::shared_ptr<IComponent> wp2 = WaypointManager::getInstance().createWaypointComponent(ob101, 20, 2);
+    std::shared_ptr<IComponent> wp3 = WaypointManager::getInstance().createWaypointComponent(ob102, 20, 3);
     /*std::shared_ptr<IComponent> wp4 = WaypointManager::getInstance().createWaypointComponent(ob103, 1, 4);
     std::shared_ptr<IComponent> wp5 = WaypointManager::getInstance().createWaypointComponent(ob104, 1, 5);
     std::shared_ptr<IComponent> wp6 = WaypointManager::getInstance().createWaypointComponent(ob105, 1, 6);
