@@ -128,12 +128,7 @@ void MoveComponent::changeAngleInc(float i){
 }
 
 void MoveComponent::isJumping(bool j){
-   // if(mData.asc == false){
         mData.jump = j;
-  /*  }
-    else{
-        mData.jump = false;
-    }*/
 }
 void MoveComponent::isSpinning(bool s){
     mData.spi = s;
@@ -150,6 +145,10 @@ void MoveComponent::isDrifting(bool d){
     }else{
         mData.driftDir=true;
     }
+}
+
+void MoveComponent::isBraking(bool b) {
+    mData.braking = b;
 }
 
 

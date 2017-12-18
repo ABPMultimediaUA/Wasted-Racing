@@ -429,7 +429,7 @@ void addObjects(){
     terrain5.p2 = (LAPAL::vec3f(500,80,-400));
     terrain5.p3 = (LAPAL::vec3f(500,80,-600));
     terrain5.p4 = (LAPAL::vec3f(-250,80,-600));
-    terrain5.fric = 0.2;
+    terrain5.fric = 0.5;
     LAPAL::calculateRotationsXZ(terrain5);
     std::shared_ptr<IComponent> terrainCP6 = PhysicsManager::getInstance().createTerrainComponent(*ob18.get(), terrain5);
     auto terrainCP6_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP6);
@@ -465,12 +465,12 @@ void addObjects(){
     mData.max_rotate = 3;
 
     mData.max_vel = 100.0;
-    mData.brake_vel = 5;
+    mData.brake_vel = 10;
     mData.velY = 10;
 
-    mData.max_acc = 10;
-    mData.dAcc = 1;
-    mData.brake_acc = 0.4;
+    mData.max_acc = 20;
+    mData.dAcc = 5;
+    mData.brake_acc = 5;
 
     std::shared_ptr<IComponent> moveCP1 = PhysicsManager::getInstance().createMoveComponent(*ob2.get(), mData, terrain, 1);
 

@@ -22,19 +22,18 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
     mData.acc += mData.dAcc*dTime; //increment of acceleration * increment of time
 
     //If we aren't accelerating
-    if(!mData.mov && mData.acc!=0) {
-        if(abs(mData.acc)<0.1) {
-            mData.acc = 0;
-        
-        //--------------Fictional friction
-        }else{
-            if(mData.acc>0){
-                mData.acc -= (mData.brake_acc)*dTime;  
-            }else{
-                mData.acc += (mData.brake_acc)*dTime; 
-            }
+    if(abs(mData.acc)<0.5  && !mData.mov)
+        mData.acc = 0;
+
+    //Aply friction
+    if(!mData.mov) {
+        if(mData.acc>0) {
+            mData.acc -= (mData.brake_acc)*dTime;  
+        }else {
+            mData.acc += (mData.brake_acc)*dTime; 
         }
     }
+    
 
     //Check acceleration limits
     if(abs(mData.acc)>abs(mData.max_acc)){
@@ -42,28 +41,31 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
     }
 
     //Update velocity
-    mData.vel += mData.acc*dTime; 
+    mData.vel += mData.acc*dTime*(1-terrain.fric); 
 
     //If we aren't accelerating
-    if(!mData.mov && mData.vel!=0) {
-        if(abs(mData.vel)<0.1) {
-            mData.vel= 0;
+    if(abs(mData.vel)<0.5 && !mData.mov)
+        mData.vel = 0;
 
-        //--------------Fictional friction
-        }else{
-            if(mData.vel>0){
-                mData.vel -= (mData.brake_vel + terrain.fric)*dTime;
-            }else{
-                mData.vel += (mData.brake_vel + terrain.fric)*dTime;
-            }  
+    //Aply friction
+    if(!mData.mov) {
+        if(mData.vel>0) {
+            mData.vel -= (mData.brake_vel + terrain.fric)*dTime;  
+        }else {
+            mData.vel += (mData.brake_vel + terrain.fric)*dTime; 
         }
     }
 
     //Check velocity limits 
-    if(abs(mData.vel)>abs(mData.max_vel)){
-        mData.vel = copysign(mData.max_vel, mData.vel);
+    if(abs(mData.vel)>abs(mData.max_vel*(1-terrain.fric))){
+        mData.vel = copysign(mData.max_vel*(1-terrain.fric), mData.vel);
     }
     
+    //Check if we are braking
+    if(mData.braking){
+        mData.vel = mData.vel * 0.99f;
+        mData.acc = mData.acc * 0.99f;
+    }
 }
 
 void LAPAL::updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain){
