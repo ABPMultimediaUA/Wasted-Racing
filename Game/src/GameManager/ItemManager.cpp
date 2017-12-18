@@ -29,7 +29,7 @@ void ItemManager::init(){
 
 void ItemManager::update(float dTime){
     
-    for(int i = 0; i < ItemBoxes.size() ; i++){
+    for(unsigned int i = 0; i < ItemBoxes.size() ; i++){
         ItemBoxes.at(i)->update(dTime);
     }
 
