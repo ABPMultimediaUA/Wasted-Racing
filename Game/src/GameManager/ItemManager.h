@@ -47,6 +47,14 @@ class ItemManager {
         IComponent::Pointer createStar(GameObject::Pointer obj);
         
 
+        //Getters
+        std::vector<std::shared_ptr<IItemComponent>> getItemComponents()        {       return ItemComponents;       };
+
+
+        //Item delete
+        void deleteMushroom(IComponent::Pointer component);
+        void deleteStar(IComponent::Pointer component);
+
 
 
  };
