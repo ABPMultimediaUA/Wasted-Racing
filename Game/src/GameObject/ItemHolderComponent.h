@@ -23,12 +23,12 @@ class ItemHolderComponent : public IComponent {
         virtual void close();
 
         //Getter
-        virtual int getItemType(){
+        int getItemType(){
             return itemType;
         }
 
         //Setter
-        virtual void setItemType(int i){
+        void setItemType(int i){
             itemType = i;
         }
 

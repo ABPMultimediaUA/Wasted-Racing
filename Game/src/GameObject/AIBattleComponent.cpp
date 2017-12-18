@@ -3,11 +3,23 @@
 
 //This class defines the usage of a generic item in the Battle System
 class UseItemAction : public Behaviour{
+    public:
+        UseItemAction(GameObject& t) : 
+        target(t) {}
     protected:
         BehaviourState Update(float d)
         {
+            auto itemHolder = target.getComponent<ItemHolderComponent>().get();
+            if(itemHolder)
+            {
+                ItemManager* itemManager = &ItemManager::getInstance();
+                itemManager->createItem(target);
+                return BehaviourState::SUCCEEDED;
+            }
 			return BehaviourState::FAILED;
         }
+    private:
+        GameObject& target;
 
 };
 
@@ -41,11 +53,26 @@ class WaitAction : public Behaviour{
 
 //Condition that checks if the player is first or not
 class ConditionFirstAction : public Behaviour {
+    public:
+        ConditionHasItem1Action(GameObject& t) :
+        target(t) {}
     protected:
         BehaviourState Update(float d)
         {
+            auto score = target.getComponent<ScoreComponent>().get();
+            if(score)
+            {
+                if(score->getPosition() == 1)
+                {
+                    return BehaviourState::SUCCEEDED;
+                }
+            }
+
             return BehaviourState::FAILED;
         }
+
+    private:
+        GameObject& target;
 
 };
 
@@ -61,67 +88,150 @@ class ConditionEnemyBehindAction : public Behaviour {
 
 //Condition that checks if the player has an item or not
 class ConditionHasItemAction : public Behaviour {
+    public:
+        ConditionHasItem1Action(GameObject& t) :
+        target(t) {}
     protected:
         BehaviourState Update(float d)
         {
+            auto itemHolder = target.getComponent<ItemHolderComponent>().get();
+            if(itemHolder)
+            {
+                if(itemHolder->getItemType() != -1)
+                {
+                    return BehaviourState::SUCCEEDED;
+                }
+            }
             return BehaviourState::FAILED;
         }
 
+    private:
+        GameObject& target;
 };
 
 //Condition that checks if the player has the item 1 or not
 class ConditionHasItem1Action : public Behaviour {
+    public:
+        ConditionHasItem1Action(GameObject& t) :
+        target(t) {}
     protected:
         BehaviourState Update(float d)
         {
+            auto itemHolder = target.getComponent<ItemHolderComponent>().get();
+            if(itemHolder)
+            {
+                if(itemHolder->getItemType() == 0)
+                {
+                    return BehaviourState::SUCCEEDED;
+                }
+            }
             return BehaviourState::FAILED;
         }
 
+    private:
+        GameObject& target;
 };
 
 //Condition that checks if the player has the item 2 or not
 class ConditionHasItem2Action : public Behaviour {
+    public:
+        ConditionHasItem1Action(GameObject& t) :
+        target(t) {}
     protected:
         BehaviourState Update(float d)
         {
+            auto itemHolder = target.getComponent<ItemHolderComponent>().get();
+            if(itemHolder)
+            {
+                if(itemHolder->getItemType() == 1)
+                {
+                    return BehaviourState::SUCCEEDED;
+                }
+            }
             return BehaviourState::FAILED;
         }
 
+    private:
+        GameObject& target;
 };
 
 //Condition that checks if the player has the item 3 or not
 class ConditionHasItem3Action : public Behaviour {
+    public:
+        ConditionHasItem1Action(GameObject& t) :
+        target(t) {}
     protected:
         BehaviourState Update(float d)
         {
+            auto itemHolder = target.getComponent<ItemHolderComponent>().get();
+            if(itemHolder)
+            {
+                if(itemHolder->getItemType() == 2)
+                {
+                    return BehaviourState::SUCCEEDED;
+                }
+            }
             return BehaviourState::FAILED;
         }
 
+    private:
+        GameObject& target;
 };
 
 //Condition that checks if the player has the item 4 or not
 class ConditionHasItem4Action : public Behaviour {
+    public:
+        ConditionHasItem1Action(GameObject& t) :
+        target(t) {}
     protected:
         BehaviourState Update(float d)
         {
+            auto itemHolder = target.getComponent<ItemHolderComponent>().get();
+            if(itemHolder)
+            {
+                if(itemHolder->getItemType() == 3)
+                {
+                    return BehaviourState::SUCCEEDED;
+                }
+            }
             return BehaviourState::FAILED;
         }
+
+    private:
+        GameObject& target;
 
 };
 
 //Condition that checks if the player has the item 5 or not
 class ConditionHasItem5Action : public Behaviour {
+    public:
+        ConditionHasItem1Action(GameObject& t) :
+        target(t) {}
     protected:
         BehaviourState Update(float d)
         {
+            auto itemHolder = target.getComponent<ItemHolderComponent>().get();
+            if(itemHolder)
+            {
+                if(itemHolder->getItemType() == 4)
+                {
+                    return BehaviourState::SUCCEEDED;
+                }
+            }
             return BehaviourState::FAILED;
         }
+
+    private:
+        GameObject& target;
 
 };
 
 //Initialize the tree
 void AIBattleComponent::init()
 {
+    //First we get the target of our actions, our GameObject, in order to avoid
+    //Getting it every time
+    GameObject& target = this->getGameObject();
     //Main selector of the tree
     auto selector = std::shared_ptr<Selector>(new Selector());
 
@@ -150,7 +260,7 @@ void AIBattleComponent::init()
     selector->AddChild(std::shared_ptr<Behaviour>(new WaitAction(1.0f)));
 
     //Checks if we have an item, if not, we go back and wait is activated. If we have it, we active selector2
-    sequence->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItemAction()));
+    sequence->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItemAction(target)));
     sequence->AddChild(selector2);
 
     //Fice sequences, one for every kind of item
@@ -161,38 +271,38 @@ void AIBattleComponent::init()
     selector2->AddChild(sequence5);
 
     //Sequence for item 1: Blue shell. If we have it, use it
-    sequence1->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem1Action()));
-    sequence1->AddChild(std::shared_ptr<Behaviour>(new UseItemAction()));
+    sequence1->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem1Action(target)));
+    sequence1->AddChild(std::shared_ptr<Behaviour>(new UseItemAction(target)));
 
     //Sequence for item 2: Red Shell. If we have it, we enter in it's correspondant Dynamic Selector
-    sequence2->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem2Action()));
+    sequence2->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem2Action(target)));
     sequence2->AddChild(DS2);
 
     //Sequence for item 3: Banana. If we have it, we enter in it's correspondant Dynamic Selector
-    sequence3->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem3Action()));
+    sequence3->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem3Action(target)));
     sequence3->AddChild(DS3);
 
     //Sequence for item 4: Mushroom. If we have it, use it
-    sequence4->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem4Action()));
-    sequence4->AddChild(std::shared_ptr<Behaviour>(new UseItemAction()));
+    sequence4->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem4Action(target)));
+    sequence4->AddChild(std::shared_ptr<Behaviour>(new UseItemAction(target)));
 
     //Sequence for item 5: Star. If we have it, use it
-    sequence5->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem5Action()));
-    sequence5->AddChild(std::shared_ptr<Behaviour>(new UseItemAction()));
+    sequence5->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem5Action(target)));
+    sequence5->AddChild(std::shared_ptr<Behaviour>(new UseItemAction(target)));
 
     //Dynamic selector of item 2. If we are first, wait, elsewhere, use the item
     DS2->AddChild(sequence21);
-    DS2->AddChild(std::shared_ptr<Behaviour>(new UseItemAction()));
+    DS2->AddChild(std::shared_ptr<Behaviour>(new UseItemAction(target)));
 
-    sequence21->AddChild(std::shared_ptr<Behaviour>(new ConditionFirstAction));
+    sequence21->AddChild(std::shared_ptr<Behaviour>(new ConditionFirstAction(target)));
     sequence21->AddChild(std::shared_ptr<Behaviour>(new WaitAction(1.0f)));
 
     //Dynamic selector of item 3. If we have an enemy behind, use it, elsewhere wait
     DS3->AddChild(sequence31);
     DS3->AddChild(std::shared_ptr<Behaviour>(new WaitAction(1.0f)));
 
-    sequence31->AddChild(std::shared_ptr<Behaviour>(new ConditionEnemyBehindAction()));
-    sequence31->AddChild(std::shared_ptr<Behaviour>(new UseItemAction()));
+    sequence31->AddChild(std::shared_ptr<Behaviour>(new ConditionEnemyBehindAction(target)));
+    sequence31->AddChild(std::shared_ptr<Behaviour>(new UseItemAction(target)));
 
 
 }
