@@ -54,7 +54,7 @@ class WaitAction : public Behaviour{
 //Condition that checks if the player is first or not
 class ConditionFirstAction : public Behaviour {
     public:
-        ConditionHasItem1Action(GameObject& t) :
+        ConditionFirstAction(GameObject& t) :
         target(t) {}
     protected:
         BehaviourState Update(float d)
@@ -89,7 +89,7 @@ class ConditionEnemyBehindAction : public Behaviour {
 //Condition that checks if the player has an item or not
 class ConditionHasItemAction : public Behaviour {
     public:
-        ConditionHasItem1Action(GameObject& t) :
+        ConditionHasItemAction(GameObject& t) :
         target(t) {}
     protected:
         BehaviourState Update(float d)
@@ -135,7 +135,7 @@ class ConditionHasItem1Action : public Behaviour {
 //Condition that checks if the player has the item 2 or not
 class ConditionHasItem2Action : public Behaviour {
     public:
-        ConditionHasItem1Action(GameObject& t) :
+        ConditionHasItem2Action(GameObject& t) :
         target(t) {}
     protected:
         BehaviourState Update(float d)
@@ -158,7 +158,7 @@ class ConditionHasItem2Action : public Behaviour {
 //Condition that checks if the player has the item 3 or not
 class ConditionHasItem3Action : public Behaviour {
     public:
-        ConditionHasItem1Action(GameObject& t) :
+        ConditionHasItem3Action(GameObject& t) :
         target(t) {}
     protected:
         BehaviourState Update(float d)
@@ -181,7 +181,7 @@ class ConditionHasItem3Action : public Behaviour {
 //Condition that checks if the player has the item 4 or not
 class ConditionHasItem4Action : public Behaviour {
     public:
-        ConditionHasItem1Action(GameObject& t) :
+        ConditionHasItem4Action(GameObject& t) :
         target(t) {}
     protected:
         BehaviourState Update(float d)
@@ -205,7 +205,7 @@ class ConditionHasItem4Action : public Behaviour {
 //Condition that checks if the player has the item 5 or not
 class ConditionHasItem5Action : public Behaviour {
     public:
-        ConditionHasItem1Action(GameObject& t) :
+        ConditionHasItem5Action(GameObject& t) :
         target(t) {}
     protected:
         BehaviourState Update(float d)
