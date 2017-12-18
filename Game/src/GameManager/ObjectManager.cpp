@@ -59,6 +59,10 @@ void ObjectManager::addObject(GameObject::Pointer ptr) {
 
 void ObjectManager::deleteObject(uint16_t id) {
 
+    auto obj = getObject(id);
+    if(obj!=nullptr)
+        obj.get()->close();
+
     if(objectsMap.erase(id) == 0)
         std::cerr << "Couldn't erase object. ID: " << id << " doesn't exist." << std::endl;
 

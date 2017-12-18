@@ -91,6 +91,8 @@ void MoveComponent::update(float dTime) {
         std::cout << " Velocidad " << mData.vel << std::endl;
         std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
         std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
+        std::cout << " VEL Y " << mData.velY << std::endl;
+
 
         if (mData.jump == false){
             std::cout << " No estoy saltando " << std::endl;
@@ -126,12 +128,7 @@ void MoveComponent::changeAngleInc(float i){
 }
 
 void MoveComponent::isJumping(bool j){
-   // if(mData.asc == false){
         mData.jump = j;
-  /*  }
-    else{
-        mData.jump = false;
-    }*/
 }
 void MoveComponent::isSpinning(bool s){
     mData.spi = s;
@@ -148,6 +145,10 @@ void MoveComponent::isDrifting(bool d){
     }else{
         mData.driftDir=true;
     }
+}
+
+void MoveComponent::isBraking(bool b) {
+    mData.braking = b;
 }
 
 
@@ -169,8 +170,13 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
     if(constantAlteredTime > 0) {
         //While time is constant, velocity is constant and maximum
-        mData.vel = mData.max_vel;
-        constantAlteredTime -= dTime;
+        if(mData.vel < 0) {
+            constantAlteredTime = -1;
+        }
+        else {
+            mData.vel = mData.max_vel;
+            constantAlteredTime -= dTime;
+        }
     }
     else if (decrementalAlteredTime > 0) {
         //Calculate velocity decrease depending on dTime

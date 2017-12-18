@@ -10,6 +10,10 @@
 void addMoveComponent(EventData eData); 
 void addCollisionComponent(EventData eData); 
 void collideRamp(EventData eData);
+void collideBanana(EventData eData);
+void collideItemBox(EventData eData);
+void objectDeletedCollide(EventData eData);   
+void objectDeletedMove(EventData eData);
 
 //==============================================
 // PHYSICS MANAGER FUNCTIONS
@@ -25,6 +29,10 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::MoveComponent_Create, addMoveComponent});
     EventManager::getInstance().addListener(EventListener {EventType::CollisionComponent_Create, addCollisionComponent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
+    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, collideItemBox});
+    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, collideBanana});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCollide});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMove});
 
 }
 
@@ -45,14 +53,15 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Check collisions with other objects
         //==============================================================================
-        calculateObjectsCollision(ourMove, ourColl);
+        calculateObjectsCollision(ourMove, ourColl, dTime);
 
         //==============================================================================
         // Check collisions with terrain limits and terrain change
         //==============================================================================
-        calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl);
+        calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl, dTime);
         
     }
+
 }
 
 void PhysicsManager::close() {
@@ -64,7 +73,7 @@ void PhysicsManager::close() {
 // PRIVATE FUNCTIONS
 //==============================================================================
 
-void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<CollisionComponent> coll) {
+void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
     CollisionComponent* ourColl = coll.get();
 
@@ -92,7 +101,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
                 if(hisMove == nullptr) {    //If the object doesn't have move component, it's static
                         
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
 
                 }
                 else {  //The object is not static
@@ -108,12 +117,27 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
                     EventManager::getInstance().addEvent(Event {EventType::RampComponent_Collision, data});
                 }
+                else if(hisColl->getType() == CollisionComponent::Type::Banana){
+                    std::cout<<"PUEDE QUE ENTRE"<<"\n";
+                    EventData data;
+                    data.Component      = std::static_pointer_cast<IComponent>(move);
+                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                    EventManager::getInstance().addEvent(Event {EventType::BananaComponent_Collision, data});
+                }
+                else if(hisColl->getType() == CollisionComponent::Type::ItemBox){
+                    EventData data;
+                    data.Component      = std::static_pointer_cast<IComponent>(move);
+                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                    EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Collision, data});
+                }
             }
         }
     }
 }
 
-void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> move) {
+void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> move, const float dTime) {
 
     MoveComponent* ourMove = move.get();
 
@@ -143,9 +167,11 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
     ourMove->setMovementData(ourMData);
     auto tData = ourMove->getGameObject().getTransformData();
     ourMove->getGameObject().setTransformData(tData);
+    ourMove->update(dTime);
+    ourMove->update(dTime);
 }
 
-void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll) {
+void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
         MoveComponent* ourMove = move.get();
         TerrainComponent* ourTerr = terr.get();
@@ -173,7 +199,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of front bounds within our next movement
         if(a>0 && b<0 && glm::abs(a)+glm::abs(b)>=1){
             if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move);
+                calculateStaticCollision(move, dTime);
                 return;
             }else{
                 //Check if we are inside the next terrain. If not, still collide.
@@ -183,7 +209,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getNext(); //Set new terrain component
                 }else{
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
                 }
             }
         }
@@ -191,7 +217,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of right bounds
         if(a>0 && b>0 && glm::abs(a)+glm::abs(b)>=1){
             if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move);
+                calculateStaticCollision(move, dTime);
                 return;
             }
             else{
@@ -202,7 +228,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getRight(); //Set new terrain component
                 }else{
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
                 }
             }
         }
@@ -210,7 +236,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of back bounds
         if(a>0 && b>0 && a - b<=0){
             if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move);
+                calculateStaticCollision(move, dTime);
                 return;
             }
             else{
@@ -221,7 +247,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getPrev(); //Set new terrain component
                 }else{
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
                 }
                 
             }
@@ -230,7 +256,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of left bounds
         if(a>0 && b<0 && a+b<=0){
            if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move);
+                calculateStaticCollision(move, dTime);
                 return;
             }
             else{
@@ -241,7 +267,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getLeft(); //Set new terrain component
                 }else{
-                    calculateStaticCollision(move);
+                    calculateStaticCollision(move, dTime);
                 }
             }
         }
@@ -359,5 +385,62 @@ void collideRamp(EventData eData) {
     if(ramp != nullptr) {
         move->changeMaxSpeedOverTime(ramp.get()->getSpeed(), ramp.get()->getConstTime(), ramp.get()->getDecTime());
     }
+}
 
+void collideBanana(EventData eData) {
+    auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
+
+    auto banana = coll->getGameObject().getComponent<ItemBananaComponent>();
+
+    if(banana != nullptr) {
+        move->changeMaxSpeedOverTime(banana.get()->getSpeed(), banana.get()->getConsTime(), banana.get()->getDecTime());
+
+        EventData data;
+        data.Id = banana->getGameObject().getId();
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+    }
+
+}
+//Collide Item Box
+void collideItemBox(EventData eData){
+
+    auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
+
+    auto itemBox = coll->getGameObject().getComponent<ItemBoxComponent>();
+
+    auto obj = move->getGameObject();
+
+    if(itemBox != nullptr){
+       if(coll->getGameObject().getTransformData().scale.x != 0 && coll->getGameObject().getTransformData().scale.y != 0 && coll->getGameObject().getTransformData().scale.z != 0){
+           itemBox->asignItem(obj);
+           itemBox->deactivateBox();
+       }
+    }
+}
+
+void objectDeletedCollide(EventData eData) {
+
+    auto collisionComponentList = PhysicsManager::getInstance().getCollisionComponentList();
+
+    for(unsigned int i = 0; i<collisionComponentList.size(); ++i) {
+        if(eData.Id == collisionComponentList.at(i).get()->getGameObject().getId()) {
+            collisionComponentList.erase(collisionComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeletedMove(EventData eData) {
+
+    auto moveComponentList = PhysicsManager::getInstance().getMoveComponentList();
+
+    for(unsigned int i = 0; i<moveComponentList.size(); ++i) {
+        if(eData.Id == moveComponentList.at(i).get()->getGameObject().getId()) {
+            moveComponentList.erase(moveComponentList.begin() + i);
+            return;
+        }
+    }
 }

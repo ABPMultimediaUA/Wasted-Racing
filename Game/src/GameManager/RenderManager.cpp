@@ -7,7 +7,8 @@
 // DELEGATES DECLARATIONS
 //==============================================
 void addObjectRenderComponent(EventData data);
-void addCameraRenderComponent(EventData data);
+void addCameraRenderComponent(EventData data); 
+void objectDeletedRender(EventData eData);
 
 //==============================================
 // RENDER MANAGER FUNCTIONS
@@ -39,6 +40,7 @@ void RenderManager::init(int engine) {
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Create, addObjectRenderComponent});
     EventManager::getInstance().addListener(EventListener {EventType::CameraRenderComponent_Create, addCameraRenderComponent});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedRender});
 }
 
 void RenderManager::update() {
@@ -97,4 +99,16 @@ void addObjectRenderComponent(EventData data) {
 void addCameraRenderComponent(EventData data) {
     RenderManager::getInstance().setCameraComponent(data.Component);
     data.Component.get()->init();
+}
+
+void objectDeletedRender(EventData eData) {
+
+    auto renderComponentList = RenderManager::getInstance().getComponentList();
+
+    for(unsigned int i = 0; i<renderComponentList.size(); ++i) {
+        if(eData.Id == renderComponentList.at(i).get()->getGameObject().getId()) {
+            renderComponentList.erase(renderComponentList.begin() + i);
+            return;
+        }
+    }
 }

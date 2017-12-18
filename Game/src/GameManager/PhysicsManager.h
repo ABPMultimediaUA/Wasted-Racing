@@ -4,6 +4,8 @@
 #include "../GameObject/CollisionComponent.h"
 #include "../GameObject/TerrainComponent.h"
 #include "../GameObject/RampComponent.h"
+#include "../GameObject/ItemBoxComponent.h"
+#include "../GameObject/ItemBananaComponent.h"
 #include <vector>
 
 class PhysicsManager{
@@ -56,9 +58,9 @@ public:
 
 private:
 
-    void calculateObjectsCollision(std::shared_ptr<MoveComponent> , std::shared_ptr<CollisionComponent> );
-    void calculateStaticCollision(std::shared_ptr<MoveComponent>);
-    void calculateTerrainCollision(MovingCharacter&, std::shared_ptr<MoveComponent>, std::shared_ptr<TerrainComponent> , std::shared_ptr<CollisionComponent> );
+    void calculateObjectsCollision(std::shared_ptr<MoveComponent> , std::shared_ptr<CollisionComponent>, const float );
+    void calculateStaticCollision(std::shared_ptr<MoveComponent>, const float);
+    void calculateTerrainCollision(MovingCharacter&, std::shared_ptr<MoveComponent>, std::shared_ptr<TerrainComponent> , std::shared_ptr<CollisionComponent>, const float );
 
     std::vector<IComponent::Pointer> moveComponentList;
     std::vector<IComponent::Pointer> collisionComponentList;
