@@ -2,10 +2,25 @@
 
 #include "../GameObject/GameObject.h"
 #include <map>
+#include "PhysicsManager.h"
+#include "RenderManager.h"
+#include "ItemManager.h"
+#include "WaypointManager.h"
+#include "AIManager.h"
+#include "SensorManager.h"
 
 class ObjectManager{
 
 public: 
+
+    enum PlayerType{
+            
+        punk            = 0,      
+        witch           = 1,      
+        cyborg          = 2,      
+        crocodile       = 3
+    
+    };
 
     //Constructor
     ObjectManager() {}
@@ -39,6 +54,16 @@ public:
 
     //Static class getter
     static ObjectManager& getInstance();
+
+    //Create Player and IA
+    void createPlayer(GameObject::TransformationData tansform, int type, int move, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent); //Read .cpp 
+
+    GameObject::Pointer createPunk(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent);
+    GameObject::Pointer createWitch(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent);
+    GameObject::Pointer createCyborg(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent);
+    GameObject::Pointer createCrocodile(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent);
+
+    void createMove(GameObject::Pointer obj, int move);
 
 private:
 
