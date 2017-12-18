@@ -27,7 +27,11 @@ void ItemManager::init(){
 
 }
 
-void ItemManager::update(){
+void ItemManager::update(float dTime){
+    
+    for(int i = 0; i < ItemBoxes.size() ; i++){
+        ItemBoxes.at(i)->update(dTime);
+    }
 
 }
 
@@ -53,6 +57,27 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
     return component;
 }
 
+//////////////////////////////////////////////////////
+/////
+/////       ITEM BOX CREATOR
+/////
+//////////////////////////////////////////////////////
+
+IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
+
+    IComponent::Pointer component = std::make_shared<ItemBoxComponent>(obj, 600);
+
+    obj.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    ItemBoxes.push_back(std::dynamic_pointer_cast<ItemBoxComponent>(component));
+    EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Create, data});
+
+    return component;
+}
+
 
 //////////////////////////////////////////////////////
 /////
@@ -62,8 +87,7 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
 
 IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
 
-    //int random = rand() % 5;
-    int random = 3;
+    int random = rand() % 5;
     if(random == IItemComponent::ItemType::redShell)
     {
         return createRedShell(obj);
@@ -254,19 +278,6 @@ void createItemEvent(EventData eData)
     ItemManager::getInstance().createItem(eData.Object);
 }
 
-IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
-
-    IComponent::Pointer component = std::make_shared<ItemBoxComponent>(obj);
-
-    obj.addComponent(component);
-
-    EventData data;
-    data.Component = component;
-
-    EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Create, data});
-
-    return component;
-}
 void objectDeletedBanana(EventData eData) {
 
     auto bananaComponentList = ItemManager::getInstance().getItemComponents();

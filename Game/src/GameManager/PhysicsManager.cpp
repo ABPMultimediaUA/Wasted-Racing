@@ -125,6 +125,13 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
                     EventManager::getInstance().addEvent(Event {EventType::BananaComponent_Collision, data});
                 }
+                else if(hisColl->getType() == CollisionComponent::Type::ItemBox){
+                    EventData data;
+                    data.Component      = std::static_pointer_cast<IComponent>(move);
+                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                    EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Collision, data});
+                }
             }
         }
     }
@@ -397,8 +404,6 @@ void collideBanana(EventData eData) {
 }
 
 void collideItemBox(EventData eData){
-
-    std::cout << "Estoy colisionando con la caja" << std::endl;
 
     auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
     auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);

@@ -12,6 +12,7 @@
 #include "../GameObject/ItemBoxComponent.h"
 #include "RenderManager.h"
 #include "PhysicsManager.h"
+#include "../GameObject/ItemHolderComponent.h"
 
 
 class ItemManager {
@@ -20,6 +21,7 @@ class ItemManager {
 
         std::vector<std::shared_ptr<ItemHolderComponent>> ItemHolders;
         std::vector<std::shared_ptr<IItemComponent>> ItemComponents;
+        std::vector<std::shared_ptr<ItemBoxComponent>> ItemBoxes;
 
     public:
 
@@ -29,7 +31,7 @@ class ItemManager {
 
         void init();
 
-        void update();
+        void update(float dTime);
 
         void close();
 

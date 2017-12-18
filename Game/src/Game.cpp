@@ -76,7 +76,7 @@ void Game::update() {
 
     sensorManager->update();
 
-    itemManager->update();
+    itemManager->update(1.0);
     
 
     //Event manager has to be the last to be updated
@@ -115,24 +115,12 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
-    int temp = 600;
     while(Game::stay){
         Game::update();
         Game::draw();
-        temp--;
-        if(temp == 0)
-        {
-            EventData data;
-            data.Object = ObjectManager::getInstance().getObject(5);
-
-            EventManager::getInstance().addEvent(Event {EventType::Key_UseItem_Down, data});
-            temp = 600;
-        }
     }
-
     Game::close();
-} 
-
+}
 
 
 void addObjects(){
@@ -365,7 +353,7 @@ void addObjects(){
     std::shared_ptr<IComponent> collisionCP2 = PhysicsManager::getInstance().createCollisionComponent(*ob3.get(), 5, true, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5, false, CollisionComponent::Type::Default);
     std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
-    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, false, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, false, CollisionComponent::Type::ItemBox);
     LAPAL::plane3f terrainX;
     terrainX.p1 = (LAPAL::vec3f( -5 , 0, 15));
     terrainX.p2 = (LAPAL::vec3f( 5 , 0, 15));
@@ -535,6 +523,11 @@ void addObjects(){
     // ADD ITEMBOX COMPONENT
     //===============================================================
     std::shared_ptr<IComponent> itemboxCP20 = ItemManager::getInstance().createItemBox(*ob25.get());
+
+    //===============================================================
+    // ADD ITEM HOLDER COMPONENT
+    //===============================================================
+    std::shared_ptr<IComponent> itemholderCP2 = ItemManager::getInstance().createItemHolderComponent(*ob2.get());
 
     //===============================================================
     // Update to distribute all creation events

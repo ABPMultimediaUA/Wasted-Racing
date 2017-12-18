@@ -8,7 +8,7 @@ class ItemBoxComponent : public IComponent{
     public:
 
         //Constructor
-        ItemBoxComponent(GameObject& newGameObject) : IComponent(newGameObject){}
+        ItemBoxComponent(GameObject& newGameObject, float dTime);
 
         //Destructor
         virtual ~ItemBoxComponent() {};
@@ -28,5 +28,10 @@ class ItemBoxComponent : public IComponent{
     //==========================================
     void deactivateBox();
     void asignItem(GameObject& obj);
+
+    private:
+        
+        float boxTime;
+        float actTime;
 
 };
