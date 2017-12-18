@@ -2,6 +2,8 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/InputManager.h"
 #include "../GameManager/RenderManager.h"
+#include "../GameManager/ItemManager.h"
+#include "ItemHolderComponent.h"
 #include "GameObject.h"
 #include "MoveComponent.h"
 #include <iostream>
@@ -21,6 +23,7 @@ void jumpUpI(EventData eData);
 void jumpDownI(EventData eData);
 void driftUpI(EventData eData);
 void driftDownI(EventData eData);
+void useItemDownI(EventData eData);
 
 //==============================================
 // INPUT COMPONENT FUNCTIONS
@@ -41,6 +44,7 @@ void InputComponent::init(){
     EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Up, jumpUpI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Down, driftDownI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Up, driftUpI});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, useItemDownI});
 
 }
 
@@ -108,4 +112,8 @@ void driftDownI(EventData eData){
 void driftUpI(EventData eData){
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
     comp->isDrifting(false);
+}
+void useItemDownI(EventData eData){
+    auto obj = InputManager::getInstance().getComponent().get()->getGameObject();
+    ItemManager::getInstance().createItem(obj);
 }

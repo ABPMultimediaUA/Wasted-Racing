@@ -1,8 +1,5 @@
 #include "ItemManager.h"
 
-
-
-void createItemEvent(EventData eData);
 void objectDeletedBanana(EventData eData);
 void objectDeletedMushroom(EventData eData);
 void objectDeletedStar(EventData eData);
@@ -20,7 +17,6 @@ ItemManager& ItemManager::getInstance(){
 
 void ItemManager::init(){
 
-    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, createItemEvent});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedBanana});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMushroom});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedStar});
@@ -281,11 +277,6 @@ void ItemManager::deleteStar(IComponent::Pointer component)
 /////       DELEGATES
 /////
 //////////////////////////////////////////////////////
-
-void createItemEvent(EventData eData)
-{
-    ItemManager::getInstance().createItem(*eData.Object.get());
-}
 
 void objectDeletedBanana(EventData eData) {
 

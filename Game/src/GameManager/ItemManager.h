@@ -3,7 +3,6 @@
 #include <vector>
 #include "../GameObject/IItemComponent.h"
 #include "../GameObject/ItemHolderComponent.h"
-#include "ObjectManager.h"
 #include "../GameObject/ItemRedShellComponent.h"
 #include "../GameObject/ItemBlueShellComponent.h"
 #include "../GameObject/ItemBananaComponent.h"
@@ -12,7 +11,7 @@
 #include "../GameObject/ItemBoxComponent.h"
 #include "RenderManager.h"
 #include "PhysicsManager.h"
-#include "../GameObject/ItemHolderComponent.h"
+#include "ObjectManager.h"
 
 
 class ItemManager {

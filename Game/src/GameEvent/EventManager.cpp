@@ -36,7 +36,7 @@ void EventManager::processEvent(Event event){
         auto eventListenerList = auxEventListenerList->second;
 
         for(auto eventListener : eventListenerList) {
-            eventListener.listener(event.data);
+                eventListener.listener(event.data);
         }
     }
 
