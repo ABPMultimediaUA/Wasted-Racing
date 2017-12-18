@@ -21,10 +21,6 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
     //BASE ACCELERATION
     mData.acc += mData.dAcc*dTime; //increment of acceleration * increment of time
 
-    //If we aren't accelerating
-    if(abs(mData.acc)<0.5  && !mData.mov)
-        mData.acc = 0;
-
     //Aply friction
     if(!mData.mov) {
         if(mData.acc>0) {
@@ -34,6 +30,9 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
         }
     }
     
+    //If we aren't accelerating
+    if(abs(mData.acc)<0.5  && !mData.mov)
+        mData.acc = 0;
 
     //Check acceleration limits
     if(abs(mData.acc)>abs(mData.max_acc)){
@@ -43,10 +42,6 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
     //Update velocity
     mData.vel += mData.acc*dTime*(1-terrain.fric); 
 
-    //If we aren't accelerating
-    if(abs(mData.vel)<0.5 && !mData.mov)
-        mData.vel = 0;
-
     //Aply friction
     if(!mData.mov) {
         if(mData.vel>0) {
@@ -55,6 +50,10 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
             mData.vel += (mData.brake_vel + terrain.fric)*dTime; 
         }
     }
+
+    //If we aren't accelerating
+    if(abs(mData.vel)<0.5 && !mData.mov)
+        mData.vel = 0;
 
     //Check velocity limits 
     if(abs(mData.vel)>abs(mData.max_vel*(1-terrain.fric))){
