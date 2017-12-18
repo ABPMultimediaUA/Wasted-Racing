@@ -11,7 +11,7 @@ class ItemRedShellComponent : public IItemComponent
 
     public:
 
-        ItemRedShellComponent(GameObject& newGameObject, GameObject::Pointer obj);
+        ItemRedShellComponent(GameObject& newGameObject);
 
         ~ItemRedShellComponent();
 
