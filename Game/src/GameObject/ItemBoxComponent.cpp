@@ -61,7 +61,7 @@ void ItemBoxComponent::asignItem(GameObject& obj){
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
 
     if(itemHolder->getItemType() == -1){
-        int random = rand() % 2 + 2;
+        int random = rand() % 5;
         itemHolder->setItemType(random);
     }
 
