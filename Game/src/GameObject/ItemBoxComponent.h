@@ -26,8 +26,7 @@ class ItemBoxComponent : public IComponent{
     //==========================================
     // BOX RELATED FUNCTIONS
     //==========================================
-    void checkCollision();
     void deactivateBox();
-    void activateBox();
+    void asignItem(GameObject& obj);
 
 };

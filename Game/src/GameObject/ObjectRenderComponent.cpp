@@ -13,7 +13,7 @@ void ObjectRenderComponent::update(float dTime) {
 
 //Closer
 void ObjectRenderComponent::close() {
-
+    RenderManager::getInstance().getRenderFacade()->deleteObject(shared_from_this());
 }
 
 //Drawer

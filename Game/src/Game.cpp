@@ -18,8 +18,8 @@ void Game::init() {
     Game::inputEngineSetter(0);
 
     //Initialize true audio manager
-    audioManager2 = &AudioManager::getInstance();
-    audioManager2->init();
+    audioManager = &AudioManager::getInstance();
+    audioManager->init();
 
     //Initilize managers
     eventManager = &EventManager::getInstance();
@@ -82,7 +82,7 @@ void Game::update() {
     //Event manager has to be the last to be updated
     eventManager->update();
 
-    audioManager2->update();
+    audioManager->update();
 
 }
 

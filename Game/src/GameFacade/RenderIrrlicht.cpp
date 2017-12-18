@@ -116,6 +116,18 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
     }
 }
 
+void RenderIrrlicht::deleteObject(IComponent::Pointer ptr) {
+    
+    auto id = ptr.get()->getGameObject().getId();
+    auto itr = nodeMap.find(id);
+
+    if(itr != nodeMap.end()){
+        auto node = itr->second;
+        node->remove();
+        nodeMap.erase(id);
+    }
+}
+
 void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::TransformationData transform) {
     auto pos = transform.position;
     auto rot = transform.rotation;

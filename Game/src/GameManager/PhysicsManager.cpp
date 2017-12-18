@@ -12,6 +12,8 @@ void addCollisionComponent(EventData eData);
 void collideRamp(EventData eData);
 void collideBanana(EventData eData);
 void collideItemBox(EventData eData);
+void objectDeletedCollide(EventData eData);   
+void objectDeletedMove(EventData eData);
 
 //==============================================
 // PHYSICS MANAGER FUNCTIONS
@@ -29,6 +31,8 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, collideItemBox});
     EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, collideBanana});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCollide});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMove});
 
 }
 
@@ -388,14 +392,43 @@ void collideBanana(EventData eData) {
 
 void collideItemBox(EventData eData){
 
+    std::cout << "Estoy colisionando con la caja" << std::endl;
+
     auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
     auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
 
     auto itemBox = coll->getGameObject().getComponent<ItemBoxComponent>();
 
-    if(itemBox != nullptr){
-        std::cout << "Estoy colisionando con la caja" << std::endl;
-    }
+    auto obj = move->getGameObject();
 
+    if(itemBox != nullptr){
+       if(coll->getGameObject().getTransformData().scale.x != 0 && coll->getGameObject().getTransformData().scale.y != 0 && coll->getGameObject().getTransformData().scale.z != 0){
+           itemBox->asignItem(obj);
+           itemBox->deactivateBox();
+       }
+    }
 }
 
+void objectDeletedCollide(EventData eData) {
+
+    auto collisionComponentList = PhysicsManager::getInstance().getCollisionComponentList();
+
+    for(unsigned int i = 0; i<collisionComponentList.size(); ++i) {
+        if(eData.Id == collisionComponentList.at(i).get()->getGameObject().getId()) {
+            collisionComponentList.erase(collisionComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeletedMove(EventData eData) {
+
+    auto moveComponentList = PhysicsManager::getInstance().getMoveComponentList();
+
+    for(unsigned int i = 0; i<moveComponentList.size(); ++i) {
+        if(eData.Id == moveComponentList.at(i).get()->getGameObject().getId()) {
+            moveComponentList.erase(moveComponentList.begin() + i);
+            return;
+        }
+    }
+}
