@@ -50,6 +50,9 @@ public:
     //Add an object to the game
     virtual void addObject(IComponent::Pointer ptr);
 
+    //Delete an object of the game
+    virtual void deleteObject(IComponent::Pointer ptr);
+
     //Add a light to the game
     virtual void addLight();
 

@@ -4,12 +4,18 @@
 void GameObject::init() {
     //Initilize all components
     for (auto comp : components)
-		comp->init();
+		comp.get()->init();
 }
 
 //Update
 void GameObject::update(float dTime) {
 
+}
+
+//Close
+void GameObject::close(){
+    for (auto comp : components)
+        comp.get()->close();
 }
 
 //Add component

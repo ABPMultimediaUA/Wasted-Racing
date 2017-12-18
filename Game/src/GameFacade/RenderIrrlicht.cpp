@@ -107,12 +107,24 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
         node->setRotation(irrRot);
         node->setScale(irrSca);
 
-        auto var = videoDriver->getTexture("/home/luis/WastedHorchata/Wasted-Racing/Game/media/img/stones.jpg");
+        auto var = videoDriver->getTexture("media/img/stones.jpg");
         node->setMaterialTexture(0, var);
         std::cout << var << std::endl;
         //while(true);
 
         nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
+    }
+}
+
+void RenderIrrlicht::deleteObject(IComponent::Pointer ptr) {
+    
+    auto id = ptr.get()->getGameObject().getId();
+    auto itr = nodeMap.find(id);
+
+    if(itr != nodeMap.end()){
+        auto node = itr->second;
+        node->remove();
+        nodeMap.erase(id);
     }
 }
 

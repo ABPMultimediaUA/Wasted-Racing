@@ -10,6 +10,10 @@
 void addMoveComponent(EventData eData); 
 void addCollisionComponent(EventData eData); 
 void collideRamp(EventData eData);
+void collideBanana(EventData eData);
+void collideItemBox(EventData eData);
+void objectDeletedCollide(EventData eData);   
+void objectDeletedMove(EventData eData);
 
 //==============================================
 // PHYSICS MANAGER FUNCTIONS
@@ -25,6 +29,10 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::MoveComponent_Create, addMoveComponent});
     EventManager::getInstance().addListener(EventListener {EventType::CollisionComponent_Create, addCollisionComponent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
+    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, collideItemBox});
+    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, collideBanana});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCollide});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMove});
 
 }
 
@@ -53,6 +61,7 @@ void PhysicsManager::update(const float dTime) {
         calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl);
         
     }
+
 }
 
 void PhysicsManager::close() {
@@ -107,6 +116,21 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 
                     EventManager::getInstance().addEvent(Event {EventType::RampComponent_Collision, data});
+                }
+                else if(hisColl->getType() == CollisionComponent::Type::Banana){
+                    std::cout<<"PUEDE QUE ENTRE"<<"\n";
+                    EventData data;
+                    data.Component      = std::static_pointer_cast<IComponent>(move);
+                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                    EventManager::getInstance().addEvent(Event {EventType::BananaComponent_Collision, data});
+                }
+                else if(hisColl->getType() == CollisionComponent::Type::ItemBox){
+                    EventData data;
+                    data.Component      = std::static_pointer_cast<IComponent>(move);
+                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                    EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Collision, data});
                 }
             }
         }
@@ -359,5 +383,62 @@ void collideRamp(EventData eData) {
     if(ramp != nullptr) {
         move->changeMaxSpeedOverTime(ramp.get()->getSpeed(), ramp.get()->getConstTime(), ramp.get()->getDecTime());
     }
+}
 
+void collideBanana(EventData eData) {
+    auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
+
+    auto banana = coll->getGameObject().getComponent<ItemBananaComponent>();
+
+    if(banana != nullptr) {
+        move->changeMaxSpeedOverTime(banana.get()->getSpeed(), banana.get()->getConsTime(), banana.get()->getDecTime());
+
+        EventData data;
+        data.Id = banana->getGameObject().getId();
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+    }
+
+}
+//Collide Item Box
+void collideItemBox(EventData eData){
+
+    auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
+
+    auto itemBox = coll->getGameObject().getComponent<ItemBoxComponent>();
+
+    auto obj = move->getGameObject();
+
+    if(itemBox != nullptr){
+       if(coll->getGameObject().getTransformData().scale.x != 0 && coll->getGameObject().getTransformData().scale.y != 0 && coll->getGameObject().getTransformData().scale.z != 0){
+           itemBox->asignItem(obj);
+           itemBox->deactivateBox();
+       }
+    }
+}
+
+void objectDeletedCollide(EventData eData) {
+
+    auto collisionComponentList = PhysicsManager::getInstance().getCollisionComponentList();
+
+    for(unsigned int i = 0; i<collisionComponentList.size(); ++i) {
+        if(eData.Id == collisionComponentList.at(i).get()->getGameObject().getId()) {
+            collisionComponentList.erase(collisionComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeletedMove(EventData eData) {
+
+    auto moveComponentList = PhysicsManager::getInstance().getMoveComponentList();
+
+    for(unsigned int i = 0; i<moveComponentList.size(); ++i) {
+        if(eData.Id == moveComponentList.at(i).get()->getGameObject().getId()) {
+            moveComponentList.erase(moveComponentList.begin() + i);
+            return;
+        }
+    }
 }

@@ -31,8 +31,12 @@ enum EventType {
     RampComponent_Delete,
     VSensorComponent_Create,
     VSensorComponent_Delete,
+    ItemBoxComponent_Create,
+    ItemBoxComponent_Delete,
     //COLLISION: Events triggered to certain collisions
     RampComponent_Collision,
+    ItemBoxComponent_Collision,
+    BananaComponent_Collision,
     //PLAYER: Basic control keys
     Key_Advance_Down,
     Key_Advance_Up,
@@ -73,10 +77,11 @@ enum EventType {
 //Struct containg diferent types of data
 struct EventData {
 
+    uint16_t                    Id;
     std::shared_ptr<GameObject> Object;
     std::shared_ptr<IComponent> Component;
     std::shared_ptr<IComponent> CollComponent;
-    float grade;
+    float                       grade;
 };
 
 //A event contains a type and the data related to the object

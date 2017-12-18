@@ -16,7 +16,8 @@ public:
 	enum Type {
 		Default,
 		Ramp,
-		ItemBox
+		ItemBox,
+		Banana
 	};
 
     //Constructor
