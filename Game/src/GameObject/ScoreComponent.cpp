@@ -6,10 +6,17 @@ ScoreComponent::ScoreComponent(GameObject& newGameObject) : IComponent(newGameOb
     position=1;
 }
 
-//Maximum number of waypoints in a lap : 300
+//Maximum number of waypoints in a lap is set in the variable : maxWaypoints
 int ScoreComponent::getScore()
 {
-    return 0;
+    auto pComp = this->getGameObject().getComponent<PathPlanningComponent>().get();
 
+    return (lap*maxWaypoints)+pComp->getActualLevel();
+}
 
+float ScoreComponent::getActualDistance()
+{
+    auto pComp = this->getGameObject().getComponent<PathPlanningComponent>().get();
+
+    return pComp->getActualDistance();
 }
