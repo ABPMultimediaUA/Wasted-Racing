@@ -1,4 +1,5 @@
 #include "ScoreManager.h"
+#include <iostream>
 
 ScoreManager::ScoreManager()
 {
@@ -15,6 +16,32 @@ void ScoreManager::init()
     
 }
 
+void ScoreManager::close()
+{
+
+}
+
+//Static getter
+ScoreManager& ScoreManager::getInstance() {
+    static ScoreManager instance;
+    return instance;
+}
+
+//Component creator
+IComponent::Pointer ScoreManager::createScoreComponent(GameObject& newGameObject){
+
+    ScoreComponent::Pointer component = std::make_shared<ScoreComponent>(newGameObject);
+
+    newGameObject.addComponent(component);
+
+    players.push_back(component);
+
+    return component;
+}
+
+
+
+
 //Thirty programmers have died during the development of this method
 //Mejoras : Quitar medio metodo, que se puede hacer en el mismo for todo
 void ScoreManager::update()
@@ -26,90 +53,98 @@ void ScoreManager::update()
     bool found;
 
     pos=1;
-    for(i=0; i<players.size(); i++)
+    if(players.size()>0)
     {
-        if(i==0)
+        for(i=0; i<players.size(); i++)
         {
-            ordered.push_back(players[i]);
-        }
-        else
-        {
-            found=false;
-            score = players[i].get()->getScore();
-            for(j=0; j<ordered.size() && found==false; j++)
-            {
-                if(score>ordered[j].get()->getScore())
-                {
-                    ordered.insert(ordered.begin()+j, players[i]);
-                    found=true;
-                }
-            }
-            if(found==false)
+            if(i==0)
             {
                 ordered.push_back(players[i]);
-            }
-        }
-    }
-    ordCount=0;
-    for(i=0; i<ordered.size()-1; i++)
-    {
-        if(ordered[i].get()->getScore() == ordered[i+1].get()->getScore())
-        {
-            ordCount++;
-            if(ordCount==1)
-            {
-                auxiliar.push_back(ordered[i]);
             }
             else
             {
                 found=false;
-                for(j=0; j<auxiliar.size() && found==false; j++)
+                score = players[i].get()->getScore();
+                for(j=0; j<ordered.size() && found==false; j++)
                 {
-                    if(ordered[i].get()->getActualDistance() < auxiliar[j].get()->getActualDistance())
+                    if(score>ordered[j].get()->getScore())
                     {
-                        auxiliar.insert(auxiliar.begin()+j, ordered[i]);
+                        ordered.insert(ordered.begin()+j, players[i]);
                         found=true;
                     }
                 }
                 if(found==false)
                 {
-                    auxiliar.push_back(ordered[i]);
+                    ordered.push_back(players[i]);
                 }
             }
         }
-        else
+        ordCount=0;
+        for(i=0; i<ordered.size()-1; i++)
         {
-            if(ordCount>0)
+            if(ordered[i].get()->getScore() == ordered[i+1].get()->getScore())
             {
-                found = false;
-                for(j=0; j<auxiliar.size() && found==false; j++)
+                ordCount++;
+                if(ordCount==1)
                 {
-                    if(ordered[i].get()->getActualDistance() < auxiliar[j].get()->getActualDistance())
+                    auxiliar.push_back(ordered[i]);
+                }
+                else
+                {
+                    found=false;
+                    for(j=0; j<auxiliar.size() && found==false; j++)
                     {
-                        auxiliar.insert(auxiliar.begin()+j, ordered[i]);
-                        found=true;
+                        if(ordered[i].get()->getActualDistance() < auxiliar[j].get()->getActualDistance())
+                        {
+                            auxiliar.insert(auxiliar.begin()+j, ordered[i]);
+                            found=true;
+                        }
+                    }
+                    if(found==false)
+                    {
+                        auxiliar.push_back(ordered[i]);
                     }
                 }
-                if(found == false)
-                {
-                    auxiliar.push_back(ordered[i]);
-                }
-                ordered.erase(ordered.begin()+(i-ordCount), ordered.begin()+i);
-                for(j=auxiliar.size()-1;j>=0; j--)
-                {
-                    ordered.insert(ordered.begin()+i, auxiliar[j]);
-                }
-                auxiliar.clear();
             }
+            else
+            {
+                if(ordCount>0)
+                {
+                    found = false;
+                    for(j=0; j<auxiliar.size() && found==false; j++)
+                    {
+                        if(ordered[i].get()->getActualDistance() < auxiliar[j].get()->getActualDistance())
+                        {
+                            auxiliar.insert(auxiliar.begin()+j, ordered[i]);
+                            found=true;
+                        }
+                    }
+                    if(found == false)
+                    {
+                        auxiliar.push_back(ordered[i]);
+                    }
+                    ordered.erase(ordered.begin()+(i-ordCount), ordered.begin()+i);
+                    for(j=auxiliar.size()-1;j>=0; j--)
+                    {
+                        ordered.insert(ordered.begin()+i, auxiliar[j]);
+                    }
+                    auxiliar.clear();
+                }
+            }
+
         }
 
-    }
+        for(i=0; i<ordered.size(); i++)
+        {
+            ordered[i].get()->setPosition(pos);
+            pos++;
+        }
+        players=ordered;
 
-    for(i=0; i<ordered.size(); i++)
-    {
-        ordered[i].get()->setPosition(pos);
-        pos++;
+        for(i=0; i<players.size(); i++)
+        {
+            int p = players[i].get()->getPosition();
+            std::cout << i << ": " << p << std::endl;
+        }
     }
-    players=ordered;
-
 }

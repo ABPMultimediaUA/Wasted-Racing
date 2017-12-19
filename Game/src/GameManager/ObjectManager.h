@@ -8,6 +8,7 @@
 #include "WaypointManager.h"
 #include "AIManager.h"
 #include "SensorManager.h"
+#include "ScoreManager.h"
 
 class ObjectManager{
 

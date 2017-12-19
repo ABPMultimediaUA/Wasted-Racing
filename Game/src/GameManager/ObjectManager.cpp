@@ -163,6 +163,8 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
 
     ItemManager::getInstance().createItemHolderComponent(*ob.get());
 
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     return ob;
@@ -203,6 +205,8 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
 
     ItemManager::getInstance().createItemHolderComponent(*ob.get());
+
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
 
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
@@ -245,6 +249,8 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
 
     ItemManager::getInstance().createItemHolderComponent(*ob.get());
 
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     return ob;
@@ -285,6 +291,8 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
 
     ItemManager::getInstance().createItemHolderComponent(*ob.get());
+
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
 
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 

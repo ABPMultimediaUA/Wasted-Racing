@@ -57,6 +57,10 @@ void Game::init() {
     itemManager = &ItemManager::getInstance();
     itemManager->init();
 
+    //Initialize Score Manager
+    scoreManager = &ScoreManager::getInstance();
+    scoreManager->init();
+
     addObjects();
 }
 
@@ -78,6 +82,7 @@ void Game::update() {
 
     itemManager->update(1.0);
     
+    scoreManager->update();
 
     //Event manager has to be the last to be updated
     eventManager->update();
@@ -107,6 +112,7 @@ void Game::close() {
     aiManager->close();
     sensorManager->close();
     itemManager->close();
+    scoreManager->close();
 }
 
 //====================================================
@@ -492,6 +498,12 @@ void addObjects(){
     transform.rotation = glm::vec3(45,45,45);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);
+
+    //===============================================================
+    // ADD AI 
+    //===============================================================
+
+    
 
 
     //===============================================================

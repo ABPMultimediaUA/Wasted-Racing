@@ -22,6 +22,13 @@ class ScoreManager {
         //Close
         void close();
 
+        //Static class getter
+        static ScoreManager& getInstance();
+
+        //Component creator
+        IComponent::Pointer createScoreComponent(GameObject& newGameObject);
+
+
         //Getters
         std::vector<ScoreComponent::Pointer> getPlayers() {return players;}
         int getMaxLaps() {return maxLaps;}
