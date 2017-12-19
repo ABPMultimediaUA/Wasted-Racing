@@ -22,7 +22,8 @@ ISensorComponent(newGameObject)
 
 }
 
-void VSensorComponent::updateSeenObjects(std::vector<GameObject::Pointer> objects)
+//Checks the objects seen and stores the ones seen in the seenObjects vector
+void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
 {
     //initial variables
     size_t i;                                                                   //Counter
@@ -41,14 +42,14 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject::Pointer> object
     //Iterate through all available objects
     for(i=0; i<objects.size(); i++)
     {
-        auto ob = objects[i].get();                                                         //get object
+        //auto ob = objects[i].get();                                                         //get object
         
-        calculateAB(ob->getTransformData().position, &a, &b);       //Do the math
+        calculateAB(objects[i].getTransformData().position, &a, &b);       //Do the math
 
         //if both are inside the cone contained by A and B
         if(a > 0 && b > 0)  
         {
-            pvo = std::make_shared<VObject>(ob->getTransformData().position, a, b, 1.f, 1); //generate VObject with the data
+            pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, 1.f, 1); //generate VObject with the data
             seenObjects.push_back(pvo);                                                     //Add to seen objects
         }
        

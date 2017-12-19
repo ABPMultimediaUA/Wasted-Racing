@@ -6,6 +6,7 @@
 #include "../GameObject/RampComponent.h"
 #include "../GameObject/ItemBoxComponent.h"
 #include "../GameObject/ItemBananaComponent.h"
+#include "../GameObject/ItemBlueShellComponent.h"
 #include <vector>
 
 class PhysicsManager{
@@ -40,14 +41,14 @@ public:
     static PhysicsManager& getInstance();
     std::vector<IComponent::Pointer>& getMoveComponentList()       {    return moveComponentList;        } //Move component list getter
     std::vector<IComponent::Pointer>& getCollisionComponentList()  {    return collisionComponentList;   } //Collision component list getter
-    //std::vector<IComponent::Pointer>& getMovingCharacterList()     {    return movingCharacterList;      } //MovingCharacter component list getter
-    /*MovingCharacter getMovingCharacter(uint16_t id){                                       //get given character from list
-        for(int i = 0; i< movingCharacterList.size(); ++i){
-            if(movingCharacterList[i].moveComponent.getGameObject().getId() == id){
+    std::vector<MovingCharacter>& getMovingCharacterList()     {    return movingCharacterList;      } //MovingCharacter component list getter
+    MovingCharacter getMovingCharacter(uint16_t id){                                                       //get given character from list
+        for(uint32_t i = 0; i < movingCharacterList.size(); ++i){
+            if(movingCharacterList[i].moveComponent->getGameObject().getId() == id){
                 return movingCharacterList[i];
             }
         }
-    }    */
+}
 
     //Component creators
     IComponent::Pointer createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass);

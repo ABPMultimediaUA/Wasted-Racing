@@ -1,9 +1,14 @@
 #pragma once
 
 #include "IComponent.h"
+#include "GameObject.h"
+#include "PathPlanningComponent.h"
 
 class ScoreComponent : public IComponent{
     public:
+        //Define ::Pointer
+        typedef std::shared_ptr<ScoreComponent> Pointer;
+
         //Constructor
         ScoreComponent(GameObject& newGameObject);
 
@@ -23,6 +28,9 @@ class ScoreComponent : public IComponent{
         //has more score than being in the highest waypoint of a previous lap
         //Maximum number of waypoints possible is set in the variable maxWaypoints
         int getScore();
+
+        //Gets the distance to it's current waypoint
+        float getActualDistance();
 
         //Getters
         int getLap() {return lap;}

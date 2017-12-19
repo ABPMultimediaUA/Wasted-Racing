@@ -91,6 +91,232 @@ void ObjectManager::initObjects() {
         obj.second.get()->init();
 }
 
+
+//==============================================
+// PLAYER CREATOR
+//  pos:        
+//              init pos player
+//  type:       
+//              0 -> Punk
+//              1 -> Witch
+//              2 -> Cyborg
+//              3 -> Crocodile
+//  move:       
+//              0 -> Player (Input)
+//              1 -> IA
+// id:
+//              id player
+//============================================== 
+
+void ObjectManager::createPlayer(GameObject::TransformationData tansform, int type, int move, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent)
+{
+    if(type == PlayerType::punk)
+    {
+        createMove(createPunk(tansform, id, terrain, terrainComponent), move);
+    }
+    else if(type == PlayerType::witch)
+    {
+        createMove(createWitch(tansform, id, terrain, terrainComponent), move);
+    }
+    else if(type == PlayerType::cyborg)
+    {
+        createMove(createCyborg(tansform, id, terrain, terrainComponent), move);
+    }
+    else if(type == PlayerType::punk)
+    {
+        createMove(createCrocodile(tansform, id, terrain, terrainComponent), move);
+    }
+}
+
+GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent)
+{
+    auto ob = ObjectManager::getInstance().createObject(id, tansform);
+    
+    LAPAL::movementData mData;
+    mData.mov = false;
+    mData.jump = false;
+    mData.spi = false;
+    mData.angInc = 0;
+    mData.angle = 0;
+    mData.spin = 0;
+    mData.spin_inc = 0.005;
+    mData.max_spin = 0.05;
+    mData.brake_spin = 0.2;
+    mData.rotateX = 0.f;
+    mData.rotateZ = 0.f;
+    mData.rotate_inc = 0.15f;
+    mData.max_rotate = 3.f;
+    mData.vel = 0;
+    mData.max_vel = 100.0f;
+    mData.brake_vel = 10.f;
+    mData.velY = 10.f;
+    mData.acc = 0;
+    mData.max_acc = 20.f;
+    mData.dAcc = 10.f;
+    mData.brake_acc = 10.f;
+
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, false, CollisionComponent::Type::Default);
+
+    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+    PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
+
+    ItemManager::getInstance().createItemHolderComponent(*ob.get());
+
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+
+    WaypointManager::getInstance().createPathPlanningComponent(ob);
+
+    return ob;
+
+}
+
+GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent)
+{
+    auto ob = ObjectManager::getInstance().createObject(id, tansform);
+    
+    LAPAL::movementData mData;
+    mData.mov = false;
+    mData.jump = false;
+    mData.spi = false;
+    mData.angInc = 0;
+    mData.angle = 0;
+    mData.spin = 0;
+    mData.spin_inc = 0.005;
+    mData.max_spin = 0.05;
+    mData.brake_spin = 0.2;
+    mData.rotateX = 0.f;
+    mData.rotateZ = 0.f;
+    mData.rotate_inc = 0.15f;
+    mData.max_rotate = 3.f;
+    mData.vel = 0;
+    mData.max_vel = 105.0f;
+    mData.brake_vel = 10.f;
+    mData.velY = 10.f;
+    mData.acc = 0;
+    mData.max_acc = 18.f;
+    mData.dAcc = 12.f;
+    mData.brake_acc = 12.f;
+
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, false, CollisionComponent::Type::Default);
+
+    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+    PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
+
+    ItemManager::getInstance().createItemHolderComponent(*ob.get());
+
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+
+    WaypointManager::getInstance().createPathPlanningComponent(ob);
+
+    return ob;
+
+}
+
+GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent)
+{
+    auto ob = ObjectManager::getInstance().createObject(id, tansform);
+    
+    LAPAL::movementData mData;
+    mData.mov = false;
+    mData.jump = false;
+    mData.spi = false;
+    mData.angInc = 0;
+    mData.angle = 0;
+    mData.spin = 0;
+    mData.spin_inc = 0.005;
+    mData.max_spin = 0.05;
+    mData.brake_spin = 0.2;
+    mData.rotateX = 0.f;
+    mData.rotateZ = 0.f;
+    mData.rotate_inc = 0.15f;
+    mData.max_rotate = 3.f;
+    mData.vel = 0;
+    mData.max_vel = 100.0f;
+    mData.brake_vel = 10.f;
+    mData.velY = 10.f;
+    mData.acc = 0;
+    mData.max_acc = 20.f;
+    mData.dAcc = 5.f;
+    mData.brake_acc = 5.f;
+
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, false, CollisionComponent::Type::Default);
+
+    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+    PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
+
+    ItemManager::getInstance().createItemHolderComponent(*ob.get());
+
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+
+    WaypointManager::getInstance().createPathPlanningComponent(ob);
+
+    return ob;
+
+}
+
+GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent)
+{
+    auto ob = ObjectManager::getInstance().createObject(id, tansform);
+    
+    LAPAL::movementData mData;
+    mData.mov = false;
+    mData.jump = false;
+    mData.spi = false;
+    mData.angInc = 0;
+    mData.angle = 0;
+    mData.spin = 0;
+    mData.spin_inc = 0.005;
+    mData.max_spin = 0.05;
+    mData.brake_spin = 0.2;
+    mData.rotateX = 0.f;
+    mData.rotateZ = 0.f;
+    mData.rotate_inc = 0.15f;
+    mData.max_rotate = 3.f;
+    mData.vel = 0;
+    mData.max_vel = 100.0f;
+    mData.brake_vel = 10.f;
+    mData.velY = 10.f;
+    mData.acc = 0;
+    mData.max_acc = 20.f;
+    mData.dAcc = 5.f;
+    mData.brake_acc = 5.f;
+
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, false, CollisionComponent::Type::Default);
+
+    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+    PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
+
+    ItemManager::getInstance().createItemHolderComponent(*ob.get());
+
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+
+    WaypointManager::getInstance().createPathPlanningComponent(ob);
+
+    return ob;
+
+}
+
+void ObjectManager::createMove(GameObject::Pointer obj, int move)
+{
+    auto mData = obj->getComponent<MoveComponent>()->getMovemententData();
+    if(move == 0)
+    {
+        InputManager::getInstance().createInputComponent(*obj.get());
+        RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+    }
+    else if(move == 1)
+    {
+        AIManager::getInstance().createAIDrivingComponent(*obj.get());
+        AIManager::getInstance().createAIBattleComponent(*obj.get());
+        SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle);
+        SensorManager::getInstance().createMSensorComponent(*obj.get(), 5.f, mData.angle);
+    }
+}
+
 //==============================================
 // DELEGATES
 //============================================== 

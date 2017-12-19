@@ -53,7 +53,7 @@ void MoveComponent::update(float dTime) {
     
     ///*===========================================================================================
     // DEBUG
-    if(id == 5){
+    if(id == 55){
         system("clear");
         std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
         std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
@@ -62,12 +62,12 @@ void MoveComponent::update(float dTime) {
         std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
         std::cout << " INCR ANGLE " << mData.spin << std::endl;
         std::cout << " ANGULO GIRO " << mData.angle << std::endl;
-        std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
+        //std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
         //std::cout << " Aceleración " << mData.acc << std::endl;
         std::cout << " Velocidad " << mData.vel << std::endl;
-        std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
-        std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
-        std::cout << " VEL Y " << mData.velY << std::endl;
+        //std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
+        //std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
+        //std::cout << " VEL Y " << mData.velY << std::endl;
 
 
         /*if (mData.jump == false){

@@ -29,6 +29,9 @@ void ItemManager::update(float dTime){
         ItemBoxes.at(i)->update(dTime);
     }
 
+    for(unsigned int i = 0; i < ItemComponents.size() ; i++){
+        ItemComponents.at(i)->update(dTime);
+    }
 }
 
 void ItemManager::close(){
@@ -95,7 +98,9 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     else if(random == IItemComponent::ItemType::blueShell)
     {
         itemHolder->setItemType(-1);
-        return createBlueShell(obj);
+        auto component = createBlueShell(obj);
+        std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init();
+        return component;
     }
     else if(random == IItemComponent::ItemType::banana)
     {
@@ -137,15 +142,19 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x, pos.y, pos.z);
+    transform.position = glm::vec3(pos.x+10*cos(obj.getTransformData().rotation.y * M_PI/180),
+                                    pos.y, pos.z-10*sin(obj.getTransformData().rotation.y * M_PI/180));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(1, 1, 1);
+    transform.scale    = glm::vec3(0.2, 0.2, 0.2);
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
     IComponent::Pointer component = std::make_shared<ItemRedShellComponent>(*ob.get());
 
     ob.get()->addComponent(component);
+
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    //PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::BlueShell);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
@@ -159,16 +168,79 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x, pos.y, pos.z);
+    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y * M_PI/180),
+                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y * M_PI/180));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(1, 1, 1);
+    transform.scale    = glm::vec3(0.2, 0.2, 0.2);
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
-    IComponent::Pointer component = std::make_shared<ItemBlueShellComponent>(*ob.get());
+    IComponent::Pointer component = std::make_shared<ItemBlueShellComponent>(*ob.get(), obj);
 
     ob.get()->addComponent(component);
 
+    LAPAL::movementData mData;
+    mData.mov = false;
+    mData.jump = false;
+    mData.spi = false;
+    mData.angInc = 0;
+    mData.angle = obj.getComponent<MoveComponent>()->getMovemententData().angle;
+    mData.spin = 0;
+    mData.spin_inc = 0.01;
+    mData.max_spin = 0.1;
+    mData.brake_spin = 0.2;
+    mData.rotateX = 0.f;
+    mData.rotateZ = 0.f;
+    mData.rotate_inc = 0.15f;
+    mData.max_rotate = 3.f;
+    mData.vel = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 400.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.brake_vel = 0.f;
+    mData.velY = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.max_acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.dAcc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.brake_acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+
+
+    auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
+    auto idd = obj.getId();
+    IComponent::Pointer terrainComp;
+
+    auto list = PhysicsManager::getInstance().getMovingCharacterList();
+    for(int i = 0; i < list.size(); i++)
+    {
+        if(list[i].moveComponent.get()->getGameObject().getId() == idd) 
+            terrainComp = list[i].terrainComponent;
+    }
+
+
+    auto terrainComponent = obj.getComponent<TerrainComponent>();
+
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::BlueShell);
+
+    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+    PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
+    WaypointManager::getInstance().createPathPlanningComponent(ob);
+
+    AIManager::getInstance().createAIDrivingComponent(*ob.get());
+    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle);
+
+/*
+
+
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Default);
+    auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
+    auto terrainComponent = obj.getComponent<TerrainComponent>();
+    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+    PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
+
+    AIManager::getInstance().createAIDrivingComponent(*ob.get());
+    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle);
+    WaypointManager::getInstance().createPathPlanningComponent(ob);
+*/
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
     return component;
@@ -184,7 +256,7 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
     transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y * M_PI/180),
                                     pos.y, pos.z+10*sin(obj.getTransformData().rotation.y * M_PI/180));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(0.1, 0.1, 0.1);
+    transform.scale    = glm::vec3(0.2, 0.2, 0.2);
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 

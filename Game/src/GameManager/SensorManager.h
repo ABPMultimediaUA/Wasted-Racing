@@ -4,6 +4,7 @@
 #include "../GameObject/VSensorComponent.h"
 #include "../GameObject/MSensorComponent.h"
 #include "ObjectManager.h"
+#include "PhysicsManager.h"
 #include <vector>
 
 class SensorManager{
@@ -43,5 +44,5 @@ public:
 private:
     std::vector<IComponent::Pointer> sensorComponentList;
     std::vector<IComponent::Pointer> sensorMComponentList;
-    std::vector<GameObject::Pointer> seenObjects;
+    std::vector<GameObject> worldObjects;
 };

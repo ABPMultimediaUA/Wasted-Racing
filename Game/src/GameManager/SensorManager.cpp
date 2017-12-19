@@ -10,20 +10,8 @@ SensorManager& SensorManager::getInstance() {
 }
 
 void SensorManager::init() {
-    GameObject::TransformationData transform;
-
-    transform.position = glm::vec3(500,0,60);
-    transform.rotation = glm::vec3(0,0,0);
-    transform.scale    = glm::vec3(1,1,1);
-    auto obj = ObjectManager::getInstance().createObject(20, transform);
-
-    transform.position = glm::vec3(200, 0, 60);
-    transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(1, 1, 1);
-    auto obj2 = ObjectManager::getInstance().createObject(21, transform);
-
-    //seenObjects.push_back(obj);
-    //seenObjects.push_back(obj2);
+    //worldObjects.push_back(obj);
+    //worldObjects.push_back(obj2);
 
 }
 
@@ -32,9 +20,18 @@ void SensorManager::update() {
     //Actually we dont have Environment, so we can't get the objects
     //from the map to be seen
 
+    //Clean the list
+    worldObjects.clear();
+
+    //Fill list of world objects
+    auto collisionList =  PhysicsManager::getInstance().getCollisionComponentList();
+    for(unsigned i = 0; i < collisionList.size(); ++i){
+        worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
+    }
+
     //Update visual sensors
     for(unsigned int i=0; i<sensorComponentList.size(); ++i){
-         std::dynamic_pointer_cast<VSensorComponent>(sensorComponentList[i]).get()->updateSeenObjects(seenObjects);
+         std::dynamic_pointer_cast<VSensorComponent>(sensorComponentList[i]).get()->updateSeenObjects(worldObjects);
     }
 
     //Update map sensors

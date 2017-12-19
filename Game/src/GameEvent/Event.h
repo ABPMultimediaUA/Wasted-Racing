@@ -39,6 +39,7 @@ enum EventType {
     RampComponent_Collision,
     ItemBoxComponent_Collision,
     BananaComponent_Collision,
+    BlueShellComponent_Collision,
     //PLAYER: Basic control keys
     Key_Advance_Down,
     Key_Advance_Up,
