@@ -277,7 +277,7 @@ void addObjects(){
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob102 = ObjectManager::getInstance().createObject(id, transform);
-    /*
+    
     id = 103;
     transform.position = glm::vec3(875, 95, -450);
     transform.rotation = glm::vec3(0, 0, 0);
@@ -288,7 +288,7 @@ void addObjects(){
     transform.position = glm::vec3(0,-4,0);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(10,10,30);
-    auto ob9 = ObjectManager::getInstance().createObject(id, transform);
+    auto ob900 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 104;
     transform.position = glm::vec3(0, 95, -450);
@@ -306,7 +306,7 @@ void addObjects(){
     transform.position = glm::vec3(100, 0, 60);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
-    auto ob106 = ObjectManager::getInstance().createObject(id, transform);*/
+    auto ob106 = ObjectManager::getInstance().createObject(id, transform);
 
     //ItemBox:
   
@@ -319,13 +319,13 @@ void addObjects(){
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(ob100, 100, 1);
-    std::shared_ptr<IComponent> wp2 = WaypointManager::getInstance().createWaypointComponent(ob101, 100, 2);
-    std::shared_ptr<IComponent> wp3 = WaypointManager::getInstance().createWaypointComponent(ob102, 100, 3);
-    /*std::shared_ptr<IComponent> wp4 = WaypointManager::getInstance().createWaypointComponent(ob103, 1, 4);
-    std::shared_ptr<IComponent> wp5 = WaypointManager::getInstance().createWaypointComponent(ob104, 1, 5);
-    std::shared_ptr<IComponent> wp6 = WaypointManager::getInstance().createWaypointComponent(ob105, 1, 6);
-    std::shared_ptr<IComponent> wp7 = WaypointManager::getInstance().createWaypointComponent(ob106, 1, 7);*/
+    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(ob100, 100, 0);
+    std::shared_ptr<IComponent> wp2 = WaypointManager::getInstance().createWaypointComponent(ob101, 100, 1);
+    std::shared_ptr<IComponent> wp3 = WaypointManager::getInstance().createWaypointComponent(ob102, 100, 2);
+    std::shared_ptr<IComponent> wp4 = WaypointManager::getInstance().createWaypointComponent(ob103, 100, 3);
+    std::shared_ptr<IComponent> wp5 = WaypointManager::getInstance().createWaypointComponent(ob104, 100, 4);
+    std::shared_ptr<IComponent> wp6 = WaypointManager::getInstance().createWaypointComponent(ob105, 100, 5);
+    std::shared_ptr<IComponent> wp7 = WaypointManager::getInstance().createWaypointComponent(ob106, 100, 6);
 
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
@@ -503,7 +503,7 @@ void addObjects(){
     // ADD AI 
     //===============================================================
 
-    
+
 
 
     //===============================================================

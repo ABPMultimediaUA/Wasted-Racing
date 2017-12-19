@@ -57,6 +57,7 @@ void ScoreManager::update()
     {
         for(i=0; i<players.size(); i++)
         {
+            int id = players[i].get()->getGameObject().getId();
             if(i==0)
             {
                 ordered.push_back(players[i]);
@@ -123,12 +124,16 @@ void ScoreManager::update()
                     {
                         auxiliar.push_back(ordered[i]);
                     }
-                    ordered.erase(ordered.begin()+(i-ordCount), ordered.begin()+i);
-                    for(j=auxiliar.size()-1;j>=0; j--)
+                    for(j=0; j<=ordCount; j++)
                     {
-                        ordered.insert(ordered.begin()+i, auxiliar[j]);
+                        ordered.erase(ordered.begin()+(i-ordCount));
+                    }
+                    for(j=auxiliar.size()-1;j<auxiliar.size(); --j)
+                    {
+                        ordered.insert(ordered.begin()+(i-1), auxiliar[j]);
                     }
                     auxiliar.clear();
+                    ordCount=0;
                 }
             }
 
@@ -144,7 +149,8 @@ void ScoreManager::update()
         for(i=0; i<players.size(); i++)
         {
             int p = players[i].get()->getPosition();
-            std::cout << i << ": " << p << std::endl;
+            int id = players[i].get()->getGameObject().getId();
+            std::cout << id << ": " << p << std::endl;
         }
     }
 }
