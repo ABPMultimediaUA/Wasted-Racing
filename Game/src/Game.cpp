@@ -311,7 +311,7 @@ void addObjects(){
     //ItemBox:
   
     id = 25;
-    transform.position = glm::vec3(60, 0, -50);
+    transform.position = glm::vec3(100, 0, 60);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob25 = ObjectManager::getInstance().createObject(id, transform);
