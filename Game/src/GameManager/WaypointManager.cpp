@@ -15,6 +15,7 @@ void WaypointManager::init() {
 
 void WaypointManager::update() {
     //I doubt this method should exist in this manager
+    //I doubt it too
 
 }
 
@@ -28,16 +29,17 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
     newGameObject.get()->addComponent(component);
 
-    if(listSubNodes->size() == 0)
-    {
-        listSubNodes->push_back(newGameObject);
-        listSubNodes->push_back(newGameObject);
-    }
-    else
-    {
-        listSubNodes->insert(listSubNodes->end()-1,newGameObject);
-    }
+    listSubNodes->push_back(newGameObject);
     
+    return component;
+}
+
+IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Pointer newGameObject)
+{
+    IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get());
+
+    newGameObject.get()->addComponent(component);
+
     return component;
 }
 
@@ -70,31 +72,4 @@ std::vector<GameObject::Pointer> WaypointManager::getWaypoints()
 {
     return *listSubNodes;
 }
-
-float WaypointManager::getDistLastWay()
-{
-    return distLastWay;
-}
-
-int WaypointManager::getLastPosVector()
-{
-    return lastPosVector;
-}
-
-//==============================================
-//Setters
-//==============================================
-
-void WaypointManager::setDistLastWay(GameObject::Pointer n, glm::vec3 pos)
-{
-    distLastWay = (n.get()->getTransformData().position.x - pos.x) * (n.get()->getTransformData().position.x - pos.x) +
-                (n.get()->getTransformData().position.y - pos.y) * (n.get()->getTransformData().position.y - pos.y) +
-                (n.get()->getTransformData().position.z - pos.z) * (n.get()->getTransformData().position.z - pos.z);
-}
-
-void WaypointManager::setLastPosVector(int lvl)
-{
-    lastPosVector = lvl;
-}
-
 

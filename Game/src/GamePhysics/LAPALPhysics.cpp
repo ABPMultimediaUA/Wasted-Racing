@@ -21,10 +21,6 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
     //BASE ACCELERATION
     mData.acc += mData.dAcc*dTime; //increment of acceleration * increment of time
 
-    //If we aren't accelerating
-    if(abs(mData.acc)<0.5  && !mData.mov)
-        mData.acc = 0;
-
     //Aply friction
     if(!mData.mov) {
         if(mData.acc>0) {
@@ -34,6 +30,9 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
         }
     }
     
+    //If we aren't accelerating
+    if(abs(mData.acc)<0.5  && !mData.mov)
+        mData.acc = 0;
 
     //Check acceleration limits
     if(abs(mData.acc)>abs(mData.max_acc)){
@@ -43,10 +42,6 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
     //Update velocity
     mData.vel += mData.acc*dTime*(1-terrain.fric); 
 
-    //If we aren't accelerating
-    if(abs(mData.vel)<0.5 && !mData.mov)
-        mData.vel = 0;
-
     //Aply friction
     if(!mData.mov) {
         if(mData.vel>0) {
@@ -55,6 +50,10 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
             mData.vel += (mData.brake_vel + terrain.fric)*dTime; 
         }
     }
+
+    //If we aren't accelerating
+    if(abs(mData.vel)<0.5 && !mData.mov)
+        mData.vel = 0;
 
     //Check velocity limits 
     if(abs(mData.vel)>abs(mData.max_vel*(1-terrain.fric))){
@@ -93,6 +92,13 @@ void LAPAL::updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain){
     }
 }
 
+
+////---------------_______----------------
+////---------------MEJORAS----------------
+////---------------_______--------------
+/*
+ >Más lento el giro cuanto más rápido el vehículo
+*/
 //Updates all spin related variables
 void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
 
@@ -120,6 +126,13 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     mData.angle += mData.spin;
 }
 
+
+////---------------_______----------------
+////---------------MEJORAS----------------
+////---------------_______--------------
+/*
+ >Rotar bien cuando el plano es horizontal
+*/
 //Updates rotation of the vehicle to match the terrain's. Do it smoothly.
 void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, const float dTime){
 
@@ -145,7 +158,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
     }
 
     //Z axis
-    if(glm::abs(mData.angZ - terrain.rotZ)<0.001f){
+    if(glm::abs(mData.angZ - terrain.rotZ)<0.01f){
         mData.angZ = terrain.rotZ;
         mData.rotateZ = 0.f;
     }else{
@@ -163,8 +176,16 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
             mData.angZ -= mData.rotateZ*dTime;
         }
     }
+
+    //std::cout<<"Rotacion X: "<<mData.angX<<","<<" Rotacion Z: "<<mData.angZ<<std::endl;
 }
 
+////---------------_______----------------
+////---------------MEJORAS----------------
+////---------------_______--------------
+/*
+ >Girar en la dirección opuesta reduce la velocidad en esa dirección, no cambia el sentido
+*/
 //function that moves the vehicle elliptically given its internal radius ratio rotation
 void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTime){
     //Check if drifting is pressed
@@ -174,7 +195,6 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
 
         //Initial declarations
         if(mData.driftDir){
-            
             mData.velocity.x += mData.vel*cos(mData.angle-1.57079632679f) * driftIncrement;
             mData.velocity.z += mData.vel*sin(mData.angle-1.57079632679f) * driftIncrement;
         }else{
@@ -230,21 +250,21 @@ bool LAPAL::checkTerrain(LAPAL::plane3f& terrain){
 void LAPAL::calculateRotationsXZ(LAPAL::plane3f& terrain){
     //check if terrain is horizontal or not
     if(checkTerrain(terrain)){
-        terrain.rotX = 0.f;
         terrain.rotZ = 0.f;
+        terrain.rotX = 0.f;
     }else{
         //check which points are at different heights. We only need to check two pairs.
         if(terrain.p1.x != terrain.p2.x){
             //angle = acos(cc / h) acos
-            terrain.rotX = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.x-terrain.p1.x) );
+            terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.x-terrain.p1.x) );
         }else{
-            terrain.rotX = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.x-terrain.p2.x) );
+            terrain.rotZ = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.x-terrain.p2.x) );
         }  
         
         if(terrain.p1.z != terrain.p2.z){
-            terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.z-terrain.p1.z) );
+            terrain.rotX = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.z-terrain.p1.z) );
         }else{
-            terrain.rotZ = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.z-terrain.p2.z) );
+            terrain.rotX = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.z-terrain.p2.z) );
         }
     } 
 }
@@ -291,6 +311,7 @@ void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPA
     }else{
         position.y = y;
     }
+    mData.jump = false;
 }
 
 //Calculates values A and B which are the scalars that multiply vector A and B to compose the point C in 2D (X-Z plane) inside the terrain given

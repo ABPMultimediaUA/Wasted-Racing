@@ -54,8 +54,7 @@ void RenderIrrlicht::updateCamera() {
     auto pos = cameraTarget->getTransformData().position;
 
     //Get target y angle
-    float angle = cameraTarget->getTransformData().rotation.y;
-    float radianAngle = (angle*M_PI)/180;
+    float radianAngle = cameraTarget->getTransformData().rotation.y;
 
     camera->setTarget(irr::core::vector3df(pos.x, pos.y, pos.z));
     camera->setPosition(irr::core::vector3df(pos.x - 30*cos(radianAngle), pos.y + 5, pos.z + 30*sin(radianAngle)));
@@ -133,14 +132,29 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
     auto rot = transform.rotation;
     auto sca = transform.scale;
     irr::core::vector3df irrPos = irr::core::vector3df((float)pos.x,(float)pos.y, (float)pos.z);
-    irr::core::vector3df irrRot = irr::core::vector3df((float)rot.x,(float)rot.y, (float)rot.z);
     irr::core::vector3df irrSca = irr::core::vector3df((float)sca.x,(float)sca.y, (float)sca.z);
 
     auto iterator = nodeMap.find(id);
     if(iterator != nodeMap.end()){
+
+        irr::core::quaternion quadX = irr::core::vector3df(rot.x,0,0);
+        irr::core::quaternion quadY = irr::core::vector3df(0,rot.y,0);
+        irr::core::quaternion quadZ = irr::core::vector3df(0,0,rot.z);
+
+        irr::core::quaternion quadRes = quadY*quadX*quadZ;
+
+        irr::core::vector3df vec;
+        quadRes.toEuler(vec);
+
+        irr::core::vector3df vecRes;
+
+        vecRes.X = vec.X*180/M_PI;
+        vecRes.Y = vec.Y*180/M_PI;
+        vecRes.Z = vec.Z*180/M_PI;
+
         auto node = iterator->second;
         node->setPosition(irrPos);
-        node->setRotation(irrRot);
+        node->setRotation(vecRes);
         node->setScale(irrSca);
     }
 }

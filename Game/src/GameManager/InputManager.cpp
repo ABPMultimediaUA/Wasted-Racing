@@ -22,6 +22,8 @@ void jumpUp(EventData eData);
 void jumpDown(EventData eData);
 void driftUp(EventData eData);
 void driftDown(EventData eData);
+void useItemUp(EventData eData);
+void useItemDown(EventData eData);
 void addInputComponent(EventData data);
 
 //==============================================
@@ -55,6 +57,8 @@ void InputManager::init(int engine){
     EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Up, jumpDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Down, driftDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Up, driftUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, useItemDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Up, useItemUp});
     EventManager::getInstance().addListener(EventListener {EventType::InputComponent_Create, addInputComponent});
   
 }
@@ -134,6 +138,12 @@ void driftUp(EventData eData){
 }
 void driftDown(EventData eData){
     std::cout << "Drift button released!" << std::endl;
+}
+void useItemDown(EventData eData){
+    std::cout << "Use item button pressed!" << std::endl;
+}
+void useItemUp(EventData eData){
+    std::cout << "Use item button released!" << std::endl;
 }
 void addInputComponent(EventData data) {
     InputManager::getInstance().setComponent(data.Component);

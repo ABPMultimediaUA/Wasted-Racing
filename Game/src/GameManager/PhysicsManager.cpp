@@ -11,6 +11,7 @@ void addMoveComponent(EventData eData);
 void addCollisionComponent(EventData eData); 
 void collideRamp(EventData eData);
 void collideBanana(EventData eData);
+void collideBlueShell(EventData eData);
 void collideItemBox(EventData eData);
 void objectDeletedCollide(EventData eData);   
 void objectDeletedMove(EventData eData);
@@ -31,6 +32,7 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, collideItemBox});
     EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, collideBanana});
+    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision, collideBlueShell});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCollide});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMove});
 
@@ -41,9 +43,9 @@ void PhysicsManager::update(const float dTime) {
     for(unsigned int i=0; i<movingCharacterList.size(); ++i){
 
         //Get components in variables
-        auto ourMove = movingCharacterList.at(i).moveComponent;
-        auto ourTerr = movingCharacterList.at(i).terrainComponent;
-        auto ourColl = movingCharacterList.at(i).collisionComponent;
+        auto ourMove = movingCharacterList[i].moveComponent;
+        auto ourTerr = movingCharacterList[i].terrainComponent;
+        auto ourColl = movingCharacterList[i].collisionComponent;
 
         //==============================================================================
         // Move character
@@ -106,31 +108,43 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                 }
                 else {  //The object is not static
                         //***** CODE FOR COLLISIONS WHERE BOTH OBJECTS ARE MOVING *****//
+                        calculateStaticCollision(move, dTime); //This is not right!!!
+                        calculateStaticCollision(hisMove, dTime); //This is not right!!!
                 }
             }
             else if(collision && !hisColl->getKinetic()){
 
-                if(hisColl->getType() == CollisionComponent::Type::Ramp){
+                if(hisColl->getType() == CollisionComponent::Type::Ramp)
+                {
                     EventData data;
                     data.Component      = std::static_pointer_cast<IComponent>(move);
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 
                     EventManager::getInstance().addEvent(Event {EventType::RampComponent_Collision, data});
                 }
-                else if(hisColl->getType() == CollisionComponent::Type::Banana){
-                    std::cout<<"PUEDE QUE ENTRE"<<"\n";
+                else if(hisColl->getType() == CollisionComponent::Type::Banana)
+                {
                     EventData data;
                     data.Component      = std::static_pointer_cast<IComponent>(move);
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 
                     EventManager::getInstance().addEvent(Event {EventType::BananaComponent_Collision, data});
                 }
-                else if(hisColl->getType() == CollisionComponent::Type::ItemBox){
+                else if(hisColl->getType() == CollisionComponent::Type::ItemBox)
+                {
                     EventData data;
                     data.Component      = std::static_pointer_cast<IComponent>(move);
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 
                     EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Collision, data});
+                }
+                else if(hisColl->getType() == CollisionComponent::Type::BlueShell)
+                {
+                    EventData data;
+                    data.Component      = std::static_pointer_cast<IComponent>(move);
+                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                    EventManager::getInstance().addEvent(Event {EventType::BlueShellComponent_Collision, data});
                 }
             }
         }
@@ -139,7 +153,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
 void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> move, const float dTime) {
 
-    MoveComponent* ourMove = move.get();
+    MoveComponent* ourMove = move.get(); 
 
     float ourMass = ourMove->getMass();
     float hisMass = 5;
@@ -401,7 +415,16 @@ void collideBanana(EventData eData) {
 
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
+}
+void collideBlueShell(EventData eData) {
+    auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
 
+    auto shell = coll->getGameObject().getComponent<ItemBlueShellComponent>();
+
+    if(shell != nullptr) {
+        move->changeMaxSpeedOverTime(shell.get()->getSpeed(), shell.get()->getConsTime(), shell.get()->getDecTime());
+    }
 }
 //Collide Item Box
 void collideItemBox(EventData eData){

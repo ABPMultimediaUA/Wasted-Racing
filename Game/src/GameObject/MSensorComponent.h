@@ -5,17 +5,18 @@
 #include <glm/ext.hpp>
 #include <vector>
 #include "GameObject.h"
+#include "../GameManager/PhysicsManager.h"
 #include <memory>
 
-class VSensorComponent : public ISensorComponent{
+class MSensorComponent : public ISensorComponent{
     public:
 
         //Constructors
-        VSensorComponent(GameObject& newGameObject);
-        VSensorComponent(GameObject& newGameObject, float angV, float angI); //AngV = angle of vision in degrees, AngI = angle of init in radians
+        MSensorComponent(GameObject& newGameObject);
+        MSensorComponent(GameObject& newGameObject, float angV, float angI);
         
         //Destructor
-        virtual ~VSensorComponent() {};
+        virtual ~MSensorComponent() {};
 
         //Initialize
         virtual void init(){};
@@ -26,11 +27,14 @@ class VSensorComponent : public ISensorComponent{
         //update
         virtual void update(float dTime){};
 
-        //Checks the objects seen and stores the ones seen in the seenObjects vector
-        void updateSeenObjects(std::vector<GameObject> objects);
+        //Checks the objects receives and stores the ones seen in the seenObjects vector
+        void updateSeenObjects();
 
         //Auxiliar function to calculate A and B of given objective
-        void calculateAB(glm::vec3 objective, float* a, float* b);
+        void calculateAB(glm::vec3& objective, float* a, float* b);
+
+        //Auxiliar function to calculate A and B of composition of individual sensors
+        void calculateAB2(glm::vec3& position, glm::vec3& tPoint, float* a, float* b);
 
         //Getters and setters
         std::vector<VObject::Pointer> getSeenObjects()           {   return seenObjects;    };

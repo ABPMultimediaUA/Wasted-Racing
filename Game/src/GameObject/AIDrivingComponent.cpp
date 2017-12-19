@@ -29,110 +29,6 @@ void AIDrivingComponent::checkList()
 	}
 }
 
-glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed)
-{
-    glm::vec3 nextPos;
-	auto wpManager = &WaypointManager::getInstance();
-
-    std::vector<GameObject::Pointer> listNodes = wpManager->getWaypoints(); //Check if i can to use without this
-
-    float tour = (modSpeed * seconds) * (modSpeed * seconds);
-	int lastPosVector;
-	float distanceNextNode;
-    float distNode;
-	float dist;
-
-    int lvl;
-
-    for (size_t i = wpManager->getLastPosVector(); i < listNodes.size(); i++)
-	{
-		/*if(listNodes[listNodes.size()-2]->getComponent<WaypointComponent>()->getLevel() == listNodes[wpManager->getLastPosVector()]->getComponent<WaypointComponent>()->getLevel()
-		 && i == listNodes.size()-1)
-		{
-			wpManager->setLastPosVector(0);
-			//i = 0;
-		}
-		else
-		{*/
-			lvl = listNodes[wpManager->getLastPosVector()].get()->getComponent<WaypointComponent>()->getLevel();
-			if(listNodes[i].get()->getComponent<WaypointComponent>()->getLevel() >= lvl)
-			{
-				wpManager->setDistLastWay(listNodes[wpManager->getLastPosVector()], pos);
-				distNode = (listNodes[i].get()->getTransformData().position.x - pos.x) * (listNodes[i].get()->getTransformData().position.x - pos.x) +
-						(listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
-						(listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
-
-				if(lvl == listNodes[i].get()->getComponent<WaypointComponent>()->getLevel())
-				{
-					if(wpManager->getDistLastWay() == -1 || distNode < wpManager->getDistLastWay())
-					{
-						wpManager->setLastPosVector(i);
-					}
-				}
-				else if((lvl+1) == listNodes[i].get()->getComponent<WaypointComponent>()->getLevel())
-				{
-					if(tour-wpManager->getDistLastWay() < 0)
-					{
-						//nextPos = ((tour/wpManager->getDistLastWay()) * (listNodes[wpManager->getLastPosVector()].get()->getTransformData().position - pos)) + pos;
-						nextPos = listNodes[wpManager->getLastPosVector()].get()->getTransformData().position;
-						return nextPos;
-					}
-					else
-					{
-						if(distNode <= tour)
-						{
-							wpManager->setLastPosVector(i);
-						}                        
-					}
-				}
-			}
-		//}
-	}
-		lastPosVector = wpManager->getLastPosVector();
-        distanceNextNode  = -1;
-
-        for(size_t i = wpManager->getLastPosVector(); i < listNodes.size(); i++)
-        {  
-			/*if(listNodes[listNodes.size()-2]->getComponent<WaypointComponent>()->getLevel() == listNodes[wpManager->getLastPosVector()]->getComponent<WaypointComponent>()->getLevel()
-			&& i == listNodes.size()-1)
-			{
-				wpManager->setLastPosVector(0);
-				//i = 0;
-			}
-			else
-			{*/
-				if(listNodes[i]->getComponent<WaypointComponent>()->getLevel() == listNodes[wpManager->getLastPosVector()]->getComponent<WaypointComponent>()->getLevel()+1)
-				{
-					distNode = (listNodes[i].get()->getTransformData().position.x - pos.x) * (listNodes[i].get()->getTransformData().position.x - pos.x) +
-							(listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
-							(listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
-
-					if(distanceNextNode == -1 || distanceNextNode > distNode)
-					{
-						distanceNextNode = distNode;
-						wpManager->setLastPosVector(i);
-					}
-				}
-			//}
-        }
-
-        distNode = (pos.x - listNodes[lastPosVector].get()->getTransformData().position.x) * (pos.x - listNodes[lastPosVector]->getTransformData().position.x) +
-                (pos.y - listNodes[lastPosVector].get()->getTransformData().position.y) * (pos.y - listNodes[lastPosVector]->getTransformData().position.y) +
-                (pos.z - listNodes[lastPosVector].get()->getTransformData().position.z) * (pos.z - listNodes[lastPosVector]->getTransformData().position.z);
-        
-		dist = ( pos.x - listNodes[wpManager->getLastPosVector()].get()->getTransformData().position.x) * ( pos.x - listNodes[wpManager->getLastPosVector()].get()->getTransformData().position.x) +
-				( pos.y - listNodes[wpManager->getLastPosVector()].get()->getTransformData().position.y) * ( pos.y - listNodes[wpManager->getLastPosVector()].get()->getTransformData().position.y) +
-				(pos.z - listNodes[wpManager->getLastPosVector()].get()->getTransformData().position.z) * ( pos.z - listNodes[wpManager->getLastPosVector()].get()->getTransformData().position.z);
-		
-		tour -= distNode;
-		
-
-        nextPos = ((tour/dist) * (listNodes[wpManager->getLastPosVector()].get()->getTransformData().position - listNodes[lastPosVector].get()->getTransformData().position) + listNodes[lastPosVector].get()->getTransformData().position);
-		
-        
-    return nextPos;
-}
-
 //Decides where to turn and in which grade (with a percentage of 0 to 1)
 
 /*//APARTADO DE MEJORAS//////
@@ -140,7 +36,7 @@ glm::vec3 AIDrivingComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float m
 >Diferenciar entre tipos de objetos
 >Tener en cuenta físicas del terreno
 >Personalidad agresiva o precavida
-
+>Añadir para hacer drifting
 
 //---------------------------*/
 float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 waypoint, float a, float b)
@@ -154,39 +50,46 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
 	float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
 
+	//-----------_TESTS_-----------
+	/*
+	std::cout<<"Waypoint: "<<waypoint.x<<","<<waypoint.z<<std::endl;
+	std::cout<<"Left side: "<<a<<std::endl;
+	std::cout<<"Right side: "<<b<<std::endl;
+	std::cout<<"ATAN: "<<atan_w<<std::endl;
+	*/
+	//-----------_TESTS_-----------
+
 	//fuzzifier and inference
 	//---------------GENERALIZE--v-------v----v
 	//waypoints
-	float wp_left = inferT(atan_w,0.25f,0.375f,0.51f);
-	float wp_center = inferT(atan_w,0.2f,0.25f,0.3f);
-	float wp_right = inferT(atan_w,-0.01f,0.125f,0.25f);
-
-	if(atan_w<0 || atan_w>0.51){
-		if(a<b){
-			wp_right = 1.f;
-		}else{
-			wp_left = 1.f;
-		}
+	if(atan_w <=-0.75){ //Since the value of the atan 0.25 corresponds to the center, from 1 to 0.25 is left, from 0.25 to -0.75 is right, and -0.75 to -1 is left.
+		atan_w += 2.f; 	//that's why we add this
 	}
+	float wp_left 	= inferL(atan_w		,0.25f  ,1.25f 	,0   	);
+	float wp_center = inferT(atan_w		,0.23f	,0.25f 	,0.27f	);
+	float wp_right 	= inferL(atan_w		,-0.75f	,0.25f  ,1   	);
 
+	//If we have collisions to collide with
 	if(array.size()>0){
 		float atan_obs = 0.0f;
-		for(unsigned i = 0; i<array.size(); i++){
+
+		//Accumulate the mean atan value of them all to pickpoint a medium point of no collisions
+		for(unsigned i = 0; i<array.size(); ++i){
 			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
 		}
 
 		//collisions
-		float obs_left = inferT(atan_obs,0.25f,0.375f,0.51f);
-		float obs_center = inferT(atan_obs,0.2f,0.25f,0.3f);
-		float obs_right = inferT(atan_obs,-0.01f,0.125f,0.25f);
-
-		if(atan_obs<0 || atan_obs>0.51){
-			if(a<b){
-				obs_right = 1.f;
-			}else{
-				obs_left = 1.f;
-			}
+		if(atan_obs <=-0.75){ 	//Same process as the waypoint
+			atan_obs += 2.f;
 		}
+		float obs_left	 	= inferL(atan_obs		,0.25f  ,1.25f 	,0   	);
+		float obs_center 	= inferT(atan_obs		,0.23f	,0.25f 	,0.27f	);
+		float obs_right 	= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
+
+		//-----------_TESTS_-----------
+		std::cout<<"Obstacle values: "<<obs_left<<" - "<<obs_center<< " - " << obs_right<<std::endl;
+		//-----------_TESTS_-----------
+
 
 		//Apply ruleset.
 		/*
@@ -222,20 +125,20 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	//---------------GENERALIZE---everything
 	float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
 
-	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.2f, 0.f, 0.2f);
-	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.95f, -0.05f);
-	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.05f, 0.95f, 1.0f);
-
-
+	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.15f, 0.f, 0.15f);
+	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.995f, -0.05f);
+	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.05f, 0.995f, 1.0f);
 
 	//adding all the centroids and crisping end result
 	float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
 	//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
 
 	//-----------_TESTS_-----------
-	//std::cout<<"Donde vas payo: "<<cx<<std::endl;
-	//std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
-	//std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
+	/*
+	std::cout<<"Donde vas payo: "<<cx<<std::endl;
+	std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
+	std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
+	*/
 	//-----------_TESTS_-----------
 
 	decision = cx;
@@ -249,10 +152,10 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 //is going, and where it is headed to.
 /*//APARTADO DE MEJORAS//////
 >Añadir que si tienes que girar demasiado a la derecha o izquierda para llegar a tu objetivo, que frenes
-
+>Añadir para hacer drifting
 
 //---------------------------*/
-float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, float direction, float speed, float b_w, float a_w)
+float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, float direction, float speed, float a_W, float b_w)
 {
 	//final turn decision
 	float decision = 0.0f;
@@ -261,10 +164,10 @@ float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, f
 
 	//fuzzifier and inference
 	//---------------GENERALIZE--v-------v----v
-	//waypoints inference
-	float going_left = inferL(direction,0.2f,1.0f,0);
-	float going_center = inferT(direction,-0.3f,0.0f,0.3f);
-	float going_right = inferL(direction,-1.0f,-0.2f,1);
+	//Where am I going
+	float going_left 	= inferL(direction,	0.2f,	1.0f,	0		);
+	float going_center 	= inferT(direction,-0.3f,	0.0f,	0.3f	);
+	float going_right 	= inferL(direction,-1.0f,	-0.2f,	1		);
 
 	//Correlation between how much more do I need to rotate to arrive and my current speed
 	/*float more_turn_left = inferT();
