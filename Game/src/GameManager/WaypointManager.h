@@ -2,6 +2,7 @@
 
 #include "../GameObject/WaypointComponent.h"
 #include "../GameObject/PathPlanningComponent.h"
+#include "../GameObject/IItemComponent.h"
 #include <vector>
 
 class WaypointManager{

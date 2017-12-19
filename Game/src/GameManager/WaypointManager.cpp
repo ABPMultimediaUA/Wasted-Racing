@@ -16,9 +16,14 @@ void WaypointManager::init() {
 void WaypointManager::update(float dTime) {
     //I doubt this method should exist in this manager
     //I doubt it too
+
     for(int i = 0; i < pathPlanningComponentList.size(); i++)
     {
-        pathPlanningComponentList[i]->update(dTime); 
+        auto iItemComponent = pathPlanningComponentList[i]->getGameObject().getComponent<IItemComponent>().get();
+        if(iItemComponent == nullptr)
+        {
+            pathPlanningComponentList[i]->update(dTime); 
+        }
     }
     
 }
