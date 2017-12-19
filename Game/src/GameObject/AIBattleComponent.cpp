@@ -81,7 +81,7 @@ class ConditionEnemyBehindAction : public Behaviour {
     protected:
         BehaviourState Update(float d)
         {
-            return BehaviourState::FAILED;
+            return BehaviourState::SUCCEEDED;
         }
 
 };

@@ -57,6 +57,10 @@ void Game::init() {
     itemManager = &ItemManager::getInstance();
     itemManager->init();
 
+    //Initialize Score Manager
+    scoreManager = &ScoreManager::getInstance();
+    scoreManager->init();
+
     addObjects();
 }
 
@@ -78,6 +82,7 @@ void Game::update() {
 
     itemManager->update(1.0);
     
+    scoreManager->update();
 
     //Event manager has to be the last to be updated
     eventManager->update();
@@ -107,6 +112,7 @@ void Game::close() {
     aiManager->close();
     sensorManager->close();
     itemManager->close();
+    scoreManager->close();
 }
 
 //====================================================
@@ -271,7 +277,7 @@ void addObjects(){
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob102 = ObjectManager::getInstance().createObject(id, transform);
-    /*
+    
     id = 103;
     transform.position = glm::vec3(875, 95, -450);
     transform.rotation = glm::vec3(0, 0, 0);
@@ -279,7 +285,7 @@ void addObjects(){
     auto ob103 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 104;
-    transform.position = glm::vec3(0, 95, -450);
+    transform.position = glm::vec3(-150, 95, -450);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob104 = ObjectManager::getInstance().createObject(id, transform);
@@ -294,12 +300,19 @@ void addObjects(){
     transform.position = glm::vec3(100, 0, 60);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
-    auto ob106 = ObjectManager::getInstance().createObject(id, transform);*/
+    auto ob106 = ObjectManager::getInstance().createObject(id, transform);
+
+    //acceleration ramp
+    id = 12;
+    transform.position = glm::vec3(0,-4,0);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(10,10,30);
+    auto ob900 = ObjectManager::getInstance().createObject(id, transform);
 
     //ItemBox:
   
     id = 25;
-    transform.position = glm::vec3(60, 0, -50);
+    transform.position = glm::vec3(100, 0, 60);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob25 = ObjectManager::getInstance().createObject(id, transform);
@@ -307,13 +320,13 @@ void addObjects(){
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(ob100, 100, 1);
-    std::shared_ptr<IComponent> wp2 = WaypointManager::getInstance().createWaypointComponent(ob101, 100, 2);
-    std::shared_ptr<IComponent> wp3 = WaypointManager::getInstance().createWaypointComponent(ob102, 100, 3);
-    /*std::shared_ptr<IComponent> wp4 = WaypointManager::getInstance().createWaypointComponent(ob103, 1, 4);
-    std::shared_ptr<IComponent> wp5 = WaypointManager::getInstance().createWaypointComponent(ob104, 1, 5);
-    std::shared_ptr<IComponent> wp6 = WaypointManager::getInstance().createWaypointComponent(ob105, 1, 6);
-    std::shared_ptr<IComponent> wp7 = WaypointManager::getInstance().createWaypointComponent(ob106, 1, 7);*/
+    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(ob100, 100, 0);
+    std::shared_ptr<IComponent> wp2 = WaypointManager::getInstance().createWaypointComponent(ob101, 100, 1);
+    std::shared_ptr<IComponent> wp3 = WaypointManager::getInstance().createWaypointComponent(ob102, 100, 2);
+    std::shared_ptr<IComponent> wp4 = WaypointManager::getInstance().createWaypointComponent(ob103, 100, 3);
+    std::shared_ptr<IComponent> wp5 = WaypointManager::getInstance().createWaypointComponent(ob104, 100, 4);
+    std::shared_ptr<IComponent> wp6 = WaypointManager::getInstance().createWaypointComponent(ob105, 100, 5);
+    std::shared_ptr<IComponent> wp7 = WaypointManager::getInstance().createWaypointComponent(ob106, 100, 6);
 
     //===============================================================
     // CREATE FIVE RENDER COMPONENTS
@@ -502,6 +515,12 @@ void addObjects(){
     transform.rotation = glm::vec3(45,45,45);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);*/
+
+    //===============================================================
+    // ADD AI 
+    //===============================================================
+
+
 
 
     //===============================================================

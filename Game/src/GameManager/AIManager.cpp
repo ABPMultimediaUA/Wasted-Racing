@@ -38,7 +38,13 @@ void AIManager::init() {
 */
 //------------------------------------
 void AIManager::update() {
-    //A update method should be defined by team IA
+    //Update of all behaviour trees
+    for(unsigned int i=0; i<battleAI.size(); i++)
+    {
+        auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
+        aiBattleComponent->update(0.02f);
+    }
+
     for(unsigned int i=0; i<objectsAI.size(); ++i){
         //Get components needed for the movement
         auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI.at(i)).get();
@@ -121,6 +127,20 @@ IComponent::Pointer AIManager::createAIDrivingComponent(GameObject& newGameObjec
     data.Component = component;
 
     EventManager::getInstance().addEvent(Event {EventType::AIDrivingComponent_Create, data});
+
+    return component;
+}
+
+IComponent::Pointer AIManager::createAIBattleComponent(GameObject& newGameObject)
+{
+    IComponent::Pointer component = std::make_shared<AIBattleComponent>(newGameObject);
+
+    newGameObject.addComponent(component);
+
+    battleAI.push_back(component);
+
+   std::dynamic_pointer_cast<AIBattleComponent>(component).get()->init();
+
 
     return component;
 }
