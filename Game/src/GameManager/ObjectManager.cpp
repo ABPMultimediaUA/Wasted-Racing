@@ -163,6 +163,8 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
 
     ItemManager::getInstance().createItemHolderComponent(*ob.get());
 
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     return ob;
@@ -203,6 +205,8 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
 
     ItemManager::getInstance().createItemHolderComponent(*ob.get());
+
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
 
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
@@ -245,6 +249,8 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
 
     ItemManager::getInstance().createItemHolderComponent(*ob.get());
 
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     return ob;
@@ -286,6 +292,8 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 
     ItemManager::getInstance().createItemHolderComponent(*ob.get());
 
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     return ob;
@@ -303,6 +311,7 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
     else if(move == 1)
     {
         AIManager::getInstance().createAIDrivingComponent(*obj.get());
+        AIManager::getInstance().createAIBattleComponent(*obj.get());
         SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle);
         SensorManager::getInstance().createMSensorComponent(*obj.get(), 5.f, mData.angle);
     }

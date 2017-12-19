@@ -3,6 +3,7 @@
 #include "../GameObject/ScoreComponent.h"
 #include <vector>
 #include <memory>
+#include <cstdint>
 
 class ScoreManager {
     public:
@@ -21,8 +22,15 @@ class ScoreManager {
         //Close
         void close();
 
+        //Static class getter
+        static ScoreManager& getInstance();
+
+        //Component creator
+        IComponent::Pointer createScoreComponent(GameObject& newGameObject);
+
+
         //Getters
-        std::vector<IComponent::Pointer> getPlayers() {return players;}
+        std::vector<ScoreComponent::Pointer> getPlayers() {return players;}
         int getMaxLaps() {return maxLaps;}
 
         //Setters
@@ -30,6 +38,6 @@ class ScoreManager {
 
 
     private:
-        std::vector<IComponent::Pointer> players;
+        std::vector<ScoreComponent::Pointer> players;
         int maxLaps;
 };
