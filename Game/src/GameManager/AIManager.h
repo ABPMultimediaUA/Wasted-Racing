@@ -5,6 +5,7 @@
 #include "../GameObject/VSensorComponent.h"
 #include "../GameObject/PathPlanningComponent.h"
 #include "../GameObject/VObject.h"
+#include "../GameObject/IItemComponent.h"
 #include <vector>
 
 class AIManager{

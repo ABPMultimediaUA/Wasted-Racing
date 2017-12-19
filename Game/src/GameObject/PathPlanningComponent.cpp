@@ -4,6 +4,7 @@
 
 PathPlanningComponent::PathPlanningComponent(GameObject& newGameObject) : IComponent(newGameObject) 
 {
+	seconds = 1;
     distLastWay = -1;
     lastVector = 0;
 }

@@ -48,9 +48,10 @@ void AIManager::update() {
         auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
         auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
         auto pathPlanningComponent = aiDrivingComponent->getGameObject().getComponent<PathPlanningComponent>().get();
+        auto iItemComponent = aiDrivingComponent->getGameObject().getComponent<IItemComponent>().get();
 
         //If they all exist
-        if(aiDrivingComponent && moveComponent && vSensorComponent){
+        if(aiDrivingComponent && moveComponent && vSensorComponent && iItemComponent == nullptr){
            
             //get all objects that are seen to the visual sensor
             std::vector<VObject::Pointer> seenObjects = vSensorComponent->getSeenObjects();
