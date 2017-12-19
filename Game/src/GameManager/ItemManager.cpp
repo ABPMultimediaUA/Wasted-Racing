@@ -1,8 +1,5 @@
 #include "ItemManager.h"
 
-
-
-void createItemEvent(EventData eData);
 void objectDeletedBanana(EventData eData);
 void objectDeletedMushroom(EventData eData);
 void objectDeletedStar(EventData eData);
@@ -20,7 +17,6 @@ ItemManager& ItemManager::getInstance(){
 
 void ItemManager::init(){
 
-    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, createItemEvent});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedBanana});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMushroom});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedStar});
@@ -86,9 +82,9 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 //////////////////////////////////////////////////////
 
 
-IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
+IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
-    auto itemHolder = obj.get()->getComponent<ItemHolderComponent>();
+    auto itemHolder = obj.getComponent<ItemHolderComponent>();
     int random = itemHolder->getItemType();
     
     if(random == IItemComponent::ItemType::redShell)
@@ -134,12 +130,12 @@ IComponent::Pointer ItemManager::createItem(GameObject::Pointer obj){
 //////////////////////////////////////////////////////
 
 
-IComponent::Pointer ItemManager::createRedShell(GameObject::Pointer obj)
+IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 {
     uint16_t id = 6000 + ItemComponents.size();
     GameObject::TransformationData transform;
 
-    auto pos = obj.get()->getTransformData().position;
+    auto pos = obj.getTransformData().position;
 
     transform.position = glm::vec3(pos.x, pos.y, pos.z);
     transform.rotation = glm::vec3(0, 0, 0);
@@ -156,12 +152,12 @@ IComponent::Pointer ItemManager::createRedShell(GameObject::Pointer obj)
     return component;
 }
 
-IComponent::Pointer ItemManager::createBlueShell(GameObject::Pointer obj)
+IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 {
     uint16_t id = 6000 + ItemComponents.size();
     GameObject::TransformationData transform;
 
-    auto pos = obj.get()->getTransformData().position;
+    auto pos = obj.getTransformData().position;
 
     transform.position = glm::vec3(pos.x, pos.y, pos.z);
     transform.rotation = glm::vec3(0, 0, 0);
@@ -178,15 +174,15 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject::Pointer obj)
     return component;
 }
 
-IComponent::Pointer ItemManager::createBanana(GameObject::Pointer obj)
+IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 {
     uint16_t id = 6000 + ItemComponents.size();
     GameObject::TransformationData transform;
 
-    auto pos = obj.get()->getTransformData().position;
+    auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x-10*cos(obj.get()->getTransformData().rotation.y * M_PI/180),
-                                    pos.y, pos.z+10*sin(obj.get()->getTransformData().rotation.y * M_PI/180));
+    transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y * M_PI/180),
+                                    pos.y, pos.z+10*sin(obj.getTransformData().rotation.y * M_PI/180));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.1, 0.1, 0.1);
 
@@ -205,12 +201,12 @@ IComponent::Pointer ItemManager::createBanana(GameObject::Pointer obj)
     return component;
 }
 
-IComponent::Pointer ItemManager::createMushroom(GameObject::Pointer obj)
+IComponent::Pointer ItemManager::createMushroom(GameObject& obj)
 {
     uint16_t id = 6000 + ItemComponents.size();
     GameObject::TransformationData transform;
 
-    auto pos = obj.get()->getTransformData().position;
+    auto pos = obj.getTransformData().position;
 
     transform.position = glm::vec3(pos.x, pos.y, pos.z);
     transform.rotation = glm::vec3(0, 0, 0);
@@ -227,12 +223,12 @@ IComponent::Pointer ItemManager::createMushroom(GameObject::Pointer obj)
     return component;
 }
 
-IComponent::Pointer ItemManager::createStar(GameObject::Pointer obj)
+IComponent::Pointer ItemManager::createStar(GameObject& obj)
 {
     uint16_t id = 6000 + ItemComponents.size();
     GameObject::TransformationData transform;
 
-    auto pos = obj.get()->getTransformData().position;
+    auto pos = obj.getTransformData().position;
 
     transform.position = glm::vec3(pos.x, pos.y, pos.z);
     transform.rotation = glm::vec3(0, 0, 0);
@@ -281,11 +277,6 @@ void ItemManager::deleteStar(IComponent::Pointer component)
 /////       DELEGATES
 /////
 //////////////////////////////////////////////////////
-
-void createItemEvent(EventData eData)
-{
-    ItemManager::getInstance().createItem(eData.Object);
-}
 
 void objectDeletedBanana(EventData eData) {
 

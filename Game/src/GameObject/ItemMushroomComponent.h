@@ -9,14 +9,14 @@ class ItemMushroomComponent : public IItemComponent
 
     private:
 
-        GameObject::Pointer player;
+        GameObject& player;
         float speed;
         float consTime;
         float decTime;
 
     public:
 
-        ItemMushroomComponent(GameObject& newGameObject, GameObject::Pointer obj);
+        ItemMushroomComponent(GameObject& newGameObject, GameObject& obj);
 
         virtual ~ItemMushroomComponent();
 

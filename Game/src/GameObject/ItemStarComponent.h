@@ -8,14 +8,14 @@ class ItemStarComponent : public IItemComponent
 
     private:
 
-        GameObject::Pointer player;
+        GameObject& player;
         float speed;
         float consTime;
         float decTime;
 
     public:
 
-        ItemStarComponent(GameObject& newGameObject, GameObject::Pointer obj);
+        ItemStarComponent(GameObject& newGameObject, GameObject& obj);
 
         ~ItemStarComponent();
 

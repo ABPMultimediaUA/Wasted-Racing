@@ -34,6 +34,7 @@ void AIManager::init() {
  >Dividir las llamadas a las funciones en diferentes tempos
  >Implementar con el resource manager
  >Comprobar que no son null y añadir comportamientos externos
+ >Dejar que otro limpie el codigo
 */
 //------------------------------------
 void AIManager::update() {
@@ -44,10 +45,10 @@ void AIManager::update() {
         auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
         auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
         auto mSensorComponent = aiDrivingComponent->getGameObject().getComponent<MSensorComponent>().get();
+        auto pathPlanningComponent = aiDrivingComponent->getGameObject().getComponent<PathPlanningComponent>().get();
 
         //If they all exist
         if(aiDrivingComponent && moveComponent && vSensorComponent && mSensorComponent){
-           
             //get all objects that are seen to the visual sensor
             std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
             std::vector<VObject::Pointer> seenObjects2 = mSensorComponent->getSeenObjects();
@@ -55,14 +56,19 @@ void AIManager::update() {
                 seenObjects.push_back(seenObjects2[i]);
             }
             
-            //Set angle of the sensor to the NPC one
+            //_______________TESTING_______________
+            std::cout<<"TAMAÑO LISTA OBSTACULOS: "<<seenObjects.size()<<std::endl;
+            //_____________________________________
+
+            //Set angle of the sensors to the NPC one
             vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
+            mSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
             
             //Get next waypoint
-            //aiDrivingComponent->setSeconds(1);
-            glm::vec3 objective; /*= aiDrivingComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
+            pathPlanningComponent->setSeconds(1);
+            glm::vec3 objective = pathPlanningComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
                                                             moveComponent->getMovemententData().velocity,
-                                                            moveComponent->getMovemententData().vel);*/
+                                                            moveComponent->getMovemententData().vel);
 
 
             //Update A and B of the objective
@@ -75,8 +81,8 @@ void AIManager::update() {
             //----------------------------------
 
             //------------Testing
-            std::cout<<"Turn values: "<<turnValue<<std::endl;
-            std::cout<<"Speed value: "<<speedValue<<std::endl;
+            //std::cout<<"Turn values: "<<turnValue<<std::endl;
+            //std::cout<<"Speed value: "<<speedValue<<std::endl;
             //-------------------
 
             //Send signal of movement
@@ -94,7 +100,7 @@ void AIManager::update() {
             }*/
             if(speedValue == 0){
                 moveComponent->isMoving(false);
-            }     
+            }
         }
     }
 }

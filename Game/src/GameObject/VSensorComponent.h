@@ -26,8 +26,8 @@ class VSensorComponent : public ISensorComponent{
         //update
         virtual void update(float dTime){};
 
-        //Checks the objects receives and stores the ones seen in the seenObjects vector
-        void updateSeenObjects(std::vector<GameObject::Pointer> objects);
+        //Checks the objects seen and stores the ones seen in the seenObjects vector
+        void updateSeenObjects(std::vector<GameObject> objects);
 
         //Auxiliar function to calculate A and B of given objective
         void calculateAB(glm::vec3 objective, float* a, float* b);

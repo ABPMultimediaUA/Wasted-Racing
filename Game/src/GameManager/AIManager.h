@@ -4,6 +4,7 @@
 #include "../GameObject/MoveComponent.h"
 #include "../GameObject/VSensorComponent.h"
 #include "../GameObject/MSensorComponent.h"
+#include "../GameObject/PathPlanningComponent.h"
 #include "../GameObject/VObject.h"
 #include "../GameObject/GameObject.h"
 #include "../GameEvent/EventManager.h"

@@ -1,16 +1,41 @@
 #include "PathPlanningComponent.h"
+#include <iostream>
  
+
+PathPlanningComponent::PathPlanningComponent(GameObject& newGameObject) : IComponent(newGameObject) 
+{
+    distLastWay = -1;
+    lastVector = 0;
+}
 
 
 glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed)
 {
+
     glm::vec3 nextPos;
 	auto wpManager = &WaypointManager::getInstance();
 
-    std::vector<GameObject::Pointer> listNodes = wpManager->getWaypoints(); //Check if i can to use without this
+    std::vector<GameObject::Pointer> listNodes = wpManager->getWaypoints(); 
+
+	float distaneActualWay = (listNodes[lastVector].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector].get()->getTransformData().position.x - pos.x) +
+						(listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
+						(listNodes[lastVector].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector].get()->getTransformData().position.z - pos.z);
+	float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
+	if(distaneActualWay <= radius*radius)
+	{
+		if(lastVector < listNodes.size()-1)
+		{
+			lastVector++;
+		}
+		else if(lastVector == listNodes.size()-1)
+		{
+			lastVector = 0;
+		}
+	}
 
     float tour = (modSpeed * seconds) * (modSpeed * seconds);
-	int lastPosVector;
+	int posVector;
+	int lastPosVector = lastVector;
 	float distanceNextNode;
     float distNode;
 	float dist;
@@ -48,14 +73,14 @@ glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, floa
 					{
 						if(distNode <= tour)
 						{
-							setLastPosVector(i);
+							lastPosVector = i;
 						}                        
 					}
 				}
 			}
 		//}
 	}
-		lastPosVector = lastPosVector;
+		posVector = lastPosVector;
         distanceNextNode  = -1;
 
         for(size_t i = lastPosVector; i < listNodes.size(); i++)
@@ -77,15 +102,15 @@ glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, floa
 					if(distanceNextNode == -1)
 					{
 						distanceNextNode = distNode;
-						setLastPosVector(i);
+						lastPosVector = i;
 					}
 				}
 			//}
         }
 
-        distNode = (pos.x - listNodes[lastPosVector].get()->getTransformData().position.x) * (pos.x - listNodes[lastPosVector]->getTransformData().position.x) +
-                (pos.y - listNodes[lastPosVector].get()->getTransformData().position.y) * (pos.y - listNodes[lastPosVector]->getTransformData().position.y) +
-                (pos.z - listNodes[lastPosVector].get()->getTransformData().position.z) * (pos.z - listNodes[lastPosVector]->getTransformData().position.z);
+        distNode = (pos.x - listNodes[posVector].get()->getTransformData().position.x) * (pos.x - listNodes[posVector]->getTransformData().position.x) +
+                (pos.y - listNodes[posVector].get()->getTransformData().position.y) * (pos.y - listNodes[posVector]->getTransformData().position.y) +
+                (pos.z - listNodes[posVector].get()->getTransformData().position.z) * (pos.z - listNodes[posVector]->getTransformData().position.z);
         
 		dist = ( pos.x - listNodes[lastPosVector].get()->getTransformData().position.x) * ( pos.x - listNodes[lastPosVector].get()->getTransformData().position.x) +
 				( pos.y - listNodes[lastPosVector].get()->getTransformData().position.y) * ( pos.y - listNodes[lastPosVector].get()->getTransformData().position.y) +
@@ -94,7 +119,7 @@ glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, floa
 		tour -= distNode;
 		
 
-        nextPos = ((tour/dist) * (listNodes[lastPosVector].get()->getTransformData().position - listNodes[lastPosVector].get()->getTransformData().position) + listNodes[lastPosVector].get()->getTransformData().position);
+        nextPos = ((tour/dist) * (listNodes[lastPosVector].get()->getTransformData().position - listNodes[posVector].get()->getTransformData().position) + listNodes[posVector].get()->getTransformData().position);
 		
         
     return nextPos;
@@ -112,9 +137,27 @@ float PathPlanningComponent::getDistLastWay()
 
 int PathPlanningComponent::getLastPosVector()
 {
-    return lastPosVector;
+    return lastVector;
 }
 
+int PathPlanningComponent::getActualLevel()
+{
+	auto listNodes = WaypointManager::getInstance().getWaypoints();
+	return listNodes[lastVector].get()->getComponent<WaypointComponent>()->getLevel();
+}
+
+float PathPlanningComponent::getActualDistance()
+{
+	glm::vec3 pos = getGameObject().getTransformData().position;
+	auto listNodes = WaypointManager::getInstance().getWaypoints();
+
+	float distanceActualWay = (listNodes[lastVector].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector].get()->getTransformData().position.x - pos.x) +
+						(listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
+						(listNodes[lastVector].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector].get()->getTransformData().position.z - pos.z);
+
+	return distanceActualWay;
+
+}
 //==============================================
 //Setters
 //==============================================
@@ -128,7 +171,5 @@ void PathPlanningComponent::setDistLastWay(GameObject::Pointer n, glm::vec3 pos)
 
 void PathPlanningComponent::setLastPosVector(int lvl)
 {
-    lastPosVector = lvl;
+    lastVector = lvl;
 }
-
-

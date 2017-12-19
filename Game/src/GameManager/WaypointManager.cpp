@@ -29,15 +29,7 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
     newGameObject.get()->addComponent(component);
 
-    if(listSubNodes->size() == 0)
-    {
-        listSubNodes->push_back(newGameObject);
-        listSubNodes->push_back(newGameObject);
-    }
-    else
-    {
-        listSubNodes->insert(listSubNodes->end()-1,newGameObject);
-    }
+    listSubNodes->push_back(newGameObject);
     
     return component;
 }
@@ -48,8 +40,6 @@ IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Poi
 
     newGameObject.get()->addComponent(component);
 
-    
-    
     return component;
 }
 

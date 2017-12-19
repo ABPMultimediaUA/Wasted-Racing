@@ -21,16 +21,20 @@ ISensorComponent(newGameObject)
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 }
 
+//Checks the objects seen and stores the ones seen in the seenObjects vector
 void MSensorComponent::updateSeenObjects()
 {
     //---------------
     //INITIALIZATIONS
     //---------------
 
-    //initial variables                                                     //Counter
-    glm::vec3 position = this->getGameObject().getTransformData().position;     //Our position
-    VObject::Pointer pvo;                                                       //VPointer included in the end result
-    float a_back = 0.f, b_back = 0.f, a_end = 0.f, b_end = 0.f;                                                         //initial a and b
+    //initial variables                                                      //Counter
+    glm::vec3 position = this->getGameObject().getTransformData().position;  //Our position
+    VObject::Pointer pvo;                                                    //VPointer included in the end result
+    float a_back = 0.f, b_back = 0.f, a_back2 = 0.f, b_back2 = 0.f, a_end = 0.f, b_end = 0.f;              //initial a and b
+    //update sensors
+    sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
+    sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 
     /* //TESTING
         std::cout<<"AnglI: "<<angleInitial<<", AnglV: "<<angleVision<<"\n";
@@ -79,10 +83,9 @@ void MSensorComponent::updateSeenObjects()
     seenObjects.push_back(pvo);                             //Add to seen objects
 
     //Calculate second point
-    calculateAB(point2, &a_back, &b_back);                            //Do the math
-    pvo = std::make_shared<VObject>(point2, a_back, b_back, 1.f, 1);  //generate VObject with the data
+    calculateAB(point2, &a_back2, &b_back2);                            //Do the math
+    pvo = std::make_shared<VObject>(point2, a_back2, b_back2, 1.f, 1);  //generate VObject with the data
     seenObjects.push_back(pvo);                             //Add to seen objects
-
 
     //-------------------
     //FRONT POINTS CHECK
@@ -134,9 +137,6 @@ void MSensorComponent::updateSeenObjects()
             pointS2     = terrain.p2 + a * vAB;
         }
     }
-    /*else{
-                ///////////////TO IMPLEMENT
-    }*/
 
     //Right
     if(terrC->getRight() == nullptr){
@@ -281,12 +281,17 @@ void MSensorComponent::updateSeenObjects()
         pvo = std::make_shared<VObject>(pointS1, a_end, b_end, 1.f, 1);  //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
     }
-
+     std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 1: "<<pointS1.x<<","<<pointS1.z<<" --- "<<a_end<<","<<b_end<<std::endl;
     if(contactR){
         //Calculate right point
         pvo = std::make_shared<VObject>(pointS2, a_end, b_end, 1.f, 1);  //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
     }
+    
+    ///_______________DOLOR DE TEST__________________
+   
+    std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 2: "<<pointS2.x<<","<<pointS2.z<<" --- "<<a_end<<","<<b_end<<std::endl;
+    ///______________________________________________
 
 }
 
@@ -296,10 +301,6 @@ void MSensorComponent::calculateAB(glm::vec3& objective, float* a, float* b){
     *b = 0.f;
 
     glm::vec3 relativeP;
-    
-    //update sensors
-    sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
-    sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 
     //Do the math
     relativeP = objective - this->getGameObject().getTransformData().position;
