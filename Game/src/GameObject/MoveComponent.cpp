@@ -37,12 +37,9 @@ void MoveComponent::update(float dTime) {
     trans.position += mData.velocity*dTime;
 
     //Change rotation
-    float degreeAngle = (mData.angle*180)/M_PI;
-    float degreeX = (mData.angX*180.f)/M_PI;
-    float degreeZ = (mData.angZ*180.f)/M_PI;
-    trans.rotation.y = -degreeAngle;
-    trans.rotation.z = degreeZ;
-    trans.rotation.x = degreeX;
+    trans.rotation.y = -mData.angle;
+    trans.rotation.z = mData.angZ;
+    trans.rotation.x = mData.angX;
 
 
     //Set final transform of position
@@ -62,7 +59,7 @@ void MoveComponent::update(float dTime) {
         std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
         std::cout << " INCR ANGLE " << mData.spin << std::endl;
         std::cout << " ANGULO GIRO " << mData.angle << std::endl;
-        std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
+        //std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
         //std::cout << " Aceleración " << mData.acc << std::endl;
         std::cout << " Velocidad " << mData.vel << std::endl;
         std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
