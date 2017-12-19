@@ -16,9 +16,10 @@ namespace LAPAL{
         vec3f p2 = glm::vec3(0,0,0);
         vec3f p3 = glm::vec3(0,0,0);
         vec3f p4 = glm::vec3(0,0,0);
-        float fric = 0.0f; //friction coeficient !NOT FRICTION FORCE
-        float rotX = 0.0f;     //rotation on X
-        float rotZ = 0.0f;     //rotation on Z
+        float fric = 0.0f;      //friction coeficient !NOT FRICTION FORCE
+        float rotX = 0.0f;      //rotation on X
+        float rotZ = 0.0f;      //rotation on Z
+        uint16_t direction = 0; //Direction of preferred movement (0 up, 1 right, 2 down, 3 left)
     };
 
     //Movement data

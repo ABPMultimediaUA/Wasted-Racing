@@ -13,6 +13,7 @@
 #include "GameManager/AIManager.h"
 #include "GameManager/SensorManager.h"
 #include "GameManager/AudioManager.h"
+#include "GameManager/ScoreManager.h"
 #include "GameObject/WaypointComponent.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
@@ -87,6 +88,8 @@ private:
     SensorManager* sensorManager;
     //Item manager
     ItemManager* itemManager;
+    //Score manager
+    ScoreManager* scoreManager;
 
     //Selected renderEngine
     int renderEngine;

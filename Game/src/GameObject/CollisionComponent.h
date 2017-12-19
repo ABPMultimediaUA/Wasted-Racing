@@ -17,7 +17,8 @@ public:
 		Default,
 		Ramp,
 		ItemBox,
-		Banana
+		Banana,
+		BlueShell
 	};
 
     //Constructor

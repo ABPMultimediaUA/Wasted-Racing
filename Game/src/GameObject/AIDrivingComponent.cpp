@@ -74,17 +74,22 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 		float atan_obs = 0.0f;
 
 		//Accumulate the mean atan value of them all to pickpoint a medium point of no collisions
-		for(unsigned i = 0; i<array.size(); i++){
+		for(unsigned i = 0; i<array.size(); ++i){
 			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
 		}
 
 		//collisions
-		if(atan_w <=-0.75){ 	//Same process as the waypoint
-			atan_w += 2.f;
+		if(atan_obs <=-0.75){ 	//Same process as the waypoint
+			atan_obs += 2.f;
 		}
-		float obs_left	 	= inferL(atan_w		,0.25f  ,1.25f 	,0   	);
-		float obs_center 	= inferT(atan_w		,0.23f	,0.25f 	,0.27f	);
-		float obs_right 	= inferL(atan_w		,-0.75f	,0.25f  ,1   	);
+		float obs_left	 	= inferL(atan_obs		,0.25f  ,1.25f 	,0   	);
+		float obs_center 	= inferT(atan_obs		,0.23f	,0.25f 	,0.27f	);
+		float obs_right 	= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
+
+		//-----------_TESTS_-----------
+		std::cout<<"Obstacle values: "<<obs_left<<" - "<<obs_center<< " - " << obs_right<<std::endl;
+		//-----------_TESTS_-----------
+
 
 		//Apply ruleset.
 		/*
