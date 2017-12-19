@@ -41,8 +41,9 @@ void MoveComponent::update(float dTime) {
     float degreeX = (mData.angX*180.f)/M_PI;
     float degreeZ = (mData.angZ*180.f)/M_PI;
     trans.rotation.y = -degreeAngle;
-    trans.rotation.z = degreeX;
-    trans.rotation.x = degreeZ;
+    trans.rotation.z = degreeZ;
+    trans.rotation.x = degreeX;
+
 
     //Set final transform of position
     getGameObject().setTransformData(trans);
@@ -52,10 +53,11 @@ void MoveComponent::update(float dTime) {
     
     ///*===========================================================================================
     // DEBUG
-    if(id == 8){
+    if(id == 5){
         system("clear");
-        //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
+        std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
         std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
+        std::cout << " ANG X " << trans.rotation.x << " ANG Y " << trans.rotation.y << " ANG Z " << trans.rotation.z << std::endl;
         //std::cout << " POS Y " << trans.position.y << std::endl;
         std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
         std::cout << " INCR ANGLE " << mData.spin << std::endl;
