@@ -73,9 +73,7 @@ void AIManager::update() {
             
             //Get next waypoint
             pathPlanningComponent->setSeconds(1);
-            glm::vec3 objective = pathPlanningComponent->getNextPoint(objectsAI.at(i)->getGameObject().getTransformData().position,
-                                                            moveComponent->getMovemententData().velocity,
-                                                            moveComponent->getMovemententData().vel);
+            glm::vec3 objective = pathPlanningComponent->getNextPoint();
 
 
             //Update A and B of the objective

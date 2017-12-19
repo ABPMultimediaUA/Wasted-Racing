@@ -78,6 +78,8 @@ void Game::update() {
 
     renderManager->update();
 
+    waypointManager->update(0.02);
+
     sensorManager->update();
 
     itemManager->update(1.0);
@@ -312,7 +314,7 @@ void addObjects(){
     //ItemBox:
   
     id = 25;
-    transform.position = glm::vec3(100, 0, 60);
+    transform.position = glm::vec3(100, 0, 20);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob25 = ObjectManager::getInstance().createObject(id, transform);
@@ -497,7 +499,7 @@ void addObjects(){
     //===============================================================
 
     id = 50;
-    transform.position = glm::vec3(-30,10,0);
+    transform.position = glm::vec3(-30,0,0);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(0.5,0.5,0.5);
     ObjectManager::getInstance().createPlayer(transform, 0, 0, id, terrain, terrainCP1);

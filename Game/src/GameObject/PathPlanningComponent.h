@@ -2,6 +2,7 @@
 
 #include "IComponent.h"
 #include "../GameManager/WaypointManager.h"
+#include "MoveComponent.h"
 
 class PathPlanningComponent : public IComponent{
 private:
@@ -9,6 +10,7 @@ private:
     float seconds;
     float distLastWay;
     int lastVector;
+    glm::vec3 nextPos;
         
 public:
 
@@ -24,7 +26,7 @@ public:
 	virtual void init() {}
 
 	//Update
-	virtual void update(float dTime) {}
+	virtual void update(float dTime);
 
 	//Closer
 	virtual void close() {}
@@ -43,6 +45,6 @@ public:
     float getActualDistance();
 
     //Functions
-    glm::vec3 getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed);    
+    glm::vec3 getNextPoint();    
 
 }; 
