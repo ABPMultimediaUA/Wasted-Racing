@@ -52,7 +52,7 @@ void ItemBlueShellComponent::update(float dTime)
     float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);
     //float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
 
-    moveComponent->changeSpin(turnValue);
+    //moveComponent->changeSpin(turnValue);
 
     //Accelerate and brake
     moveComponent->isMoving(true);
