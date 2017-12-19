@@ -106,6 +106,8 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                 }
                 else {  //The object is not static
                         //***** CODE FOR COLLISIONS WHERE BOTH OBJECTS ARE MOVING *****//
+                        calculateStaticCollision(move, dTime); //This is not right!!!
+                        calculateStaticCollision(hisMove, dTime); //This is not right!!!
                 }
             }
             else if(collision && !hisColl->getKinetic()){
