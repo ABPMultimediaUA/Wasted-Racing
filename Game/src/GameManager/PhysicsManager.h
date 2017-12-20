@@ -48,7 +48,9 @@ public:
                 return movingCharacterList[i];
             }
         }
-}
+    }
+    //Setters
+    void setCollisionComponentList(std::vector<IComponent::Pointer>& collision)            {    collisionComponentList = collision; }
 
     //Component creators
     IComponent::Pointer createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass);

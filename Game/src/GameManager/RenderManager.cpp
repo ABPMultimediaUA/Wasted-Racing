@@ -108,6 +108,7 @@ void objectDeletedRender(EventData eData) {
     for(unsigned int i = 0; i<renderComponentList.size(); ++i) {
         if(eData.Id == renderComponentList.at(i).get()->getGameObject().getId()) {
             renderComponentList.erase(renderComponentList.begin() + i);
+            
             return;
         }
     }

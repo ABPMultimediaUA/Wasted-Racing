@@ -1,8 +1,8 @@
 #include "ItemManager.h"
 
-void objectDeletedBanana(EventData eData);
-void objectDeletedMushroom(EventData eData);
-void objectDeletedStar(EventData eData);
+void objectDeleteItem(EventData eData);
+void objectDeleteItem(EventData eData);
+void objectDeleteItem(EventData eData);
 
 ItemManager::ItemManager()
 {
@@ -17,9 +17,9 @@ ItemManager& ItemManager::getInstance(){
 
 void ItemManager::init(){
 
-    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedBanana});
-    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMushroom});
-    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedStar});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteItem});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteItem});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteItem});
 
 }
 
@@ -142,8 +142,8 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+10*cos(obj.getTransformData().rotation.y * M_PI/180),
-                                    pos.y, pos.z-10*sin(obj.getTransformData().rotation.y * M_PI/180));
+    transform.position = glm::vec3(pos.x+10*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-10*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.2, 0.2, 0.2);
 
@@ -168,8 +168,8 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y * M_PI/180),
-                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y * M_PI/180));
+    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.2, 0.2, 0.2);
 
@@ -227,20 +227,6 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle);
 
-/*
-
-
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Default);
-    auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
-    auto terrainComponent = obj.getComponent<TerrainComponent>();
-    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
-    PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
-
-    AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle);
-    WaypointManager::getInstance().createPathPlanningComponent(ob);
-*/
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
     return component;
@@ -253,8 +239,8 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y * M_PI/180),
-                                    pos.y, pos.z+10*sin(obj.getTransformData().rotation.y * M_PI/180));
+    transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z+10*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.2, 0.2, 0.2);
 
@@ -350,7 +336,7 @@ void ItemManager::deleteStar(IComponent::Pointer component)
 /////
 //////////////////////////////////////////////////////
 
-void objectDeletedBanana(EventData eData) {
+void objectDeleteItem(EventData eData) {
 
     auto bananaComponentList = ItemManager::getInstance().getItemComponents();
 
@@ -361,28 +347,3 @@ void objectDeletedBanana(EventData eData) {
         }
     }
 }
-
-void objectDeletedMushroom(EventData eData) {
-
-    auto mushroomComponentList = ItemManager::getInstance().getItemComponents();
-
-    for(unsigned int i = 0; i<mushroomComponentList.size(); ++i) {
-        if(eData.Id == mushroomComponentList.at(i).get()->getGameObject().getId()) {
-            mushroomComponentList.erase(mushroomComponentList.begin() + i);
-            return;
-        }
-    }
-}
-
-void objectDeletedStar(EventData eData) {
-
-    auto starComponentList = ItemManager::getInstance().getItemComponents();
-
-    for(unsigned int i = 0; i<starComponentList.size(); ++i) {
-        if(eData.Id == starComponentList.at(i).get()->getGameObject().getId()) {
-            starComponentList.erase(starComponentList.begin() + i);
-            return;
-        }
-    }
-}
-

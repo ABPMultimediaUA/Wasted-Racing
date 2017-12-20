@@ -26,17 +26,20 @@ void SensorManager::update() {
     //Fill list of world objects
     auto collisionList =  PhysicsManager::getInstance().getCollisionComponentList();
     for(unsigned i = 0; i < collisionList.size(); ++i){
-        worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
+        if(collisionList[i] != nullptr){}
+            //worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
     }
 
     //Update visual sensors
     for(unsigned int i=0; i<sensorComponentList.size(); ++i){
-         std::dynamic_pointer_cast<VSensorComponent>(sensorComponentList[i]).get()->updateSeenObjects(worldObjects);
+        if(sensorComponentList[i] != nullptr)
+            std::dynamic_pointer_cast<VSensorComponent>(sensorComponentList[i]).get()->updateSeenObjects(worldObjects);
     }
 
     //Update map sensors
     for(unsigned int i=0; i<sensorMComponentList.size(); ++i){
-         std::dynamic_pointer_cast<MSensorComponent>(sensorMComponentList[i]).get()->updateMapCollisions();
+        if(sensorMComponentList[i] != nullptr)
+            std::dynamic_pointer_cast<MSensorComponent>(sensorMComponentList[i]).get()->updateSeenObjects();
     }
 }
 
