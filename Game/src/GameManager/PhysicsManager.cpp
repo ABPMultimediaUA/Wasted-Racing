@@ -140,7 +140,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
                     EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Collision, data});
                 }
-                else if(hisColl->getType() == CollisionComponent::Type::BlueShell)
+                else if(hisColl->getType() == CollisionComponent::Type::BlueShell && coll == ScoreManager::getInstance().getPlayers()[0].get()->getGameObject().getComponent<CollisionComponent>())
                 {
                     EventData data;
                     data.Component      = std::static_pointer_cast<IComponent>(move);
@@ -435,6 +435,11 @@ void collideBlueShell(EventData eData) {
 
     if(shell != nullptr) {
         move->changeMaxSpeedOverTime(shell.get()->getSpeed(), shell.get()->getConsTime(), shell.get()->getDecTime());
+
+        EventData data;
+        data.Id = shell->getGameObject().getId();
+
+        //EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
 }
 //Collide Item Box

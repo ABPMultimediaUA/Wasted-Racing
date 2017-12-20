@@ -27,11 +27,13 @@ void ItemBlueShellComponent::update(float dTime)
     auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
     auto aiDrivingComponent = getGameObject().getComponent<AIDrivingComponent>().get();
 
-    /*auto pos =getGameObject().getTransformData().position;
+    auto pos =getGameObject().getTransformData().position;
 
-    float distaneActualWay = (listNodes[lastVector].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector].get()->getTransformData().position.x - pos.x) +
-						(listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
-						(listNodes[lastVector].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector].get()->getTransformData().position.z - pos.z);
+    auto posWay = listNodes[lastVector].get()->getTransformData().position;
+
+    float distaneActualWay = (posWay.x - pos.x) * (posWay.x - pos.x) +
+						(posWay.y - pos.y) * (posWay.y - pos.y) +
+						(posWay.z - pos.z) * (posWay.z - pos.z);
 	float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
 	if(distaneActualWay <= radius*radius)
 	{
@@ -43,10 +45,20 @@ void ItemBlueShellComponent::update(float dTime)
 		{
 			lastVector = 0;
 		}
-	}*/
-
+	}
+    
     vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
     glm::vec3 objective = ScoreManager::getInstance().getPlayers()[0].get()->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
+
+    float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
+						(objective.y - pos.y) * (objective.y - pos.y) +
+						(objective.z - pos.z) * (objective.z - pos.z);
+	
+    if(distaneActualWay < distancePlayer)
+    {
+        objective = posWay;
+    }
+
     float a=0,b=0;
     vSensorComponent->calculateAB(objective, &a, &b);
     std::vector<VObject::Pointer> seenObjects;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../GameObject/ScoreComponent.h"
+#include "ScoreManager.h"
 #include <vector>
 #include <memory>
 #include <cstdint>

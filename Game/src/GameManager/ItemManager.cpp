@@ -90,7 +90,7 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = 1;//itemHolder->getItemType();
+    int random = itemHolder->getItemType();
     
     if(random == IItemComponent::ItemType::redShell)
     {
@@ -188,21 +188,21 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     mData.angInc = 0;
     mData.angle = obj.getComponent<MoveComponent>()->getMovemententData().angle;
     mData.spin = 0;
-    mData.spin_inc = 0.01;
-    mData.max_spin = 0.1;
+    mData.spin_inc = 1;
+    mData.max_spin = 1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 20;//400.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 200.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_vel = 0.f;
-    mData.velY = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.acc = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.max_acc = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.dAcc = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.brake_acc = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.velY = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.max_acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.dAcc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.brake_acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
 
 
     auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
