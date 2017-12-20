@@ -32,6 +32,8 @@ void PathPlanningComponent::update(float dTime)
 		}
 		else if(lastVector == listNodes.size()-1)
 		{
+			int vuelta = getGameObject().getComponent<ScoreComponent>()->getLap();
+			getGameObject().getComponent<ScoreComponent>()->setLap(vuelta + 1);
 			lastVector = 0;
 		}
 	}

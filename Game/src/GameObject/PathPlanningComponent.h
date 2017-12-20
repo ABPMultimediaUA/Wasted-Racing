@@ -3,6 +3,7 @@
 #include "IComponent.h"
 #include "../GameManager/WaypointManager.h"
 #include "MoveComponent.h"
+#include "ScoreComponent.h"
 
 class PathPlanningComponent : public IComponent{
 private:

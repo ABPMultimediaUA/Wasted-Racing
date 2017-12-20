@@ -41,7 +41,7 @@ void Game::init() {
     physicsManager = &PhysicsManager::getInstance();
     physicsManager->init();
 
-    //Initialize Waypoint Manager
+    //Initialize Waypoint Manager 
     waypointManager = &WaypointManager::getInstance();
     waypointManager->init();
 
@@ -107,14 +107,16 @@ void Game::draw() {
 void Game::close() {
 
     physicsManager->close();
-    renderManager->close();
-    inputManager->close();
+    audioManager->close();
     eventManager->close();
     waypointManager->close();
     aiManager->close();
     sensorManager->close();
-    itemManager->close();
     scoreManager->close();
+    itemManager->close();
+    inputManager->close();
+    renderManager->close();
+    objectManager->close();
 }
 
 //====================================================
@@ -126,6 +128,7 @@ void Game::Run() {
     while(Game::stay){
         Game::update();
         Game::draw();
+        Game::stay = objectManager->getGameRunning();
     }
     Game::close();
 }

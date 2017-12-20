@@ -65,9 +65,9 @@ private:
     QuadTree                              renderComponentTree;
 
     //Data for the quadTree
-    unsigned int maxObjPerNode;
-    int          updateRange;
-    int          x0, x1, y0, y1; //Map dimensions
+    //unsigned int maxObjPerNode;
+    //int          updateRange;
+    //int          x0, x1, y0, y1; //Map dimensions
 
     //We store just one camera component, so we can't have more than 1
     IComponent::Pointer cameraComponent;

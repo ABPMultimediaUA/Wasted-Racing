@@ -33,9 +33,9 @@ void RenderManager::init(int engine) {
     renderFacade->openWindow();
 
     //QuadTree data init
-    maxObjPerNode = 2;
-    updateRange = 2;
-    x0 = 0; x1 = 10; y0 = 0;  y1 = 10; //Map dimensions
+    //maxObjPerNode = 2;
+    //updateRange = 2;
+    //x0 = 0; x1 = 10; y0 = 0;  y1 = 10; //Map dimensions
 
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Create, addObjectRenderComponent});
@@ -52,12 +52,12 @@ void RenderManager::draw() {
 }
 
 void RenderManager::close(){
-    
+    renderComponentList.clear();
 }
 
 void RenderManager::splitQuadTree(){
-    renderComponentTree.init(maxObjPerNode, updateRange, renderComponentList, x0, x1, y0, y1);
-    renderComponentTree.divide();
+    //renderComponentTree.init(maxObjPerNode, updateRange, renderComponentList, x0, x1, y0, y1);
+    //renderComponentTree.divide();
 }
 
 IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape) {
