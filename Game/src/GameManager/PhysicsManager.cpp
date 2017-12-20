@@ -67,7 +67,9 @@ void PhysicsManager::update(const float dTime) {
 }
 
 void PhysicsManager::close() {
-
+    moveComponentList.clear();
+    collisionComponentList.clear();
+    movingCharacterList.clear();  
 }
 
 
@@ -451,6 +453,7 @@ void objectDeletedCollide(EventData eData) {
     for(unsigned int i = 0; i<collisionComponentList.size(); ++i) {
         if(eData.Id == collisionComponentList.at(i).get()->getGameObject().getId()) {
             collisionComponentList.erase(collisionComponentList.begin() + i);
+            PhysicsManager::getInstance().setCollisionComponentList(collisionComponentList);
             return;
         }
     }

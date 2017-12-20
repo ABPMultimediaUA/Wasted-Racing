@@ -2,6 +2,7 @@
 
 #include "../GameObject/WaypointComponent.h"
 #include "../GameObject/PathPlanningComponent.h"
+#include "../GameObject/IItemComponent.h"
 #include <vector>
 
 class WaypointManager{
@@ -18,7 +19,7 @@ public:
     void init();
 
     //Update
-    void update();
+    void update(float dTime);
 
     //Shutdown
     void close();
@@ -47,6 +48,7 @@ public:
 private:
 
     std::vector<IComponent::Pointer>      waypointComponentList;
+    std::vector<IComponent::Pointer>      pathPlanningComponentList;
 
     std::vector<GameObject::Pointer> *listSubNodes;
 

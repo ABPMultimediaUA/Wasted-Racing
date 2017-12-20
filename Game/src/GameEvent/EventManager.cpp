@@ -19,7 +19,10 @@ void EventManager::update() {
 }
 
 void EventManager::close() {
-
+    while(!eventQueue.empty()){
+        eventQueue.pop();
+    }
+    eventListenerMap.clear();
 }
 
 void EventManager::addEvent(Event event) {
