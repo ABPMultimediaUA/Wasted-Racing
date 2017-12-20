@@ -9,11 +9,13 @@ PathPlanningComponent::PathPlanningComponent(GameObject& newGameObject) : ICompo
     lastVector = 0;
 }
 
-
-glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed)
+void PathPlanningComponent::update(float dTime)
 {
 
-    glm::vec3 nextPos;
+	auto pos = this->getGameObject().getTransformData().position;
+	auto vel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().velocity;
+	auto modSpeed = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
+
 	auto wpManager = &WaypointManager::getInstance();
 
     std::vector<GameObject::Pointer> listNodes = wpManager->getWaypoints(); 
@@ -68,7 +70,7 @@ glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, floa
 					{
 						//nextPos = ((tour/distLastWay) * (listNodes[lastPosVector].get()->getTransformData().position - pos)) + pos;
 						nextPos = listNodes[lastPosVector].get()->getTransformData().position;
-						return nextPos;
+						return;
 					}
 					else
 					{
@@ -123,7 +125,12 @@ glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, floa
         nextPos = ((tour/dist) * (listNodes[lastPosVector].get()->getTransformData().position - listNodes[posVector].get()->getTransformData().position) + listNodes[posVector].get()->getTransformData().position);
 		
         
-    return nextPos;
+    return;
+}
+
+glm::vec3 PathPlanningComponent::getNextPoint()
+{
+	return nextPos;
 }
 
 

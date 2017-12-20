@@ -13,10 +13,19 @@ void WaypointManager::init() {
     listSubNodes = new std::vector<GameObject::Pointer>;
 }
 
-void WaypointManager::update() {
+void WaypointManager::update(float dTime) {
     //I doubt this method should exist in this manager
     //I doubt it too
 
+    for(int i = 0; i < pathPlanningComponentList.size(); i++)
+    {
+        auto iItemComponent = pathPlanningComponentList[i]->getGameObject().getComponent<IItemComponent>().get();
+        if(iItemComponent == nullptr)
+        {
+            pathPlanningComponentList[i]->update(dTime); 
+        }
+    }
+    
 }
 
 void WaypointManager::close() {
@@ -40,6 +49,8 @@ IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Poi
     IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get());
 
     newGameObject.get()->addComponent(component);
+
+    pathPlanningComponentList.push_back(component);
 
     return component;
 }
