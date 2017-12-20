@@ -157,34 +157,34 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
 
     MoveComponent* ourMove = move.get(); 
 
-    float ourMass = ourMove->getMass();
-    float hisMass = 5;
+    //float ourMass = ourMove->getMass();
+    //float hisMass = 5;
 
     auto ourMData = ourMove->getMovemententData();
 
-    LAPAL::vec3f ourVel = ourMData.velocity;
-    LAPAL::vec3f hisVel = glm::vec3(0,0,0);
+    //LAPAL::vec3f ourVel = ourMData.velocity;
+    //LAPAL::vec3f hisVel = glm::vec3(0,0,0);
 
     //Calculate new velocity after collision
-    LAPAL::calculateElasticCollision(ourVel, ourMass, hisVel, hisMass);
-    ourMData.velocity = ourVel;
+    //LAPAL::calculateElasticCollision(ourVel, ourMass, hisVel, hisMass);
+    //ourMData.velocity = ourVel;
 
-    //Calculate new velocity module
-    float newVel    = -sqrt(ourVel.x*ourVel.x + ourVel.z*ourVel.z);
-    if(ourMData.vel < 0)
-        newVel = -newVel;
+    ////Calculate new velocity module
+    //float newVel    = -sqrt(ourVel.x*ourVel.x + ourVel.z*ourVel.z);
+    //if(ourMData.vel < 0)
+    //    newVel = -newVel;
 
-    ourMData.vel    = newVel;
+    ourMData.vel    = 0;
 
     //-----_TESTING_------
-    ourMData.spin = -ourMData.spin;
+    //ourMData.spin = -ourMData.spin;
 
     //Set new movement
     ourMove->setMovementData(ourMData);
-    auto tData = ourMove->getGameObject().getTransformData();
-    ourMove->getGameObject().setTransformData(tData);
-    ourMove->update(dTime);
-    ourMove->update(dTime);
+    //auto tData = ourMove->getGameObject().getTransformData();
+    //ourMove->getGameObject().setTransformData(tData);
+    //ourMove->update(dTime);
+    //ourMove->update(dTime);
 }
 
 

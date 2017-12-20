@@ -147,42 +147,51 @@ void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, floa
 
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    if(constantAlteredTime > 0) {
-        //While time is constant, velocity is constant and maximum
-        if(mData.vel < 0) {
-            constantAlteredTime = -1;
+    if(mData.vel!=0) {
+        if(constantAlteredTime > 0) {
+            //While time is constant, velocity is constant and maximum
+            if(mData.vel < 0) {
+                constantAlteredTime = -1;
+            }
+            else {
+                mData.vel = mData.max_vel;
+                constantAlteredTime -= dTime;
+            }
         }
-        else {
-            mData.vel = mData.max_vel;
-            constantAlteredTime -= dTime;
+        else if (decrementalAlteredTime > 0) {
+            //Calculate velocity decrease depending on dTime
+            float vel_diff = mData.max_vel - auxData.max_vel;
+            float vel      = (dTime*vel_diff)/maxDecrementalAT;
+
+            mData.vel     -= vel; 
+
+            decrementalAlteredTime -= dTime;
+
+            if(decrementalAlteredTime < 0)
+                mData.max_vel = auxData.max_vel;
         }
     }
-    else if (decrementalAlteredTime > 0) {
-        //Calculate velocity decrease depending on dTime
-        float vel_diff = mData.max_vel - auxData.max_vel;
-        float vel      = (dTime*vel_diff)/maxDecrementalAT;
-
-        mData.vel     -= vel; 
-
-        decrementalAlteredTime -= dTime;
-
-        if(decrementalAlteredTime < 0)
-            mData.max_vel = auxData.max_vel;
+    else {
+        constantAlteredTime = 0;
+        decrementalAlteredTime = 0;
     }
-
 }
 
 void MoveComponent::updateJump(LAPAL::movementData& mData, glm::vec3& pos, LAPAL::plane3f t){
 
+    float maxJump = 15.0;
+    float velJump = 50.0;
+
     if(mData.jump == true){
         if(abs(LAPAL::calculateExpectedY(t, pos)-pos.y) < 1) { 
-            mData.posY = pos.y +15;
+            mData.posY = pos.y + maxJump;
             mData.asc = true;
         }
     }
     if(mData.asc == true){
         if(pos.y < mData.posY){
-            mData.velocity.y = 50;
+            mData.velocity.y = (velJump*(mData.posY-pos.y)/maxJump)+10; //Interpolate velocity 
+                                                                            //(the higher we get, the slower we go up)
         }
         else{
             mData.asc = false;
