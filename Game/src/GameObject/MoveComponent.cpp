@@ -174,15 +174,19 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
 void MoveComponent::updateJump(LAPAL::movementData& mData, glm::vec3& pos, LAPAL::plane3f t){
 
+    float maxJump = 15.0;
+    float velJump = 50.0;
+
     if(mData.jump == true){
         if(abs(LAPAL::calculateExpectedY(t, pos)-pos.y) < 1) { 
-            mData.posY = pos.y +15;
+            mData.posY = pos.y + maxJump;
             mData.asc = true;
         }
     }
     if(mData.asc == true){
         if(pos.y < mData.posY){
-            mData.velocity.y = 50;
+            mData.velocity.y = (velJump*(mData.posY-pos.y)/maxJump)+10; //Interpolate velocity 
+                                                                            //(the higher we get, the slower we go up)
         }
         else{
             mData.asc = false;

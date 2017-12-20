@@ -138,7 +138,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
 
     //Increasing rotation axis in mData until it matches the terrain. Incremental turn.
     //X axis.
-    if(glm::abs(mData.angX - terrain.rotX)<0.01f){
+    if(glm::abs(mData.angX - terrain.rotX)<0.05f){
         mData.angX = terrain.rotX;
         mData.rotateX = 0.f;
     }else{
@@ -158,7 +158,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
     }
 
     //Z axis
-    if(glm::abs(mData.angZ - terrain.rotZ)<0.01f){
+    if(glm::abs(mData.angZ - terrain.rotZ)<0.05f){
         mData.angZ = terrain.rotZ;
         mData.rotateZ = 0.f;
     }else{
