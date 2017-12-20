@@ -1,8 +1,10 @@
 #include "RenderIrrlicht.h"
 #include "InputIrrlicht.h"
 #include "../GameEvent/EventManager.h"
+#include "../GameManager/ObjectManager.h"
 #include "../GameObject/ObjectRenderComponent.h"
 #include <cmath>
+#include <string>
 
 void RenderIrrlicht::openWindow(){
 
@@ -17,6 +19,10 @@ void RenderIrrlicht::openWindow(){
     sceneManager = device->getSceneManager();
     geometryCreator = sceneManager->getGeometryCreator();
 
+    font = sceneManager->getGUIEnvironment()->getFont("../media/img/fontcourier.bmp");
+    pos = sceneManager->getGUIEnvironment()->addStaticText(L"Position: ", irr::core::recti(0,0, 200,50));
+    pos->setOverrideFont(font);
+
     addCamera();
     addLight();
 
@@ -28,6 +34,14 @@ void RenderIrrlicht::openWindow(){
 
 void RenderIrrlicht::updateWindow() {
     updateCamera();
+    int h = pos->getTextHeight();
+    int w = pos->getTextWidth();
+    int oM = ObjectManager::getInstance().getObject(50).get()->getComponent<ScoreComponent>().get()->getPosition();
+    std::cout <<  "Height: " << h << std::endl;
+    std::cout << "Width: " << w << std::endl;
+    irr::core::stringw stringPos = L"  POSITION:";
+    stringPos += oM;
+    pos->setText(stringPos.c_str());
 }
 
 void RenderIrrlicht::closeWindow() {
@@ -40,6 +54,7 @@ void RenderIrrlicht::renderDraw() {
 
     videoDriver->beginScene(true, true, irr::video::SColor(255,113,113,133));
     sceneManager->drawAll();
+    sceneManager->getGUIEnvironment()->drawAll();
     videoDriver->endScene();
  
 }
