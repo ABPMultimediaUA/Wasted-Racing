@@ -73,8 +73,28 @@ void VSensorComponent::calculateAB(glm::vec3 objective, float* a, float* b){
 
     //Do the math
     relativeP = objective - this->getGameObject().getTransformData().position;
-    if(sensorRight.x*sensorLeft.z != sensorRight.z*sensorLeft.x) 
+
+    //Satan
+    double sR_x = sensorRight.x;
+    double sR_z = sensorRight.z;
+    double sL_x = sensorLeft.x;
+    double sL_z = sensorLeft.z;
+    double r_x = relativeP.x;
+    double r_z = relativeP.z;
+    double aux_a = 0;
+    double aux_b = 0;
+    //
+    if(sR_x * sL_x != sR_z * sL_x){
+        aux_a = (r_z * sL_x - r_x * sL_z) / (sR_z * sL_x - sR_x * sL_z);
+    }
+    if(sL_x != 0){
+        aux_b = (r_z - aux_a * sR_z) / sL_z;
+    }
+
+    *a = (float) aux_a;
+    *b = (float) aux_b;
+    /*if(sensorRight.x*sensorLeft.z != sensorRight.z*sensorLeft.x) 
         *b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
     if(sensorLeft.x != 0)
-        *a = (relativeP.z - (*b) * sensorRight.z) / sensorLeft.z;
+        *a = (relativeP.z - (*b) * sensorRight.z) / sensorLeft.z;*/
 }

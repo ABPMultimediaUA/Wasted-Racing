@@ -44,15 +44,16 @@ void ItemBlueShellComponent::update(float dTime)
 			lastVector = 0;
 		}
 	}
-    auto objective = glm::vec3(100,0,0); //= listNodes[lastVector]->getTransformData().position;
+
+    auto objective = ScoreManager::getInstance().getPlayers()[0]->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
     float a=0,b=0;
     vSensorComponent->calculateAB(objective, &a, &b);
     std::vector<VObject::Pointer> seenObjects;
     //DECIDE STUFF
     float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);
-    //float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
+    float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
 
-    //moveComponent->changeSpin(turnValue);
+    moveComponent->changeSpin(turnValue);
 
     //Accelerate and brake
     moveComponent->isMoving(true);
