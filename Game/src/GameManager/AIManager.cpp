@@ -39,6 +39,7 @@ void AIManager::init() {
 //------------------------------------
 void AIManager::update() {
     //Update of all behaviour trees
+
     for(unsigned int i=0; i<battleAI.size(); i++)
     {
         auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
@@ -53,8 +54,11 @@ void AIManager::update() {
         auto mSensorComponent = aiDrivingComponent->getGameObject().getComponent<MSensorComponent>().get();
         auto pathPlanningComponent = aiDrivingComponent->getGameObject().getComponent<PathPlanningComponent>().get();
         auto iItemComponent = aiDrivingComponent->getGameObject().getComponent<IItemComponent>().get();
-
+int add = 0;
         //If they all exist
+        if(iItemComponent != nullptr){
+            add++;
+        }
         if(aiDrivingComponent && moveComponent && vSensorComponent && mSensorComponent && iItemComponent == nullptr){
             //get all objects that are seen to the visual sensor
             std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();

@@ -195,14 +195,14 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 400.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 20;//400.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_vel = 0.f;
-    mData.velY = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.max_acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.dAcc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.brake_acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.velY = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.acc = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.max_acc = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.dAcc = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.brake_acc = 20;//400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
 
 
     auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
