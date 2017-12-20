@@ -60,7 +60,7 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Check collisions with terrain limits and terrain change
         //==============================================================================
-        calculateTerrainCollision(movingCharacterList.at(i), ourMove, ourTerr, ourColl, dTime);
+        calculateTerrainCollision(movingCharacterList[i], ourMove, ourTerr, ourColl, dTime);
         
     }
 
@@ -81,7 +81,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
     for(unsigned int j=0; j<collisionComponentList.size(); ++j) {
 
-        std::shared_ptr<CollisionComponent> hColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList.at(j));
+        std::shared_ptr<CollisionComponent> hColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList[j]);
         CollisionComponent* hisColl = hColl.get();
         if( hisColl != ourColl ) { //If the collider is different to the one of ourselves
 
@@ -185,6 +185,15 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
     ourMove->update(dTime);
 }
 
+
+///--------------MEJORAS--------------------
+/*
+    >Comprobar colisioens con la Y y que rebote en caso de estar por
+    debajo de la Y del siguiente terreno a cierto nivel (para saltos)
+    >Añadir botón o mecánica de recuperación en caso de caída
+
+*/
+///-----------------------------------------
 void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
         MoveComponent* ourMove = move.get();
@@ -210,7 +219,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Calculate A and B for the object radius in the direction of its movement
         LAPAL::calculateConstantAB(terrain, nextPosition, &a, &b);
 
-        //Check if we are out of front bounds within our next movement
+        //Check if we are out of front bounds
         if(a>0 && b<0 && glm::abs(a)+glm::abs(b)>=1){
             if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
                 calculateStaticCollision(move, dTime);

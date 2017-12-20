@@ -214,8 +214,8 @@ void addObjects(){
     auto ob16 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 17;
-    transform.position = glm::vec3(550,0,-500);
-    transform.rotation = glm::vec3(0,0,0);
+    transform.position = glm::vec3(550,84,-500);
+    transform.rotation = glm::vec3(0,0,10.78252579);
     transform.scale    = glm::vec3(10,0.01,20);
     auto ob17 = ObjectManager::getInstance().createObject(id, transform);
 
@@ -285,13 +285,13 @@ void addObjects(){
     auto ob103 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 104;
-    transform.position = glm::vec3(-150, 95, -450);
+    transform.position = glm::vec3(-100, 95, -450);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob104 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 105;
-    transform.position = glm::vec3(-200, 50, -250);
+    transform.position = glm::vec3(-150, 50, -250);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob105 = ObjectManager::getInstance().createObject(id, transform);
@@ -444,10 +444,10 @@ void addObjects(){
     terrainCP4_0.get()->connectSiblingLeft(idd);
 
     LAPAL::plane3f terrain4;
-    terrain4.p1 = (LAPAL::vec3f(500,0,-400));
-    terrain4.p2 = (LAPAL::vec3f(600,0,-400));
-    terrain4.p3 = (LAPAL::vec3f(600,0,-600));
-    terrain4.p4 = (LAPAL::vec3f(500,0,-600));
+    terrain4.p1 = (LAPAL::vec3f(500,80,-400));
+    terrain4.p2 = (LAPAL::vec3f(600,100,-400));
+    terrain4.p3 = (LAPAL::vec3f(600,100,-600));
+    terrain4.p4 = (LAPAL::vec3f(500,80,-600));
     terrain4.fric = 0.2;
     terrain4.direction = 2;
     LAPAL::calculateRotationsXZ(terrain4);
