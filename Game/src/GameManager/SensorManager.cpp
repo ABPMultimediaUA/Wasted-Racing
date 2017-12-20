@@ -39,7 +39,7 @@ void SensorManager::update() {
     //Update map sensors
     for(unsigned int i=0; i<sensorMComponentList.size(); ++i){
         if(sensorMComponentList[i] != nullptr)
-            std::dynamic_pointer_cast<MSensorComponent>(sensorMComponentList[i]).get()->updateSeenObjects();
+            std::dynamic_pointer_cast<MSensorComponent>(sensorMComponentList[i]).get()->updateMapCollisions();
     }
 }
 
