@@ -79,4 +79,8 @@ private:
     //Irrlicht camera
     irr::scene::ICameraSceneNode* camera;
 
+    irr::gui::IGUIStaticText* pos;
+
+    irr::gui::IGUIFont* font;
+
 };
