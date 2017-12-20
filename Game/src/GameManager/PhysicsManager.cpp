@@ -67,7 +67,9 @@ void PhysicsManager::update(const float dTime) {
 }
 
 void PhysicsManager::close() {
-
+    moveComponentList.clear();
+    collisionComponentList.clear();
+    movingCharacterList.clear();  
 }
 
 

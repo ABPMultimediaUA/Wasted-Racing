@@ -35,7 +35,9 @@ void ItemManager::update(float dTime){
 }
 
 void ItemManager::close(){
-
+    ItemHolders.clear();
+    ItemComponents.clear();        
+    ItemBoxes.clear();
 }
 
 

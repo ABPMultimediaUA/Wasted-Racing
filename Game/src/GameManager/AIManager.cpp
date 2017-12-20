@@ -113,7 +113,8 @@ void AIManager::update() {
 }
 
 void AIManager::close() {
-
+    objectsAI.clear();
+    battleAI.clear();
 }
 
 

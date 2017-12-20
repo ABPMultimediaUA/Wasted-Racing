@@ -105,6 +105,7 @@ void Game::draw() {
 void Game::close() {
 
     physicsManager->close();
+    audioManager->close();
     eventManager->close();
     waypointManager->close();
     aiManager->close();
@@ -113,6 +114,7 @@ void Game::close() {
     itemManager->close();
     inputManager->close();
     renderManager->close();
+    objectManager->close();
 }
 
 //====================================================
@@ -121,9 +123,13 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
+    int i = 300;
     while(Game::stay){
         Game::update();
         Game::draw();
+        --i;
+        if(i<0)
+            break;
     }
     Game::close();
 }
@@ -415,7 +421,7 @@ void addObjects(){
     std::shared_ptr<IComponent> terrainCP2 = PhysicsManager::getInstance().createTerrainComponent(*ob7.get(), terrain1);
     auto terrainCP2_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP2);
     uint16_t idd = 4;
-    terrainCP2_0.get()->connectSiblingBack(idd);
+    //terrainCP2_0.get()->connectSiblingBack(idd);
 
     LAPAL::plane3f terrain2;
     terrain2.p1 = (LAPAL::vec3f(750,100,100));
@@ -428,7 +434,7 @@ void addObjects(){
     std::shared_ptr<IComponent> terrainCP3 = PhysicsManager::getInstance().createTerrainComponent(*ob15.get(), terrain2);
     auto terrainCP3_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP3);
     idd = 10;
-    terrainCP3_0.get()->connectSiblingBack(idd);
+    //terrainCP3_0.get()->connectSiblingBack(idd);
 
     LAPAL::plane3f terrain3;
     terrain3.p1 = (LAPAL::vec3f(600,100,-400));
@@ -441,7 +447,7 @@ void addObjects(){
     std::shared_ptr<IComponent> terrainCP4 = PhysicsManager::getInstance().createTerrainComponent(*ob16.get(), terrain3);
     auto terrainCP4_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP4);
     idd = 15;
-    terrainCP4_0.get()->connectSiblingLeft(idd);
+    //terrainCP4_0.get()->connectSiblingLeft(idd);
 
     LAPAL::plane3f terrain4;
     terrain4.p1 = (LAPAL::vec3f(500,0,-400));
@@ -454,7 +460,7 @@ void addObjects(){
     std::shared_ptr<IComponent> terrainCP5 = PhysicsManager::getInstance().createTerrainComponent(*ob17.get(), terrain4);
     auto terrainCP5_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP5);
     idd = 16;
-    terrainCP5_0.get()->connectSiblingFront(idd);
+    //terrainCP5_0.get()->connectSiblingFront(idd);
 
     LAPAL::plane3f terrain5;
     terrain5.p1 = (LAPAL::vec3f(-250,80,-400));
@@ -467,7 +473,7 @@ void addObjects(){
     std::shared_ptr<IComponent> terrainCP6 = PhysicsManager::getInstance().createTerrainComponent(*ob18.get(), terrain5);
     auto terrainCP6_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP6);
     idd = 17;
-    terrainCP6_0.get()->connectSiblingFront(idd);
+    //terrainCP6_0.get()->connectSiblingFront(idd);
 
     LAPAL::plane3f terrain6;
     terrain6.p1 = (LAPAL::vec3f(-250,0,-100));
@@ -480,9 +486,9 @@ void addObjects(){
     std::shared_ptr<IComponent> terrainCP7 = PhysicsManager::getInstance().createTerrainComponent(*ob19.get(), terrain6);
     auto terrainCP7_0 = std::dynamic_pointer_cast<TerrainComponent>(terrainCP7);
     idd = 18;
-    terrainCP7_0.get()->connectSiblingRight(idd);
+    //terrainCP7_0.get()->connectSiblingRight(idd);
     idd = 4;
-    terrainCP7_0.get()->connectSiblingLeft(idd);
+    //terrainCP7_0.get()->connectSiblingLeft(idd);
 
     
 

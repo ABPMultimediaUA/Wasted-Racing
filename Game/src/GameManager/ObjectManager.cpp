@@ -30,7 +30,9 @@ void ObjectManager::init() {
 
 void ObjectManager::close() {
 
-    objectsMap.clear();
+    while(!objectsMap.empty()){
+        objectsMap.erase(objectsMap.begin());
+    }
 
 }
 

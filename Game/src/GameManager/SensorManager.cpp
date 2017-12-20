@@ -41,7 +41,9 @@ void SensorManager::update() {
 }
 
 void SensorManager::close() {
-
+    sensorComponentList.clear();
+    sensorMComponentList.clear();
+    worldObjects.clear();
 }
 
 
