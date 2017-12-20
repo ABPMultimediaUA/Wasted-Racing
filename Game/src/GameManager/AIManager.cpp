@@ -58,9 +58,9 @@ void AIManager::update() {
         if(aiDrivingComponent && moveComponent && vSensorComponent && mSensorComponent && iItemComponent == nullptr){
             //get all objects that are seen to the visual sensor
             std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
-            std::vector<VObject::Pointer> seenObjects2 = mSensorComponent->getSeenObjects();
-            for(uint32_t i = 0; i < seenObjects2.size(); ++i){
-                seenObjects.push_back(seenObjects2[i]);
+            std::vector<VObject::Pointer> mapCollisions = mSensorComponent->getMapCollisions();
+            for(uint32_t i = 0; i < mapCollisions.size(); ++i){
+                seenObjects.push_back(mapCollisions[i]);
             }
             
             //_______________TESTING_______________

@@ -21,8 +21,8 @@ ISensorComponent(newGameObject)
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 }
 
-//Checks the objects seen and stores the ones seen in the seenObjects vector
-void MSensorComponent::updateSeenObjects()
+//Checks possible collisions with terrain and returns VObjects collisions
+void MSensorComponent::updateMapCollisions()
 {
     //---------------
     //INITIALIZATIONS
@@ -31,7 +31,8 @@ void MSensorComponent::updateSeenObjects()
     //initial variables                                                      //Counter
     glm::vec3 position = this->getGameObject().getTransformData().position;  //Our position
     VObject::Pointer pvo;                                                    //VPointer included in the end result
-    float a_back = 0.f, b_back = 0.f, a_back2 = 0.f, b_back2 = 0.f, a_end = 0.f, b_end = 0.f;              //initial a and b
+    float a_back = 0.f, b_back = 0.f, a_end = 0.f, b_end = 0.f;              //initial A and B of the back points, and A and B of front points
+
     //update sensors
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
@@ -80,12 +81,12 @@ void MSensorComponent::updateSeenObjects()
     //Calculate first point
     calculateAB(point1, &a_back, &b_back);                            //Do the math
     pvo = std::make_shared<VObject>(point1, a_back, b_back, 1.f, 1);  //generate VObject with the data
-    seenObjects.push_back(pvo);                             //Add to seen objects
+    seenObjects.push_back(pvo);                                       //Add to seen objects
 
     //Calculate second point
-    calculateAB(point2, &a_back2, &b_back2);                            //Do the math
-    pvo = std::make_shared<VObject>(point2, a_back2, b_back2, 1.f, 1);  //generate VObject with the data
-    seenObjects.push_back(pvo);                             //Add to seen objects
+    calculateAB(point2, &a_back, &b_back);                            //Do the math
+    pvo = std::make_shared<VObject>(point2, a_back, b_back, 1.f, 1);  //generate VObject with the data
+    seenObjects.push_back(pvo);                                       //Add to seen objects
 
     //-------------------
     //FRONT POINTS CHECK
@@ -113,7 +114,7 @@ void MSensorComponent::updateSeenObjects()
         }
 
         //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-        if(a > 0.f && b > 0.f && a <= 1){
+        if(a >= 0.f && b > 0.f && a <= 1){
             a_end       = b;                      //a_end => a * sensorLeft till point of cross, which it is b in this calculus
             contactL    = true;
             pointS1     = terrain.p2 + a * vAB;
@@ -131,7 +132,7 @@ void MSensorComponent::updateSeenObjects()
         }
 
         //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-        if(a > 0.f && b > 0.f && a <= 1.f){
+        if(a >= 0.f && b > 0.f && a <= 1.f){
             b_end       = b;                      //b_end => a * sensorRight till point of cross, which it is b in this calculus
             contactR    = true;
             pointS2     = terrain.p2 + a * vAB;
@@ -155,10 +156,10 @@ void MSensorComponent::updateSeenObjects()
             }
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && a <= 1){
+            if(a >= 0.f && b > 0.f && a <= 1){
                 a_end       = b;                      //a_end => a * sensorLeft till point of cross, which it is b in this calculus
                 contactL    = true;
-                pointS1     = terrain.p2 + a * vAB;
+                pointS1     = terrain.p3 + a * vAB;
             }
         }
 
@@ -176,16 +177,17 @@ void MSensorComponent::updateSeenObjects()
             }
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && a <= 1.f){
+            if(a >= 0.f && b > 0.f && a <= 1.f){
                 b_end       = b;                      //b_end => a * sensorRight till point of cross, which it is b in this calculus
                 contactR    = true;
-                pointS2     = terrain.p2 + a * vAB;
+                pointS2     = terrain.p3 + a * vAB;
             }
         }
     }
 
     //Down
     if(terrC->getPrev() == nullptr){
+
         float a = 0.f, b = 0.f;
         glm::vec3 vAB = terrain.p1 - terrain.p4; //Vector de los puntos de abajo
         
@@ -200,11 +202,15 @@ void MSensorComponent::updateSeenObjects()
                 a = (position.x + sensorLeft.x * b - terrain.p4.x) / vAB.x;
             }
 
+            ///_______________DOLOR DE TEST__________________
+            std::cout<<"DOLORES. A: "<<a<<" , B: "<<b<<std::endl;
+            ///______________________________________________
+
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && a <= 1){
+            if(a >= 0.f && b > 0.f && a <= 1.f){
                 a_end       = b;                      //a_end => a * sensorLeft till point of cross, which it is b in this calculus
                 contactL    = true;
-                pointS1     = terrain.p2 + a * vAB;
+                pointS1     = terrain.p4 + a * vAB;
             }
         }
 
@@ -221,11 +227,15 @@ void MSensorComponent::updateSeenObjects()
                 a = (position.x + sensorRight.x * b - terrain.p4.x) / vAB.x;
             }
 
+            ///_______________DOLOR DE TEST__________________
+            std::cout<<"DOLORES. A: "<<a<<" , B: "<<b<<std::endl;
+            ///______________________________________________
+
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && a <= 1.f){
+            if(a >= 0.f && b > 0.f && a <= 1.f){
                 b_end       = b;                      //b_end => a * sensorRight till point of cross, which it is b in this calculus
                 contactR    = true;
-                pointS2     = terrain.p2 + a * vAB;
+                pointS2     = terrain.p4 + a * vAB;
             }
         }
     }
@@ -247,10 +257,10 @@ void MSensorComponent::updateSeenObjects()
             }
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && a <= 1){
+            if(a >= 0.f && b > 0.f && a <= 1){
                 a_end       = b;                      //a_end => a * sensorLeft till point of cross, which it is b in this calculus
                 contactL    = true;
-                pointS1     = terrain.p2 + a * vAB;
+                pointS1     = terrain.p1 + a * vAB;
             }
         }
 
@@ -268,30 +278,37 @@ void MSensorComponent::updateSeenObjects()
             }
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && a <= 1.f){
+            if(a >= 0.f && b > 0.f && a <= 1.f){
                 b_end       = b;                      //b_end => a * sensorRight till point of cross, which it is b in this calculus
                 contactR    = true;
-                pointS2     = terrain.p2 + a * vAB;
+                pointS2     = terrain.p1 + a * vAB;
             }
         }
     }
 
     if(contactL){   //if left sensor hit the wall
         //Calculate left point
-        pvo = std::make_shared<VObject>(pointS1, a_end, b_end, 1.f, 1);  //generate VObject with the data
+        pvo = std::make_shared<VObject>(pointS1, a_end, 0.f, 1.f, 1);    //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
     }
-     std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 1: "<<pointS1.x<<","<<pointS1.z<<" --- "<<a_end<<","<<b_end<<std::endl;
+
+
+    ///_______________DOLOR DE TEST__________________
+    std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 1: "<<pointS1.x<<","<<pointS1.z<<" --- "<<a_end<<std::endl;
+    ///______________________________________________
+
+
     if(contactR){
         //Calculate right point
-        pvo = std::make_shared<VObject>(pointS2, a_end, b_end, 1.f, 1);  //generate VObject with the data
+        pvo = std::make_shared<VObject>(pointS2, 0.f, b_end, 1.f, 1);    //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
     }
-    
+
+
     ///_______________DOLOR DE TEST__________________
-   
-    std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 2: "<<pointS2.x<<","<<pointS2.z<<" --- "<<a_end<<","<<b_end<<std::endl;
+    std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 2: "<<pointS2.x<<","<<pointS2.z<<" --- "<<b_end<<std::endl;
     ///______________________________________________
+
 
 }
 
@@ -309,3 +326,9 @@ void MSensorComponent::calculateAB(glm::vec3& objective, float* a, float* b){
     if(sensorLeft.x != 0)
         *a = (relativeP.z - (*b) * sensorRight.z) / sensorLeft.z;
 }
+
+//Auxiliar function to calculate the point of collision with a vector given one of the sensors
+//PARAMS: Terrain point 1, terrain point 2, is left = true / is right = false, *pointer boolean if the sensor is touching a surface
+/*glm::vec3 MSensorComponent::calculateSensorCollision(glm::vec3& t1, glm::vec3& t2, bool isLeft, bool* contact){
+        terrain.p3. terrain.p2, L o R, *contact, return glm ve3¡c3
+}*/
