@@ -29,7 +29,8 @@ void WaypointManager::update(float dTime) {
 }
 
 void WaypointManager::close() {
-
+    waypointComponentList.clear();
+    listSubNodes->clear();
 }
 
 IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer newGameObject, float r, int lvl)

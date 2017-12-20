@@ -18,7 +18,7 @@ void ScoreManager::init()
 
 void ScoreManager::close()
 {
-
+    players.clear();
 }
 
 //Static getter

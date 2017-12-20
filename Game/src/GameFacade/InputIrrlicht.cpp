@@ -1,6 +1,7 @@
 #include "InputIrrlicht.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/RenderManager.h"
+#include "../Game.h"
 
 #include <iostream>
 
@@ -14,7 +15,6 @@ void InputIrrlicht::updateInput() {
 
     if(!device->run()){
         EventManager::getInstance().addEvent(Event {EventType::Game_Close});
-        device->drop();
     }
         
 

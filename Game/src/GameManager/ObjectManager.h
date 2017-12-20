@@ -24,7 +24,9 @@ public:
     };
 
     //Constructor
-    ObjectManager() {}
+    ObjectManager() {
+        gameRunning = true;
+    }
 
     //Destructor
     ~ObjectManager() {}
@@ -66,9 +68,15 @@ public:
 
     void createMove(GameObject::Pointer obj, int move);
 
+    //Game running getter and setter
+    void setGameRunning(bool s) {   gameRunning = s;    }
+    bool getGameRunning()       {   return gameRunning; }
+
 private:
 
     //Map of objects
     std::map<uint16_t, GameObject::Pointer> objectsMap;
+
+    bool gameRunning;
 
 };
