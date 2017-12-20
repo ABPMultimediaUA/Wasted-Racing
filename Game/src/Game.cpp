@@ -41,7 +41,7 @@ void Game::init() {
     physicsManager = &PhysicsManager::getInstance();
     physicsManager->init();
 
-    //Initialize Waypoint Manager
+    //Initialize Waypoint Manager 
     waypointManager = &WaypointManager::getInstance();
     waypointManager->init();
 
@@ -123,13 +123,14 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
-    int i = 300;
+    //int i = 600;
     while(Game::stay){
         Game::update();
         Game::draw();
-        --i;
+        Game::stay = objectManager->getGameRunning();
+        /*--i;
         if(i<0)
-            break;
+            break;*/
     }
     Game::close();
 }

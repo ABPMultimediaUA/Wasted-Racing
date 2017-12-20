@@ -11,6 +11,7 @@
 //or deleted to the objectMap
 void objectCreated(EventData eData); 
 void objectDeleted(EventData eData); 
+void gameClosed(EventData eData); 
 
 //==============================================
 // OBJECT MANAGER FUNCTIONS
@@ -25,6 +26,7 @@ void ObjectManager::init() {
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Create, objectCreated});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleted});
+    EventManager::getInstance().addListener(EventListener {EventType::Game_Close, gameClosed});
 
 }
 
@@ -330,5 +332,11 @@ void objectCreated(EventData eData) {
 void objectDeleted(EventData eData) {
 
     ObjectManager::getInstance().deleteObject(eData.Id);
+
+}
+
+void gameClosed(EventData eData) {
+
+    ObjectManager::getInstance().setGameRunning(false);
 
 }
