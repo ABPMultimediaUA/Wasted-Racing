@@ -147,29 +147,34 @@ void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, floa
 
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    if(constantAlteredTime > 0) {
-        //While time is constant, velocity is constant and maximum
-        if(mData.vel < 0) {
-            constantAlteredTime = -1;
+    if(mData.vel!=0) {
+        if(constantAlteredTime > 0) {
+            //While time is constant, velocity is constant and maximum
+            if(mData.vel < 0) {
+                constantAlteredTime = -1;
+            }
+            else {
+                mData.vel = mData.max_vel;
+                constantAlteredTime -= dTime;
+            }
         }
-        else {
-            mData.vel = mData.max_vel;
-            constantAlteredTime -= dTime;
+        else if (decrementalAlteredTime > 0) {
+            //Calculate velocity decrease depending on dTime
+            float vel_diff = mData.max_vel - auxData.max_vel;
+            float vel      = (dTime*vel_diff)/maxDecrementalAT;
+
+            mData.vel     -= vel; 
+
+            decrementalAlteredTime -= dTime;
+
+            if(decrementalAlteredTime < 0)
+                mData.max_vel = auxData.max_vel;
         }
     }
-    else if (decrementalAlteredTime > 0) {
-        //Calculate velocity decrease depending on dTime
-        float vel_diff = mData.max_vel - auxData.max_vel;
-        float vel      = (dTime*vel_diff)/maxDecrementalAT;
-
-        mData.vel     -= vel; 
-
-        decrementalAlteredTime -= dTime;
-
-        if(decrementalAlteredTime < 0)
-            mData.max_vel = auxData.max_vel;
+    else {
+        constantAlteredTime = 0;
+        decrementalAlteredTime = 0;
     }
-
 }
 
 void MoveComponent::updateJump(LAPAL::movementData& mData, glm::vec3& pos, LAPAL::plane3f t){
