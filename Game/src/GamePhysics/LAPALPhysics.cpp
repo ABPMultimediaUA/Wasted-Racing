@@ -289,27 +289,29 @@ float LAPAL::calculateExpectedY(LAPAL::plane3f& terrain, LAPAL::vec3f& position 
 void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPAL::plane3f& terrain, LAPAL::vec3f& position){
     float y = calculateExpectedY(terrain, position);
     
-    //check if we are not touching the ground
-    if(position.y>y){
-         
-        //update vertical speed with gravity
-        mData.velY += gravity*dTime*mData.velY*0.05;
-
-        //update falling position
-        position.y -= mData.velY* dTime;
-        if(position.y < y)  //Correct position if we get under it
-            position.y = y; 
-
-        //if terrain is plane, reset gravity
-        if(terrain.rotX == 0 && terrain.rotZ == 0 && position.y == y)
-            mData.velY = gravity;
-
-        //if gravity is too high, cap gravity
-        if(mData.velY > gravity * 20)
-            mData.velY = gravity * 20;
-
-    }else{
-        position.y = y;
+    if(!mData.asc){
+        //check if we are not touching the ground
+        if(position.y>y){
+             
+            //update vertical speed with gravity
+            mData.velY += gravity*dTime*mData.velY*0.05;
+        
+            //update falling position
+            position.y -= mData.velY* dTime;
+            if(position.y < y)  //Correct position if we get under it
+                position.y = y; 
+        
+            //if terrain is plane, reset gravity
+            if(position.y == y)
+                mData.velY = gravity;
+        
+            //if gravity is too high, cap gravity
+            if(mData.velY > gravity * 20)
+                mData.velY = gravity * 20;
+        
+        }else{
+            position.y = y;
+        }
     }
     mData.jump = false;
 }

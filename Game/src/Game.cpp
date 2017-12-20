@@ -105,14 +105,14 @@ void Game::draw() {
 void Game::close() {
 
     physicsManager->close();
-    renderManager->close();
-    inputManager->close();
     eventManager->close();
     waypointManager->close();
     aiManager->close();
     sensorManager->close();
-    itemManager->close();
     scoreManager->close();
+    itemManager->close();
+    inputManager->close();
+    renderManager->close();
 }
 
 //====================================================
