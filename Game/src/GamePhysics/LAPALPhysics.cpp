@@ -143,7 +143,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
         mData.rotateX = 0.f;
     }else{
         //increment rotate speed
-        mData.rotateX += mData.rotate_inc*dTime;
+        mData.rotateX += mData.rotate_inc*dTime*50;
 
         if(abs(mData.rotateX)>abs(mData.max_rotate)){
             mData.rotateX = copysign(mData.max_rotate, mData.rotateX);
@@ -163,7 +163,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
         mData.rotateZ = 0.f;
     }else{
         //increment rotate speed
-        mData.rotateZ += mData.rotate_inc*dTime;
+        mData.rotateZ += mData.rotate_inc*dTime*50;
 
         if(abs(mData.rotateZ)>abs(mData.max_rotate)){
             mData.rotateZ = copysign(mData.max_rotate, mData.rotateZ);
