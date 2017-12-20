@@ -21,6 +21,8 @@ void RenderIrrlicht::openWindow(){
 
     font = sceneManager->getGUIEnvironment()->getFont("../media/img/fontcourier.bmp");
     pos = sceneManager->getGUIEnvironment()->addStaticText(L"Position: ", irr::core::recti(0,0, 200,50));
+    lap = sceneManager->getGUIEnvironment()->addStaticText(L"Lap: ", irr::core::recti(0, 20, 200, 50));
+    item = sceneManager->getGUIEnvironment()->addStaticText(L"Item: ", irr::core::recti(0, 40, 200, 50));
     pos->setOverrideFont(font);
 
     addCamera();
@@ -34,14 +36,32 @@ void RenderIrrlicht::openWindow(){
 
 void RenderIrrlicht::updateWindow() {
     updateCamera();
-    int h = pos->getTextHeight();
-    int w = pos->getTextWidth();
     int oM = ObjectManager::getInstance().getObject(50).get()->getComponent<ScoreComponent>().get()->getPosition();
-    std::cout <<  "Height: " << h << std::endl;
-    std::cout << "Width: " << w << std::endl;
+    int oL = ObjectManager::getInstance().getObject(50).get()->getComponent<ScoreComponent>().get()->getLap();
+    int iT = ObjectManager::getInstance().getObject(50).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+    irr::core::stringw stringLap = L"  LAP:";
+    irr::core::stringw stringItm = L"  ITEM:";
     irr::core::stringw stringPos = L"  POSITION:";
+    stringLap += oL;
+    switch(iT)
+    {
+        case -1: stringItm+="EMPTY";
+                 break;
+        case 0: stringItm+="RED SHELL";
+                 break;
+        case 1: stringItm+="BLUE SHELL";
+                 break;
+        case 2: stringItm+="BANANA";
+                 break;
+        case 3: stringItm+="MUSHROOM";
+                 break;
+        case 4: stringItm+="STAR";
+                 break;
+    }
     stringPos += oM;
     pos->setText(stringPos.c_str());
+    lap->setText(stringLap.c_str());
+    item->setText(stringItm.c_str());
 }
 
 void RenderIrrlicht::closeWindow() {

@@ -81,6 +81,10 @@ private:
 
     irr::gui::IGUIStaticText* pos;
 
+    irr::gui::IGUIStaticText* lap;
+
+    irr::gui::IGUIStaticText* item;
+
     irr::gui::IGUIFont* font;
 
 };
