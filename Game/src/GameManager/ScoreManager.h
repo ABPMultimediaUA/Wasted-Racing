@@ -31,7 +31,7 @@ class ScoreManager {
 
 
         //Getters
-        std::vector<ScoreComponent::Pointer> getPlayers() {return players;}
+        std::vector<ScoreComponent::Pointer>& getPlayers() {return players;}
         int getMaxLaps() {return maxLaps;}
 
         //Setters
