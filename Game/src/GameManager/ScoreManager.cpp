@@ -1,6 +1,9 @@
 #include "ScoreManager.h"
 #include <iostream>
 
+
+void objectDeleteScore(EventData);
+
 ScoreManager::ScoreManager()
 {
 
@@ -13,7 +16,7 @@ ScoreManager::~ScoreManager()
 
 void ScoreManager::init()
 {
-    
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteScore});
 }
 
 void ScoreManager::close()
@@ -151,6 +154,26 @@ void ScoreManager::update()
             int p = players[i].get()->getPosition();
             int id = players[i].get()->getGameObject().getId();
             std::cout << id << ": " << p << std::endl;
+        }
+    }
+}
+
+
+////////////////////////////////////////////
+//
+//      DELEGATES
+//
+////////////////////////////////////////////
+
+
+void objectDeleteScore(EventData eData) {
+
+    auto& scoreComponentList = ScoreManager::getInstance().getPlayers();
+
+    for(unsigned int i = 0; i<scoreComponentList.size(); ++i) {
+        if(eData.Id == scoreComponentList.at(i).get()->getGameObject().getId()) {
+            scoreComponentList.erase(scoreComponentList.begin() + i);
+            return;
         }
     }
 }

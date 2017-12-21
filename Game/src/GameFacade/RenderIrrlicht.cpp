@@ -96,7 +96,7 @@ void RenderIrrlicht::updateCamera() {
 }
 
 void RenderIrrlicht::addLight() {
-    auto node = sceneManager->addLightSceneNode(); 
+    auto node = sceneManager->addLightSceneNode(0, irr::core::vector3df(0,0,0), irr::video::SColorf(1.0,1.0,1.0), 500); 
     node->setPosition(irr::core::vector3df(0,150,0));
 }
 
@@ -123,6 +123,8 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
 
             case ObjectRenderComponent::Shape::Cube: {
                 node = sceneManager->addCubeSceneNode();
+                auto var = videoDriver->getTexture("media/img/road.jpg");
+                node->setMaterialTexture(0, var);
             }
             break;
             case ObjectRenderComponent::Shape::Sphere: {
@@ -132,19 +134,22 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
             case ObjectRenderComponent::Shape::Plane: {
                 auto plane = geometryCreator->createPlaneMesh(irr::core::dimension2d<irr::f32>(1,1));
                 node = sceneManager->addMeshSceneNode(plane);
+                auto var = videoDriver->getTexture("media/img/ramp.jpg");
+                node->setMaterialTexture(0, var);
             }
-            default: break;
+            break;
+            case ObjectRenderComponent::Shape::Mesh: {
+                auto plane = sceneManager->getMesh("media/mesh/amyrose.3ds");
+                node = sceneManager->addMeshSceneNode(plane);
+            }
+            default:
+            break;
         }
 
         //Set node transformation
         node->setPosition(irrPos);
         node->setRotation(irrRot);
         node->setScale(irrSca);
-
-        auto var = videoDriver->getTexture("media/img/stones.jpg");
-        node->setMaterialTexture(0, var);
-        std::cout << var << std::endl;
-        //while(true);
 
         nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
     }

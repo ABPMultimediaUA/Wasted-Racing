@@ -159,7 +159,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.dAcc = 10.f;
     mData.brake_acc = 10.f;
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, false, CollisionComponent::Type::Default);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);

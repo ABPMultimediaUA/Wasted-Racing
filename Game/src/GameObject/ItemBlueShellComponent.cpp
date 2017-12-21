@@ -4,7 +4,7 @@
 
 ItemBlueShellComponent::ItemBlueShellComponent(GameObject& newGameObject, GameObject& obj) : IItemComponent(newGameObject), player(obj)
 {
-    speed = 0.f;
+    speed = 1.f;
     consTime = 0.1f;
     decTime = 1.f;
 }
@@ -29,9 +29,11 @@ void ItemBlueShellComponent::update(float dTime)
 
     auto pos =getGameObject().getTransformData().position;
 
-    float distaneActualWay = (listNodes[lastVector].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector].get()->getTransformData().position.x - pos.x) +
-						(listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
-						(listNodes[lastVector].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector].get()->getTransformData().position.z - pos.z);
+    auto posWay = listNodes[lastVector].get()->getTransformData().position;
+
+    float distaneActualWay = (posWay.x - pos.x) * (posWay.x - pos.x) +
+						(posWay.y - pos.y) * (posWay.y - pos.y) +
+						(posWay.z - pos.z) * (posWay.z - pos.z);
 	float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
 	if(distaneActualWay <= radius*radius)
 	{
@@ -44,15 +46,27 @@ void ItemBlueShellComponent::update(float dTime)
 			lastVector = 0;
 		}
 	}
-    auto objective = glm::vec3(100,0,0); //= listNodes[lastVector]->getTransformData().position;
+    
+    vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
+    glm::vec3 objective = ScoreManager::getInstance().getPlayers()[0].get()->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
+
+    float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
+						(objective.y - pos.y) * (objective.y - pos.y) +
+						(objective.z - pos.z) * (objective.z - pos.z);
+	
+    if(distaneActualWay < distancePlayer)
+    {
+        objective = posWay;
+    }
+
     float a=0,b=0;
     vSensorComponent->calculateAB(objective, &a, &b);
     std::vector<VObject::Pointer> seenObjects;
-    //DECIDE STUFF
+    //DECIDE 
     float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);
-    //float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
+    float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
 
-    //moveComponent->changeSpin(turnValue);
+    moveComponent->changeSpin(turnValue);
 
     //Accelerate and brake
     moveComponent->isMoving(true);

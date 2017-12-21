@@ -15,6 +15,7 @@ void collideBlueShell(EventData eData);
 void collideItemBox(EventData eData);
 void objectDeletedCollide(EventData eData);   
 void objectDeletedMove(EventData eData);
+void objectDeletedCharacter(EventData eData);
 
 //==============================================
 // PHYSICS MANAGER FUNCTIONS
@@ -35,6 +36,7 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision, collideBlueShell});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCollide});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMove});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCharacter});
 
 }
 
@@ -140,7 +142,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
                     EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Collision, data});
                 }
-                else if(hisColl->getType() == CollisionComponent::Type::BlueShell)
+                else if(hisColl->getType() == CollisionComponent::Type::BlueShell && coll == ScoreManager::getInstance().getPlayers()[0].get()->getGameObject().getComponent<CollisionComponent>())
                 {
                     EventData data;
                     data.Component      = std::static_pointer_cast<IComponent>(move);
@@ -157,34 +159,34 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
 
     MoveComponent* ourMove = move.get(); 
 
-    float ourMass = ourMove->getMass();
-    float hisMass = 5;
+    //float ourMass = ourMove->getMass();
+    //float hisMass = 5;
 
     auto ourMData = ourMove->getMovemententData();
 
-    LAPAL::vec3f ourVel = ourMData.velocity;
-    LAPAL::vec3f hisVel = glm::vec3(0,0,0);
+    //LAPAL::vec3f ourVel = ourMData.velocity;
+    //LAPAL::vec3f hisVel = glm::vec3(0,0,0);
 
     //Calculate new velocity after collision
-    LAPAL::calculateElasticCollision(ourVel, ourMass, hisVel, hisMass);
-    ourMData.velocity = ourVel;
+    //LAPAL::calculateElasticCollision(ourVel, ourMass, hisVel, hisMass);
+    //ourMData.velocity = ourVel;
 
-    //Calculate new velocity module
-    float newVel    = -sqrt(ourVel.x*ourVel.x + ourVel.z*ourVel.z);
-    if(ourMData.vel < 0)
-        newVel = -newVel;
+    ////Calculate new velocity module
+    //float newVel    = -sqrt(ourVel.x*ourVel.x + ourVel.z*ourVel.z);
+    //if(ourMData.vel < 0)
+    //    newVel = -newVel;
 
-    ourMData.vel    = newVel;
+    ourMData.vel    = 0;
 
     //-----_TESTING_------
-    ourMData.spin = -ourMData.spin;
+    //ourMData.spin = -ourMData.spin;
 
     //Set new movement
     ourMove->setMovementData(ourMData);
-    auto tData = ourMove->getGameObject().getTransformData();
-    ourMove->getGameObject().setTransformData(tData);
-    ourMove->update(dTime);
-    ourMove->update(dTime);
+    //auto tData = ourMove->getGameObject().getTransformData();
+    //ourMove->getGameObject().setTransformData(tData);
+    //ourMove->update(dTime);
+    //ourMove->update(dTime);
 }
 
 
@@ -435,6 +437,11 @@ void collideBlueShell(EventData eData) {
 
     if(shell != nullptr) {
         move->changeMaxSpeedOverTime(shell.get()->getSpeed(), shell.get()->getConsTime(), shell.get()->getDecTime());
+
+        EventData data;
+        data.Id = shell->getGameObject().getId();
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
 }
 //Collide Item Box
@@ -448,7 +455,7 @@ void collideItemBox(EventData eData){
     auto obj = move->getGameObject();
 
     if(itemBox != nullptr){
-       if(coll->getGameObject().getTransformData().scale.x != 0 && coll->getGameObject().getTransformData().scale.y != 0 && coll->getGameObject().getTransformData().scale.z != 0){
+       if(move->getGameObject().getComponent<IItemComponent>() == nullptr && coll->getGameObject().getTransformData().scale.x != 0 && coll->getGameObject().getTransformData().scale.y != 0 && coll->getGameObject().getTransformData().scale.z != 0){
            itemBox->asignItem(obj);
            itemBox->deactivateBox();
        }
@@ -457,12 +464,11 @@ void collideItemBox(EventData eData){
 
 void objectDeletedCollide(EventData eData) {
 
-    auto collisionComponentList = PhysicsManager::getInstance().getCollisionComponentList();
+    auto& collisionComponentList = PhysicsManager::getInstance().getCollisionComponentList();
 
     for(unsigned int i = 0; i<collisionComponentList.size(); ++i) {
         if(eData.Id == collisionComponentList.at(i).get()->getGameObject().getId()) {
             collisionComponentList.erase(collisionComponentList.begin() + i);
-            PhysicsManager::getInstance().setCollisionComponentList(collisionComponentList);
             return;
         }
     }
@@ -470,11 +476,24 @@ void objectDeletedCollide(EventData eData) {
 
 void objectDeletedMove(EventData eData) {
 
-    auto moveComponentList = PhysicsManager::getInstance().getMoveComponentList();
+    auto& moveComponentList = PhysicsManager::getInstance().getMoveComponentList();
 
     for(unsigned int i = 0; i<moveComponentList.size(); ++i) {
         if(eData.Id == moveComponentList.at(i).get()->getGameObject().getId()) {
             moveComponentList.erase(moveComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+
+void objectDeletedCharacter(EventData eData) {
+
+    auto& movingCharacterList = PhysicsManager::getInstance().getMovingCharacterList();
+
+    for(unsigned int i = 0; i<movingCharacterList.size(); ++i) {
+        if(eData.Id == movingCharacterList[i].moveComponent->getGameObject().getId()) {
+            movingCharacterList.erase(movingCharacterList.begin() + i);
             return;
         }
     }

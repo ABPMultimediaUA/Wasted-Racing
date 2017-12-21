@@ -6,6 +6,9 @@
 //==============================================
 
 void addAIDrivingComponent(EventData data);
+void objectDeleteAIDriving(EventData data);
+void objectDeleteAIBattle(EventData data);
+
 
 //==============================================
 // AI MANAGER FUNCTIONS
@@ -21,6 +24,8 @@ void AIManager::init() {
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
     //No delete by the moment
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIDriving});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIBattle});
 
 }
 
@@ -39,6 +44,7 @@ void AIManager::init() {
 //------------------------------------
 void AIManager::update() {
     //Update of all behaviour trees
+
     for(unsigned int i=0; i<battleAI.size(); i++)
     {
         auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
@@ -53,8 +59,11 @@ void AIManager::update() {
         auto mSensorComponent = aiDrivingComponent->getGameObject().getComponent<MSensorComponent>().get();
         auto pathPlanningComponent = aiDrivingComponent->getGameObject().getComponent<PathPlanningComponent>().get();
         auto iItemComponent = aiDrivingComponent->getGameObject().getComponent<IItemComponent>().get();
-
+int add = 0;
         //If they all exist
+        if(iItemComponent != nullptr){
+            add++;
+        }
         if(aiDrivingComponent && moveComponent && vSensorComponent && mSensorComponent && iItemComponent == nullptr){
             //get all objects that are seen to the visual sensor
             std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
@@ -152,4 +161,28 @@ IComponent::Pointer AIManager::createAIBattleComponent(GameObject& newGameObject
 void addAIDrivingComponent(EventData data) {
     AIManager::getInstance().getAIDrivingComponentList().push_back(data.Component);
     data.Component.get()->init();
+}
+
+void objectDeleteAIDriving(EventData eData) {
+
+    auto& aIDrivingComponentList = AIManager::getInstance().getAIDrivingComponentList();
+
+    for(unsigned int i = 0; i<aIDrivingComponentList.size(); ++i) {
+        if(eData.Id == aIDrivingComponentList.at(i).get()->getGameObject().getId()) {
+            aIDrivingComponentList.erase(aIDrivingComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeleteAIBattle(EventData eData) {
+
+    auto& aIBattleComponentList = AIManager::getInstance().getAIBattleComponentList();
+
+    for(unsigned int i = 0; i<aIBattleComponentList.size(); ++i) {
+        if(eData.Id == aIBattleComponentList.at(i).get()->getGameObject().getId()) {
+            aIBattleComponentList.erase(aIBattleComponentList.begin() + i);
+            return;
+        }
+    }
 }

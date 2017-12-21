@@ -48,7 +48,7 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	float steeringNone = 0.0f, steeringLeft = 0.0f, steeringRight = 0.0f;
 
 	//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
-	float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
+	float atan_w = glm::atan(b,a)/3.14159265358979323846264338327f;
 
 	//-----------_TESTS_-----------
 	/*
@@ -75,7 +75,7 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 
 		//Accumulate the mean atan value of them all to pickpoint a medium point of no collisions
 		for(unsigned i = 0; i<array.size(); ++i){
-			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
+			atan_obs += (glm::atan(array[i].get()->getB(), array[i].get()->getA()) / 3.14159265358979323846264338327f )/array.size();
 		}
 
 		//collisions
@@ -180,7 +180,7 @@ float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, f
 		//Previous calculus
 		float atan_obs = 0.0f, min_value = FLT_MAX;
 		for(unsigned i = 0; i<array.size(); i++){
-			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
+			atan_obs += (glm::atan(array[i].get()->getB(),array[i].get()->getA()) / 3.14159265358979323846264338327f )/array.size();
 			min_value = glm::min(min_value,array[i].get()->getA()+array[i].get()->getB());
 		}
 

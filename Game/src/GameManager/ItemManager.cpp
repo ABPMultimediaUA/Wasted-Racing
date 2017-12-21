@@ -1,8 +1,7 @@
 #include "ItemManager.h"
 
 void objectDeleteItem(EventData eData);
-void objectDeleteItem(EventData eData);
-void objectDeleteItem(EventData eData);
+void objectDeleteHolder(EventData);
 
 ItemManager::ItemManager()
 {
@@ -18,8 +17,7 @@ ItemManager& ItemManager::getInstance(){
 void ItemManager::init(){
 
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteItem});
-    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteItem});
-    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteItem});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteHolder});
 
 }
 
@@ -90,7 +88,7 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = itemHolder->getItemType();
+    int random = 1;//itemHolder->getItemType();
     
     if(random == IItemComponent::ItemType::redShell)
     {
@@ -114,7 +112,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         itemHolder->setItemType(-1);
         auto component = createMushroom(obj);
         std::dynamic_pointer_cast<ItemMushroomComponent>(component)->init();
-        deleteMushroom(component);
+        deleteItem(component);
         return component;
     }
     else if(random == IItemComponent::ItemType::star)
@@ -122,7 +120,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         itemHolder->setItemType(-1);
         auto component = createStar(obj);
         std::dynamic_pointer_cast<ItemStarComponent>(component)->init();
-        deleteStar(component);
+        deleteItem(component);
         return component;
     }
     return nullptr;
@@ -188,21 +186,21 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     mData.angInc = 0;
     mData.angle = obj.getComponent<MoveComponent>()->getMovemententData().angle;
     mData.spin = 0;
-    mData.spin_inc = 0.01;
-    mData.max_spin = 0.1;
+    mData.spin_inc = 1;
+    mData.max_spin = 1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 400.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 200.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_vel = 0.f;
-    mData.velY = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.max_acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.dAcc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.brake_acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.velY = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.max_acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.dAcc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.brake_acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
 
 
     auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
@@ -311,7 +309,7 @@ IComponent::Pointer ItemManager::createStar(GameObject& obj)
 /////
 //////////////////////////////////////////////////////
 
-void ItemManager::deleteMushroom(IComponent::Pointer component)
+void ItemManager::deleteItem(IComponent::Pointer component)
 {
 
     EventData data;
@@ -320,17 +318,6 @@ void ItemManager::deleteMushroom(IComponent::Pointer component)
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
 
 }
-
-void ItemManager::deleteStar(IComponent::Pointer component)
-{
-
-    EventData data;
-    data.Id = component->getGameObject().getId();
-
-    EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
-
-}
-
 
 //////////////////////////////////////////////////////
 /////
@@ -340,11 +327,23 @@ void ItemManager::deleteStar(IComponent::Pointer component)
 
 void objectDeleteItem(EventData eData) {
 
-    auto bananaComponentList = ItemManager::getInstance().getItemComponents();
+    auto& itemComponentList = ItemManager::getInstance().getItemComponents();
 
-    for(unsigned int i = 0; i<bananaComponentList.size(); ++i) {
-        if(eData.Id == bananaComponentList.at(i).get()->getGameObject().getId()) {
-            bananaComponentList.erase(bananaComponentList.begin() + i);
+    for(unsigned int i = 0; i<itemComponentList.size(); ++i) {
+        if(eData.Id == itemComponentList.at(i).get()->getGameObject().getId()) {
+            itemComponentList.erase(itemComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeleteHolder(EventData eData) {
+
+    auto& holderComponentList = ItemManager::getInstance().getItemHolderComponents();
+
+    for(unsigned int i = 0; i<holderComponentList.size(); ++i) {
+        if(eData.Id == holderComponentList.at(i).get()->getGameObject().getId()) {
+            holderComponentList.erase(holderComponentList.begin() + i);
             return;
         }
     }
