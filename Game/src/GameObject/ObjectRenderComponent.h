@@ -10,7 +10,9 @@ public:
 		Cube,
 		Sphere,
 		Mesh,
-		Plane
+		Plane, 
+		Banana,
+		Shell
 	};
 
     //Constructor

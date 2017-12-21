@@ -25,7 +25,7 @@ void AIDrivingComponent::checkList()
 
 	for (size_t i = 0; i < listNodes.size(); i++)
 	{
-		std::cout<<"WAYPOINT POS: "<<listNodes[i].get()->getTransformData().position.x<<"\n";
+		//std::cout<<"WAYPOINT POS: "<<listNodes[i].get()->getTransformData().position.x<<"\n";
 	}
 }
 
@@ -87,7 +87,7 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 		float obs_right 	= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
 
 		//-----------_TESTS_-----------
-		std::cout<<"Obstacle values: "<<obs_left<<" - "<<obs_center<< " - " << obs_right<<std::endl;
+		//std::cout<<"Obstacle values: "<<obs_left<<" - "<<obs_center<< " - " << obs_right<<std::endl;
 		//-----------_TESTS_-----------
 
 

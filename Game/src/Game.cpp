@@ -195,50 +195,50 @@ void addObjects(){
     //===============================================================
     //Planes:
     id = 4;
-    transform.position = glm::vec3(0,-5,0);
+    transform.position = glm::vec3(0,-3,0);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(50,0.01,20);
     auto ob1 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 10;
-    transform.position = glm::vec3(500,45,0);
+    transform.position = glm::vec3(500,47,0);
     transform.rotation = glm::vec3(0,0,11.365);
     transform.scale    = glm::vec3(51,0.01,20);
     auto ob7 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 15;
-    transform.position = glm::vec3(875,95,-150);
+    transform.position = glm::vec3(875,97,-150);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(25,0.01,50);
     auto ob15 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 16;
-    transform.position = glm::vec3(800,95,-500);
+    transform.position = glm::vec3(800,97,-500);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(40,0.01,20);
     auto ob16 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 17;
-    transform.position = glm::vec3(550,84,-500);
+    transform.position = glm::vec3(550,87.25,-500);
     transform.rotation = glm::vec3(0,0,10.78252579);
-    transform.scale    = glm::vec3(10,0.01,20);
+    transform.scale    = glm::vec3(10.4,0.01,20);
     auto ob17 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 18;
-    transform.position = glm::vec3(125,75,-500);
+    transform.position = glm::vec3(125,77,-500);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(75,0.01,20);
     auto ob18 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 19;
-    transform.position = glm::vec3(-125,35,-250);
+    transform.position = glm::vec3(-125,37,-250);
     transform.rotation = glm::vec3(14.94,0,0);
     transform.scale    = glm::vec3(25,0.01,31.05);
     auto ob19 = ObjectManager::getInstance().createObject(id, transform);
 
     //Ramp:
     id = 12;
-    transform.position = glm::vec3(0,-4,0);
+    transform.position = glm::vec3(0,-2,0);
     transform.rotation = glm::vec3(0,0,0);
     transform.scale    = glm::vec3(10,10,30);
     auto ob9 = ObjectManager::getInstance().createObject(id, transform);
@@ -246,8 +246,8 @@ void addObjects(){
 
     //Obstacles:
     id = 6;
-    transform.position = glm::vec3(30,0,30);
-    transform.rotation = glm::vec3(0,0,0);
+    transform.position = glm::vec3(30,2,30);
+    transform.rotation = glm::vec3(45,45,0);
     transform.scale    = glm::vec3(1,1,1);
     auto ob3 = ObjectManager::getInstance().createObject(id, transform);
 
@@ -307,17 +307,9 @@ void addObjects(){
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob106 = ObjectManager::getInstance().createObject(id, transform);
 
-    //acceleration ramp
-    id = 12;
-    transform.position = glm::vec3(0,-4,0);
-    transform.rotation = glm::vec3(0,0,0);
-    transform.scale    = glm::vec3(10,10,30);
-    auto ob900 = ObjectManager::getInstance().createObject(id, transform);
-
     //ItemBox:
-  
     id = 25;
-    transform.position = glm::vec3(100, 0, 20);
+    transform.position = glm::vec3(100, 2, 20);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob25 = ObjectManager::getInstance().createObject(id, transform);
@@ -355,14 +347,14 @@ void addObjects(){
     std::shared_ptr<IComponent> cp16 = RenderManager::getInstance().createObjectRenderComponent(*ob19.get(), ObjectRenderComponent::Shape::Cube);
 
     //WAYPOINT
-    std::shared_ptr<IComponent> cp100 = RenderManager::getInstance().createObjectRenderComponent(*ob100.get(), ObjectRenderComponent::Shape::Sphere);
+    /*std::shared_ptr<IComponent> cp100 = RenderManager::getInstance().createObjectRenderComponent(*ob100.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp101 = RenderManager::getInstance().createObjectRenderComponent(*ob101.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp102 = RenderManager::getInstance().createObjectRenderComponent(*ob102.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp103 = RenderManager::getInstance().createObjectRenderComponent(*ob103.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp104 = RenderManager::getInstance().createObjectRenderComponent(*ob104.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp105 = RenderManager::getInstance().createObjectRenderComponent(*ob105.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp106 = RenderManager::getInstance().createObjectRenderComponent(*ob106.get(), ObjectRenderComponent::Shape::Sphere);
-    
+    */
     //ITEM BOX
     std::shared_ptr<IComponent> cp25 = RenderManager::getInstance().createObjectRenderComponent(*ob25.get(), ObjectRenderComponent::Shape::Cube);
 
@@ -503,8 +495,8 @@ void addObjects(){
 
     id = 50;
     transform.position = glm::vec3(-30,0,0);
-    transform.rotation = glm::vec3(0,0,0);
-    transform.scale    = glm::vec3(0.5,0.5,0.5);
+    transform.rotation = glm::vec3(0,90,0);
+    transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 0, 0, id, terrain, terrainCP1);
 
     //===============================================================

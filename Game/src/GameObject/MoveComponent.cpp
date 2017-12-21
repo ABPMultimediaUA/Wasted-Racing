@@ -50,19 +50,17 @@ void MoveComponent::update(float dTime) {
     
     ///*===========================================================================================
     // DEBUG
-    if(id == 55){
+    if(id == 50){
         system("clear");
-        std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
-        std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
-        std::cout << " ANG X " << trans.rotation.x << " ANG Y " << trans.rotation.y << " ANG Z " << trans.rotation.z << std::endl;
+        //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
+        //std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
+        //std::cout << " ANG X " << trans.rotation.x << " ANG Y " << trans.rotation.y << " ANG Z " << trans.rotation.z << std::endl;
         //std::cout << " POS Y " << trans.position.y << std::endl;
         std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
-        std::cout << " INCR ANGLE " << mData.spin << std::endl;
-        std::cout << " ANGULO GIRO " << mData.angle << std::endl;
-        //std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
-        //std::cout << " Aceleración " << mData.acc << std::endl;
+        std::cout << " INCR ANGLE: " << mData.spin_inc << std::endl;
+        std::cout << " ANGULO VELOCIDAD: " << mData.spin << std::endl;
+        std::cout << " ANGULO GIRO: " << mData.angle << std::endl;
         std::cout << " Velocidad " << mData.vel << std::endl;
-        //std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
         //std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
         //std::cout << " VEL Y " << mData.velY << std::endl;
 
@@ -85,49 +83,44 @@ void MoveComponent::close() {
 
 //Physics related functions
 void MoveComponent::changeAccInc(float n) {
-    mData.dAcc = n;
+    mData.dAcc     = n;
 }
 
 void MoveComponent::changeSpinIncrement(float n) {
+    //Reset spin speed in case of change of direction
     mData.spin_inc = n;
 }
 
 void MoveComponent::isMoving(bool m){
-    mData.mov = m;
+    mData.mov      = m;
 }
 
 void MoveComponent::changeAngleInc(float i){
-    mData.angInc = i;
+    mData.angInc   = i;
 }
 
 void MoveComponent::isJumping(bool j){
-        mData.jump = j;
+    mData.jump = j;
 }
 void MoveComponent::isSpinning(bool s){
-    mData.spi = s;
+    mData.spi      = s;
 }
 
 void MoveComponent::changeSpin(float n) {
-    mData.spin = mData.max_spin * n;
+    mData.spin     = mData.max_spin * n;
 }
 
 void MoveComponent::changeAcc(float a){
-    mData.acc  = mData.max_acc  * a;
+    mData.acc      = mData.max_acc  * a;
 }
 
 void MoveComponent::isDrifting(bool d){
-    mData.drift = d;
-    
-    //Change directions
-    if(d && mData.spin<0){
-        mData.driftDir=false;
-    }else{
-        mData.driftDir=true;
-    }
+    mData.drift    = d;
+    mData.driftDir = (d && mData.spin_inc < 0) ? 1.f : -1.f ; //if it is drifting activation, change direction of drift to the speed one. (negative spin = right turn)
 }
 
 void MoveComponent::isBraking(bool b) {
-    mData.braking = b;
+    mData.braking  = b;
 }
 
 
@@ -147,7 +140,7 @@ void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, floa
 
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    if(mData.vel!=0) {
+    if(mData.vel>=0) {
         if(constantAlteredTime > 0) {
             //While time is constant, velocity is constant and maximum
             if(mData.vel < 0) {
