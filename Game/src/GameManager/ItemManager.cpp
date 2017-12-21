@@ -88,7 +88,7 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = 1;//itemHolder->getItemType();
+    int random = itemHolder->getItemType();
     
     if(random == IItemComponent::ItemType::redShell)
     {
@@ -145,7 +145,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     transform.position = glm::vec3(pos.x+10*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-10*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(0.2, 0.2, 0.2);
+    transform.scale    = glm::vec3(2,2,2);
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
@@ -153,7 +153,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     ob.get()->addComponent(component);
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Shell);
     //PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::BlueShell);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
@@ -171,7 +171,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(0.2, 0.2, 0.2);
+    transform.scale    = glm::vec3(2,2,2);
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
@@ -217,7 +217,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Shell);
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::BlueShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -242,7 +242,7 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
     transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z+10*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(0.2, 0.2, 0.2);
+    transform.scale    = glm::vec3(1, 1, 1);
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
@@ -250,7 +250,7 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
     ob.get()->addComponent(component);
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Banana);
     PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Banana);
 
 

@@ -176,17 +176,19 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
     //if(ourMData.vel < 0)
     //    newVel = -newVel;
 
-    ourMData.vel    = 0;
+    ourMData.vel    = -0.1;
 
     //-----_TESTING_------
     //ourMData.spin = -ourMData.spin;
 
     //Set new movement
     ourMove->setMovementData(ourMData);
-    //auto tData = ourMove->getGameObject().getTransformData();
-    //ourMove->getGameObject().setTransformData(tData);
-    //ourMove->update(dTime);
-    //ourMove->update(dTime);
+    auto tData = ourMove->getGameObject().getTransformData();
+
+    tData.position.x -= ourMData.velocity.x*dTime;
+    tData.position.z -= ourMData.velocity.z*dTime;
+
+    ourMove->getGameObject().setTransformData(tData);
 }
 
 
