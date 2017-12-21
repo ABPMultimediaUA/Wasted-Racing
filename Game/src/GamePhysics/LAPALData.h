@@ -60,10 +60,8 @@ namespace LAPAL{
         float max_rotate        = 0.0f;         //maximum rotation speed
 
         //Drifting variables
-        float radius_in         = 0.0f;         //in the ellipse formation, the inner circle
-        float radius_ex         = 0.0f;         //in the ellipse formation, the outer circle
-        float tAngle            = 0.0f;         //Angle inside the drift ellipse. Initially always 0.
-        float driftDir          = 0.0f;         //Direction of drifting
+        float driftDir          = 0.f;         //Direction of drifting
+        float driftIncrement    = -10;         //Initial increment of drifting angle
 
         //Movement vectors
         vec3f velocity          = glm::vec3(0,0,0); //base velocity in 3d
