@@ -48,10 +48,9 @@ namespace LAPAL {
     //--------------------------------------
 
     //Calculates values A and B which are the scalars that multiply vector A and B to compose the point C in 2D (X-Z plane)
-    void calculateAB(const LAPAL::vec3f& vecC, const LAPAL::vec3f& vecA, const LAPAL::vec3f& vecB, float* a, float* b);
-    
+
     //Calculates values A and B in given terrain, using Cross vectors (from p1 to p3 and from p2 to p4 OR down-left to up-right and up-left to down-right)
-    void calculateTerrainAB(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, float* a, float* b);
+    void calculateConstantAB(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, float* a, float* b);
 
     //Calculates the distance between a line defined by two points (l1,l2) and a point (p1)
     float distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1);

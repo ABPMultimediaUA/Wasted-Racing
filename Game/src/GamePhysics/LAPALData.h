@@ -65,6 +65,13 @@ namespace LAPAL{
 
         //Movement vectors
         vec3f velocity          = glm::vec3(0,0,0); //base velocity in 3d
+        vec3f finalAcc          = glm::vec3(0,0,0); //final acceleration
+        vec3f accDif            = glm::vec3(0,0,0); //difference of acceleration
+
+        //Force vectors
+        vec3f netForce          = glm::vec3(0,0,0); 
+        vec3f frictionForce     = glm::vec3(0,0,0); //All the forces must be in Newtons
+        vec3f gravityForce      = glm::vec3(0,0,0);
 
         //Jump variables
         float posY = 0.0;      //Relative position in y when the jump starts

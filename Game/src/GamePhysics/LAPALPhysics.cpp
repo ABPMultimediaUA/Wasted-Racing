@@ -104,9 +104,8 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     //if spinning
     mData.spin += mData.spin_inc * dTime; //Spin depends on vel and spin_inc
 
-    //if not spinning
+    //if not
     if(!mData.spi) {
-        //Sensibility of spinning
         if(abs(mData.spin) < 0.001) {
             mData.spin = 0;
         
@@ -116,12 +115,13 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
         }
     }
 
-    //Copy sign of max_spinning
     if(abs(mData.spin)>abs(mData.max_spin)){
         mData.spin = copysign(mData.max_spin, mData.spin);
     }
 
-    mData.angle += mData.spin;
+    if(!mData.drift){
+        mData.angle += mData.spin;
+    }
 }
 
 
@@ -191,13 +191,26 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
         //Check if drifting is pressed
         if(mData.drift){
             //Initial variables
-            mData.driftIncrement = 0.785398163397f;                 //increment drift turn
+            if(mData.driftIncrement == -10.f){
+                //Initial drift depends on the side it's initially turning to
+                mData.driftIncrement = 0.785398163397f;                 //increment drift turn
+            }
+
+            float increment = mData.spin / mData.max_spin; //increment of drift dvalue, based on incremental spin (more drift the more you spin)
 
             //if true, drift going left and NPC was right
             if(mData.driftDir == 1.0f){
                 //if spin is going in the same direction as when it began (right)
                 if(mData.spin_inc < 0){
-                    mData.angle -= dTime*2;
+                    mData.angle  -= dTime*2;
+                }
+                
+                if(mData.spin_inc > 0){
+                    if(mData.driftIncrement     < 0.785398163397f){
+                        mData.driftIncrement += dTime;
+                    }else{
+                        mData.driftIncrement = 0.785398163397f;
+                    }
                 }
 
                 //Update velocity with 90º vector
@@ -208,7 +221,7 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
             if(mData.driftDir == -1.f){
                 //if spin is positive, it is going in the same direction as when it began ( left)
                 if(mData.spin_inc > 0){
-                    mData.angle += dTime*2;
+                    mData.angle          += dTime*2;
                 }
 
                 //Update velocity with 90º vector
@@ -216,6 +229,7 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
                 mData.velocity.z += mData.vel*sin(mData.angle - mData.driftIncrement);
             }
         }else{
+            mData.driftIncrement = -10.f;
             mData.driftDir       = 0.f;
         }
     }
@@ -295,7 +309,7 @@ float LAPAL::calculateExpectedY(LAPAL::plane3f& terrain, LAPAL::vec3f& position 
         float a, b;
 
         //Using auxiliar function to calculate them
-        calculateTerrainAB(terrain, position, &a, &b);
+        calculateConstantAB(terrain, position, &a, &b);
 
         //Returns the Y value correspondent
         return a * (terrain.p3 - terrain.p1).y + b  * (terrain.p4 - terrain.p2).y + terrain.p1.y;
@@ -337,49 +351,21 @@ void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPA
 //---------------MATHS------------------
 //--------------------------------------
 
-//Calculates values A and B which are the scalars that multiply vector A and B to compose the point/vector C in 2D (X-Z plane) inside the terrain given
-void LAPAL::calculateAB(const LAPAL::vec3f& vecC, const LAPAL::vec3f& vecA, const LAPAL::vec3f& vecB, float* a, float* b){
-    
-    //float to double conversion
-    double a_x = vecA.x;
-    double a_z = vecA.z;
-    double b_x = vecB.x;
-    double b_z = vecB.z;
-    double c_x = vecC.x;
-    double c_z = vecC.z;
+//Calculates values A and B which are the scalars that multiply vector A and B to compose the point C in 2D (X-Z plane) inside the terrain given
+void LAPAL::calculateConstantAB(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, float* a, float* b){
+    *a = 0.f;
+    *b = 0.f;
 
-    //Final answer
-    double aux_a = 0.0;
-    double aux_b = 0.0;
-
-    //High precision calculus
-    if(b_x * a_z != b_z * a_x){
-        aux_a = (c_z * a_x - c_x * a_z) / (b_z * a_x - b_x * a_z);
-    }
-    if(a_z != 0){
-        aux_b = (c_z - aux_a * b_z) / a_z;
-    }
-
-    //Conversion to float of calculus
-    *a = (float) aux_a;
-    *b = (float) aux_b;
-
-}
-
-//Calculates values A and B in given terrain, using Cross vectors (from p1 to p3 and from p2 to p4 OR down-left to up-right and up-left to down-right)
-void LAPAL::calculateTerrainAB(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, float* a, float* b){
     //Vector that will compose the position inside the terrain
     glm::vec3 vec_a = terrain.p3 - terrain.p1;
     glm::vec3 vec_b = terrain.p4 - terrain.p2;
     glm::vec3 relativeP = position - terrain.p1;
 
     //Composing the scalars
-    calculateAB(relativeP, vec_a, vec_b, a, b);
-
-    /*if(vec_a.x * vec_b.z != vec_a.z * vec_b.x) 
+    if(vec_a.x * vec_b.z != vec_a.z * vec_b.x) 
         *a = (relativeP.x * vec_b.z - relativeP.z * vec_b.x) /(vec_a.x * vec_b.z - vec_a.z * vec_b.x);
     if(vec_b.z != 0)
-        *b = (relativeP.z - (*a) * vec_a.z) / vec_b.z;*/
+        *b = (relativeP.z - (*a) * vec_a.z) / vec_b.z;
 
 }
 
