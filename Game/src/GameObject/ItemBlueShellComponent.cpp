@@ -65,7 +65,7 @@ void ItemBlueShellComponent::update(float dTime)
     vSensorComponent->calculateAB(objective, a, b);
     std::vector<VObject::Pointer> seenObjects;
     //DECIDE 
-    float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);
+    float turnValue = aiDrivingComponent->girar(seenObjects, seenObjects, objective, a, b);
 
     moveComponent->changeSpin(turnValue);
 

@@ -33,7 +33,7 @@ void SensorManager::update() {
     auto collisionList =  PhysicsManager::getInstance().getCollisionComponentList();
     for(unsigned i = 0; i < collisionList.size(); ++i){
         if(collisionList[i] != nullptr){}
-            //worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
+            worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
     }
 
     //Update visual sensors

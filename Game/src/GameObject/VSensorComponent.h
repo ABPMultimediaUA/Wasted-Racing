@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ISensorComponent.h"
+#include "../GamePhysics/LAPALPhysics.h"
 #include "VObject.h"
 #include <glm/ext.hpp>
 #include <vector>
