@@ -92,14 +92,16 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
         if( hisColl != ourColl ) { //If the collider is different to the one of ourselves
 
             bool collision;
+
+            auto nexPosition = ourColl->getGameObject().getTransformData().position + (move.get()->getMovemententData().velocity * dTime);
             
             if(hisColl->getShape() == CollisionComponent::Shape::Circle) {
-                collision = LAPAL::checkCircleCircleCollision(  ourColl->getGameObject().getTransformData().position, ourColl->getRadius(), 
+                collision = LAPAL::checkCircleCircleCollision(  nexPosition, ourColl->getRadius(), 
                                                                 hisColl->getGameObject().getTransformData().position, hisColl->getRadius());
             } 
             else if(hisColl->getShape() == CollisionComponent::Shape::Rectangle) {
                 collision = LAPAL::checkCircleRectangleCollision(   hisColl->getRectangle(), 
-                                                                    ourColl->getGameObject().getTransformData().position, ourColl->getRadius());
+                                                                    nexPosition, ourColl->getRadius());
             }
 
             if(collision && hisColl->getKinetic()){
@@ -186,19 +188,20 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
     //if(ourMData.vel < 0)
     //    newVel = -newVel;
 
-    ourMData.vel    = -0.1;
+    ourMData.vel    = 0;
+    ourMData.acc    = 0;
 
     //-----_TESTING_------
     //ourMData.spin = -ourMData.spin;
 
     //Set new movement
     ourMove->setMovementData(ourMData);
-    auto tData = ourMove->getGameObject().getTransformData();
-
-    tData.position.x -= ourMData.velocity.x*dTime;
-    tData.position.z -= ourMData.velocity.z*dTime;
-
-    ourMove->getGameObject().setTransformData(tData);
+    //auto tData = ourMove->getGameObject().getTransformData();
+//
+    //tData.position.x -= ourMData.velocity.x*dTime;
+    //tData.position.z -= ourMData.velocity.z*dTime;
+//
+    //ourMove->getGameObject().setTransformData(tData);
 }
 
 
