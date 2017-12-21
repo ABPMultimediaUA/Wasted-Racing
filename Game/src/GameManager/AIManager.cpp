@@ -86,8 +86,8 @@ int add = 0;
 
 
             //Update A and B of the objective
-            float a=0,b=0;
-            vSensorComponent->calculateAB(objective, &a, &b);
+            float a = 0.f,b = 0.f;
+            vSensorComponent->calculateAB(objective, a, b);
 
             //DECIDE STUFF
             float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);

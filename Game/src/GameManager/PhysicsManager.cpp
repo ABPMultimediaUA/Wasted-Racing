@@ -213,17 +213,22 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         float radius    = ourColl->getRadius();
         
         //Composition values of the point inside the terrain
-        float a, b;
+        float a = 0.f, b = 0.f;
+        glm::vec3 nextPosition;
 
         //Future position:
-        glm::vec3 nextPosition(
+        if(ourMovementData.vel != 0){
+            nextPosition = glm::vec3(
                                 ourMData.position.x + ourMovementData.velocity.x / ourMovementData.vel * radius,
                                 ourMData.position.y + ourMovementData.velocity.y / ourMovementData.vel * radius,
                                 ourMData.position.z + ourMovementData.velocity.z / ourMovementData.vel * radius
                                 );
-
+        }else{
+            nextPosition = ourMData.position;
+        }
         //Calculate A and B for the object radius in the direction of its movement
-        LAPAL::calculateConstantAB(terrain, nextPosition, &a, &b);
+        LAPAL::calculateTerrainAB(terrain, nextPosition, a, b);
+
 
         //Check if we are out of front bounds
         if(a>0 && b<0 && glm::abs(a)+glm::abs(b)>=1){
@@ -232,7 +237,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                 return;
             }else{
                 //Check if we are inside the next terrain. If not, still collide.
-                LAPAL::calculateConstantAB(ourTerr->getNext()->getTerrain(), nextPosition, &a, &b);
+                LAPAL::calculateTerrainAB(ourTerr->getNext()->getTerrain(), nextPosition, a, b);
                 if(a+b >= 0 && abs(a)+abs(b)<=1){
                     //Inside the next terrain
                     ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
@@ -251,7 +256,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
             }
             else{
                 //Check if we are inside the next terrain. If not, still collide.
-                LAPAL::calculateConstantAB(ourTerr->getRight()->getTerrain(), nextPosition, &a, &b);
+                LAPAL::calculateTerrainAB(ourTerr->getRight()->getTerrain(), nextPosition, a, b);
                 if(a+b >= 0 && abs(a)+abs(b)<=1){
                     //Inside the next terrain
                     ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
@@ -270,7 +275,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
             }
             else{
                 //Check if we are inside the next terrain. If not, still collide.
-                LAPAL::calculateConstantAB(ourTerr->getPrev()->getTerrain(), nextPosition, &a, &b);
+                LAPAL::calculateTerrainAB(ourTerr->getPrev()->getTerrain(), nextPosition, a, b);
                 if(a+b >= 0 && abs(a)+abs(b)<=1){
                     //Inside the next terrain
                     ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
@@ -290,7 +295,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
             }
             else{
                 //Check if we are inside the next terrain. If not, still collide.
-                LAPAL::calculateConstantAB(ourTerr->getLeft()->getTerrain(), nextPosition, &a, &b);
+                LAPAL::calculateTerrainAB(ourTerr->getLeft()->getTerrain(), nextPosition, a, b);
                 if(a+b >= 0 && abs(a)+abs(b)<=1){
                     //Inside the next terrain
                     ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain

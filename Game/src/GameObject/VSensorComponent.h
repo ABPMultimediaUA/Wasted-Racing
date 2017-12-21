@@ -30,7 +30,7 @@ class VSensorComponent : public ISensorComponent{
         void updateSeenObjects(std::vector<GameObject> objects);
 
         //Auxiliar function to calculate A and B of given objective
-        void calculateAB(glm::vec3 objective, float* a, float* b);
+        void calculateAB(glm::vec3 objective, float& a, float& b);
 
         //Getters and setters
         std::vector<VObject::Pointer> getSeenObjects()           {   return seenObjects;    };

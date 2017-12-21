@@ -189,28 +189,14 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
     //Check if it is turning somewhere
     if(mData.spin_inc != 0){
         //Check if drifting is pressed
-        if(mData.drift){
+        if(mData.drift){ 
             //Initial variables
-            if(mData.driftIncrement == -10.f){
-                //Initial drift depends on the side it's initially turning to
-                mData.driftIncrement = 0.785398163397f;                 //increment drift turn
-            }
-
-            float increment = mData.spin / mData.max_spin; //increment of drift dvalue, based on incremental spin (more drift the more you spin)
-
+        
             //if true, drift going left and NPC was right
             if(mData.driftDir == 1.0f){
                 //if spin is going in the same direction as when it began (right)
                 if(mData.spin_inc < 0){
                     mData.angle  -= dTime*2;
-                }
-                
-                if(mData.spin_inc > 0){
-                    if(mData.driftIncrement     < 0.785398163397f){
-                        mData.driftIncrement += dTime;
-                    }else{
-                        mData.driftIncrement = 0.785398163397f;
-                    }
                 }
 
                 //Update velocity with 90º vector
@@ -229,7 +215,6 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
                 mData.velocity.z += mData.vel*sin(mData.angle - mData.driftIncrement);
             }
         }else{
-            mData.driftIncrement = -10.f;
             mData.driftDir       = 0.f;
         }
     }
@@ -306,10 +291,10 @@ float LAPAL::calculateExpectedY(LAPAL::plane3f& terrain, LAPAL::vec3f& position 
         return terrain.p1.y;
     }else{
         //Scalars that determine the position Y of the object given the vectors needed to compose its position in X and Z
-        float a, b;
+        float a = 0.f, b = 0.f;
 
         //Using auxiliar function to calculate them
-        calculateConstantAB(terrain, position, &a, &b);
+        calculateTerrainAB(terrain, position, a, b);
 
         //Returns the Y value correspondent
         return a * (terrain.p3 - terrain.p1).y + b  * (terrain.p4 - terrain.p2).y + terrain.p1.y;
@@ -350,22 +335,49 @@ void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPA
 //--------------------------------------
 //---------------MATHS------------------
 //--------------------------------------
+//Calculates values A and B which are the scalars that multiply vector 1 and 2 to compose the point C in 2D (X-Z plane) inside the terrain givenç
+void LAPAL::calculateAB(const LAPAL::vec3f& vecC, const LAPAL::vec3f& vec1, const LAPAL::vec3f& vec2,  float& a, float& b){
+    double a_x = vec2.x;
+    double a_z = vec2.z;
+    double b_x = vec1.x;
+    double b_z = vec1.z;
+    double c_x = vecC.x;
+    double c_z = vecC.z;
+    double aux_a = 0;
+    double aux_b = 0;
+    
 
-//Calculates values A and B which are the scalars that multiply vector A and B to compose the point C in 2D (X-Z plane) inside the terrain given
-void LAPAL::calculateConstantAB(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, float* a, float* b){
-    *a = 0.f;
-    *b = 0.f;
+    //Composing vectors a * vec1 +  b * vec2 = vecC
+    if(b_x * a_z != b_z * a_x){
+        aux_a = (c_z * a_x - c_x * a_z) / (b_z * a_x - b_x * a_z);
+    }
+    if(a_z != 0.0){
+        aux_b = (c_z - aux_a * b_z) / a_z;
+    }
+
+
+    a = aux_a;
+    b = aux_b;
+}
+
+
+//Calculates values A and B in given terrain, using Cross vectors (from p1 to p3 and from p2 to p4 OR down-left to up-right and up-left to down-right)
+void LAPAL::calculateTerrainAB(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, float& a, float& b){
 
     //Vector that will compose the position inside the terrain
-    glm::vec3 vec_a = terrain.p3 - terrain.p1;
-    glm::vec3 vec_b = terrain.p4 - terrain.p2;
+    glm::vec3 vec_a     =   terrain.p3 - terrain.p1;
+    glm::vec3 vec_b     =   terrain.p4 - terrain.p2;
     glm::vec3 relativeP = position - terrain.p1;
 
     //Composing the scalars
+    calculateAB(relativeP, vec_a, vec_b, a, b);
+
+    /*
     if(vec_a.x * vec_b.z != vec_a.z * vec_b.x) 
         *a = (relativeP.x * vec_b.z - relativeP.z * vec_b.x) /(vec_a.x * vec_b.z - vec_a.z * vec_b.x);
     if(vec_b.z != 0)
         *b = (relativeP.z - (*a) * vec_a.z) / vec_b.z;
+        */
 
 }
 

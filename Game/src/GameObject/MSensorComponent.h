@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ISensorComponent.h"
+#include "VSensorComponent.h"
 #include "VObject.h"
 #include <glm/ext.hpp>
 #include <vector>
@@ -32,7 +33,7 @@ class MSensorComponent : public ISensorComponent{
         void updateMapCollisions();
 
         //Auxiliar function to calculate A and B of given objective
-        void calculateAB(glm::vec3& objective, float* a, float* b);
+        void calculateABTerrainBack(glm::vec3& objective, float& a, float& b);
 
         //Auxiliar function to calculate A and B of composition of individual sensors
         glm::vec3 calculateSensorCollision(glm::vec3& position, glm::vec3& tPoint, float* a, float* b);

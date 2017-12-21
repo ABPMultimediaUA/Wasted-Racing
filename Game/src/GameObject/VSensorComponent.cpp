@@ -28,7 +28,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
     //initial variables
     size_t i;                                                                   //Counter
     VObject::Pointer pvo;                                                       //VPointer included in the end result
-    float a = 0, b = 0;                                                         //initial a and b (left and right sensor, respectively)
+    float a = 0.f, b = 0.f;                                                         //initial a and b (left and right sensor, respectively)
 
     /* //TESTING
         std::cout<<"AnglI: "<<angleInitial<<", AnglV: "<<angleVision<<"\n";
@@ -44,7 +44,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
     {
         //auto ob = objects[i].get();                                                         //get object
         
-        calculateAB(objects[i].getTransformData().position, &a, &b);       //Do the math
+        calculateAB(objects[i].getTransformData().position, a, b);       //Do the math
 
         //if both are inside the cone contained by A and B
         if(a > 0 && b > 0)  
@@ -64,7 +64,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
 }
 
 //Auxiliar function to calculate A and B of given objective
-void VSensorComponent::calculateAB(glm::vec3 objective, float* a, float* b){
+void VSensorComponent::calculateAB(glm::vec3 objective, float& a, float& b){
     glm::vec3 relativeP;
     
     //update sensors
@@ -84,17 +84,13 @@ void VSensorComponent::calculateAB(glm::vec3 objective, float* a, float* b){
     double aux_a = 0;
     double aux_b = 0;
     //
-    if(sR_x * sL_x != sR_z * sL_x){
+    if(sR_x * sL_z != sR_z * sL_x){
         aux_a = (r_z * sL_x - r_x * sL_z) / (sR_z * sL_x - sR_x * sL_z);
     }
-    if(sL_x != 0){
+    if(sL_z != 0){
         aux_b = (r_z - aux_a * sR_z) / sL_z;
     }
 
-    *a = (float) aux_a;
-    *b = (float) aux_b;
-    /*if(sensorRight.x*sensorLeft.z != sensorRight.z*sensorLeft.x) 
-        *b = (relativeP.z * sensorLeft.x - relativeP.x*sensorLeft.z) /(sensorRight.z * sensorLeft.x - sensorRight.x*sensorLeft.z);
-    if(sensorLeft.x != 0)
-        *a = (relativeP.z - (*b) * sensorRight.z) / sensorLeft.z;*/
+    a = (float) aux_a;
+    b = (float) aux_b;
 }
