@@ -219,9 +219,9 @@ void addObjects(){
     auto ob16 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 17;
-    transform.position = glm::vec3(550,87,-500);
+    transform.position = glm::vec3(550,87.25,-500);
     transform.rotation = glm::vec3(0,0,10.78252579);
-    transform.scale    = glm::vec3(10,0.01,20);
+    transform.scale    = glm::vec3(10.4,0.01,20);
     auto ob17 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 18;
@@ -246,8 +246,8 @@ void addObjects(){
 
     //Obstacles:
     id = 6;
-    transform.position = glm::vec3(30,0,30);
-    transform.rotation = glm::vec3(0,0,0);
+    transform.position = glm::vec3(30,2,30);
+    transform.rotation = glm::vec3(45,45,0);
     transform.scale    = glm::vec3(1,1,1);
     auto ob3 = ObjectManager::getInstance().createObject(id, transform);
 
@@ -309,7 +309,7 @@ void addObjects(){
 
     //ItemBox:
     id = 25;
-    transform.position = glm::vec3(100, 0, 20);
+    transform.position = glm::vec3(100, 2, 20);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob25 = ObjectManager::getInstance().createObject(id, transform);

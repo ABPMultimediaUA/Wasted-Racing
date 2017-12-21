@@ -147,7 +147,7 @@ void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, floa
 
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    if(mData.vel!=0) {
+    if(mData.vel>=0) {
         if(constantAlteredTime > 0) {
             //While time is constant, velocity is constant and maximum
             if(mData.vel < 0) {
