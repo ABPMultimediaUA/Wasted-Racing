@@ -32,13 +32,13 @@ namespace LAPAL {
     void calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::vec3f& vel2, float& mass2); //done
 
     //Checks if terrain is horizontal o it's a pendent
-    bool checkTerrain(LAPAL::plane3f& terrain); //done
+    bool checkTerrain(const LAPAL::plane3f& terrain); //done
 
     //Calculates rotation in X and Z of the plane, assigning the value to rotZ and rotX
     void calculateRotationsXZ(LAPAL::plane3f& terrain);
 
     //Calculates expected Y for the object given its position
-    float calculateExpectedY(LAPAL::plane3f& terrain, LAPAL::vec3f& position );
+    float calculateExpectedY(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position );
 
     //Corrects position of the object on Y
     void correctYPosition(LAPAL::movementData& mData, const float dTime, LAPAL::plane3f& terrain, LAPAL::vec3f& position);

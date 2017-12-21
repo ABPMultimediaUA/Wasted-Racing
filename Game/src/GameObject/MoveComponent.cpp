@@ -167,6 +167,7 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
     else {
         constantAlteredTime = 0;
         decrementalAlteredTime = 0;
+        mData.max_vel = auxData.max_vel;
     }
 }
 
