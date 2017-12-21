@@ -4,7 +4,7 @@
 
 ItemBlueShellComponent::ItemBlueShellComponent(GameObject& newGameObject, GameObject& obj) : IItemComponent(newGameObject), player(obj)
 {
-    speed = 0.f;
+    speed = 1.f;
     consTime = 0.1f;
     decTime = 1.f;
 }

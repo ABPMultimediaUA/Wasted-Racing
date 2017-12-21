@@ -6,6 +6,9 @@
 //==============================================
 
 void addAIDrivingComponent(EventData data);
+void objectDeleteAIDriving(EventData data);
+void objectDeleteAIBattle(EventData data);
+
 
 //==============================================
 // AI MANAGER FUNCTIONS
@@ -21,6 +24,8 @@ void AIManager::init() {
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
     //No delete by the moment
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIDriving});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIBattle});
 
 }
 
@@ -156,4 +161,28 @@ IComponent::Pointer AIManager::createAIBattleComponent(GameObject& newGameObject
 void addAIDrivingComponent(EventData data) {
     AIManager::getInstance().getAIDrivingComponentList().push_back(data.Component);
     data.Component.get()->init();
+}
+
+void objectDeleteAIDriving(EventData eData) {
+
+    auto& aIDrivingComponentList = AIManager::getInstance().getAIDrivingComponentList();
+
+    for(unsigned int i = 0; i<aIDrivingComponentList.size(); ++i) {
+        if(eData.Id == aIDrivingComponentList.at(i).get()->getGameObject().getId()) {
+            aIDrivingComponentList.erase(aIDrivingComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeleteAIBattle(EventData eData) {
+
+    auto& aIBattleComponentList = AIManager::getInstance().getAIBattleComponentList();
+
+    for(unsigned int i = 0; i<aIBattleComponentList.size(); ++i) {
+        if(eData.Id == aIBattleComponentList.at(i).get()->getGameObject().getId()) {
+            aIBattleComponentList.erase(aIBattleComponentList.begin() + i);
+            return;
+        }
+    }
 }

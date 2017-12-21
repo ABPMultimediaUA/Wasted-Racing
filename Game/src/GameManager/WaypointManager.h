@@ -37,6 +37,10 @@ public:
         return waypointComponentList;
     }
 
+    std::vector<IComponent::Pointer>& getPathPlanningList() {
+        return pathPlanningComponentList;
+    }
+
 
     //Getters
     std::vector<GameObject::Pointer> getWaypoints();

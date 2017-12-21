@@ -4,6 +4,9 @@
 // DELEGATES DECLARATIONS
 //==============================================
 
+void objectDeleteMSensor(EventData data);
+void objectDeleteVSensor(EventData data);
+
 SensorManager& SensorManager::getInstance() {
     static SensorManager instance;
     return instance;
@@ -12,6 +15,9 @@ SensorManager& SensorManager::getInstance() {
 void SensorManager::init() {
     //worldObjects.push_back(obj);
     //worldObjects.push_back(obj2);
+
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteVSensor});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteMSensor});
 
 }
 
@@ -89,3 +95,27 @@ IComponent::Pointer SensorManager::createMSensorComponent(GameObject& newGameObj
 //==============================================
 // DELEGATES
 //============================================== 
+
+void objectDeleteVSensor(EventData eData) {
+
+    auto& vSensorList = SensorManager::getInstance().getComponentList();
+
+    for(unsigned int i = 0; i<vSensorList.size(); ++i) {
+        if(eData.Id == vSensorList.at(i).get()->getGameObject().getId()) {
+            vSensorList.erase(vSensorList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeleteMSensor(EventData eData) {
+
+    auto& MSensorList = SensorManager::getInstance().getMComponentList();
+
+    for(unsigned int i = 0; i<MSensorList.size(); ++i) {
+        if(eData.Id == MSensorList.at(i).get()->getGameObject().getId()) {
+            MSensorList.erase(MSensorList.begin() + i);
+            return;
+        }
+    }
+}

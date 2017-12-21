@@ -15,6 +15,7 @@ void collideBlueShell(EventData eData);
 void collideItemBox(EventData eData);
 void objectDeletedCollide(EventData eData);   
 void objectDeletedMove(EventData eData);
+void objectDeletedCharacter(EventData eData);
 
 //==============================================
 // PHYSICS MANAGER FUNCTIONS
@@ -35,6 +36,7 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision, collideBlueShell});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCollide});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMove});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCharacter});
 
 }
 
@@ -439,7 +441,7 @@ void collideBlueShell(EventData eData) {
         EventData data;
         data.Id = shell->getGameObject().getId();
 
-        //EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
 }
 //Collide Item Box
@@ -453,7 +455,7 @@ void collideItemBox(EventData eData){
     auto obj = move->getGameObject();
 
     if(itemBox != nullptr){
-       if(coll->getGameObject().getTransformData().scale.x != 0 && coll->getGameObject().getTransformData().scale.y != 0 && coll->getGameObject().getTransformData().scale.z != 0){
+       if(move->getGameObject().getComponent<IItemComponent>() == nullptr && coll->getGameObject().getTransformData().scale.x != 0 && coll->getGameObject().getTransformData().scale.y != 0 && coll->getGameObject().getTransformData().scale.z != 0){
            itemBox->asignItem(obj);
            itemBox->deactivateBox();
        }
@@ -462,12 +464,11 @@ void collideItemBox(EventData eData){
 
 void objectDeletedCollide(EventData eData) {
 
-    auto collisionComponentList = PhysicsManager::getInstance().getCollisionComponentList();
+    auto& collisionComponentList = PhysicsManager::getInstance().getCollisionComponentList();
 
     for(unsigned int i = 0; i<collisionComponentList.size(); ++i) {
         if(eData.Id == collisionComponentList.at(i).get()->getGameObject().getId()) {
             collisionComponentList.erase(collisionComponentList.begin() + i);
-            PhysicsManager::getInstance().setCollisionComponentList(collisionComponentList);
             return;
         }
     }
@@ -475,11 +476,24 @@ void objectDeletedCollide(EventData eData) {
 
 void objectDeletedMove(EventData eData) {
 
-    auto moveComponentList = PhysicsManager::getInstance().getMoveComponentList();
+    auto& moveComponentList = PhysicsManager::getInstance().getMoveComponentList();
 
     for(unsigned int i = 0; i<moveComponentList.size(); ++i) {
         if(eData.Id == moveComponentList.at(i).get()->getGameObject().getId()) {
             moveComponentList.erase(moveComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+
+void objectDeletedCharacter(EventData eData) {
+
+    auto& movingCharacterList = PhysicsManager::getInstance().getMovingCharacterList();
+
+    for(unsigned int i = 0; i<movingCharacterList.size(); ++i) {
+        if(eData.Id == movingCharacterList[i].moveComponent->getGameObject().getId()) {
+            movingCharacterList.erase(movingCharacterList.begin() + i);
             return;
         }
     }
