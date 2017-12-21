@@ -17,6 +17,8 @@ class ItemBlueShellComponent : public IItemComponent
         float consTime;
         float decTime;
         int lastVector;
+        glm::vec3 objective;
+        ScoreComponent::Pointer enemy;
 
     public:
 

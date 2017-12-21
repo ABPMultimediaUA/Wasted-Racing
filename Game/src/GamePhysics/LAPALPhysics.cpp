@@ -227,7 +227,8 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
 //Checks 2D collision between circles
 bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const LAPAL::vec3f& pos2,const float& radius2) {
     if ( ( pos2.x-pos1.x ) * ( pos2.x-pos1.x )  + ( pos2.z-pos1.z ) * ( pos2.z-pos1.z ) < ( radius1 + radius2 ) * ( radius1 + radius2) ) // = (x² + z²)<tRadius²
-        return true;
+        if( abs(pos2.y-pos1.y) < (radius1 + radius2) )
+            return true;
     return false;
 } 
 
@@ -251,7 +252,7 @@ void LAPAL::calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::v
 
 }
 
-bool LAPAL::checkTerrain(LAPAL::plane3f& terrain){
+bool LAPAL::checkTerrain(const LAPAL::plane3f& terrain){
 
     bool state=false;
 
@@ -286,7 +287,7 @@ void LAPAL::calculateRotationsXZ(LAPAL::plane3f& terrain){
 }
 
 //Calculates expected Y for the object given its position
-float LAPAL::calculateExpectedY(LAPAL::plane3f& terrain, LAPAL::vec3f& position ){
+float LAPAL::calculateExpectedY(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position ){
     if(checkTerrain(terrain)){
         return terrain.p1.y;
     }else{
@@ -414,6 +415,9 @@ bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const L
 
     distance = LAPAL::distance2DLinePoint(terrain.p4, terrain.p1, position);
     if( distance+radius < 0 ) return false;
+
+    //if( abs(LAPAL::calculateExpectedY(terrain, position)-position.y)-radius > 1)
+    //    return false;
 
     return true;
 

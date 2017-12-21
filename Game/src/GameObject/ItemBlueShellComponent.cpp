@@ -17,11 +17,12 @@ ItemBlueShellComponent::~ItemBlueShellComponent()
 void ItemBlueShellComponent::init()
 {
     lastVector = player.getComponent<PathPlanningComponent>()->getLastPosVector();
+    enemy = ScoreManager::getInstance().getPlayers()[0];
+
 }
 
 void ItemBlueShellComponent::update(float dTime)
 {
-    //auto obj;// = ScoreManager::getInstance()->getPlayers()[0];
     auto listNodes = WaypointManager::getInstance().getWaypoints();
     auto vSensorComponent = getGameObject().getComponent<VSensorComponent>().get();
     auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
@@ -48,7 +49,6 @@ void ItemBlueShellComponent::update(float dTime)
 	}
     
     vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
-    glm::vec3 objective = ScoreManager::getInstance().getPlayers()[0].get()->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
 
     float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
 						(objective.y - pos.y) * (objective.y - pos.y) +
@@ -58,13 +58,14 @@ void ItemBlueShellComponent::update(float dTime)
     {
         objective = posWay;
     }
+    
+    objective = enemy.get()->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
 
     float a = 0.f,b = 0.f;
     vSensorComponent->calculateAB(objective, a, b);
     std::vector<VObject::Pointer> seenObjects;
     //DECIDE 
     float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);
-    float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
 
     moveComponent->changeSpin(turnValue);
 
