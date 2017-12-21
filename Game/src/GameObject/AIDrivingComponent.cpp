@@ -51,12 +51,12 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 	float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
 
 	//-----------_TESTS_-----------
-	/*
+	
 	std::cout<<"Waypoint: "<<waypoint.x<<","<<waypoint.z<<std::endl;
 	std::cout<<"Left side: "<<a<<std::endl;
 	std::cout<<"Right side: "<<b<<std::endl;
 	std::cout<<"ATAN: "<<atan_w<<std::endl;
-	*/
+	
 	//-----------_TESTS_-----------
 
 	//fuzzifier and inference
