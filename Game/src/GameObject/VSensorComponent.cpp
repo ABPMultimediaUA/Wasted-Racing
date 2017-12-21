@@ -84,7 +84,7 @@ void VSensorComponent::calculateAB(glm::vec3 objective, float* a, float* b){
     double aux_a = 0;
     double aux_b = 0;
     //
-    if(sR_x * sL_x != sR_z * sL_x){
+    if(sR_x * sL_z != sR_z * sL_x){
         aux_a = (r_z * sL_x - r_x * sL_z) / (sR_z * sL_x - sR_x * sL_z);
     }
     if(sL_x != 0){
