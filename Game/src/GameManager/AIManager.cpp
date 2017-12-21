@@ -64,7 +64,7 @@ void AIManager::update() {
             }
             
             //_______________TESTING_______________
-            std::cout<<"TAMAÑO LISTA OBSTACULOS: "<<seenObjects.size()<<std::endl;
+            //std::cout<<"TAMAÑO LISTA OBSTACULOS: "<<seenObjects.size()<<std::endl;
             //_____________________________________
 
             //Set angle of the sensors to the NPC one
@@ -103,7 +103,7 @@ void AIManager::update() {
                 moveComponent->isMoving(false);
                 moveComponent->changeAcc(speedValue);
             }*/
-            if(speedValue == 0){
+            if(speedValue <= 0){
                 moveComponent->isMoving(false);
             }
         }
