@@ -4,9 +4,9 @@
 
 ItemMushroomComponent::ItemMushroomComponent(GameObject& newGameObject, GameObject& obj) : IItemComponent(newGameObject), player(obj)
 {
-    speed = 200.f;
+    speed = 350.f;
     consTime = 0.1f;
-    decTime = 2.f;
+    decTime = 4.f;
 }
 
 ItemMushroomComponent::~ItemMushroomComponent()

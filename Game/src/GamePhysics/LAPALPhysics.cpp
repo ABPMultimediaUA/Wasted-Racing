@@ -347,7 +347,7 @@ void LAPAL::calculateAB(const LAPAL::vec3f& vecC, const LAPAL::vec3f& vec1, cons
     double aux_a = 0;
     double aux_b = 0;
     
-
+ 
     //Composing vectors a * vec1 +  b * vec2 = vecC
     if(b_x * a_z != b_z * a_x){
         aux_a = (c_z * a_x - c_x * a_z) / (b_z * a_x - b_x * a_z);
@@ -416,8 +416,8 @@ bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const L
     distance = LAPAL::distance2DLinePoint(terrain.p4, terrain.p1, position);
     if( distance+radius < 0 ) return false;
 
-    //if( abs(LAPAL::calculateExpectedY(terrain, position)-position.y)-radius > 1)
-    //    return false;
+    if( abs(LAPAL::calculateExpectedY(terrain, position)-position.y)-radius > 1)
+        return false;
 
     return true;
 

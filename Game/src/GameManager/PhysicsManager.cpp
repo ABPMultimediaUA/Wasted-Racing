@@ -189,7 +189,7 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
     //    newVel = -newVel;
 
     ourMData.vel    = 0;
-    ourMData.acc    = 0;
+    ourMData.acc    = -10;
 
     //-----_TESTING_------
     //ourMData.spin = -ourMData.spin;
