@@ -128,19 +128,18 @@ void MoveComponent::isBraking(bool b) {
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
 
     if(mData.max_vel != maxSpeed){
- 
         auxData.max_vel         = mData.max_vel;
-        mData.max_vel           = maxSpeed;
-
-        constantAlteredTime     = constTime;
-        decrementalAlteredTime  = decTime;
-        maxDecrementalAT        = decTime;
+        mData.max_vel           = maxSpeed;      
     }
+    constantAlteredTime     = constTime;
+    decrementalAlteredTime  = decTime;
+    maxDecrementalAT        = decTime;
+
 }
 
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    if(mData.vel>=0) {
+    if(mData.acc>=0) {
         if(constantAlteredTime > 0) {
             //While time is constant, velocity is constant and maximum
             if(mData.vel < 0) {
@@ -167,7 +166,7 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
     else {
         constantAlteredTime = 0;
         decrementalAlteredTime = 0;
-        mData.max_vel = auxData.max_vel;
+        mData.max_vel = auxData.max_vel; 
     }
 }
 
