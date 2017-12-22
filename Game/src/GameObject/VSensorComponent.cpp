@@ -30,12 +30,6 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
     VObject::Pointer pvo;                                                       //VPointer included in the end result
     float a = 0.f, b = 0.f;                                                         //initial a and b (left and right sensor, respectively)
 
-    /* //TESTING
-        std::cout<<"AnglI: "<<angleInitial<<", AnglV: "<<angleVision<<"\n";
-        std::cout<<"Left: "<<sensorLeft.x<<","<<sensorLeft.z<<"\n";
-        std::cout<<"Right: "<<sensorRight.x<<","<<sensorRight.z<<"\n";
-    */
-
     //Clear seen objects
     seenObjects.clear();
 
@@ -52,10 +46,6 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
             pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, 1.f, 1); //generate VObject with the data
             seenObjects.push_back(pvo);                                                     //Add to seen objects
         }
-       
-        /* //TESTING
-        std::cout<<"Adri dice que: "<<a<<","<<b<<std::endl;
-        */
         
         //clean A and B for the next object
         a = 0;

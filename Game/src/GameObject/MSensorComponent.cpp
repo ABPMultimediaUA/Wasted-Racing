@@ -37,11 +37,6 @@ void MSensorComponent::updateMapCollisions()
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 
-    /* //TESTING
-        std::cout<<"AnglI: "<<angleInitial<<", AnglV: "<<angleVision<<"\n";
-        std::cout<<"Left: "<<sensorLeft.x<<","<<sensorLeft.z<<"\n";
-        std::cout<<"Right: "<<sensorRight.x<<","<<sensorRight.z<<"\n";
-    */
 
     //Clear seen objects
     seenObjects.clear();
@@ -226,10 +221,6 @@ void MSensorComponent::updateMapCollisions()
         //Calculate left point
         pvo = std::make_shared<VObject>(pointS1, a_final, b_final, 1.f, 1);    //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
-
-        ///_______________DOLOR DE TEST__________________
-        ///std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 1: "<<pointS1.x<<","<<pointS1.z<<" --- "<<a_final<<","<<b_final<<std::endl;
-        ///______________________________________________
     }
 
 
@@ -242,10 +233,6 @@ void MSensorComponent::updateMapCollisions()
         //Calculate right point
         pvo = std::make_shared<VObject>(pointS2, a_final2, b_final2, 1.f, 1);    //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
-
-        ///_______________DOLOR DE TEST__________________
-        ///std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 2: "<<pointS2.x<<","<<pointS2.z<<" --- "<<a_final2<<","<<b_final2<<std::endl;
-        ///______________________________________________
     }
 
 
@@ -263,9 +250,6 @@ void MSensorComponent::calculateABTerrainBack(glm::vec3& objective, float& a, fl
     //calculation in physics of point A and B
     LAPAL::calculateAB(relativeP, vsensor->getSensorLeft(), vsensor->getSensorRight(), a, b);
 
-    ///_______________DOLOR DE TEST__________________
-   // std::cout<<"TERRAIN BACK A Y B "<<a<<","<<b<<std::endl;
-    ///______________________________________________
 }
 
 //Auxiliar function to calculate the point of collision with a vector given one of the sensors

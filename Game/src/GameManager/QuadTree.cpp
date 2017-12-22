@@ -122,13 +122,15 @@ void QuadTree::clear(){
 
 void QuadTree::debugStructure(int n) {
 	if (n == 1)
-		std::cout << "*Level 1* - 4 children" << std::endl;
-	else {
-		std::cout << "*Level " << n << " - " << nodes.size() << " nodes - " << components.size() << " components - P1: ";
-        std::cout << x0 << "," << y0 << " | P2:" << x1 << "," << y1 << std::endl;
+    {
+		//std::cout << "*Level 1* - 4 children" << std::endl;
+	}
+    else {
+		//std::cout << "*Level " << n << " - " << nodes.size() << " nodes - " << components.size() << " components - P1: ";
+        //std::cout << x0 << "," << y0 << " | P2:" << x1 << "," << y1 << std::endl;
         for(unsigned int i=0; i<components.size(); i++){
-            std::cout << "     P: " << components[i].get()->getGameObject().getTransformData().position.x << ",";
-            std::cout << components[i].get()->getGameObject().getTransformData().position.z << std::endl;
+            //std::cout << "     P: " << components[i].get()->getGameObject().getTransformData().position.x << ",";
+            //std::cout << components[i].get()->getGameObject().getTransformData().position.z << std::endl;
         }
 	}
 	for (unsigned int i = 0; i < nodes.size(); i++)

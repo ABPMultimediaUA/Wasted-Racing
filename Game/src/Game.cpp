@@ -139,59 +139,9 @@ void addObjects(){
     //Send an event saying object has been created
     uint16_t id = 1;
     GameObject::TransformationData transform;
-    
-    /*transform.position = glm::vec3(0,0,0);
-    std::cout << std::endl;
-    ObjectManager::getInstance().createObject(id, transform);
-    ObjectManager::getInstance().createObject(id, transform);
-    id = 2;
-    ObjectManager::getInstance().createObject(id, transform);
-    id = 3;
-    transform.position = glm::vec3(4,0,4);
-    ObjectManager::getInstance().createObject(id, transform);
-    EventManager::getInstance().update();
-    std::cout << std::endl;
-    ObjectManager::getInstance().showObjects();
-    std::cout << std::endl;
-    id = 4;
-    ObjectManager::getInstance().getObject(id);
-    id = 2;
-    EventData data;
-    data.Object = ObjectManager::getInstance().getObject(id);
-    EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
-    EventManager::getInstance().update();
-    std::cout << std::endl;
-    ObjectManager::getInstance().showObjects();
-    std::cout << std::endl;
-    EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
-    EventManager::getInstance().update();
-    std::cout << std::endl;
-    ObjectManager::getInstance().showObjects();
-    std::cout << std::endl;*/
-
-    //================================================
-    // EXPECTED OUTPUT
-    //================================================
-        /*
-        Couldn't insert object. ID: 1 already exists.
-        
-        1
-        2
-        3
-        
-        Couldn't find object. ID: 4 doesn't exist.
-        
-        1
-        3
-        
-        Couldn't erase object. ID: 2 doesn't exist.
-        
-        1
-        3
-        */
-
+   
     //===============================================================
-    // CREATE FIVE POSITIONED OBJECTS
+    // CREATE POSITIONED OBJECTS
     //===============================================================
     //Planes:
     id = 4;
@@ -401,7 +351,7 @@ void addObjects(){
     std::shared_ptr<IComponent> wp8 = WaypointManager::getInstance().createWaypointComponent(ob107, 100, 8);
 
     //===============================================================
-    // CREATE FIVE RENDER COMPONENTS
+    // CREATE RENDER COMPONENTS
     //===============================================================
     std::shared_ptr<IComponent> cp1 = RenderManager::getInstance().createObjectRenderComponent(*ob1.get(), ObjectRenderComponent::Shape::Cube);
 
@@ -621,7 +571,7 @@ void addObjects(){
     ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);
 
     /*id = 56;
-    transform.position = glm::vec3(60,0,0);
+    transform.position = glm::vec3(-125,0,5);
     transform.rotation = glm::vec3(45,45,45);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);*/

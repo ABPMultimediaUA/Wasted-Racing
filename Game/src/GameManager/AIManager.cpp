@@ -30,18 +30,6 @@ void AIManager::init() {
 }
 
 
-////---------------_______----------------
-////---------------MEJORAS----------------
-////---------------_______--------------
-/*
- >Añadir que la señal sea a través del input manager (checkear performance)
- >Input de los sensores
- >Dividir las llamadas a las funciones en diferentes tempos
- >Implementar con el resource manager
- >Comprobar que no son null y añadir comportamientos externos
- >Dejar que otro limpie el codigo
-*/
-//------------------------------------
 void AIManager::update() {
     //Update of all behaviour trees
     if(changeAI == true)
@@ -68,10 +56,7 @@ void AIManager::update() {
                 //get all objects that are seen to the visual sensor
                 std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
                 std::vector<VObject::Pointer> mapCollisions = mSensorComponent->getMapCollisions();
-                
-                //_______________TESTING_______________
-                //std::cout<<"TAMAÑO LISTA OBSTACULOS: "<<seenObjects.size()<<std::endl;
-                //_____________________________________
+               
 
                 //Set angle of the sensors to the NPC one
                 vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
@@ -86,32 +71,18 @@ void AIManager::update() {
                 float a = 0.f,b = 0.f;
                 vSensorComponent->calculateAB(objective, a, b);
 
-                //DECIDE STUFF
-                //seenObjects.clear();
+                
 
                 float turnValue = aiDrivingComponent->girar(seenObjects, mapCollisions, objective, a, b);
-                //float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
                 //----------------------------------
-
-                //------------Testing
-                std::cout<<"Turn values: "<<turnValue<<std::endl;
-                //std::cout<<"Speed value: "<<speedValue<<std::endl;
-                //-------------------
 
                 //Send signal of movement
                 //Turn
 
                 moveComponent->changeSpin(turnValue );
 
-                //Accelerate and brake
-                //if(speedValue > 0){
                 moveComponent->isMoving(true);
                 moveComponent->changeAcc(1.f);
-                //}
-                /*if(speedValue < 0){
-                    moveComponent->isMoving(false);
-                    moveComponent->changeAcc(speedValue);
-                }*/
             }
         }
         changeAI = true;

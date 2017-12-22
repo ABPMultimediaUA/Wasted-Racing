@@ -13,11 +13,7 @@ int ScoreComponent::getScore()
 {
     auto pComp = this->getGameObject().getComponent<PathPlanningComponent>().get();
 
-    int id = this->getGameObject().getId();
-
-    std::cout << "ID: " << std::endl;
-
-    std::cout << id << ": " << (lap*maxWaypoints)+pComp->getActualLevel() << std::endl;
+    //int id = this->getGameObject().getId();
 
     return (lap*maxWaypoints)+pComp->getActualLevel();
 }

@@ -52,7 +52,7 @@ class ItemManager {
         
 
         //Getters
-        std::vector<std::shared_ptr<IItemComponent>>& getItemComponents()        {       return ItemComponents;       };
+        std::vector<std::shared_ptr<IItemComponent>>& getItemComponents()                   {       return ItemComponents;       };
         std::vector<std::shared_ptr<ItemHolderComponent>>& getItemHolderComponents()        {       return ItemHolders;       };
 
         //Item delete

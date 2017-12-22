@@ -86,8 +86,8 @@ GameObject::Pointer ObjectManager::getObject(uint16_t id) {
 }
 
 void ObjectManager::showObjects() {
-    for(auto obj : objectsMap)
-        std::cout << obj.second.get()->getId() << std::endl;
+    for(auto obj : objectsMap){}
+        //std::cout << obj.second.get()->getId() << std::endl;
 }
 
 void ObjectManager::initObjects() {

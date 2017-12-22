@@ -17,7 +17,7 @@ ItemRedShellComponent::~ItemRedShellComponent()
 void ItemRedShellComponent::init()
 {
     lastVector = player.getComponent<PathPlanningComponent>()->getLastPosVector();
-    myPos = player.getComponent<ScoreComponent>()->getPosition(); //= listNodes[lastVector]->getTransformData().position;
+    myPos = player.getComponent<ScoreComponent>()->getPosition(); 
     
     if(myPos > 1)
     {
@@ -59,7 +59,7 @@ void ItemRedShellComponent::update(float dTime)
         
         vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
 
-        objective = enemy.get()->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
+        objective = enemy.get()->getGameObject().getTransformData().position; 
 
         float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
                             (objective.y - pos.y) * (objective.y - pos.y) +

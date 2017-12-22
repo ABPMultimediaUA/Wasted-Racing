@@ -46,7 +46,6 @@ IComponent::Pointer ScoreManager::createScoreComponent(GameObject& newGameObject
 
 
 //Thirty programmers have died during the development of this method
-//Mejoras : Quitar medio metodo, que se puede hacer en el mismo for todo
 void ScoreManager::update()
 {
     std::vector<ScoreComponent::Pointer> ordered;
@@ -155,9 +154,9 @@ void ScoreManager::update()
 
         for(unsigned int i=0; i<players.size(); i++)
         {
-            int p = players[i].get()->getPosition();
-            int id = players[i].get()->getGameObject().getId();
-            std::cout << id << ": " << p << std::endl;
+            //int p = players[i].get()->getPosition();
+            //int id = players[i].get()->getGameObject().getId();
+            //std::cout << id << ": " << p << std::endl;
         }
     }
 }
