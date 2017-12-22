@@ -42,14 +42,6 @@ void EventManager::processEvent(Event event){
                 eventListener.listener(event.data);
         }
     }
-
-    /* Old version
-    auto eventListenerList = EventManager::eventListenerMap.find(event.type)->second;
-
-    for(auto eventListener : eventListenerList) {
-        eventListener.listener(event.data);
-    }
-    */
 }
 
 void EventManager::addListener(EventListener eventListener){

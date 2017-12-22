@@ -67,6 +67,7 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
     }
 }
 
+//Updates vector velocity
 void LAPAL::updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain){
     mData.velocity.x = mData.vel*cos(mData.angle);
     mData.velocity.y = 0;
@@ -92,13 +93,6 @@ void LAPAL::updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain){
     }
 }
 
-
-////---------------_______----------------
-////---------------MEJORAS----------------
-////---------------_______--------------
-/*
- >Más lento el giro cuanto más rápido el vehículo
-*/
 //Updates all spin related variables
 void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     //if spinning
@@ -124,13 +118,6 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     }
 }
 
-
-////---------------_______----------------
-////---------------MEJORAS----------------
-////---------------_______--------------
-/*
- >Rotar bien cuando el plano es horizontal
-*/
 //Updates rotation of the vehicle to match the terrain's. Do it smoothly.
 void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, const float dTime){
 
@@ -178,13 +165,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
     //std::cout<<"Rotacion X: "<<mData.angX<<","<<" Rotacion Z: "<<mData.angZ<<std::endl;
 }
 
-////---------------_______----------------
-////---------------MEJORAS----------------
-////---------------_______--------------
-/*
- >Girar en la dirección opuesta reduce la velocidad en esa dirección, no cambia el sentido
-*/
-//function that moves the vehicle elliptically given its internal radius ratio rotation
+//Function that moves the vehicle elliptically given its internal radius ratio rotation
 void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTime){
     //Check if it is turning somewhere
     if(mData.spin_inc != 0){
@@ -236,6 +217,8 @@ bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& rad
 //Assuming there's collision, changes velocity of every object after collision
 void LAPAL::calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::vec3f& vel2, float& mass2) {
 
+    //We apply the physical inelastic collision formula
+
     float mT = mass1 + mass2;
 
     float m1i_1 = (mass1 - mass2)/mT;
@@ -252,6 +235,7 @@ void LAPAL::calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::v
 
 }
 
+//Checks if terrain is horizontal o it's a pendent 
 bool LAPAL::checkTerrain(const LAPAL::plane3f& terrain){
 
     bool state=false;
@@ -336,6 +320,7 @@ void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPA
 //--------------------------------------
 //---------------MATHS------------------
 //--------------------------------------
+
 //Calculates values A and B which are the scalars that multiply vector 1 and 2 to compose the point C in 2D (X-Z plane) inside the terrain givenç
 void LAPAL::calculateAB(const LAPAL::vec3f& vecC, const LAPAL::vec3f& vec1, const LAPAL::vec3f& vec2,  float& a, float& b){
     double a_x = vec2.x;

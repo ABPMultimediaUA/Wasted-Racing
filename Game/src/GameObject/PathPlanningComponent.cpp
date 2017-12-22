@@ -13,7 +13,6 @@ void PathPlanningComponent::update(float dTime)
 {
 
 	auto pos = this->getGameObject().getTransformData().position;
-	auto vel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().velocity;
 	auto modSpeed = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
 
 	auto wpManager = &WaypointManager::getInstance();

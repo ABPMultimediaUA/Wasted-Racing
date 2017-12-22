@@ -51,16 +51,15 @@ void ScoreManager::update()
 {
     std::vector<ScoreComponent::Pointer> ordered;
     std::vector<ScoreComponent::Pointer> auxiliar;
-    uint32_t i, j, pos, ordCount;
+    uint32_t j, pos, ordCount;
     int score;
     bool found;
 
     pos=1;
     if(players.size()>0)
     {
-        for(i=0; i<players.size(); i++)
+        for(unsigned int i=0; i<players.size(); i++)
         {
-            int id = players[i].get()->getGameObject().getId();
             if(i==0)
             {
                 ordered.push_back(players[i]);
@@ -84,7 +83,7 @@ void ScoreManager::update()
             }
         }
         ordCount=0;
-        for(i=0; i<ordered.size()-1; i++)
+        for(unsigned int i=0; i<ordered.size()-1; i++)
         {
             if(ordered[i].get()->getScore() == ordered[i+1].get()->getScore())
             {
@@ -142,14 +141,14 @@ void ScoreManager::update()
 
         }
 
-        for(i=0; i<ordered.size(); i++)
+        for(unsigned int i=0; i<ordered.size(); i++)
         {
             ordered[i].get()->setPosition(pos);
             pos++;
         }
         players=ordered;
 
-        for(i=0; i<players.size(); i++)
+        for(unsigned int i=0; i<players.size(); i++)
         {
             int p = players[i].get()->getPosition();
             int id = players[i].get()->getGameObject().getId();
@@ -171,7 +170,7 @@ void objectDeleteScore(EventData eData) {
     auto& scoreComponentList = ScoreManager::getInstance().getPlayers();
 
     for(unsigned int i = 0; i<scoreComponentList.size(); ++i) {
-        if(eData.Id == scoreComponentList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == scoreComponentList[i].get()->getGameObject().getId()) {
             scoreComponentList.erase(scoreComponentList.begin() + i);
             return;
         }

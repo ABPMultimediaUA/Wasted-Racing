@@ -16,7 +16,7 @@ class ItemRedShellComponent : public IItemComponent
         float speed;
         float consTime;
         float decTime;
-        int lastVector;
+        unsigned int lastVector;
         int myPos;
         glm::vec3 objective;
         ScoreComponent::Pointer enemy;

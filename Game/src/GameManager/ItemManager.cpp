@@ -24,11 +24,11 @@ void ItemManager::init(){
 void ItemManager::update(float dTime){
     
     for(unsigned int i = 0; i < ItemBoxes.size() ; i++){
-        ItemBoxes.at(i)->update(dTime);
+        ItemBoxes[i]->update(dTime);
     }
 
     for(unsigned int i = 0; i < ItemComponents.size() ; i++){
-        ItemComponents.at(i)->update(dTime);
+        ItemComponents[i]->update(dTime);
     }
 }
 
@@ -159,7 +159,6 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     mData.mov = false;
     mData.jump = false;
     mData.spi = false;
-    mData.angInc = 0;
     mData.angle = obj.getComponent<MoveComponent>()->getMovemententData().angle;
     mData.spin = 0;
     mData.spin_inc = 1;
@@ -184,7 +183,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     IComponent::Pointer terrainComp;
 
     auto list = PhysicsManager::getInstance().getMovingCharacterList();
-    for(int i = 0; i < list.size(); i++)
+    for(unsigned int i=0; i < list.size(); i++)
     {
         if(list[i].moveComponent.get()->getGameObject().getId() == idd) 
             terrainComp = list[i].terrainComponent;
@@ -230,7 +229,6 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     mData.mov = false;
     mData.jump = false;
     mData.spi = false;
-    mData.angInc = 0;
     mData.angle = obj.getComponent<MoveComponent>()->getMovemententData().angle;
     mData.spin = 0;
     mData.spin_inc = 1;
@@ -255,7 +253,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     IComponent::Pointer terrainComp;
 
     auto list = PhysicsManager::getInstance().getMovingCharacterList();
-    for(int i = 0; i < list.size(); i++)
+    for(unsigned int i=0; i < list.size(); i++)
     {
         if(list[i].moveComponent.get()->getGameObject().getId() == idd) 
             terrainComp = list[i].terrainComponent;
@@ -377,7 +375,7 @@ void objectDeleteItem(EventData eData) {
     auto& itemComponentList = ItemManager::getInstance().getItemComponents();
 
     for(unsigned int i = 0; i<itemComponentList.size(); ++i) {
-        if(eData.Id == itemComponentList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == itemComponentList[i].get()->getGameObject().getId()) {
             itemComponentList.erase(itemComponentList.begin() + i);
             return;
         }
@@ -389,7 +387,7 @@ void objectDeleteHolder(EventData eData) {
     auto& holderComponentList = ItemManager::getInstance().getItemHolderComponents();
 
     for(unsigned int i = 0; i<holderComponentList.size(); ++i) {
-        if(eData.Id == holderComponentList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == holderComponentList[i].get()->getGameObject().getId()) {
             holderComponentList.erase(holderComponentList.begin() + i);
             return;
         }

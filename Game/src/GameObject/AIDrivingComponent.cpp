@@ -71,7 +71,6 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 	//If we have collisions to collide with
 	if(array.size()>0){
 		float atan_obs 	 = 0.0f;
-		float atan_walls = 0.0f;
 		float obs_left   = 0.f, obs_center = 0.f, obs_right = 0.f;
 
 		//Accumulate the mean atan value of them all to pickpoint a medium point of no collisions

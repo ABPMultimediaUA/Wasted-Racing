@@ -35,7 +35,6 @@ public:
 	//Keyboard functions
     void changeAccInc(float n);
     void changeSpinIncrement(float n);
-	void changeAngleInc(float i);
 
 	//Joystick functions
 	void changeSpin(float n);
