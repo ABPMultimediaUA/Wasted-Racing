@@ -32,8 +32,6 @@ void AIDrivingComponent::checkList()
 //Decides where to turn and in which grade (with a percentage of 0 to 1)
 
 /*//APARTADO DE MEJORAS//////
->Decidir si girar según los enemigos cercanos
->Diferenciar entre tipos de objetos
 >Tener en cuenta físicas del terreno
 >Personalidad agresiva o precavida
 >Añadir para hacer drifting
@@ -65,11 +63,7 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 	if(atan_w <=-0.75){ //Since the value of the atan 0.25 corresponds to the center, from 1 to 0.25 is left, from 0.25 to -0.75 is right, and -0.75 to -1 is left.
 		atan_w += 2.f; 	//that's why we add this
 	}
-	/*
-	float wp_left 	= inferL(atan_w		,0.25f  ,1.25f 	,0   	);
-	float wp_center = inferT(atan_w		,0.23f	,0.25f 	,0.27f	);
-	float wp_right 	= inferL(atan_w		,-0.75f	,0.25f  ,1   	);
-	*/
+	//Limits: -0.75 - 0.25 right, 0.25 center, 0.25 to 1.25 left
 	float wp_left 	= inferL(atan_w		,0.25f  ,0.8f 	,0   	);
 	float wp_center = inferT(atan_w		,0.23f	,0.25f 	,0.27f	);
 	float wp_right 	= inferL(atan_w		,-0.25f	,0.25f  ,1   	);
