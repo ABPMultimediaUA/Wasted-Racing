@@ -39,7 +39,7 @@ void AIDrivingComponent::checkList()
 >Añadir para hacer drifting
 
 //---------------------------*/
-float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 waypoint, float a, float b)
+float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector<VObject::Pointer> walls, glm::vec3 waypoint, float a, float b)
 {	
 	//final turn decision
 	float decision = 0.0f;
@@ -48,15 +48,15 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	float steeringNone = 0.0f, steeringLeft = 0.0f, steeringRight = 0.0f;
 
 	//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
-	float atan_w = glm::atan(b,a)/3.14159265358979323846264338327f;
+	float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
 
 	//-----------_TESTS_-----------
-	/*
+	
 	std::cout<<"Waypoint: "<<waypoint.x<<","<<waypoint.z<<std::endl;
 	std::cout<<"Left side: "<<a<<std::endl;
 	std::cout<<"Right side: "<<b<<std::endl;
 	std::cout<<"ATAN: "<<atan_w<<std::endl;
-	*/
+	
 	//-----------_TESTS_-----------
 
 	//fuzzifier and inference
@@ -70,13 +70,24 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	float wp_right 	= inferL(atan_w		,-0.75f	,0.25f  ,1   	);
 
 	//If we have collisions to collide with
-	if(array.size()>0){
+	if(array.size()>0 || walls.size() > 0){
 		float atan_obs = 0.0f;
+		float atan_walls = 0.0f;
 
 		//Accumulate the mean atan value of them all to pickpoint a medium point of no collisions
 		for(unsigned i = 0; i<array.size(); ++i){
-			atan_obs += (glm::atan(array[i].get()->getB(), array[i].get()->getA()) / 3.14159265358979323846264338327f )/array.size();
+			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
 		}
+		for(unsigned i = 0; i<walls.size(); ++i){
+			atan_walls += (glm::atan(walls[i].get()->getA(),walls[i].get()->getB()) / 3.14159265358979323846264338327f )/walls.size();
+		}
+
+		if(array.size()>0){
+			atan_obs = (atan_obs + atan_walls) / 2;
+		}else{
+			atan_obs = atan_walls;
+		}
+		
 
 		//collisions
 		if(atan_obs <=-0.75){ 	//Same process as the waypoint
@@ -87,7 +98,7 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 		float obs_right 	= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
 
 		//-----------_TESTS_-----------
-		//std::cout<<"Obstacle values: "<<obs_left<<" - "<<obs_center<< " - " << obs_right<<std::endl;
+		std::cout<<"Obstacle values: "<<obs_left<<" - "<<obs_center<< " - " << obs_right<<std::endl;
 		//-----------_TESTS_-----------
 
 

@@ -53,7 +53,7 @@ void MoveComponent::update(float dTime) {
     if(id == 50){
         system("clear");
         //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
-        //std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
+        std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
         //std::cout << " ANG X " << trans.rotation.x << " ANG Y " << trans.rotation.y << " ANG Z " << trans.rotation.z << std::endl;
         //std::cout << " POS Y " << trans.position.y << std::endl;
         std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;

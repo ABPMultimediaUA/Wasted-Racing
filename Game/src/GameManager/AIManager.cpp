@@ -68,9 +68,6 @@ int add = 0;
             //get all objects that are seen to the visual sensor
             std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
             std::vector<VObject::Pointer> mapCollisions = mSensorComponent->getMapCollisions();
-            for(uint32_t i = 0; i < mapCollisions.size(); ++i){
-                seenObjects.push_back(mapCollisions[i]);
-            }
             
             //_______________TESTING_______________
             //std::cout<<"TAMAÑO LISTA OBSTACULOS: "<<seenObjects.size()<<std::endl;
@@ -90,31 +87,31 @@ int add = 0;
             vSensorComponent->calculateAB(objective, a, b);
 
             //DECIDE STUFF
-            float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);
-            float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
+            //seenObjects.clear();
+
+            float turnValue = aiDrivingComponent->girar(seenObjects, mapCollisions, objective, a, b);
+            //float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
             //----------------------------------
 
             //------------Testing
-            //std::cout<<"Turn values: "<<turnValue<<std::endl;
+            std::cout<<"Turn values: "<<turnValue<<std::endl;
             //std::cout<<"Speed value: "<<speedValue<<std::endl;
             //-------------------
 
             //Send signal of movement
             //Turn
-            moveComponent->changeSpin(turnValue);
+
+            /*moveComponent->changeSpin(turnValue * 3);
 
             //Accelerate and brake
             //if(speedValue > 0){
-                moveComponent->isMoving(true);
-                moveComponent->changeAcc(1.f);
+            moveComponent->isMoving(true);
+            moveComponent->changeAcc(1.f);*/
             //}
             /*if(speedValue < 0){
                 moveComponent->isMoving(false);
                 moveComponent->changeAcc(speedValue);
             }*/
-            if(speedValue <= 0){
-                moveComponent->isMoving(false);
-            }
         }
     }
 }

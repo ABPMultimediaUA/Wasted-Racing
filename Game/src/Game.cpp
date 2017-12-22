@@ -509,11 +509,11 @@ void addObjects(){
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, terrain, terrainCP1);
 
-    id = 56;
+    /*id = 56;
     transform.position = glm::vec3(60,0,0);
     transform.rotation = glm::vec3(45,45,45);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);
+    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);*/
 
     //===============================================================
     // ADD AI 

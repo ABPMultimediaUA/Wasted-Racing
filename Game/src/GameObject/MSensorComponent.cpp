@@ -108,8 +108,7 @@ void MSensorComponent::updateMapCollisions()
         LAPAL::calculateAB(relativePoint, sensorLeft, vAB,  a, b);
 
         //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-        if(a > 0.f && b >= 0.f && b <= 1.f){
-            a_end       = a;                      //a_end => a * sensorLeft till point of cross
+        if(a > 0.f && b > 0.f && b <= 1.f){
             contactL    = true;
             pointS1     = terrain.p2 - b * vAB;
         }
@@ -118,8 +117,7 @@ void MSensorComponent::updateMapCollisions()
         LAPAL::calculateAB(relativePoint, sensorRight, vAB,  a, b);
 
         //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-        if(a > 0.f && b >= 0.f && b <= 1.f){
-            b_end       = a;                      //b_end => a * sensorRight till point of cross
+        if(a > 0.f && b > 0.f && b <= 1.f){
             contactR    = true;
             pointS2     = terrain.p2 - b * vAB;
         }
@@ -137,8 +135,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorLeft, vAB, a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b >= 0.f && b <= 1){
-                a_end       = a;                      //a_end => a * sensorLeft till point of cross
+            if(a > 0.f && b > 0.f && b <= 1){
                 contactL    = true;
                 pointS1     = terrain.p3 - b * vAB;
             }
@@ -150,8 +147,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorRight, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b >= 0.f && b <= 1.f){
-                b_end       = a;                      //b_end => a * sensorRight till point of cross
+            if(a > 0.f && b > 0.f && b <= 1.f){
                 contactR    = true;
                 pointS2     = terrain.p3 - b * vAB;
             }
@@ -171,8 +167,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorLeft, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b >= 0.f && b <= 1.f){
-                a_end       = a;                      //a_end => a * sensorLeft till point of cross, which it is b in this calculus
+            if(a > 0.f && b > 0.f && b <= 1.f){
                 contactL    = true;
                 pointS1     = terrain.p4 - b * vAB;
             }
@@ -184,8 +179,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorRight, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b >= 0.f && b <= 1.f){
-                b_end       = a;                      //b_end => a * sensorRight till point of cross, which it is b in this calculus
+            if(a > 0.f && b > 0.f && b <= 1.f){
                 contactR    = true;
                 pointS2     = terrain.p4 - b * vAB;
             }
@@ -204,8 +198,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorLeft, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b >= 0.f && a <= 1){
-                a_end       = a;                      //a_end => a * sensorLeft till point of cross
+            if(a > 0.f && b > 0.f && a <= 1){
                 contactL    = true;
                 pointS1     = terrain.p1 - b * vAB;
             }
@@ -217,8 +210,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorRight, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b >= 0.f && a <= 1.f){
-                b_end       = a;                      //b_end => a * sensorRight till point of cross
+            if(a > 0.f && b > 0.f && a <= 1.f){
                 contactR    = true;
                 pointS2     = terrain.p1 - b * vAB;
             }
@@ -229,14 +221,14 @@ void MSensorComponent::updateMapCollisions()
         //Calculate A and B with the sensor of VSensor
         float a_final = 0.f, b_final = 0.f;
         auto vsensor = this->getGameObject().getComponent<VSensorComponent>().get();
-        LAPAL::calculateAB(pointS1, vsensor->getSensorLeft(), vsensor->getSensorRight(), a_final, b_final);
+        LAPAL::calculateAB(pointS1 - position, vsensor->getSensorLeft(), vsensor->getSensorRight(), a_final, b_final);
 
         //Calculate left point
         pvo = std::make_shared<VObject>(pointS1, a_final, b_final, 1.f, 1);    //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
 
         ///_______________DOLOR DE TEST__________________
-        std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 2: "<<pointS1.x<<","<<pointS1.z<<" --- "<<a_final<<","<<b_final<<std::endl;
+        ///std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 1: "<<pointS1.x<<","<<pointS1.z<<" --- "<<a_final<<","<<b_final<<std::endl;
         ///______________________________________________
     }
 
@@ -245,14 +237,14 @@ void MSensorComponent::updateMapCollisions()
         //Calculate A and B with the sensors of VSensor
         float a_final2 = 0.f, b_final2 = 0.f;
         auto vsensor = this->getGameObject().getComponent<VSensorComponent>().get();
-        LAPAL::calculateAB(pointS1, vsensor->getSensorLeft(), vsensor->getSensorRight(), a_final2, b_final2);
+        LAPAL::calculateAB(pointS2 - position, vsensor->getSensorLeft(), vsensor->getSensorRight(), a_final2, b_final2);
 
         //Calculate right point
         pvo = std::make_shared<VObject>(pointS2, a_final2, b_final2, 1.f, 1);    //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
 
         ///_______________DOLOR DE TEST__________________
-        std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 2: "<<pointS2.x<<","<<pointS2.z<<" --- "<<a_final2<<","<<b_final2<<std::endl;
+        ///std::cout<<"DOLOR DE CORRECCIÓN. PUNTO 2: "<<pointS2.x<<","<<pointS2.z<<" --- "<<a_final2<<","<<b_final2<<std::endl;
         ///______________________________________________
     }
 
@@ -263,10 +255,17 @@ void MSensorComponent::updateMapCollisions()
 //Auxiliar function to calculate A and B of given objective
 void MSensorComponent::calculateABTerrainBack(glm::vec3& objective, float& a, float& b){
     //relative point to us
-    glm::vec3 relativeP = objective - this->getGameObject().getTransformData().position;;
+    glm::vec3 relativeP = objective - this->getGameObject().getTransformData().position;
+
+    //get vectors of vsensor for standarization
+    auto vsensor = this->getGameObject().getComponent<VSensorComponent>().get();
 
     //calculation in physics of point A and B
-    LAPAL::calculateAB(relativeP, sensorLeft, sensorRight, a, b);
+    LAPAL::calculateAB(relativeP, vsensor->getSensorLeft(), vsensor->getSensorRight(), a, b);
+
+    ///_______________DOLOR DE TEST__________________
+   // std::cout<<"TERRAIN BACK A Y B "<<a<<","<<b<<std::endl;
+    ///______________________________________________
 }
 
 //Auxiliar function to calculate the point of collision with a vector given one of the sensors
