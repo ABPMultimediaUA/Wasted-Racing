@@ -107,16 +107,14 @@ void Game::draw() {
 void Game::close() {
 
     physicsManager->close();
-    audioManager->close();
+    renderManager->close();
+    inputManager->close();
     eventManager->close();
     waypointManager->close();
     aiManager->close();
     sensorManager->close();
-    scoreManager->close();
     itemManager->close();
-    inputManager->close();
-    renderManager->close();
-    objectManager->close();
+    scoreManager->close();
 }
 
 //====================================================
@@ -128,7 +126,10 @@ void Game::Run() {
     while(Game::stay){
         Game::update();
         Game::draw();
+<<<<<<< HEAD
+=======
         Game::stay = objectManager->getGameRunning();
+>>>>>>> 312415cac86bd1117569649206093e8bce53a827
     }
     Game::close();
 }
@@ -169,9 +170,15 @@ void addObjects(){
     auto ob16 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 17;
+<<<<<<< HEAD
+    transform.position = glm::vec3(550,84,-500);
+    transform.rotation = glm::vec3(0,0,10.78252579);
+    transform.scale    = glm::vec3(10,0.01,20);
+=======
     transform.position = glm::vec3(550,87.25,-500);
     transform.rotation = glm::vec3(0,0,10.78252579);
     transform.scale    = glm::vec3(10.4,0.01,20);
+>>>>>>> 312415cac86bd1117569649206093e8bce53a827
     auto ob17 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 18;
@@ -231,13 +238,21 @@ void addObjects(){
     auto ob103 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 104;
+<<<<<<< HEAD
+    transform.position = glm::vec3(-100, 95, -450);
+=======
     transform.position = glm::vec3(0, 80, -500);
+>>>>>>> 312415cac86bd1117569649206093e8bce53a827
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob104 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 105;
+<<<<<<< HEAD
+    transform.position = glm::vec3(-150, 50, -250);
+=======
     transform.position = glm::vec3(-125, 80, -400);
+>>>>>>> 312415cac86bd1117569649206093e8bce53a827
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob105 = ObjectManager::getInstance().createObject(id, transform);
