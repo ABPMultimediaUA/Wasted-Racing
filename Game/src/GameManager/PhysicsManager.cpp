@@ -220,6 +220,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         if(a>0 && b<0 && glm::abs(a)+glm::abs(b)>=1){
             if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
                 calculateStaticCollision(move, dTime);
+                checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }else{
                 //Check if we are inside the next terrain. If not, still collide.
@@ -230,6 +231,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     movingChar.terrainComponent = ourTerr->getNext(); //Set new terrain component
                 }else{
                     calculateStaticCollision(move, dTime);
+                    checkCollisionShellTerrain(move.get()->getGameObject());
                 }
             }
         }
@@ -238,6 +240,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         if(a>0 && b>0 && glm::abs(a)+glm::abs(b)>=1){
             if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
                 calculateStaticCollision(move, dTime);
+                checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
             else{
@@ -249,6 +252,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     movingChar.terrainComponent = ourTerr->getRight(); //Set new terrain component
                 }else{
                     calculateStaticCollision(move, dTime);
+                    checkCollisionShellTerrain(move.get()->getGameObject());
                 }
             }
         }
@@ -257,6 +261,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         if(a>0 && b>0 && a - b<=0){
             if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
                 calculateStaticCollision(move, dTime);
+                checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
             else{
@@ -268,6 +273,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     movingChar.terrainComponent = ourTerr->getPrev(); //Set new terrain component
                 }else{
                     calculateStaticCollision(move, dTime);
+                    checkCollisionShellTerrain(move.get()->getGameObject());
                 }
                 
             }
@@ -277,6 +283,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         if(a>0 && b<0 && a+b<=0){
            if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
                 calculateStaticCollision(move, dTime);
+                checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
             else{
@@ -288,11 +295,22 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     movingChar.terrainComponent = ourTerr->getLeft(); //Set new terrain component
                 }else{
                     calculateStaticCollision(move, dTime);
+                    checkCollisionShellTerrain(move.get()->getGameObject());
                 }
             }
         }
 }
 
+void PhysicsManager::checkCollisionShellTerrain(GameObject& obj)
+{
+    if(obj.getComponent<ItemRedShellComponent>() != nullptr || obj.getComponent<ItemBlueShellComponent>() != nullptr)
+    {
+        EventData data;
+        data.Id = obj.getId();
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+    }
+}
 
 //==============================================================================
 // COMPONENT CREATOR FUNCTIONS

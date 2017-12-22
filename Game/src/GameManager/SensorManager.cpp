@@ -13,8 +13,6 @@ SensorManager& SensorManager::getInstance() {
 }
 
 void SensorManager::init() {
-    //worldObjects.push_back(obj);
-    //worldObjects.push_back(obj2);
 
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteVSensor});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteMSensor});

@@ -25,16 +25,11 @@ void AIDrivingComponent::checkList()
 
 	for (size_t i = 0; i < listNodes.size(); i++)
 	{
-		//std::cout<<"WAYPOINT POS: "<<listNodes[i].get()->getTransformData().position.x<<"\n";
+
 	}
 }
 
 //Decides where to turn and in which grade (with a percentage of 0 to 1)
-
-/*//APARTADO DE MEJORAS//////
->Tener en cuenta físicas del terreno
->Personalidad agresiva o precavida
->Añadir para hacer drifting
 
 //---------------------------*/
 float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector<VObject::Pointer> walls, glm::vec3 waypoint, float a, float b)
@@ -48,17 +43,6 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 	//calculate the arctg being a the right side, then b over a is the right choice. Returns in radians.
 	float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
 
-	//-----------_TESTS_-----------
-	
-	/*std::cout<<"Waypoint: "<<waypoint.x<<","<<waypoint.z<<std::endl;
-	std::cout<<"Left side: "<<a<<std::endl;
-	std::cout<<"Right side: "<<b<<std::endl;
-	std::cout<<"ATAN: "<<atan_w<<std::endl;*/
-	
-	//-----------_TESTS_-----------
-
-	//fuzzifier and inference
-	//---------------GENERALIZE--v-------v----v
 	//waypoints
 	if(atan_w <=-0.75){ //Since the value of the atan 0.25 corresponds to the center, from 1 to 0.25 is left, from 0.25 to -0.75 is right, and -0.75 to -1 is left.
 		atan_w += 2.f; 	//that's why we add this
@@ -104,9 +88,6 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 			atan_obs = atan_walls;
 		}*/
 		
-		//-----------_TESTS_-----------
-		std::cout<<"Obstacle values: "<<obs_left<<" - "<<obs_center<< " - " << obs_right<<std::endl;
-		//-----------_TESTS_-----------
 		//Apply ruleset.
 
 		//New Iteration approach
@@ -139,14 +120,6 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 	float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
 	//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
 
-	//-----------_TESTS_-----------
-	
-	std::cout<<"Valores de steering: "<<steeringLeft<<" --- "<<steeringNone<<" --- "<<steeringRight<<std::endl;
-	std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
-	std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
-	
-	//-----------_TESTS_-----------
-
 	decision = cx;
 
 	return decision;
@@ -156,9 +129,6 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 
 //Decides wheter the NPC should brake, do nothing or accelerate, and in which proportion. Takes in account where objects are, distance to closest one, where the NPC
 //is going, and where it is headed to.
-/*//APARTADO DE MEJORAS//////
->Añadir que si tienes que girar demasiado a la derecha o izquierda para llegar a tu objetivo, que frenes
->Añadir para hacer drifting
 
 //---------------------------*/
 float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, float direction, float speed, float a_W, float b_w)

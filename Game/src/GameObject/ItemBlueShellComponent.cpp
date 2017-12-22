@@ -52,14 +52,15 @@ void ItemBlueShellComponent::update(float dTime)
     
     vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
 
-    objective = enemy.get()->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
+    objective = enemy.get()->getGameObject().getTransformData().position; 
 
     float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
 						(objective.y - pos.y) * (objective.y - pos.y) +
 						(objective.z - pos.z) * (objective.z - pos.z);
 	
 
-    if(distaneActualWay < distancePlayer)
+    unsigned int posVectorEnemy = enemy.get()->getGameObject().getComponent<PathPlanningComponent>()->getLastPosVector();
+    if(distaneActualWay < distancePlayer || lastVector < posVectorEnemy)
     {
         objective = posWay;
     }

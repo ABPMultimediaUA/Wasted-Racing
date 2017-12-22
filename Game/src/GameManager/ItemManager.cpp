@@ -5,7 +5,7 @@ void objectDeleteHolder(EventData);
 
 ItemManager::ItemManager()
 {
-
+    ids = 6000;
 }
 
 //Instance getter
@@ -139,13 +139,15 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
 IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+40*cos(obj.getTransformData().rotation.y),
-                                    pos.y, pos.z-40*sin(obj.getTransformData().rotation.y));
+    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(2,2,2);
 
@@ -209,13 +211,14 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
 IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+40*cos(obj.getTransformData().rotation.y),
-                                    pos.y, pos.z-40*sin(obj.getTransformData().rotation.y));
+    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(2,2,2);
 
@@ -279,8 +282,9 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
 IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 
@@ -306,8 +310,9 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
 IComponent::Pointer ItemManager::createMushroom(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 
@@ -328,8 +333,9 @@ IComponent::Pointer ItemManager::createMushroom(GameObject& obj)
 
 IComponent::Pointer ItemManager::createStar(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 

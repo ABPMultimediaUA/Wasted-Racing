@@ -162,7 +162,6 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
         }
     }
 
-    //std::cout<<"Rotacion X: "<<mData.angX<<","<<" Rotacion Z: "<<mData.angZ<<std::endl;
 }
 
 //Function that moves the vehicle elliptically given its internal radius ratio rotation
@@ -256,7 +255,6 @@ void LAPAL::calculateRotationsXZ(LAPAL::plane3f& terrain){
     }else{
         //check which points are at different heights. We only need to check two pairs.
         if(terrain.p1.x != terrain.p2.x){
-            //angle = acos(cc / h) acos
             terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.x-terrain.p1.x) );
         }else{
             terrain.rotZ = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.x-terrain.p2.x) );
