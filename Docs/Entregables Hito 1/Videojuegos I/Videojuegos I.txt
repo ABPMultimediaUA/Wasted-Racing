@@ -17,7 +17,7 @@ Los documentos:
     -Diseño de requerimientos y funciones de red
     -Diseño tenico del motor de red
     
-Se encuentran en la carpeta Videojuegos/Documentos
+Se encuentran en la carpeta Videojuegos I/Documentos
 
 -----------------------------------------------------------------------------------------------------------------
 Logica Difusa
@@ -33,12 +33,15 @@ Se puede ver el codigo en los archivos:
 -----------------------------------------------------------------------------------------------------------------
 Behaviour Trees
 
-    El codigo de implementacion lo podemos ver en Game/src/GameBehaviourTrees/
+    Podemos ver su funcionamiento en el video "IA.mp4"
+
+    -El codigo de implementacion lo podemos ver en Game/src/GameBehaviourTrees/
+    -En el documento "Diseño técnico del motor de IA", podemos ver ademas el diagrama sobre el que se ha implementado
     
 -----------------------------------------------------------------------------------------------------------------
 Sistema de gestión de eventos
 
-    Para ver el funcionamiento, las teclas por ejemplo van por eventos
+    Se puede comprobar pulsando las teclas, de manera que mediante eventos el Player realizará acciones
 
     -Se puede ver Game/src/GameEvent/
     
@@ -56,5 +59,13 @@ Sistema de percepcion sensorial
         -Game/src/GamePhysics
 
 -----------------------------------------------------------------------------------------------------------------
-
+Sistema de Waypoints para pathfinding continuo
     
+    
+    Podemos ver su funcionamiento en el video "IA.mp4"
+    
+    Se puede ver en:
+        -Game/src/GameManager/WaypointManager
+        -Game/src/GameObject/WaypointComponent
+        -Game/src/GameObject/PathPlanningComponent
+        
