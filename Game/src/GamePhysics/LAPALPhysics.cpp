@@ -355,7 +355,9 @@ void LAPAL::calculateAB(const LAPAL::vec3f& vecC, const LAPAL::vec3f& vec1, cons
     if(a_z != 0.0){
         aux_b = (c_z - aux_a * b_z) / a_z;
     }
-
+    if(a_x != 0.0){
+        aux_b = (c_x - aux_a * b_x) / a_x;
+    }
 
     a = aux_a;
     b = aux_b;
@@ -372,14 +374,6 @@ void LAPAL::calculateTerrainAB(const LAPAL::plane3f& terrain, const LAPAL::vec3f
 
     //Composing the scalars
     calculateAB(relativeP, vec_a, vec_b, a, b);
-
-    /*
-    if(vec_a.x * vec_b.z != vec_a.z * vec_b.x) 
-        *a = (relativeP.x * vec_b.z - relativeP.z * vec_b.x) /(vec_a.x * vec_b.z - vec_a.z * vec_b.x);
-    if(vec_b.z != 0)
-        *b = (relativeP.z - (*a) * vec_a.z) / vec_b.z;
-        */
-
 }
 
 //Calculates the distance between a line defined by two points (l1,l2) and a point (p1)

@@ -101,12 +101,12 @@ int add = 0;
             //Send signal of movement
             //Turn
 
-            /*moveComponent->changeSpin(turnValue * 3);
+            moveComponent->changeSpin(turnValue );
 
             //Accelerate and brake
             //if(speedValue > 0){
             moveComponent->isMoving(true);
-            moveComponent->changeAcc(1.f);*/
+            moveComponent->changeAcc(1.f);
             //}
             /*if(speedValue < 0){
                 moveComponent->isMoving(false);

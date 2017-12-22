@@ -108,7 +108,7 @@ void MSensorComponent::updateMapCollisions()
         LAPAL::calculateAB(relativePoint, sensorLeft, vAB,  a, b);
 
         //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-        if(a > 0.f && b > 0.f && b <= 1.f){
+        if(a > 0.f && b >= 0.f && b <= 1.f){
             contactL    = true;
             pointS1     = terrain.p2 - b * vAB;
         }
@@ -117,7 +117,7 @@ void MSensorComponent::updateMapCollisions()
         LAPAL::calculateAB(relativePoint, sensorRight, vAB,  a, b);
 
         //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-        if(a > 0.f && b > 0.f && b <= 1.f){
+        if(a > 0.f && b >= 0.f && b <= 1.f){
             contactR    = true;
             pointS2     = terrain.p2 - b * vAB;
         }
@@ -135,7 +135,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorLeft, vAB, a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && b <= 1){
+            if(a > 0.f && b >= 0.f && b <= 1){
                 contactL    = true;
                 pointS1     = terrain.p3 - b * vAB;
             }
@@ -147,7 +147,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorRight, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && b <= 1.f){
+            if(a > 0.f && b >= 0.f && b <= 1.f){
                 contactR    = true;
                 pointS2     = terrain.p3 - b * vAB;
             }
@@ -167,7 +167,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorLeft, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && b <= 1.f){
+            if(a > 0.f && b >= 0.f && b <= 1.f){
                 contactL    = true;
                 pointS1     = terrain.p4 - b * vAB;
             }
@@ -179,7 +179,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorRight, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && b <= 1.f){
+            if(a > 0.f && b >= 0.f && b <= 1.f){
                 contactR    = true;
                 pointS2     = terrain.p4 - b * vAB;
             }
@@ -198,7 +198,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorLeft, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && a <= 1){
+            if(a > 0.f && b >= 0.f && a <= 1){
                 contactL    = true;
                 pointS1     = terrain.p1 - b * vAB;
             }
@@ -210,7 +210,7 @@ void MSensorComponent::updateMapCollisions()
             LAPAL::calculateAB(relativePoint, sensorRight, vAB,  a, b);
 
             //The vector must be inside the line (a > 0 && a <= 1), and different from the object (b > 0)
-            if(a > 0.f && b > 0.f && a <= 1.f){
+            if(a > 0.f && b >= 0.f && a <= 1.f){
                 contactR    = true;
                 pointS2     = terrain.p1 - b * vAB;
             }
