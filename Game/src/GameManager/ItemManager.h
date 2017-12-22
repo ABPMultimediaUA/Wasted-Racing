@@ -22,6 +22,9 @@ class ItemManager {
         std::vector<std::shared_ptr<IItemComponent>> ItemComponents;
         std::vector<std::shared_ptr<ItemBoxComponent>> ItemBoxes;
 
+        //Item ids index
+        int ids;
+
     public:
 
         ItemManager();

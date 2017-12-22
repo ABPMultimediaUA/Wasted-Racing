@@ -59,7 +59,7 @@ void ItemBlueShellComponent::update(float dTime)
 						(objective.z - pos.z) * (objective.z - pos.z);
 	
 
-    int posVectorEnemy = enemy.get()->getGameObject().getComponent<PathPlanningComponent>()->getLastPosVector();
+    unsigned int posVectorEnemy = enemy.get()->getGameObject().getComponent<PathPlanningComponent>()->getLastPosVector();
     if(distaneActualWay < distancePlayer || lastVector < posVectorEnemy)
     {
         objective = posWay;
