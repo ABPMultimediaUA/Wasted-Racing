@@ -1,0 +1,6 @@
+﻿  common.cpp
+  common_platform.cpp
+  record.cpp
+c:\mingw\msys\1.0\home\luis\wasted-racing\game\lib\win\lowlevel\examples\record.cpp(179): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  record.vcxproj -> C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\lowlevel\examples\vs2015\_builds\record\Debug\Win32\record.exe
+  record.vcxproj -> C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\lowlevel\examples\vs2015\_builds\record\Debug\Win32\record.pdb (Partial PDB)

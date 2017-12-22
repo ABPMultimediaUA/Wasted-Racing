@@ -1,0 +1,7 @@
+﻿  common.cpp
+  common_platform.cpp
+  dsp_custom.cpp
+c:\mingw\msys\1.0\home\luis\wasted-racing\game\lib\win\lowlevel\examples\dsp_custom.cpp(333): warning C4244: '=': conversión de 'double' a 'float'; posible pérdida de datos
+c:\mingw\msys\1.0\home\luis\wasted-racing\game\lib\win\lowlevel\examples\dsp_custom.cpp(336): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+  dsp_custom.vcxproj -> C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\lowlevel\examples\vs2015\_builds\dsp_custom\Debug\Win32\dsp_custom.exe
+  dsp_custom.vcxproj -> C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\lowlevel\examples\vs2015\_builds\dsp_custom\Debug\Win32\dsp_custom.pdb (Partial PDB)

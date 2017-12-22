@@ -1,0 +1,1 @@
+C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\studio\examples\vs2015\objectpan.vcxproj;x86

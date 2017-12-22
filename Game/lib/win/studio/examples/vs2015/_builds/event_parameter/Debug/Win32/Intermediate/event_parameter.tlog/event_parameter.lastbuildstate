@@ -1,0 +1,2 @@
+#TargetFrameworkVersion=:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=10.0.10240.0
+Debug|Win32|C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\studio\examples\vs2015\|
