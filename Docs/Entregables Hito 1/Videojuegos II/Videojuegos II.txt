@@ -46,7 +46,20 @@ Utilización de propiedades físicas en las mecánicas jugables
 
 -----------------------------------------------------------------------------------------------------------------
 Mecánicas básicas entidades sin IA
-
+    
+    Se puede observar en cualquiera de los videos, especialmente en "Mecánicas de ítems.mp4"
+    
+    Las entidades sin IA son:
+        -Rampas de aceleración
+        -Cajas de item
+        -Obstaculos
+        
+    En el codigo lo podemos ver en:
+        -Game/src/GameManager/ItemManager
+        -Game/src/GameObject/ItemBoxComponent
+        -Game/src/GameObject/RampComponent
+        -Game/src/GameObject/CollisionComponent
+        -Game/src/GameManager/PhysicsManager
 
 
 -----------------------------------------------------------------------------------------------------------------
@@ -71,9 +84,29 @@ Mecánicas de acción
 -----------------------------------------------------------------------------------------------------------------
 Formato propio para la definición de los niveles (documento con la especificación del formato)
 
-
+    Documento adjuntado en Videojuegos II/Formato propio para la definicion de niveles.pdf
+    
 
 -----------------------------------------------------------------------------------------------------------------
 Implementación de cámara de seguimiento
 
+    Para observar su funcionamiento, podemos ver cualquiera de los videos, especialmente el de "Movimiento Player.mp4"
+    
+    Su implementacion se puede observar en:
+        -Game/src/GameManager/RenderManager
 
+-----------------------------------------------------------------------------------------------------------------
+Power-ups y elementos adicionales
+
+    
+    Podemos ver el uso de los items en el video "Mecanica de items.mp4"
+    
+    
+    Su implementacion se puede observar en:
+        -Game/src/GameManager/ItemManager
+        -Game/src/GameObject/ItemRedShellComponent
+        -Game/src/GameObject/ItemBlueShellComponent
+        -Game/src/GameObject/ItemStarComponent
+        -Game/src/GameObject/ItemMushroomComponent
+        -Game/src/GameObject/ItemBananaComponent
+-----------------------------------------------------------------------------------------------------------------
