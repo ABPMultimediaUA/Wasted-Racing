@@ -8,7 +8,7 @@
 void QuadTree::init(unsigned int max, int rang, std::vector<IComponent::Pointer> &componentList, float qx0, float qx1, float qy0, float qy1){
 
     for(unsigned int i = 0; i<componentList.size(); ++i)
-        components.push_back(componentList.at(i));
+        components.push_back(componentList[i]);
 
     x0 = qx0;
     x1 = qx1;
@@ -48,26 +48,21 @@ void QuadTree::divide(){
         //Inserting the entities into the children nodes
         for (unsigned int i = 0; i< components.size(); i++){
 
-            GameObject object = components.at(i).get()->getGameObject();
+            GameObject object = components[i].get()->getGameObject();
             glm::vec3 position = object.getTransformData().position;
 
             if (x0 <= position.x && x01 >= position.x && y1 >= position.z && y01 <= position.z){//if it is inside node northwest
-                northWest.components.push_back(components.at(i));
+                northWest.components.push_back(components[i]);
             }
             else if (x01 < position.x && x1 >= position.x && y1 >= position.z && y01 <= position.z){//if it is inside node northeast
-                northEast.components.push_back(components.at(i));
+                northEast.components.push_back(components[i]);
             }
             else if (x0 <= position.x && x01 >= position.x && y01 > position.z && y0 <= position.z){//if it is inside node southwest
-                southWest.components.push_back(components.at(i));
+                southWest.components.push_back(components[i]);
             }
             else if (x01 < position.x && x1 >= position.x && y01 > position.z && y0 <= position.z){//if it is inside node southeast
-                southEast.components.push_back(components.at(i));
+                southEast.components.push_back(components[i]);
             }
-
-            //std::cout << x0 << " " << position.x << " " << x01 << " | ";
-            //std::cout << y01 << " " << position.z << " " << y1 << " | ";
-            //std::cout << (x0 <= position.x && x01>= position.x) << " " << (y01 > position.z && y1 <= position.z) << std::endl;
-            //std::cout << y0 << " " << y01 << " " << y1 << std::endl;
 
         }
 
@@ -80,7 +75,7 @@ void QuadTree::divide(){
         nodes.push_back(southEast);
 
         for (unsigned int i = 0; i < nodes.size(); i++){//We keep dividing the children in case they're full of objects
-            nodes.at(i).divide();
+            nodes[i].divide();
         }
 
     }
@@ -96,22 +91,22 @@ void QuadTree::update(float dTime, glm::vec3 position){
 
 
     for(unsigned int i=0; i<components.size(); i++){
-        components.at(i).get()->update(dTime); //calls the Update function from each
+        components[i].get()->update(dTime); //calls the Update function from each
     }
 
      //We check the entities around the position of our entity to see if they have to update
     if(components.size() != 0){ 
         if(x0-range <= position.x && x01+range >= position.x && y0-range <= position.z && y01+range >= position.z){
-            nodes.at(0).update(dTime, position); //updating the entities inside the node northwest
+            nodes[0].update(dTime, position); //updating the entities inside the node northwest
         }
         if(x01-range <= position.x && x1+range >= position.x && y0-range <= position.z && y01+range >= position.z){
-            nodes.at(1).update(dTime, position); //updating the entities inside the node northeast
+            nodes[1].update(dTime, position); //updating the entities inside the node northeast
          }
          if(x0-range <= position.x && x01+range >= position.x && y01-range <= position.z && y1+range >= position.z){
-            nodes.at(2).update(dTime, position); //updating the entities inside the node southwest
+            nodes[2].update(dTime, position); //updating the entities inside the node southwest
         }
         if(x01-range <= position.x && x1+range >= position.x && y01-range <= position.z && y1+range >= position.z){
-            nodes.at(3).update(dTime, position); //updating the entities inside the node southeast
+            nodes[3].update(dTime, position); //updating the entities inside the node southeast
         }
     }
 }
@@ -121,7 +116,7 @@ void QuadTree::clear(){
     components.clear();
 
     for(unsigned int i=0; i<nodes.size(); i++){
-            nodes.at(i).clear();
+            nodes[i].clear();
     }
 }
 
@@ -132,12 +127,12 @@ void QuadTree::debugStructure(int n) {
 		std::cout << "*Level " << n << " - " << nodes.size() << " nodes - " << components.size() << " components - P1: ";
         std::cout << x0 << "," << y0 << " | P2:" << x1 << "," << y1 << std::endl;
         for(unsigned int i=0; i<components.size(); i++){
-            std::cout << "     P: " << components.at(i).get()->getGameObject().getTransformData().position.x << ",";
-            std::cout << components.at(i).get()->getGameObject().getTransformData().position.z << std::endl;
+            std::cout << "     P: " << components[i].get()->getGameObject().getTransformData().position.x << ",";
+            std::cout << components[i].get()->getGameObject().getTransformData().position.z << std::endl;
         }
 	}
 	for (unsigned int i = 0; i < nodes.size(); i++)
-		nodes.at(i).debugStructure(n + 1);
+		nodes[i].debugStructure(n + 1);
 }
 
 

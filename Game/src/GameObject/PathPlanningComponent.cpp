@@ -13,7 +13,6 @@ void PathPlanningComponent::update(float dTime)
 {
 
 	auto pos = this->getGameObject().getTransformData().position;
-	auto vel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().velocity;
 	auto modSpeed = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
 
 	auto wpManager = &WaypointManager::getInstance();
@@ -23,18 +22,43 @@ void PathPlanningComponent::update(float dTime)
 	float distaneActualWay = (listNodes[lastVector].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector].get()->getTransformData().position.x - pos.x) +
 						(listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
 						(listNodes[lastVector].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector].get()->getTransformData().position.z - pos.z);
+	
+	
 	float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
-	if(distaneActualWay <= radius*radius)
+
+	if(this->getGameObject().getComponent<AIDrivingComponent>() != nullptr)
 	{
-		if(lastVector < listNodes.size()-1)
+		if(distaneActualWay <= (radius*radius)/2)
 		{
-			lastVector++;
-		}
-		else if(lastVector == listNodes.size()-1)
-		{
-			lastVector = 0;
+			if(lastVector < listNodes.size()-1)
+			{
+				lastVector++;
+			}
+			else if(lastVector == listNodes.size()-1)
+			{
+				int vuelta = getGameObject().getComponent<ScoreComponent>()->getLap();
+				getGameObject().getComponent<ScoreComponent>()->setLap(vuelta + 1);
+				lastVector = 0;
+			}
 		}
 	}
+	else
+	{
+		if(distaneActualWay <= radius*radius)
+		{
+			if(lastVector < listNodes.size()-1)
+			{
+				lastVector++;
+			}
+			else if(lastVector == listNodes.size()-1)
+			{
+				int vuelta = getGameObject().getComponent<ScoreComponent>()->getLap();
+				getGameObject().getComponent<ScoreComponent>()->setLap(vuelta + 1);
+				lastVector = 0;
+			}
+		}
+	}
+	
 
     float tour = (modSpeed * seconds) * (modSpeed * seconds);
 	int posVector;

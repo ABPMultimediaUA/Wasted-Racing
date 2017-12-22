@@ -3,13 +3,15 @@
 #include "IComponent.h"
 #include "../GameManager/WaypointManager.h"
 #include "MoveComponent.h"
+#include "ScoreComponent.h"
+#include "AIDrivingComponent.h"
 
 class PathPlanningComponent : public IComponent{
 private:
 
     float seconds;
     float distLastWay;
-    int lastVector;
+    unsigned int lastVector;
     glm::vec3 nextPos;
         
 public:

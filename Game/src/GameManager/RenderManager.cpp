@@ -103,10 +103,10 @@ void addCameraRenderComponent(EventData data) {
 
 void objectDeletedRender(EventData eData) {
 
-    auto renderComponentList = RenderManager::getInstance().getComponentList();
+    auto& renderComponentList = RenderManager::getInstance().getComponentList();
 
     for(unsigned int i = 0; i<renderComponentList.size(); ++i) {
-        if(eData.Id == renderComponentList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == renderComponentList[i].get()->getGameObject().getId()) {
             renderComponentList.erase(renderComponentList.begin() + i);
             
             return;

@@ -49,12 +49,11 @@ class ItemManager {
         
 
         //Getters
-        std::vector<std::shared_ptr<IItemComponent>> getItemComponents()        {       return ItemComponents;       };
-
+        std::vector<std::shared_ptr<IItemComponent>>& getItemComponents()        {       return ItemComponents;       };
+        std::vector<std::shared_ptr<ItemHolderComponent>>& getItemHolderComponents()        {       return ItemHolders;       };
 
         //Item delete
-        void deleteMushroom(IComponent::Pointer component);
-        void deleteStar(IComponent::Pointer component);
+        void deleteItem(IComponent::Pointer component);
 
 
 

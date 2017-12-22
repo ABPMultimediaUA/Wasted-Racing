@@ -25,21 +25,19 @@ void AIDrivingComponent::checkList()
 
 	for (size_t i = 0; i < listNodes.size(); i++)
 	{
-		std::cout<<"WAYPOINT POS: "<<listNodes[i].get()->getTransformData().position.x<<"\n";
+		//std::cout<<"WAYPOINT POS: "<<listNodes[i].get()->getTransformData().position.x<<"\n";
 	}
 }
 
 //Decides where to turn and in which grade (with a percentage of 0 to 1)
 
 /*//APARTADO DE MEJORAS//////
->Decidir si girar según los enemigos cercanos
->Diferenciar entre tipos de objetos
 >Tener en cuenta físicas del terreno
 >Personalidad agresiva o precavida
 >Añadir para hacer drifting
 
 //---------------------------*/
-float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 waypoint, float a, float b)
+float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector<VObject::Pointer> walls, glm::vec3 waypoint, float a, float b)
 {	
 	//final turn decision
 	float decision = 0.0f;
@@ -51,12 +49,12 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	float atan_w = glm::atan(a,b)/3.14159265358979323846264338327f;
 
 	//-----------_TESTS_-----------
-	/*
-	std::cout<<"Waypoint: "<<waypoint.x<<","<<waypoint.z<<std::endl;
+	
+	/*std::cout<<"Waypoint: "<<waypoint.x<<","<<waypoint.z<<std::endl;
 	std::cout<<"Left side: "<<a<<std::endl;
 	std::cout<<"Right side: "<<b<<std::endl;
-	std::cout<<"ATAN: "<<atan_w<<std::endl;
-	*/
+	std::cout<<"ATAN: "<<atan_w<<std::endl;*/
+	
 	//-----------_TESTS_-----------
 
 	//fuzzifier and inference
@@ -65,51 +63,59 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	if(atan_w <=-0.75){ //Since the value of the atan 0.25 corresponds to the center, from 1 to 0.25 is left, from 0.25 to -0.75 is right, and -0.75 to -1 is left.
 		atan_w += 2.f; 	//that's why we add this
 	}
-	float wp_left 	= inferL(atan_w		,0.25f  ,1.25f 	,0   	);
+	//Limits: -0.75 - 0.25 right, 0.25 center, 0.25 to 1.25 left
+	float wp_left 	= inferL(atan_w		,0.25f  ,0.8f 	,0   	);
 	float wp_center = inferT(atan_w		,0.23f	,0.25f 	,0.27f	);
-	float wp_right 	= inferL(atan_w		,-0.75f	,0.25f  ,1   	);
+	float wp_right 	= inferL(atan_w		,-0.25f	,0.25f  ,1   	);
 
 	//If we have collisions to collide with
 	if(array.size()>0){
-		float atan_obs = 0.0f;
+		float atan_obs 	 = 0.0f;
+		float obs_left   = 0.f, obs_center = 0.f, obs_right = 0.f;
 
 		//Accumulate the mean atan value of them all to pickpoint a medium point of no collisions
 		for(unsigned i = 0; i<array.size(); ++i){
-			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
+			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f );
+			//collisions
+			if(atan_obs <=-0.75){ 	//Same process as the waypoint
+				atan_obs += 2.f;
+			}
+			obs_left	+= inferL(atan_obs		,0.25f  ,1.25f 	,0   	);
+			obs_center 	+= inferT(atan_obs		,0.23f	,0.25f 	,0.27f	);
+			obs_right 	+= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
 		}
+		/*for(unsigned i = 0; i<walls.size(); ++i){
+			atan_walls += (glm::atan(walls[i].get()->getA(),walls[i].get()->getB()) / 3.14159265358979323846264338327f );
+			//collisions
+			if(atan_walls <=-0.75){ 	//Same process as the waypoint
+				atan_walls += 2.f;
+			}
+			obs_left	+= inferL(atan_walls	,0.25f  ,1.25f 	,0   	);
+			obs_center 	+= inferT(atan_walls	,0.23f	,0.25f 	,0.27f	);
+			obs_right 	+= inferL(atan_walls	,-0.75f	,0.25f  ,1   	);
+		}*/
 
-		//collisions
-		if(atan_obs <=-0.75){ 	//Same process as the waypoint
-			atan_obs += 2.f;
-		}
-		float obs_left	 	= inferL(atan_obs		,0.25f  ,1.25f 	,0   	);
-		float obs_center 	= inferT(atan_obs		,0.23f	,0.25f 	,0.27f	);
-		float obs_right 	= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
-
+		obs_left   = obs_left / (array.size() );//+ walls.size());
+		obs_center = obs_center / (array.size() );//+ walls.size());
+		obs_right  = obs_right / (array.size() );//+ walls.size());
+		/*if(array.size()>0){
+			atan_obs = (atan_obs + atan_walls) / 2;
+		}else{
+			atan_obs = atan_walls;
+		}*/
+		
 		//-----------_TESTS_-----------
 		std::cout<<"Obstacle values: "<<obs_left<<" - "<<obs_center<< " - " << obs_right<<std::endl;
 		//-----------_TESTS_-----------
-
-
 		//Apply ruleset.
-		/*
-		ORIGINAL APPROACH
-		
-		steeringLeft  = wp_center > obs_center ? wp_center : obs_center;
-		steeringRight = wp_center > obs_left   ? wp_center : obs_left;
-		steeringLeft  = wp_center > obs_right  ? wp_center : obs_right;
-		steeringLeft  = wp_left   > obs_center ? wp_left   : obs_center;
-		steeringNone  = wp_left   > obs_left   ? wp_left   : obs_left;
-		steeringLeft  = wp_left   > obs_right  ? wp_left   : obs_right;
-		steeringRight = wp_right  > obs_center ? wp_right  : obs_center;
-		steeringRight = wp_right  > obs_left   ? wp_right  : obs_left;
-		steeringNone  = wp_right  > obs_right  ? wp_right  : obs_right;
-		*/
 
 		//New Iteration approach
-		steeringLeft = glm::min( glm::max(wp_left, wp_center), glm::max(obs_center, obs_right) );
+		/*steeringLeft = glm::min( glm::max(wp_left, wp_center), glm::max(obs_center, obs_right) );
 		steeringNone = glm::min( glm::max(1-wp_left, wp_center, 1-wp_right), glm::max(obs_left, obs_right) );
-		steeringRight = glm::min( glm::max(wp_right, wp_center), glm::max(obs_center,obs_left) );
+		steeringRight = glm::min( glm::max(wp_right, wp_center), glm::max(obs_center,obs_left) );*/
+		steeringLeft 	= glm::max( wp_left, obs_right);
+		steeringRight 	= glm::max( wp_right, obs_left);
+		steeringNone 	= 1-obs_center;
 
 	}else{
 		//ruleset
@@ -125,20 +131,20 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, glm::vec3 w
 	//---------------GENERALIZE---everything
 	float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
 
-	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.15f, 0.f, 0.15f);
-	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.995f, -0.05f);
-	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.05f, 0.995f, 1.0f);
+	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.3f, 0.f, 0.3f);
+	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.5f, -0.01f);
+	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.01f, 0.5f, 1.0f);
 
 	//adding all the centroids and crisping end result
 	float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
 	//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
 
 	//-----------_TESTS_-----------
-	/*
-	std::cout<<"Donde vas payo: "<<cx<<std::endl;
+	
+	std::cout<<"Valores de steering: "<<steeringLeft<<" --- "<<steeringNone<<" --- "<<steeringRight<<std::endl;
 	std::cout<<"Centro: "<<op1_cx<<", dech: "<<op2_cx<<", izq: "<<op3_cx<<std::endl;
 	std::cout<<"Center area: "<<op1_area<<", right area: "<<op2_area<<", left area: "<<op3_area<<std::endl;
-	*/
+	
 	//-----------_TESTS_-----------
 
 	decision = cx;
@@ -180,7 +186,7 @@ float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, f
 		//Previous calculus
 		float atan_obs = 0.0f, min_value = FLT_MAX;
 		for(unsigned i = 0; i<array.size(); i++){
-			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f )/array.size();
+			atan_obs += (glm::atan(array[i].get()->getB(),array[i].get()->getA()) / 3.14159265358979323846264338327f )/array.size();
 			min_value = glm::min(min_value,array[i].get()->getA()+array[i].get()->getB());
 		}
 

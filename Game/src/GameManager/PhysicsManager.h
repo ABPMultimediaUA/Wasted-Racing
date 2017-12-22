@@ -7,6 +7,8 @@
 #include "../GameObject/ItemBoxComponent.h"
 #include "../GameObject/ItemBananaComponent.h"
 #include "../GameObject/ItemBlueShellComponent.h"
+#include "../GameObject/ItemRedShellComponent.h"
+#include "../GameObject/ItemStarComponent.h"
 #include <vector>
 
 class PhysicsManager{
@@ -41,13 +43,16 @@ public:
     static PhysicsManager& getInstance();
     std::vector<IComponent::Pointer>& getMoveComponentList()       {    return moveComponentList;        } //Move component list getter
     std::vector<IComponent::Pointer>& getCollisionComponentList()  {    return collisionComponentList;   } //Collision component list getter
-    std::vector<MovingCharacter>& getMovingCharacterList()     {    return movingCharacterList;      } //MovingCharacter component list getter
-    MovingCharacter getMovingCharacter(uint16_t id){                                                       //get given character from list
-        for(uint32_t i = 0; i < movingCharacterList.size(); ++i){
+    std::vector<MovingCharacter>& getMovingCharacterList()     {    return movingCharacterList;      }     //MovingCharacter component list getter
+    
+    MovingCharacter getMovingCharacter(uint16_t id){      //Get given moving character by object id from list
+        MovingCharacter mChar;
+        for(unsigned int i=0; i < movingCharacterList.size(); ++i){
             if(movingCharacterList[i].moveComponent->getGameObject().getId() == id){
                 return movingCharacterList[i];
             }
         }
+        return mChar;
     }
     //Setters
     void setCollisionComponentList(std::vector<IComponent::Pointer>& collision)            {    collisionComponentList = collision; }

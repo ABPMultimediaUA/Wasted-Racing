@@ -11,6 +11,7 @@ public:
 	MoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newTerrain, float newMass) 
 		: IComponent(newGameObject), mData(newMData), terrain(newTerrain), mass(newMass) {
 			
+			auxData 				= newMData;
 			constantAlteredTime		= 0.0f;		
 			decrementalAlteredTime	= 0.0f;
 			maxDecrementalAT		= 0.0f;			
@@ -34,7 +35,6 @@ public:
 	//Keyboard functions
     void changeAccInc(float n);
     void changeSpinIncrement(float n);
-	void changeAngleInc(float i);
 
 	//Joystick functions
 	void changeSpin(float n);

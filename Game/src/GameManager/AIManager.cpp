@@ -6,6 +6,9 @@
 //==============================================
 
 void addAIDrivingComponent(EventData data);
+void objectDeleteAIDriving(EventData data);
+void objectDeleteAIBattle(EventData data);
+
 
 //==============================================
 // AI MANAGER FUNCTIONS
@@ -21,6 +24,8 @@ void AIManager::init() {
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
     //No delete by the moment
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIDriving});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIBattle});
 
 }
 
@@ -39,6 +44,7 @@ void AIManager::init() {
 //------------------------------------
 void AIManager::update() {
     //Update of all behaviour trees
+
     for(unsigned int i=0; i<battleAI.size(); i++)
     {
         auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
@@ -47,24 +53,20 @@ void AIManager::update() {
 
     for(unsigned int i=0; i<objectsAI.size(); ++i){
         //Get components needed for the movement
-        auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI.at(i)).get();
+        auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI[i]).get();
         auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
         auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
         auto mSensorComponent = aiDrivingComponent->getGameObject().getComponent<MSensorComponent>().get();
         auto pathPlanningComponent = aiDrivingComponent->getGameObject().getComponent<PathPlanningComponent>().get();
         auto iItemComponent = aiDrivingComponent->getGameObject().getComponent<IItemComponent>().get();
 
-        //If they all exist
         if(aiDrivingComponent && moveComponent && vSensorComponent && mSensorComponent && iItemComponent == nullptr){
             //get all objects that are seen to the visual sensor
             std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
-            std::vector<VObject::Pointer> seenObjects2 = mSensorComponent->getSeenObjects();
-            for(uint32_t i = 0; i < seenObjects2.size(); ++i){
-                seenObjects.push_back(seenObjects2[i]);
-            }
+            std::vector<VObject::Pointer> mapCollisions = mSensorComponent->getMapCollisions();
             
             //_______________TESTING_______________
-            std::cout<<"TAMAÑO LISTA OBSTACULOS: "<<seenObjects.size()<<std::endl;
+            //std::cout<<"TAMAÑO LISTA OBSTACULOS: "<<seenObjects.size()<<std::endl;
             //_____________________________________
 
             //Set angle of the sensors to the NPC one
@@ -77,35 +79,35 @@ void AIManager::update() {
 
 
             //Update A and B of the objective
-            float a=0,b=0;
-            vSensorComponent->calculateAB(objective, &a, &b);
+            float a = 0.f,b = 0.f;
+            vSensorComponent->calculateAB(objective, a, b);
 
             //DECIDE STUFF
-            float turnValue = aiDrivingComponent->girar(seenObjects, objective, a, b);
-            float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
+            //seenObjects.clear();
+
+            float turnValue = aiDrivingComponent->girar(seenObjects, mapCollisions, objective, a, b);
+            //float speedValue = aiDrivingComponent->acelerar_frenar(seenObjects, turnValue, vSensorComponent->getAngleInitial(), a, b);
             //----------------------------------
 
             //------------Testing
-            //std::cout<<"Turn values: "<<turnValue<<std::endl;
+            std::cout<<"Turn values: "<<turnValue<<std::endl;
             //std::cout<<"Speed value: "<<speedValue<<std::endl;
             //-------------------
 
             //Send signal of movement
             //Turn
-            moveComponent->changeSpin(turnValue);
+
+            moveComponent->changeSpin(turnValue );
 
             //Accelerate and brake
             //if(speedValue > 0){
-                moveComponent->isMoving(true);
-                moveComponent->changeAcc(1.f);
+            moveComponent->isMoving(true);
+            moveComponent->changeAcc(1.f);
             //}
             /*if(speedValue < 0){
                 moveComponent->isMoving(false);
                 moveComponent->changeAcc(speedValue);
             }*/
-            if(speedValue == 0){
-                moveComponent->isMoving(false);
-            }
         }
     }
 }
@@ -152,4 +154,28 @@ IComponent::Pointer AIManager::createAIBattleComponent(GameObject& newGameObject
 void addAIDrivingComponent(EventData data) {
     AIManager::getInstance().getAIDrivingComponentList().push_back(data.Component);
     data.Component.get()->init();
+}
+
+void objectDeleteAIDriving(EventData eData) {
+
+    auto& aIDrivingComponentList = AIManager::getInstance().getAIDrivingComponentList();
+
+    for(unsigned int i = 0; i<aIDrivingComponentList.size(); ++i) {
+        if(eData.Id == aIDrivingComponentList[i].get()->getGameObject().getId()) {
+            aIDrivingComponentList.erase(aIDrivingComponentList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeleteAIBattle(EventData eData) {
+
+    auto& aIBattleComponentList = AIManager::getInstance().getAIBattleComponentList();
+
+    for(unsigned int i = 0; i<aIBattleComponentList.size(); ++i) {
+        if(eData.Id == aIBattleComponentList[i].get()->getGameObject().getId()) {
+            aIBattleComponentList.erase(aIBattleComponentList.begin() + i);
+            return;
+        }
+    }
 }

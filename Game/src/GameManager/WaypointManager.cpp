@@ -1,8 +1,14 @@
 #include "WaypointManager.h"
 
+
+
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
+
+void objectDeletePathPlanning(EventData eData);
+
+
 
 WaypointManager& WaypointManager::getInstance() {
     static WaypointManager instance;
@@ -11,13 +17,16 @@ WaypointManager& WaypointManager::getInstance() {
 
 void WaypointManager::init() {
     listSubNodes = new std::vector<GameObject::Pointer>;
+
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletePathPlanning});
 }
 
 void WaypointManager::update(float dTime) {
     //I doubt this method should exist in this manager
     //I doubt it too
+    //I hope Fran reads this
 
-    for(int i = 0; i < pathPlanningComponentList.size(); i++)
+    for(unsigned int i=0; i < pathPlanningComponentList.size(); i++)
     {
         auto iItemComponent = pathPlanningComponentList[i]->getGameObject().getComponent<IItemComponent>().get();
         if(iItemComponent == nullptr)
@@ -85,3 +94,22 @@ std::vector<GameObject::Pointer> WaypointManager::getWaypoints()
     return *listSubNodes;
 }
 
+
+////////////////////////////////////////////
+//
+//      DELEGATES
+//
+////////////////////////////////////////////
+
+
+void objectDeletePathPlanning(EventData eData) {
+
+    auto& PathPlanningComponentList = WaypointManager::getInstance().getPathPlanningList();
+
+    for(unsigned int i = 0; i<PathPlanningComponentList.size(); ++i) {
+        if(eData.Id == PathPlanningComponentList[i].get()->getGameObject().getId()) {
+            PathPlanningComponentList.erase(PathPlanningComponentList.begin() + i);
+            return;
+        }
+    }
+} 
