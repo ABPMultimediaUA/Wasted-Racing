@@ -53,7 +53,7 @@ void AIManager::update() {
 
     for(unsigned int i=0; i<objectsAI.size(); ++i){
         //Get components needed for the movement
-        auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI.at(i)).get();
+        auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI[i]).get();
         auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
         auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
         auto mSensorComponent = aiDrivingComponent->getGameObject().getComponent<MSensorComponent>().get();
@@ -165,7 +165,7 @@ void objectDeleteAIDriving(EventData eData) {
     auto& aIDrivingComponentList = AIManager::getInstance().getAIDrivingComponentList();
 
     for(unsigned int i = 0; i<aIDrivingComponentList.size(); ++i) {
-        if(eData.Id == aIDrivingComponentList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == aIDrivingComponentList[i].get()->getGameObject().getId()) {
             aIDrivingComponentList.erase(aIDrivingComponentList.begin() + i);
             return;
         }
@@ -177,7 +177,7 @@ void objectDeleteAIBattle(EventData eData) {
     auto& aIBattleComponentList = AIManager::getInstance().getAIBattleComponentList();
 
     for(unsigned int i = 0; i<aIBattleComponentList.size(); ++i) {
-        if(eData.Id == aIBattleComponentList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == aIBattleComponentList[i].get()->getGameObject().getId()) {
             aIBattleComponentList.erase(aIBattleComponentList.begin() + i);
             return;
         }

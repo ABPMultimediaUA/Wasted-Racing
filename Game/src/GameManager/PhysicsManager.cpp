@@ -44,6 +44,7 @@ void PhysicsManager::init() {
 
 void PhysicsManager::update(const float dTime) {
 
+    //For every moving character we have, calculate collisions with the others
     for(unsigned int i=0; i<movingCharacterList.size(); ++i){
 
         //Get components in variables
@@ -95,6 +96,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
             auto nexPosition = ourColl->getGameObject().getTransformData().position + (move.get()->getMovemententData().velocity * dTime);
             
+            //Depending on the shape to collide with, check collision with it
             if(hisColl->getShape() == CollisionComponent::Shape::Circle) {
                 collision = LAPAL::checkCircleCircleCollision(  nexPosition, ourColl->getRadius(), 
                                                                 hisColl->getGameObject().getTransformData().position, hisColl->getRadius());
@@ -104,6 +106,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                                                                     nexPosition, ourColl->getRadius());
             }
 
+            //If collision is kinetic, apply collision physics
             if(collision && hisColl->getKinetic()){
 
                 //Get other object move component
@@ -116,10 +119,11 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                 }
                 else {  //The object is not static
                         //***** CODE FOR COLLISIONS WHERE BOTH OBJECTS ARE MOVING *****//
-                        calculateStaticCollision(move, dTime); //This is not right!!!
-                        calculateStaticCollision(hisMove, dTime); //This is not right!!!
+                        calculateStaticCollision(move, dTime); //This is not right!!! Just a temporal solution
+                        calculateStaticCollision(hisMove, dTime); //This is not right!!! Just a temporal solution
                 }
             }
+            //If collision isn't kinetic, react with events depending on the collision type
             else if(collision && !hisColl->getKinetic()){
 
                 if(hisColl->getType() == CollisionComponent::Type::Ramp)
@@ -167,52 +171,21 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
     }
 }
 
+//Change velocity of the objects when it collides with another one
 void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> move, const float dTime) {
 
     MoveComponent* ourMove = move.get(); 
 
-    //float ourMass = ourMove->getMass();
-    //float hisMass = 5;
-
     auto ourMData = ourMove->getMovemententData();
-
-    //LAPAL::vec3f ourVel = ourMData.velocity;
-    //LAPAL::vec3f hisVel = glm::vec3(0,0,0);
-
-    //Calculate new velocity after collision
-    //LAPAL::calculateElasticCollision(ourVel, ourMass, hisVel, hisMass);
-    //ourMData.velocity = ourVel;
-
-    ////Calculate new velocity module
-    //float newVel    = -sqrt(ourVel.x*ourVel.x + ourVel.z*ourVel.z);
-    //if(ourMData.vel < 0)
-    //    newVel = -newVel;
 
     ourMData.vel    = 0;
     ourMData.acc    = -10;
 
-    //-----_TESTING_------
-    //ourMData.spin = -ourMData.spin;
-
-    //Set new movement
     ourMove->setMovementData(ourMData);
-    //auto tData = ourMove->getGameObject().getTransformData();
-//
-    //tData.position.x -= ourMData.velocity.x*dTime;
-    //tData.position.z -= ourMData.velocity.z*dTime;
-//
-    //ourMove->getGameObject().setTransformData(tData);
 }
 
 
-///--------------MEJORAS--------------------
-/*
-    >Comprobar colisioens con la Y y que rebote en caso de estar por
-    debajo de la Y del siguiente terreno a cierto nivel (para saltos)
-    >Añadir botón o mecánica de recuperación en caso de caída
-
-*/
-///-----------------------------------------
+//Calculate if we are inside a terrain or if we are going to another one
 void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
         MoveComponent* ourMove = move.get();
@@ -504,7 +477,7 @@ void objectDeletedCollide(EventData eData) {
     auto& collisionComponentList = PhysicsManager::getInstance().getCollisionComponentList();
 
     for(unsigned int i = 0; i<collisionComponentList.size(); ++i) {
-        if(eData.Id == collisionComponentList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == collisionComponentList[i].get()->getGameObject().getId()) {
             collisionComponentList.erase(collisionComponentList.begin() + i);
             return;
         }
@@ -516,7 +489,7 @@ void objectDeletedMove(EventData eData) {
     auto& moveComponentList = PhysicsManager::getInstance().getMoveComponentList();
 
     for(unsigned int i = 0; i<moveComponentList.size(); ++i) {
-        if(eData.Id == moveComponentList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == moveComponentList[i].get()->getGameObject().getId()) {
             moveComponentList.erase(moveComponentList.begin() + i);
             return;
         }

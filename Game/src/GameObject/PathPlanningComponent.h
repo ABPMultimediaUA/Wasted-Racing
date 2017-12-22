@@ -10,7 +10,7 @@ private:
 
     float seconds;
     float distLastWay;
-    int lastVector;
+    unsigned int lastVector;
     glm::vec3 nextPos;
         
 public:

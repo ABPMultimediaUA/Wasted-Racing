@@ -101,7 +101,7 @@ void objectDeleteVSensor(EventData eData) {
     auto& vSensorList = SensorManager::getInstance().getComponentList();
 
     for(unsigned int i = 0; i<vSensorList.size(); ++i) {
-        if(eData.Id == vSensorList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == vSensorList[i].get()->getGameObject().getId()) {
             vSensorList.erase(vSensorList.begin() + i);
             return;
         }
@@ -113,7 +113,7 @@ void objectDeleteMSensor(EventData eData) {
     auto& MSensorList = SensorManager::getInstance().getMComponentList();
 
     for(unsigned int i = 0; i<MSensorList.size(); ++i) {
-        if(eData.Id == MSensorList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == MSensorList[i].get()->getGameObject().getId()) {
             MSensorList.erase(MSensorList.begin() + i);
             return;
         }

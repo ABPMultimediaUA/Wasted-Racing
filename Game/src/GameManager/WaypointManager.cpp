@@ -26,7 +26,7 @@ void WaypointManager::update(float dTime) {
     //I doubt it too
     //I hope Fran reads this
 
-    for(int i = 0; i < pathPlanningComponentList.size(); i++)
+    for(unsigned int i=0; i < pathPlanningComponentList.size(); i++)
     {
         auto iItemComponent = pathPlanningComponentList[i]->getGameObject().getComponent<IItemComponent>().get();
         if(iItemComponent == nullptr)
@@ -107,7 +107,7 @@ void objectDeletePathPlanning(EventData eData) {
     auto& PathPlanningComponentList = WaypointManager::getInstance().getPathPlanningList();
 
     for(unsigned int i = 0; i<PathPlanningComponentList.size(); ++i) {
-        if(eData.Id == PathPlanningComponentList.at(i).get()->getGameObject().getId()) {
+        if(eData.Id == PathPlanningComponentList[i].get()->getGameObject().getId()) {
             PathPlanningComponentList.erase(PathPlanningComponentList.begin() + i);
             return;
         }

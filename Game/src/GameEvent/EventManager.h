@@ -30,7 +30,7 @@ public:
     // Event related functions
     //==================================
 
-    //Add a event to the event queue
+    //Add an event to the event queue
     void addEvent(Event);
 
     //Process an event from the queue
