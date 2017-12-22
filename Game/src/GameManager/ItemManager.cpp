@@ -1,12 +1,11 @@
 #include "ItemManager.h"
 
-void objectDeletedBanana(EventData eData);
-void objectDeletedMushroom(EventData eData);
-void objectDeletedStar(EventData eData);
+void objectDeleteItem(EventData eData);
+void objectDeleteHolder(EventData);
 
 ItemManager::ItemManager()
 {
-
+    ids = 6000;
 }
 
 //Instance getter
@@ -17,20 +16,19 @@ ItemManager& ItemManager::getInstance(){
 
 void ItemManager::init(){
 
-    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedBanana});
-    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMushroom});
-    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedStar});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteItem});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteHolder});
 
 }
 
 void ItemManager::update(float dTime){
     
     for(unsigned int i = 0; i < ItemBoxes.size() ; i++){
-        ItemBoxes.at(i)->update(dTime);
+        ItemBoxes[i]->update(dTime);
     }
 
     for(unsigned int i = 0; i < ItemComponents.size() ; i++){
-        ItemComponents.at(i)->update(dTime);
+        ItemComponents[i]->update(dTime);
     }
 }
 
@@ -95,7 +93,9 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     if(random == IItemComponent::ItemType::redShell)
     {
         itemHolder->setItemType(-1);
-        return createRedShell(obj);
+        auto component = createRedShell(obj);
+        std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();
+        return component;
     }
     else if(random == IItemComponent::ItemType::blueShell)
     {
@@ -114,7 +114,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         itemHolder->setItemType(-1);
         auto component = createMushroom(obj);
         std::dynamic_pointer_cast<ItemMushroomComponent>(component)->init();
-        deleteMushroom(component);
+        deleteItem(component);
         return component;
     }
     else if(random == IItemComponent::ItemType::star)
@@ -122,7 +122,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         itemHolder->setItemType(-1);
         auto component = createStar(obj);
         std::dynamic_pointer_cast<ItemStarComponent>(component)->init();
-        deleteStar(component);
+        deleteItem(component);
         return component;
     }
     return nullptr;
@@ -139,24 +139,70 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
 IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+10*cos(obj.getTransformData().rotation.y * M_PI/180),
-                                    pos.y, pos.z-10*sin(obj.getTransformData().rotation.y * M_PI/180));
+    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(0.2, 0.2, 0.2);
+    transform.scale    = glm::vec3(2,2,2);
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
-    IComponent::Pointer component = std::make_shared<ItemRedShellComponent>(*ob.get());
+    IComponent::Pointer component = std::make_shared<ItemRedShellComponent>(*ob.get(), obj);
 
     ob.get()->addComponent(component);
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
-    //PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::BlueShell);
+    LAPAL::movementData mData;
+    mData.mov = false;
+    mData.jump = false;
+    mData.spi = false;
+    mData.angle = obj.getComponent<MoveComponent>()->getMovemententData().angle;
+    mData.spin = 0;
+    mData.spin_inc = 0;
+    mData.max_spin = 1;
+    mData.brake_spin = 0.2;
+    mData.rotateX = 0.f;
+    mData.rotateZ = 0.f;
+    mData.rotate_inc = 0.15f;
+    mData.max_rotate = 3.f;
+    mData.vel = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 300.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.brake_vel = 0.f;
+    mData.velY = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+
+
+    auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
+    auto idd = obj.getId();
+    IComponent::Pointer terrainComp;
+
+    auto list = PhysicsManager::getInstance().getMovingCharacterList();
+    for(unsigned int i=0; i < list.size(); i++)
+    {
+        if(list[i].moveComponent.get()->getGameObject().getId() == idd) 
+            terrainComp = list[i].terrainComponent;
+    }
+
+
+    auto terrainComponent = obj.getComponent<TerrainComponent>();
+
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Shell);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::RedShell);
+
+    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+    PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
+    WaypointManager::getInstance().createPathPlanningComponent(ob);
+
+    AIManager::getInstance().createAIDrivingComponent(*ob.get());
+    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
@@ -165,15 +211,16 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
 IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y * M_PI/180),
-                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y * M_PI/180));
+    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(0.2, 0.2, 0.2);
+    transform.scale    = glm::vec3(2,2,2);
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
@@ -185,24 +232,23 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     mData.mov = false;
     mData.jump = false;
     mData.spi = false;
-    mData.angInc = 0;
     mData.angle = obj.getComponent<MoveComponent>()->getMovemententData().angle;
     mData.spin = 0;
-    mData.spin_inc = 0.01;
-    mData.max_spin = 0.1;
+    mData.spin_inc = 0;
+    mData.max_spin = 1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 400.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 300.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_vel = 0.f;
-    mData.velY = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.max_acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.dAcc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.brake_acc = 400.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.velY = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
 
 
     auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
@@ -210,7 +256,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     IComponent::Pointer terrainComp;
 
     auto list = PhysicsManager::getInstance().getMovingCharacterList();
-    for(int i = 0; i < list.size(); i++)
+    for(unsigned int i=0; i < list.size(); i++)
     {
         if(list[i].moveComponent.get()->getGameObject().getId() == idd) 
             terrainComp = list[i].terrainComponent;
@@ -219,7 +265,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Shell);
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::BlueShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -229,20 +275,6 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle);
 
-/*
-
-
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Default);
-    auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
-    auto terrainComponent = obj.getComponent<TerrainComponent>();
-    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
-    PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
-
-    AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle);
-    WaypointManager::getInstance().createPathPlanningComponent(ob);
-*/
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
     return component;
@@ -250,15 +282,16 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
 IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y * M_PI/180),
-                                    pos.y, pos.z+10*sin(obj.getTransformData().rotation.y * M_PI/180));
+    transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z+10*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(0.2, 0.2, 0.2);
+    transform.scale    = glm::vec3(1, 1, 1);
 
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
@@ -266,7 +299,7 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
     ob.get()->addComponent(component);
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Cube);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Banana);
     PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Banana);
 
 
@@ -277,8 +310,9 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
 IComponent::Pointer ItemManager::createMushroom(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 
@@ -299,8 +333,9 @@ IComponent::Pointer ItemManager::createMushroom(GameObject& obj)
 
 IComponent::Pointer ItemManager::createStar(GameObject& obj)
 {
-    uint16_t id = 6000 + ItemComponents.size();
+    uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+    ItemManager::ids++;
 
     auto pos = obj.getTransformData().position;
 
@@ -325,7 +360,7 @@ IComponent::Pointer ItemManager::createStar(GameObject& obj)
 /////
 //////////////////////////////////////////////////////
 
-void ItemManager::deleteMushroom(IComponent::Pointer component)
+void ItemManager::deleteItem(IComponent::Pointer component)
 {
 
     EventData data;
@@ -334,17 +369,6 @@ void ItemManager::deleteMushroom(IComponent::Pointer component)
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
 
 }
-
-void ItemManager::deleteStar(IComponent::Pointer component)
-{
-
-    EventData data;
-    data.Id = component->getGameObject().getId();
-
-    EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
-
-}
-
 
 //////////////////////////////////////////////////////
 /////
@@ -352,39 +376,26 @@ void ItemManager::deleteStar(IComponent::Pointer component)
 /////
 //////////////////////////////////////////////////////
 
-void objectDeletedBanana(EventData eData) {
+void objectDeleteItem(EventData eData) {
 
-    auto bananaComponentList = ItemManager::getInstance().getItemComponents();
+    auto& itemComponentList = ItemManager::getInstance().getItemComponents();
 
-    for(unsigned int i = 0; i<bananaComponentList.size(); ++i) {
-        if(eData.Id == bananaComponentList.at(i).get()->getGameObject().getId()) {
-            bananaComponentList.erase(bananaComponentList.begin() + i);
+    for(unsigned int i = 0; i<itemComponentList.size(); ++i) {
+        if(eData.Id == itemComponentList[i].get()->getGameObject().getId()) {
+            itemComponentList.erase(itemComponentList.begin() + i);
             return;
         }
     }
 }
 
-void objectDeletedMushroom(EventData eData) {
+void objectDeleteHolder(EventData eData) {
 
-    auto mushroomComponentList = ItemManager::getInstance().getItemComponents();
+    auto& holderComponentList = ItemManager::getInstance().getItemHolderComponents();
 
-    for(unsigned int i = 0; i<mushroomComponentList.size(); ++i) {
-        if(eData.Id == mushroomComponentList.at(i).get()->getGameObject().getId()) {
-            mushroomComponentList.erase(mushroomComponentList.begin() + i);
+    for(unsigned int i = 0; i<holderComponentList.size(); ++i) {
+        if(eData.Id == holderComponentList[i].get()->getGameObject().getId()) {
+            holderComponentList.erase(holderComponentList.begin() + i);
             return;
         }
     }
 }
-
-void objectDeletedStar(EventData eData) {
-
-    auto starComponentList = ItemManager::getInstance().getItemComponents();
-
-    for(unsigned int i = 0; i<starComponentList.size(); ++i) {
-        if(eData.Id == starComponentList.at(i).get()->getGameObject().getId()) {
-            starComponentList.erase(starComponentList.begin() + i);
-            return;
-        }
-    }
-}
-

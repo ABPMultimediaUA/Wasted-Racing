@@ -4,14 +4,18 @@
 // DELEGATES DECLARATIONS
 //==============================================
 
+void objectDeleteMSensor(EventData data);
+void objectDeleteVSensor(EventData data);
+
 SensorManager& SensorManager::getInstance() {
     static SensorManager instance;
     return instance;
 }
 
 void SensorManager::init() {
-    //worldObjects.push_back(obj);
-    //worldObjects.push_back(obj2);
+
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteVSensor});
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteMSensor});
 
 }
 
@@ -25,18 +29,23 @@ void SensorManager::update() {
 
     //Fill list of world objects
     auto collisionList =  PhysicsManager::getInstance().getCollisionComponentList();
-    for(unsigned i = 0; i < collisionList.size(); ++i){
-        worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
+    for(unsigned int i = 0; i < collisionList.size(); ++i){
+        if(collisionList[i] != nullptr && collisionList[i].get()->getGameObject().getComponent<ItemBoxComponent>() == nullptr && collisionList[i].get()->getGameObject().getComponent<IItemComponent>() == nullptr && collisionList[i].get()->getGameObject().getComponent<RampComponent>() == nullptr)
+        {
+            worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
+        }   
     }
 
     //Update visual sensors
     for(unsigned int i=0; i<sensorComponentList.size(); ++i){
-         std::dynamic_pointer_cast<VSensorComponent>(sensorComponentList[i]).get()->updateSeenObjects(worldObjects);
+        if(sensorComponentList[i] != nullptr)
+            std::dynamic_pointer_cast<VSensorComponent>(sensorComponentList[i]).get()->updateSeenObjects(worldObjects);
     }
 
     //Update map sensors
     for(unsigned int i=0; i<sensorMComponentList.size(); ++i){
-         std::dynamic_pointer_cast<MSensorComponent>(sensorMComponentList[i]).get()->updateSeenObjects();
+        if(sensorMComponentList[i] != nullptr)
+            std::dynamic_pointer_cast<MSensorComponent>(sensorMComponentList[i]).get()->updateMapCollisions();
     }
 }
 
@@ -86,3 +95,27 @@ IComponent::Pointer SensorManager::createMSensorComponent(GameObject& newGameObj
 //==============================================
 // DELEGATES
 //============================================== 
+
+void objectDeleteVSensor(EventData eData) {
+
+    auto& vSensorList = SensorManager::getInstance().getComponentList();
+
+    for(unsigned int i = 0; i<vSensorList.size(); ++i) {
+        if(eData.Id == vSensorList[i].get()->getGameObject().getId()) {
+            vSensorList.erase(vSensorList.begin() + i);
+            return;
+        }
+    }
+}
+
+void objectDeleteMSensor(EventData eData) {
+
+    auto& MSensorList = SensorManager::getInstance().getMComponentList();
+
+    for(unsigned int i = 0; i<MSensorList.size(); ++i) {
+        if(eData.Id == MSensorList[i].get()->getGameObject().getId()) {
+            MSensorList.erase(MSensorList.begin() + i);
+            return;
+        }
+    }
+}

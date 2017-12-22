@@ -50,31 +50,29 @@ void MoveComponent::update(float dTime) {
     
     ///*===========================================================================================
     // DEBUG
-    if(id == 55){
-        system("clear");
-        std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
-        std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
-        std::cout << " ANG X " << trans.rotation.x << " ANG Y " << trans.rotation.y << " ANG Z " << trans.rotation.z << std::endl;
-        //std::cout << " POS Y " << trans.position.y << std::endl;
-        std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
-        std::cout << " INCR ANGLE " << mData.spin << std::endl;
-        std::cout << " ANGULO GIRO " << mData.angle << std::endl;
-        //std::cout << " ANGULO GRADOS " << degreeAngle << std::endl;
-        //std::cout << " Aceleración " << mData.acc << std::endl;
-        std::cout << " Velocidad " << mData.vel << std::endl;
-        //std::cout << " Gravity force on " << mData.gravityForce.y << std::endl;
-        //std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
-        //std::cout << " VEL Y " << mData.velY << std::endl;
-
-
-        /*if (mData.jump == false){
-            std::cout << " No estoy saltando " << std::endl;
-        }
-        else{
-            std::cout << " Sí estoy saltando " << std::endl;
-        }*/
-    }
-
+    //if(id == 50){
+    //    system("clear");
+    //    //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
+    //    std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
+    //    //std::cout << " ANG X " << trans.rotation.x << " ANG Y " << trans.rotation.y << " ANG Z " << trans.rotation.z << std::endl;
+    //    //std::cout << " POS Y " << trans.position.y << std::endl;
+    //    std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
+    //    std::cout << " INCR ANGLE: " << mData.spin_inc << std::endl;
+    //    std::cout << " ANGULO VELOCIDAD: " << mData.spin << std::endl;
+    //    std::cout << " ANGULO GIRO: " << mData.angle << std::endl;
+    //    std::cout << " Velocidad " << mData.vel << std::endl;
+    //    //std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
+    //    //std::cout << " VEL Y " << mData.velY << std::endl;
+    //
+    //
+    //    /*if (mData.jump == false){
+    //        std::cout << " No estoy saltando " << std::endl;
+    //    }
+    //    else{
+    //        std::cout << " Sí estoy saltando " << std::endl;
+    //    }*/
+    //}
+    //
     //=========================================================================================*/
 }
 
@@ -85,104 +83,109 @@ void MoveComponent::close() {
 
 //Physics related functions
 void MoveComponent::changeAccInc(float n) {
-    mData.dAcc = n;
+    mData.dAcc     = n;
 }
 
 void MoveComponent::changeSpinIncrement(float n) {
+    //Reset spin speed in case of change of direction
     mData.spin_inc = n;
 }
 
 void MoveComponent::isMoving(bool m){
-    mData.mov = m;
-}
-
-void MoveComponent::changeAngleInc(float i){
-    mData.angInc = i;
+    mData.mov      = m;
 }
 
 void MoveComponent::isJumping(bool j){
-        mData.jump = j;
+    mData.jump = j;
 }
 void MoveComponent::isSpinning(bool s){
-    mData.spi = s;
+    mData.spi      = s;
 }
 
 void MoveComponent::changeSpin(float n) {
-    mData.spin = mData.max_spin * n;
+    mData.spin     = mData.max_spin * n;
 }
 
 void MoveComponent::changeAcc(float a){
-    mData.acc  = mData.max_acc  * a;
+    mData.acc      = mData.max_acc  * a;
 }
 
 void MoveComponent::isDrifting(bool d){
-    mData.drift = d;
-    
-    //Change directions
-    if(d && mData.spin<0){
-        mData.driftDir=false;
-    }else{
-        mData.driftDir=true;
-    }
+    mData.drift    = d;
+    mData.driftDir = (d && mData.spin_inc < 0) ? 1.f : -1.f ; //if it is drifting activation, change direction of drift to the speed one. (negative spin = right turn)
 }
 
 void MoveComponent::isBraking(bool b) {
-    mData.braking = b;
+    mData.braking  = b;
 }
 
-
+//=================================================
 //Functions related with temporal data changes
+//=================================================
+
+//Activate temporal speed change
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
 
     if(mData.max_vel != maxSpeed){
- 
         auxData.max_vel         = mData.max_vel;
-        mData.max_vel           = maxSpeed;
-
-        constantAlteredTime     = constTime;
-        decrementalAlteredTime  = decTime;
-        maxDecrementalAT        = decTime;
+        mData.max_vel           = maxSpeed;      
     }
+    constantAlteredTime     = constTime;
+    decrementalAlteredTime  = decTime;
+    maxDecrementalAT        = decTime;
+
 }
 
+//Update and interpolate temporal speed change
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    if(constantAlteredTime > 0) {
-        //While time is constant, velocity is constant and maximum
-        if(mData.vel < 0) {
-            constantAlteredTime = -1;
+    if(mData.acc>=0) {
+        if(constantAlteredTime > 0) {
+            //While time is constant, velocity is constant and maximum
+            if(mData.vel < 0) {
+                constantAlteredTime = -1;
+            }
+            else {
+                mData.vel = mData.max_vel;
+                constantAlteredTime -= dTime;
+            }
         }
-        else {
-            mData.vel = mData.max_vel;
-            constantAlteredTime -= dTime;
+        else if (decrementalAlteredTime > 0) {
+            //Calculate velocity decrease depending on dTime
+            float vel_diff = mData.max_vel - auxData.max_vel;
+            float vel      = (dTime*vel_diff)/maxDecrementalAT;
+
+            mData.vel     -= vel; 
+
+            decrementalAlteredTime -= dTime;
+
+            if(decrementalAlteredTime < 0)
+                mData.max_vel = auxData.max_vel;
         }
     }
-    else if (decrementalAlteredTime > 0) {
-        //Calculate velocity decrease depending on dTime
-        float vel_diff = mData.max_vel - auxData.max_vel;
-        float vel      = (dTime*vel_diff)/maxDecrementalAT;
-
-        mData.vel     -= vel; 
-
-        decrementalAlteredTime -= dTime;
-
-        if(decrementalAlteredTime < 0)
-            mData.max_vel = auxData.max_vel;
+    else {
+        constantAlteredTime = 0;
+        decrementalAlteredTime = 0;
+        mData.max_vel = auxData.max_vel; 
     }
-
 }
 
+//Control and update jump
 void MoveComponent::updateJump(LAPAL::movementData& mData, glm::vec3& pos, LAPAL::plane3f t){
+
+    float maxJump = 15.0;
+    float velJump = 50.0;
 
     if(mData.jump == true){
         if(abs(LAPAL::calculateExpectedY(t, pos)-pos.y) < 1) { 
-            mData.posY = pos.y +15;
+            mData.posY = pos.y + maxJump;
             mData.asc = true;
         }
     }
     if(mData.asc == true){
         if(pos.y < mData.posY){
-            mData.velocity.y = 50;
+            mData.velocity.y = (velJump*(mData.posY-pos.y)/maxJump)+10; //Interpolate velocity 
+                                                                            //(the higher we get, the slower we go up)
         }
         else{
             mData.asc = false;

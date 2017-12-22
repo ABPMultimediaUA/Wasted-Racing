@@ -1,0 +1,6 @@
+﻿  fmod_noise.cpp
+c:\mingw\msys\1.0\home\luis\wasted-racing\game\lib\win\lowlevel\examples\plugins\fmod_noise.cpp(8): warning C4005: '_CRT_SECURE_NO_WARNINGS': redefinición de macro
+  c:\mingw\msys\1.0\home\luis\wasted-racing\game\lib\win\lowlevel\examples\plugins\fmod_noise.cpp(8): note: argumentos de la línea de comandos: vea la definición anterior de '_CRT_SECURE_NO_WARNINGS'
+     Creando biblioteca C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\lowlevel\examples\vs2015\_builds\fmod_noise\Debug\Win32\fmod_noise.lib y objeto C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\lowlevel\examples\vs2015\_builds\fmod_noise\Debug\Win32\fmod_noise.exp
+  fmod_noise.vcxproj -> C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\lowlevel\examples\vs2015\_builds\fmod_noise\Debug\Win32\fmod_noise.dll
+  fmod_noise.vcxproj -> C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\lowlevel\examples\vs2015\_builds\fmod_noise\Debug\Win32\fmod_noise.pdb (Partial PDB)

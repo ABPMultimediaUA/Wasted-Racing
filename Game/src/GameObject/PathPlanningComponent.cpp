@@ -9,11 +9,12 @@ PathPlanningComponent::PathPlanningComponent(GameObject& newGameObject) : ICompo
     lastVector = 0;
 }
 
-
-glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, float modSpeed)
+void PathPlanningComponent::update(float dTime)
 {
 
-    glm::vec3 nextPos;
+	auto pos = this->getGameObject().getTransformData().position;
+	auto modSpeed = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
+
 	auto wpManager = &WaypointManager::getInstance();
 
     std::vector<GameObject::Pointer> listNodes = wpManager->getWaypoints(); 
@@ -21,18 +22,43 @@ glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, floa
 	float distaneActualWay = (listNodes[lastVector].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector].get()->getTransformData().position.x - pos.x) +
 						(listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
 						(listNodes[lastVector].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector].get()->getTransformData().position.z - pos.z);
+	
+	
 	float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
-	if(distaneActualWay <= radius*radius)
+
+	if(this->getGameObject().getComponent<AIDrivingComponent>() != nullptr)
 	{
-		if(lastVector < listNodes.size()-1)
+		if(distaneActualWay <= (radius*radius)/2)
 		{
-			lastVector++;
-		}
-		else if(lastVector == listNodes.size()-1)
-		{
-			lastVector = 0;
+			if(lastVector < listNodes.size()-1)
+			{
+				lastVector++;
+			}
+			else if(lastVector == listNodes.size()-1)
+			{
+				int vuelta = getGameObject().getComponent<ScoreComponent>()->getLap();
+				getGameObject().getComponent<ScoreComponent>()->setLap(vuelta + 1);
+				lastVector = 0;
+			}
 		}
 	}
+	else
+	{
+		if(distaneActualWay <= radius*radius)
+		{
+			if(lastVector < listNodes.size()-1)
+			{
+				lastVector++;
+			}
+			else if(lastVector == listNodes.size()-1)
+			{
+				int vuelta = getGameObject().getComponent<ScoreComponent>()->getLap();
+				getGameObject().getComponent<ScoreComponent>()->setLap(vuelta + 1);
+				lastVector = 0;
+			}
+		}
+	}
+	
 
     float tour = (modSpeed * seconds) * (modSpeed * seconds);
 	int posVector;
@@ -68,7 +94,7 @@ glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, floa
 					{
 						//nextPos = ((tour/distLastWay) * (listNodes[lastPosVector].get()->getTransformData().position - pos)) + pos;
 						nextPos = listNodes[lastPosVector].get()->getTransformData().position;
-						return nextPos;
+						return;
 					}
 					else
 					{
@@ -123,7 +149,12 @@ glm::vec3 PathPlanningComponent::getNextPoint(glm::vec3 pos, glm::vec3 vel, floa
         nextPos = ((tour/dist) * (listNodes[lastPosVector].get()->getTransformData().position - listNodes[posVector].get()->getTransformData().position) + listNodes[posVector].get()->getTransformData().position);
 		
         
-    return nextPos;
+    return;
+}
+
+glm::vec3 PathPlanningComponent::getNextPoint()
+{
+	return nextPos;
 }
 
 

@@ -24,7 +24,7 @@ class AIDrivingComponent : public IComponent{
         void checkList();
 
         //Makes NPC turn a fixated angle based on data
-        static float girar(std::vector<VObject::Pointer>, glm::vec3 waypoint, float a, float b);
+        static float girar(std::vector<VObject::Pointer> array, std::vector<VObject::Pointer> walls, glm::vec3 waypoint, float a, float b);
         
         //Makes NPC accelerate or brake based on data
         static float acelerar_frenar(std::vector<VObject::Pointer>, float direction, float speed, float a_w, float b_w);

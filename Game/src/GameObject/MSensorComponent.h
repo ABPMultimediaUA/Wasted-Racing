@@ -1,11 +1,13 @@
 #pragma once
 
 #include "ISensorComponent.h"
+#include "VSensorComponent.h"
 #include "VObject.h"
 #include <glm/ext.hpp>
 #include <vector>
 #include "GameObject.h"
 #include "../GameManager/PhysicsManager.h"
+#include "../GamePhysics/LAPALPhysics.h"
 #include <memory>
 
 class MSensorComponent : public ISensorComponent{
@@ -28,16 +30,16 @@ class MSensorComponent : public ISensorComponent{
         virtual void update(float dTime){};
 
         //Checks the objects receives and stores the ones seen in the seenObjects vector
-        void updateSeenObjects();
+        void updateMapCollisions();
 
         //Auxiliar function to calculate A and B of given objective
-        void calculateAB(glm::vec3& objective, float* a, float* b);
+        void calculateABTerrainBack(glm::vec3& objective, float& a, float& b);
 
         //Auxiliar function to calculate A and B of composition of individual sensors
-        void calculateAB2(glm::vec3& position, glm::vec3& tPoint, float* a, float* b);
+        glm::vec3 calculateSensorCollision(glm::vec3& position, glm::vec3& tPoint, float* a, float* b);
 
         //Getters and setters
-        std::vector<VObject::Pointer> getSeenObjects()           {   return seenObjects;    };
+        std::vector<VObject::Pointer> getMapCollisions()         {   return seenObjects;    };
         glm::vec3 getSensorLeft()                                {   return sensorLeft;     };
         glm::vec3 getSensorRight()                               {   return sensorRight;    };
         float getAngleInitial()                                  {   return angleInitial;   };

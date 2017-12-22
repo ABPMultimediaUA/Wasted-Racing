@@ -246,9 +246,11 @@ void AIBattleComponent::init()
     auto sequence4 = std::shared_ptr<Sequence>(new Sequence());
     auto sequence5 = std::shared_ptr<Sequence>(new Sequence());
 
+    auto DS1 = std::shared_ptr<DynamicSelector>(new DynamicSelector());
     auto DS2 = std::shared_ptr<DynamicSelector>(new DynamicSelector());
     auto DS3 = std::shared_ptr<DynamicSelector>(new DynamicSelector());
 
+    auto sequence11 = std::shared_ptr<Sequence>(new Sequence());
     auto sequence21 = std::shared_ptr<Sequence>(new Sequence());
     auto sequence31 = std::shared_ptr<Sequence>(new Sequence());
 
@@ -272,7 +274,7 @@ void AIBattleComponent::init()
 
     //Sequence for item 1: Blue shell. If we have it, use it
     sequence1->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem1Action(target)));
-    sequence1->AddChild(std::shared_ptr<Behaviour>(new UseItemAction(target)));
+    sequence1->AddChild(DS1);
 
     //Sequence for item 2: Red Shell. If we have it, we enter in it's correspondant Dynamic Selector
     sequence2->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem2Action(target)));
@@ -289,6 +291,13 @@ void AIBattleComponent::init()
     //Sequence for item 5: Star. If we have it, use it
     sequence5->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem5Action(target)));
     sequence5->AddChild(std::shared_ptr<Behaviour>(new UseItemAction(target)));
+
+    //Dynamic selector of item 1. If we are first, wait, elsewhere, use the item
+    DS1->AddChild(sequence11);
+    DS1->AddChild(std::shared_ptr<Behaviour>(new UseItemAction(target)));
+
+    sequence11->AddChild(std::shared_ptr<Behaviour>(new ConditionFirstAction(target)));
+    sequence11->AddChild(std::shared_ptr<Behaviour>(new WaitAction(1.0f)));
 
     //Dynamic selector of item 2. If we are first, wait, elsewhere, use the item
     DS2->AddChild(sequence21);

@@ -16,9 +16,9 @@ namespace LAPAL{
         vec3f p2 = glm::vec3(0,0,0);
         vec3f p3 = glm::vec3(0,0,0);
         vec3f p4 = glm::vec3(0,0,0);
-        float fric = 0.0f;      //friction coeficient !NOT FRICTION FORCE
-        float rotX = 0.0f;      //rotation on X
-        float rotZ = 0.0f;      //rotation on Z
+        float fric = 0.0f;      //Friction coeficient !NOT FRICTION FORCE
+        float rotX = 0.0f;      //Rotation on X
+        float rotZ = 0.0f;      //Rotation on Z
         uint16_t direction = 0; //Direction of preferred movement (0 up, 1 right, 2 down, 3 left)
     };
 
@@ -30,10 +30,9 @@ namespace LAPAL{
         bool spi  = false;      //To know if a spin related key is pressed
         bool asc = false;       //To know that the object is ascending
         bool drift = false;     //To know if object is drifting or not
-        bool braking = false;
+        bool braking = false;   //To know if brake key is pressed
 
         //spin
-        float angInc            = 0.0f;         //?
         float angle             = 0.0f;         //Angle faced by object
         float spin              = 0.0f;         //Speed of movement added to angle
         float spin_inc          = 0.0f;         //Increment of the spin
@@ -60,20 +59,11 @@ namespace LAPAL{
         float max_rotate        = 0.0f;         //maximum rotation speed
 
         //Drifting variables
-        float radius_in         = 0.0f;         //in the ellipse formation, the inner circle
-        float radius_ex         = 0.0f;         //in the ellipse formation, the outer circle
-        float tAngle            = 0.0f;         //Angle inside the drift ellipse. Initially always 0.
-        float driftDir          = 0.0f;         //Direction of drifting
+        float driftDir          = 0.f;                      //Direction of drifting
+        float driftIncrement    = 0.785398163397f;          //Initial increment of drifting angle
 
         //Movement vectors
-        vec3f velocity          = glm::vec3(0,0,0); //base velocity in 3d
-        vec3f finalAcc          = glm::vec3(0,0,0); //final acceleration
-        vec3f accDif            = glm::vec3(0,0,0); //difference of acceleration
-
-        //Force vectors
-        vec3f netForce          = glm::vec3(0,0,0); 
-        vec3f frictionForce     = glm::vec3(0,0,0); //All the forces must be in Newtons
-        vec3f gravityForce      = glm::vec3(0,0,0);
+        vec3f velocity          = glm::vec3(0,0,0);         //Base velocity in 3d
 
         //Jump variables
         float posY = 0.0;      //Relative position in y when the jump starts

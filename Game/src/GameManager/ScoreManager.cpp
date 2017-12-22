@@ -1,6 +1,9 @@
 #include "ScoreManager.h"
 #include <iostream>
 
+
+void objectDeleteScore(EventData);
+
 ScoreManager::ScoreManager()
 {
 
@@ -13,7 +16,7 @@ ScoreManager::~ScoreManager()
 
 void ScoreManager::init()
 {
-    
+    EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteScore});
 }
 
 void ScoreManager::close()
@@ -43,21 +46,19 @@ IComponent::Pointer ScoreManager::createScoreComponent(GameObject& newGameObject
 
 
 //Thirty programmers have died during the development of this method
-//Mejoras : Quitar medio metodo, que se puede hacer en el mismo for todo
 void ScoreManager::update()
 {
     std::vector<ScoreComponent::Pointer> ordered;
     std::vector<ScoreComponent::Pointer> auxiliar;
-    uint32_t i, j, pos, ordCount;
+    uint32_t j, pos, ordCount;
     int score;
-    bool found;
+    bool found, aux;
 
     pos=1;
     if(players.size()>0)
     {
-        for(i=0; i<players.size(); i++)
+        for(unsigned int i=0; i<players.size(); i++)
         {
-            int id = players[i].get()->getGameObject().getId();
             if(i==0)
             {
                 ordered.push_back(players[i]);
@@ -81,9 +82,14 @@ void ScoreManager::update()
             }
         }
         ordCount=0;
-        for(i=0; i<ordered.size()-1; i++)
+        aux = true;
+        for(unsigned int i=0; i<ordered.size(); i++)
         {
-            if(ordered[i].get()->getScore() == ordered[i+1].get()->getScore())
+            if(i==ordered.size()-1)
+            {
+                aux = false;
+            }
+            if(aux && ordered[i].get()->getScore() == ordered[i+1].get()->getScore())
             {
                 ordCount++;
                 if(ordCount==1)
@@ -139,18 +145,38 @@ void ScoreManager::update()
 
         }
 
-        for(i=0; i<ordered.size(); i++)
+        for(unsigned int i=0; i<ordered.size(); i++)
         {
             ordered[i].get()->setPosition(pos);
             pos++;
         }
         players=ordered;
 
-        for(i=0; i<players.size(); i++)
+        for(unsigned int i=0; i<players.size(); i++)
         {
-            int p = players[i].get()->getPosition();
-            int id = players[i].get()->getGameObject().getId();
-            std::cout << id << ": " << p << std::endl;
+            //int p = players[i].get()->getPosition();
+            //int id = players[i].get()->getGameObject().getId();
+            //std::cout << id << ": " << p << std::endl;
+        }
+    }
+}
+
+
+////////////////////////////////////////////
+//
+//      DELEGATES
+//
+////////////////////////////////////////////
+
+
+void objectDeleteScore(EventData eData) {
+
+    auto& scoreComponentList = ScoreManager::getInstance().getPlayers();
+
+    for(unsigned int i = 0; i<scoreComponentList.size(); ++i) {
+        if(eData.Id == scoreComponentList[i].get()->getGameObject().getId()) {
+            scoreComponentList.erase(scoreComponentList.begin() + i);
+            return;
         }
     }
 }
