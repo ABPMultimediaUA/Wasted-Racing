@@ -162,7 +162,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     mData.angInc = 0;
     mData.angle = obj.getComponent<MoveComponent>()->getMovemententData().angle;
     mData.spin = 0;
-    mData.spin_inc = 1;
+    mData.spin_inc = 0;
     mData.max_spin = 1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
@@ -233,7 +233,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     mData.angInc = 0;
     mData.angle = obj.getComponent<MoveComponent>()->getMovemententData().angle;
     mData.spin = 0;
-    mData.spin_inc = 1;
+    mData.spin_inc = 0;
     mData.max_spin = 1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;

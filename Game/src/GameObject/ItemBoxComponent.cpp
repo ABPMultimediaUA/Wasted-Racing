@@ -18,6 +18,11 @@ void ItemBoxComponent::init(){
 
 void ItemBoxComponent::update(float dTime){
 
+    auto trans = getGameObject().getTransformData();
+    trans.rotation.y += 1*M_PI/180;
+    getGameObject().setTransformData(trans);
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
+
     if(getGameObject().getTransformData().scale.x == 0){
             actTime -= dTime;
     }
@@ -60,6 +65,7 @@ void ItemBoxComponent::asignItem(GameObject& obj){
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
 
     if(itemHolder->getItemType() == -1){
+        srand (time(NULL));
         int random = rand() % 5;
         itemHolder->setItemType(random);
     }

@@ -143,8 +143,8 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.angInc = 0;
     mData.angle = 0.0f;
     mData.spin = 0;
-    mData.spin_inc = 0.005;
-    mData.max_spin = 0.05;
+    mData.spin_inc = 0.01;
+    mData.max_spin = 0.1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
@@ -160,7 +160,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.brake_acc = 10.f;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, false, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, true, CollisionComponent::Type::Default);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
@@ -186,8 +186,8 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.angInc = 0;
     mData.angle = 0.0f;
     mData.spin = 0;
-    mData.spin_inc = 0.005;
-    mData.max_spin = 0.05;
+    mData.spin_inc = 0.01;
+    mData.max_spin = 0.1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
@@ -203,7 +203,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.brake_acc = 12.f;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, false, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, true, CollisionComponent::Type::Default);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
@@ -229,8 +229,8 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.angInc = 0;
     mData.angle =  0.0f;
     mData.spin = 0;
-    mData.spin_inc = 0.005;
-    mData.max_spin = 0.05;
+    mData.spin_inc = 0.01;
+    mData.max_spin = 0.1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
@@ -246,7 +246,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.brake_acc = 5.f;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, false, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, true, CollisionComponent::Type::Default);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
@@ -272,8 +272,8 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.angInc = 0;
     mData.angle =  0.0f;
     mData.spin = 0;
-    mData.spin_inc = 0.005;
-    mData.max_spin = 0.05;
+    mData.spin_inc = 0.01;
+    mData.max_spin = 0.1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
@@ -289,7 +289,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.brake_acc = 5.f;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, false, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, true, CollisionComponent::Type::Default);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);

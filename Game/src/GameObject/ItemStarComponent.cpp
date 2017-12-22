@@ -4,8 +4,8 @@
 
 ItemStarComponent::ItemStarComponent(GameObject& newGameObject, GameObject& obj) : IItemComponent(newGameObject), player(obj)
 {
-    speed = 200.f;
-    consTime = 5.f;
+    speed = 350.f;
+    consTime = 8.f;
     decTime = 0.5f;
 }
 
@@ -16,7 +16,7 @@ ItemStarComponent::~ItemStarComponent()
 
 void ItemStarComponent::init()
 {
-    player.getComponent<MoveComponent>()->changeMaxSpeedOverTime(200.f, 5.f, 0.5f);
+    player.getComponent<MoveComponent>()->changeMaxSpeedOverTime(speed, consTime, decTime);
 }
 
 void ItemStarComponent::update(float dTime)

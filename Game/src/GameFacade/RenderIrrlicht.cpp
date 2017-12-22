@@ -127,7 +127,7 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
                     auto var = videoDriver->getTexture("media/img/grass.jpg");
                     node->setMaterialTexture(0, var);
                 }
-                else if(cmp->getGameObject().getId() == 25) {
+                else if(cmp->getGameObject().getId() >= 25 && cmp->getGameObject().getId() <= 36) {
                     auto var = videoDriver->getTexture("media/img/itemBox.png");
                     node->setMaterialTexture(0, var);
                 }

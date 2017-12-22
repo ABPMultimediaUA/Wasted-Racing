@@ -24,6 +24,7 @@ void WaypointManager::init() {
 void WaypointManager::update(float dTime) {
     //I doubt this method should exist in this manager
     //I doubt it too
+    //I hope Fran reads this
 
     for(int i = 0; i < pathPlanningComponentList.size(); i++)
     {
