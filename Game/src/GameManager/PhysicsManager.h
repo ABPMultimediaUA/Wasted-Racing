@@ -8,6 +8,7 @@
 #include "../GameObject/ItemBananaComponent.h"
 #include "../GameObject/ItemBlueShellComponent.h"
 #include "../GameObject/ItemRedShellComponent.h"
+#include "../GameObject/ItemStarComponent.h"
 #include <vector>
 
 class PhysicsManager{

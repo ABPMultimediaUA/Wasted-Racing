@@ -144,8 +144,8 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
-                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
+    transform.position = glm::vec3(pos.x+40*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-40*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(2,2,2);
 
@@ -168,14 +168,14 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 200.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 300.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_vel = 0.f;
-    mData.velY = 2000.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.max_acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.dAcc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.brake_acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.velY = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
 
 
     auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
@@ -214,8 +214,8 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
-                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
+    transform.position = glm::vec3(pos.x+40*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-40*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(2,2,2);
 
@@ -238,14 +238,14 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 200.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 300.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_vel = 0.f;
-    mData.velY = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.max_acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.dAcc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
-    mData.brake_acc = 200.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;;
+    mData.velY = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
 
 
     auto terrain = obj.getComponent<MoveComponent>()->getTerrain();

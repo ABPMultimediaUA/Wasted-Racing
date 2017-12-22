@@ -36,31 +36,34 @@ void ItemBlueShellComponent::update(float dTime)
 						(posWay.y - pos.y) * (posWay.y - pos.y) +
 						(posWay.z - pos.z) * (posWay.z - pos.z);
 	float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
-	if(distaneActualWay <= radius*radius)
-	{
-		if(lastVector < listNodes.size()-1)
-		{
-			lastVector++;
-		}
-		else if(lastVector == listNodes.size()-1)
-		{
-			lastVector = 0;
-		}
-	}
+	
+    if(distaneActualWay <= (radius*radius)/2)
+    {
+        if(lastVector < listNodes.size()-1)
+        {
+            lastVector++;
+        }
+        else if(lastVector == listNodes.size()-1)
+        {
+            lastVector = 0;
+        }
+    }
+	
     
     vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
+
+    objective = enemy.get()->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
 
     float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
 						(objective.y - pos.y) * (objective.y - pos.y) +
 						(objective.z - pos.z) * (objective.z - pos.z);
 	
+
     if(distaneActualWay < distancePlayer)
     {
         objective = posWay;
     }
     
-    objective = enemy.get()->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
-
     float a = 0.f,b = 0.f;
     vSensorComponent->calculateAB(objective, a, b);
     std::vector<VObject::Pointer> seenObjects;

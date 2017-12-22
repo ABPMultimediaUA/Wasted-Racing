@@ -35,16 +35,16 @@ void ItemRedShellComponent::update(float dTime)
     {
         auto aiDrivingComponent = getGameObject().getComponent<AIDrivingComponent>().get();
 
-        auto pos = getGameObject().getTransformData().position;
+        auto pos =getGameObject().getTransformData().position;
 
         auto posWay = listNodes[lastVector].get()->getTransformData().position;
 
         float distaneActualWay = (posWay.x - pos.x) * (posWay.x - pos.x) +
                             (posWay.y - pos.y) * (posWay.y - pos.y) +
                             (posWay.z - pos.z) * (posWay.z - pos.z);
-
         float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
-        if(distaneActualWay <= radius*radius)
+        
+        if(distaneActualWay <= (radius*radius)/2)
         {
             if(lastVector < listNodes.size()-1)
             {
@@ -56,22 +56,22 @@ void ItemRedShellComponent::update(float dTime)
             }
         }
         
+        
         vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
-    
-        objective = enemy->getGameObject().getTransformData().position;
-    
+
+        objective = enemy.get()->getGameObject().getTransformData().position; //= listNodes[lastVector]->getTransformData().position;
 
         float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
-						    (objective.y - pos.y) * (objective.y - pos.y) +
-						    (objective.z - pos.z) * (objective.z - pos.z);
-    
+                            (objective.y - pos.y) * (objective.y - pos.y) +
+                            (objective.z - pos.z) * (objective.z - pos.z);
+        
 
         if(distaneActualWay < distancePlayer)
         {
             objective = posWay;
         }
         
-        float a=0,b=0;
+        float a = 0.f,b = 0.f;
         vSensorComponent->calculateAB(objective, a, b);
         std::vector<VObject::Pointer> seenObjects;
         //DECIDE 
