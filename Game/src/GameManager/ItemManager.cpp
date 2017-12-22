@@ -144,8 +144,8 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+40*cos(obj.getTransformData().rotation.y),
-                                    pos.y, pos.z-40*sin(obj.getTransformData().rotation.y));
+    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(2,2,2);
 
@@ -214,8 +214,8 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     auto pos = obj.getTransformData().position;
 
-    transform.position = glm::vec3(pos.x+40*cos(obj.getTransformData().rotation.y),
-                                    pos.y, pos.z-40*sin(obj.getTransformData().rotation.y));
+    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(2,2,2);
 

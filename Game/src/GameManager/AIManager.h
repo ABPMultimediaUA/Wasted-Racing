@@ -53,4 +53,5 @@ public:
 private:
     std::vector<IComponent::Pointer> objectsAI;
     std::vector<IComponent::Pointer> battleAI;
+    bool changeAI;
 };
