@@ -15,7 +15,7 @@ Diseño e implementación de la arquitectura basada en componentes (diagrama de 
         -En la carpeta Videojuegos II/DiagramaClases.png  ->  Diagrama de clases de nuestro juego
         -Videojuegos II/DiagramaComponentes.pdf           ->  Diagrama de componentes de nuestro juego
         
-    En codigo se puede ver en:
+    En código se puede ver en:
         -Game/src/GameManager
         -Game/src/GameObject
         
@@ -25,21 +25,21 @@ Control del player por motor de físicas 2D, dynamic o kinematic
 
     Se puede observar en cualquiera de los videos, especialmente en "Movimiento Player.mp4"
     
-    En el codigo lo podemos ver en:
+    En el código lo podemos ver en:
         -Game/src/GameManager/PhysicsManager
         -Game/src/GameObject/MoveComponent
         -Game/src/GamePhysics
         
-    Cabe puntualizar que el motor de fisicas utilizado es de creacion propia "LAPAL" y, su codigo se encuentra en Game/src/GamePhysics
+    Cabe puntualizar que el motor de físicas utilizado es de creacion propia "LAPAL" y, su código se encuentra en Game/src/GamePhysics
 
 -----------------------------------------------------------------------------------------------------------------
 Utilización de propiedades físicas en las mecánicas jugables
 
-    Cabe puntualizar que el motor de fisicas utilizado es de creacion propia "LAPAL" y, su codigo se encuentra en Game/src/GamePhysics
+   Se usa el motor de físicas "LAPAL" (proprio) y, su código se encuentra en Game/src/GamePhysics
     
     Se puede observar en cualquiera de los videos, especialmente en "Mecánicas del mapa.mp4"
     
-    En el codigo lo podemos ver en:
+    En el código lo podemos ver en:
         -Game/src/GameManager/PhysicsManager
         -Game/src/GameObject/MoveComponent
         -Game/src/GamePhysics
@@ -54,7 +54,7 @@ Mecánicas básicas entidades sin IA
         -Cajas de item
         -Obstaculos
         
-    En el codigo lo podemos ver en:
+    En el código lo podemos ver en:
         -Game/src/GameManager/ItemManager
         -Game/src/GameObject/ItemBoxComponent
         -Game/src/GameObject/RampComponent
@@ -67,7 +67,7 @@ Mecánicas de acción
 
     Podemos ver las mecánicas en el video "Movimiento Player.mp4"
     
-    Podemos probar las mecanicas en el juego con:
+    Podemos probar las mecánicas en el juego con:
         -W: Adelante
         -S: Atras
         -A: Izquierda
@@ -76,7 +76,7 @@ Mecánicas de acción
         -Q: Item
         -T: Derrape
         
-    Su implementacion se puede observar en:
+    Su implementación se puede observar en:
         -Game/src/GameManager/PhysicsManager
         -Game/src/GameObject/MoveComponent
         -Game/src/GamePhysics
@@ -84,23 +84,21 @@ Mecánicas de acción
 -----------------------------------------------------------------------------------------------------------------
 Formato propio para la definición de los niveles (documento con la especificación del formato)
 
-    Documento adjuntado en Videojuegos II/Formato propio para la definicion de niveles.pdf
+    Documento adjuntado en "Formato propio para la definición de níveles.pdf"
     
 
 -----------------------------------------------------------------------------------------------------------------
 Implementación de cámara de seguimiento
 
-    Para observar su funcionamiento, podemos ver cualquiera de los videos, especialmente el de "Movimiento Player.mp4"
+    Para observar su funcionamiento, podemos ver cualquiera de los vídeos, especialmente el de "Movimiento Player.mp4"
     
-    Su implementacion se puede observar en:
+    Su implementación se puede observar en:
         -Game/src/GameManager/RenderManager
 
 -----------------------------------------------------------------------------------------------------------------
 Power-ups y elementos adicionales
 
-    
     Podemos ver el uso de los items en el video "Mecanica de items.mp4"
-    
     
     Su implementacion se puede observar en:
         -Game/src/GameManager/ItemManager
