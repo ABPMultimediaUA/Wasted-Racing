@@ -23,7 +23,7 @@ Se encuentran en la carpeta Videojuegos I/Documentos
 Logica Difusa
 
 
-Se puede ver el codigo en los archivos:
+Se puede ver el código en los archivos:
     
     Podemos ver su funcionamiento en el video "IA.mp4"
     
@@ -35,8 +35,8 @@ Behaviour Trees
 
     Podemos ver su funcionamiento en el video "IA.mp4"
 
-    -El codigo de implementacion lo podemos ver en Game/src/GameBehaviourTrees/
-    -En el documento "Diseño técnico del motor de IA", podemos ver ademas el diagrama sobre el que se ha implementado
+    -El código de implementacion lo podemos ver en Game/src/GameBehaviourTrees/
+    -En el documento "Diseño técnico del motor de IA", podemos ver además el diagrama sobre el que se ha implementado
     
 -----------------------------------------------------------------------------------------------------------------
 Sistema de gestión de eventos
@@ -46,9 +46,9 @@ Sistema de gestión de eventos
     -Se puede ver Game/src/GameEvent/
     
 -----------------------------------------------------------------------------------------------------------------
-Sistema de percepcion sensorial
+Sistema de percepción sensorial
 
-    En los videos, podemos ver como la IA va esquivando objetos mediante este sensor
+    En los videos, podemos ver como la IA ve los objetos que esquiva y pasa esta información al AIManager
     
     Lo podemos observar en:
         -Game/src/GameManager/SensorManager
