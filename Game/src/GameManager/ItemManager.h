@@ -1,14 +1,14 @@
  #pragma once
 
 #include <vector>
-#include "../GameObject/IItemComponent.h"
-#include "../GameObject/ItemHolderComponent.h"
-#include "../GameObject/ItemRedShellComponent.h"
-#include "../GameObject/ItemBlueShellComponent.h"
-#include "../GameObject/ItemBananaComponent.h"
-#include "../GameObject/ItemMushroomComponent.h"
-#include "../GameObject/ItemStarComponent.h"
-#include "../GameObject/ItemBoxComponent.h"
+#include "../GameObject/ItemComponent/IItemComponent.h"
+#include "../GameObject/ItemComponent/ItemHolderComponent.h"
+#include "../GameObject/ItemComponent/ItemRedShellComponent.h"
+#include "../GameObject/ItemComponent/ItemBlueShellComponent.h"
+#include "../GameObject/ItemComponent/ItemBananaComponent.h"
+#include "../GameObject/ItemComponent/ItemMushroomComponent.h"
+#include "../GameObject/ItemComponent/ItemStarComponent.h"
+#include "../GameObject/ItemComponent/ItemBoxComponent.h"
 #include "RenderManager.h"
 #include "PhysicsManager.h"
 #include "ObjectManager.h"

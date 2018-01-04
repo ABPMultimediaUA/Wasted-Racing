@@ -20,11 +20,11 @@ endif
 MKDIR_P = mkdir -p
 
 #default target is Linux
-all: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP make_gameB all_linux
+all: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameE make_gameP make_gameB make_gameA all_linux
 	$(warning Linking done!)
 
 #we can also have Windows
-win: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameE make_gameP make_gameB all_windows
+win: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameE make_gameP make_gameB make_gameA all_windows
 	$(warning Linking done!)
 
 create_dir: make_bin_dir make_obj_dir
@@ -52,7 +52,19 @@ make_gameS:
 
 make_gameO:
 	$(MAKE) -C src/GameObject
+
+make_gameO_R:
+	$(MAKE) -C src/GameObject/RenderComponent
+
+make_gameO_A:
+	$(MAKE) -C src/GameObject/AIComponent
+
+make_gameO_I:
+	$(MAKE) -C src/GameObject/ItemComponent
 	
+make_gameO_F:
+	$(MAKE) -C src/GameObject/PhysicsComponent
+
 make_gameE:
 	$(MAKE) -C src/GameEvent
 	
@@ -61,6 +73,9 @@ make_gameP:
 
 make_gameB:
 	$(MAKE) -C src/GameBehaviourTrees
+
+make_gameA:
+	$(MAKE) -C src/GameAudio
 
 # target specific settings
 all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor

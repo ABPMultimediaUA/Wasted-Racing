@@ -2,7 +2,7 @@
 
 #include "IComponent.h"
 #include "GameObject.h"
-#include "PathPlanningComponent.h"
+#include "AIComponent/PathPlanningComponent.h"
 
 class ScoreComponent : public IComponent{
     public:

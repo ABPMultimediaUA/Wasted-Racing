@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../GameObject/AIDrivingComponent.h"
-#include "../GameObject/AIBattleComponent.h"
-#include "../GameObject/MoveComponent.h"
-#include "../GameObject/VSensorComponent.h"
-#include "../GameObject/MSensorComponent.h"
-#include "../GameObject/PathPlanningComponent.h"
-#include "../GameObject/VObject.h"
-#include "../GameObject/IItemComponent.h"
+#include "../GameObject/AIComponent/AIDrivingComponent.h"
+#include "../GameObject/AIComponent/AIBattleComponent.h"
+#include "../GameObject/AIComponent/VSensorComponent.h"
+#include "../GameObject/AIComponent/MSensorComponent.h"
+#include "../GameObject/AIComponent/PathPlanningComponent.h"
+#include "../GameObject/AIComponent/VObject.h"
+#include "../GameObject/ItemComponent/IItemComponent.h"
+#include "../GameObject/PhysicsComponent/MoveComponent.h"
 #include "../GameObject/GameObject.h"
 #include "../GameEvent/EventManager.h"
 #include <memory>

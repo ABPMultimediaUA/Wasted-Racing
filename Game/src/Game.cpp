@@ -107,16 +107,14 @@ void Game::draw() {
 void Game::close() {
 
     physicsManager->close();
-    audioManager->close();
+    renderManager->close();
+    inputManager->close();
     eventManager->close();
     waypointManager->close();
     aiManager->close();
     sensorManager->close();
-    scoreManager->close();
     itemManager->close();
-    inputManager->close();
-    renderManager->close();
-    objectManager->close();
+    scoreManager->close();
 }
 
 //====================================================

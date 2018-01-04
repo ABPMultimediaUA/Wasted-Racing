@@ -3,9 +3,9 @@
 #include "../GameManager/InputManager.h"
 #include "../GameManager/RenderManager.h"
 #include "../GameManager/ItemManager.h"
-#include "ItemHolderComponent.h"
+#include "ItemComponent/ItemHolderComponent.h"
 #include "GameObject.h"
-#include "MoveComponent.h"
+#include "PhysicsComponent/MoveComponent.h"
 #include <iostream>
 
 //==============================================

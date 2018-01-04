@@ -2,7 +2,7 @@
 #include "InputIrrlicht.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/ObjectManager.h"
-#include "../GameObject/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
 #include <cmath>
 #include <string>
 

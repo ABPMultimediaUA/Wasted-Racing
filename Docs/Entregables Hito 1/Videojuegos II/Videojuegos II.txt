@@ -1,0 +1,110 @@
+	_______________________________________________________________________________
+	|  _    _           _           _   _   _                _           _         |
+	| | |  | |         | |         | | | | | |              | |         | |        |
+	| | |  | | __ _ ___| |_ ___  __| | | |_| | ___  _ __ ___| |__   __ _| |_ __ _  |
+	| | |/\| |/ _` / __| __/ _ \/ _` | |  _  |/ _ \| '__/ __| '_ \ / _` | __/ _` | |
+	| \  /\  / (_| \__ \ ||  __/ (_| | | | | | (_) | | | (__| | | | (_| | || (_| | |
+	|  \/  \/ \__,_|___/\__\___|\__,_| \_| |_/\___/|_|  \___|_| |_|\__,_|\__\__,_| |
+	|______________________________________________________________________________|
+
+ 
+-----------------------------------------------------------------------------------------------------------------
+Diseño e implementación de la arquitectura basada en componentes (diagrama de clases e implementación)
+
+    Se puede ver en:
+        -En la carpeta Videojuegos II/DiagramaClases.png  ->  Diagrama de clases de nuestro juego
+        -Videojuegos II/DiagramaComponentes.pdf           ->  Diagrama de componentes de nuestro juego
+        
+    En código se puede ver en:
+        -Game/src/GameManager
+        -Game/src/GameObject
+        
+
+-----------------------------------------------------------------------------------------------------------------
+Control del player por motor de físicas 2D, dynamic o kinematic
+
+    Se puede observar en cualquiera de los videos, especialmente en "Movimiento Player.mp4"
+    
+    En el código lo podemos ver en:
+        -Game/src/GameManager/PhysicsManager
+        -Game/src/GameObject/MoveComponent
+        -Game/src/GamePhysics
+        
+    Cabe puntualizar que el motor de físicas utilizado es de creacion propia "LAPAL" y, su código se encuentra en Game/src/GamePhysics
+
+-----------------------------------------------------------------------------------------------------------------
+Utilización de propiedades físicas en las mecánicas jugables
+
+   Se usa el motor de físicas "LAPAL" (proprio) y, su código se encuentra en Game/src/GamePhysics
+    
+    Se puede observar en cualquiera de los videos, especialmente en "Mecánicas del mapa.mp4"
+    
+    En el código lo podemos ver en:
+        -Game/src/GameManager/PhysicsManager
+        -Game/src/GameObject/MoveComponent
+        -Game/src/GamePhysics
+
+-----------------------------------------------------------------------------------------------------------------
+Mecánicas básicas entidades sin IA
+    
+    Se puede observar en cualquiera de los videos, especialmente en "Mecánicas de ítems.mp4"
+    
+    Las entidades sin IA son:
+        -Rampas de aceleración
+        -Cajas de item
+        -Obstaculos
+        
+    En el código lo podemos ver en:
+        -Game/src/GameManager/ItemManager
+        -Game/src/GameObject/ItemBoxComponent
+        -Game/src/GameObject/RampComponent
+        -Game/src/GameObject/CollisionComponent
+        -Game/src/GameManager/PhysicsManager
+
+
+-----------------------------------------------------------------------------------------------------------------
+Mecánicas de acción
+
+    Podemos ver las mecánicas en el video "Movimiento Player.mp4"
+    
+    Podemos probar las mecánicas en el juego con:
+        -W: Adelante
+        -S: Atras
+        -A: Izquierda
+        -D: Derecha
+        -Space: Salto
+        -Q: Item
+        -T: Derrape
+        
+    Su implementación se puede observar en:
+        -Game/src/GameManager/PhysicsManager
+        -Game/src/GameObject/MoveComponent
+        -Game/src/GamePhysics
+
+-----------------------------------------------------------------------------------------------------------------
+Formato propio para la definición de los niveles (documento con la especificación del formato)
+
+    Documento adjuntado en "Formato propio para la definición de níveles.pdf"
+    
+
+-----------------------------------------------------------------------------------------------------------------
+Implementación de cámara de seguimiento
+
+    Para observar su funcionamiento, podemos ver cualquiera de los vídeos, especialmente el de "Movimiento Player.mp4"
+    
+    Su implementación se puede observar en:
+        -Game/src/GameManager/RenderManager
+
+-----------------------------------------------------------------------------------------------------------------
+Power-ups y elementos adicionales
+
+    Podemos ver el uso de los items en el video "Mecanica de items.mp4"
+    
+    Su implementacion se puede observar en:
+        -Game/src/GameManager/ItemManager
+        -Game/src/GameObject/ItemRedShellComponent
+        -Game/src/GameObject/ItemBlueShellComponent
+        -Game/src/GameObject/ItemStarComponent
+        -Game/src/GameObject/ItemMushroomComponent
+        -Game/src/GameObject/ItemBananaComponent
+-----------------------------------------------------------------------------------------------------------------
