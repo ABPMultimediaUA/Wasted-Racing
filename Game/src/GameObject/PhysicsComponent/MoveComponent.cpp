@@ -1,6 +1,6 @@
 #include "MoveComponent.h"
-#include "GameObject.h"
-#include "../GameManager/RenderManager.h"
+#include "../GameObject.h"
+#include "../../GameManager/RenderManager.h"
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>

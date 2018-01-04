@@ -1,5 +1,5 @@
 #include "CollisionComponent.h"
-#include "../GameManager/ObjectManager.h"
+#include "../../GameManager/ObjectManager.h"
 
 //Initilizer
 void CollisionComponent::init() {

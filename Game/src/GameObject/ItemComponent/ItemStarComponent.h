@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IItemComponent.h"
-#include "../MoveComponent.h"
+#include "../PhysicsComponent/MoveComponent.h"
 
 class ItemStarComponent : public IItemComponent
 {

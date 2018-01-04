@@ -2,12 +2,12 @@
 
 #include "../GameObject/AIComponent/AIDrivingComponent.h"
 #include "../GameObject/AIComponent/AIBattleComponent.h"
-#include "../GameObject/MoveComponent.h"
 #include "../GameObject/AIComponent/VSensorComponent.h"
 #include "../GameObject/AIComponent/MSensorComponent.h"
 #include "../GameObject/AIComponent/PathPlanningComponent.h"
 #include "../GameObject/AIComponent/VObject.h"
 #include "../GameObject/ItemComponent/IItemComponent.h"
+#include "../GameObject/PhysicsComponent/MoveComponent.h"
 #include "../GameObject/GameObject.h"
 #include "../GameEvent/EventManager.h"
 #include <memory>

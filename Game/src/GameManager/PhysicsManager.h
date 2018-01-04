@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../GameObject/MoveComponent.h"
-#include "../GameObject/CollisionComponent.h"
-#include "../GameObject/TerrainComponent.h"
-#include "../GameObject/RampComponent.h"
+#include "../GameObject/PhysicsComponent/MoveComponent.h"
+#include "../GameObject/PhysicsComponent/CollisionComponent.h"
+#include "../GameObject/PhysicsComponent/TerrainComponent.h"
+#include "../GameObject/PhysicsComponent/RampComponent.h"
 #include "../GameObject/ItemComponent/ItemBoxComponent.h"
 #include "../GameObject/ItemComponent/ItemBananaComponent.h"
 #include "../GameObject/ItemComponent/ItemBlueShellComponent.h"

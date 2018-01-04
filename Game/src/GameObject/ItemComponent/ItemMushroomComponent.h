@@ -2,7 +2,7 @@
 
 #include "IItemComponent.h"
 #include "../GameObject.h"
-#include "../MoveComponent.h"
+#include "../PhysicsComponent/MoveComponent.h"
 
 class ItemMushroomComponent : public IItemComponent
 {

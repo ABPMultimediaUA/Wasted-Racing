@@ -2,7 +2,7 @@
 
 #include "../IComponent.h"
 #include "../../GameManager/WaypointManager.h"
-#include "../MoveComponent.h"
+#include "../PhysicsComponent/MoveComponent.h"
 #include "../ScoreComponent.h"
 #include "AIDrivingComponent.h"
 

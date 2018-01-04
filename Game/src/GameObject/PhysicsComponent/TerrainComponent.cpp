@@ -1,5 +1,5 @@
 #include "TerrainComponent.h"
-#include "../GameManager/ObjectManager.h"
+#include "../../GameManager/ObjectManager.h"
 
 //Initilizer
 void TerrainComponent::init() {

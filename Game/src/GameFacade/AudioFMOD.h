@@ -8,9 +8,9 @@
 #include <string>
 #include <glm/ext.hpp>
 
-#include "ISoundEvent.h"
-#include "AcceptEvent.h"
-#include "CocodrileGoodENEvent.h"
+#include "../GameAudio/ISoundEvent.h"
+#include "../GameAudio/AcceptEvent.h"
+#include "../GameAudio/CocodrileGoodENEvent.h"
 
 class ISoundEvent;
 
