@@ -1,11 +1,11 @@
 #pragma once
 
 #include "IItemComponent.h"
-#include "../GameManager/ScoreManager.h"
-#include "PathPlanningComponent.h"
-#include "VSensorComponent.h"
-#include "MoveComponent.h"
-#include "AIDrivingComponent.h"
+#include "../../GameManager/ScoreManager.h"
+#include "../AIComponent/PathPlanningComponent.h"
+#include "../AIComponent/VSensorComponent.h"
+#include "../MoveComponent.h"
+#include "../AIComponent/AIDrivingComponent.h"
 
 class ItemRedShellComponent : public IItemComponent
 {

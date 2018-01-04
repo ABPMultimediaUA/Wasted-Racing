@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IComponent.h"
+#include "../IComponent.h"
 
 class IRenderComponent : public IComponent {
 

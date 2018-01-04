@@ -1,9 +1,9 @@
 #pragma once
 
-#include "IComponent.h"
-#include "../GameManager/WaypointManager.h"
-#include "MoveComponent.h"
-#include "ScoreComponent.h"
+#include "../IComponent.h"
+#include "../../GameManager/WaypointManager.h"
+#include "../MoveComponent.h"
+#include "../ScoreComponent.h"
 #include "AIDrivingComponent.h"
 
 class PathPlanningComponent : public IComponent{

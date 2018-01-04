@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../GameObject/ISensorComponent.h"
-#include "../GameObject/VSensorComponent.h"
-#include "../GameObject/MSensorComponent.h"
+#include "../GameObject/AIComponent/ISensorComponent.h"
+#include "../GameObject/AIComponent/VSensorComponent.h"
+#include "../GameObject/AIComponent/MSensorComponent.h"
 #include "ObjectManager.h"
 #include "PhysicsManager.h"
 #include <vector>

@@ -4,7 +4,7 @@
 #include <cstdint>
 
 #include "../GameManager/InputManager.h"
-#include "../GameObject/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
 #include "../GameObject/GameObject.h"
 
 class GameObject;

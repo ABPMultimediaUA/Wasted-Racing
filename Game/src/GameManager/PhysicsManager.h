@@ -4,11 +4,11 @@
 #include "../GameObject/CollisionComponent.h"
 #include "../GameObject/TerrainComponent.h"
 #include "../GameObject/RampComponent.h"
-#include "../GameObject/ItemBoxComponent.h"
-#include "../GameObject/ItemBananaComponent.h"
-#include "../GameObject/ItemBlueShellComponent.h"
-#include "../GameObject/ItemRedShellComponent.h"
-#include "../GameObject/ItemStarComponent.h"
+#include "../GameObject/ItemComponent/ItemBoxComponent.h"
+#include "../GameObject/ItemComponent/ItemBananaComponent.h"
+#include "../GameObject/ItemComponent/ItemBlueShellComponent.h"
+#include "../GameObject/ItemComponent/ItemRedShellComponent.h"
+#include "../GameObject/ItemComponent/ItemStarComponent.h"
 #include <vector>
 
 class PhysicsManager{

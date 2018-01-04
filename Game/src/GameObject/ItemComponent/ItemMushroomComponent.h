@@ -1,8 +1,8 @@
 #pragma once
 
 #include "IItemComponent.h"
-#include "GameObject.h"
-#include "MoveComponent.h"
+#include "../GameObject.h"
+#include "../MoveComponent.h"
 
 class ItemMushroomComponent : public IItemComponent
 {

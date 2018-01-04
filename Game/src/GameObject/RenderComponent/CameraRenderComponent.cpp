@@ -1,5 +1,5 @@
 #include "CameraRenderComponent.h"
-#include "../GameManager/RenderManager.h"
+#include "../../GameManager/RenderManager.h"
 #include <iostream>
 
 //Initilizer

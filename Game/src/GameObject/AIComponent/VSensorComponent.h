@@ -1,24 +1,22 @@
 #pragma once
 
 #include "ISensorComponent.h"
-#include "VSensorComponent.h"
+#include "../../GamePhysics/LAPALPhysics.h"
 #include "VObject.h"
 #include <glm/ext.hpp>
 #include <vector>
-#include "GameObject.h"
-#include "../GameManager/PhysicsManager.h"
-#include "../GamePhysics/LAPALPhysics.h"
+#include "../GameObject.h"
 #include <memory>
 
-class MSensorComponent : public ISensorComponent{
+class VSensorComponent : public ISensorComponent{
     public:
 
         //Constructors
-        MSensorComponent(GameObject& newGameObject);
-        MSensorComponent(GameObject& newGameObject, float angV, float angI);
+        VSensorComponent(GameObject& newGameObject);
+        VSensorComponent(GameObject& newGameObject, float angV, float angI); //AngV = angle of vision in degrees, AngI = angle of init in radians
         
         //Destructor
-        virtual ~MSensorComponent() {};
+        virtual ~VSensorComponent() {};
 
         //Initialize
         virtual void init(){};
@@ -29,17 +27,14 @@ class MSensorComponent : public ISensorComponent{
         //update
         virtual void update(float dTime){};
 
-        //Checks the objects receives and stores the ones seen in the seenObjects vector
-        void updateMapCollisions();
+        //Checks the objects seen and stores the ones seen in the seenObjects vector
+        void updateSeenObjects(std::vector<GameObject> objects);
 
         //Auxiliar function to calculate A and B of given objective
-        void calculateABTerrainBack(glm::vec3& objective, float& a, float& b);
-
-        //Auxiliar function to calculate A and B of composition of individual sensors
-        glm::vec3 calculateSensorCollision(glm::vec3& position, glm::vec3& tPoint, float* a, float* b);
+        void calculateAB(glm::vec3 objective, float& a, float& b);
 
         //Getters and setters
-        std::vector<VObject::Pointer> getMapCollisions()         {   return seenObjects;    };
+        std::vector<VObject::Pointer> getSeenObjects()           {   return seenObjects;    };
         glm::vec3 getSensorLeft()                                {   return sensorLeft;     };
         glm::vec3 getSensorRight()                               {   return sensorRight;    };
         float getAngleInitial()                                  {   return angleInitial;   };

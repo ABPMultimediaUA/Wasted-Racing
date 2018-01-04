@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../GameObject/WaypointComponent.h"
-#include "../GameObject/PathPlanningComponent.h"
-#include "../GameObject/IItemComponent.h"
+#include "../GameObject/AIComponent/WaypointComponent.h"
+#include "../GameObject/AIComponent/PathPlanningComponent.h"
+#include "../GameObject/ItemComponent/IItemComponent.h"
 #include <vector>
 
 class WaypointManager{

@@ -1,5 +1,5 @@
 #include "ObjectRenderComponent.h"
-#include "../GameManager/RenderManager.h"
+#include "../../GameManager/RenderManager.h"
 
 //Initilizer
 void ObjectRenderComponent::init() {

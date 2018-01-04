@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IComponent.h"
+#include "../IComponent.h"
 #include "VObject.h"
 #include <glm/ext.hpp>
 #include <vector>

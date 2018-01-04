@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IComponent.h"
+#include "../IComponent.h"
 
 class ISensorComponent : public IComponent {
 

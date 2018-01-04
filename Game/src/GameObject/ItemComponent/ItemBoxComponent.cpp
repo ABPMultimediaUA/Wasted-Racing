@@ -1,7 +1,7 @@
 #include "ItemBoxComponent.h"
-#include "GameObject.h"
+#include "../GameObject.h"
 #include "ItemHolderComponent.h"
-#include "../GameManager/RenderManager.h"
+#include "../../GameManager/RenderManager.h"
 
 
 //Constructor

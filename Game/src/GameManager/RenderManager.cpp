@@ -1,7 +1,7 @@
 #include "RenderManager.h"
 #include "../GameFacade/RenderIrrlicht.h"
-#include "../GameObject/ObjectRenderComponent.h"
-#include "../GameObject/CameraRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 
 //==============================================
 // DELEGATES DECLARATIONS

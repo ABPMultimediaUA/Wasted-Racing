@@ -1,7 +1,7 @@
 #pragma once
 
-#include "IComponent.h"
-#include "GameObject.h"
+#include "../IComponent.h"
+#include "../GameObject.h"
 #include <glm/ext.hpp>
 
 class WaypointComponent : public IComponent{

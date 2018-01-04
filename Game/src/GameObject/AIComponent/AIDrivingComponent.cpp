@@ -1,6 +1,6 @@
 #include "AIDrivingComponent.h"
 #include "WaypointComponent.h"
-#include "../GameManager/WaypointManager.h"
+#include "../../GameManager/WaypointManager.h"
 #include <memory>
 #include <iostream>
 
