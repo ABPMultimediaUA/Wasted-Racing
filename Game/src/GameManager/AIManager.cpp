@@ -71,7 +71,7 @@ void AIManager::update() {
                 float a = 0.f,b = 0.f;
                 vSensorComponent->calculateAB(objective, a, b);
 
-                
+                //std::cout<<"Objetos: "<<seenObjects.size()<<"\n";
 
                 float turnValue = aiDrivingComponent->girar(seenObjects, mapCollisions, objective, a, b);
                 //----------------------------------

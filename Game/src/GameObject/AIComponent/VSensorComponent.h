@@ -13,7 +13,7 @@ class VSensorComponent : public ISensorComponent{
 
         //Constructors
         VSensorComponent(GameObject& newGameObject);
-        VSensorComponent(GameObject& newGameObject, float angV, float angI); //AngV = angle of vision in degrees, AngI = angle of init in radians
+        VSensorComponent(GameObject& newGameObject, float angV, float angI, float md); //AngV = angle of vision in degrees, AngI = angle of init in radians
         
         //Destructor
         virtual ~VSensorComponent() {};
@@ -54,6 +54,8 @@ class VSensorComponent : public ISensorComponent{
 
         //Objects being seen
         std::vector<VObject::Pointer> seenObjects;
+
+        float maxDistance;
 
 
 };

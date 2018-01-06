@@ -48,7 +48,7 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 		atan_w += 2.f; 	//that's why we add this
 	}
 	//Limits: -0.75 - 0.25 right, 0.25 center, 0.25 to 1.25 left
-	float wp_left 	= inferL(atan_w		,0.25f  ,0.8f 	,0   	);
+	float wp_left 	= inferL(atan_w		,0.25f  ,0.75f 	,0   	);
 	float wp_center = inferT(atan_w		,0.23f	,0.25f 	,0.27f	);
 	float wp_right 	= inferL(atan_w		,-0.25f	,0.25f  ,1   	);
 
@@ -111,7 +111,7 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 	//Here we use the centroid point between the defuzzified inferences, to pinpoint the crisp steering value
 	//---------------GENERALIZE---everything
 	float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
-
+	//std::cout<<
 	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.3f, 0.f, 0.3f);
 	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.5f, -0.01f);
 	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.01f, 0.5f, 1.0f);

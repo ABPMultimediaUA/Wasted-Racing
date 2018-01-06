@@ -194,12 +194,29 @@ void addObjects(){
 
     //Obstacles:
     id = 200;
-    transform.position = glm::vec3(0,2,90);
+    transform.position = glm::vec3(100,2,0);
     transform.rotation = glm::vec3(45,45,0);
     transform.scale    = glm::vec3(1,1,1);
     auto ob200 = ObjectManager::getInstance().createObject(id, transform);
 
-    
+    id = 201;
+    transform.position = glm::vec3(875, 100, -100);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob201 = ObjectManager::getInstance().createObject(id, transform);
+
+    /*id = 202;
+    transform.position = glm::vec3(850, 100, -100);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob202 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 203;
+    transform.position = glm::vec3(890, 100, -100);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob203 = ObjectManager::getInstance().createObject(id, transform);
+    */
 
 
     //WAYPOINTS
@@ -369,6 +386,9 @@ void addObjects(){
 
     //Obstacles
     std::shared_ptr<IComponent> cp200 = RenderManager::getInstance().createObjectRenderComponent(*ob200.get(), ObjectRenderComponent::Shape::Sphere);
+    std::shared_ptr<IComponent> cp201 = RenderManager::getInstance().createObjectRenderComponent(*ob201.get(), ObjectRenderComponent::Shape::Sphere);
+    //std::shared_ptr<IComponent> cp202 = RenderManager::getInstance().createObjectRenderComponent(*ob202.get(), ObjectRenderComponent::Shape::Sphere);
+    //std::shared_ptr<IComponent> cp203 = RenderManager::getInstance().createObjectRenderComponent(*ob203.get(), ObjectRenderComponent::Shape::Sphere);
 
 
 
@@ -419,6 +439,9 @@ void addObjects(){
     //std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
     
     std::shared_ptr<IComponent> collisionCP200 = PhysicsManager::getInstance().createCollisionComponent(*ob200.get(), 5, true, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collisionCP201 = PhysicsManager::getInstance().createCollisionComponent(*ob201.get(), 5, true, CollisionComponent::Type::Default);
+    //std::shared_ptr<IComponent> collisionCP202 = PhysicsManager::getInstance().createCollisionComponent(*ob202.get(), 5, true, CollisionComponent::Type::Default);
+    //std::shared_ptr<IComponent> collisionCP203 = PhysicsManager::getInstance().createCollisionComponent(*ob203.get(), 5, true, CollisionComponent::Type::Default);
 
 
     std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, false, CollisionComponent::Type::ItemBox);
@@ -566,7 +589,7 @@ void addObjects(){
     transform.position = glm::vec3(-125,0,-30);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);
+    ObjectManager::getInstance().createPlayer(transform, 2, 1, id, terrain, terrainCP1);
 
     /*id = 56;
     transform.position = glm::vec3(-125,0,5);

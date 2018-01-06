@@ -9,9 +9,10 @@ ISensorComponent(newGameObject)
     angleVision=55.0 * 3.141592653589f / 180.f;
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
+    maxDistance = 200.f;
 }       
 
-VSensorComponent::VSensorComponent(GameObject& newGameObject, float angV, float angI) :
+VSensorComponent::VSensorComponent(GameObject& newGameObject, float angV, float angI, float md) :
 ISensorComponent(newGameObject)
 {
     angleInitial=angI;
@@ -20,6 +21,7 @@ ISensorComponent(newGameObject)
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 
+    maxDistance = md;
 }
 
 //Checks the objects seen and stores the ones seen in the seenObjects vector
@@ -37,16 +39,25 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
     for(i=0; i<objects.size(); i++)
     {
         //auto ob = objects[i].get();                                                         //get object
+        glm::vec3 myPos = getGameObject().getTransformData().position;
+        float distance = (objects[i].getTransformData().position.x - myPos.x) * (objects[i].getTransformData().position.x - myPos.x) +
+						(objects[i].getTransformData().position.y - myPos.y) * (objects[i].getTransformData().position.y - myPos.y) +
+						(objects[i].getTransformData().position.z - myPos.z) * (objects[i].getTransformData().position.z - myPos.z);
         
-        calculateAB(objects[i].getTransformData().position, a, b);       //Do the math
+        //std::cout<<"Distancce: "<<distance<<"\n";
 
-        //if both are inside the cone contained by A and B
-        if(a > 0 && b > 0)  
+        if(distance < maxDistance*maxDistance || maxDistance == 0)
         {
-            pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, 1.f, 1); //generate VObject with the data
-            seenObjects.push_back(pvo);                                                     //Add to seen objects
+            calculateAB(objects[i].getTransformData().position, a, b);       //Do the math
+
+            //if both are inside the cone contained by A and B
+            if(a > 0 && b > 0)  
+            {
+                pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, 1.f, 1); //generate VObject with the data
+                seenObjects.push_back(pvo);                                                     //Add to seen objects
+            }
         }
-        
+
         //clean A and B for the next object
         a = 0;
         b = 0;
