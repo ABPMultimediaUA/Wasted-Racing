@@ -180,6 +180,7 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
 
     ourMData.vel    = 0;
     ourMData.acc    = -10;
+    ourMData.velocity = glm::vec3(0,0,0);
 
     ourMove->setMovementData(ourMData);
 }

@@ -200,6 +200,22 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
     }
 }
 
+//Updates the deviation in velocity caused by a collision
+void LAPAL::updateCollisionMovement ( LAPAL::movementData& mData, const float dTime) {
+
+    if(abs(mData.colVel.x) > 0.1 || abs(mData.colVel.z) > 0.1) {
+
+        mData.velocity.x -= mData.colVel.x;
+        mData.velocity.z -= mData.colVel.z;
+
+        mData.colVel.x -= mData.colVel.x*dTime;
+        mData.colVel.z -= mData.colVel.z*dTime;
+
+    }
+
+}
+
+
 //--------------------------------------
 //-------------COLLISIONS---------------
 //--------------------------------------

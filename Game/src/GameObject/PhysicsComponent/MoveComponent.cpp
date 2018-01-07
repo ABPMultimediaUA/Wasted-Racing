@@ -24,7 +24,8 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateSpin(mData, dTime);                    //Update spin (turning)
     LAPAL::updateVelocity(mData, terrain);              //Update velocity (vector)
     LAPAL::updateEllipticMovement(mData, dTime);        //Update elliptic movement (if object is drifting)
-
+    LAPAL::updateCollisionMovement(mData, dTime);       //Update deviation in velocity after a collision
+    
     //Correct vertical movement
     updateJump(mData, position, terrain);
     LAPAL::correctYPosition(mData, dTime, terrain, position);

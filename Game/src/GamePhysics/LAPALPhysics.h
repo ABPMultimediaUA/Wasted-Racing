@@ -22,6 +22,9 @@ namespace LAPAL {
     //function that moves the vehicle elliptically given its internal radius ratio rotation
     void updateEllipticMovement( LAPAL::movementData& mData, const float dTime);
 
+    //Updates the deviation in velocity caused by a collision
+    void updateCollisionMovement ( LAPAL::movementData& mData, const float dTime);
+
     //--------------------------------------
     //-------------COLLISIONS---------------
     //--------------------------------------

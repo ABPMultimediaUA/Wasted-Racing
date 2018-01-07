@@ -68,6 +68,9 @@ namespace LAPAL{
         //Jump variables
         float posY = 0.0;      //Relative position in y when the jump starts
 
+        //Collision variables
+        vec3f colVel            = glm::vec3(0,0,0);         //Velocity of the object after a collision  
+
     };
 
 }
