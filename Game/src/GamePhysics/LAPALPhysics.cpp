@@ -392,6 +392,23 @@ float LAPAL::distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2,
 
 }
 
+//Calculates if a point (p1) is left o right of a line defined by two points (l1,l2)
+bool LAPAL::position2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1) {
+
+    //We use a formula infered from the equation of the line (A * x + B * y + C = 0)
+    float A = -( l2.z - l1.z );
+    float B = l2.x - l1.x;
+    float C = -( A * l1.x + B * l1.z );
+
+    float D = A * p1.x + B * p1.z + C;
+
+    if (D > 0)
+        return false;   // p1 is left of the line
+    else 
+        return true;    // p1 is right of the line (or in the line)
+
+}
+
 //Calculates if a circle is inside a rectangle
 bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, const float radius) {
 

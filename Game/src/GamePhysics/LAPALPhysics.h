@@ -59,6 +59,9 @@ namespace LAPAL {
     //Calculates the distance between a line defined by two points (l1,l2) and a point (p1)
     float distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1);
 
+    //Calculates if a point (p1) is left o right of a line defined by two points (l1,l2)
+    bool position2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1);
+
     //Calculates if a circle is inside a rectangle
     bool checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, const float radius);
 

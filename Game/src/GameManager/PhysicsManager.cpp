@@ -199,11 +199,9 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         auto ourMovementData = ourMove ->getMovemententData();
         float radius    = ourColl->getRadius();
         
-        //Composition values of the point inside the terrain
-        float a = 0.f, b = 0.f;
+        //Future position:
         glm::vec3 nextPosition;
 
-        //Future position:
         if(ourMovementData.vel != 0){
             nextPosition = glm::vec3(
                                 ourMData.position.x + ourMovementData.velocity.x / ourMovementData.vel * radius,
@@ -213,91 +211,64 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         }else{
             nextPosition = ourMData.position;
         }
-        //Calculate A and B for the object radius in the direction of its movement
-        LAPAL::calculateTerrainAB(terrain, nextPosition, a, b);
-
 
         //Check if we are out of front bounds
-        if(a>0 && b<0 && glm::abs(a)+glm::abs(b)>=1){
+        if(!LAPAL::position2DLinePoint(terrain.p2, terrain.p3, nextPosition)){
             if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
                 calculateStaticCollision(move, dTime);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
-            }else{
-                //Check if we are inside the next terrain. If not, still collide.
-                LAPAL::calculateTerrainAB(ourTerr->getNext()->getTerrain(), nextPosition, a, b);
-                if(a+b >= 0 && abs(a)+abs(b)<=1){
-                    //Inside the next terrain
+            }
+            //Check if our center is still in the same terrain
+            else if(!LAPAL::position2DLinePoint(terrain.p2, terrain.p3, ourMData.position)){
+                    //If not, change to next terrain
                     ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getNext(); //Set new terrain component
-                }else{
-                    calculateStaticCollision(move, dTime);
-                    checkCollisionShellTerrain(move.get()->getGameObject());
-                }
             }
         }
 
         //Check if we are out of right bounds
-        if(a>0 && b>0 && glm::abs(a)+glm::abs(b)>=1){
+        if(!LAPAL::position2DLinePoint(terrain.p3, terrain.p4, nextPosition)){
             if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
                 calculateStaticCollision(move, dTime);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
-            else{
-                //Check if we are inside the next terrain. If not, still collide.
-                LAPAL::calculateTerrainAB(ourTerr->getRight()->getTerrain(), nextPosition, a, b);
-                if(a+b >= 0 && abs(a)+abs(b)<=1){
-                    //Inside the next terrain
+            //Check if our center is still in the same terrain
+            else if(!LAPAL::position2DLinePoint(terrain.p3, terrain.p4, ourMData.position)){
+                    //If not, change to next terrain
                     ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getRight(); //Set new terrain component
-                }else{
-                    calculateStaticCollision(move, dTime);
-                    checkCollisionShellTerrain(move.get()->getGameObject());
-                }
             }
         }
         
         //Check if we are out of back bounds
-        if(a>0 && b>0 && a - b<=0){
+        if(!LAPAL::position2DLinePoint(terrain.p4, terrain.p1, nextPosition)){
             if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
                 calculateStaticCollision(move, dTime);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
-            else{
-                //Check if we are inside the next terrain. If not, still collide.
-                LAPAL::calculateTerrainAB(ourTerr->getPrev()->getTerrain(), nextPosition, a, b);
-                if(a+b >= 0 && abs(a)+abs(b)<=1){
-                    //Inside the next terrain
+            //Check if our center is still in the same terrain
+            else if(!LAPAL::position2DLinePoint(terrain.p4, terrain.p1, ourMData.position)){
+                    //If not, change to next terrain
                     ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getPrev(); //Set new terrain component
-                }else{
-                    calculateStaticCollision(move, dTime);
-                    checkCollisionShellTerrain(move.get()->getGameObject());
-                }
-                
             }
         }
 
         //Check if we are out of left bounds
-        if(a>0 && b<0 && a+b<=0){
+        if(!LAPAL::position2DLinePoint(terrain.p1, terrain.p2, nextPosition)){
            if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
                 calculateStaticCollision(move, dTime);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
-            else{
-                //Check if we are inside the next terrain. If not, still collide.
-                LAPAL::calculateTerrainAB(ourTerr->getLeft()->getTerrain(), nextPosition, a, b);
-                if(a+b >= 0 && abs(a)+abs(b)<=1){
-                    //Inside the next terrain
+            //Check if our center is still in the same terrain
+            else if(!LAPAL::position2DLinePoint(terrain.p1, terrain.p2, ourMData.position)){
+                    //If not, change to next terrain
                     ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getLeft(); //Set new terrain component
-                }else{
-                    calculateStaticCollision(move, dTime);
-                    checkCollisionShellTerrain(move.get()->getGameObject());
-                }
             }
         }
 }
