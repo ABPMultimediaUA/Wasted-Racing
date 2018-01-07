@@ -215,7 +215,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of front bounds
         if(!LAPAL::position2DLinePoint(terrain.p2, terrain.p3, nextPosition)){
             if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move, dTime);
+                calculateLineCollision(move, terrain.p2, terrain.p3);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
@@ -230,7 +230,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of right bounds
         if(!LAPAL::position2DLinePoint(terrain.p3, terrain.p4, nextPosition)){
             if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move, dTime);
+                calculateLineCollision(move, terrain.p3, terrain.p4);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
@@ -245,7 +245,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of back bounds
         if(!LAPAL::position2DLinePoint(terrain.p4, terrain.p1, nextPosition)){
             if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move, dTime);
+                calculateLineCollision(move, terrain.p4, terrain.p1);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
@@ -260,7 +260,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         //Check if we are out of left bounds
         if(!LAPAL::position2DLinePoint(terrain.p1, terrain.p2, nextPosition)){
            if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
-                calculateStaticCollision(move, dTime);
+                calculateLineCollision(move, terrain.p1, terrain.p2);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
@@ -271,6 +271,22 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     movingChar.terrainComponent = ourTerr->getLeft(); //Set new terrain component
             }
         }
+}
+
+void PhysicsManager::calculateLineCollision(std::shared_ptr<MoveComponent> move, LAPAL::vec3f p1, LAPAL::vec3f p2) {
+
+    MoveComponent* ourMove = move.get();
+    LAPAL::movementData mData = ourMove->getMovemententData();
+
+    LAPAL::calculateReflectedVector(mData.velocity, p1, p2);
+
+    mData.colVel = mData.velocity / 2;
+    mData.vel = 0;
+    mData.velocity = glm::vec3(0,0,0);
+    mData.boost = false;
+
+    ourMove->setMovementData(mData);
+
 }
 
 void PhysicsManager::checkCollisionShellTerrain(GameObject& obj)

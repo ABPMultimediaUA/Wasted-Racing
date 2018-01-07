@@ -203,13 +203,15 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
 //Updates the deviation in velocity caused by a collision
 void LAPAL::updateCollisionMovement ( LAPAL::movementData& mData, const float dTime) {
 
+    const float cons = 5; //factor of vel reduction over time
+
     if(abs(mData.colVel.x) > 0.1 || abs(mData.colVel.z) > 0.1) {
 
-        mData.velocity.x -= mData.colVel.x;
-        mData.velocity.z -= mData.colVel.z;
+        mData.velocity.x += mData.colVel.x;
+        mData.velocity.z += mData.colVel.z;
 
-        mData.colVel.x -= mData.colVel.x*dTime;
-        mData.colVel.z -= mData.colVel.z*dTime;
+        mData.colVel.x -= mData.colVel.x*dTime*cons;
+        mData.colVel.z -= mData.colVel.z*dTime*cons;
 
     }
 
@@ -329,6 +331,23 @@ void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPA
         }
     }
     mData.jump = false;
+}
+
+//Reflects the velocity given a line
+void LAPAL::calculateReflectedVector(LAPAL::vec3f& vel, const LAPAL::vec3f& p1, const LAPAL::vec3f& p2) {
+
+    LAPAL::vec3f lineVector = p2-p1;
+    LAPAL::vec3f normal = glm::vec3(-lineVector.z, 0, lineVector.x);    //Get normal from the two points of the line
+
+    float nMod = sqrt(normal.x*normal.x + normal.z*normal.z);
+
+    normal = glm::vec3(normal.x/nMod, 0, normal.z/nMod);    //Normalize normal
+
+    float dotVelNormal = vel.x*normal.x + vel.z*normal.z;   //Obtain product between vel and normal
+
+    vel.x = vel.x - 2 * dotVelNormal * normal.x;
+    vel.z = vel.z - 2 * dotVelNormal * normal.z;
+
 }
 
 //--------------------------------------

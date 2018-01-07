@@ -31,6 +31,7 @@ namespace LAPAL{
         bool asc = false;       //To know that the object is ascending
         bool drift = false;     //To know if object is drifting or not
         bool braking = false;   //To know if brake key is pressed
+        bool boost = false;     //To know if velocity/acceletarion has been abnormally increased
 
         //spin
         float angle             = 0.0f;         //Angle faced by object

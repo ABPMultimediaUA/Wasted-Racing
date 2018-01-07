@@ -8,10 +8,10 @@ namespace LAPAL {
     //-------------MOVEMENT-----------------
     //--------------------------------------
     //Updates all linear variables 
-    void updateLinearVelocity(LAPAL::movementData& mData, const float dTime, const LAPAL::plane3f& terrain);//done
+    void updateLinearVelocity(LAPAL::movementData& mData, const float dTime, const LAPAL::plane3f& terrain);
 
     //Updates spin velocity and spin
-    void updateSpin(LAPAL::movementData& mData, const float dTime);//done
+    void updateSpin(LAPAL::movementData& mData, const float dTime);
 
     //Updates vector velocity
     void updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain);
@@ -29,10 +29,10 @@ namespace LAPAL {
     //-------------COLLISIONS---------------
     //--------------------------------------
     //Checks colision between circles
-    bool checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const LAPAL::vec3f& pos2,const float& radius2); //done
+    bool checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const LAPAL::vec3f& pos2,const float& radius2);
 
     //Assuming there's collision, changes velocity of every object after collision
-    void calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::vec3f& vel2, float& mass2); //done
+    void calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::vec3f& vel2, float& mass2);
 
     //Checks if terrain is horizontal o it's a pendent 
     bool checkTerrain(const LAPAL::plane3f& terrain); //done
@@ -45,6 +45,9 @@ namespace LAPAL {
 
     //Corrects position of the object on Y
     void correctYPosition(LAPAL::movementData& mData, const float dTime, LAPAL::plane3f& terrain, LAPAL::vec3f& position);
+
+    //Reflects the velocity given a line
+    void calculateReflectedVector(LAPAL::vec3f& vel, const LAPAL::vec3f& p1, const LAPAL::vec3f& p2);
 
     //--------------------------------------
     //-------------MATHEMATICS--------------

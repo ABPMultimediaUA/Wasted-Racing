@@ -71,6 +71,7 @@ private:
     void calculateStaticCollision(std::shared_ptr<MoveComponent>, const float);
     void calculateTerrainCollision(MovingCharacter&, std::shared_ptr<MoveComponent>, std::shared_ptr<TerrainComponent> , std::shared_ptr<CollisionComponent>, const float );
     void checkCollisionShellTerrain(GameObject& obj);
+    void calculateLineCollision(std::shared_ptr<MoveComponent>, LAPAL::vec3f, LAPAL::vec3f);
 
     std::vector<IComponent::Pointer> moveComponentList;
     std::vector<IComponent::Pointer> collisionComponentList;
