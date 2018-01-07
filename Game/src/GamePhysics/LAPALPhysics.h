@@ -32,7 +32,7 @@ namespace LAPAL {
     bool checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const LAPAL::vec3f& pos2,const float& radius2);
 
     //Assuming there's collision, changes velocity of every object after collision
-    void calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::vec3f& vel2, float& mass2);
+    void calculateElasticCollision(LAPAL::vec3f& vel1, const LAPAL::vec3f& pos1, const float& mass1, LAPAL::vec3f& vel2, const LAPAL::vec3f& pos2, const float& mass2);
 
     //Checks if terrain is horizontal o it's a pendent 
     bool checkTerrain(const LAPAL::plane3f& terrain); //done

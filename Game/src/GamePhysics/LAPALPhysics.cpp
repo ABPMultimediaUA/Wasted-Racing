@@ -232,23 +232,25 @@ bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& rad
 
 
 //Assuming there's collision, changes velocity of every object after collision
-void LAPAL::calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::vec3f& vel2, float& mass2) {
+void LAPAL::calculateElasticCollision(LAPAL::vec3f& vel1, const LAPAL::vec3f& pos1, const float& mass1, 
+                                        LAPAL::vec3f& vel2, const LAPAL::vec3f& pos2, const float& mass2) {
 
-    //We apply the physical inelastic collision formula
-
-    float mT = mass1 + mass2;
-
-    float m1i_1 = (mass1 - mass2)/mT;
-    float m2i_1 = (mass2 + mass2)/mT;
+    //We apply the physical elastic collision formula
+    /*
+                2⋅m2     ⟨v1−v2,x1−x2⟩                           2⋅m1    ⟨v2−v1,x2−x1⟩
+    v′1 = v1 − ------ ⋅ -------------  ⋅(x1−x2)    v'2 = v2 −  ------ ⋅ ------------- ⋅ (x2−x1)
+                m1+m2       ∥x1−x2∥^2                           m1+m2     ∥x2−x1∥^2
+    */
     
-    float m1i_2 = (mass1 + mass1)/mT;
-    float m2i_2 = (mass2 - mass1)/mT;
+    LAPAL::vec3f auxPos = pos1 - pos2;
+    LAPAL::vec3f auxVel = vel1 - vel2;
+    auxPos.y = 0;
+    vel1 = vel1 - ((2 * mass2) / (mass1 + mass2)) * ( (auxPos.x*auxVel.x + auxPos.z*auxVel.z) / (auxPos.x * auxPos.x + auxPos.z + auxPos.z)) * auxPos;
 
-    vel1.x = vel1.x*m1i_1 + vel2.x*m2i_1;
-    vel2.x = vel1.x*m1i_2 + vel2.x*m2i_2;
-
-    vel1.z = vel1.z*m1i_1 + vel2.z*m2i_1;
-    vel2.z = vel1.z*m1i_2 + vel2.z*m2i_2;
+    auxPos = pos2 - pos1;
+    auxVel = vel2 - vel1;
+    auxPos.y = 0;
+    vel2 = vel2 - ((2 * mass1) / (mass1 + mass2)) * ( (auxPos.x*auxVel.x + auxPos.z*auxVel.z) / (auxPos.x * auxPos.x + auxPos.z + auxPos.z)) * auxPos;
 
 }
 

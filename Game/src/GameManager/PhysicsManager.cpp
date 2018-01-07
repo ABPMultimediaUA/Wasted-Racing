@@ -114,13 +114,11 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
                 if(hisMove == nullptr) {    //If the object doesn't have move component, it's static
                         
-                    calculateStaticCollision(move, dTime);
+                    calculateStaticCollision(move, hisColl->getGameObject().getTransformData().position, dTime);
 
                 }
                 else {  //The object is not static
-                        //***** CODE FOR COLLISIONS WHERE BOTH OBJECTS ARE MOVING *****//
-                        calculateStaticCollision(move, dTime); //This is not right!!! Just a temporal solution
-                        calculateStaticCollision(hisMove, dTime); //This is not right!!! Just a temporal solution
+                        calculateMovingCollision(move, hisMove, dTime);
                 }
             }
             //If collision isn't kinetic, react with events depending on the collision type
@@ -172,19 +170,43 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 }
 
 //Change velocity of the objects when it collides with another one
-void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> move, const float dTime) {
+void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> move, LAPAL::vec3f hisPos, const float dTime) {
 
     MoveComponent* ourMove = move.get(); 
 
-    auto ourMData = ourMove->getMovemententData();
+    auto mData = ourMove->getMovemententData();
+    auto hisVel = glm::vec3(0,0,0);
 
-    ourMData.vel    = 0;
-    ourMData.acc    = -10;
-    ourMData.velocity = glm::vec3(0,0,0);
+    LAPAL::calculateElasticCollision(mData.velocity, ourMove->getGameObject().getTransformData().position, 
+                                        ourMove->getMass(), hisVel, hisPos, 1.0);
 
-    ourMove->setMovementData(ourMData);
+    mData.colVel = mData.velocity / 2;
+    mData.vel = 0;
+    mData.velocity = glm::vec3(0,0,0);
+    mData.boost = false;
+
+    ourMove->setMovementData(mData);
 }
 
+//Change velocity of the objects when it collides with another one
+void PhysicsManager::calculateMovingCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<MoveComponent> hMove, const float dTime) {
+
+    MoveComponent* ourMove = move.get(); 
+    MoveComponent* hisMove = hMove.get(); 
+
+    auto mData = ourMove->getMovemententData();
+    LAPAL::vec3f hisVel = hisMove->getMovemententData().velocity;
+
+    LAPAL::calculateElasticCollision(mData.velocity, ourMove->getGameObject().getTransformData().position, ourMove->getMass(), 
+                                        hisVel, hisMove->getGameObject().getTransformData().position, hisMove->getMass());
+
+    mData.colVel = mData.velocity / 2;
+    mData.vel = 0;
+    mData.velocity = glm::vec3(0,0,0);
+    mData.boost = false;
+
+    ourMove->setMovementData(mData);
+}
 
 //Calculate if we are inside a terrain or if we are going to another one
 void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll, const float dTime) {
