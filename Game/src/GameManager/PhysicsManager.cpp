@@ -235,14 +235,14 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         }
 
         //Check if we are out of front bounds
-        if(!LAPAL::position2DLinePoint(terrain.p2, terrain.p3, nextPosition)){
+        if(!LAPAL::position2DLinePoint(terrain.p1, terrain.p2, nextPosition)){
             if( ourTerr->getNext() == nullptr ) {   //If there isn't next plane, collision
-                calculateLineCollision(move, terrain.p2, terrain.p3);
+                calculateLineCollision(move, terrain.p1, terrain.p2);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
             //Check if our center is still in the same terrain
-            else if(!LAPAL::position2DLinePoint(terrain.p2, terrain.p3, ourMData.position)){
+            else if(!LAPAL::position2DLinePoint(terrain.p1, terrain.p2, ourMData.position)){
                     //If not, change to next terrain
                     ourMove->setTerrain(ourTerr->getNext()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getNext(); //Set new terrain component
@@ -250,14 +250,14 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         }
 
         //Check if we are out of right bounds
-        if(!LAPAL::position2DLinePoint(terrain.p3, terrain.p4, nextPosition)){
+        if(!LAPAL::position2DLinePoint(terrain.p2, terrain.p3, nextPosition)){
             if( ourTerr->getRight() == nullptr ) {   //If there isn't next plane, collision
-                calculateLineCollision(move, terrain.p3, terrain.p4);
+                calculateLineCollision(move, terrain.p2, terrain.p3);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
             //Check if our center is still in the same terrain
-            else if(!LAPAL::position2DLinePoint(terrain.p3, terrain.p4, ourMData.position)){
+            else if(!LAPAL::position2DLinePoint(terrain.p2, terrain.p3, ourMData.position)){
                     //If not, change to next terrain
                     ourMove->setTerrain(ourTerr->getRight()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getRight(); //Set new terrain component
@@ -265,14 +265,14 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         }
         
         //Check if we are out of back bounds
-        if(!LAPAL::position2DLinePoint(terrain.p4, terrain.p1, nextPosition)){
+        if(!LAPAL::position2DLinePoint(terrain.p3, terrain.p4, nextPosition)){
             if( ourTerr->getPrev() == nullptr ) {   //If there isn't next plane, collision
-                calculateLineCollision(move, terrain.p4, terrain.p1);
+                calculateLineCollision(move, terrain.p3, terrain.p4);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
             //Check if our center is still in the same terrain
-            else if(!LAPAL::position2DLinePoint(terrain.p4, terrain.p1, ourMData.position)){
+            else if(!LAPAL::position2DLinePoint(terrain.p3, terrain.p4, ourMData.position)){
                     //If not, change to next terrain
                     ourMove->setTerrain(ourTerr->getPrev()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getPrev(); //Set new terrain component
@@ -280,14 +280,14 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         }
 
         //Check if we are out of left bounds
-        if(!LAPAL::position2DLinePoint(terrain.p1, terrain.p2, nextPosition)){
+        if(!LAPAL::position2DLinePoint(terrain.p4, terrain.p1, nextPosition)){
            if( ourTerr->getLeft() == nullptr ) {   //If there isn't next plane, collision
-                calculateLineCollision(move, terrain.p1, terrain.p2);
+                calculateLineCollision(move, terrain.p4, terrain.p1);
                 checkCollisionShellTerrain(move.get()->getGameObject());
                 return;
             }
             //Check if our center is still in the same terrain
-            else if(!LAPAL::position2DLinePoint(terrain.p1, terrain.p2, ourMData.position)){
+            else if(!LAPAL::position2DLinePoint(terrain.p4, terrain.p1, ourMData.position)){
                     //If not, change to next terrain
                     ourMove->setTerrain(ourTerr->getLeft()->getTerrain()); //Set new terrain
                     movingChar.terrainComponent = ourTerr->getLeft(); //Set new terrain component

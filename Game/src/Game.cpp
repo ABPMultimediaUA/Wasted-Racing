@@ -573,11 +573,14 @@ void addObjects(){
     //===============================================================
     loadMap();
 
+    auto terrainCMP = ObjectManager::getInstance().getObject((uint16_t) 1108).get()->getComponent<TerrainComponent>();
+    auto terrCMP = terrainCMP.get()->getTerrain();
+
     id = 50;
     transform.position = glm::vec3(-100,0,0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrain, terrainCP1);
+    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrCMP, terrainCMP);
 
     //===============================================================
     // ADD AI 
@@ -587,7 +590,7 @@ void addObjects(){
     transform.position = glm::vec3(-100,0,-10);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);
+    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrCMP, terrainCMP);
 
     /*id = 56;
     transform.position = glm::vec3(-125,0,5);
@@ -665,7 +668,7 @@ void loadMap() {
     // Find our root node
 	root_node = doc.first_node("object");
 
-    // Iterate over the gameObjects
+    // Iterate over the gameObjects, reading them
     for (xml_node<> * object = root_node; object; object = object->next_sibling()) {
 
         uint16_t id;
@@ -685,16 +688,100 @@ void loadMap() {
 
         //Create new OBJECT
         auto obj = ObjectManager::getInstance().createObject(id, transform);
-/*
-<object id="1000" pos="27.543671,0.800003,-300.813843"  rot="0,0,0"  sca="0,0,0" >
-    <component name="terrain" l0="-1" l1="1001:3" l2="-1" l3="1107:1">
-        <bbox p1="27.543671,0.800003,-300.813843" p2="43.343658,0.8,-300.672394" p3="47.849762,0.8,-364.51358" p4="31.670502,0.799997,-364.680664" friction="0.2" />
-    </component>
-</object>
-*/
-        //std::cout << id  << " " << transform.position.x << " " << transform.position.y << " " << transform.position.z << std::endl;
+
+
+        //Parse components
+        xml_node<> * root_component = object->first_node("component");
+
+        for (xml_node<> * component = root_component; component; component = component->next_sibling()){
+
+            //Parse TERRAIN component
+            if(strcmp(component->first_attribute("name")->value(),"terrain") == 0){
+
+                xml_node<>* bbox = component->first_node("bbox");
+
+                LAPAL::plane3f terrain;
+                //Read P1 from XML
+                auto strVector = split(bbox->first_attribute("p1")->value(), ',');
+                terrain.p1 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read P2 from XML
+                strVector = split(bbox->first_attribute("p2")->value(), ',');
+                terrain.p2 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read P3 from XML
+                strVector = split(bbox->first_attribute("p3")->value(), ',');
+                terrain.p3 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read P4 from XML
+                strVector = split(bbox->first_attribute("p4")->value(), ',');
+                terrain.p4 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read FRICTION from XML
+                terrain.fric = std::stof(bbox->first_attribute("friction")->value());
+                //Calculate terrain angles in X and Z
+                LAPAL::calculateRotationsXZ(terrain);
+
+                //Create TERRAIN component
+                PhysicsManager::getInstance().createTerrainComponent(*obj.get(), terrain);
+
+            }
+
+        }
 	}
 
+    //Update every thing that has been created
+    EventManager::getInstance().update();
+
+    //Loop over terrain components, linking them
+    for (xml_node<> * object = root_node; object; object = object->next_sibling()) {
+
+        //Get current object ID
+        uint16_t id = (uint16_t) std::stoi(object->first_attribute("id")->value());
+
+        //Parse components
+        xml_node<> * root_component = object->first_node("component");
+
+        for (xml_node<> * component = root_component; component; component = component->next_sibling()){
+
+            //Parse TERRAIN components
+            if(strcmp(component->first_attribute("name")->value(),"terrain") == 0){
+
+                //Get our component
+                std::shared_ptr<TerrainComponent> cmp = ObjectManager::getInstance().getObject(id).get()->getComponent<TerrainComponent>();
+
+                //If not null, connect our component with next object
+                uint16_t connectID = (uint16_t) std::stoi(split(component->first_attribute("l0")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setNext(nullptr);
+                else 
+                    cmp.get()->setNext(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+                //If not null, connect our component with right object
+                connectID = (uint16_t) std::stoi(split(component->first_attribute("l1")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setRight(nullptr);
+                else 
+                    cmp.get()->setRight(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+                //If not null, connect our component with prev object
+                connectID = (uint16_t) std::stoi(split(component->first_attribute("l2")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setPrev(nullptr);
+                else 
+                    cmp.get()->setPrev(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+                //If not null, connect our component with left object
+                connectID = (uint16_t) std::stoi(split(component->first_attribute("l3")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setLeft(nullptr);
+                else 
+                    cmp.get()->setLeft(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+            }
+        }
+    }
+    //Update every thing that has been created
     EventManager::getInstance().update();
 
 }
