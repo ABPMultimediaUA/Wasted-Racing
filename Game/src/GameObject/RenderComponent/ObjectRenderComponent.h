@@ -12,7 +12,8 @@ public:
 		Mesh,
 		Plane, 
 		Banana,
-		Shell
+		Shell,
+		Road
 	};
 
     //Constructor

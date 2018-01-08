@@ -2,8 +2,14 @@
 
 #include <memory>
 #include <iostream>
+#include <rapidxml/rapidxml.hpp>
+#include <string>
+#include <vector>
+#include <fstream>
 
 void addObjects();
+void loadMap();
+std::vector<std::string> split(const std::string& s, const char& c);
 
 //====================================================
 //  GAME INITIALIZATION
@@ -335,6 +341,13 @@ void addObjects(){
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob36 = ObjectManager::getInstance().createObject(id, transform);
 
+    //Circuit
+    id = 37;
+    transform.position = glm::vec3(0, -3, 0);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob37 = ObjectManager::getInstance().createObject(id, transform);
+
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
@@ -351,11 +364,11 @@ void addObjects(){
     //===============================================================
     // CREATE RENDER COMPONENTS
     //===============================================================
+    //Planes
+    /*
     std::shared_ptr<IComponent> cp1 = RenderManager::getInstance().createObjectRenderComponent(*ob1.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp6 = RenderManager::getInstance().createObjectRenderComponent(*ob7.get(), ObjectRenderComponent::Shape::Cube);
-
-    std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob9.get(), ObjectRenderComponent::Shape::Plane);
 
     std::shared_ptr<IComponent> cp12 = RenderManager::getInstance().createObjectRenderComponent(*ob15.get(), ObjectRenderComponent::Shape::Cube);
 
@@ -366,6 +379,13 @@ void addObjects(){
     std::shared_ptr<IComponent> cp15 = RenderManager::getInstance().createObjectRenderComponent(*ob18.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp16 = RenderManager::getInstance().createObjectRenderComponent(*ob19.get(), ObjectRenderComponent::Shape::Cube);
+    */
+
+    //Ramp
+    std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob9.get(), ObjectRenderComponent::Shape::Plane);
+
+    //Road
+    std::shared_ptr<IComponent> cp17 = RenderManager::getInstance().createObjectRenderComponent(*ob37.get(), ObjectRenderComponent::Shape::Road);
 
     //Obstacles
     std::shared_ptr<IComponent> cp200 = RenderManager::getInstance().createObjectRenderComponent(*ob200.get(), ObjectRenderComponent::Shape::Sphere);
@@ -551,9 +571,10 @@ void addObjects(){
     //===============================================================
     // ADD PLAYER 
     //===============================================================
+    loadMap();
 
     id = 50;
-    transform.position = glm::vec3(-125,0,40);
+    transform.position = glm::vec3(-100,0,0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrain, terrainCP1);
@@ -563,7 +584,7 @@ void addObjects(){
     //===============================================================
 
     id = 55;
-    transform.position = glm::vec3(-125,0,-30);
+    transform.position = glm::vec3(-100,0,-10);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);
@@ -610,4 +631,70 @@ void addObjects(){
     RenderManager::getInstance().splitQuadTree();
     //RenderManager::getInstance().getComponentTree().debugStructure(1);
     
+}
+
+std::vector<std::string> split(const std::string& s, const char& c) {
+	std::string buff{""};
+	std::vector<std::string> v;
+	
+	for(auto n:s)
+	{
+		if(n != c) buff+=n; else
+		if(n == c && buff != "") { v.push_back(buff); buff = ""; }
+	}
+	if(buff != "") v.push_back(buff);
+	
+	return v;
+}
+
+void loadMap() {
+
+    using namespace rapidxml;
+
+    xml_document<> doc;
+    xml_node<> * root_node;
+
+    //Read the file and put it into a char array
+    std::ifstream theFile("media/xml/circuit.xml");
+	std::string buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
+	buffer.push_back('\0');
+
+	// Parse the buffer using the xml file parsing library into doc 
+	doc.parse<0>(&buffer[0]);
+
+    // Find our root node
+	root_node = doc.first_node("object");
+
+    // Iterate over the gameObjects
+    for (xml_node<> * object = root_node; object; object = object->next_sibling()) {
+
+        uint16_t id;
+        GameObject::TransformationData transform;
+
+        //Read ID from XML
+        id = (uint16_t) std::stoi(object->first_attribute("id")->value());
+        //Read POSITION from XML
+        auto strVector = split(object->first_attribute("pos")->value(), ',');
+        transform.position = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+        //Read ROTATION from XML
+        strVector = split(object->first_attribute("rot")->value(), ',');
+        transform.rotation = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+        //Read SCALE from XML
+        strVector = split(object->first_attribute("rot")->value(), ',');
+        transform.scale = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+
+        //Create new OBJECT
+        auto obj = ObjectManager::getInstance().createObject(id, transform);
+/*
+<object id="1000" pos="27.543671,0.800003,-300.813843"  rot="0,0,0"  sca="0,0,0" >
+    <component name="terrain" l0="-1" l1="1001:3" l2="-1" l3="1107:1">
+        <bbox p1="27.543671,0.800003,-300.813843" p2="43.343658,0.8,-300.672394" p3="47.849762,0.8,-364.51358" p4="31.670502,0.799997,-364.680664" friction="0.2" />
+    </component>
+</object>
+*/
+        //std::cout << id  << " " << transform.position.x << " " << transform.position.y << " " << transform.position.z << std::endl;
+	}
+
+    EventManager::getInstance().update();
+
 }
