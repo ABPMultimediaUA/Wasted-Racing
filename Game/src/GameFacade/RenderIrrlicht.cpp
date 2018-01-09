@@ -168,6 +168,8 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
             case ObjectRenderComponent::Shape::Road: {
                 auto plane = sceneManager->getMesh("media/mesh/circuit.3ds");
                 node = sceneManager->addMeshSceneNode(plane);
+                auto var = videoDriver->getTexture("media/img/road.jpg");
+                node->setMaterialTexture(0, var);
             }
             break;
             default:

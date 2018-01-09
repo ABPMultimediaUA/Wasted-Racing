@@ -573,11 +573,11 @@ void addObjects(){
     //===============================================================
     loadMap();
 
-    auto terrainCMP = ObjectManager::getInstance().getObject((uint16_t) 1108).get()->getComponent<TerrainComponent>();
+    auto terrainCMP = ObjectManager::getInstance().getObject((uint16_t) 1010).get()->getComponent<TerrainComponent>();
     auto terrCMP = terrainCMP.get()->getTerrain();
 
     id = 50;
-    transform.position = glm::vec3(-100,0,0);
+    transform.position = glm::vec3(-20,0,0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrCMP, terrainCMP);
@@ -587,7 +587,7 @@ void addObjects(){
     //===============================================================
 
     id = 55;
-    transform.position = glm::vec3(-100,0,-10);
+    transform.position = glm::vec3(0,0,-10);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrCMP, terrainCMP);
