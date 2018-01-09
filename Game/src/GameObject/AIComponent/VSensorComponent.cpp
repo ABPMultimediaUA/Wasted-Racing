@@ -9,7 +9,7 @@ ISensorComponent(newGameObject)
     angleVision=55.0 * 3.141592653589f / 180.f;
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
-    maxDistance = 200.f;
+    maxDistance = 100.f;
 }       
 
 VSensorComponent::VSensorComponent(GameObject& newGameObject, float angV, float angI, float md) :
@@ -69,15 +69,15 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
                     pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 0); //generate VObject with the data
                     seenObjects.push_back(pvo);                                                     //Add to seen objects
                 }
-                else if(objects[i].getComponent<RampComponent>() == nullptr)
+                else if(objects[i].getComponent<ItemBoxComponent>() != nullptr)
                 {
-                    if(distanceBox == -1 || distance < distanceBox)
+                    if((distanceBox == -1 || distance < distanceBox) && objects[i].getComponent<ItemBoxComponent>()->getActive() == 1)
                     {
                         distanceBox = distance;
                         box = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 1); //generate VObject with the data
                     } 
                 }
-                else if(objects[i].getComponent<ItemBoxComponent>() == nullptr)
+                else if(objects[i].getComponent<RampComponent>() != nullptr)
                 {
                     if(distanceRamp == -1 || distance < distanceRamp)
                     {

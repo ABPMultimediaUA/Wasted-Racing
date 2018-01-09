@@ -2,6 +2,7 @@
 
 #include "../IComponent.h" 
 #include "../GameObject.h"
+#include "../ScoreComponent.h"
 
 class ItemBoxComponent : public IComponent{
 
@@ -22,6 +23,9 @@ class ItemBoxComponent : public IComponent{
         //Update
         virtual void update(float dTime);
 
+
+        int getActive()             {       return active;      }
+
     
     //==========================================
     // BOX RELATED FUNCTIONS
@@ -30,7 +34,7 @@ class ItemBoxComponent : public IComponent{
     void asignItem(GameObject& obj);
 
     private:
-        
+        int active = 1;
         float boxTime;
         float actTime;
 

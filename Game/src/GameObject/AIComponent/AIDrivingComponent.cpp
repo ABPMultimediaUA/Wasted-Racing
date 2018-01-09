@@ -60,7 +60,7 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 		float box_left   = 0.f, box_center = 0.f, box_right = 0.f;
 		float rmp_left   = 0.f, rmp_center = 0.f, rmp_right = 0.f;
 		float go_left   = 0.f, go_right = 0.f;
-		float go_center = 0.f;
+		//float go_center = 0.f;
 		int box = 0, ramp = 0, obs_count = 0;
 
 		float nearA, nearB;
@@ -81,9 +81,9 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 
 				atan_obs += (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
 				//collisions
-				obs_left	+= inferL(atan_obs		,0.25f  ,0.5f 	,0   	);
+				obs_left	+= inferL(atan_obs		,0.25f  ,1.25f 	,0  	);
 				obs_center 	+= inferT(atan_obs		,0.23f	,0.25f 	,0.27f	);
-				obs_right	+= inferL(atan_obs		,0.f	,0.25f  ,1   	);
+				obs_right	+= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
 
 				obs_count++;
 

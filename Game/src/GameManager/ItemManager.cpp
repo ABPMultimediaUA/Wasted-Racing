@@ -89,7 +89,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
     int random = itemHolder->getItemType();
-    
+
     if(random == IItemComponent::ItemType::redShell)
     {
         itemHolder->setItemType(-1);
