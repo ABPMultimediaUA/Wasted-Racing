@@ -716,7 +716,7 @@ void loadMap() {
                 //Read FRICTION from XML
                 terrain.fric = std::stof(bbox->first_attribute("friction")->value());
                 //Calculate terrain angles in X and Z
-                LAPAL::calculateRotationsXZ(terrain);
+                //LAPAL::calculateRotationsXZ(terrain);
 
                 //Create TERRAIN component
                 PhysicsManager::getInstance().createTerrainComponent(*obj.get(), terrain);
