@@ -30,7 +30,7 @@ void SensorManager::update() {
     //Fill list of world objects
     auto collisionList =  PhysicsManager::getInstance().getCollisionComponentList();
     for(unsigned int i = 0; i < collisionList.size(); ++i){
-        if(collisionList[i] != nullptr && collisionList[i].get()->getGameObject().getComponent<ItemBoxComponent>() == nullptr && collisionList[i].get()->getGameObject().getComponent<IItemComponent>() == nullptr && collisionList[i].get()->getGameObject().getComponent<RampComponent>() == nullptr)
+        if(collisionList[i] != nullptr)
         {
             worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
         }   

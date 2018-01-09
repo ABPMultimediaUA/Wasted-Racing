@@ -71,9 +71,10 @@ void AIManager::update() {
                 float a = 0.f,b = 0.f;
                 vSensorComponent->calculateAB(objective, a, b);
 
-                //std::cout<<"Objetos: "<<seenObjects.size()<<"\n";
+                auto myPos = aiDrivingComponent->getGameObject();
 
-                float turnValue = aiDrivingComponent->girar(seenObjects, mapCollisions, objective, a, b);
+                float turnValue = aiDrivingComponent->girar(myPos, seenObjects, mapCollisions, objective, a, b);
+                float speedValue = aiDrivingComponent->acelerar_frenar(myPos, seenObjects, turnValue, moveComponent->getMovemententData().vel, a, b); 
                 //----------------------------------
 
                 //Send signal of movement
@@ -82,7 +83,7 @@ void AIManager::update() {
                 moveComponent->changeSpin(turnValue );
 
                 moveComponent->isMoving(true);
-                moveComponent->changeAcc(1.f);
+                moveComponent->changeAcc(speedValue);
             }
         }
         changeAI = true;

@@ -30,8 +30,14 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
     //initial variables
     size_t i;                                                                   //Counter
     VObject::Pointer pvo;                                                       //VPointer included in the end result
+    VObject::Pointer ramp; 
+    VObject::Pointer box; 
+    float distanceBox = -1, distanceRamp = -1;
     float a = 0.f, b = 0.f;                                                         //initial a and b (left and right sensor, respectively)
-
+    /*for(int j = 0; j < seenObjects.size(); j++)
+    {
+        std::cout<<"Vistos: "<<seenObjects[i]->getType()<<"\n";
+    }*/
     //Clear seen objects
     seenObjects.clear();
 
@@ -44,7 +50,12 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
 						(objects[i].getTransformData().position.y - myPos.y) * (objects[i].getTransformData().position.y - myPos.y) +
 						(objects[i].getTransformData().position.z - myPos.z) * (objects[i].getTransformData().position.z - myPos.z);
         
-        //std::cout<<"Distancce: "<<distance<<"\n";
+        float rad = objects[i].getComponent<CollisionComponent>()->getRadius();
+
+        if(rad != -1.f)
+        {
+            distance -= rad;
+        }
 
         if(distance < maxDistance*maxDistance || maxDistance == 0)
         {
@@ -53,14 +64,41 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
             //if both are inside the cone contained by A and B
             if(a > 0 && b > 0)  
             {
-                pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, 1.f, 1); //generate VObject with the data
-                seenObjects.push_back(pvo);                                                     //Add to seen objects
+                if(objects[i].getComponent<ItemBoxComponent>() == nullptr && objects[i].getComponent<RampComponent>() == nullptr)
+                {
+                    pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 0); //generate VObject with the data
+                    seenObjects.push_back(pvo);                                                     //Add to seen objects
+                }
+                else if(objects[i].getComponent<RampComponent>() == nullptr)
+                {
+                    if(distanceBox == -1 || distance < distanceBox)
+                    {
+                        distanceBox = distance;
+                        box = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 1); //generate VObject with the data
+                    } 
+                }
+                else if(objects[i].getComponent<ItemBoxComponent>() == nullptr)
+                {
+                    if(distanceRamp == -1 || distance < distanceRamp)
+                    {
+                        distanceRamp = distance;
+                        ramp = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 2); //generate VObject with the data
+                    } 
+                }
             }
         }
 
         //clean A and B for the next object
         a = 0;
         b = 0;
+    }
+    if(box != nullptr)
+    {
+        seenObjects.push_back(box);                                     //Add box to seen objects
+    }
+    if(ramp != nullptr)
+    {
+        seenObjects.push_back(ramp);                                    //Add ramp to seen objects
     }
 }
 
