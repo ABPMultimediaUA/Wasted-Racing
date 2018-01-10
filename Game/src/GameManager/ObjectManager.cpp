@@ -184,8 +184,8 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.spi = false;
     mData.angle = 0.0f;
     mData.spin = 0;
-    mData.spin_inc = 0.01;
-    mData.max_spin = 0.1;
+    mData.spin_inc = 0.001;
+    mData.max_spin = 0.01;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
