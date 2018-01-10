@@ -51,7 +51,7 @@ public:
 
 private:
 
-    float 			radius;
+    float 			radius = -1.f;
 	LAPAL::plane3f 	rectangle;
 	Shape 			shape;
 	bool 			kinetic;

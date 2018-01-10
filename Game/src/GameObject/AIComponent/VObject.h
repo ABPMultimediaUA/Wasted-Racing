@@ -2,9 +2,22 @@
 
 #include <glm/ext.hpp>
 #include <memory>
+#include <iostream>
+#include "../GameObject.h"
+#include "../IComponent.h"
 
 class VObject{
+
+    enum ItemType{
+        
+        Collide         = 0,
+        Box             = 1,      
+        Ramp            = 2
+
+    };
+
     private:
+
         glm::vec3 position;
         float a, b, radius;
         int type;
@@ -34,4 +47,7 @@ class VObject{
         void setB(float y)              {   b = y;          };
         void setRadius(float r)         {   radius = r;     };
         void setType(int t)             {   type = t;       };
+
+        //Methods
+        void nearAB(float* a, float* b, GameObject& myPos);
 };

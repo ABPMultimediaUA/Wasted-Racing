@@ -197,16 +197,12 @@ void addObjects(){
     transform.scale    = glm::vec3(10,10,100);
     auto ob9 = ObjectManager::getInstance().createObject(id, transform);
 
-
     //Obstacles:
     id = 200;
-    transform.position = glm::vec3(0,2,90);
+    transform.position = glm::vec3(50,0,-30);
     transform.rotation = glm::vec3(45,45,0);
     transform.scale    = glm::vec3(1,1,1);
     auto ob200 = ObjectManager::getInstance().createObject(id, transform);
-
-    
-
 
     //WAYPOINTS
 
@@ -392,7 +388,6 @@ void addObjects(){
 
 
 
-
     //WAYPOINT
     std::shared_ptr<IComponent> cp100 = RenderManager::getInstance().createObjectRenderComponent(*ob100.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp101 = RenderManager::getInstance().createObjectRenderComponent(*ob101.get(), ObjectRenderComponent::Shape::Sphere);
@@ -440,7 +435,6 @@ void addObjects(){
     //std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
     
     std::shared_ptr<IComponent> collisionCP200 = PhysicsManager::getInstance().createCollisionComponent(*ob200.get(), 5, true, CollisionComponent::Type::Default);
-
 
     std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, false, CollisionComponent::Type::ItemBox);
     std::shared_ptr<IComponent> collisionCP7 = PhysicsManager::getInstance().createCollisionComponent(*ob26.get(), 5, false, CollisionComponent::Type::ItemBox);
@@ -587,11 +581,11 @@ void addObjects(){
     // ADD AI 
     //===============================================================
 
-    /*id = 55;
+    id = 55;
     transform.position = glm::vec3(0,0,-10);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrCMP, terrainCMP);*/
+    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrCMP, terrainCMP);
 
     /*id = 56;
     transform.position = glm::vec3(-125,0,5);

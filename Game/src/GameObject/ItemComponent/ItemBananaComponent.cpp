@@ -4,7 +4,7 @@
 
 ItemBananaComponent::ItemBananaComponent(GameObject& newGameObject) : IItemComponent(newGameObject)
 {
-    speed = 10.f;
+    speed = 5.f;
     consTime = 0.1f;
     decTime = 1.f;
 }
