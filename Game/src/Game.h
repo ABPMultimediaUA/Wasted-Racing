@@ -45,7 +45,7 @@ private:
     void init();
 
     //Update
-    void update();
+    void update(float dTime);
 
     //Render draw
     void draw();

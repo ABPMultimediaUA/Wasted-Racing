@@ -1,6 +1,7 @@
 #include "PhysicsManager.h"
 #include "../GameObject/GameObject.h"
 #include "../GameEvent/EventManager.h"
+#include "../GameManager/RenderManager.h"
 #include <memory>
 #include <iostream>
 
@@ -47,6 +48,11 @@ void PhysicsManager::update(const float dTime) {
     //For every moving character we have, calculate collisions with the others
     for(unsigned int i=0; i<movingCharacterList.size(); ++i){
 
+        GameObject& gameObject = movingCharacterList[i].moveComponent.get()->getGameObject();
+
+        gameObject.setOldTransformData(gameObject.getNewTransformData());
+        gameObject.setTransformData(gameObject.getNewTransformData());
+
         //Get components in variables
         auto ourMove = movingCharacterList[i].moveComponent;
         auto ourTerr = movingCharacterList[i].terrainComponent;
@@ -66,6 +72,8 @@ void PhysicsManager::update(const float dTime) {
         // Check collisions with terrain limits and terrain change
         //==============================================================================
         calculateTerrainCollision(movingCharacterList[i], ourMove, ourTerr, ourColl, dTime);
+
+        gameObject.setNewTransformData(gameObject.getTransformData());
         
     }
 
@@ -77,6 +85,36 @@ void PhysicsManager::close() {
     movingCharacterList.clear();  
 }
 
+void PhysicsManager::interpolate(float accumulatedTime, const float maxTime) {
+
+    //For every moving character we have, interpolate its coordinates
+    for(unsigned int i=0; i<movingCharacterList.size(); ++i){
+
+        //Get components in variables
+        GameObject& gameObject = movingCharacterList[i].moveComponent.get()->getGameObject();
+
+        auto oldTrans = gameObject.getOldTransformData();
+        auto newTrans = gameObject.getNewTransformData();
+
+        GameObject::TransformationData fTrans;
+        fTrans.position = newTrans.position - oldTrans.position;
+        fTrans.rotation = newTrans.rotation - oldTrans.rotation;
+        fTrans.scale = newTrans.scale - oldTrans.scale;
+
+        GameObject::TransformationData currTrans; //Here we store current transformation
+
+        currTrans.position = oldTrans.position + (accumulatedTime * fTrans.position)/maxTime;
+        currTrans.rotation = oldTrans.rotation + (accumulatedTime * fTrans.rotation)/maxTime;
+        currTrans.scale = oldTrans.scale + (accumulatedTime * fTrans.scale)/maxTime;
+
+        gameObject.setTransformData(currTrans);
+
+        auto id = gameObject.getId();
+        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, currTrans);
+        
+    }
+
+}
 
 //==============================================================================
 // PRIVATE FUNCTIONS

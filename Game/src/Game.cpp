@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <chrono>
 
 void addObjects();
 void loadMap();
@@ -73,29 +74,30 @@ void Game::init() {
 //====================================================
 //  GAME UPDATE
 //====================================================
-void Game::update() {
+void Game::update(float dTime) {
 
     //Input manager has to be the first to be updated
     inputManager->update();
 
-    physicsManager->update(0.02);
+    physicsManager->update(dTime);
 
     aiManager->update();
 
     renderManager->update();
 
-    waypointManager->update(0.02);
+    waypointManager->update(dTime);
 
     sensorManager->update();
 
-    itemManager->update(1.0);
+    itemManager->update(dTime);
     
     scoreManager->update();
+
+    audioManager->update();
 
     //Event manager has to be the last to be updated
     eventManager->update();
 
-    audioManager->update();
 
 }
 
@@ -129,10 +131,31 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
+
+    auto lastTime = std::chrono::high_resolution_clock::now();
+    float accumulatedTime = 0;
+    const float maxTime = 0.01;
+
     while(Game::stay){
-        Game::update();
+
+        //Measure elapsed time
+        auto currTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = currTime - lastTime;
+        lastTime = currTime;
+
+        accumulatedTime += (float)elapsed.count();
+
+        //Update the game once every maxTime
+        if(accumulatedTime > maxTime){
+            Game::update(accumulatedTime);
+            Game::stay = objectManager->getGameRunning();
+            accumulatedTime = 0;
+        }
+
+        //Always interpolate and draw the game 
+        //physicsManager->interpolate(accumulatedTime, maxTime);
         Game::draw();
-        Game::stay = objectManager->getGameRunning();
+        
     }
     Game::close();
 }

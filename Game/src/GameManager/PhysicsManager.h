@@ -38,6 +38,9 @@ public:
     //Shutdown
     void close();
 
+    //Interpolate data function
+    void interpolate(float accumulatedTime, const float maxTime);
+
 
     //Static class getter
     static PhysicsManager& getInstance();
