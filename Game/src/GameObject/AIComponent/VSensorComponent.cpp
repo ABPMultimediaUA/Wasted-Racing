@@ -64,12 +64,14 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
             //if both are inside the cone contained by A and B
             if(a > 0 && b > 0)  
             {
-                if(objects[i].getComponent<ItemBoxComponent>() == nullptr && objects[i].getComponent<RampComponent>() == nullptr)
+                if(objects[i].getComponent<CollisionComponent>()->getType() != CollisionComponent::Type::ItemBox &&
+                 objects[i].getComponent<CollisionComponent>()->getType() != CollisionComponent::Type::Ramp &&
+                 objects[i].getComponent<CollisionComponent>()->getType() != CollisionComponent::Type::StartLine)
                 {
                     pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 0); //generate VObject with the data
                     seenObjects.push_back(pvo);                                                     //Add to seen objects
                 }
-                else if(objects[i].getComponent<ItemBoxComponent>() != nullptr)
+                else if(objects[i].getComponent<CollisionComponent>()->getType() == CollisionComponent::Type::ItemBox)
                 {
                     if((distanceBox == -1 || distance < distanceBox) && objects[i].getComponent<ItemBoxComponent>()->getActive() == 1)
                     {
@@ -77,7 +79,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
                         box = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 1); //generate VObject with the data
                     } 
                 }
-                else if(objects[i].getComponent<RampComponent>() != nullptr)
+                else if(objects[i].getComponent<CollisionComponent>()->getType() == CollisionComponent::Type::Ramp)
                 {
                     if(distanceRamp == -1 || distance < distanceRamp)
                     {

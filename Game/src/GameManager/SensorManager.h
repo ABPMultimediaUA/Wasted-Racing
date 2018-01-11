@@ -3,6 +3,7 @@
 #include "../GameObject/AIComponent/ISensorComponent.h"
 #include "../GameObject/AIComponent/VSensorComponent.h"
 #include "../GameObject/AIComponent/MSensorComponent.h"
+#include "../GameObject/StartLineComponent.h"
 #include "ObjectManager.h"
 #include "PhysicsManager.h"
 #include <vector>

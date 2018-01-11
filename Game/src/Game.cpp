@@ -138,7 +138,7 @@ void Game::Run() {
 
     auto lastTime = std::chrono::high_resolution_clock::now();
     float accumulatedTime = 0;
-    const float maxTime = 1.0f/30.0f;
+    const float maxTime = 1.0f/60.0f;
 
     while(Game::stay){
 
@@ -400,25 +400,25 @@ void addObjects(){
 
     //ItemBox:
     id = 25;
-    transform.position = glm::vec3(125, 1, 17);
+    transform.position = glm::vec3(175, 1, 17);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob25 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 26;
-    transform.position = glm::vec3(125, 1, -3);
+    transform.position = glm::vec3(175, 1, -3);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob26 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 27;
-    transform.position = glm::vec3(125, 1, -23);
+    transform.position = glm::vec3(175, 1, -23);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob27 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 28;
-    transform.position = glm::vec3(125, 1, -43);
+    transform.position = glm::vec3(175, 1, -43);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob28 = ObjectManager::getInstance().createObject(id, transform);
@@ -735,7 +735,7 @@ void addObjects(){
     //===============================================================
     // ADD RAMP COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 250.0f,2.f,2.0f);
+    //std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 250.0f,2.f,2.0f);
 
 
     //===============================================================
@@ -747,7 +747,7 @@ void addObjects(){
     auto terrCMP = terrainCMP.get()->getTerrain();
 
     id = 50;
-    transform.position = glm::vec3(-20,0,0);
+    transform.position = glm::vec3(-20,0, 10);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrCMP, terrainCMP);
@@ -757,7 +757,7 @@ void addObjects(){
     //===============================================================
 
     id = 55;
-    transform.position = glm::vec3(0,0,-10);
+    transform.position = glm::vec3(-20,0,-30);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrCMP, terrainCMP);
