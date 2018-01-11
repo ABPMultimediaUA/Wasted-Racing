@@ -7,6 +7,10 @@
 #include <vector>
 #include <fstream>
 #include <chrono>
+#include <stdio.h>
+ 
+#define SERVER_PORT 12345
+#define MAX_CONNS 2000
 
 void addObjects();
 void loadMap();
