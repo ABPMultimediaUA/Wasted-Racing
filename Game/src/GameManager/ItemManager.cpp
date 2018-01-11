@@ -64,7 +64,7 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
 
 IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 
-    IComponent::Pointer component = std::make_shared<ItemBoxComponent>(obj, 600);
+    IComponent::Pointer component = std::make_shared<ItemBoxComponent>(obj);
 
     obj.addComponent(component);
 

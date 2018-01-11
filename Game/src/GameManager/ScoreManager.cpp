@@ -42,6 +42,17 @@ IComponent::Pointer ScoreManager::createScoreComponent(GameObject& newGameObject
     return component;
 }
 
+IComponent::Pointer ScoreManager::createStartLineComponent(GameObject& newGameObject){
+
+    StartLineComponent::Pointer component = std::make_shared<StartLineComponent>(newGameObject);
+
+    newGameObject.addComponent(component);
+
+    startLines.push_back(component);
+
+    return component;
+}
+
 
 
 

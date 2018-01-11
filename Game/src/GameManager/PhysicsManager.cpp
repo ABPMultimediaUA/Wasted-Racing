@@ -15,6 +15,7 @@ void collideBanana(EventData eData);
 void collideBlueShell(EventData eData);
 void collideRedShell(EventData eData);
 void collideItemBox(EventData eData);
+void collideStartLine(EventData eData);
 void objectDeletedCollide(EventData eData);   
 void objectDeletedMove(EventData eData);
 void objectDeletedCharacter(EventData eData);
@@ -40,6 +41,7 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCollide});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedMove});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCharacter});
+    EventManager::getInstance().addListener(EventListener {EventType::StartLineComponent_Collision, collideStartLine});
 
 }
 
@@ -201,6 +203,15 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 
                     EventManager::getInstance().addEvent(Event {EventType::RedShellComponent_Collision, data});
+                }
+                else if(hisColl->getType() == CollisionComponent::Type::StartLine)
+                {
+
+                    EventData data;
+                    data.Component      = std::static_pointer_cast<IComponent>(move);
+                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                    EventManager::getInstance().addEvent(Event {EventType::StartLineComponent_Collision, data});
                 }
             }
         }
@@ -507,7 +518,6 @@ void collideBlueShell(EventData eData) {
 void collideRedShell(EventData eData) {
     auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
     auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
-
     auto shell = coll->getGameObject().getComponent<ItemRedShellComponent>();
 
     if(shell != nullptr) {
@@ -535,6 +545,24 @@ void collideItemBox(EventData eData){
            itemBox->asignItem(obj);
            itemBox->deactivateBox();
        }
+    }
+}
+
+void collideStartLine(EventData eData) {
+
+    auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
+    auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
+
+    auto line = move->getGameObject().getComponent<StartLineComponent>();
+
+    if(line != nullptr) {
+        if(line->getActive() == true)
+        {
+            auto score = move->getGameObject().getComponent<ScoreComponent>();
+            int vuelta = score->getLap();
+            score->setLap(vuelta + 1);
+            line->setActive(false);
+        }
     }
 }
 
