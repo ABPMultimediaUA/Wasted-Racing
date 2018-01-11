@@ -38,7 +38,7 @@ public:
     static SensorManager& getInstance();
 
     //Component creators
-    IComponent::Pointer createVSensorComponent(GameObject& newGameObject, float angV, float angI);
+    IComponent::Pointer createVSensorComponent(GameObject& newGameObject, float angV, float angI, float md);
     IComponent::Pointer createMSensorComponent(GameObject& newGameObject, float angV, float angI);
 
 private:

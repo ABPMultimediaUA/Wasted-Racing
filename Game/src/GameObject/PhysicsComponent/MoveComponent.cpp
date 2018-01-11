@@ -24,6 +24,7 @@ void MoveComponent::update(float dTime) {
     LAPAL::updateSpin(mData, dTime);                    //Update spin (turning)
     LAPAL::updateVelocity(mData, terrain);              //Update velocity (vector)
     LAPAL::updateEllipticMovement(mData, dTime);        //Update elliptic movement (if object is drifting)
+    LAPAL::updateCollisionMovement(mData, dTime);       //Update deviation in velocity after a collision
 
     //Correct vertical movement
     updateJump(mData, position, terrain);
@@ -45,8 +46,8 @@ void MoveComponent::update(float dTime) {
     //Set final transform of position
     getGameObject().setTransformData(trans);
 
-    auto id = getGameObject().getId();
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
+    //auto id = getGameObject().getId();
+    //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
     
     ///*===========================================================================================
     // DEBUG
@@ -133,22 +134,18 @@ void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, floa
     constantAlteredTime     = constTime;
     decrementalAlteredTime  = decTime;
     maxDecrementalAT        = decTime;
+    mData.boost             = true;
 
 }
 
 //Update and interpolate temporal speed change
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    if(mData.acc>=0) {
+    if(mData.boost) {
         if(constantAlteredTime > 0) {
             //While time is constant, velocity is constant and maximum
-            if(mData.vel < 0) {
-                constantAlteredTime = -1;
-            }
-            else {
-                mData.vel = mData.max_vel;
-                constantAlteredTime -= dTime;
-            }
+            mData.vel = mData.max_vel;
+            constantAlteredTime -= dTime;
         }
         else if (decrementalAlteredTime > 0) {
             //Calculate velocity decrease depending on dTime
@@ -159,8 +156,11 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
             decrementalAlteredTime -= dTime;
 
-            if(decrementalAlteredTime < 0)
+            if(decrementalAlteredTime < 0) {
                 mData.max_vel = auxData.max_vel;
+                mData.boost   = false;
+            }
+                
         }
     }
     else {

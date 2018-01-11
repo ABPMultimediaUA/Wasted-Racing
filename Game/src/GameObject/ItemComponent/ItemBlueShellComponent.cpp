@@ -28,7 +28,7 @@ void ItemBlueShellComponent::update(float dTime)
     auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
     auto aiDrivingComponent = getGameObject().getComponent<AIDrivingComponent>().get();
 
-    auto pos =getGameObject().getTransformData().position;
+    auto pos = getGameObject().getTransformData().position;
 
     auto posWay = listNodes[lastVector].get()->getTransformData().position;
 
@@ -69,7 +69,7 @@ void ItemBlueShellComponent::update(float dTime)
     vSensorComponent->calculateAB(objective, a, b);
     std::vector<VObject::Pointer> seenObjects;
     //DECIDE 
-    float turnValue = aiDrivingComponent->girar(seenObjects, seenObjects, objective, a, b);
+    float turnValue = aiDrivingComponent->girar(getGameObject(), seenObjects, seenObjects, objective, a, b);
 
     moveComponent->changeSpin(turnValue);
 

@@ -2,8 +2,19 @@
 
 #include <memory>
 #include <iostream>
+#include <rapidxml/rapidxml.hpp>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <chrono>
+#include <stdio.h>
+ 
+#define SERVER_PORT 12345
+#define MAX_CONNS 2000
 
 void addObjects();
+void loadMap();
+std::vector<std::string> split(const std::string& s, const char& c);
 
 //====================================================
 //  GAME INITIALIZATION
@@ -67,29 +78,30 @@ void Game::init() {
 //====================================================
 //  GAME UPDATE
 //====================================================
-void Game::update() {
+void Game::update(float dTime) {
 
     //Input manager has to be the first to be updated
     inputManager->update();
 
-    physicsManager->update(0.02);
+    physicsManager->update(dTime);
 
     aiManager->update();
 
     renderManager->update();
 
-    waypointManager->update(0.02);
+    waypointManager->update(dTime);
 
     sensorManager->update();
 
-    itemManager->update(1.0);
+    itemManager->update(dTime);
     
     scoreManager->update();
+
+    audioManager->update();
 
     //Event manager has to be the last to be updated
     eventManager->update();
 
-    audioManager->update();
 
 }
 
@@ -123,10 +135,33 @@ void Game::close() {
 void Game::Run() {
 
     Game::init();
+
+    auto lastTime = std::chrono::high_resolution_clock::now();
+    float accumulatedTime = 0;
+    const float maxTime = 1.0f/30.0f;
+
     while(Game::stay){
-        Game::update();
+
+        //Measure elapsed time
+        auto currTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = currTime - lastTime;
+        lastTime = currTime;
+
+        accumulatedTime += (float)elapsed.count();
+
+        //Update the game once every maxTime
+        if(accumulatedTime > maxTime){
+            Game::update(accumulatedTime);
+            Game::stay = objectManager->getGameRunning();
+            accumulatedTime = 0;
+        }
+
+        //Always interpolate and draw the game 
+        physicsManager->interpolate(accumulatedTime, maxTime);
+        renderManager->getRenderFacade()->updateCamera();
+
         Game::draw();
-        Game::stay = objectManager->getGameRunning();
+        
     }
     Game::close();
 }
@@ -191,69 +226,65 @@ void addObjects(){
     transform.scale    = glm::vec3(10,10,100);
     auto ob9 = ObjectManager::getInstance().createObject(id, transform);
 
-
     //Obstacles:
     id = 200;
-    transform.position = glm::vec3(0,2,90);
+    transform.position = glm::vec3(50,0,-30);
     transform.rotation = glm::vec3(45,45,0);
     transform.scale    = glm::vec3(1,1,1);
     auto ob200 = ObjectManager::getInstance().createObject(id, transform);
 
-    
-
-
     //WAYPOINTS
 
     id = 100;
-    transform.position = glm::vec3(750, 100, 0);
+    transform.position = glm::vec3(700, 48, -25);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob100 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 101;
-    transform.position = glm::vec3(875, 100, -100);
+    transform.position = glm::vec3(868, 66, 8);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob101 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 102;
-    transform.position = glm::vec3(875, 100, -400);
+    transform.position = glm::vec3(900, 76, 188);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob102 = ObjectManager::getInstance().createObject(id, transform);
     
     id = 103;
-    transform.position = glm::vec3(750, 100, -500);
+    transform.position = glm::vec3(831, 90, 380);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob103 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 104;
-    transform.position = glm::vec3(0, 80, -500);
+    transform.position = glm::vec3(907, 103, 503);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob104 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 105;
-    transform.position = glm::vec3(-125, 80, -400);
+    transform.position = glm::vec3(1093, 138, 675);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob105 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 106;
-    transform.position = glm::vec3(-125, 0, -100);
+    transform.position = glm::vec3(1112, 129, 848);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob106 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 107;
-    transform.position = glm::vec3(0, 0, 0);
+    transform.position = glm::vec3(1000, 72, 1011);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob107 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 108;
-    transform.position = glm::vec3(0, 0, 0);
+    transform.position = glm::vec3(845, 37, 1091);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob108 = ObjectManager::getInstance().createObject(id, transform);
@@ -335,27 +366,34 @@ void addObjects(){
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob36 = ObjectManager::getInstance().createObject(id, transform);
 
+    //Circuit
+    id = 37;
+    transform.position = glm::vec3(0, -3, 0);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob37 = ObjectManager::getInstance().createObject(id, transform);
+
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
-    std::shared_ptr<IComponent> wp0 = WaypointManager::getInstance().createWaypointComponent(ob108, 100, 0);
-    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(ob100, 100, 1);
-    std::shared_ptr<IComponent> wp2 = WaypointManager::getInstance().createWaypointComponent(ob101, 125, 2);
-    std::shared_ptr<IComponent> wp3 = WaypointManager::getInstance().createWaypointComponent(ob102, 125, 3);
-    std::shared_ptr<IComponent> wp4 = WaypointManager::getInstance().createWaypointComponent(ob103, 100, 4);
-    std::shared_ptr<IComponent> wp5 = WaypointManager::getInstance().createWaypointComponent(ob104, 100, 5);
-    std::shared_ptr<IComponent> wp6 = WaypointManager::getInstance().createWaypointComponent(ob105, 125, 6);
-    std::shared_ptr<IComponent> wp7 = WaypointManager::getInstance().createWaypointComponent(ob106, 125, 7);
-    std::shared_ptr<IComponent> wp8 = WaypointManager::getInstance().createWaypointComponent(ob107, 100, 8);
+    std::shared_ptr<IComponent> wp1 = WaypointManager::getInstance().createWaypointComponent(ob100, 60, 0);
+    std::shared_ptr<IComponent> wp2 = WaypointManager::getInstance().createWaypointComponent(ob101, 60, 1);
+    std::shared_ptr<IComponent> wp3 = WaypointManager::getInstance().createWaypointComponent(ob102, 60, 2);
+    std::shared_ptr<IComponent> wp4 = WaypointManager::getInstance().createWaypointComponent(ob103, 60, 3);
+    std::shared_ptr<IComponent> wp5 = WaypointManager::getInstance().createWaypointComponent(ob104, 60, 4);
+    std::shared_ptr<IComponent> wp6 = WaypointManager::getInstance().createWaypointComponent(ob105, 60, 5);
+    std::shared_ptr<IComponent> wp7 = WaypointManager::getInstance().createWaypointComponent(ob106, 60, 6);
+    std::shared_ptr<IComponent> wp8 = WaypointManager::getInstance().createWaypointComponent(ob107, 60, 7);
+    std::shared_ptr<IComponent> wp9 = WaypointManager::getInstance().createWaypointComponent(ob108, 60, 8);
 
     //===============================================================
     // CREATE RENDER COMPONENTS
     //===============================================================
+    //Planes
+    /*
     std::shared_ptr<IComponent> cp1 = RenderManager::getInstance().createObjectRenderComponent(*ob1.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp6 = RenderManager::getInstance().createObjectRenderComponent(*ob7.get(), ObjectRenderComponent::Shape::Cube);
-
-    std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob9.get(), ObjectRenderComponent::Shape::Plane);
 
     std::shared_ptr<IComponent> cp12 = RenderManager::getInstance().createObjectRenderComponent(*ob15.get(), ObjectRenderComponent::Shape::Cube);
 
@@ -366,15 +404,21 @@ void addObjects(){
     std::shared_ptr<IComponent> cp15 = RenderManager::getInstance().createObjectRenderComponent(*ob18.get(), ObjectRenderComponent::Shape::Cube);
 
     std::shared_ptr<IComponent> cp16 = RenderManager::getInstance().createObjectRenderComponent(*ob19.get(), ObjectRenderComponent::Shape::Cube);
+    */
+
+    //Ramp
+    std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob9.get(), ObjectRenderComponent::Shape::Plane);
+
+    //Road
+    std::shared_ptr<IComponent> cp17 = RenderManager::getInstance().createObjectRenderComponent(*ob37.get(), ObjectRenderComponent::Shape::Road);
 
     //Obstacles
     std::shared_ptr<IComponent> cp200 = RenderManager::getInstance().createObjectRenderComponent(*ob200.get(), ObjectRenderComponent::Shape::Sphere);
 
 
 
-
     //WAYPOINT
-    /*std::shared_ptr<IComponent> cp100 = RenderManager::getInstance().createObjectRenderComponent(*ob100.get(), ObjectRenderComponent::Shape::Sphere);
+    std::shared_ptr<IComponent> cp100 = RenderManager::getInstance().createObjectRenderComponent(*ob100.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp101 = RenderManager::getInstance().createObjectRenderComponent(*ob101.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp102 = RenderManager::getInstance().createObjectRenderComponent(*ob102.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp103 = RenderManager::getInstance().createObjectRenderComponent(*ob103.get(), ObjectRenderComponent::Shape::Sphere);
@@ -382,7 +426,8 @@ void addObjects(){
     std::shared_ptr<IComponent> cp105 = RenderManager::getInstance().createObjectRenderComponent(*ob105.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp106 = RenderManager::getInstance().createObjectRenderComponent(*ob106.get(), ObjectRenderComponent::Shape::Sphere);
     std::shared_ptr<IComponent> cp107 = RenderManager::getInstance().createObjectRenderComponent(*ob107.get(), ObjectRenderComponent::Shape::Sphere);
-    */
+    std::shared_ptr<IComponent> cp108 = RenderManager::getInstance().createObjectRenderComponent(*ob108.get(), ObjectRenderComponent::Shape::Sphere);
+
     //ITEM BOX
     std::shared_ptr<IComponent> cp25 = RenderManager::getInstance().createObjectRenderComponent(*ob25.get(), ObjectRenderComponent::Shape::Cube);
     std::shared_ptr<IComponent> cp26 = RenderManager::getInstance().createObjectRenderComponent(*ob26.get(), ObjectRenderComponent::Shape::Cube);
@@ -419,7 +464,6 @@ void addObjects(){
     //std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
     
     std::shared_ptr<IComponent> collisionCP200 = PhysicsManager::getInstance().createCollisionComponent(*ob200.get(), 5, true, CollisionComponent::Type::Default);
-
 
     std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, false, CollisionComponent::Type::ItemBox);
     std::shared_ptr<IComponent> collisionCP7 = PhysicsManager::getInstance().createCollisionComponent(*ob26.get(), 5, false, CollisionComponent::Type::ItemBox);
@@ -551,22 +595,26 @@ void addObjects(){
     //===============================================================
     // ADD PLAYER 
     //===============================================================
+    loadMap();
+
+    auto terrainCMP = ObjectManager::getInstance().getObject((uint16_t) 1010).get()->getComponent<TerrainComponent>();
+    auto terrCMP = terrainCMP.get()->getTerrain();
 
     id = 50;
-    transform.position = glm::vec3(-125,0,40);
+    transform.position = glm::vec3(-20,0,0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrain, terrainCP1);
+    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrCMP, terrainCMP);
 
     //===============================================================
     // ADD AI 
     //===============================================================
 
     id = 55;
-    transform.position = glm::vec3(-125,0,-30);
+    transform.position = glm::vec3(0,0,-10);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);
+    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrCMP, terrainCMP);
 
     /*id = 56;
     transform.position = glm::vec3(-125,0,5);
@@ -610,4 +658,154 @@ void addObjects(){
     RenderManager::getInstance().splitQuadTree();
     //RenderManager::getInstance().getComponentTree().debugStructure(1);
     
+}
+
+std::vector<std::string> split(const std::string& s, const char& c) {
+	std::string buff{""};
+	std::vector<std::string> v;
+	
+	for(auto n:s)
+	{
+		if(n != c) buff+=n; else
+		if(n == c && buff != "") { v.push_back(buff); buff = ""; }
+	}
+	if(buff != "") v.push_back(buff);
+	
+	return v;
+}
+
+void loadMap() {
+
+    using namespace rapidxml;
+
+    xml_document<> doc;
+    xml_node<> * root_node;
+
+    //Read the file and put it into a char array
+    std::ifstream theFile("media/xml/circuit.xml");
+	std::string buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
+	buffer.push_back('\0');
+
+	// Parse the buffer using the xml file parsing library into doc 
+	doc.parse<0>(&buffer[0]);
+
+    // Find our root node
+	root_node = doc.first_node("object");
+
+    // Iterate over the gameObjects, reading them
+    for (xml_node<> * object = root_node; object; object = object->next_sibling()) {
+
+        uint16_t id;
+        GameObject::TransformationData transform;
+
+        //Read ID from XML
+        id = (uint16_t) std::stoi(object->first_attribute("id")->value());
+        //Read POSITION from XML
+        auto strVector = split(object->first_attribute("pos")->value(), ',');
+        transform.position = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+        //Read ROTATION from XML
+        strVector = split(object->first_attribute("rot")->value(), ',');
+        transform.rotation = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+        //Read SCALE from XML
+        strVector = split(object->first_attribute("rot")->value(), ',');
+        transform.scale = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+
+        //Create new OBJECT
+        auto obj = ObjectManager::getInstance().createObject(id, transform);
+
+
+        //Parse components
+        xml_node<> * root_component = object->first_node("component");
+
+        for (xml_node<> * component = root_component; component; component = component->next_sibling()){
+
+            //Parse TERRAIN component
+            if(strcmp(component->first_attribute("name")->value(),"terrain") == 0){
+
+                xml_node<>* bbox = component->first_node("bbox");
+
+                LAPAL::plane3f terrain;
+                //Read P1 from XML
+                auto strVector = split(bbox->first_attribute("p1")->value(), ',');
+                terrain.p1 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read P2 from XML
+                strVector = split(bbox->first_attribute("p2")->value(), ',');
+                terrain.p2 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read P3 from XML
+                strVector = split(bbox->first_attribute("p3")->value(), ',');
+                terrain.p3 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read P4 from XML
+                strVector = split(bbox->first_attribute("p4")->value(), ',');
+                terrain.p4 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read FRICTION from XML
+                terrain.fric = std::stof(bbox->first_attribute("friction")->value());
+                //Calculate terrain angles in X and Z
+                //LAPAL::calculateRotationsXZ(terrain);
+
+                //Create TERRAIN component
+                PhysicsManager::getInstance().createTerrainComponent(*obj.get(), terrain);
+
+            }
+
+        }
+	}
+
+    //Update every thing that has been created
+    EventManager::getInstance().update();
+
+    //Loop over terrain components, linking them
+    for (xml_node<> * object = root_node; object; object = object->next_sibling()) {
+
+        //Get current object ID
+        uint16_t id = (uint16_t) std::stoi(object->first_attribute("id")->value());
+
+        //Parse components
+        xml_node<> * root_component = object->first_node("component");
+
+        for (xml_node<> * component = root_component; component; component = component->next_sibling()){
+
+            //Parse TERRAIN components
+            if(strcmp(component->first_attribute("name")->value(),"terrain") == 0){
+
+                //Get our component
+                std::shared_ptr<TerrainComponent> cmp = ObjectManager::getInstance().getObject(id).get()->getComponent<TerrainComponent>();
+
+                //If not null, connect our component with next object
+                uint16_t connectID = (uint16_t) std::stoi(split(component->first_attribute("l0")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setNext(nullptr);
+                else 
+                    cmp.get()->setNext(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+                //If not null, connect our component with right object
+                connectID = (uint16_t) std::stoi(split(component->first_attribute("l1")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setRight(nullptr);
+                else 
+                    cmp.get()->setRight(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+                //If not null, connect our component with prev object
+                connectID = (uint16_t) std::stoi(split(component->first_attribute("l2")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setPrev(nullptr);
+                else 
+                    cmp.get()->setPrev(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+                //If not null, connect our component with left object
+                connectID = (uint16_t) std::stoi(split(component->first_attribute("l3")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setLeft(nullptr);
+                else 
+                    cmp.get()->setLeft(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+            }
+        }
+    }
+    //Update every thing that has been created
+    EventManager::getInstance().update();
+
 }

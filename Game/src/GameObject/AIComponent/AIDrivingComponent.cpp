@@ -32,8 +32,8 @@ void AIDrivingComponent::checkList()
 //Decides where to turn and in which grade (with a percentage of 0 to 1)
 
 //---------------------------*/
-float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector<VObject::Pointer> walls, glm::vec3 waypoint, float a, float b)
-{	
+float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer> array, std::vector<VObject::Pointer> walls, glm::vec3 waypoint, float a, float b)
+{
 	//final turn decision
 	float decision = 0.0f;
 
@@ -48,40 +48,99 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 		atan_w += 2.f; 	//that's why we add this
 	}
 	//Limits: -0.75 - 0.25 right, 0.25 center, 0.25 to 1.25 left
-	float wp_left 	= inferL(atan_w		,0.25f  ,0.8f 	,0   	);
-	float wp_center = inferT(atan_w		,0.23f	,0.25f 	,0.27f	);
+	float wp_left 	= inferL(atan_w		,0.25f  ,0.75f 	,0   	);
+	float wp_center = inferT(atan_w		,0.20f	,0.25f 	,0.30f	);
 	float wp_right 	= inferL(atan_w		,-0.25f	,0.25f  ,1   	);
 
 	//If we have collisions to collide with
 	if(array.size()>0){
-		float atan_obs 	 = 0.0f;
+		float atan_obs 	 = 0.0f, atan_box = 0.0f;
+		//float atan_walls 	 = 0.0f;
 		float obs_left   = 0.f, obs_center = 0.f, obs_right = 0.f;
+		float box_left   = 0.f, box_center = 0.f, box_right = 0.f;
+		float rmp_left   = 0.f, rmp_center = 0.f, rmp_right = 0.f;
+		float go_left   = 0.f, go_right = 0.f;
+		//float go_center = 0.f;
+		int box = 0, ramp = 0, obs_count = 0;
+
+		float nearA, nearB;
 
 		//Accumulate the mean atan value of them all to pickpoint a medium point of no collisions
 		for(unsigned i = 0; i<array.size(); ++i){
-			atan_obs += (glm::atan(array[i].get()->getA(),array[i].get()->getB()) / 3.14159265358979323846264338327f );
-			//collisions
-			if(atan_obs <=-0.75){ 	//Same process as the waypoint
-				atan_obs += 2.f;
+			if(array[i]->getType() == 0)
+			{
+				if(array[i]->getRadius() != -1)
+				{
+					array[i]->nearAB(&nearA, &nearB, myPos);
+				}
+				else
+				{
+					nearA = array[i].get()->getA();
+					nearB = array[i].get()->getB();
+				}
+
+				atan_obs += (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
+				//collisions
+				obs_left	+= inferL(atan_obs		,0.25f  ,1.25f 	,0  	);
+				obs_center 	+= inferT(atan_obs		,0.23f	,0.25f 	,0.27f	);
+				obs_right	+= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
+
+				obs_count++;
+
 			}
-			obs_left	+= inferL(atan_obs		,0.25f  ,1.25f 	,0   	);
-			obs_center 	+= inferT(atan_obs		,0.23f	,0.25f 	,0.27f	);
-			obs_right 	+= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
+			else if(array[i]->getType() == 1)
+			{
+				nearA = array[i].get()->getA();
+				nearB = array[i].get()->getB();
+				
+				atan_box += (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
+				//collisions
+				box_left 		+= inferL(atan_box		,0.25f  ,0.5f 	,0   	);
+				box_center 		+= inferT(atan_box		,0.2f	,0.25f 	,0.3f	);
+				box_right 		+= inferL(atan_box		,0.f	,0.25f  ,1   	);
+				
+				box++;
+			}
+			else if(array[i]->getType() == 2)
+			{
+				nearA = array[i].get()->getA();
+				nearB = array[i].get()->getB();
+				
+				atan_box += (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
+				//collisions
+				rmp_left 		+= inferL(atan_box		,0.25f  ,0.5f 	,0   	);
+				rmp_center 		+= inferT(atan_box		,0.20f	,0.25f 	,0.3f	);
+				rmp_right 		+= inferL(atan_box		,0.f	,0.25f  ,1   	);
+				
+				ramp++;
+			}
 		}
+
+		float types = ramp + box;
+
+		if(obs_count != 0)
+		{
+			obs_left   = obs_left / (array.size() - types);					// (array.size() - types) because two items can be box and ramp
+			obs_center = obs_center / (array.size() - types);
+			obs_right  = obs_right / (array.size() - types);
+		}
+
 		/*for(unsigned i = 0; i<walls.size(); ++i){
 			atan_walls += (glm::atan(walls[i].get()->getA(),walls[i].get()->getB()) / 3.14159265358979323846264338327f );
 			//collisions
 			if(atan_walls <=-0.75){ 	//Same process as the waypoint
 				atan_walls += 2.f;
 			}
-			obs_left	+= inferL(atan_walls	,0.25f  ,1.25f 	,0   	);
-			obs_center 	+= inferT(atan_walls	,0.23f	,0.25f 	,0.27f	);
-			obs_right 	+= inferL(atan_walls	,-0.75f	,0.25f  ,1   	);
-		}*/
+			obs_l	+= inferL(atan_walls	,0.25f  ,1.25f 	,0   	);
+			obs_c 	+= inferT(atan_walls	,0.23f	,0.25f 	,0.27f	);
+			obs_r 	+= inferL(atan_walls	,-0.75f	,0.25f  ,1   	);
+		}
 
-		obs_left   = obs_left / (array.size() );//+ walls.size());
-		obs_center = obs_center / (array.size() );//+ walls.size());
-		obs_right  = obs_right / (array.size() );//+ walls.size());
+		obs_left   = obs_left - ((obs_l / walls.size()) * 0.3);
+		obs_center = obs_center - ((obs_c / walls.size()) * 0.3);
+		obs_right  = obs_right - ((obs_r / walls.size()) * 0.3);*/
+
+
 		/*if(array.size()>0){
 			atan_obs = (atan_obs + atan_walls) / 2;
 		}else{
@@ -94,8 +153,38 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 		/*steeringLeft = glm::min( glm::max(wp_left, wp_center), glm::max(obs_center, obs_right) );
 		steeringNone = glm::min( glm::max(1-wp_left, wp_center, 1-wp_right), glm::max(obs_left, obs_right) );
 		steeringRight = glm::min( glm::max(wp_right, wp_center), glm::max(obs_center,obs_left) );*/
-		steeringLeft 	= glm::max( wp_left, obs_right);
-		steeringRight 	= glm::max( wp_right, obs_left);
+
+		if(types == 0)
+		{
+			go_left = wp_left;
+			//go_center = wp_center;
+			go_right = wp_right;
+		}
+		else if(types == 1)
+		{
+			if(box == 1)
+			{
+				go_left = wp_left * 0.2 + box_left * 0.8;
+				//go_center = wp_center * 0.2 + box_center * 0.8;
+				go_right = wp_right * 0.2 + box_right * 0.8;
+			}
+			else if(ramp == 1)
+			{
+				go_left = wp_left * 0.2 + rmp_left * 0.8;
+				//go_center = wp_center * 0.2 + rmp_center * 0.8;
+				go_right = wp_right * 0.2 + rmp_right * 0.8;
+			}
+		}
+		else if(types == 2)
+		{
+			go_left = wp_left * 0.2 + box_left * 0.55 + rmp_left * 0.25;
+			//go_center = wp_center * 0.2 + box_center * 0.55 + rmp_center * 0.25;
+			go_right = wp_right * 0.2 + box_right * 0.55 + rmp_right * 0.25;
+		}
+
+
+		steeringLeft 	= glm::max( go_left, obs_right);
+		steeringRight 	= glm::max( go_right, obs_left);
 		steeringNone 	= 1-obs_center;
 
 	}else{
@@ -111,7 +200,7 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 	//Here we use the centroid point between the defuzzified inferences, to pinpoint the crisp steering value
 	//---------------GENERALIZE---everything
 	float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
-
+	//std::cout<<
 	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, -0.3f, 0.f, 0.3f);
 	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, -1.f, -0.5f, -0.01f);
 	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, 0.01f, 0.5f, 1.0f);
@@ -131,7 +220,7 @@ float AIDrivingComponent::girar(std::vector<VObject::Pointer> array, std::vector
 //is going, and where it is headed to.
 
 //---------------------------*/
-float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, float direction, float speed, float a_W, float b_w)
+float AIDrivingComponent::acelerar_frenar(GameObject& myPos, std::vector<VObject::Pointer> array, float direction, float speed, float a_W, float b_w)
 {
 	//final turn decision
 	float decision = 0.0f;
@@ -156,8 +245,24 @@ float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, f
 		//Previous calculus
 		float atan_obs = 0.0f, min_value = FLT_MAX;
 		for(unsigned i = 0; i<array.size(); i++){
-			atan_obs += (glm::atan(array[i].get()->getB(),array[i].get()->getA()) / 3.14159265358979323846264338327f )/array.size();
-			min_value = glm::min(min_value,array[i].get()->getA()+array[i].get()->getB());
+
+			if(array[i]->getType() == 0)
+			{
+				float nearA, nearB;
+
+				if(array[i]->getRadius() != -1)
+				{
+					array[i]->nearAB(&nearA, &nearB, myPos);
+				}
+				else
+				{
+					nearA = array[i].get()->getA();
+					nearB = array[i].get()->getB();
+				}
+
+				atan_obs += (glm::atan(nearA,nearB) / 3.14159265358979323846264338327f )/array.size();
+				min_value = glm::min(min_value,nearA+nearB);
+			}
 		}
 
 		//Dividing between speed to get a time of impact
@@ -199,7 +304,6 @@ float AIDrivingComponent::acelerar_frenar(std::vector<VObject::Pointer> array, f
 						), 
 						obs_closeRange
 				); //Frenar cuando vamos en rumbo de colisión y están cerca los objetos
-	
 		if(accelerating == 0 && none == 0 && braking == 0){
 			accelerating = 1.f;
 			none = 0.f;

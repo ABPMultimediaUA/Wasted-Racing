@@ -31,7 +31,7 @@ public:
 
 	//Constructor
 	GameObject(const uint16_t newId, const TransformationData &newPos) 
-		: id(newId), transformData(newPos)  {}
+		: id(newId), transformData(newPos), oldTransformData(newPos), newTransformData(newPos)  {}
 
 	//Destructor
 	~GameObject() {
@@ -48,6 +48,24 @@ public:
 	//Set position
 	void setTransformData(TransformationData data){
 		transformData = data;
+	}
+
+	//Get old position
+	TransformationData getOldTransformData(){
+		return oldTransformData;
+	}
+	//Set old position
+	void setOldTransformData(TransformationData data){
+		oldTransformData = data;
+	}
+
+	//Get new position
+	TransformationData getNewTransformData(){
+		return newTransformData;
+	}
+	//Set new position
+	void setNewTransformData(TransformationData data){
+		newTransformData = data;
 	}
 
 	//===========================================
@@ -85,6 +103,10 @@ private:
 
 	//Object Transformation Data
 	TransformationData transformData;
+	//Old Transformation Data for interpolation
+	TransformationData oldTransformData;
+	//New Transformation Data for interpolation
+	TransformationData newTransformData;
 
 	//Object Components
 	std::list<IComponent::Pointer> components;

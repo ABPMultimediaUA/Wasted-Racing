@@ -102,7 +102,7 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     if(!mData.spi) {
         if(abs(mData.spin) < 0.001) {
             mData.spin = 0;
-        
+         
         //Comment if no friction
         }else {
             mData.spin -= mData.spin*(mData.brake_spin);
@@ -200,6 +200,24 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
     }
 }
 
+//Updates the deviation in velocity caused by a collision
+void LAPAL::updateCollisionMovement ( LAPAL::movementData& mData, const float dTime) {
+
+    const float cons = 5; //factor of vel reduction over time
+
+    if(abs(mData.colVel.x) > 0.1 || abs(mData.colVel.z) > 0.1) {
+
+        mData.velocity.x += mData.colVel.x;
+        mData.velocity.z += mData.colVel.z;
+
+        mData.colVel.x -= mData.colVel.x*dTime*cons;
+        mData.colVel.z -= mData.colVel.z*dTime*cons;
+
+    }
+
+}
+
+
 //--------------------------------------
 //-------------COLLISIONS---------------
 //--------------------------------------
@@ -214,23 +232,25 @@ bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& rad
 
 
 //Assuming there's collision, changes velocity of every object after collision
-void LAPAL::calculateElasticCollision(LAPAL::vec3f& vel1, float& mass1, LAPAL::vec3f& vel2, float& mass2) {
+void LAPAL::calculateElasticCollision(LAPAL::vec3f& vel1, const LAPAL::vec3f& pos1, const float& mass1, 
+                                        LAPAL::vec3f& vel2, const LAPAL::vec3f& pos2, const float& mass2) {
 
-    //We apply the physical inelastic collision formula
-
-    float mT = mass1 + mass2;
-
-    float m1i_1 = (mass1 - mass2)/mT;
-    float m2i_1 = (mass2 + mass2)/mT;
+    //We apply the physical elastic collision formula
+    /*
+                2⋅m2     ⟨v1−v2,x1−x2⟩                           2⋅m1    ⟨v2−v1,x2−x1⟩
+    v′1 = v1 − ------ ⋅ -------------  ⋅(x1−x2)    v'2 = v2 −  ------ ⋅ ------------- ⋅ (x2−x1)
+                m1+m2       ∥x1−x2∥^2                           m1+m2     ∥x2−x1∥^2
+    */
     
-    float m1i_2 = (mass1 + mass1)/mT;
-    float m2i_2 = (mass2 - mass1)/mT;
+    LAPAL::vec3f auxPos = pos1 - pos2;
+    LAPAL::vec3f auxVel = vel1 - vel2;
+    auxPos.y = 0;
+    vel1 = vel1 - ((2 * mass2) / (mass1 + mass2)) * ( (auxPos.x*auxVel.x + auxPos.z*auxVel.z) / (auxPos.x * auxPos.x + auxPos.z + auxPos.z)) * auxPos;
 
-    vel1.x = vel1.x*m1i_1 + vel2.x*m2i_1;
-    vel2.x = vel1.x*m1i_2 + vel2.x*m2i_2;
-
-    vel1.z = vel1.z*m1i_1 + vel2.z*m2i_1;
-    vel2.z = vel1.z*m1i_2 + vel2.z*m2i_2;
+    auxPos = pos2 - pos1;
+    auxVel = vel2 - vel1;
+    auxPos.y = 0;
+    vel2 = vel2 - ((2 * mass1) / (mass1 + mass2)) * ( (auxPos.x*auxVel.x + auxPos.z*auxVel.z) / (auxPos.x * auxPos.x + auxPos.z + auxPos.z)) * auxPos;
 
 }
 
@@ -315,6 +335,23 @@ void LAPAL::correctYPosition(LAPAL::movementData& mData, const float dTime, LAPA
     mData.jump = false;
 }
 
+//Reflects the velocity given a line
+void LAPAL::calculateReflectedVector(LAPAL::vec3f& vel, const LAPAL::vec3f& p1, const LAPAL::vec3f& p2) {
+
+    LAPAL::vec3f lineVector = p2-p1;
+    LAPAL::vec3f normal = glm::vec3(-lineVector.z, 0, lineVector.x);    //Get normal from the two points of the line
+
+    float nMod = sqrt(normal.x*normal.x + normal.z*normal.z);
+
+    normal = glm::vec3(normal.x/nMod, 0, normal.z/nMod);    //Normalize normal
+
+    float dotVelNormal = vel.x*normal.x + vel.z*normal.z;   //Obtain product between vel and normal
+
+    vel.x = vel.x - 2 * dotVelNormal * normal.x;
+    vel.z = vel.z - 2 * dotVelNormal * normal.z;
+
+}
+
 //--------------------------------------
 //---------------MATHS------------------
 //--------------------------------------
@@ -373,6 +410,23 @@ float LAPAL::distance2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2,
     float distance = vectorCos*circVecMod;
 
     return distance;
+
+}
+
+//Calculates if a point (p1) is left o right of a line defined by two points (l1,l2)
+bool LAPAL::position2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1) {
+
+    //We use a formula infered from the equation of the line (A * x + B * y + C = 0)
+    float A = -( l2.z - l1.z );
+    float B = l2.x - l1.x;
+    float C = -( A * l1.x + B * l1.z );
+
+    float D = A * p1.x + B * p1.z + C;
+
+    if (D > 0)
+        return false;   // p1 is left of the line
+    else 
+        return true;    // p1 is right of the line (or in the line)
 
 }
 

@@ -31,6 +31,7 @@ namespace LAPAL{
         bool asc = false;       //To know that the object is ascending
         bool drift = false;     //To know if object is drifting or not
         bool braking = false;   //To know if brake key is pressed
+        bool boost = false;     //To know if velocity/acceletarion has been abnormally increased
 
         //spin
         float angle             = 0.0f;         //Angle faced by object
@@ -67,6 +68,9 @@ namespace LAPAL{
 
         //Jump variables
         float posY = 0.0;      //Relative position in y when the jump starts
+
+        //Collision variables
+        vec3f colVel            = glm::vec3(0,0,0);         //Velocity of the object after a collision  
 
     };
 
