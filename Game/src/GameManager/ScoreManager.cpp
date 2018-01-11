@@ -6,7 +6,7 @@ void objectDeleteScore(EventData);
 
 ScoreManager::ScoreManager()
 {
-
+    maxLaps = 3;
 }
 
 ScoreManager::~ScoreManager()

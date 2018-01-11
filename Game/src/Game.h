@@ -99,4 +99,6 @@ private:
     //Stay in the main loop
     bool stay;
 
+    float timeWait = 3.0f;
+
 };

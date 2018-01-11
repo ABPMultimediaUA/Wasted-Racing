@@ -81,11 +81,17 @@ void Game::init() {
 void Game::update(float dTime) {
 
     //Input manager has to be the first to be updated
-    inputManager->update();
-
+    if(timeWait <= 0) 
+    {
+        inputManager->update();
+        
+        aiManager->update();
+    }
+    else
+    {
+        timeWait -= dTime;
+    }
     physicsManager->update(dTime);
-
-    aiManager->update();
 
     renderManager->update();
 
@@ -760,7 +766,7 @@ void addObjects(){
     transform.position = glm::vec3(-20,0,-30);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrCMP, terrainCMP);
+    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, terrCMP, terrainCMP);
 
     /*id = 56;
     transform.position = glm::vec3(-125,0,5);
