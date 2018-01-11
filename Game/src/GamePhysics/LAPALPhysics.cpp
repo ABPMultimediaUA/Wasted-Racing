@@ -102,7 +102,7 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     if(!mData.spi) {
         if(abs(mData.spin) < 0.001) {
             mData.spin = 0;
-        
+         
         //Comment if no friction
         }else {
             mData.spin -= mData.spin*(mData.brake_spin);
