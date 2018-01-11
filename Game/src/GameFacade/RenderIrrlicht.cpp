@@ -38,11 +38,14 @@ void RenderIrrlicht::updateWindow() {
     updateCamera();
     int oM = ObjectManager::getInstance().getObject(50).get()->getComponent<ScoreComponent>().get()->getPosition();
     int oL = ObjectManager::getInstance().getObject(50).get()->getComponent<ScoreComponent>().get()->getLap();
+    int ML = ScoreManager::getInstance().getMaxLaps();
     int iT = ObjectManager::getInstance().getObject(50).get()->getComponent<ItemHolderComponent>().get()->getItemType();
     irr::core::stringw stringLap = L"  LAP:";
     irr::core::stringw stringItm = L"  ITEM:";
     irr::core::stringw stringPos = L"  POSITION:";
     stringLap += oL;
+    stringLap += " / ";
+    stringLap += ML;
     switch(iT)
     {
         case -1: stringItm+="EMPTY";
