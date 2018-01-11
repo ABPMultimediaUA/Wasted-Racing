@@ -72,7 +72,7 @@ void RenderIrrlicht::closeWindow() {
 
 void RenderIrrlicht::renderDraw() {
 
-    videoDriver->beginScene(true, true, irr::video::SColor(255,113,113,133));
+    videoDriver->beginScene(true, true, irr::video::SColor(255,10,10,40));
     sceneManager->drawAll();
     sceneManager->getGUIEnvironment()->drawAll();
     videoDriver->endScene();
