@@ -101,7 +101,7 @@ void RenderIrrlicht::addLight() {
     l.Type = irr::video::E_LIGHT_TYPE::ELT_DIRECTIONAL;
     auto node = sceneManager->addLightSceneNode(0, irr::core::vector3df(0,0,0), irr::video::SColorf(1.0,1.0,1.0), 500); 
     node->setPosition(irr::core::vector3df(0,150,0));
-    sceneManager->setAmbientLight(irr::video::SColorf(0.05,0.05,0.05,1));
+    sceneManager->setAmbientLight(irr::video::SColorf(0.2,0.2,0.2,1));
 }
 
 void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
