@@ -111,7 +111,7 @@ void PhysicsManager::interpolate(float accumulatedTime, const float maxTime) {
 
         auto id = gameObject.getId();
         RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, currTrans);
-        
+
     }
 
 }

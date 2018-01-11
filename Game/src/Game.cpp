@@ -134,7 +134,7 @@ void Game::Run() {
 
     auto lastTime = std::chrono::high_resolution_clock::now();
     float accumulatedTime = 0;
-    const float maxTime = 0.01;
+    const float maxTime = 1.0f/30.0f;
 
     while(Game::stay){
 
@@ -153,7 +153,9 @@ void Game::Run() {
         }
 
         //Always interpolate and draw the game 
-        //physicsManager->interpolate(accumulatedTime, maxTime);
+        physicsManager->interpolate(accumulatedTime, maxTime);
+        renderManager->getRenderFacade()->updateCamera();
+
         Game::draw();
         
     }
