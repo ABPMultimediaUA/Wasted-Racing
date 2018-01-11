@@ -37,6 +37,7 @@ enum EventType {
     ItemBoxComponent_Delete,
     //COLLISION: Events triggered to certain collisions
     RampComponent_Collision,
+    StartLineComponent_Collision,
     ItemBoxComponent_Collision,
     BananaComponent_Collision,
     BlueShellComponent_Collision,

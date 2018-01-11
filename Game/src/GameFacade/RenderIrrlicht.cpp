@@ -178,6 +178,13 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
                 node = sceneManager->addMeshSceneNode(plane);
             }
             break;
+            case ObjectRenderComponent::Shape::StarLine: {
+                auto plane = geometryCreator->createPlaneMesh(irr::core::dimension2d<irr::f32>(1,1));
+                node = sceneManager->addMeshSceneNode(plane);
+                auto var = videoDriver->getTexture("media/img/starLine.png");
+                node->setMaterialTexture(0, var);
+            }
+            break;
             default:
             break;
         }

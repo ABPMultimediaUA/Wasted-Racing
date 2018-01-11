@@ -219,11 +219,11 @@ void addObjects(){
     transform.scale    = glm::vec3(25,0.01,31.05);
     auto ob19 = ObjectManager::getInstance().createObject(id, transform);
 
-    //Ramp:
+    //Start Line:
     id = 12;
-    transform.position = glm::vec3(0,-2,0);
-    transform.rotation = glm::vec3(0,0,0);
-    transform.scale    = glm::vec3(10,10,100);
+    transform.position = glm::vec3(0,-2.85,-3);
+    transform.rotation = glm::vec3(1.5,0,0);
+    transform.scale    = glm::vec3(10,10,118);
     auto ob9 = ObjectManager::getInstance().createObject(id, transform);
 
     //Obstacles:
@@ -391,6 +391,12 @@ void addObjects(){
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob125 = ObjectManager::getInstance().createObject(id, transform);
 
+    id = 126;
+    transform.position = glm::vec3(0, 0,-12.5);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob126 = ObjectManager::getInstance().createObject(id, transform);
+
 
     //ItemBox:
     id = 25;
@@ -479,32 +485,33 @@ void addObjects(){
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
-    WaypointManager::getInstance().createWaypointComponent(ob100, 60, 0);
-    WaypointManager::getInstance().createWaypointComponent(ob101, 60, 1);
-    WaypointManager::getInstance().createWaypointComponent(ob102, 60, 2);
-    WaypointManager::getInstance().createWaypointComponent(ob103, 60, 3);
-    WaypointManager::getInstance().createWaypointComponent(ob104, 60, 4);
-    WaypointManager::getInstance().createWaypointComponent(ob105, 60, 5);
-    WaypointManager::getInstance().createWaypointComponent(ob106, 60, 6);
-    WaypointManager::getInstance().createWaypointComponent(ob107, 60, 7);
-    WaypointManager::getInstance().createWaypointComponent(ob108, 60, 8);
-    WaypointManager::getInstance().createWaypointComponent(ob109, 60, 9);
-    WaypointManager::getInstance().createWaypointComponent(ob110, 60, 10);
-    WaypointManager::getInstance().createWaypointComponent(ob111, 60, 11);
-    WaypointManager::getInstance().createWaypointComponent(ob112, 60, 12);
-    WaypointManager::getInstance().createWaypointComponent(ob113, 60, 13);
-    WaypointManager::getInstance().createWaypointComponent(ob114, 60, 14);
-    WaypointManager::getInstance().createWaypointComponent(ob115, 60, 15);
-    WaypointManager::getInstance().createWaypointComponent(ob116, 60, 16);
-    WaypointManager::getInstance().createWaypointComponent(ob117, 60, 17);
-    WaypointManager::getInstance().createWaypointComponent(ob118, 60, 18);
-    WaypointManager::getInstance().createWaypointComponent(ob119, 60, 19);
-    WaypointManager::getInstance().createWaypointComponent(ob120, 60, 20);
-    WaypointManager::getInstance().createWaypointComponent(ob121, 60, 21);
-    WaypointManager::getInstance().createWaypointComponent(ob122, 60, 22);
-    WaypointManager::getInstance().createWaypointComponent(ob123, 60, 23);
-    WaypointManager::getInstance().createWaypointComponent(ob124, 60, 24);
-    WaypointManager::getInstance().createWaypointComponent(ob125, 60, 25);
+    WaypointManager::getInstance().createWaypointComponent(ob100, 70, 0);
+    WaypointManager::getInstance().createWaypointComponent(ob101, 70, 1);
+    WaypointManager::getInstance().createWaypointComponent(ob102, 70, 2);
+    WaypointManager::getInstance().createWaypointComponent(ob103, 70, 3);
+    WaypointManager::getInstance().createWaypointComponent(ob104, 70, 4);
+    WaypointManager::getInstance().createWaypointComponent(ob105, 70, 5);
+    WaypointManager::getInstance().createWaypointComponent(ob106, 70, 6);
+    WaypointManager::getInstance().createWaypointComponent(ob107, 70, 7);
+    WaypointManager::getInstance().createWaypointComponent(ob108, 70, 8);
+    WaypointManager::getInstance().createWaypointComponent(ob109, 70, 9);
+    WaypointManager::getInstance().createWaypointComponent(ob110, 70, 10);
+    WaypointManager::getInstance().createWaypointComponent(ob111, 70, 11);
+    WaypointManager::getInstance().createWaypointComponent(ob112, 70, 12);
+    WaypointManager::getInstance().createWaypointComponent(ob113, 70, 13);
+    WaypointManager::getInstance().createWaypointComponent(ob114, 70, 14);
+    WaypointManager::getInstance().createWaypointComponent(ob115, 70, 15);
+    WaypointManager::getInstance().createWaypointComponent(ob116, 70, 16);
+    WaypointManager::getInstance().createWaypointComponent(ob117, 70, 17);
+    WaypointManager::getInstance().createWaypointComponent(ob118, 70, 18);
+    WaypointManager::getInstance().createWaypointComponent(ob119, 70, 19);
+    WaypointManager::getInstance().createWaypointComponent(ob120, 70, 20);
+    WaypointManager::getInstance().createWaypointComponent(ob121, 70, 21);
+    WaypointManager::getInstance().createWaypointComponent(ob122, 70, 22);
+    WaypointManager::getInstance().createWaypointComponent(ob123, 70, 23);
+    WaypointManager::getInstance().createWaypointComponent(ob124, 70, 24);
+    WaypointManager::getInstance().createWaypointComponent(ob125, 70, 25);
+    WaypointManager::getInstance().createWaypointComponent(ob126, 70, 26);
 
     //===============================================================
     // CREATE RENDER COMPONENTS
@@ -526,8 +533,8 @@ void addObjects(){
     std::shared_ptr<IComponent> cp16 = RenderManager::getInstance().createObjectRenderComponent(*ob19.get(), ObjectRenderComponent::Shape::Cube);
     */
 
-    //Ramp
-    std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob9.get(), ObjectRenderComponent::Shape::Plane);
+    //StartLine
+    std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob9.get(), ObjectRenderComponent::Shape::StarLine);
 
     //Road
     std::shared_ptr<IComponent> cp17 = RenderManager::getInstance().createObjectRenderComponent(*ob37.get(), ObjectRenderComponent::Shape::Road);
@@ -563,7 +570,8 @@ void addObjects(){
     RenderManager::getInstance().createObjectRenderComponent(*ob122.get(), ObjectRenderComponent::Shape::Sphere);
     RenderManager::getInstance().createObjectRenderComponent(*ob123.get(), ObjectRenderComponent::Shape::Sphere);
     RenderManager::getInstance().createObjectRenderComponent(*ob124.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob125.get(), ObjectRenderComponent::Shape::Sphere);*/
+    RenderManager::getInstance().createObjectRenderComponent(*ob125.get(), ObjectRenderComponent::Shape::Sphere);
+    RenderManager::getInstance().createObjectRenderComponent(*ob126.get(), ObjectRenderComponent::Shape::Sphere);*/
 
     //ITEM BOX
     std::shared_ptr<IComponent> cp25 = RenderManager::getInstance().createObjectRenderComponent(*ob25.get(), ObjectRenderComponent::Shape::Cube);
@@ -618,12 +626,13 @@ void addObjects(){
     std::shared_ptr<IComponent> collisionCP17 = PhysicsManager::getInstance().createCollisionComponent(*ob36.get(), 5, false, CollisionComponent::Type::ItemBox);
 
 
+    //Start Line
     LAPAL::plane3f terrainX;
-    terrainX.p1 = (LAPAL::vec3f( -5 , 0, 50));
-    terrainX.p2 = (LAPAL::vec3f( 5 , 0, 50));
-    terrainX.p3 = (LAPAL::vec3f( 5 , 0, -50));
-    terrainX.p4 = (LAPAL::vec3f( -5 , 0, -50));
-    std::shared_ptr<IComponent> collisionCP5 = PhysicsManager::getInstance().createCollisionComponent(*ob9.get(), terrainX, false, CollisionComponent::Type::Ramp);
+    terrainX.p1 = (LAPAL::vec3f( -5 , 0, 55));
+    terrainX.p2 = (LAPAL::vec3f( 5 , 0, 55));
+    terrainX.p3 = (LAPAL::vec3f( 5 , 0, -63));
+    terrainX.p4 = (LAPAL::vec3f( -5 , 0, -63));
+    std::shared_ptr<IComponent> collisionCP5 = PhysicsManager::getInstance().createCollisionComponent(*ob9.get(), terrainX, false, CollisionComponent::Type::StartLine);
     
 
     //===============================================================

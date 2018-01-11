@@ -18,7 +18,6 @@ void PathPlanningComponent::update(float dTime)
 	std::cout<<"Y: "<<pos.y<<"\n";
 	std::cout<<"Z: "<<pos.z<<"\n";*/
 
-
 	auto modSpeed = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
 
 	auto wpManager = &WaypointManager::getInstance();
@@ -42,8 +41,7 @@ void PathPlanningComponent::update(float dTime)
 			}
 			else if(lastVector == listNodes.size()-1)
 			{
-				int vuelta = getGameObject().getComponent<ScoreComponent>()->getLap();
-				getGameObject().getComponent<ScoreComponent>()->setLap(vuelta + 1);
+				getGameObject().getComponent<StartLineComponent>()->setActive(true);
 				lastVector = 0;
 			}
 		}
@@ -58,8 +56,7 @@ void PathPlanningComponent::update(float dTime)
 			}
 			else if(lastVector == listNodes.size()-1)
 			{
-				int vuelta = getGameObject().getComponent<ScoreComponent>()->getLap();
-				getGameObject().getComponent<ScoreComponent>()->setLap(vuelta + 1);
+				getGameObject().getComponent<StartLineComponent>()->setActive(true);
 				lastVector = 0;
 			}
 		}

@@ -13,6 +13,7 @@ public:
 		Plane, 
 		Banana,
 		Shell,
+		StarLine,
 		Road
 	};
 
