@@ -518,7 +518,6 @@ void collideBlueShell(EventData eData) {
 void collideRedShell(EventData eData) {
     auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
     auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
-
     auto shell = coll->getGameObject().getComponent<ItemRedShellComponent>();
 
     if(shell != nullptr) {
