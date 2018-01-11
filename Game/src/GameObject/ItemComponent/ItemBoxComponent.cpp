@@ -29,6 +29,8 @@ void ItemBoxComponent::update(float dTime){
 
     if(actTime == 0){
 
+        active = 1;
+
         actTime = boxTime;
         auto trans = getGameObject().getTransformData();
 
@@ -49,6 +51,8 @@ void ItemBoxComponent::close(){
 
 void ItemBoxComponent::deactivateBox(){
 
+    active = 0;
+
     auto trans = getGameObject().getTransformData();
 
     trans.scale.x = 0;
@@ -66,8 +70,18 @@ void ItemBoxComponent::asignItem(GameObject& obj){
 
     if(itemHolder->getItemType() == -1){
         srand (time(NULL));
-        int random = rand() % 5;
+        int random;
+        if(obj.getComponent<ScoreComponent>()->getPosition() == 1)
+        {
+            random = rand() % 3 + 2;
+        }
+        else
+        {
+            random = rand() % 5;
+        }
+
         itemHolder->setItemType(random);
+        
     }
 
 }

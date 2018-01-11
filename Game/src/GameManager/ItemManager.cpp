@@ -89,7 +89,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
     int random = itemHolder->getItemType();
-    
+
     if(random == IItemComponent::ItemType::redShell)
     {
         itemHolder->setItemType(-1);
@@ -202,7 +202,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle);
+    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
@@ -273,7 +273,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle);
+    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
