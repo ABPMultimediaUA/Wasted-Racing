@@ -64,9 +64,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
             //if both are inside the cone contained by A and B
             if(a > 0 && b > 0)  
             {
-                if(objects[i].getComponent<CollisionComponent>()->getType() != CollisionComponent::Type::ItemBox &&
-                 objects[i].getComponent<CollisionComponent>()->getType() != CollisionComponent::Type::Ramp &&
-                 objects[i].getComponent<CollisionComponent>()->getType() != CollisionComponent::Type::StartLine)
+                if(objects[i].getComponent<CollisionComponent>()->getType() == CollisionComponent::Type::Default)
                 {
                     pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 0); //generate VObject with the data
                     seenObjects.push_back(pvo);                                                     //Add to seen objects

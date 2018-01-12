@@ -232,12 +232,97 @@ void addObjects(){
     transform.scale    = glm::vec3(10,10,118);
     auto ob9 = ObjectManager::getInstance().createObject(id, transform);
 
+    //Ramp:
+    id = 40;
+    transform.position = glm::vec3(1444,342,-1249);
+    transform.rotation = glm::vec3(0,45,0);
+    transform.scale    = glm::vec3(10,10,40);
+    auto ob40 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 41;
+    transform.position = glm::vec3(-487,-2,-638);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(20,10,40);
+    auto ob41 = ObjectManager::getInstance().createObject(id, transform);
+
     //Obstacles:
-    /*id = 200;
-    transform.position = glm::vec3(50,0,-30);
+    id = 200;
+    transform.position = glm::vec3(-157.5,1,-1207);
     transform.rotation = glm::vec3(45,45,0);
     transform.scale    = glm::vec3(1,1,1);
-    auto ob200 = ObjectManager::getInstance().createObject(id, transform);*/
+    auto ob200 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 201;
+    transform.position = glm::vec3(-210 ,1,-1210.5);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob201 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 202;
+    transform.position = glm::vec3(-209,1,-1272);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob202 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 203;
+    transform.position = glm::vec3(-335,1,-1272);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob203 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 204;
+    transform.position = glm::vec3(-335,1,-1210);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob204 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 205;
+    transform.position = glm::vec3(-404,1,-1272);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob205 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 206;
+    transform.position = glm::vec3(-403,1,-1193);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob206 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 207;
+    transform.position = glm::vec3(-509,1,-1124);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob207 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 208;
+    transform.position = glm::vec3(-509,1,-1021);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob208 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 209;
+    transform.position = glm::vec3(-504,1,-911);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob209 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 210;
+    transform.position = glm::vec3(-532,1,-906);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob210 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 211;
+    transform.position = glm::vec3(-560,1,-905);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob211 = ObjectManager::getInstance().createObject(id, transform);
+
+    id = 212;
+    transform.position = glm::vec3(-546,1,-824);
+    transform.rotation = glm::vec3(45,45,0);
+    transform.scale    = glm::vec3(1,1,1);
+    auto ob212 = ObjectManager::getInstance().createObject(id, transform);
 
     //WAYPOINTS
 
@@ -488,7 +573,7 @@ void addObjects(){
     auto ob140 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 141;
-    transform.position = glm::vec3(454, 0,13);
+    transform.position = glm::vec3(440, 0,5);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob141 = ObjectManager::getInstance().createObject(id, transform);
@@ -499,28 +584,34 @@ void addObjects(){
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob142 = ObjectManager::getInstance().createObject(id, transform);
 
+    id = 143;
+    transform.position = glm::vec3(962, 146,-800);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob143 = ObjectManager::getInstance().createObject(id, transform);
+
 
     //ItemBox:
     id = 25;
-    transform.position = glm::vec3(175, 1, 40);
+    transform.position = glm::vec3(495, 2, -370);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob25 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 26;
-    transform.position = glm::vec3(175, 1, 20);
+    transform.position = glm::vec3(481, 2, -393);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob26 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 27;
-    transform.position = glm::vec3(175, 1, 0);
+    transform.position = glm::vec3(509, 2, -347);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob27 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 28;
-    transform.position = glm::vec3(175, 1, -20);
+    transform.position = glm::vec3(467, 2, -416);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob28 = ObjectManager::getInstance().createObject(id, transform);
@@ -528,54 +619,54 @@ void addObjects(){
     //////////////////////////
 
     id = 29;
-    transform.position = glm::vec3(1068, 91, 1000);
+    transform.position = glm::vec3(1404, 345, -1800);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob29 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 30;
-    transform.position = glm::vec3(1053, 90, 988);
+    transform.position = glm::vec3(1412, 345, -1820);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob30 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 31;
-    transform.position = glm::vec3(1038, 89, 976);
+    transform.position = glm::vec3(1396, 345, -1780);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob31 = ObjectManager::getInstance().createObject(id, transform);
 
-    id = 32;
+    /*id = 32;
     transform.position = glm::vec3(1023, 88, 964);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
-    auto ob32 = ObjectManager::getInstance().createObject(id, transform);
+    auto ob32 = ObjectManager::getInstance().createObject(id, transform);*/
 
     //////////////////////////
 
     id = 33;
-    transform.position = glm::vec3(-120, -1, 492);
+    transform.position = glm::vec3(327, 186, -1012);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob33 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 34;
-    transform.position = glm::vec3(-135, 0, 480);
+    transform.position = glm::vec3(311, 186, -999);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob34 = ObjectManager::getInstance().createObject(id, transform);
 
     id = 35;
-    transform.position = glm::vec3(-150, 1, 468);
+    transform.position = glm::vec3(343, 186, -1025);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
     auto ob35 = ObjectManager::getInstance().createObject(id, transform);
 
-    id = 36;
+    /*id = 36;
     transform.position = glm::vec3(-165, 2, 456);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(0.5, 0.5, 0.5);
-    auto ob36 = ObjectManager::getInstance().createObject(id, transform);
+    auto ob36 = ObjectManager::getInstance().createObject(id, transform);*/
 
     //Circuit
     id = 37;
@@ -593,43 +684,44 @@ void addObjects(){
     WaypointManager::getInstance().createWaypointComponent(ob138, 80, 3);
     WaypointManager::getInstance().createWaypointComponent(ob137, 80, 4);
     WaypointManager::getInstance().createWaypointComponent(ob136, 100, 5);
-    WaypointManager::getInstance().createWaypointComponent(ob135, 100, 6);
-    WaypointManager::getInstance().createWaypointComponent(ob134, 80, 7);
-    WaypointManager::getInstance().createWaypointComponent(ob133, 80, 8);
-    WaypointManager::getInstance().createWaypointComponent(ob132, 80, 9);
-    WaypointManager::getInstance().createWaypointComponent(ob131, 80, 10);
-    WaypointManager::getInstance().createWaypointComponent(ob130, 80, 11);
-    WaypointManager::getInstance().createWaypointComponent(ob129, 80, 12);
-    WaypointManager::getInstance().createWaypointComponent(ob128, 80, 13);
-    WaypointManager::getInstance().createWaypointComponent(ob127, 80, 14);
-    WaypointManager::getInstance().createWaypointComponent(ob126, 80, 15);
-    WaypointManager::getInstance().createWaypointComponent(ob125, 80, 16);
-    WaypointManager::getInstance().createWaypointComponent(ob124, 80, 17);
-    WaypointManager::getInstance().createWaypointComponent(ob123, 80, 18);
-    WaypointManager::getInstance().createWaypointComponent(ob122, 80, 19);
-    WaypointManager::getInstance().createWaypointComponent(ob121, 80, 20);
-    WaypointManager::getInstance().createWaypointComponent(ob120, 80, 21);
-    WaypointManager::getInstance().createWaypointComponent(ob119, 80, 22);
-    WaypointManager::getInstance().createWaypointComponent(ob118, 80, 23);
-    WaypointManager::getInstance().createWaypointComponent(ob117, 80, 24);
-    WaypointManager::getInstance().createWaypointComponent(ob116, 80, 25);
-    WaypointManager::getInstance().createWaypointComponent(ob115, 80, 26);
-    WaypointManager::getInstance().createWaypointComponent(ob114, 80, 27);
-    WaypointManager::getInstance().createWaypointComponent(ob113, 80, 28);
-    WaypointManager::getInstance().createWaypointComponent(ob112, 80, 29);
-    WaypointManager::getInstance().createWaypointComponent(ob111, 80, 30);
-    WaypointManager::getInstance().createWaypointComponent(ob110, 80, 31);
-    WaypointManager::getInstance().createWaypointComponent(ob109, 50, 32);
-    WaypointManager::getInstance().createWaypointComponent(ob108, 100, 33);
-    WaypointManager::getInstance().createWaypointComponent(ob107, 80, 34);
-    WaypointManager::getInstance().createWaypointComponent(ob106, 80, 35);
-    WaypointManager::getInstance().createWaypointComponent(ob105, 80, 36);
-    WaypointManager::getInstance().createWaypointComponent(ob104, 80, 37);
-    WaypointManager::getInstance().createWaypointComponent(ob103, 80, 38);
-    WaypointManager::getInstance().createWaypointComponent(ob102, 80, 39);
-    WaypointManager::getInstance().createWaypointComponent(ob101, 80, 40);
-    WaypointManager::getInstance().createWaypointComponent(ob100, 80, 41);
-    WaypointManager::getInstance().createWaypointComponent(ob142, 80, 42);
+    WaypointManager::getInstance().createWaypointComponent(ob143, 100, 6);
+    WaypointManager::getInstance().createWaypointComponent(ob135, 100, 7);
+    WaypointManager::getInstance().createWaypointComponent(ob134, 80, 8);
+    WaypointManager::getInstance().createWaypointComponent(ob133, 80, 9);
+    WaypointManager::getInstance().createWaypointComponent(ob132, 80, 10);
+    WaypointManager::getInstance().createWaypointComponent(ob131, 80, 11);
+    WaypointManager::getInstance().createWaypointComponent(ob130, 80, 12);
+    WaypointManager::getInstance().createWaypointComponent(ob129, 80, 13);
+    WaypointManager::getInstance().createWaypointComponent(ob128, 80, 14);
+    WaypointManager::getInstance().createWaypointComponent(ob127, 80, 15);
+    WaypointManager::getInstance().createWaypointComponent(ob126, 80, 16);
+    WaypointManager::getInstance().createWaypointComponent(ob125, 80, 17);
+    WaypointManager::getInstance().createWaypointComponent(ob124, 80, 18);
+    WaypointManager::getInstance().createWaypointComponent(ob123, 80, 19);
+    WaypointManager::getInstance().createWaypointComponent(ob122, 80, 20);
+    WaypointManager::getInstance().createWaypointComponent(ob121, 80, 21);
+    WaypointManager::getInstance().createWaypointComponent(ob120, 80, 22);
+    WaypointManager::getInstance().createWaypointComponent(ob119, 80, 23);
+    WaypointManager::getInstance().createWaypointComponent(ob118, 80, 24);
+    WaypointManager::getInstance().createWaypointComponent(ob117, 80, 25);
+    WaypointManager::getInstance().createWaypointComponent(ob116, 80, 26);
+    WaypointManager::getInstance().createWaypointComponent(ob115, 80, 27);
+    WaypointManager::getInstance().createWaypointComponent(ob114, 80, 28);
+    WaypointManager::getInstance().createWaypointComponent(ob113, 80, 29);
+    WaypointManager::getInstance().createWaypointComponent(ob112, 80, 30);
+    WaypointManager::getInstance().createWaypointComponent(ob111, 80, 31);
+    WaypointManager::getInstance().createWaypointComponent(ob110, 80, 32);
+    WaypointManager::getInstance().createWaypointComponent(ob109, 50, 33);
+    WaypointManager::getInstance().createWaypointComponent(ob108, 100, 34);
+    WaypointManager::getInstance().createWaypointComponent(ob107, 80, 35);
+    WaypointManager::getInstance().createWaypointComponent(ob106, 80, 36);
+    WaypointManager::getInstance().createWaypointComponent(ob105, 80, 37);
+    WaypointManager::getInstance().createWaypointComponent(ob104, 80, 38);
+    WaypointManager::getInstance().createWaypointComponent(ob103, 80, 39);
+    WaypointManager::getInstance().createWaypointComponent(ob102, 80, 40);
+    WaypointManager::getInstance().createWaypointComponent(ob101, 80, 41);
+    WaypointManager::getInstance().createWaypointComponent(ob100, 80, 42);
+    WaypointManager::getInstance().createWaypointComponent(ob142, 80, 43);
 
     //===============================================================
     // CREATE RENDER COMPONENTS
@@ -653,6 +745,10 @@ void addObjects(){
 
     //StartLine
     //std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob9.get(), ObjectRenderComponent::Shape::StarLine);
+
+    //Ramp
+    std::shared_ptr<IComponent> cp9 = RenderManager::getInstance().createObjectRenderComponent(*ob40.get(), ObjectRenderComponent::Shape::Plane);
+    std::shared_ptr<IComponent> cp10 = RenderManager::getInstance().createObjectRenderComponent(*ob41.get(), ObjectRenderComponent::Shape::Plane);
 
     //Road
     std::shared_ptr<IComponent> cp17 = RenderManager::getInstance().createObjectRenderComponent(*ob37.get(), ObjectRenderComponent::Shape::Road);
@@ -681,7 +777,19 @@ void addObjects(){
     //std::shared_ptr<IComponent> collisionCP3 = PhysicsManager::getInstance().createCollisionComponent(*ob5.get(), 5, false, CollisionComponent::Type::Default);
     //std::shared_ptr<IComponent> collisionCP4 = PhysicsManager::getInstance().createCollisionComponent(*ob8.get(), 5, true, CollisionComponent::Type::Default);
     
-    //std::shared_ptr<IComponent> collisionCP200 = PhysicsManager::getInstance().createCollisionComponent(*ob200.get(), 5, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob200.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob201.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob202.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob203.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob204.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob205.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob206.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob207.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob208.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob209.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob210.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob211.get(), 2, true, CollisionComponent::Type::Default);
+    PhysicsManager::getInstance().createCollisionComponent(*ob212.get(), 15, true, CollisionComponent::Type::Default);
 
 
     //Start Line
@@ -691,6 +799,21 @@ void addObjects(){
     terrainX.p3 = (LAPAL::vec3f( 5 , 0, -63));
     terrainX.p4 = (LAPAL::vec3f( -5 , 0, -63));
     std::shared_ptr<IComponent> collisionCP5 = PhysicsManager::getInstance().createCollisionComponent(*ob9.get(), terrainX, false, CollisionComponent::Type::StartLine);
+    
+    //Ramp
+    LAPAL::plane3f terrainX2;
+    terrainX2.p1 = (LAPAL::vec3f( 1434 , 342, -1229));
+    terrainX2.p2 = (LAPAL::vec3f( 1454 , 342, -1229));
+    terrainX2.p3 = (LAPAL::vec3f( 1454 , 342, -1269));
+    terrainX2.p4 = (LAPAL::vec3f( 1434 , 342, -1269));
+    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob40.get(), terrainX2, false, CollisionComponent::Type::Ramp);
+    
+    LAPAL::plane3f terrainX3;
+    terrainX2.p1 = (LAPAL::vec3f( -497 , 1, -618));
+    terrainX2.p2 = (LAPAL::vec3f( -477 , 1, -618));
+    terrainX2.p3 = (LAPAL::vec3f( -477 , 1, -658));
+    terrainX2.p4 = (LAPAL::vec3f( -497 , 1, -658));
+    std::shared_ptr<IComponent> collisionCP7 = PhysicsManager::getInstance().createCollisionComponent(*ob41.get(), terrainX2, false, CollisionComponent::Type::Ramp);
     
 
     //===============================================================
@@ -793,7 +916,8 @@ void addObjects(){
     //===============================================================
     // ADD RAMP COMPONENT
     //===============================================================
-    //std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 250.0f,2.f,2.0f);
+    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob40.get(), 250.0f,1.f,1.0f);
+    std::shared_ptr<IComponent> rampCP2 = PhysicsManager::getInstance().createRampComponent(*ob41.get(), 250.0f,1.f,1.0f);
 
 
     //===============================================================
@@ -805,7 +929,7 @@ void addObjects(){
     auto terrCMP = terrainCMP.get()->getTerrain();
 
     id = 50;
-    transform.position = glm::vec3(-20,10, 10);
+    transform.position = glm::vec3(-25,10, -20);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrCMP, terrainCMP);
@@ -814,11 +938,11 @@ void addObjects(){
     // ADD AI 
     //===============================================================
 
-    /*id = 55;
-    transform.position = glm::vec3(-20,10,-30);
+    id = 55;
+    transform.position = glm::vec3(-25,10,20);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, terrCMP, terrainCMP);*/
+    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, terrCMP, terrainCMP);
 
     /*id = 56;
     transform.position = glm::vec3(-125,0,5);
@@ -844,12 +968,12 @@ void addObjects(){
     std::shared_ptr<IComponent> itemboxCP24 = ItemManager::getInstance().createItemBox(*ob29.get());
     std::shared_ptr<IComponent> itemboxCP25 = ItemManager::getInstance().createItemBox(*ob30.get());
     std::shared_ptr<IComponent> itemboxCP26 = ItemManager::getInstance().createItemBox(*ob31.get());
-    std::shared_ptr<IComponent> itemboxCP27 = ItemManager::getInstance().createItemBox(*ob32.get());
+    //std::shared_ptr<IComponent> itemboxCP27 = ItemManager::getInstance().createItemBox(*ob32.get());
 
     std::shared_ptr<IComponent> itemboxCP28 = ItemManager::getInstance().createItemBox(*ob33.get());
     std::shared_ptr<IComponent> itemboxCP29 = ItemManager::getInstance().createItemBox(*ob34.get());
     std::shared_ptr<IComponent> itemboxCP30 = ItemManager::getInstance().createItemBox(*ob35.get());
-    std::shared_ptr<IComponent> itemboxCP31 = ItemManager::getInstance().createItemBox(*ob36.get());
+    //std::shared_ptr<IComponent> itemboxCP31 = ItemManager::getInstance().createItemBox(*ob36.get());
 
     //===============================================================
     // Update to distribute all creation events

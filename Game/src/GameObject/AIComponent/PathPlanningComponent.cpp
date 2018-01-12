@@ -14,9 +14,9 @@ void PathPlanningComponent::update(float dTime)
 
 	auto pos = this->getGameObject().getTransformData().position;
 
-	std::cout<<"X: "<<pos.x<<"\n";
+	/*std::cout<<"X: "<<pos.x<<"\n";
 	std::cout<<"Y: "<<pos.y<<"\n";
-	std::cout<<"Z: "<<pos.z<<"\n";
+	std::cout<<"Z: "<<pos.z<<"\n";*/
 
 	auto modSpeed = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
 
@@ -28,12 +28,29 @@ void PathPlanningComponent::update(float dTime)
 						(listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
 						(listNodes[lastVector].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector].get()->getTransformData().position.z - pos.z);
 	
+	float distaneNextWay;
+
+	if(lastVector == listNodes.size()-1)
+	{
+		distaneNextWay = (listNodes[0].get()->getTransformData().position.x - pos.x) * (listNodes[0].get()->getTransformData().position.x - pos.x) +
+						(listNodes[0].get()->getTransformData().position.y - pos.y) * (listNodes[0].get()->getTransformData().position.y - pos.y) +
+						(listNodes[0].get()->getTransformData().position.z - pos.z) * (listNodes[0].get()->getTransformData().position.z - pos.z);
+	
+	}
+	else
+	{
+		distaneNextWay = (listNodes[lastVector+1].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector+1].get()->getTransformData().position.x - pos.x) +
+						(listNodes[lastVector+1].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector+1].get()->getTransformData().position.y - pos.y) +
+						(listNodes[lastVector+1].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector+1].get()->getTransformData().position.z - pos.z);
+	
+	}
+	
 	
 	float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
 
 	if(this->getGameObject().getComponent<AIDrivingComponent>() != nullptr)
 	{
-		if(distaneActualWay <= (radius*radius))
+		if((distaneActualWay <= (radius*radius)/2) || distaneNextWay < distaneNextWay)
 		{
 			if(lastVector < listNodes.size()-1)
 			{
@@ -48,7 +65,7 @@ void PathPlanningComponent::update(float dTime)
 	}
 	else
 	{
-		if(distaneActualWay <= radius*radius)
+		if((distaneActualWay <= radius*radius) || distaneNextWay < distaneNextWay)
 		{
 			if(lastVector < listNodes.size()-1)
 			{
