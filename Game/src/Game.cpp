@@ -7,11 +7,13 @@
 #include <vector>
 #include <fstream>
 #include <chrono>
+#include <string>
 #include <stdio.h>
  
 #define SERVER_PORT 12345
 #define MAX_CONNS 2000
 
+void introVideo();
 void addObjects();
 void loadMap();
 std::vector<std::string> split(const std::string& s, const char& c);
@@ -23,6 +25,9 @@ void Game::init() {
 
     //Say game loop is active
     Game::stay = true;
+
+    //Initial state
+    //stateSetter(IntroState::getInstance());
 
     //Set engine to default
     Game::renderEngineSetter(0);
@@ -139,6 +144,8 @@ void Game::Run() {
     auto lastTime = std::chrono::high_resolution_clock::now();
     float accumulatedTime = 0;
     const float maxTime = 1.0f/30.0f;
+
+    introVideo();
 
     while(Game::stay){
 
@@ -808,4 +815,50 @@ void loadMap() {
     //Update every thing that has been created
     EventManager::getInstance().update();
 
+}
+
+
+//-----------------------------------
+//-----------------------------------
+//------------PROVISIONAL------------
+//-----------------------------------
+//-----------------------------------
+void introVideo(){
+	//Play intro video
+	double currentSec = 0;
+
+    char part1[] = "ffmpeg -i $PWD/media/video/logo.mp4 -ss 00:00:";
+    char part2[] = " -vframes 1 $PWD/media/video/framelogo.bmp && y && echo";
+
+    
+	//loop for the full size of the video
+	while(currentSec < 17.0){
+        char * numbers = new char[7];   //numbers and decimals to put
+        char * systemCall = new char[std::strlen(part1)+std::strlen(part2)+8];  //entire message
+
+        /*if(currentSec<10.0){
+            numbers[0] = '0';        //floor to unit
+        }else{
+            numbers = {'1',(char) (((int)currentSec%) % 10)} //obtain unit only
+        }*/
+
+        //double now = (double) ( (int) (currentSec * 1000) ) / 1000.0; //4 decimals
+
+        std::string str = std::to_string(currentSec);
+        if(currentSec < 10.0){
+            strcat(numbers, "0");
+        }
+        strcat(numbers, str.c_str() );
+
+        
+        strcat(systemCall,part1);
+        strcat(systemCall,numbers);
+        strcat(systemCall,part2);
+        std::cout<<"numbers"<<numbers<<std::endl;
+        std::cout<<"final "<<systemCall<<std::endl;
+		system(systemCall);
+
+        //addcurrentTime
+        currentSec+=1/60.0;
+	}
 }

@@ -7,7 +7,7 @@ class MenuState : public IGameState {
 public: 
 
     //Constructor
-    MenuState () : IGameState() {};
+    MenuState (){};
 
     //Destructor
     virtual ~MenuState() {}

@@ -7,7 +7,7 @@ class MatchState : public IGameState {
 public: 
 
     //Constructor
-    MatchState () : IGameState() {};
+    MatchState () { type = IGameState::MAIN; };
 
     //Destructor
     virtual ~MatchState() {}
@@ -23,6 +23,12 @@ public:
 
     //Shutdown
     virtual void close();
+
+    //Static class getter
+    static MatchState& getInstance() {
+        static MatchState instance;
+        return instance;
+    };
 
 private:
 

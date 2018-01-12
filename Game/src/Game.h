@@ -19,8 +19,10 @@
 #include "GameManager/ItemManager.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
-
-
+#include "GameState/IGameState.h"
+#include "GameState/IntroState.h"
+#include "GameState/MainState.h"
+#include "GameState/MatchState.h"
 
 class Game {
 
@@ -58,11 +60,15 @@ private:
         renderEngine = n;
     }
 
-    //Engine setter
+    //Input setter
     void inputEngineSetter(int n){
         inputEngine = n;
     }
 
+    //State setter
+    void stateSetter(IGameState* s){
+        state = s;
+    }
 
     //==============================================================
     // Private data
@@ -99,4 +105,6 @@ private:
     //Stay in the main loop
     bool stay;
 
+    //current state
+    IGameState* state;
 };

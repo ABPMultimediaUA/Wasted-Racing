@@ -234,3 +234,7 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
         node->setScale(irrSca);
     }
 }
+
+void RenderIrrlicht::updateLogo(){
+    
+}

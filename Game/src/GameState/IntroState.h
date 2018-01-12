@@ -7,7 +7,7 @@ class IntroState : public IGameState {
 public: 
 
     //Constructor
-    IntroState () : IGameState() {};
+    IntroState (){ type = IGameState::INTRO; };
 
     //Destructor
     virtual ~IntroState() {}
@@ -24,6 +24,11 @@ public:
     //Shutdown
     virtual void close();
 
+    //Static class getter
+    static IntroState& getInstance() {
+        static IntroState instance;
+        return instance;
+    };
 private:
 
 };
