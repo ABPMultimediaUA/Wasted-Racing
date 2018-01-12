@@ -143,20 +143,20 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.angle = 0.0f;
     mData.spin = 0;
     mData.spin_inc = 0.001;
-    mData.max_spin = 0.1;
+    mData.max_spin = 0.08;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 155.0f;
+    mData.max_vel = 160.0f;
     mData.brake_vel = 10.f;
     mData.velY = 10.f;
     mData.acc = 0;
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
-    mData.brake_acc = 12.f;
+    mData.brake_acc = 30.f;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, true, CollisionComponent::Type::Default);
@@ -186,20 +186,20 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.angle = 0.0f;
     mData.spin = 0;
     mData.spin_inc = 0.001;
-    mData.max_spin = 0.1;
+    mData.max_spin = 0.08;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 155.0f;
+    mData.max_vel = 160.0f;
     mData.brake_vel = 10.f;
     mData.velY = 10.f;
     mData.acc = 0;
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
-    mData.brake_acc = 12.f;
+    mData.brake_acc = 30.f;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, true, CollisionComponent::Type::Default);
