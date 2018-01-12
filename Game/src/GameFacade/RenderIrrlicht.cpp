@@ -72,7 +72,7 @@ void RenderIrrlicht::closeWindow() {
 
 void RenderIrrlicht::renderDraw() {
 
-    videoDriver->beginScene(true, true, irr::video::SColor(255,10,10,40));
+    videoDriver->beginScene(true, true, irr::video::SColor(255,150,150,255));
     sceneManager->drawAll();
     sceneManager->getGUIEnvironment()->drawAll();
     videoDriver->endScene();
@@ -101,7 +101,7 @@ void RenderIrrlicht::addLight() {
     l.Type = irr::video::E_LIGHT_TYPE::ELT_DIRECTIONAL;
     auto node = sceneManager->addLightSceneNode(0, irr::core::vector3df(0,0,0), irr::video::SColorf(1.0,1.0,1.0), 500); 
     node->setPosition(irr::core::vector3df(0,150,0));
-    sceneManager->setAmbientLight(irr::video::SColorf(0.2,0.2,0.2,1));
+    sceneManager->setAmbientLight(irr::video::SColorf(0.4,0.4,0.4,1));
 }
 
 void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
@@ -174,7 +174,7 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
             break;
             case ObjectRenderComponent::Shape::Road: {
                 //auto plane = sceneManager->getMesh("media/mesh/circuit.3ds");
-                auto plane = sceneManager->getMesh("media/mesh/circuit.obj");
+                auto plane = sceneManager->getMesh("media/mesh/course/course.obj");
                 node = sceneManager->addMeshSceneNode(plane);
             }
             break;

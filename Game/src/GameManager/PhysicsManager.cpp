@@ -76,6 +76,9 @@ void PhysicsManager::update(const float dTime) {
         calculateTerrainCollision(movingCharacterList[i], ourMove, ourTerr, ourColl, dTime);
 
         gameObject.setNewTransformData(gameObject.getTransformData());
+
+        if(gameObject.getId()==50)
+            std::cout << movingCharacterList[i].terrainComponent.get()->getGameObject().getId() << std::endl;
         
     }
 

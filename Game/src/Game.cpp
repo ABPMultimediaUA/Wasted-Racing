@@ -743,7 +743,7 @@ void addObjects(){
     //===============================================================
     loadMap();
 
-    auto terrainCMP = ObjectManager::getInstance().getObject((uint16_t) 1010).get()->getComponent<TerrainComponent>();
+    auto terrainCMP = ObjectManager::getInstance().getObject((uint16_t) 1090).get()->getComponent<TerrainComponent>();
     auto terrCMP = terrainCMP.get()->getTerrain();
 
     id = 50;
