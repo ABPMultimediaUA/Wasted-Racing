@@ -79,11 +79,11 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 					nearB = array[i].get()->getB();
 				}
 
-				atan_obs += (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
+				atan_obs = (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
 				//collisions
-				obs_left	+= inferL(atan_obs		,0.25f  ,1.25f 	,0  	);
-				obs_center 	+= inferT(atan_obs		,0.23f	,0.25f 	,0.27f	);
-				obs_right	+= inferL(atan_obs		,-0.75f	,0.25f  ,1   	);
+				obs_left	+= inferL(atan_obs		,0.25f  ,0.5f 	,0  	);
+				obs_center 	+= inferT(atan_obs		,0.20f	,0.25f 	,0.3f	);
+				obs_right	+= inferL(atan_obs		,0.f	,0.25f  ,1   	);
 
 				obs_count++;
 
@@ -93,7 +93,7 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 				nearA = array[i].get()->getA();
 				nearB = array[i].get()->getB();
 				
-				atan_box += (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
+				atan_box = (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
 				//collisions
 				box_left 		+= inferL(atan_box		,0.25f  ,0.5f 	,0   	);
 				box_center 		+= inferT(atan_box		,0.2f	,0.25f 	,0.3f	);
@@ -106,7 +106,7 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 				nearA = array[i].get()->getA();
 				nearB = array[i].get()->getB();
 				
-				atan_box += (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
+				atan_box = (glm::atan(nearA, nearB) / 3.14159265358979323846264338327f );
 				//collisions
 				rmp_left 		+= inferL(atan_box		,0.25f  ,0.5f 	,0   	);
 				rmp_center 		+= inferT(atan_box		,0.20f	,0.25f 	,0.3f	);
@@ -166,7 +166,11 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 		{
 			if(box == 1)
 			{
-				if(haveItem == -1)
+					go_left = box_left;
+					//go_center = wp_center;
+					go_right = box_right;
+
+				/*if(haveItem == -1)
 				{
 					go_left = wp_left * 0.3 + box_left * 0.7;
 					//go_center = wp_center * 0.3 + box_center * 0.7;
@@ -177,7 +181,7 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 					go_left = wp_left;
 					//go_center = wp_center;
 					go_right = wp_right;
-				}
+				}*/
 			}
 			else if(ramp == 1)
 			{
