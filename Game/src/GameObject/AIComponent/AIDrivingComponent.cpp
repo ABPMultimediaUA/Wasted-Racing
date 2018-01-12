@@ -154,6 +154,8 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 		steeringNone = glm::min( glm::max(1-wp_left, wp_center, 1-wp_right), glm::max(obs_left, obs_right) );
 		steeringRight = glm::min( glm::max(wp_right, wp_center), glm::max(obs_center,obs_left) );*/
 
+		auto haveItem = myPos.getComponent<ItemHolderComponent>()->getItemType();
+
 		if(types == 0)
 		{
 			go_left = wp_left;
@@ -164,22 +166,40 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 		{
 			if(box == 1)
 			{
-				go_left = wp_left * 0.2 + box_left * 0.8;
-				//go_center = wp_center * 0.2 + box_center * 0.8;
-				go_right = wp_right * 0.2 + box_right * 0.8;
+				if(haveItem == -1)
+				{
+					go_left = wp_left * 0.3 + box_left * 0.7;
+					//go_center = wp_center * 0.3 + box_center * 0.7;
+					go_right = wp_right * 0.3 + box_right * 0.7;
+				}
+				else
+				{
+					go_left = wp_left;
+					//go_center = wp_center;
+					go_right = wp_right;
+				}
 			}
 			else if(ramp == 1)
 			{
-				go_left = wp_left * 0.2 + rmp_left * 0.8;
-				//go_center = wp_center * 0.2 + rmp_center * 0.8;
-				go_right = wp_right * 0.2 + rmp_right * 0.8;
+				go_left = wp_left * 0.3 + rmp_left * 0.7;
+				//go_center = wp_center * 0.3 + rmp_center * 0.7;
+				go_right = wp_right * 0.3 + rmp_right * 0.7;
 			}
 		}
 		else if(types == 2)
 		{
-			go_left = wp_left * 0.2 + box_left * 0.55 + rmp_left * 0.25;
-			//go_center = wp_center * 0.2 + box_center * 0.55 + rmp_center * 0.25;
-			go_right = wp_right * 0.2 + box_right * 0.55 + rmp_right * 0.25;
+			if(haveItem == -1)
+			{
+				go_left = wp_left * 0.2 + box_left * 0.55 + rmp_left * 0.25;
+				//go_center = wp_center * 0.2 + box_center * 0.55 + rmp_center * 0.25;
+				go_right = wp_right * 0.2 + box_right * 0.55 + rmp_right * 0.25;
+			}
+			else
+			{
+				go_left = wp_left * 0.3 + rmp_left * 0.7;
+				//go_center = wp_center * 0.3 + rmp_center * 0.7;
+				go_right = wp_right * 0.3 + rmp_right * 0.7;
+			}
 		}
 
 

@@ -150,7 +150,8 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
             }
 
             //If collision is kinetic, apply collision physics
-            if(collision && hisColl->getKinetic()){
+            if(collision && hisColl->getKinetic() && 
+                coll->getType() != CollisionComponent::Type::RedShell && coll->getType() != CollisionComponent::Type::BlueShell){
 
                 //Get other object move component
                 auto hisMove = hisColl->getGameObject().getComponent<MoveComponent>();

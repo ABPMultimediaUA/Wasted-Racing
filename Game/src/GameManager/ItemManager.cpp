@@ -74,6 +74,10 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
     ItemBoxes.push_back(std::dynamic_pointer_cast<ItemBoxComponent>(component));
     EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Create, data});
 
+    RenderManager::getInstance().createObjectRenderComponent(obj, ObjectRenderComponent::Shape::Cube);
+    PhysicsManager::getInstance().createCollisionComponent(obj, 5, false, CollisionComponent::Type::ItemBox);
+
+
     return component;
 }
 

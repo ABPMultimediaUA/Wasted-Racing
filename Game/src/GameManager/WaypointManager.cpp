@@ -49,7 +49,9 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
     newGameObject.get()->addComponent(component);
 
     listSubNodes->push_back(newGameObject);
-    
+        
+    //RenderManager::getInstance().createObjectRenderComponent(*newGameObject.get(), ObjectRenderComponent::Shape::Sphere);
+
     return component;
 }
 
