@@ -550,51 +550,6 @@ void addObjects(){
 
 
 
-    //WAYPOINT
-   /* RenderManager::getInstance().createObjectRenderComponent(*ob100.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob101.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob102.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob103.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob104.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob105.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob106.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob107.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob108.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob109.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob110.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob111.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob112.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob113.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob114.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob115.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob116.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob117.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob118.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob119.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob120.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob121.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob122.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob123.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob124.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob125.get(), ObjectRenderComponent::Shape::Sphere);
-    RenderManager::getInstance().createObjectRenderComponent(*ob126.get(), ObjectRenderComponent::Shape::Sphere);*/
-
-    //ITEM BOX
-    std::shared_ptr<IComponent> cp25 = RenderManager::getInstance().createObjectRenderComponent(*ob25.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> cp26 = RenderManager::getInstance().createObjectRenderComponent(*ob26.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> cp27 = RenderManager::getInstance().createObjectRenderComponent(*ob27.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> cp28 = RenderManager::getInstance().createObjectRenderComponent(*ob28.get(), ObjectRenderComponent::Shape::Cube);
-
-    std::shared_ptr<IComponent> cp29 = RenderManager::getInstance().createObjectRenderComponent(*ob29.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> cp30 = RenderManager::getInstance().createObjectRenderComponent(*ob30.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> cp31 = RenderManager::getInstance().createObjectRenderComponent(*ob31.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> cp32 = RenderManager::getInstance().createObjectRenderComponent(*ob32.get(), ObjectRenderComponent::Shape::Cube);
-
-    std::shared_ptr<IComponent> cp33 = RenderManager::getInstance().createObjectRenderComponent(*ob33.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> cp34 = RenderManager::getInstance().createObjectRenderComponent(*ob34.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> cp35 = RenderManager::getInstance().createObjectRenderComponent(*ob35.get(), ObjectRenderComponent::Shape::Cube);
-    std::shared_ptr<IComponent> cp36 = RenderManager::getInstance().createObjectRenderComponent(*ob36.get(), ObjectRenderComponent::Shape::Cube);
-
     //===============================================================
     // ADD AN INPUT COMPONENT TO THE FIRST OBJECT
     //===============================================================
@@ -616,21 +571,6 @@ void addObjects(){
     
     //std::shared_ptr<IComponent> collisionCP200 = PhysicsManager::getInstance().createCollisionComponent(*ob200.get(), 5, true, CollisionComponent::Type::Default);
 
-    std::shared_ptr<IComponent> collisionCP6 = PhysicsManager::getInstance().createCollisionComponent(*ob25.get(), 5, false, CollisionComponent::Type::ItemBox);
-    std::shared_ptr<IComponent> collisionCP7 = PhysicsManager::getInstance().createCollisionComponent(*ob26.get(), 5, false, CollisionComponent::Type::ItemBox);
-    std::shared_ptr<IComponent> collisionCP8 = PhysicsManager::getInstance().createCollisionComponent(*ob27.get(), 5, false, CollisionComponent::Type::ItemBox);
-    std::shared_ptr<IComponent> collisionCP9 = PhysicsManager::getInstance().createCollisionComponent(*ob28.get(), 5, false, CollisionComponent::Type::ItemBox);
-    
-    std::shared_ptr<IComponent> collisionCP10 = PhysicsManager::getInstance().createCollisionComponent(*ob29.get(), 5, false, CollisionComponent::Type::ItemBox);
-    std::shared_ptr<IComponent> collisionCP11 = PhysicsManager::getInstance().createCollisionComponent(*ob30.get(), 5, false, CollisionComponent::Type::ItemBox);
-    std::shared_ptr<IComponent> collisionCP12 = PhysicsManager::getInstance().createCollisionComponent(*ob31.get(), 5, false, CollisionComponent::Type::ItemBox);
-    std::shared_ptr<IComponent> collisionCP13 = PhysicsManager::getInstance().createCollisionComponent(*ob32.get(), 5, false, CollisionComponent::Type::ItemBox);
-
-    std::shared_ptr<IComponent> collisionCP14 = PhysicsManager::getInstance().createCollisionComponent(*ob33.get(), 5, false, CollisionComponent::Type::ItemBox);
-    std::shared_ptr<IComponent> collisionCP15 = PhysicsManager::getInstance().createCollisionComponent(*ob34.get(), 5, false, CollisionComponent::Type::ItemBox);
-    std::shared_ptr<IComponent> collisionCP16 = PhysicsManager::getInstance().createCollisionComponent(*ob35.get(), 5, false, CollisionComponent::Type::ItemBox);
-    std::shared_ptr<IComponent> collisionCP17 = PhysicsManager::getInstance().createCollisionComponent(*ob36.get(), 5, false, CollisionComponent::Type::ItemBox);
-
 
     //Start Line
     LAPAL::plane3f terrainX;
@@ -644,7 +584,7 @@ void addObjects(){
     //===============================================================
     // ADD TERRAIN COMPONENT
     //===============================================================
-    EventManager::getInstance().update();
+    /*EventManager::getInstance().update();
     LAPAL::plane3f terrain;
     terrain.p1 = (LAPAL::vec3f(-250.f ,0.f ,100.f));
     terrain.p2 = (LAPAL::vec3f(250.f  ,0.f ,100.f));
@@ -734,7 +674,7 @@ void addObjects(){
     idd = 18;
     terrainCP7_0.get()->connectSiblingRight(idd);
     idd = 4;
-    terrainCP7_0.get()->connectSiblingLeft(idd);
+    terrainCP7_0.get()->connectSiblingLeft(idd);*/
 
     
 
