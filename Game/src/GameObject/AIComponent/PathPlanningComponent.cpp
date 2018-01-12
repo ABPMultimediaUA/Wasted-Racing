@@ -14,9 +14,9 @@ void PathPlanningComponent::update(float dTime)
 
 	auto pos = this->getGameObject().getTransformData().position;
 
-	/*std::cout<<"X: "<<pos.x<<"\n";
+	std::cout<<"X: "<<pos.x<<"\n";
 	std::cout<<"Y: "<<pos.y<<"\n";
-	std::cout<<"Z: "<<pos.z<<"\n";*/
+	std::cout<<"Z: "<<pos.z<<"\n";
 
 	auto modSpeed = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
 
