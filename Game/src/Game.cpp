@@ -133,6 +133,7 @@ void Game::close() {
     sensorManager->close();
     itemManager->close();
     scoreManager->close();
+    audioManager->close();
 }
 
 //====================================================

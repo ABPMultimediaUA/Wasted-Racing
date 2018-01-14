@@ -1,10 +1,8 @@
-#include "Game.h"
+#include "Game/src/Game.h"
+
 #include <iostream>
 
 void holita(){
-	for(int i = 0; i < 1000000000; ++i){
-
-	}
 }
 
 int main(){

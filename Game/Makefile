@@ -2,6 +2,7 @@
 
 # Name of the executable created (.exe will be added automatically if necessary)
 TARGET := XKating
+TARGETSERVER := Server_XKating
 
 # Path for the executable. Note that Irrlicht.dll should usually also be there for win32 systems
 BIN_PATH := bin/
@@ -94,6 +95,9 @@ clean_linux:
 
 info:
 	$(info $(shell ls $(BIN_PATH)$(OBJ_PATH)))
+
+server:
+	$(CXX) $(CXXFLAGS) ../ServerGame.cpp $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH)))  -o $(BIN_PATH)$(TARGETSERVER) $(LDFLAGS)
 
 ################################################################################
 # Windows 
