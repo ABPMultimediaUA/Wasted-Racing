@@ -8,9 +8,6 @@
 #include <fstream>
 #include <chrono>
 #include <stdio.h>
- 
-#define SERVER_PORT 12345
-#define MAX_CONNS 2000
 
 void addObjects();
 void loadMap();
@@ -89,7 +86,7 @@ void Game::update(float dTime) {
     }
     else
     {
-        timeWait -= dTime;
+        timeWait -= dTime; 
     }
     physicsManager->update(dTime);
 
@@ -1068,7 +1065,7 @@ void loadMap() {
                 //Read FRICTION from XML
                 terrain.fric = std::stof(bbox->first_attribute("friction")->value());
                 //Calculate terrain angles in X and Z
-                //LAPAL::calculateRotationsXZ(terrain);
+                LAPAL::calculateRotationsXZ(terrain);
 
                 //Create TERRAIN component
                 PhysicsManager::getInstance().createTerrainComponent(*obj.get(), terrain);
