@@ -15,6 +15,8 @@ enum EventType {
     GameObject_Delete,
     ObjectRenderComponent_Create,
     ObjectRenderComponent_Delete,
+    LightRenderComponent_Create,
+    LightRenderComponent_Delete,
     CameraRenderComponent_Create,
     CameraRenderComponent_Delete,
     InputComponent_Create,

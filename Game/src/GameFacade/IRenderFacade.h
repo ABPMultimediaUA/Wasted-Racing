@@ -5,6 +5,7 @@
 
 #include "../GameManager/InputManager.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
 #include "../GameObject/GameObject.h"
 
 class GameObject;
@@ -77,11 +78,11 @@ public:
     //Add an object to the game
     virtual void addObject(IComponent::Pointer ptr) = 0;
 
-    //Delete an object of the game
-    virtual void deleteObject(IComponent::Pointer ptr) = 0;
-
     //Add a light to the game
-    virtual void addLight() = 0;
+    virtual void addLight(IComponent::Pointer ptr) = 0;
+
+    //Delete an object or light of the game
+    virtual void deleteObject(IComponent::Pointer ptr) = 0;
 
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;

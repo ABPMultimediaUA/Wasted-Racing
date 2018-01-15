@@ -26,7 +26,7 @@ void RenderIrrlicht::openWindow(){
     pos->setOverrideFont(font);
 
     addCamera();
-    addLight();
+    //sceneManager->setAmbientLight(irr::video::SColorf(0.8,0.8,0.8,1));
 
     uintptr_t aux = reinterpret_cast<uintptr_t>(device);
     InputManager::getInstance().setDevice(aux);
@@ -96,15 +96,6 @@ void RenderIrrlicht::updateCamera() {
 
     camera->setTarget(irr::core::vector3df(pos.x, pos.y, pos.z));
     camera->setPosition(irr::core::vector3df(pos.x - 30*cos(radianAngle), pos.y + 12, pos.z + 30*sin(radianAngle)));
-}
-
-void RenderIrrlicht::addLight() {
-    auto pLight = sceneManager->addLightSceneNode(0, irr::core::vector3df(0,0,0), irr::video::SColorf(1.0,1.0,1.0), 500); 
-    auto & l = pLight->getLightData();
-    l.Type = irr::video::E_LIGHT_TYPE::ELT_DIRECTIONAL;
-    auto node = sceneManager->addLightSceneNode(0, irr::core::vector3df(0,0,0), irr::video::SColorf(1.0,1.0,1.0), 500); 
-    node->setPosition(irr::core::vector3df(0,150,0));
-    sceneManager->setAmbientLight(irr::video::SColorf(0.8,0.8,0.8,1));
 }
 
 void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
@@ -188,6 +179,55 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
                 node->setMaterialTexture(0, var);
             }
             break;
+            default:
+            break;
+        }
+
+        //Set node transformation
+        node->setPosition(irrPos);
+        node->setRotation(irrRot);
+        node->setScale(irrSca);
+
+        nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
+    }
+}
+
+void RenderIrrlicht::addLight(IComponent::Pointer ptr) {
+
+    LightRenderComponent* cmp = dynamic_cast<LightRenderComponent*>(ptr.get());
+
+    if(cmp != nullptr){
+
+        auto obj = cmp->getGameObject();
+        auto type = cmp->getLightType();
+        auto rad = cmp->getLightRadius();
+        //Transform the data to irrlicht type
+        auto pos = obj.getTransformData().position;
+        auto rot = obj.getTransformData().rotation;
+        auto sca = obj.getTransformData().scale;
+        irr::core::vector3df irrPos = irr::core::vector3df((float)pos.x,(float)pos.y, (float)pos.z);
+        irr::core::vector3df irrRot = irr::core::vector3df((float)rot.x,(float)rot.y, (float)rot.z);
+        irr::core::vector3df irrSca = irr::core::vector3df((float)sca.x,(float)sca.y, (float)sca.z);
+
+        irr::scene::ISceneNode * node;
+
+        //Initialize the node
+        switch(type){
+
+            case LightRenderComponent::Type::Point: {
+                auto light = sceneManager->addLightSceneNode(0, irr::core::vector3df((float)pos.x,(float)pos.y, (float)pos.z), irr::video::SColorf(1.0,1.0,1.0), rad); 
+                auto & type = light->getLightData();
+                node = light;
+                type.Type = irr::video::E_LIGHT_TYPE::ELT_POINT;
+
+            }
+            break;
+            case LightRenderComponent::Type::Directional: {
+                auto light = sceneManager->addLightSceneNode(0, irr::core::vector3df((float)pos.x,(float)pos.y, (float)pos.z), irr::video::SColorf(1.0,1.0,1.0), rad); 
+                auto & type = light->getLightData();
+                node = light;
+                type.Type = irr::video::E_LIGHT_TYPE::ELT_DIRECTIONAL;
+            }
             default:
             break;
         }

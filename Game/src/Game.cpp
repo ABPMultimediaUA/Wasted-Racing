@@ -672,6 +672,14 @@ void addObjects(){
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob37 = ObjectManager::getInstance().createObject(id, transform);
 
+    //Add light
+    id = 12211;
+    transform.position = glm::vec3(0, 1000, 0);
+    transform.rotation = glm::vec3(0, 0, 0);
+    transform.scale    = glm::vec3(1, 1, 1);
+    auto ob12211 = ObjectManager::getInstance().createObject(id, transform);
+    RenderManager::getInstance().createLightRenderComponent(*ob12211.get(),LightRenderComponent::Type::Point,5000);
+
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================

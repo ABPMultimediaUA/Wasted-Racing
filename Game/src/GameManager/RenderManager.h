@@ -49,6 +49,7 @@ public:
     }
 
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape);
+    IComponent::Pointer createLightRenderComponent(GameObject& newGameObject, LightRenderComponent::Type newType, float newRadius);
     IComponent::Pointer createCameraRenderComponent(GameObject& newGameObject);
 
     //Camera component getter and setter
