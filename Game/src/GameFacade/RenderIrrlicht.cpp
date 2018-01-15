@@ -167,8 +167,8 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
             }
             break;
             case ObjectRenderComponent::Shape::Road: {
-                //auto plane = sceneManager->getMesh("media/mesh/circuit.3ds");
-                auto plane = sceneManager->getMesh("media/mesh/course/course.obj");
+                auto plane = sceneManager->getMesh("media/mesh/circuit.obj");
+                //auto plane = sceneManager->getMesh("media/mesh/course/course.obj");
                 node = sceneManager->addMeshSceneNode(plane);
             }
             break;
