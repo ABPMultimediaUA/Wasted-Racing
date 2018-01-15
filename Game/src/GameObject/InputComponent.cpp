@@ -61,7 +61,7 @@ void InputComponent::close(){
 //==============================================
 void advanceDownI(EventData eData) {
     auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp->changeAccInc(10);
+    comp->changeAccInc(comp->getMovemententData().max_acc);
     comp->isMoving(true);
 }
 void advanceUpI(EventData eData) {

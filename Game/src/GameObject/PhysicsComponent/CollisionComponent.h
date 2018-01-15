@@ -19,7 +19,8 @@ public:
 		ItemBox,
 		Banana,
 		BlueShell,
-		RedShell
+		RedShell,
+		StartLine
 	};
 
     //Constructor

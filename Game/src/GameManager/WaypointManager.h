@@ -1,5 +1,6 @@
 #pragma once
 
+#include "RenderManager.h"
 #include "../GameObject/AIComponent/WaypointComponent.h"
 #include "../GameObject/AIComponent/PathPlanningComponent.h"
 #include "../GameObject/ItemComponent/IItemComponent.h"

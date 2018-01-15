@@ -268,24 +268,32 @@ bool LAPAL::checkTerrain(const LAPAL::plane3f& terrain){
 
 //Calculates rotation in X and Z of the plane, assigning the value to rotZ and rotX
 void LAPAL::calculateRotationsXZ(LAPAL::plane3f& terrain){
-    //check if terrain is horizontal or not
-    if(checkTerrain(terrain)){
-        terrain.rotZ = 0.f;
-        terrain.rotX = 0.f;
-    }else{
-        //check which points are at different heights. We only need to check two pairs.
-        if(terrain.p1.x != terrain.p2.x){
-            terrain.rotZ = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.x-terrain.p1.x) );
-        }else{
-            terrain.rotZ = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.x-terrain.p2.x) );
-        }  
-        
-        if(terrain.p1.z != terrain.p2.z){
-            terrain.rotX = glm::atan( (terrain.p2.y - terrain.p1.y) / glm::abs(terrain.p2.z-terrain.p1.z) );
-        }else{
-            terrain.rotX = glm::atan( (terrain.p3.y - terrain.p2.y) / glm::abs(terrain.p3.z-terrain.p2.z) );
-        }
-    } 
+    
+    //Calculate terrain normal
+    LAPAL::vec3f v1 = terrain.p2 - terrain.p1;
+    LAPAL::vec3f v2 = terrain.p3 - terrain.p1;
+
+    //Plane equation Ax + By + Cz + D = 0
+    float A = v1.y * v2.z - v1.z * v2.y;
+    float B = v1.z * v2.x - v1.x * v2.z;
+    float C = v1.x * v2.y - v1.y * v2.x;
+    float D = -( terrain.p1.x * A + terrain.p1.y * B + terrain.p1.z * C );
+
+    //Calculate three points from the plane (0,y,0), (1,y,0) and (0,y,1)
+    auto p0 = glm::vec3( 0, -D / B, 0);
+    auto pX = glm::vec3( 1, (-A-D) / B, 0);
+    auto pZ = glm::vec3( 0, (-C-D) / B, 1);
+
+    //Calculate line in x and angle with x axis (1,0,0)
+    auto lX = pX-p0;
+    float cosX = lX.x / sqrt(lX.x*lX.x + lX.y*lX.y + lX.z*lX.z);
+    terrain.rotZ = acos(cosX);
+
+    //Calculate line in z and angle with z axis (0,0,1)
+    auto lZ = pZ-p0;
+    float cosZ = lZ.z / sqrt(lZ.x*lZ.x + lZ.y*lZ.y + lZ.z*lZ.z);
+    terrain.rotX = acos(cosZ);
+
 }
 
 //Calculates expected Y for the object given its position

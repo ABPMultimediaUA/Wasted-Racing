@@ -9,7 +9,7 @@ class ItemBoxComponent : public IComponent{
     public:
 
         //Constructor
-        ItemBoxComponent(GameObject& newGameObject, float dTime);
+        ItemBoxComponent(GameObject& newGameObject);
 
         //Destructor
         virtual ~ItemBoxComponent() {};

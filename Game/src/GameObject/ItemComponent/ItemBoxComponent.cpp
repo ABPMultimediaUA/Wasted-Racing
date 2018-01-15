@@ -5,10 +5,10 @@
 
 
 //Constructor
-ItemBoxComponent::ItemBoxComponent(GameObject& newGameObject, float dTime) : IComponent(newGameObject){
+ItemBoxComponent::ItemBoxComponent(GameObject& newGameObject) : IComponent(newGameObject){
 
-    boxTime = dTime;
-    actTime = dTime;
+    boxTime = 5.f;
+    actTime = 5.f;
 
 }
 
@@ -27,7 +27,7 @@ void ItemBoxComponent::update(float dTime){
             actTime -= dTime;
     }
 
-    if(actTime == 0){
+    if(actTime <= 0){
 
         active = 1;
 

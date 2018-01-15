@@ -9,6 +9,8 @@
 #include "../GameObject/ItemComponent/ItemBlueShellComponent.h"
 #include "../GameObject/ItemComponent/ItemRedShellComponent.h"
 #include "../GameObject/ItemComponent/ItemStarComponent.h"
+#include "../GameObject/StartLineComponent.h"
+#include "../GameObject/ScoreComponent.h"
 #include <vector>
 
 class PhysicsManager{

@@ -5,6 +5,7 @@
 #include <glm/ext.hpp>
 #include <vector>
 #include "../GameObject.h"
+#include "../ItemComponent/ItemHolderComponent.h"
 
 class AIDrivingComponent : public IComponent{
     public:
