@@ -39,6 +39,14 @@ LRadius   = []
 LType     = []
 LId       = 14000
 
+#################################################################################
+#                            ITEM BOX                                           #
+#################################################################################
+IPosArray = []
+IRotArray = []
+IScaArray = []
+IId       = 16000
+
 #Variables for knowing when an object has been fully analyzed
 WVisited   = False
 LVisited   = False 
@@ -144,7 +152,7 @@ for line in objFile:
         if len(aux) > 5 :
             WScaArray.append(aux[4].split(':')[0] + ',' + aux[4].split(':')[1] + ',' + aux[4].split(':')[2])
         else :
-            WScaArray.append('0,0,0')
+            WScaArray.append('1,1,1')
 
     #Here we store data for the position of our LIGHT
     elif Waypoint == True and WVisited == False and line[0] == 'v' and line[1] == ' ' :
@@ -180,7 +188,7 @@ for line in objFile:
         if len(aux) > 6 :
             LScaArray.append(aux[5].split(':')[0] + ',' + aux[5].split(':')[1] + ',' + aux[5].split(':')[2])
         else :
-            LScaArray.append('0,0,0')
+            LScaArray.append('1,1,1')
 
     #Here we store data for the position of our LIGHT
     elif Light == True and LVisited == False and line[0] == 'v' and line[1] == ' ' :
@@ -190,8 +198,37 @@ for line in objFile:
 
         LVisited = True
 
+    #################################################################################
+    #                            ITEM BOX                                           #
+    #################################################################################
+    if ItemBox == True and line[0] == 'o' and line[1] == ' ' :
+        aux = line.split(' ')[1].split('_')
+
+        #Set Rotation if given, and 0 if not
+        if len(aux) > 3 :
+            IRotArray.append(aux[2].split(':')[0] + ',' + aux[2].split(':')[1] + ',' + aux[2].split(':')[2])
+        else :
+            IRotArray.append('0,0,0')
+
+
+        #Set Scale if given, and 0 if not
+        if len(aux) > 4 :
+            IScaArray.append(aux[3].split(':')[0] + ',' + aux[3].split(':')[1] + ',' + aux[3].split(':')[2])
+        else :
+            IScaArray.append('1,1,1')
+
+    #Here we store data for the position of our LIGHT
+    elif ItemBox == True and IVisited == False and line[0] == 'v' and line[1] == ' ' :
+
+        aux = line.split(' ')
+        IPosArray.append(aux[1] + ',' + aux[2] + ',' + aux[3].rstrip())
+
+        IVisited = True
+
+
 #close obj file once read
 objFile.close()
+
 
 #Extra MATHS for TERRAIN
 #reorder vertex in faces depending on its x and z values
@@ -318,6 +355,17 @@ for i in range( 0, len(LPosArray) ) :
 
     destFile.write(gameObject)
     destFile.write(lightComponent)
+    destFile.write(gameObjectEnd)
+
+#ITEM BOX
+for i in range( 0, len(IPosArray) ) :
+
+    gameObject          =  '<object id=\"' + str(IId+i) + '\" pos=\"' + IPosArray[i] + '\" rot=\"' + IRotArray[i] + '\" sca=\"' + IScaArray[i] + '\">\n'
+    itemComponent    =  '    <component name=\"itemBox\"' + ' />\n'
+    gameObjectEnd       =  '</object>\n'
+
+    destFile.write(gameObject)
+    destFile.write(itemComponent)
     destFile.write(gameObjectEnd)
 
 #close write file

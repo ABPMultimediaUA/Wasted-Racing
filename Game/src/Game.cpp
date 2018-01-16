@@ -209,12 +209,6 @@ void addObjects(){
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, terrCMP, terrainCMP);
-    /*
-    id = 56;
-    transform.position = glm::vec3(-125,0,5);
-    transform.rotation = glm::vec3(45,45,45);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, terrain, terrainCP1);*/
 
     //===============================================================
     // Update to distribute all creation events
@@ -270,12 +264,11 @@ void loadMap() {
         strVector = split(object->first_attribute("rot")->value(), ',');
         transform.rotation = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
         //Read SCALE from XML
-        strVector = split(object->first_attribute("rot")->value(), ',');
+        strVector = split(object->first_attribute("sca")->value(), ',');
         transform.scale = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
 
         //Create new OBJECT
         auto obj = ObjectManager::getInstance().createObject(id, transform);
-
 
         //Parse components
         xml_node<> * root_component = object->first_node("component");
@@ -339,6 +332,14 @@ void loadMap() {
 
             }
 
+            //Parse ITEMBOX component
+            if(strcmp(component->first_attribute("name")->value(),"itemBox") == 0){
+                
+                //Create TERRAIN component
+                ItemManager::getInstance().createItemBox(*obj.get());
+
+
+            }
 
         }
 	}
@@ -398,6 +399,7 @@ void loadMap() {
             }
         }
     }
+
     //Update every thing that has been created
     EventManager::getInstance().update();
 

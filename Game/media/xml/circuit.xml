@@ -383,24 +383,33 @@
         <bbox p1="117.770035,-0.278279,-31.437876" p2="161.221146,-0.505546,-23.763136" p3="169.427109,0.809513,-123.184982" p4="122.028702,0.62805,-98.761551" friction="0.2" />
     </component>
 </object>
-<object id="10000" pos="0.000000,0.000000,-24.737925" rot="0,0,0" sca="0,0,0">
+<object id="10000" pos="0.000000,0.000000,-24.737925" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="80" level="0" />
 </object>
-<object id="10001" pos="99.403587,0.000000,0.000000" rot="0,0,0" sca="0,0,0">
+<object id="10001" pos="99.403587,0.000000,0.000000" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="80" level="1" />
 </object>
-<object id="10002" pos="178.683075,0.000000,1.947726" rot="0,0,0" sca="0,0,0">
+<object id="10002" pos="178.683075,0.000000,1.947726" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="90.5" level="2" />
 </object>
 <object id="14000" pos="0.000000,40.000000,-30.000000" rot="0,0,10" sca="0.5,0.5,0.5">
     <component name="light" radius="60" type="D" />
 </object>
-<object id="14001" pos="-110.000000,50.000000,-10.000000" rot="0,0,0" sca="0,0,0">
+<object id="14001" pos="-110.000000,50.000000,-10.000000" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
-<object id="14002" pos="-64.436913,181.453278,210.039520" rot="45,45,45.001" sca="0,0,0">
+<object id="14002" pos="-64.436913,181.453278,210.039520" rot="45,45,45.001" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
-<object id="14003" pos="110.000000,50.000000,-40.000000" rot="0,0,0" sca="0,0,0">
+<object id="14003" pos="110.000000,50.000000,-40.000000" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="80" type="P" />
+</object>
+<object id="16000" pos="78.523079,0.000000,-24.461281" rot="0,0,0" sca="0.5,0.5,0.5">
+    <component name="itemBox" />
+</object>
+<object id="16001" pos="78.523079,0.000000,-4.931152" rot="0,0,0" sca="1,1,1">
+    <component name="itemBox" />
+</object>
+<object id="16002" pos="78.523079,0.000000,15.191893" rot="45,45,45" sca="0.5,0.5,0.5">
+    <component name="itemBox" />
 </object>
