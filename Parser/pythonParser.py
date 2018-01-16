@@ -8,14 +8,46 @@ objFile = open(fileName, 'r')
 
 destFile = open("./../Game/media/xml/circuit.xml", 'w')
 
-#load arrays for vertex and faces
+#################################################################################
+#                            TERRAIN                                            #
+#################################################################################
 TVertexArray = []
 TFaceArray = []
 TFirstFace = 2147483647
-TId = 1000
+TId = 0
 
 TVertexArray.append(0)   #insert and initial 0 value, in this way we make
-                        #that vertex and face numeration matches
+                            #that vertex and face numeration matches
+
+#################################################################################
+#                            WAYPOINTS                                          #
+#################################################################################
+WPosArray = []
+WRotArray = []
+WScaArray = []
+WRadius   = []
+WLevel     = []
+WId       = 10000
+
+#################################################################################
+#                            LIGHTS                                             #
+#################################################################################
+LPosArray = []
+LRotArray = []
+LScaArray = []
+LRadius   = []
+LType     = []
+LId       = 14000
+
+#Variables for knowing when an object has been fully analyzed
+WVisited   = False
+LVisited   = False 
+IVisited   = False
+RVisited   = False
+OVisited   = False
+SVisited   = False
+
+#Variables for each different object
 Terrain     = False
 Waypoint    = False
 Light       = False 
@@ -36,6 +68,13 @@ for line in objFile:
         Object      = False
         StartLine   = False
 
+        WVisited   = False
+        LVisited   = False 
+        IVisited   = False
+        RVisited   = False
+        OVisited   = False
+        SVisited   = False
+
         if line[2] == 'T' :
             Terrain         = True
         if line[2] == 'W' :
@@ -51,7 +90,9 @@ for line in objFile:
         if line[2] == 'S' :
             StartLine       = True
 
-    #Here we store data for our terrain
+    #################################################################################
+    #                            TERRAIN                                            #
+    #################################################################################
     if Terrain == True and line[0] == 'v' and line[1] == ' ' :
 
         #split vertex into x,y,z and push them into vertex array
@@ -80,9 +121,79 @@ for line in objFile:
         if TFirstFace > int(aux[4].split('/')[0]) - 1 :
             TFirstFace = int(aux[4].split('/')[0]) - 1
 
+    #################################################################################
+    #                            WAYPOINT                                           #
+    #################################################################################
+    if Waypoint == True and line[0] == 'o' and line[1] == ' ' :
+        aux = line.split(' ')[1].split('_')
+
+        #Set Waipoint Level
+        WLevel.append(aux[1])
+
+        #Set Radius of Waypoint
+        WRadius.append(aux[2])
+
+        #Set Rotation if given, and 0 if not
+        if len(aux) > 4 :
+            WRotArray.append(aux[3].split(':')[0] + ',' + aux[3].split(':')[1] + ',' + aux[3].split(':')[2])
+        else :
+            WRotArray.append('0,0,0')
+
+
+        #Set Scale if given, and 0 if not
+        if len(aux) > 5 :
+            WScaArray.append(aux[4].split(':')[0] + ',' + aux[4].split(':')[1] + ',' + aux[4].split(':')[2])
+        else :
+            WScaArray.append('0,0,0')
+
+    #Here we store data for the position of our LIGHT
+    elif Waypoint == True and WVisited == False and line[0] == 'v' and line[1] == ' ' :
+
+        aux = line.split(' ')
+        WPosArray.append(aux[1] + ',' + aux[2] + ',' + aux[3].rstrip())
+
+        WVisited = True
+
+    #################################################################################
+    #                            LIGHT                                              #
+    #################################################################################
+    if Light == True and line[0] == 'o' and line[1] == ' ' :
+        aux = line.split(' ')[1].split('_')
+
+        #Check Type of Light
+        if aux[2][0] == 'P' :
+            LType.append('P')
+        if aux[2][0] == 'D' :
+            LType.append('D')
+
+        #Set Radius of Light
+        LRadius.append(aux[3])
+
+        #Set Rotation if given, and 0 if not
+        if len(aux) > 5 :
+            LRotArray.append(aux[4].split(':')[0] + ',' + aux[4].split(':')[1] + ',' + aux[4].split(':')[2])
+        else :
+            LRotArray.append('0,0,0')
+
+
+        #Set Scale if given, and 0 if not
+        if len(aux) > 6 :
+            LScaArray.append(aux[5].split(':')[0] + ',' + aux[5].split(':')[1] + ',' + aux[5].split(':')[2])
+        else :
+            LScaArray.append('0,0,0')
+
+    #Here we store data for the position of our LIGHT
+    elif Light == True and LVisited == False and line[0] == 'v' and line[1] == ' ' :
+
+        aux = line.split(' ')
+        LPosArray.append(aux[1] + ',' + aux[2] + ',' + aux[3].rstrip())
+
+        LVisited = True
+
 #close obj file once read
 objFile.close()
 
+#Extra MATHS for TERRAIN
 #reorder vertex in faces depending on its x and z values
 for i, face in enumerate(TFaceArray):
 
@@ -164,6 +275,7 @@ for i, face in enumerate(relatedFaces): #for every face
                     relatedEdges[i][j] = str(TId+faceId) + ':' + str(z)
 
 #write the xml
+#TERRAIN
 for i, face in enumerate(TFaceArray):
 
     p1 = 'p1=\"' + str(TVertexArray[face[0]-TFirstFace][0]) + ',' + str(TVertexArray[face[0]-TFirstFace][1]) + ',' + str(TVertexArray[face[0]-TFirstFace][2]) + '\" '
@@ -184,6 +296,28 @@ for i, face in enumerate(TFaceArray):
     destFile.write(terrainComponent)
     destFile.write(bbox)
     destFile.write(terrainComponentEnd)
+    destFile.write(gameObjectEnd)
+
+#WAYPOINT
+for i in range( 0, len(WPosArray) ) :
+
+    gameObject          =  '<object id=\"' + str(WId+i) + '\" pos=\"' + WPosArray[i] + '\" rot=\"' + WRotArray[i] + '\" sca=\"' + WScaArray[i] + '\">\n'
+    waypointComponent    =  '    <component name=\"waypoint\"' + ' radius=\"' + WRadius[i] + '\" level=\"' + WLevel[i] + '\" />\n'
+    gameObjectEnd       =  '</object>\n'
+
+    destFile.write(gameObject)
+    destFile.write(waypointComponent)
+    destFile.write(gameObjectEnd)
+
+#LIGHT
+for i in range( 0, len(LPosArray) ) :
+
+    gameObject          =  '<object id=\"' + str(LId+i) + '\" pos=\"' + LPosArray[i] + '\" rot=\"' + LRotArray[i] + '\" sca=\"' + LScaArray[i] + '\">\n'
+    lightComponent    =  '    <component name=\"light\"' + ' radius=\"' + LRadius[i] + '\" type=\"' + LType[i] + '\" />\n'
+    gameObjectEnd       =  '</object>\n'
+
+    destFile.write(gameObject)
+    destFile.write(lightComponent)
     destFile.write(gameObjectEnd)
 
 #close write file

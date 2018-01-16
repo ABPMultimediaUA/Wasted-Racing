@@ -173,31 +173,16 @@ void Game::Run() {
 void addObjects(){
     GameObject::TransformationData transform;
     u_int16_t id;
-    //Circuit
-    id = 37;
+
+    id = 178;
     transform.position = glm::vec3(0, -3, 0);
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(1, 1, 1);
     auto ob37 = ObjectManager::getInstance().createObject(id, transform);
 
-    //Add light
-    id = 12211;
-    transform.position = glm::vec3(0, 1000, 0);
-    transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(1, 1, 1);
-    auto ob12211 = ObjectManager::getInstance().createObject(id, transform);
-    RenderManager::getInstance().createLightRenderComponent(*ob12211.get(),LightRenderComponent::Type::Point,5000);
-
     //===============================================================
     // ADD WAYPOINT COMPONENT
     //===============================================================
-    id = 141;
-    transform.position = glm::vec3(440, 0,5);
-    transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(1, 1, 1);
-    auto ob141 = ObjectManager::getInstance().createObject(id, transform);
-    
-    WaypointManager::getInstance().createWaypointComponent(ob141, 80, 0);
     //Road
     std::shared_ptr<IComponent> cp17 = RenderManager::getInstance().createObjectRenderComponent(*ob37.get(), ObjectRenderComponent::Shape::Road);
 
@@ -206,10 +191,10 @@ void addObjects(){
     //===============================================================
     loadMap();
 
-    auto terrainCMP = ObjectManager::getInstance().getObject((uint16_t) 1067).get()->getComponent<TerrainComponent>();
+    auto terrainCMP = ObjectManager::getInstance().getObject((uint16_t) 67).get()->getComponent<TerrainComponent>();
     auto terrCMP = terrainCMP.get()->getTerrain();
 
-    id = 50;
+    id = 25000;
     transform.position = glm::vec3(-25,10, -20);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
@@ -219,12 +204,12 @@ void addObjects(){
     // ADD AI 
     //===============================================================
 
-    /*id = 55;
-    transform.position = glm::vec3(-25,10,20);
+    id = 25001;
+    transform.position = glm::vec3(-25,10,0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, terrCMP, terrainCMP);
-
+    /*
     id = 56;
     transform.position = glm::vec3(-125,0,5);
     transform.rotation = glm::vec3(45,45,45);
@@ -324,6 +309,36 @@ void loadMap() {
                 PhysicsManager::getInstance().createTerrainComponent(*obj.get(), terrain);
 
             }
+
+            //Parse WAYPOINT component
+            if(strcmp(component->first_attribute("name")->value(),"waypoint") == 0){
+                
+                float radius = std::stof(component->first_attribute("radius")->value());
+                
+                int level = std::stoi(component->first_attribute("level")->value());
+
+                //Create TERRAIN component
+                WaypointManager::getInstance().createWaypointComponent(obj, radius, level);
+
+            }
+
+            //Parse LIGHT component
+            if(strcmp(component->first_attribute("name")->value(),"light") == 0){
+                
+                float radius = std::stof(component->first_attribute("radius")->value());
+                
+                LightRenderComponent::Type type;
+
+                if(component->first_attribute("type")->value()[0] == 'P')
+                    type = LightRenderComponent::Type::Point;
+                if(component->first_attribute("type")->value()[0] == 'D')
+                    type = LightRenderComponent::Type::Directional;
+
+                //Create LIGHT component
+                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,radius);
+
+            }
+
 
         }
 	}
