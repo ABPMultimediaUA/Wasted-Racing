@@ -173,7 +173,7 @@ void Game::Run() {
 void addObjects(){
 
     GameObject::TransformationData transform;
-    u_int16_t id;
+    uint16_t id;
 
     //===============================================================
     // ADD PLAYER 

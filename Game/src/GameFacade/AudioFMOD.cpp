@@ -20,26 +20,26 @@ void activateK(EventData eData);
 
 void AudioFMOD::openAudioEngine() {
     //Initialize FMOD System
-    ERRCHECK(FMOD::Studio::System::create(&system));
-    ERRCHECK(system->getLowLevelSystem(&lowLevelSystem));
-    ERRCHECK(lowLevelSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0));
-    ERRCHECK(lowLevelSystem->setOutput(FMOD_OUTPUTTYPE_AUTODETECT));
-    ERRCHECK(system->initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));
+    ERRCHECK(FMOD_Studio_System_Create(&system, FMOD_VERSION));
+    ERRCHECK(FMOD_Studio_System_GetLowLevelSystem(system, &lowLevelSystem));
+    ERRCHECK(FMOD_System_SetSoftwareFormat(lowLevelSystem, 0, FMOD_SPEAKERMODE_5POINT1, 0));
+    ERRCHECK(FMOD_System_SetOutput(lowLevelSystem, FMOD_OUTPUTTYPE_AUTODETECT));
+    ERRCHECK(FMOD_Studio_System_Initialize(system, 512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0));
 
     //Initialize banks
-    ERRCHECK(system->loadBankFile("media/audio/banks/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
-    ERRCHECK(system->loadBankFile("media/audio/banks/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
-    ERRCHECK(system->loadBankFile("media/audio/banks/Menu.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &menuBank));
-    ERRCHECK(system->loadBankFile("media/audio/banks/Crocodile.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &cocodrileBank));
+    ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
+    ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
+    ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Menu.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &menuBank));
+    ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Crocodile.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &cocodrileBank));
 
     //Initialize Event
-    ERRCHECK(system->getEvent("event:/Accept", &acceptDescription));
-    ERRCHECK(acceptDescription->createInstance(&acceptInstance));
+    ERRCHECK(FMOD_Studio_System_GetEvent(system, "event:/Accept", &acceptDescription));
+    ERRCHECK(FMOD_Studio_EventDescription_CreateInstance(acceptDescription, &acceptInstance));
 
     acceptEvent = new AcceptEvent(acceptInstance);
 
-    ERRCHECK(system->getEvent("event:/CrocodileGoodEN", &cocodrileGoodENDescription));
-    ERRCHECK(cocodrileGoodENDescription->createInstance(&cocodrileGoodENInstance));
+    ERRCHECK(FMOD_Studio_System_GetEvent(system, "event:/CrocodileGoodEN", &cocodrileGoodENDescription));
+    ERRCHECK(FMOD_Studio_EventDescription_CreateInstance(cocodrileGoodENDescription, &cocodrileGoodENInstance));
 
     cocodrileGoodENEvent = new CocodrileGoodENEvent(cocodrileGoodENInstance);
 
@@ -54,7 +54,7 @@ void AudioFMOD::openAudioEngine() {
 }
 
 void AudioFMOD::update() {
-    ERRCHECK(system->update());
+    ERRCHECK(FMOD_Studio_System_Update(system));
 }
 
 void AudioFMOD::closeAudioEngine() {

@@ -1,1 +1,0 @@
-C:\MinGW\msys\1.0\home\Luis\Wasted-Racing\Game\lib\win\lowlevel\examples\vs2015\multiple_speaker.vcxproj;x86

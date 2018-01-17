@@ -1,58 +1,155 @@
+#define WIN32_LEAN_AND_MEAN
+
 #include "common.h"
+#include <stdio.h>
+#include <conio.h>
+#include <Windows.h>
+#include <Objbase.h>
 #include <vector>
 
-using namespace Platform;
-using namespace Windows::Foundation;
-using namespace Windows::Storage;
-using namespace Windows::System;
-using namespace Windows::ApplicationModel::Activation;
-using namespace Windows::UI::Core;
-using namespace Windows::UI::Xaml;
-using namespace Windows::UI::Xaml::Controls;
-using namespace Windows::UI::Xaml::Input;
-using namespace Windows::UI::Xaml::Media;
-using namespace Windows::UI::ViewManagement;
+static unsigned int gPressedButtons = 0;
+static unsigned int gDownButtons = 0;
+static HANDLE gConsoleHandle = NULL;
+static CHAR_INFO gConsoleBuffer[NUM_COLUMNS * NUM_ROWS] = {0};
+static char gWriteBuffer[NUM_COLUMNS * NUM_ROWS] = {0};
+static unsigned int gYPos = 0;
+static bool gPaused = false;
+static std::vector<char *> gPathList;
 
-TextBlock ^gText;
-CoreDispatcher ^gUIDispatcher;
-std::wstring gOutputString;
-std::vector<char *> gStringList;
-unsigned int gKeyboardState;
-unsigned int gTouchState;
-unsigned int gPressedButtons;
-unsigned int gDownButtons;
+bool Common_Private_Test;
+int Common_Private_Argc;
+char** Common_Private_Argv;
+void (*Common_Private_Update)(unsigned int*);
+void (*Common_Private_Print)(const char*);
+void (*Common_Private_Close)();
 
-static const char DATA_PREFIX[] = "ms-appx://";
-
-int FMOD_Main();
+int main(int argc, char** argv)
+{
+    Common_Private_Argc = argc;
+    Common_Private_Argv = argv;
+    return FMOD_Main();
+}
 
 void Common_Init(void** /*extraDriverData*/)
 {
+    gConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
+    CONSOLE_SCREEN_BUFFER_INFO bufferInfo = {0};
+    GetConsoleScreenBufferInfo(gConsoleHandle, &bufferInfo);
+
+    // Set window and buffer width, order is important buffer must always be >= window
+    unsigned int windowWidth = bufferInfo.srWindow.Left + bufferInfo.srWindow.Right;
+    bufferInfo.dwSize.X = NUM_COLUMNS;
+    bufferInfo.srWindow.Right = bufferInfo.srWindow.Left + (NUM_COLUMNS - 1);
+    if (NUM_COLUMNS > windowWidth)
+    {
+        SetConsoleScreenBufferSize(gConsoleHandle, bufferInfo.dwSize);
+        SetConsoleWindowInfo(gConsoleHandle, TRUE, &bufferInfo.srWindow);
+    }
+    else
+    {       
+        SetConsoleWindowInfo(gConsoleHandle, TRUE, &bufferInfo.srWindow);
+        SetConsoleScreenBufferSize(gConsoleHandle, bufferInfo.dwSize);
+    }
+
+    // Set window and buffer height, order is important buffer must always be >= window
+    unsigned int windowHeight = bufferInfo.srWindow.Top + bufferInfo.srWindow.Bottom;
+    bufferInfo.dwSize.Y = NUM_ROWS;
+    bufferInfo.srWindow.Bottom = bufferInfo.srWindow.Top + (NUM_ROWS - 1);
+    if (NUM_ROWS > windowHeight)
+    {
+        SetConsoleScreenBufferSize(gConsoleHandle, bufferInfo.dwSize);
+        SetConsoleWindowInfo(gConsoleHandle, TRUE, &bufferInfo.srWindow);
+    }
+    else
+    {       
+        SetConsoleWindowInfo(gConsoleHandle, TRUE, &bufferInfo.srWindow);
+        SetConsoleScreenBufferSize(gConsoleHandle, bufferInfo.dwSize);
+    }
+
+    // Hide the cursor
+    CONSOLE_CURSOR_INFO cursorInfo = {0};
+    cursorInfo.bVisible = false;
+    cursorInfo.dwSize = 100;
+    SetConsoleCursorInfo(gConsoleHandle, &cursorInfo);
+
+    SetConsoleTitleA("FMOD Example");
+
+    CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 }
 
 void Common_Close()
 {
-    for (auto item = gStringList.begin(); item != gStringList.end(); ++item)
+    CoUninitialize();
+
+    for (std::vector<char *>::iterator item = gPathList.begin(); item != gPathList.end(); ++item)
     {
         free(*item);
     }
-
-    Application::Current->Exit();
+    if (Common_Private_Close)
+    {
+        Common_Private_Close();
+    }
 }
 
 void Common_Update()
 {
-    unsigned int inputState = gKeyboardState | gTouchState;
-    gTouchState = 0;
+    /*
+        Capture key input
+    */
+    unsigned int newButtons = 0;
+    while (_kbhit())
+    {
+        int key = _getch();
+        if (key == 0 || key == 224)
+        {
+            key = 256 + _getch(); // Handle multi-char keys
+        }
 
-    gPressedButtons = (gDownButtons ^ inputState) & inputState;
-    gDownButtons = inputState;
+        if      (key == '1')    newButtons |= (1 << BTN_ACTION1);
+        else if (key == '2')    newButtons |= (1 << BTN_ACTION2);
+        else if (key == '3')    newButtons |= (1 << BTN_ACTION3);
+        else if (key == '4')    newButtons |= (1 << BTN_ACTION4);
+        else if (key == 256+75) newButtons |= (1 << BTN_LEFT);
+        else if (key == 256+77) newButtons |= (1 << BTN_RIGHT);
+        else if (key == 256+72) newButtons |= (1 << BTN_UP);
+        else if (key == 256+80) newButtons |= (1 << BTN_DOWN);
+        else if (key == 32)     newButtons |= (1 << BTN_MORE);
+        else if (key == 27)     newButtons |= (1 << BTN_QUIT);
+        else if (key == 112)    gPaused = !gPaused;
+    }
 
-    String ^content = ref new String(gOutputString.c_str());
-    gUIDispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([content]() { gText->Text = content; }));
+    gPressedButtons = (gDownButtons ^ newButtons) & newButtons;
+    gDownButtons = newButtons;
 
-    gOutputString.clear();
+    /*
+        Update the screen
+    */
+    if (!gPaused)
+    {
+        for (unsigned int i = 0; i < NUM_COLUMNS * NUM_ROWS; i++)
+        {
+            gConsoleBuffer[i].Char.AsciiChar = gWriteBuffer[i];
+            gConsoleBuffer[i].Attributes = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+        }
+
+        COORD bufferSize = {NUM_COLUMNS, NUM_ROWS};
+        COORD bufferCoord = {0, 0};
+        SMALL_RECT writeRegion = {0, 0, NUM_COLUMNS - 1, NUM_ROWS - 1};
+        WriteConsoleOutput(gConsoleHandle, gConsoleBuffer, bufferSize, bufferCoord, &writeRegion);
+        fflush(stdout);
+    }
+
+    /*
+        Reset the write buffer
+    */
+    gYPos = 0;
+    memset(gWriteBuffer, ' ', sizeof(gWriteBuffer));
+
+    if (Common_Private_Update)
+    {
+        Common_Private_Update(&gPressedButtons);
+    }
 }
 
 void Common_Sleep(unsigned int ms)
@@ -60,55 +157,36 @@ void Common_Sleep(unsigned int ms)
     Sleep(ms);
 }
 
-void Common_Exit(int /*returnCode*/)
+void Common_Exit(int returnCode)
 {
-    Application::Current->Exit();
+    exit(returnCode);
 }
 
 void Common_DrawText(const char *text)
 {
-    wchar_t wideText[256];
-    _snwprintf_s(wideText, _countof(wideText), L"%S\n", text);
-
-    gOutputString.append(wideText);
-}
-
-void Common_TTY(const char *format, ...)
-{
-    char string[1024] = { 0 };
-
-    va_list args;
-    va_start(args, format);
-    Common_vsnprintf(string, 1023, format, args);
-    va_end(args);
-
-    OutputDebugStringA(string);
+    if (gYPos < NUM_ROWS)
+    {
+        Common_Format(&gWriteBuffer[gYPos * NUM_COLUMNS], NUM_COLUMNS, "%s", text);
+        gYPos++;
+    }
 }
 
 void Common_LoadFileMemory(const char *name, void **buff, int *length)
 {
-    wchar_t filePath[256] = {};
-    assert(strncmp(name, DATA_PREFIX, sizeof(DATA_PREFIX) - 1) == 0);
-    swprintf_s(filePath, 256, L"%s\\%S", Windows::ApplicationModel::Package::Current->InstalledLocation->Path->Begin(), name + sizeof(DATA_PREFIX) - 1);
-
-    HANDLE handle = CreateFile2(filePath, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, nullptr);
-    assert(handle != INVALID_HANDLE_VALUE);
-
-    FILE_STANDARD_INFO info = {};
-    BOOL success = GetFileInformationByHandleEx(handle, FileStandardInfo, &info, sizeof(info));
-    assert(success);
-
-    void *mem = malloc(info.EndOfFile.LowPart);
-    assert(mem);
-
-    success = ReadFile(handle, mem, info.EndOfFile.LowPart, nullptr, nullptr);
-    assert(success);
-
-    success = CloseHandle(handle);
-    assert(success);
+    FILE *file = NULL;
+    file = fopen(name, "rb");
+    
+    fseek(file, 0, SEEK_END);
+    long len = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    
+    void *mem = malloc(len);
+    fread(mem, 1, len, file);
+    
+    fclose(file);
 
     *buff = mem;
-    *length = info.EndOfFile.LowPart;
+    *length = len;
 }
 
 void Common_UnloadFileMemory(void *buff)
@@ -134,12 +212,12 @@ const char *Common_BtnStr(Common_Button btn)
         case BTN_ACTION2:   return "2";
         case BTN_ACTION3:   return "3";
         case BTN_ACTION4:   return "4";
-        case BTN_LEFT:      return "Left";
-        case BTN_RIGHT:     return "Right";
-        case BTN_UP:        return "Up";
-        case BTN_DOWN:      return "Down";
-        case BTN_MORE:      return "More"; // Spacebar triggers UI elements, so use something else
-        case BTN_QUIT:      return "Esc";
+        case BTN_LEFT:      return "LEFT";
+        case BTN_RIGHT:     return "RIGHT";
+        case BTN_UP:        return "UP";
+        case BTN_DOWN:      return "DOWN";
+        case BTN_MORE:      return "SPACE";
+        case BTN_QUIT:      return "ESCAPE";
         default:            return "Unknown";
     }
 }
@@ -147,139 +225,35 @@ const char *Common_BtnStr(Common_Button btn)
 const char *Common_MediaPath(const char *fileName)
 {
     char *filePath = (char *)calloc(256, sizeof(char));
-    sprintf_s(filePath, 256, "%s/media/%s", DATA_PREFIX, fileName);
-    gStringList.push_back(filePath);
+
+    strcat(filePath, "../media/");
+    strcat(filePath, fileName);
+    gPathList.push_back(filePath);
 
     return filePath;
 }
 
 const char *Common_WritePath(const char *fileName)
 {
-    char *filePath = (char *)calloc(256, sizeof(char));
-    sprintf_s(filePath, 256, "%S\\%s", ApplicationData::Current->TemporaryFolder->Path->Begin(), fileName);
-    gStringList.push_back(filePath);
-
-    return filePath;
+	return Common_MediaPath(fileName);
 }
 
-void Common_Mutex_Create(Common_Mutex *mutex)
+void Common_TTY(const char *format, ...)
 {
-    InitializeCriticalSectionEx(mutex, 0, 0);
-}
+    char string[1024] = {0};
 
-void Common_Mutex_Destroy(Common_Mutex *mutex)
-{
-    DeleteCriticalSection(mutex);
-}
+    va_list args;
+    va_start(args, format);
+    Common_vsnprintf(string, 1023, format, args);
+    va_end(args);
 
-void Common_Mutex_Enter(Common_Mutex *mutex)
-{
-    EnterCriticalSection(mutex);
-}
-
-void Common_Mutex_Leave(Common_Mutex *mutex)
-{
-    LeaveCriticalSection(mutex);
-}
-
-static unsigned int virtualKeyToMask(VirtualKey key)
-{
-    if (key == VirtualKey::Number1) return (1 << BTN_ACTION1);
-    if (key == VirtualKey::Number2) return (1 << BTN_ACTION2);
-    if (key == VirtualKey::Number3) return (1 << BTN_ACTION3);
-    if (key == VirtualKey::Number4) return (1 << BTN_ACTION4);
-    if (key == VirtualKey::Left)    return (1 << BTN_LEFT);
-    if (key == VirtualKey::Right)   return (1 << BTN_RIGHT);
-    if (key == VirtualKey::Up)      return (1 << BTN_UP);
-    if (key == VirtualKey::Down)    return (1 << BTN_DOWN);
-    if (key == VirtualKey::Q)       return (1 << BTN_MORE);
-    if (key == VirtualKey::Escape)  return (1 << BTN_QUIT);
-    return 0;
-}
-
-ref struct App sealed : public Application
-{
-    virtual void OnLaunched(LaunchActivatedEventArgs ^args) override
+    if (Common_Private_Print)
     {
-        if (args->PreviousExecutionState == ApplicationExecutionState::Running)
-        {
-            Window::Current->Activate();
-            return;
-        }
-
-        gText = ref new TextBlock();
-        gText->FontFamily = ref new FontFamily("Consolas");
-        gText->FontSize = 12;
-        gText->MaxLines = NUM_ROWS;
-
-        Button ^buttons[9];
-        for (int i = 0; i < 9; i++)
-        {
-            wchar_t wideText[256];
-            _snwprintf_s(wideText, _countof(wideText), L"%S", Common_BtnStr((Common_Button)i));
-
-            buttons[i] = ref new Button();
-            buttons[i]->Content = ref new String(wideText);
-            buttons[i]->Click += ref new RoutedEventHandler([](Object ^sender, RoutedEventArgs^) { gTouchState |= (1 << (int)((Button^)sender)->Tag); });
-            buttons[i]->Tag = i;
-            buttons[i]->Width = 100;
-            buttons[i]->Height = 60;
-            buttons[i]->Margin = 2;
-        }
-
-        auto topButtonPanel = ref new StackPanel();
-        topButtonPanel->Orientation = Orientation::Horizontal;
-        topButtonPanel->Children->Append(buttons[0]);
-        topButtonPanel->Children->Append(buttons[6]);
-        topButtonPanel->Children->Append(buttons[1]);
-
-        auto middleButtonPanel = ref new StackPanel();
-        middleButtonPanel->Orientation = Orientation::Horizontal;
-        middleButtonPanel->Children->Append(buttons[4]);
-        middleButtonPanel->Children->Append(buttons[8]);
-        middleButtonPanel->Children->Append(buttons[5]);
-
-        auto bottomButtonPanel = ref new StackPanel();
-        bottomButtonPanel->Orientation = Orientation::Horizontal;
-        bottomButtonPanel->Children->Append(buttons[2]);
-        bottomButtonPanel->Children->Append(buttons[7]);
-        bottomButtonPanel->Children->Append(buttons[3]);
-
-        auto buttonPanel = ref new StackPanel();
-        buttonPanel->Orientation = Orientation::Vertical;
-        buttonPanel->HorizontalAlignment = HorizontalAlignment::Center;
-        buttonPanel->VerticalAlignment = VerticalAlignment::Bottom;
-        buttonPanel->Children->Append(topButtonPanel);
-        buttonPanel->Children->Append(middleButtonPanel);
-        buttonPanel->Children->Append(bottomButtonPanel);
-
-        auto grid = ref new Grid();
-        grid->Margin = 10;
-        grid->Children->Append(gText);
-        grid->Children->Append(buttonPanel);
-
-        auto page = ref new Page();
-        page->Content = grid;
-        page->KeyDown += ref new KeyEventHandler([](Object^, KeyRoutedEventArgs ^args) { gKeyboardState |= virtualKeyToMask(args->Key); });
-        page->KeyUp += ref new KeyEventHandler([](Object^, KeyRoutedEventArgs ^args) { gKeyboardState &= ~virtualKeyToMask(args->Key); });
-        page->Visibility = Visibility::Visible;
-
-        ApplicationView::GetForCurrentView()->SetPreferredMinSize(Size(350, 500));
-        ApplicationView::PreferredLaunchWindowingMode = ApplicationViewWindowingMode::PreferredLaunchViewSize;
-        ApplicationView::PreferredLaunchViewSize = Size(350, 600);
-
-        Window::Current->Content = page;
-        Window::Current->Activate();
-
-        gUIDispatcher = Window::Current->Dispatcher; // Save the dispatcher for this thread (UI thread) so we can use it from other threads
-        gUIDispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
-
-        CreateThread(nullptr, 0, [](void *) -> unsigned long { return FMOD_Main(); }, nullptr, 0, nullptr);
+        (*Common_Private_Print)(string);
     }
-};
-
-int main(Array<String^>^)
-{
-    Application::Start(ref new ApplicationInitializationCallback([](ApplicationInitializationCallbackParams^) { ref new App(); }));
-    return 0;
+    else
+    {
+        OutputDebugStringA(string);
+    }
 }
+

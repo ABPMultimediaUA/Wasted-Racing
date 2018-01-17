@@ -4,6 +4,6 @@
 
 class CocodrileGoodENEvent : public ISoundEvent{
     public:
-        CocodrileGoodENEvent(FMOD::Studio::EventInstance* newEvent);
+        CocodrileGoodENEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent);
 
 };

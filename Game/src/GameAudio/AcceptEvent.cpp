@@ -1,6 +1,6 @@
 #include "AcceptEvent.h"
 
-AcceptEvent::AcceptEvent(FMOD::Studio::EventInstance* newEvent) : ISoundEvent(newEvent)
+AcceptEvent::AcceptEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent) : ISoundEvent(newEvent)
 {
 
 }

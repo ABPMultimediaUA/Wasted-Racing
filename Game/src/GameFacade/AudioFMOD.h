@@ -78,22 +78,22 @@ public:
 private: 
 
     std::string banksPath;
-    FMOD::Studio::System* system = NULL;
-    FMOD::System* lowLevelSystem = NULL;
+    FMOD_STUDIO_SYSTEM* system = NULL;
+    FMOD_SYSTEM* lowLevelSystem = NULL;
     //Banks
-    FMOD::Studio::Bank* masterBank;
-    FMOD::Studio::Bank* stringsBank;
-    FMOD::Studio::Bank* menuBank;
-    FMOD::Studio::Bank* cocodrileBank;
+    FMOD_STUDIO_BANK* masterBank;
+    FMOD_STUDIO_BANK* stringsBank;
+    FMOD_STUDIO_BANK* menuBank;
+    FMOD_STUDIO_BANK* cocodrileBank;
 
     //Events should go on another Fachade
     //Events descriptions
-    FMOD::Studio::EventDescription* acceptDescription;
-    FMOD::Studio::EventDescription* cocodrileGoodENDescription;
+    FMOD_STUDIO_EVENTDESCRIPTION* acceptDescription;
+    FMOD_STUDIO_EVENTDESCRIPTION* cocodrileGoodENDescription;
 
     //Events
-    FMOD::Studio::EventInstance* acceptInstance;
-    FMOD::Studio::EventInstance* cocodrileGoodENInstance;
+    FMOD_STUDIO_EVENTINSTANCE* acceptInstance;
+    FMOD_STUDIO_EVENTINSTANCE* cocodrileGoodENInstance;
 
     AcceptEvent* acceptEvent;
     CocodrileGoodENEvent* cocodrileGoodENEvent;

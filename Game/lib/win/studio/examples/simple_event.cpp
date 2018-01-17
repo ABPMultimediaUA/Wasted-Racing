@@ -25,7 +25,7 @@ int FMOD_Main()
     Common_Init(&extraDriverData);
 
     FMOD::Studio::System* system = NULL;
-    ERRCHECK( FMOD::Studio::System::create(&system) );
+    ERRCHECK( FMOD_Studio_System_Create(&system, FMOD_VERSION) );
 
     // The example Studio project is authored for 5.1 sound, so set up the system output mode to match
     FMOD::System* lowLevelSystem = NULL;

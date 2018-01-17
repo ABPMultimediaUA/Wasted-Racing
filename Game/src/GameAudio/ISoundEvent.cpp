@@ -1,11 +1,11 @@
 #include "ISoundEvent.h"
 #include <iostream>
 
-ISoundEvent::ISoundEvent(FMOD::Studio::EventInstance* newEvent)
+ISoundEvent::ISoundEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent)
 {
     soundInstance = newEvent;
     paused=false;
-    soundInstance->getVolume(&volume, 0);
+    FMOD_Studio_EventInstance_GetVolume(soundInstance, &volume, 0);
     flanger=0.f;
 }
 
@@ -19,7 +19,7 @@ void ISoundEvent::start()
 {
     if(soundInstance!=NULL)
     {
-        soundInstance->start();
+        FMOD_Studio_EventInstance_Start(soundInstance);
     }
 }
 
@@ -31,7 +31,7 @@ void ISoundEvent::stop()
 void ISoundEvent::pause()
 {
     paused = !paused;
-    soundInstance->setPaused(paused);
+    FMOD_Studio_EventInstance_SetPaused(soundInstance, paused);
 }
     
 void ISoundEvent::setVolume(float vol)
@@ -39,7 +39,7 @@ void ISoundEvent::setVolume(float vol)
     if(vol>=0 && vol<=1)
     {
         volume=vol;
-        soundInstance->setVolume(volume);
+        FMOD_Studio_EventInstance_SetVolume(soundInstance, volume);
     }
 }
     
@@ -58,7 +58,7 @@ bool ISoundEvent::isPlaying()
     if(soundInstance!=NULL)
     {
         FMOD_STUDIO_PLAYBACK_STATE state;
-        soundInstance->getPlaybackState(&state);
+        FMOD_Studio_EventInstance_GetPlaybackState(soundInstance, &state);
         if(state==FMOD_STUDIO_PLAYBACK_PLAYING)
         {
             return true;
@@ -79,7 +79,7 @@ void ISoundEvent::increaseFlanger()
     {
         flanger+=0.1f;
     }
-    soundInstance->setParameterValue(f, flanger);
+    FMOD_Studio_EventInstance_SetParameterValue(soundInstance, f, flanger);
 }
 
 void ISoundEvent::decreaseFlanger()
@@ -89,5 +89,5 @@ void ISoundEvent::decreaseFlanger()
     {
         flanger-=0.1f;
     }
-    soundInstance->setParameterValue(f, flanger);
+    FMOD_Studio_EventInstance_SetParameterValue(soundInstance, f, flanger);
 }

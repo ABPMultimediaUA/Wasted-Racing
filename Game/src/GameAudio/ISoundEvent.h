@@ -8,7 +8,7 @@
 
 class ISoundEvent {
 public:
-    ISoundEvent(FMOD::Studio::EventInstance* newEvent);
+    ISoundEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent);
     ~ISoundEvent();
     
    //Starts playing the event
@@ -40,7 +40,7 @@ public:
     void decreaseFlanger();
     
 protected:
-    FMOD::Studio::EventInstance* soundInstance;
+    FMOD_STUDIO_EVENTINSTANCE* soundInstance;
     bool paused; //Initially set on false
     float volume;
     float flanger;

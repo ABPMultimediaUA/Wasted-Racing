@@ -4,6 +4,6 @@
 
 class AcceptEvent : public ISoundEvent{
     public:
-        AcceptEvent(FMOD::Studio::EventInstance* newEvent);
+        AcceptEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent);
 
 };

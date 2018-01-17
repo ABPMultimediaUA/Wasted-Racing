@@ -1,6 +1,6 @@
 #include "CocodrileGoodENEvent.h"
 
-CocodrileGoodENEvent::CocodrileGoodENEvent(FMOD::Studio::EventInstance* newEvent) : ISoundEvent(newEvent)
+CocodrileGoodENEvent::CocodrileGoodENEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent) : ISoundEvent(newEvent)
 {
 
 }
