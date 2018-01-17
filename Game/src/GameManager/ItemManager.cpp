@@ -53,6 +53,8 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
 
     ItemHolders.push_back(std::dynamic_pointer_cast<ItemHolderComponent>(component));
 
+    //players.push_back(newGameObject); 
+
     return component;
 }
 

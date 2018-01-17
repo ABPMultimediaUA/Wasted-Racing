@@ -12,7 +12,9 @@ public:
 		Sphere,
 		Mesh,
 		Cone,
-		Plane
+		Plane,
+		Arrow,
+		Cylinder
 	};
 
     //Constructor

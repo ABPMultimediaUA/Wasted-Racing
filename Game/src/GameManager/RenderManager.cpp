@@ -153,7 +153,7 @@ void RenderManager::renderAIDebug()
     auto npcs = ItemManager::getInstance().getItemHolderComponents();
     for(unsigned int i = 0; i < npcs.size(); ++i)
     {
-        auto player = npcs[i].get()->getGameObject();
+        auto player = npcs[i]->getGameObject();
         AIDebugPoint.push_back(player); 
     }
     
@@ -206,20 +206,43 @@ void RenderManager::renderAIDebug()
 
 void RenderManager::updateAIDebug()
 {
+    
+
     if(AIDebug < AIDebugPoint.size())
     {
-        //Update next point marker
+        AIDebugPoint.clear();
+        auto npcs = ItemManager::getInstance().getItemHolderComponents();
+        for(unsigned int i = 0; i < npcs.size(); ++i)
+        {
+            auto player = npcs[i]->getGameObject();
+            AIDebugPoint.push_back(player); 
+        }
+
+
+
+        glm::vec3 point;
         GameObject::TransformationData transform;
 
-        auto point = AIDebugPoint[AIDebug].getComponent<PathPlanningComponent>()->getNextPoint();
+        //Update next point marker
+        point = AIDebugPoint[AIDebug].getComponent<PathPlanningComponent>()->getNextPoint();
 
         transform.position = point;
-        transform.position.y = transform.position.y + 15;
-        transform.rotation = glm::vec3(0, 0, 0);
-        transform.scale    = glm::vec3(0.5, 1, 0.5);
+        transform.position.y = transform.position.y + 20;
+        transform.rotation = glm::vec3(0, 0, 3.14);
+        transform.scale    = glm::vec3(1, 1, 1);
 
         marker->setTransformData(transform);
         RenderManager::getInstance().getRenderFacade()->updateObjectTransform(marker->getId(), transform);
+
+        //Update Collision Cylinder
+        point = AIDebugPoint[AIDebug].getTransformData().position;
+
+        transform.position = point;
+        transform.rotation = glm::vec3(0, 0, 0);
+        transform.scale    = glm::vec3(1, 1, 1);
+
+        collisionCylinder->setTransformData(transform);
+        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(collisionCylinder->getId(), transform);
     }
 }
 
@@ -227,22 +250,37 @@ void RenderManager::createRenderNPC()
 {
     if(lap == false)
     {
-        uint16_t id = 5000;
+        uint16_t id;
+        glm::vec3 point;
         GameObject::TransformationData transform;
 
-        auto point = AIDebugPoint[AIDebug].getComponent<PathPlanningComponent>()->getNextPoint();
+        //Create marker
+        id = 5000;
+        point = AIDebugPoint[AIDebug].getComponent<PathPlanningComponent>()->getNextPoint();
 
         transform.position = point;
-        transform.position.y = transform.position.y + 15;
-        transform.rotation = glm::vec3(0, 0, 0);
-        transform.scale    = glm::vec3(0.5, 1, 0.5);
-        auto obj = ObjectManager::getInstance().createObject(id, transform);
-        marker = obj;
+        transform.position.y = transform.position.y + 20;
+        transform.rotation = glm::vec3(0, 0, 3.14);
+        transform.scale    = glm::vec3(1, 1, 1);
+        marker = ObjectManager::getInstance().createObject(id, transform);
 
-        RenderManager::getInstance().createObjectRenderComponent(*marker.get(), ObjectRenderComponent::Shape::Sphere, "pool.jpg");
+        RenderManager::getInstance().createObjectRenderComponent(*marker.get(), ObjectRenderComponent::Shape::Arrow, "pool.jpg");
+
+        //Create Collision Cylinder
+        id = 5001;
+        point = AIDebugPoint[AIDebug].getTransformData().position;
+
+        transform.position = point;
+        transform.rotation = glm::vec3(0, 0, 0);
+        transform.scale    = glm::vec3(1, 1, 1);
+        collisionCylinder = ObjectManager::getInstance().createObject(id, transform);
+
+        RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "semiTransparente.png");
     }
-    //renderFacade->setCameraTarget(&AIDebugPoint[AIDebug]);
-    RenderManager::getInstance().createCameraRenderComponent(AIDebugPoint[AIDebug]);
+
+    //Create camera render
+    auto obj = ObjectManager::getInstance().getObject(AIDebugPoint[AIDebug].getId());
+    RenderManager::getInstance().createCameraRenderComponent(*obj.get());
 }
 
 void RenderManager::deleteRenderNPC()
@@ -250,9 +288,21 @@ void RenderManager::deleteRenderNPC()
     if(lap == true)
     {
         EventData data;
+
+        //Delete marker
         data.Id = marker->getId();
 
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
-        RenderManager::getInstance().createCameraRenderComponent(AIDebugPoint[0]);
+
+        //Delete Collision Cylinder
+        data.Id = collisionCylinder->getId();
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+
+        //Change camera to initial player
+        auto obj = ObjectManager::getInstance().getObject(AIDebugPoint[0].getId());
+        RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+
+        AIDebugPoint.clear();
     }
 }

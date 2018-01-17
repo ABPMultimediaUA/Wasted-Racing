@@ -143,11 +143,19 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
                 node = sceneManager->addMeshSceneNode(plane);
             }
             break;
-            case ObjectRenderComponent::Shape::Cone: {
-                auto plane = geometryCreator->createConeMesh(50,50,2);
+            case ObjectRenderComponent::Shape::Arrow: {
+                auto plane = geometryCreator->createArrowMesh(4,8,10,6,1,3);
                 node = sceneManager->addMeshSceneNode(plane);
-                //auto var = videoDriver->getTexture(cmp->getImg().c_str());
-                //node->setMaterialTexture(0, var);
+                auto var = videoDriver->getTexture(cmp->getImg().c_str());
+                node->setMaterialTexture(0, var);
+            }
+            break;
+            case ObjectRenderComponent::Shape::Cylinder: {
+                auto plane = geometryCreator->createCylinderMesh(2,10,10);
+                node = sceneManager->addMeshSceneNode(plane);
+                auto var = videoDriver->getTexture(cmp->getImg().c_str());
+                node->setMaterialTexture(0, var);
+                node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
             }
             break;
             default:

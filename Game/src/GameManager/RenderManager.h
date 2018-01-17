@@ -83,5 +83,6 @@ private:
     bool lap = false;
     std::vector<GameObject> AIDebugPoint;
     GameObject::Pointer marker;
+    GameObject::Pointer collisionCylinder;
 
 };
