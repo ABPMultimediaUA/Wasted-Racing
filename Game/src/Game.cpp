@@ -338,8 +338,81 @@ void loadMap() {
                 //Create TERRAIN component
                 ItemManager::getInstance().createItemBox(*obj.get());
 
+            }
+
+            //Parse COLLISION component
+            if(strcmp(component->first_attribute("name")->value(),"collision") == 0){
+
+                xml_node<>* bbox = component->first_node("bbox");
+                LAPAL::plane3f terrain;
+                float radius;
+                bool kinetic;
+                CollisionComponent::Type type = CollisionComponent::Type::Default;
+
+                //Parse Terrain if given
+                if(bbox != nullptr) {
+                    //Read P1 from XML
+                    auto strVector = split(bbox->first_attribute("p1")->value(), ',');
+                    terrain.p1 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                    //Read P2 from XML
+                    strVector = split(bbox->first_attribute("p2")->value(), ',');
+                    terrain.p2 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                    //Read P3 from XML
+                    strVector = split(bbox->first_attribute("p3")->value(), ',');
+                    terrain.p3 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                    //Read P4 from XML
+                    strVector = split(bbox->first_attribute("p4")->value(), ',');
+                    terrain.p4 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                    //Read FRICTION from XML
+                    terrain.fric = std::stof(bbox->first_attribute("friction")->value());
+                    //Calculate terrain angles in X and Z
+                    LAPAL::calculateRotationsXZ(terrain);
+                }
+
+                //Parse Radius if given
+                if(component->first_attribute("radius") != nullptr)
+                    radius = std::stof(component->first_attribute("radius")->value());
+
+                //Parse Kinetic
+                if(strcmp(component->first_attribute("kinetic")->value(),"true") == 0)
+                    kinetic = true;
+                else 
+                    kinetic = false;
+
+                //Parse Type
+                if(strcmp(component->first_attribute("type")->value(),"ramp") == 0)
+                    type = CollisionComponent::Type::Ramp;
+
+
+                //Create COLLISION component
+                if(bbox != nullptr)
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), terrain, kinetic, type);
+                else
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), radius, kinetic, type);
 
             }
+
+            //Parse RAMP component
+            if(strcmp(component->first_attribute("name")->value(),"ramp") == 0){
+                
+                float vel = std::stof(component->first_attribute("vel")->value());
+                float cTime = std::stof(component->first_attribute("cTime")->value());
+                float dTime = std::stof(component->first_attribute("dTime")->value());
+
+                //Create RAMP component
+                PhysicsManager::getInstance().createRampComponent(*obj.get(), vel, cTime, dTime);
+
+            }
+
+/*<object id="18000" pos="29.727184,1.472275,11.147034" rot="0,-15,0" sca="5,25,1">
+    <component name="render" img="ramp.jpg" type="plane" />
+    <component name="collision" type="ramp">
+        <bbox p1="29.727184,1.472275,11.147034" p2="39.386444,1.472275,13.735226" p3="52.327396,1.472275,-34.561066" p4="42.668137,1.472275,-37.149258" friction="0.2" />
+    </component>
+    <component name="ramp" vel="300" cTime="1" dTime="1" />
+</object>*/
+
+
 
         }
 	}

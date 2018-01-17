@@ -47,11 +47,23 @@ IRotArray = []
 IScaArray = []
 IId       = 16000
 
+#################################################################################
+#                            RAMP                                               #
+#################################################################################
+RPosArray = []
+RRotArray = []
+RScaArray = []
+RMaxVel   = []
+RCTime    = []
+RDTime    = []
+RPoints   = []
+RId       = 18000
+
 #Variables for knowing when an object has been fully analyzed
 WVisited   = False
 LVisited   = False 
 IVisited   = False
-RVisited   = False
+RVisited   = 0
 OVisited   = False
 SVisited   = False
 
@@ -225,6 +237,49 @@ for line in objFile:
 
         IVisited = True
 
+    #################################################################################
+    #                            RAMP                                               #
+    #################################################################################
+    if Ramp == True and line[0] == 'o' and line[1] == ' ' :
+        aux = line.split(' ')[1].split('_')
+
+        #Set Velocity of Ramp
+        RMaxVel.append(aux[2])
+        RCTime.append(aux[3])
+        RDTime.append(aux[4])
+
+        #Set Rotation if given, and 0 if not
+        if len(aux) > 6 :
+            RRotArray.append(aux[5].split(':')[0] + ',' + aux[5].split(':')[1] + ',' + aux[5].split(':')[2])
+        else :
+            RRotArray.append('0,0,0')
+
+
+        #Set Scale if given, and 0 if not
+        if len(aux) > 7 :
+            RScaArray.append(aux[6].split(':')[0] + ',' + aux[6].split(':')[1] + ',' + aux[6].split(':')[2])
+        else :
+            RScaArray.append('1,1,1')
+
+        RVisited = 0
+
+    #Here we store data for the position of our LIGHT
+    elif Ramp == True and RVisited < 4 and line[0] == 'v' and line[1] == ' ' :
+
+        aux = line.split(' ')
+
+        if RVisited == 0 :
+            RPosArray.append(aux[1] + ',' + aux[2] + ',' + aux[3].rstrip())
+
+        RPoints.append(aux[1] + ',' + aux[2] + ',' + aux[3].rstrip())
+
+        if RVisited == 3 :
+            aux1 = RPoints[2]
+            RPoints[2] = RPoints[3]
+            RPoints[3] = aux1
+
+        RVisited += 1
+
 
 #close obj file once read
 objFile.close()
@@ -339,7 +394,7 @@ for i, face in enumerate(TFaceArray):
 for i in range( 0, len(WPosArray) ) :
 
     gameObject          =  '<object id=\"' + str(WId+i) + '\" pos=\"' + WPosArray[i] + '\" rot=\"' + WRotArray[i] + '\" sca=\"' + WScaArray[i] + '\">\n'
-    waypointComponent    =  '    <component name=\"waypoint\"' + ' radius=\"' + WRadius[i] + '\" level=\"' + WLevel[i] + '\" />\n'
+    waypointComponent   =  '    <component name=\"waypoint\"' + ' radius=\"' + WRadius[i] + '\" level=\"' + WLevel[i] + '\" />\n'
     gameObjectEnd       =  '</object>\n'
 
     destFile.write(gameObject)
@@ -350,7 +405,7 @@ for i in range( 0, len(WPosArray) ) :
 for i in range( 0, len(LPosArray) ) :
 
     gameObject          =  '<object id=\"' + str(LId+i) + '\" pos=\"' + LPosArray[i] + '\" rot=\"' + LRotArray[i] + '\" sca=\"' + LScaArray[i] + '\">\n'
-    lightComponent    =  '    <component name=\"light\"' + ' radius=\"' + LRadius[i] + '\" type=\"' + LType[i] + '\" />\n'
+    lightComponent      =  '    <component name=\"light\"' + ' radius=\"' + LRadius[i] + '\" type=\"' + LType[i] + '\" />\n'
     gameObjectEnd       =  '</object>\n'
 
     destFile.write(gameObject)
@@ -361,11 +416,30 @@ for i in range( 0, len(LPosArray) ) :
 for i in range( 0, len(IPosArray) ) :
 
     gameObject          =  '<object id=\"' + str(IId+i) + '\" pos=\"' + IPosArray[i] + '\" rot=\"' + IRotArray[i] + '\" sca=\"' + IScaArray[i] + '\">\n'
-    itemComponent    =  '    <component name=\"itemBox\"' + ' />\n'
+    itemComponent       =  '    <component name=\"itemBox\"' + ' />\n'
     gameObjectEnd       =  '</object>\n'
 
     destFile.write(gameObject)
     destFile.write(itemComponent)
+    destFile.write(gameObjectEnd)
+
+#RAMP
+for i in range( 0, len(RPosArray) ) :
+
+    gameObject          =  '<object id=\"' + str(RId+i) + '\" pos=\"' + RPosArray[i] + '\" rot=\"' + RRotArray[i] + '\" sca=\"' + RScaArray[i] + '\">\n'
+    renderComponent     =  '    <component name=\"render\"' + ' img=\"ramp.jpg\" type=\"plane\" />\n'
+    collisionComponent  =  '    <component name=\"collision\" kinetic=\"false\" type=\"ramp\">\n'
+    bbox                =  '        <bbox p1=\"' + RPoints[i*4] + '\" p2=\"' + RPoints[i*4+1] + '\" p3=\"' + RPoints[i*4+2] + '\" p4=\"' + RPoints[i*4+3] + '\" ' + 'friction=\"0.2\" />\n'
+    collisiComponentEnd =  '    </component>\n'
+    rampComponent       =  '    <component name=\"ramp\"' + ' vel=\"' + RMaxVel[i] + '\" cTime=\"' + RCTime[i] + '\" dTime=\"' + RDTime[i] +'\" />\n'
+    gameObjectEnd       =  '</object>\n'
+
+    destFile.write(gameObject)
+    destFile.write(renderComponent)
+    destFile.write(collisionComponent)
+    destFile.write(bbox)
+    destFile.write(collisiComponentEnd)
+    destFile.write(rampComponent)
     destFile.write(gameObjectEnd)
 
 #close write file
