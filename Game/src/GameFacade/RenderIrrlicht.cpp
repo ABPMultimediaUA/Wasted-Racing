@@ -98,9 +98,9 @@ void RenderIrrlicht::updateCamera() {
     camera->setPosition(irr::core::vector3df(pos.x - 30*cos(radianAngle), pos.y + 12, pos.z + 30*sin(radianAngle)));
 }
 
-void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
+void RenderIrrlicht::addObject(IComponent* ptr) {
 
-    ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr.get());
+    ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr);
 
     if(cmp != nullptr){
 
@@ -156,9 +156,9 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
     }
 }
 
-void RenderIrrlicht::addLight(IComponent::Pointer ptr) {
+void RenderIrrlicht::addLight(IComponent* ptr) {
 
-    LightRenderComponent* cmp = dynamic_cast<LightRenderComponent*>(ptr.get());
+    LightRenderComponent* cmp = dynamic_cast<LightRenderComponent*>(ptr);
 
     if(cmp != nullptr){
 
@@ -205,9 +205,9 @@ void RenderIrrlicht::addLight(IComponent::Pointer ptr) {
     }
 }
 
-void RenderIrrlicht::deleteObject(IComponent::Pointer ptr) {
+void RenderIrrlicht::deleteObject(IComponent* ptr) {
     
-    auto id = ptr.get()->getGameObject().getId();
+    auto id = ptr->getGameObject().getId();
     auto itr = nodeMap.find(id);
 
     if(itr != nodeMap.end()){

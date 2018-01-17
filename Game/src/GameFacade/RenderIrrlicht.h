@@ -48,13 +48,13 @@ public:
     virtual void updateCamera();
 
     //Add an object to the game
-    virtual void addObject(IComponent::Pointer ptr);
+    virtual void addObject(IComponent* ptr);
 
     //Add a light to the game
-    virtual void addLight(IComponent::Pointer ptr);
+    virtual void addLight(IComponent* ptr);
 
     //Delete an object of the game
-    virtual void deleteObject(IComponent::Pointer ptr);
+    virtual void deleteObject(IComponent* ptr);
 
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
