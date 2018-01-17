@@ -413,13 +413,26 @@
 <object id="16002" pos="78.523079,0.000000,15.191893" rot="45,45,45" sca="0.5,0.5,0.5">
     <component name="itemBox" />
 </object>
-<object id="18000" pos="41.02729025,1.472275,-11.707016" rot="0,-15,0" sca="10,1,50">
+<object id="18000" pos="41.02729025,0.0,-11.707016" rot="0,-15,0" sca="10,1,50">
     <component name="render" file="ramp.jpg" type="plane" />
     <component name="collision" kinetic="false" type="ramp">
-        <bbox p1="29.727184,1.472275,11.147034" p2="39.386444,1.472275,13.735226" p3="52.327396,1.472275,-34.561066" p4="42.668137,1.472275,-37.149258" friction="0.2" />
+        <bbox p1="29.727184,0.000000,11.147034" p2="39.386444,0.000000,13.735226" p3="52.327396,0.000000,-34.561066" p4="42.668137,0.000000,-37.149258" friction="0.2" />
     </component>
     <component name="ramp" vel="300" cTime="1" dTime="1" />
 </object>
-<object id="18000" pos="0.000000,0.000000,0.000000" rot="0,0,0" sca="1,1,1">
+<object id="18001" pos="125.4187355,0.0,-3.9821360000000006" rot="0,0,0" sca="10,1,50">
+    <component name="render" file="ramp.jpg" type="plane" />
+    <component name="collision" kinetic="false" type="ramp">
+        <bbox p1="120.418739,0.000000,21.017864" p2="130.418732,0.000000,21.017864" p3="130.418732,0.000000,-28.982136" p4="120.418739,0.000000,-28.982136" friction="0.2" />
+    </component>
+    <component name="ramp" vel="300" cTime="1" dTime="1" />
+</object>
+<object id="20000" pos="0.000000,-2.000000,0.000000" rot="0,0,0" sca="1,1,1">
     <component name="render" file="circuit.obj" type="mesh" />
+</object>
+<object id="24000" pos="23.66268675,0.0,-17.078972" rot="0,-15,0" sca="10,1,50">
+    <component name="render" file="starLine.png" type="plane" />
+    <component name="collision" kinetic="false" type="start">
+        <bbox p1="12.362582,0.000000,5.775078" p2="22.021839,0.000000,8.363270" p3="34.962791,0.000000,-39.933022" p4="25.303535,0.000000,-42.521214" friction="0.2" />
+    </component>
 </object>

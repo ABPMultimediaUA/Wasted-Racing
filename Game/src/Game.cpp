@@ -171,6 +171,7 @@ void Game::Run() {
 
 
 void addObjects(){
+
     GameObject::TransformationData transform;
     u_int16_t id;
 
@@ -183,7 +184,7 @@ void addObjects(){
     auto terrCMP = terrainCMP.get()->getTerrain();
 
     id = 25000;
-    transform.position = glm::vec3(-25,10, -20);
+    transform.position = glm::vec3(-35,10, -20);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrCMP, terrainCMP);
@@ -193,7 +194,7 @@ void addObjects(){
     //===============================================================
 
     id = 25001;
-    transform.position = glm::vec3(-25,10,0);
+    transform.position = glm::vec3(-35,10,0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, terrCMP, terrainCMP);
@@ -370,6 +371,8 @@ void loadMap() {
                 //Parse Type
                 if(strcmp(component->first_attribute("type")->value(),"ramp") == 0)
                     type = CollisionComponent::Type::Ramp;
+                if(strcmp(component->first_attribute("type")->value(),"start") == 0)
+                    type = CollisionComponent::Type::StartLine;
 
 
                 //Create COLLISION component

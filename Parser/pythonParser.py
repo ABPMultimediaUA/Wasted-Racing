@@ -67,7 +67,20 @@ ORotArray = []
 OScaArray = []
 OFile     = []
 ORadius   = []
-OId       = 18000
+OId       = 20000
+
+#################################################################################
+#                            START LINE                                         #
+#################################################################################
+SPosArray = []
+SRotArray = []
+SScaArray = []
+SPoints   = []
+SId       = 24000
+
+#################################################################################
+#                       OTHER VARIABLES                                         #
+#################################################################################
 
 #Variables for knowing when an object has been fully analyzed
 WVisited   = False
@@ -75,7 +88,7 @@ LVisited   = False
 IVisited   = False
 RVisited   = 0
 OVisited   = False
-SVisited   = False
+SVisited   = 0
 
 #Variables for each different object
 Terrain     = False
@@ -320,6 +333,39 @@ for line in objFile:
 
         OVisited = True
 
+    #################################################################################
+    #                            START LINE                                         #
+    #################################################################################
+    if StartLine == True and line[0] == 'o' and line[1] == ' ' :
+        aux = line.split(' ')[1].split('_')
+
+        #Set Rotation if given, and 0 if not
+        if len(aux) > 3 :
+            SRotArray.append(aux[2].split(':')[0] + ',' + aux[2].split(':')[1] + ',' + aux[2].split(':')[2])
+        else :
+            SRotArray.append('0,0,0')
+
+
+        #Set Scale if given, and 0 if not
+        if len(aux) > 4 :
+            SScaArray.append(aux[3].split(':')[0] + ',' + aux[3].split(':')[1] + ',' + aux[3].split(':')[2])
+        else :
+            SScaArray.append('1,1,1')
+
+        SVisited = 0
+
+    #Here we store data for the position of our LIGHT
+    elif StartLine == True and SVisited < 4 and line[0] == 'v' and line[1] == ' ' :
+
+        aux = line.split(' ')
+
+        if SVisited == 0 :
+            SPosArray.append(aux[1] + ',' + aux[2] + ',' + aux[3].rstrip())
+
+        SPoints.append(aux[1] + ',' + aux[2] + ',' + aux[3].rstrip())
+
+        SVisited += 1
+
 #close obj file once read
 objFile.close()
 
@@ -418,6 +464,19 @@ for i, iter in enumerate(RPosArray):
 
     RPosArray[i] = str(x) + ',' + str(y) + ',' + str(z)
 
+#Extra MATHS for START LINE
+for i, iter in enumerate(SPosArray):
+
+    x = float(SPoints[i*4].split(',')[0]) + float(SPoints[i*4+1].split(',')[0]) + float(SPoints[i*4+2].split(',')[0]) + float(SPoints[i*4+3].split(',')[0])
+    y = float(SPoints[i*4].split(',')[1]) + float(SPoints[i*4+1].split(',')[1]) + float(SPoints[i*4+2].split(',')[1]) + float(SPoints[i*4+3].split(',')[1])
+    z = float(SPoints[i*4].split(',')[2]) + float(SPoints[i*4+1].split(',')[2]) + float(SPoints[i*4+2].split(',')[2]) + float(SPoints[i*4+3].split(',')[2])
+
+    x /= 4
+    y /= 4
+    z /= 4
+
+    SPosArray[i] = str(x) + ',' + str(y) + ',' + str(z)
+
 ################################################################################
 #                       Write the Xml                                          #
 ################################################################################
@@ -483,7 +542,7 @@ for i in range( 0, len(RPosArray) ) :
     gameObject          =  '<object id=\"' + str(RId+i) + '\" pos=\"' + RPosArray[i] + '\" rot=\"' + RRotArray[i] + '\" sca=\"' + RScaArray[i] + '\">\n'
     renderComponent     =  '    <component name=\"render\"' + ' file=\"ramp.jpg\" type=\"plane\" />\n'
     collisionComponent  =  '    <component name=\"collision\" kinetic=\"false\" type=\"ramp\">\n'
-    bbox                =  '        <bbox p1=\"' + RPoints[i*4] + '\" p2=\"' + RPoints[i*4+1] + '\" p3=\"' + RPoints[i*4+2] + '\" p4=\"' + RPoints[i*4+3] + '\" ' + 'friction=\"0.2\" />\n'
+    bbox                =  '        <bbox p1=\"' + RPoints[i*4] + '\" p2=\"' + RPoints[i*4+1] + '\" p3=\"' + RPoints[i*4+3] + '\" p4=\"' + RPoints[i*4+2] + '\" ' + 'friction=\"0.2\" />\n'
     collisiComponentEnd =  '    </component>\n'
     rampComponent       =  '    <component name=\"ramp\"' + ' vel=\"' + RMaxVel[i] + '\" cTime=\"' + RCTime[i] + '\" dTime=\"' + RDTime[i] +'\" />\n'
     gameObjectEnd       =  '</object>\n'
@@ -508,6 +567,23 @@ for i in range( 0, len(OPosArray) ) :
     destFile.write(renderComponent)
     if ORadius[i] != "0" :
         destFile.write(collisionComponent)
+    destFile.write(gameObjectEnd)
+
+#START LINE
+for i in range( 0, len(SPosArray) ) :
+
+    gameObject          =  '<object id=\"' + str(SId+i) + '\" pos=\"' + SPosArray[i] + '\" rot=\"' + SRotArray[i] + '\" sca=\"' + SScaArray[i] + '\">\n'
+    renderComponent     =  '    <component name=\"render\"' + ' file=\"starLine.png\" type=\"plane\" />\n'
+    collisionComponent  =  '    <component name=\"collision\" kinetic=\"false\" type=\"start\">\n'
+    bbox                =  '        <bbox p1=\"' + SPoints[i*4] + '\" p2=\"' + SPoints[i*4+1] + '\" p3=\"' + SPoints[i*4+3] + '\" p4=\"' + SPoints[i*4+2] + '\" ' + 'friction=\"0.2\" />\n'
+    collisiComponentEnd =  '    </component>\n'
+    gameObjectEnd       =  '</object>\n'
+
+    destFile.write(gameObject)
+    destFile.write(renderComponent)
+    destFile.write(collisionComponent)
+    destFile.write(bbox)
+    destFile.write(collisiComponentEnd)
     destFile.write(gameObjectEnd)
 
 #close write file
