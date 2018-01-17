@@ -1,7 +1,7 @@
 # Blender v2.79 (sub 0) OBJ File: 'circuit.blend'
 # www.blender.org
 mtllib circuit.mtl
-o R_0_300_1_1_0:-15:0_5:25:1_Plane
+o R_0_300_1_1_0:-15:0_10:1:50_Plane
 v 29.727184 1.472275 11.147034
 v 39.386444 1.472275 13.735226
 v 42.668137 1.472275 -37.149258

@@ -366,7 +366,22 @@ for i, face in enumerate(relatedFaces): #for every face
                   (TFaceArray[i][aux] == TFaceArray[faceId][z] or TFaceArray[i][aux] == TFaceArray[faceId][aux1]):
                     relatedEdges[i][j] = str(TId+faceId) + ':' + str(z)
 
-#write the xml
+#Extra MATHS for RAMP
+for i, iter in enumerate(RPosArray):
+
+    x = float(RPoints[i*4].split(',')[0]) + float(RPoints[i*4+1].split(',')[0]) + float(RPoints[i*4+2].split(',')[0]) + float(RPoints[i*4+3].split(',')[0])
+    y = float(RPoints[i*4].split(',')[1]) + float(RPoints[i*4+1].split(',')[1]) + float(RPoints[i*4+2].split(',')[1]) + float(RPoints[i*4+3].split(',')[1])
+    z = float(RPoints[i*4].split(',')[2]) + float(RPoints[i*4+1].split(',')[2]) + float(RPoints[i*4+2].split(',')[2]) + float(RPoints[i*4+3].split(',')[2])
+
+    x /= 4
+    y /= 4
+    z /= 4
+
+    RPosArray[i] = str(x) + ',' + str(y) + ',' + str(z)
+
+################################################################################
+#                       Write the Xml                                          #
+################################################################################
 #TERRAIN
 for i, face in enumerate(TFaceArray):
 
@@ -427,7 +442,7 @@ for i in range( 0, len(IPosArray) ) :
 for i in range( 0, len(RPosArray) ) :
 
     gameObject          =  '<object id=\"' + str(RId+i) + '\" pos=\"' + RPosArray[i] + '\" rot=\"' + RRotArray[i] + '\" sca=\"' + RScaArray[i] + '\">\n'
-    renderComponent     =  '    <component name=\"render\"' + ' img=\"ramp.jpg\" type=\"plane\" />\n'
+    renderComponent     =  '    <component name=\"render\"' + ' file=\"ramp.jpg\" type=\"plane\" />\n'
     collisionComponent  =  '    <component name=\"collision\" kinetic=\"false\" type=\"ramp\">\n'
     bbox                =  '        <bbox p1=\"' + RPoints[i*4] + '\" p2=\"' + RPoints[i*4+1] + '\" p3=\"' + RPoints[i*4+2] + '\" p4=\"' + RPoints[i*4+3] + '\" ' + 'friction=\"0.2\" />\n'
     collisiComponentEnd =  '    </component>\n'

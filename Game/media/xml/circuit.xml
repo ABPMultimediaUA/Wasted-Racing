@@ -413,8 +413,8 @@
 <object id="16002" pos="78.523079,0.000000,15.191893" rot="45,45,45" sca="0.5,0.5,0.5">
     <component name="itemBox" />
 </object>
-<object id="18000" pos="29.727184,1.472275,11.147034" rot="0,-15,0" sca="5,25,1">
-    <component name="render" img="ramp.jpg" type="plane" />
+<object id="18000" pos="41.02729025,1.472275,-11.707016" rot="0,-15,0" sca="10,1,50">
+    <component name="render" file="ramp.jpg" type="plane" />
     <component name="collision" kinetic="false" type="ramp">
         <bbox p1="29.727184,1.472275,11.147034" p2="39.386444,1.472275,13.735226" p3="52.327396,1.472275,-34.561066" p4="42.668137,1.472275,-37.149258" friction="0.2" />
     </component>

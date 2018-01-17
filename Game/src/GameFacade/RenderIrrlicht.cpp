@@ -121,62 +121,26 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
 
             case ObjectRenderComponent::Shape::Cube: {
                 node = sceneManager->addCubeSceneNode();
-                if(cmp->getGameObject().getId() == 18) {
-                    auto var = videoDriver->getTexture("media/img/grass.jpg");
-                    node->setMaterialTexture(0, var);
-                }
-                else if(cmp->getGameObject().getId() >= 25 && cmp->getGameObject().getId() <= 36) {
-                    auto var = videoDriver->getTexture("media/img/itemBox.png");
-                    node->setMaterialTexture(0, var);
-                }
-                else {
-                    auto var = videoDriver->getTexture("media/img/road.jpg");
-                    node->setMaterialTexture(0, var);
-                }
+                auto var = videoDriver->getTexture(cmp->getImg().c_str());
+                node->setMaterialTexture(0, var);
             }
             break;
             case ObjectRenderComponent::Shape::Sphere: {
                 node = sceneManager->addSphereSceneNode();
-                auto var = videoDriver->getTexture("media/img/pool.jpg");
+                auto var = videoDriver->getTexture(cmp->getImg().c_str());
                 node->setMaterialTexture(0, var);
             }
             break;
             case ObjectRenderComponent::Shape::Plane: {
                 auto plane = geometryCreator->createPlaneMesh(irr::core::dimension2d<irr::f32>(1,1));
                 node = sceneManager->addMeshSceneNode(plane);
-                auto var = videoDriver->getTexture("media/img/ramp.jpg");
+                auto var = videoDriver->getTexture(cmp->getImg().c_str());
                 node->setMaterialTexture(0, var);
-            }
-            break;
-            case ObjectRenderComponent::Shape::Banana: {
-                auto plane = sceneManager->getMesh("media/mesh/banana.3ds");
-                node = sceneManager->addMeshSceneNode(plane);
-            }
-            break;
-            case ObjectRenderComponent::Shape::Shell: {
-                auto plane = sceneManager->getMesh("media/mesh/ball.3ds");
-                node = sceneManager->addMeshSceneNode(plane);
             }
             break;
             case ObjectRenderComponent::Shape::Mesh: {
-                /*
-                auto plane = sceneManager->getMesh("media/mesh/amyrose.3ds");
-                node = sceneManager->addMeshSceneNode(plane);*/
-                auto plane = sceneManager->getMesh("media/mesh/Link.obj");
+                auto plane = sceneManager->getMesh(cmp->getMesh().c_str());
                 node = sceneManager->addMeshSceneNode(plane);
-            }
-            break;
-            case ObjectRenderComponent::Shape::Road: {
-                auto plane = sceneManager->getMesh("media/mesh/circuit.obj");
-                //auto plane = sceneManager->getMesh("media/mesh/course/course.obj");
-                node = sceneManager->addMeshSceneNode(plane);
-            }
-            break;
-            case ObjectRenderComponent::Shape::StarLine: {
-                auto plane = geometryCreator->createPlaneMesh(irr::core::dimension2d<irr::f32>(1,1));
-                node = sceneManager->addMeshSceneNode(plane);
-                auto var = videoDriver->getTexture("media/img/starLine.png");
-                node->setMaterialTexture(0, var);
             }
             break;
             default:

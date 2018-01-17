@@ -48,7 +48,7 @@ public:
         return renderFacade;
     }
 
-    IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape);
+    IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr);
     IComponent::Pointer createLightRenderComponent(GameObject& newGameObject, LightRenderComponent::Type newType, float newRadius);
     IComponent::Pointer createCameraRenderComponent(GameObject& newGameObject);
 

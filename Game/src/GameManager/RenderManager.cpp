@@ -62,9 +62,9 @@ void RenderManager::splitQuadTree(){
     //renderComponentTree.divide();
 }
 
-IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape) {
+IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr) {
 
-    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape);
+    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
 
     newGameObject.addComponent(component);
 

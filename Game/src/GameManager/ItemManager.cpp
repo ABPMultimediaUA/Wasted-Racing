@@ -74,7 +74,7 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
     ItemBoxes.push_back(std::dynamic_pointer_cast<ItemBoxComponent>(component));
     EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Create, data});
 
-    RenderManager::getInstance().createObjectRenderComponent(obj, ObjectRenderComponent::Shape::Cube);
+    RenderManager::getInstance().createObjectRenderComponent(obj, ObjectRenderComponent::Shape::Cube, "itemBox.png");
     PhysicsManager::getInstance().createCollisionComponent(obj, 5, false, CollisionComponent::Type::ItemBox);
 
 
@@ -198,7 +198,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Shell);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.3ds");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::RedShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -269,7 +269,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Shell);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.3ds");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::BlueShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -303,7 +303,7 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
     ob.get()->addComponent(component);
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Banana);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "banana.3ds");
     PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Banana);
 
 
