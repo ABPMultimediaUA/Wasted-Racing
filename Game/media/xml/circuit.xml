@@ -386,11 +386,11 @@
 <object id="10000" pos="0.000000,0.000000,-24.737925" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="80" level="0" />
 </object>
-<object id="10001" pos="99.403587,0.000000,0.000000" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="80" level="1" />
-</object>
-<object id="10002" pos="178.683075,0.000000,1.947726" rot="0,0,0" sca="1,1,1">
+<object id="10001" pos="178.683075,0.000000,1.947726" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="90.5" level="2" />
+</object>
+<object id="10002" pos="99.403587,0.000000,0.000000" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="80.001" level="1" />
 </object>
 <object id="14000" pos="0.000000,40.000000,-30.000000" rot="0,0,10" sca="0.5,0.5,0.5">
     <component name="light" radius="60" type="D" />
@@ -419,4 +419,7 @@
         <bbox p1="29.727184,1.472275,11.147034" p2="39.386444,1.472275,13.735226" p3="52.327396,1.472275,-34.561066" p4="42.668137,1.472275,-37.149258" friction="0.2" />
     </component>
     <component name="ramp" vel="300" cTime="1" dTime="1" />
+</object>
+<object id="18000" pos="0.000000,0.000000,0.000000" rot="0,0,0" sca="1,1,1">
+    <component name="render" file="circuit.obj" type="mesh" />
 </object>

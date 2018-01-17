@@ -174,18 +174,6 @@ void addObjects(){
     GameObject::TransformationData transform;
     u_int16_t id;
 
-    id = 178;
-    transform.position = glm::vec3(0, -3, 0);
-    transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(1, 1, 1);
-    auto ob37 = ObjectManager::getInstance().createObject(id, transform);
-
-    //===============================================================
-    // ADD WAYPOINT COMPONENT
-    //===============================================================
-    //Road
-    std::shared_ptr<IComponent> cp17 = RenderManager::getInstance().createObjectRenderComponent(*ob37.get(), ObjectRenderComponent::Shape::Mesh, "circuit.obj");
-
     //===============================================================
     // ADD PLAYER 
     //===============================================================
@@ -426,17 +414,6 @@ void loadMap() {
                 RenderManager::getInstance().createObjectRenderComponent(*obj.get(), shape, component->first_attribute("file")->value());
 
             }
-
-/*<object id="18000" pos="29.727184,1.472275,11.147034" rot="0,-15,0" sca="5,25,1">
-    <component name="render" file="ramp.jpg" type="plane" />
-    <component name="collision" type="ramp">
-        <bbox p1="29.727184,1.472275,11.147034" p2="39.386444,1.472275,13.735226" p3="52.327396,1.472275,-34.561066" p4="42.668137,1.472275,-37.149258" friction="0.2" />
-    </component>
-    <component name="ramp" vel="300" cTime="1" dTime="1" />
-</object>*/
-
-
-
         }
 	}
 

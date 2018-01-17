@@ -59,6 +59,16 @@ RDTime    = []
 RPoints   = []
 RId       = 18000
 
+#################################################################################
+#                            OBSTACLES                                          #
+#################################################################################
+OPosArray = []
+ORotArray = []
+OScaArray = []
+OFile     = []
+ORadius   = []
+OId       = 18000
+
 #Variables for knowing when an object has been fully analyzed
 WVisited   = False
 LVisited   = False 
@@ -280,6 +290,35 @@ for line in objFile:
 
         RVisited += 1
 
+    #################################################################################
+    #                            OBSTACLES                                          #
+    #################################################################################
+    if Object == True and line[0] == 'o' and line[1] == ' ' :
+        aux = line.split(' ')[1].split('_')
+
+        OFile.append(aux[2])
+        ORadius.append(aux[3])
+
+        #Set Rotation if given, and 0 if not
+        if len(aux) > 5 :
+            ORotArray.append(aux[4].split(':')[0] + ',' + aux[4].split(':')[1] + ',' + aux[4].split(':')[2])
+        else :
+            ORotArray.append('0,0,0')
+
+
+        #Set Scale if given, and 0 if not
+        if len(aux) > 6 :
+            OScaArray.append(aux[5].split(':')[0] + ',' + aux[5].split(':')[1] + ',' + aux[5].split(':')[2])
+        else :
+            OScaArray.append('1,1,1')
+
+    #Here we store data for the position of our LIGHT
+    elif Object == True and OVisited == False and line[0] == 'v' and line[1] == ' ' :
+
+        aux = line.split(' ')
+        OPosArray.append(aux[1] + ',' + aux[2] + ',' + aux[3].rstrip())
+
+        OVisited = True
 
 #close obj file once read
 objFile.close()
@@ -455,6 +494,20 @@ for i in range( 0, len(RPosArray) ) :
     destFile.write(bbox)
     destFile.write(collisiComponentEnd)
     destFile.write(rampComponent)
+    destFile.write(gameObjectEnd)
+
+#OBSTACLE
+for i in range( 0, len(OPosArray) ) :
+
+    gameObject          =  '<object id=\"' + str(OId+i) + '\" pos=\"' + OPosArray[i] + '\" rot=\"' + ORotArray[i] + '\" sca=\"' + OScaArray[i] + '\">\n'
+    renderComponent     =  '    <component name=\"render\"' + ' file=\"' + OFile[i] + '\" type=\"mesh\" />\n'
+    collisionComponent  =  '    <component name=\"collision\" radius=\"' + ORadius[i] + '\" kinetic=\"true\" type=\"default\" />\n'
+    gameObjectEnd       =  '</object>\n'
+
+    destFile.write(gameObject)
+    destFile.write(renderComponent)
+    if ORadius[i] != "0" :
+        destFile.write(collisionComponent)
     destFile.write(gameObjectEnd)
 
 #close write file
