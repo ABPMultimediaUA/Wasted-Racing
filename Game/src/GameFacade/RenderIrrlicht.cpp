@@ -143,6 +143,13 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
                 node = sceneManager->addMeshSceneNode(plane);
             }
             break;
+            case ObjectRenderComponent::Shape::Cone: {
+                auto plane = geometryCreator->createConeMesh(50,50,2);
+                node = sceneManager->addMeshSceneNode(plane);
+                //auto var = videoDriver->getTexture(cmp->getImg().c_str());
+                //node->setMaterialTexture(0, var);
+            }
+            break;
             default:
             break;
         }

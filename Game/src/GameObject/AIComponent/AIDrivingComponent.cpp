@@ -116,29 +116,28 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 			}
 		}
 
-		float types = ramp + box;
-
-		if(obs_count != 0)
-		{
-			obs_left   = obs_left / (array.size() - types);					// (array.size() - types) because two items can be box and ramp
-			obs_center = obs_center / (array.size() - types);
-			obs_right  = obs_right / (array.size() - types);
-		}
 
 		/*for(unsigned i = 0; i<walls.size(); ++i){
-			atan_walls += (glm::atan(walls[i].get()->getA(),walls[i].get()->getB()) / 3.14159265358979323846264338327f );
+			atan_walls = (glm::atan(walls[i].get()->getA(),walls[i].get()->getB()) / 3.14159265358979323846264338327f );
 			//collisions
 			if(atan_walls <=-0.75){ 	//Same process as the waypoint
 				atan_walls += 2.f;
 			}
-			obs_l	+= inferL(atan_walls	,0.25f  ,1.25f 	,0   	);
-			obs_c 	+= inferT(atan_walls	,0.23f	,0.25f 	,0.27f	);
-			obs_r 	+= inferL(atan_walls	,-0.75f	,0.25f  ,1   	);
-		}
+			obs_left	+= inferL(atan_walls	,0.25f  ,1.25f 	,0   	);
+			obs_center 	+= inferT(atan_walls	,0.20f	,0.25f 	,0.3f	);
+			obs_right 	+= inferL(atan_walls	,-0.75f	,0.25f  ,1   	);
 
-		obs_left   = obs_left - ((obs_l / walls.size()) * 0.3);
-		obs_center = obs_center - ((obs_c / walls.size()) * 0.3);
-		obs_right  = obs_right - ((obs_r / walls.size()) * 0.3);*/
+			obs_count++;
+		}*/
+
+		float types = ramp + box;
+
+		if(obs_count != 0)
+		{
+			obs_left   = obs_left 	/ ((array.size() /*+ walls.size()*/) - types);					// (array.size() - types) because two items can be box and ramp
+			obs_center = obs_center / ((array.size() /*+ walls.size()*/) - types);
+			obs_right  = obs_right 	/ ((array.size() /*+ walls.size()*/) - types);
+		}
 
 
 		/*if(array.size()>0){
@@ -166,11 +165,7 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 		{
 			if(box == 1)
 			{
-					go_left = box_left;
-					//go_center = wp_center;
-					go_right = box_right;
-
-				/*if(haveItem == -1)
+				if(haveItem == -1)
 				{
 					go_left = wp_left * 0.3 + box_left * 0.7;
 					//go_center = wp_center * 0.3 + box_center * 0.7;
@@ -181,7 +176,7 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 					go_left = wp_left;
 					//go_center = wp_center;
 					go_right = wp_right;
-				}*/
+				}
 			}
 			else if(ramp == 1)
 			{
@@ -284,7 +279,7 @@ float AIDrivingComponent::acelerar_frenar(GameObject& myPos, std::vector<VObject
 					nearB = array[i].get()->getB();
 				}
 
-				atan_obs += (glm::atan(nearA,nearB) / 3.14159265358979323846264338327f )/array.size();
+				atan_obs = (glm::atan(nearA,nearB) / 3.14159265358979323846264338327f )/array.size();
 				min_value = glm::min(min_value,nearA+nearB);
 			}
 		}

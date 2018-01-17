@@ -56,6 +56,12 @@ public:
     IComponent::Pointer getCameraComponent() { return cameraComponent; }
     void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
 
+    //AI Debug
+    void renderAIDebug();
+    void updateAIDebug();
+    void createRenderNPC(); //create camera and render next point of npc
+    void deleteRenderNPC(); //delete camera and render next point of npc
+
 private:
 
     IRenderFacade* renderFacade;
@@ -72,5 +78,10 @@ private:
 
     //We store just one camera component, so we can't have more than 1
     IComponent::Pointer cameraComponent;
+
+    unsigned int AIDebug = 0;
+    bool lap = false;
+    std::vector<GameObject> AIDebugPoint;
+    GameObject::Pointer marker;
 
 };

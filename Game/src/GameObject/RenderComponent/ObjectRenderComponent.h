@@ -11,6 +11,7 @@ public:
 		Cube,
 		Sphere,
 		Mesh,
+		Cone,
 		Plane
 	};
 
