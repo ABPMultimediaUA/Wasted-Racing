@@ -16,6 +16,7 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
     }
 }
 
+
 void holita(){
 
 	void *extraDriverData = NULL;
@@ -29,7 +30,45 @@ void holita(){
 	ERRCHECK( FMOD_System_SetOutput(lowLevelSystem, FMOD_OUTPUTTYPE_AUTODETECT) );
     ERRCHECK( FMOD_Studio_System_Initialize(system, 1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, extraDriverData) );
     
+
     FMOD_STUDIO_BANK* masterBank = NULL;
+    ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
+    FMOD_STUDIO_BANK* stringsBank = NULL;
+    ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
+    FMOD_STUDIO_BANK* menuBank = NULL;
+    ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Menu.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &menuBank));
+    FMOD_STUDIO_BANK* cocodrileBank = NULL;
+    ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Crocodile.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &cocodrileBank));
+
+    //Initialize Event
+    FMOD_STUDIO_EVENTDESCRIPTION* acceptDescription = NULL;
+    FMOD_STUDIO_EVENTINSTANCE* acceptInstance = NULL;
+    ERRCHECK(FMOD_Studio_System_GetEvent(system, "event:/Accept", &acceptDescription));
+
+        ERRCHECK( FMOD_Studio_EventDescription_LoadSampleData(acceptDescription) );
+
+
+            FMOD_STUDIO_PLAYBACK_STATE state;
+            FMOD_STUDIO_EVENTINSTANCE* eventInstance = NULL;
+            ERRCHECK( FMOD_Studio_EventDescription_CreateInstance(acceptDescription,&eventInstance )  );
+            FMOD_Studio_EventInstance_GetPlaybackState(eventInstance, &state);
+            std::cout << state << std::endl;
+            ERRCHECK( FMOD_Studio_EventInstance_Start(eventInstance) );
+            FMOD_Studio_EventInstance_GetPlaybackState(eventInstance, &state);
+            std::cout << state << std::endl;
+
+            while(true){
+                FMOD_STUDIO_PLAYBACK_STATE state;
+                FMOD_Studio_EventInstance_GetPlaybackState(eventInstance, &state);
+                std::cout << state << std::endl;
+                if(state==FMOD_STUDIO_PLAYBACK_STOPPED)
+                {
+                    ERRCHECK( FMOD_Studio_EventInstance_Start(eventInstance) );
+                    ERRCHECK( FMOD_Studio_EventInstance_Release(eventInstance) );
+                }
+            }
+            
+    /*FMOD_STUDIO_BANK* masterBank = NULL;
     ERRCHECK( FMOD_Studio_System_LoadBankFile(system, "C:/Program Files (x86)/FMOD SoundSystem1/FMOD Studio API Windows/api/studio/examples/media/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank) );
     
     FMOD_STUDIO_BANK* stringsBank = NULL;
@@ -70,11 +109,15 @@ void holita(){
             FMOD_STUDIO_EVENTINSTANCE* eventInstance = NULL;
             ERRCHECK( FMOD_Studio_EventDescription_CreateInstance(explosionDescription,&eventInstance )  );
 
-            ERRCHECK( FMOD_Studio_EventInstance_Start(eventInstance) );
+            ERRCHECK( FMOD_Studio_EventInstance_Start(eventInstance) );*/
 
 
-	while(1)
+	while(1){
         ERRCHECK( FMOD_Studio_System_Update(system) );
+        FMOD_Studio_EventInstance_GetPlaybackState(eventInstance, &state);
+            std::cout << state << std::endl;
+    }
+        
 
 
 
