@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 
 #include <fmod_studio.hpp>
 #include "fmod.hpp"
@@ -48,3 +48,4 @@ protected:
     //virtual ISoundEvent* newSoundEvent(FMOD::Studio::EventInstance*) = 0;
 };
 
+*/

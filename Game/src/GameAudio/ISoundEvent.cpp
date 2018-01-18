@@ -1,4 +1,4 @@
-#include "ISoundEvent.h"
+/*#include "ISoundEvent.h"
 #include <iostream>
 
 ISoundEvent::ISoundEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent)
@@ -91,3 +91,4 @@ void ISoundEvent::decreaseFlanger()
     }
     FMOD_Studio_EventInstance_SetParameterValue(soundInstance, f, flanger);
 }
+*/

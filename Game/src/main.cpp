@@ -5,20 +5,8 @@
 #include <fmod_studio.hpp>
 #include <fmod.hpp>
 
-#define ERRCHECK(_result) ERRCHECK_fn(_result, __FILE__, __LINE__)
-
-void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
-{
-    if (result != FMOD_OK)
-    {
-        std::cerr << file << "(" << line << "): FMOD error " << result << " - " << FMOD_ErrorString(result) << std::endl;
-        exit(-1);
-    }
-}
-
-
 void holita(){
-
+/*
 	void *extraDriverData = NULL;
 
     FMOD_STUDIO_SYSTEM* system = NULL;
@@ -58,16 +46,18 @@ void holita(){
             std::cout << state << std::endl;
 
             while(true){
-                FMOD_STUDIO_PLAYBACK_STATE state;
                 FMOD_Studio_EventInstance_GetPlaybackState(eventInstance, &state);
                 std::cout << state << std::endl;
+                
                 if(state==FMOD_STUDIO_PLAYBACK_STOPPED)
                 {
                     ERRCHECK( FMOD_Studio_EventInstance_Start(eventInstance) );
-                    ERRCHECK( FMOD_Studio_EventInstance_Release(eventInstance) );
+                    //ERRCHECK( FMOD_Studio_EventInstance_Release(eventInstance) );
                 }
+
+                ERRCHECK( FMOD_Studio_System_Update(system) );
             }
-            
+            */
     /*FMOD_STUDIO_BANK* masterBank = NULL;
     ERRCHECK( FMOD_Studio_System_LoadBankFile(system, "C:/Program Files (x86)/FMOD SoundSystem1/FMOD Studio API Windows/api/studio/examples/media/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank) );
     
@@ -110,14 +100,6 @@ void holita(){
             ERRCHECK( FMOD_Studio_EventDescription_CreateInstance(explosionDescription,&eventInstance )  );
 
             ERRCHECK( FMOD_Studio_EventInstance_Start(eventInstance) );*/
-
-
-	while(1){
-        ERRCHECK( FMOD_Studio_System_Update(system) );
-        FMOD_Studio_EventInstance_GetPlaybackState(eventInstance, &state);
-            std::cout << state << std::endl;
-    }
-        
 
 
 

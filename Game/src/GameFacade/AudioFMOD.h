@@ -12,11 +12,11 @@
 #include "../GameAudio/AcceptEvent.h"
 #include "../GameAudio/CocodrileGoodENEvent.h"
 
-class ISoundEvent;
+//class ISoundEvent;
 
-class AcceptEvent;
+//class AcceptEvent;
 
-class CocodrileGoodENEvent;
+//class CocodrileGoodENEvent;
 
 class AudioFMOD : public IAudioFacade {
 
@@ -95,10 +95,10 @@ private:
     FMOD_STUDIO_EVENTINSTANCE* acceptInstance;
     FMOD_STUDIO_EVENTINSTANCE* cocodrileGoodENInstance;
 
-    AcceptEvent* acceptEvent;
-    CocodrileGoodENEvent* cocodrileGoodENEvent;
+    //AcceptEvent* acceptEvent;
+    //CocodrileGoodENEvent* cocodrileGoodENEvent;
 
-    bool acceptW;
-    bool crocodileW;
+    //bool acceptW;
+    //bool crocodileW;
 
 };
