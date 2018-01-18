@@ -13,7 +13,6 @@ AudioManager& AudioManager::getInstance()
 }
 
 void AudioManager::update() {
-    audioFacade->playSound();
     audioFacade->update();
 }
 

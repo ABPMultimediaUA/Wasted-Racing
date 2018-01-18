@@ -13,11 +13,6 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 
 #define ERRCHECK(_result) ERRCHECK_fn(_result, __FILE__, __LINE__)
 
-void FlangerDown(EventData eData);
-void FlangerUp(EventData eData);
-void activateA(EventData eData);
-void activateK(EventData eData);
-
 void AudioFMOD::openAudioEngine() {
     //Initialize FMOD System
     ERRCHECK(FMOD_Studio_System_Create(&system, FMOD_VERSION));
@@ -32,93 +27,16 @@ void AudioFMOD::openAudioEngine() {
     ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Menu.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &menuBank));
     ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Crocodile.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &cocodrileBank));
 
-    //Initialize Event
-    ERRCHECK(FMOD_Studio_System_GetEvent(system, "event:/Accept", &acceptDescription));
-    ERRCHECK(FMOD_Studio_EventDescription_CreateInstance(acceptDescription, &acceptInstance));
-
-    //acceptEvent = new AcceptEvent(acceptInstance);
-
-    ERRCHECK(FMOD_Studio_System_GetEvent(system, "event:/CrocodileGoodEN", &cocodrileGoodENDescription));
-    ERRCHECK(FMOD_Studio_EventDescription_CreateInstance(cocodrileGoodENDescription, &cocodrileGoodENInstance));
-
-    //cocodrileGoodENEvent = new CocodrileGoodENEvent(cocodrileGoodENInstance);
-
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Flanger_Down, FlangerDown});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Decflanger_Down, FlangerUp});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_ActivateA_Down, activateA});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_ActivateK_Down, activateK});
-
-    //acceptW = true;
-    //crocodileW = true;
+    //Listeners
 
 }
 
 void AudioFMOD::update() {
 
-    FMOD_STUDIO_PLAYBACK_STATE state;
-
-    FMOD_Studio_EventInstance_GetPlaybackState(acceptInstance, &state);
-    std::cout << state << std::endl;
-    
-    if(state==FMOD_STUDIO_PLAYBACK_STOPPED)
-    {
-        ERRCHECK( FMOD_Studio_EventInstance_Start(acceptInstance) );
-    }
     ERRCHECK( FMOD_Studio_System_Update(system) );
+
 }
 
 void AudioFMOD::closeAudioEngine() {
     
-}
-
-void AudioFMOD::playSound(){
-    /*
-    if(!acceptEvent->isPlaying() && acceptW)
-    {
-        acceptEvent->start();
-    }
-    if(!cocodrileGoodENEvent->isPlaying() && crocodileW)
-    {
-        cocodrileGoodENEvent->start();
-    }*/
-}
-
-void AudioFMOD::IncreaseFlanger()
-{
-    //acceptEvent->increaseFlanger();
-}
-
-void AudioFMOD::DecreaseFlanger()
-{
-    //acceptEvent->decreaseFlanger();
-}
-
-void AudioFMOD::stopA()
-{
-    //acceptW = !acceptW;
-}
-
-void AudioFMOD::stopK()
-{
-    //crocodileW = !crocodileW;
-}
-
-void FlangerDown(EventData eData)
-{
-    AudioManager::getInstance().getAudioFacade()->IncreaseFlanger();
-}
-
-void FlangerUp(EventData eData)
-{
-    AudioManager::getInstance().getAudioFacade()->DecreaseFlanger();
-}
-
-void activateA(EventData eData)
-{
-    AudioManager::getInstance().getAudioFacade()->stopA();
-}
-
-void activateK(EventData eData)
-{
-    AudioManager::getInstance().getAudioFacade()->stopK();
 }

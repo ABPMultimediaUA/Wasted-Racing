@@ -39,24 +39,6 @@ public:
     //Closes engine window
     virtual void closeAudioEngine() = 0;
 
-    //==============================================================
-    // Audio Related functions
-    //==============================================================
-
-    //Renders all the scene
-    virtual void playSound() = 0;
-
-    //Increases the flanger of the parameter
-    virtual void IncreaseFlanger() = 0;
-
-    //Decreases the flanger of the parameter
-    virtual void DecreaseFlanger() = 0;
-
-    //Pauses and unpauses Accept Event
-    virtual void stopA() = 0;
-
-    //Pauses and unpauses Cocodrile Event
-    virtual void stopK() = 0;
 protected:
 
 };

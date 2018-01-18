@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 
 #include <fmod_studio.hpp>
 #include "fmod.hpp"
@@ -17,9 +17,6 @@ public:
     //Stops inmediatelly to play the event
     void stop();
     
-    //Pauses or unpauses the event, depending on it's current state
-    void pause();
-    
     //Sets the volume of the event
     void setVolume(float vol);
     
@@ -31,21 +28,11 @@ public:
     
     //Checks if the event is playing
     bool isPlaying();
-
-    //Checks if the event is paused. True = paused, false = unpaused
-    bool isPaused();
-
-    //Increases and decreases a flanger set as an example parameter
-    void increaseFlanger();
-    void decreaseFlanger();
     
 protected:
+
     FMOD_STUDIO_EVENTINSTANCE* soundInstance;
-    bool paused; //Initially set on false
+
     float volume;
-    float flanger;
 
-    //virtual ISoundEvent* newSoundEvent(FMOD::Studio::EventInstance*) = 0;
 };
-
-*/
