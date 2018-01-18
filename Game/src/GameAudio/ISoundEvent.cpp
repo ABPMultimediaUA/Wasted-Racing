@@ -1,17 +1,6 @@
 #include "ISoundEvent.h"
 
-ISoundEvent::ISoundEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent)
-{
-    soundInstance = newEvent;
-    FMOD_Studio_EventInstance_GetVolume(soundInstance, &volume, 0);
-}
-
-ISoundEvent::~ISoundEvent()
-{
-
-}
-
-
+//Play Sound once
 void ISoundEvent::start()
 {
     if(soundInstance!=NULL)
@@ -20,11 +9,13 @@ void ISoundEvent::start()
     }
 }
 
+//Stop sound inmediately 
 void ISoundEvent::stop()
 {
 
 }
-    
+
+//Change sound Volume
 void ISoundEvent::setVolume(float vol)
 {
     if(vol>=0 && vol<=1)
@@ -33,17 +24,20 @@ void ISoundEvent::setVolume(float vol)
         FMOD_Studio_EventInstance_SetVolume(soundInstance, volume);
     }
 }
-    
+
+//Change sound Gain
 void ISoundEvent::setGain(float gain)
 {
 
 }
-    
+
+//Change sound position
 void ISoundEvent::setPosition(glm::vec3 pos)
 {
 
 }
-    
+
+//Check if sound is being played
 bool ISoundEvent::isPlaying()
 {
     if(soundInstance!=NULL)

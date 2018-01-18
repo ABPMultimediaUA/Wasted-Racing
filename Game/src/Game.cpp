@@ -112,7 +112,6 @@ void Game::update(float dTime) {
 //  GAME DRAW
 //====================================================
 void Game::draw() {
-
     renderManager->draw();
 }
 
@@ -130,6 +129,7 @@ void Game::close() {
     sensorManager->close();
     itemManager->close();
     scoreManager->close();
+    audioManager->close();
 }
 
 //====================================================
@@ -141,7 +141,7 @@ void Game::Run() {
 
     auto lastTime = std::chrono::high_resolution_clock::now();
     float accumulatedTime = 0;
-    const float maxTime = 1.0f/60.0f;
+    const float maxTime = 1.0f/20.0f;
 
     while(Game::stay){
 

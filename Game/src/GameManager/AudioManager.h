@@ -10,7 +10,7 @@ public:
     AudioManager() {}
 
     //Destructor
-    ~AudioManager() {delete audioFacade;}
+    ~AudioManager() {}
 
     //Initialization
     void init();
@@ -32,8 +32,24 @@ public:
         return audioFacade;
     }
 
+    //Gets Listener
+    IComponent::Pointer getListenerComponent() {
+        return listenerComponent;
+    }
+
+    //Sets Listener
+    void setListenerComponent(IComponent::Pointer newListenerComponent) {
+        listenerComponent = newListenerComponent;
+    }
+
+    //Listener Component Creator
+    IComponent::Pointer createListenerComponent(GameObject& newGameObject);
+
 private:
 
     IAudioFacade* audioFacade;
+
+    //We store just one listener component, so we can't have more than 1
+    IComponent::Pointer listenerComponent;
 
 };

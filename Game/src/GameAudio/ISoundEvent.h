@@ -8,8 +8,15 @@
 
 class ISoundEvent {
 public:
-    ISoundEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent);
-    ~ISoundEvent();
+
+    //Constructor
+    ISoundEvent(FMOD_STUDIO_EVENTINSTANCE* newEvent){
+        soundInstance = newEvent;
+        FMOD_Studio_EventInstance_GetVolume(soundInstance, &volume, 0);
+    }
+
+    //Destrcutor 
+    virtual ~ISoundEvent() = 0;
     
    //Starts playing the event
     void start();
@@ -31,7 +38,7 @@ public:
     
 protected:
 
-    FMOD_STUDIO_EVENTINSTANCE* soundInstance;
+    FMOD_STUDIO_EVENTINSTANCE* soundInstance = NULL;
 
     float volume;
 

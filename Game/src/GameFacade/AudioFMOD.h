@@ -6,7 +6,7 @@
 #include <fmod_errors.h>
 #include <iostream>
 #include <string>
-#include <glm/ext.hpp>
+#include <map>
 
 #include "../GameAudio/ISoundEvent.h"
 
@@ -42,10 +42,10 @@ public:
     //==============================================================
 
     //Sets the basic volume of the game. Expected value between 0 and 1;
-    void setVolume(float vol);
+    virtual void setVolume(float vol);
 
     //Sets the 3D position of the listener
-    void setListernerPosition(glm::vec3 pos);
+    virtual void setListenerPosition(glm::vec3 pos);
 
 private: 
 
@@ -57,6 +57,8 @@ private:
     FMOD_STUDIO_BANK* masterBank;
     FMOD_STUDIO_BANK* stringsBank;
     FMOD_STUDIO_BANK* menuBank;
-    FMOD_STUDIO_BANK* cocodrileBank;
+
+    std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*> eventDescriptions;
+    //std::map<std::string, SoundEvent*> soundEvents;
 
 };

@@ -311,6 +311,7 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
     {
         InputManager::getInstance().createInputComponent(*obj.get());
         RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+        AudioManager::getInstance().createListenerComponent(*obj.get());
     }
     else if(move == 1)
     {

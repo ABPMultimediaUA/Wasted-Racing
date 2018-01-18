@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <glm/ext.hpp>
+#include "../GameObject/GameObject.h"
 
 class IAudioFacade{
 
@@ -16,16 +18,6 @@ public:
     //Destructor
     virtual ~IAudioFacade() {}
 
-    //Initializer
-    void init() {
-
-    }
-
-    //Closer
-    void close() {
-
-    }
-
     //==============================================================
     // Engine Related functions
     //==============================================================
@@ -39,6 +31,28 @@ public:
     //Closes engine window
     virtual void closeAudioEngine() = 0;
 
+    //==============================================================
+    // Audio Related functions
+    //==============================================================
+
+    //Sets the basic volume of the game. Expected value between 0 and 1;
+    virtual void setVolume(float vol) = 0;
+
+    //Sets the 3D position of the listener
+    virtual void setListenerPosition(glm::vec3 pos) = 0;
+
+    //Sets the gameObject to be the listener
+    void setListener(GameObject& newListener) {
+        listener = &newListener;
+    }
+    //Returns the gameObject that is listening
+    GameObject& getListener() {
+        return *listener;
+    }
+
 protected:
+
+    //Listener
+    GameObject* listener;
 
 };
