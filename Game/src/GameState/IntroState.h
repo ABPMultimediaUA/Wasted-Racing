@@ -1,6 +1,8 @@
 #pragma once
 
 #include "IGameState.h"
+#include "MainState.h"
+#include "../Game.h"
 
 class IntroState : public IGameState {
 
@@ -16,7 +18,7 @@ public:
     virtual void init();
 
     //Updater
-    virtual void update();
+    virtual void update(float &accumulatedTime);
 
     //Drawer
     virtual void draw();
@@ -31,4 +33,6 @@ public:
     };
 private:
 
+    //Update's loop time
+    const float loopTime = 1.0f/30.0f;
 };

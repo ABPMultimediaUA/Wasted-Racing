@@ -4,7 +4,7 @@ void MatchState::init() {
 
 }
 
-void MatchState::update() {
+void MatchState::update(float &accumulatedTime) {
 
 }
 

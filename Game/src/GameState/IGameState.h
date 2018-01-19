@@ -20,7 +20,7 @@ public:
     virtual void init() = 0;
 
     //Updater
-    virtual void update() = 0;
+    virtual void update(float &accumulatedTime) = 0;
 
     //Drawer
     virtual void draw() = 0;

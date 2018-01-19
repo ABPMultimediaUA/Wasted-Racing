@@ -7,9 +7,7 @@ int main(){
 
 	std::cout << "Starting game..." << std::endl;
 
-	Game game;
-
-	game.Run();
+	Game::getInstance().Run();
 	
 	std::cout << "Exiting game..." << std::endl;
 	
