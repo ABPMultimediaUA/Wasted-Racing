@@ -23,7 +23,7 @@ public:
     //==============================================================
 
     //Creates a window depending on the engine
-    virtual void openAudioEngine() = 0;
+    virtual void openAudioEngine(int lang) = 0;
 
     //Updates window info in the engine
     virtual void update() = 0;

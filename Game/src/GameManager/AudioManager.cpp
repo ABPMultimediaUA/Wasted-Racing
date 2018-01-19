@@ -15,7 +15,7 @@ void addListenerComponent(EventData data);
 void AudioManager::init() {
 
     audioFacade = new AudioFMOD();
-    audioFacade->openAudioEngine();
+    audioFacade->openAudioEngine(1);
 
     //Listeners
     EventManager::getInstance().addListener(EventListener {EventType::ListenerComponent_Create, addListenerComponent});

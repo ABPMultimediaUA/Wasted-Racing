@@ -13,7 +13,7 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
         std::cerr << file << "(" << line << "): FMOD error " << result << " - " << FMOD_ErrorString(result) << std::endl;
         exit(-1);
     }
-}
+} 
 
 #define ERRCHECK(_result) ERRCHECK_fn(_result, __FILE__, __LINE__)
 
@@ -27,7 +27,7 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 //==============================================================================================================================
 
 //Initializer
-void AudioFMOD::openAudioEngine() {
+void AudioFMOD::openAudioEngine(int lang) {
     //Initialize FMOD System
     ERRCHECK(FMOD_Studio_System_Create(&system, FMOD_VERSION));
     ERRCHECK(FMOD_Studio_System_GetLowLevelSystem(system, &lowLevelSystem));
@@ -38,10 +38,25 @@ void AudioFMOD::openAudioEngine() {
     //Initialize banks
     ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
     ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
-    ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Menu.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &menuBank));
+
+    if(lang == 1){
+        ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/CharacterES.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &characterBank));
+
+
+        ERRCHECK(FMOD_Studio_System_GetEvent(system, "event:/CharacterES", &characterDescription));
+        ERRCHECK(FMOD_Studio_EventDescription_CreateInstance(characterDescription, &characterInstance));
+    }
+
+    else
+        ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/CharacterES.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &characterBank));
+
 
     //Listeners
 
+
+    player = 0;
+    track = 0;
+    change = true;
 }
 
 //Updater
@@ -59,6 +74,41 @@ void AudioFMOD::update() {
 
     ERRCHECK( FMOD_Studio_System_SetListenerAttributes(system, 0, &attributes) );
 
+
+    //=================================================================
+    FMOD_STUDIO_PLAYBACK_STATE state;
+
+    FMOD_Studio_EventInstance_GetPlaybackState(characterInstance, &state);
+
+    if(state==FMOD_STUDIO_PLAYBACK_STOPPED)
+    {
+        
+        FMOD_Studio_EventInstance_SetParameterValue(characterInstance, "player", (float)player);
+        FMOD_Studio_EventInstance_SetParameterValue(characterInstance, "track", (float)track);
+
+        if(change)
+            change = false;
+        else
+            change = true;
+
+        if(change){
+            track++;
+            if(track>8){
+                track=0;
+                player++;
+            }
+        }
+
+        FMOD_3D_ATTRIBUTES attributes;
+        attributes.position.x = 0;
+        attributes.position.y = 0;
+        attributes.position.z = 0;
+        FMOD_Studio_EventInstance_Set3DAttributes(characterInstance, &attributes);
+
+        ERRCHECK( FMOD_Studio_EventInstance_Start(characterInstance) );
+    }
+    //=================================================================
+
     //Update FMOD system
     ERRCHECK( FMOD_Studio_System_Update(system) );
 
@@ -67,7 +117,11 @@ void AudioFMOD::update() {
 //Closer
 void AudioFMOD::closeAudioEngine() {
 
-    ERRCHECK( FMOD_Studio_Bank_Unload(menuBank) );
+    //We should do a release for every class, instance and description
+
+    ERRCHECK( FMOD_Studio_EventDescription_ReleaseAllInstances(characterDescription) );
+
+    ERRCHECK( FMOD_Studio_Bank_Unload(characterBank) );
     ERRCHECK( FMOD_Studio_Bank_Unload(stringsBank) );
     ERRCHECK( FMOD_Studio_Bank_Unload(masterBank) );
 

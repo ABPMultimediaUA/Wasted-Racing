@@ -29,7 +29,7 @@ public:
     //==============================================================
 
     //Creates the basic stuff needed on the engine
-    virtual void openAudioEngine();
+    virtual void openAudioEngine(int lang);
 
     //Updates the engine
     virtual void update();
@@ -56,9 +56,15 @@ private:
     //BANKS
     FMOD_STUDIO_BANK* masterBank;
     FMOD_STUDIO_BANK* stringsBank;
-    FMOD_STUDIO_BANK* menuBank;
+    
+    FMOD_STUDIO_BANK* characterBank;
+    FMOD_STUDIO_EVENTDESCRIPTION* characterDescription;
+    FMOD_STUDIO_EVENTINSTANCE* characterInstance;
 
-    std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*> eventDescriptions;
-    //std::map<std::string, SoundEvent*> soundEvents;
+    int player;
+    int track;
+    bool change;
+    //std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*> eventDescriptions;
+    //std::map<std::string, ISoundEvent*> soundEvents;
 
 };
