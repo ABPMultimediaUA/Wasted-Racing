@@ -1,25 +1,10 @@
-#include "../Game.h"
-#include <iostream>
+#include "ServerManager.h"
 
-void holita(){
-	for(int i = 0; i < 1000000000; ++i){
+int main()
+{
+	ServerManager server;
 
-	}
-}
-
-int main(){
-
-	std::cout << "Starting game..." << std::endl;
-
-	//holita();
-	
-	Game game;
-	
-	game.Run();
-	
-	std::cout << "Exiting game..." << std::endl;
-	
-	return 0;  
-
+	server.init();
+	server.run();
 }
 
