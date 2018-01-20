@@ -11,7 +11,7 @@ void singleplayerActivated(EventData eData);
 
 void IntroState::init() {
     //Initilize managers
-    eventManager = &EventManager::getInstance();
+    /*eventManager = &EventManager::getInstance();
     eventManager->init();
 
     //First we initialize renderManager, who creates a device and passes this reference to the inputManager
@@ -24,16 +24,19 @@ void IntroState::init() {
 
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting*/
 }
 
 void IntroState::update(float &accumulatedTime) {
-    inputManager->update();
+   /* inputManager->update();
 
     //Event manager has to be the last to be updated
-    eventManager->update();
-
+    eventManager->update();*/
     std::cout<<"Whatsapp boys"<<std::endl;
+
+    Game::getInstance().setState(&MainState::getInstance());
+
+   
 }
 
 void IntroState::draw() {
@@ -41,9 +44,9 @@ void IntroState::draw() {
 }
 
 void IntroState::close() {
-    renderManager->close();
+   /* renderManager->close();
     inputManager->close();
-    eventManager->close();
+    eventManager->close();*/
 }
 
 //==============================================

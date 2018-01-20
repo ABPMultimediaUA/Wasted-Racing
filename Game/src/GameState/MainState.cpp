@@ -15,7 +15,7 @@ std::vector<std::string> split(const std::string& s, const char& c);
 
 void MainState::init() {
     //Initialize true audio manager
-    audioManager = &AudioManager::getInstance();
+    /*audioManager = &AudioManager::getInstance();
     audioManager->init();
 
     //Initilize managers
@@ -58,12 +58,13 @@ void MainState::init() {
     scoreManager = &ScoreManager::getInstance();
     scoreManager->init();
 
-    addObjects();
+    addObjects();*/
+    std::cout<<"PERO Q COJONES PASA"<<std::endl;
 }
 
 void MainState::update(float &accumulatedTime) {
     //If time surpassed the loopTime
-    if(accumulatedTime > loopTime){
+    /*if(accumulatedTime > loopTime){
         //Update managers
         MainState::updateManagers(accumulatedTime);
 
@@ -72,7 +73,7 @@ void MainState::update(float &accumulatedTime) {
     }
     //Always interpolate
     physicsManager->interpolate(accumulatedTime, loopTime);
-    renderManager->getRenderFacade()->updateCamera();
+    renderManager->getRenderFacade()->updateCamera();*/
 }
 
 void MainState::updateManagers(float dTime){
@@ -102,11 +103,11 @@ void MainState::updateManagers(float dTime){
 }
 
 void MainState::draw() {
-    renderManager->draw();
+   /* renderManager->draw();*/
 }
 
 void MainState::close() {
-    physicsManager->close();
+   /* physicsManager->close();
     renderManager->close();
     inputManager->close();
     eventManager->close();
@@ -114,7 +115,7 @@ void MainState::close() {
     aiManager->close();
     sensorManager->close();
     itemManager->close();
-    scoreManager->close();
+    scoreManager->close();*/
 }
 
 //Additional functions

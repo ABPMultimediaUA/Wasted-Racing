@@ -5,9 +5,6 @@
 #include <vector>
 #include <chrono>
 #include <stdio.h>
- 
-#define SERVER_PORT 12345
-#define MAX_CONNS 2000
 
 
 
@@ -79,8 +76,3 @@ void Game::Run() {
 
     Game::close();
 }
-
-
-
-
-
