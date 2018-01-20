@@ -1,12 +1,18 @@
 #pragma once
 
-
 class IGameState {
     
 public:
-	
+    //Type of states
+    enum stateType {
+        INTRO,          //Game intro (initial state)
+        MAIN,           //Game main menu
+        MATCH,          //inside the game state
+        CLIENTLOBBY     //Client waiting in the lobby for a match
+    };
+
     //Constructor
-	IGameState() {};
+	IGameState(){};
 
     //Destructor
 	virtual ~IGameState() {};
@@ -15,7 +21,7 @@ public:
     virtual void init() = 0;
 
     //Updater
-    virtual void update() = 0;
+    virtual void update(float &accumulatedTime) = 0;
 
     //Drawer
     virtual void draw() = 0;
@@ -23,6 +29,5 @@ public:
     //Shutdown
     virtual void close() = 0;
 
-protected:
-
+    stateType type;     //Type of state
 };

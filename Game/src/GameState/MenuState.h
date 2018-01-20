@@ -7,7 +7,7 @@ class MenuState : public IGameState {
 public: 
 
     //Constructor
-    MenuState () : IGameState() {};
+    MenuState (){};
 
     //Destructor
     virtual ~MenuState() {}
@@ -16,7 +16,7 @@ public:
     virtual void init();
 
     //Updater
-    virtual void update();
+    virtual void update(float &accumulatedTime);
 
     //Drawer
     virtual void draw();

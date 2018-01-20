@@ -1,11 +1,42 @@
 #include "IntroState.h"
+#include <iostream>
+
+//Delegate functions
+void multiplayerActivated(EventData eData);
+void singleplayerActivated(EventData eData);
+
+//Extra functions
+//void introVideo();
+
 
 void IntroState::init() {
+    //Initilize managers
+    /*eventManager = &EventManager::getInstance();
+    eventManager->init();
 
+    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
+    renderManager = &RenderManager::getInstance();
+    renderManager->init(Game::getInstance().getRenderEngine());
+
+    //Once we've initialized the renderManager, we can do the same with our inputManager
+    inputManager = &InputManager::getInstance();
+    inputManager->init(Game::getInstance().getInputEngine());
+
+    //Bind functions
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting*/
 }
 
-void IntroState::update() {
+void IntroState::update(float &accumulatedTime) {
+   /* inputManager->update();
 
+    //Event manager has to be the last to be updated
+    eventManager->update();*/
+    std::cout<<"Whatsapp boys"<<std::endl;
+
+    Game::getInstance().setState(&MainState::getInstance());
+
+   
 }
 
 void IntroState::draw() {
@@ -13,5 +44,61 @@ void IntroState::draw() {
 }
 
 void IntroState::close() {
-    
+   /* renderManager->close();
+    inputManager->close();
+    eventManager->close();*/
 }
+
+//==============================================
+// DELEGATES
+//============================================== 
+void multiplayerActivated(EventData eData) {
+    Game::getInstance().setState(&ClientLobbyState::getInstance());
+}
+void singleplayerActivated(EventData eData) {
+    Game::getInstance().setState(&MainState::getInstance());
+}
+//-----------------------------------
+//-----------------------------------
+//------------PROVISIONAL------------
+//-----------------------------------
+//-----------------------------------
+/*void introVideo(){
+	//Play intro video
+	double currentSec = 0;
+
+    char part1[] = "ffmpeg -i $PWD/media/video/logo.mp4 -ss 00:00:";
+    char part2[] = " -vframes 1 $PWD/media/video/framelogo.bmp && y && echo";
+
+    
+	//loop for the full size of the video
+	while(currentSec < 17.0){
+        char * numbers = new char[7];   //numbers and decimals to put
+        char * systemCall = new char[std::strlen(part1)+std::strlen(part2)+8];  //entire message
+
+        /*if(currentSec<10.0){
+            numbers[0] = '0';        //floor to unit
+        }else{
+            numbers = {'1',(char) (((int)currentSec%) % 10)} //obtain unit only
+        }*/
+
+        //double now = (double) ( (int) (currentSec * 1000) ) / 1000.0; //4 decimals
+
+       /* std::string str = std::to_string(currentSec);
+        if(currentSec < 10.0){
+            strcat(numbers, "0");
+        }
+        strcat(numbers, str.c_str() );
+
+        
+        strcat(systemCall,part1);
+        strcat(systemCall,numbers);
+        strcat(systemCall,part2);
+        std::cout<<"numbers"<<numbers<<std::endl;
+        std::cout<<"final "<<systemCall<<std::endl;
+		system(systemCall);
+
+        //addcurrentTime
+        currentSec+=1/60.0;
+	}
+}*/

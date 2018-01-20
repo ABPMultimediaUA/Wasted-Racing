@@ -86,6 +86,9 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
 
+    //Update logo video
+    virtual void updateLogo() = 0;
+
     //==============================================================
     // Window Related functions
     //==============================================================
