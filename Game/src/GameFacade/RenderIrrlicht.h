@@ -51,7 +51,7 @@ public:
     virtual void addObject(IComponent* ptr);
 
     //Add an object to the game
-    virtual void addCylinder(IComponent* ptr, float radius, float length, int tesselation, bool transparency);
+    virtual void addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency);
 
     //Add a light to the game
     virtual void addLight(IComponent* ptr);

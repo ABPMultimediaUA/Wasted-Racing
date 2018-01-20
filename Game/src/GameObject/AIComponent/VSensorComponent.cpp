@@ -10,9 +10,10 @@ ISensorComponent(newGameObject)
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
     maxDistance = 100.f;
+    maxLength = 20.f;
 }       
 
-VSensorComponent::VSensorComponent(GameObject& newGameObject, float angV, float angI, float md) :
+VSensorComponent::VSensorComponent(GameObject& newGameObject, float angV, float angI, float md, float ml) :
 ISensorComponent(newGameObject)
 {
     angleInitial=angI;
@@ -22,6 +23,7 @@ ISensorComponent(newGameObject)
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 
     maxDistance = md;
+    maxLength = ml;
 }
 
 //Checks the objects seen and stores the ones seen in the seenObjects vector
@@ -50,6 +52,9 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
 						(objects[i].getTransformData().position.y - myPos.y) * (objects[i].getTransformData().position.y - myPos.y) +
 						(objects[i].getTransformData().position.z - myPos.z) * (objects[i].getTransformData().position.z - myPos.z);
         
+
+        float distY = (objects[i].getTransformData().position.y - myPos.y) * (objects[i].getTransformData().position.y - myPos.y);
+
         float rad = objects[i].getComponent<CollisionComponent>()->getRadius();
 
         if(rad != -1.f)
@@ -57,7 +62,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
             distance -= rad;
         }
 
-        if(distance < maxDistance*maxDistance || maxDistance == 0)
+        if((distance < maxDistance*maxDistance || maxDistance == 0) && (distY < maxLength*maxLength || maxLength == 0))
         {
             calculateAB(objects[i].getTransformData().position, a, b);       //Do the math
 

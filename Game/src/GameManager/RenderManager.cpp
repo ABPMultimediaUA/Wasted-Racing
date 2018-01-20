@@ -108,7 +108,7 @@ IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGa
     return component;
 }
 
-IComponent::Pointer RenderManager::createObjectRenderComponentCylinder(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency) {
+IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency) {
 
     IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
 
@@ -119,7 +119,7 @@ IComponent::Pointer RenderManager::createObjectRenderComponentCylinder(GameObjec
 
     auto comp = newGameObject.getComponent<ObjectRenderComponent>();
 
-    renderFacade->addCylinder(component.get(), radius, length, tesselation, transparency);
+    renderFacade->addObject(component.get(), radius, length, tesselation, transparency);
 
     return component;
 }
@@ -222,6 +222,7 @@ void RenderManager::renderAIDebug()
 void RenderManager::updateAIDebug()
 {
     
+    float pi = 3.14159265358979323846;
 
     if(AIDebug < AIDebugPoint.size())
     {
@@ -258,17 +259,45 @@ void RenderManager::updateAIDebug()
 
         collisionCylinder->setTransformData(transform);
         RenderManager::getInstance().getRenderFacade()->updateObjectTransform(collisionCylinder->getId(), transform);
+
+        if(AIDebug != 0)
+        {
+            //Update Visibility Area
+            point = AIDebugPoint[AIDebug].getTransformData().position;
+
+            transform.position = point;
+            transform.rotation = glm::vec3(0, 0, 0);
+            transform.scale    = glm::vec3(1, 1, 1);
+
+            visibilityArea->setTransformData(transform);
+            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(visibilityArea->getId(), transform);
+
+            //Update Vision Cone
+            point = AIDebugPoint[AIDebug].getTransformData().position;
+
+            transform.position = glm::vec3(point.x-10*cos(AIDebugPoint[AIDebug].getTransformData().rotation.y),
+                                    point.y, point.z+10*sin(AIDebugPoint[AIDebug].getTransformData().rotation.y));
+            transform.rotation = glm::vec3(0, 0, pi/2);
+            transform.scale    = glm::vec3(1, 1, 1);
+
+            visionCone->setTransformData(transform);
+            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(visionCone->getId(), transform);
+        }
     }
 }
 
 void RenderManager::createRenderNPC()
 {
+
+    uint16_t id;
+    glm::vec3 point;
+    GameObject::TransformationData transform;
+    float rad;
+    float length;
+    float pi = 3.14159265358979323846;
+
     if(lap == false)
     {
-        uint16_t id;
-        glm::vec3 point;
-        GameObject::TransformationData transform;
-
         //Create marker
         id = 5000;
         point = AIDebugPoint[AIDebug].getComponent<PathPlanningComponent>()->getNextPoint();
@@ -290,10 +319,41 @@ void RenderManager::createRenderNPC()
         transform.scale    = glm::vec3(1, 1, 1);
         collisionCylinder = ObjectManager::getInstance().createObject(id, transform);
 
-        auto rad = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getRadius();
-        auto length = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getLength();
+        rad = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getRadius();
+        length = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getLength();
 
-        RenderManager::getInstance().createObjectRenderComponentCylinder(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "semiTransparente.png", rad, length, 10.f, true);
+        RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "semiTransparente.png", rad, length, 10.f, true);
+    }
+    else if(lap == true && AIDebug != 0)
+    {
+        //Create Visibility Area
+        id = 5002;
+        point = AIDebugPoint[AIDebug].getTransformData().position;
+
+        transform.position = point;
+        transform.rotation = glm::vec3(0, 0, 0);
+        transform.scale    = glm::vec3(1, 1, 1);
+        visibilityArea = ObjectManager::getInstance().createObject(id, transform);
+
+        rad = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
+
+        RenderManager::getInstance().createObjectRenderComponent(*visibilityArea.get(), ObjectRenderComponent::Shape::Cylinder, "black.jpg", rad, 0.1, 10.f, false);
+        
+        //Create Vision Cone
+        id = 5003;
+        point = AIDebugPoint[AIDebug].getTransformData().position;
+
+
+        transform.position = glm::vec3(point.x-10*cos(AIDebugPoint[AIDebug].getTransformData().rotation.y),
+                                point.y, point.z+10*sin(AIDebugPoint[AIDebug].getTransformData().rotation.y));
+        transform.rotation = glm::vec3(0, 0, pi/2);
+        transform.scale    = glm::vec3(1, 1, 1);
+        visionCone = ObjectManager::getInstance().createObject(id, transform);
+
+        rad = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
+        length = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxLength();
+
+        RenderManager::getInstance().createObjectRenderComponent(*visionCone.get(), ObjectRenderComponent::Shape::Cone, "semiTransparente.png", 5, 10, 10.f, false);
     }
 
     //Create camera render
@@ -314,6 +374,16 @@ void RenderManager::deleteRenderNPC()
 
         //Delete Collision Cylinder
         data.Id = collisionCylinder->getId();
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+
+        //Delete Collision Cylinder
+        data.Id = visibilityArea->getId();
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+
+        //Delete Vision Cone
+        data.Id = visionCone->getId();
 
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
 

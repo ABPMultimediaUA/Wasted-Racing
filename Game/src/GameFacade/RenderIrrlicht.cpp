@@ -163,7 +163,7 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
     }
 }
 
-void RenderIrrlicht::addCylinder(IComponent* ptr, float radius, float length, int tesselation, bool transparency) {
+void RenderIrrlicht::addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) {
 
     ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr);
 
@@ -186,6 +186,17 @@ void RenderIrrlicht::addCylinder(IComponent* ptr, float radius, float length, in
 
             case ObjectRenderComponent::Shape::Cylinder: {
                 auto plane = geometryCreator->createCylinderMesh(radius,length,tesselation);
+                node = sceneManager->addMeshSceneNode(plane);
+                auto var = videoDriver->getTexture(cmp->getImg().c_str());
+                node->setMaterialTexture(0, var);
+                if(transparency == true)
+                {
+                    node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+                }
+            }
+            break;
+            case ObjectRenderComponent::Shape::Cone: {
+                auto plane = geometryCreator->createConeMesh(radius,length,tesselation);
                 node = sceneManager->addMeshSceneNode(plane);
                 auto var = videoDriver->getTexture(cmp->getImg().c_str());
                 node->setMaterialTexture(0, var);
