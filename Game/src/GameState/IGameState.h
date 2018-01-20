@@ -7,7 +7,8 @@ public:
     enum stateType {
         INTRO,          //Game intro (initial state)
         MAIN,           //Game main menu
-        MATCH           //inside the game state
+        MATCH,          //inside the game state
+        CLIENTLOBBY     //Client waiting in the lobby for a match
     };
 
     //Constructor

@@ -11,10 +11,10 @@
 
 void initServer(){
 	//get instance of peer interface, which usually connects it all
-	Raknet::RakPeerInterface* peer = RakNet::RakPeerInterface::GetInstance();
+	/*Raknet::RakPeerInterface* peer = RakNet::RakPeerInterface::GetInstance();
 
 	peer->Startup(MAX_CONNECTIONS_ALLOWED, &SocketDescriptor(SERVER_PORT,0), 1);
-	peer->SetMaximumIncomingConnections(MAX_PLAYERS_PER_SERVER);
+	peer->SetMaximumIncomingConnections(MAX_PLAYERS_PER_SERVER);*/
 
 
 }

@@ -2,7 +2,11 @@
 
 #include "IGameState.h"
 #include "MainState.h"
+#include "ClientLobbyState.h"
 #include "../Game.h"
+#include "../GameEvent/EventManager.h"
+#include "../GameManager/InputManager.h"
+#include "../GameManager/RenderManager.h"
 
 class IntroState : public IGameState {
 
@@ -32,7 +36,20 @@ public:
         return instance;
     };
 private:
+    //==============================================================
+    // Private data
+    //==============================================================
+
+    //Input manager
+    InputManager* inputManager;
+    //Render manager
+    RenderManager* renderManager;
+    //Event manager
+    EventManager* eventManager;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;
+
+    //Mode choosing
+    bool stay = false;
 };

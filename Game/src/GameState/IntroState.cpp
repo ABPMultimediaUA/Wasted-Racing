@@ -1,19 +1,39 @@
 #include "IntroState.h"
+#include <iostream>
+
+//Delegate functions
+void multiplayerActivated(EventData eData);
+void singleplayerActivated(EventData eData);
 
 //Extra functions
-void introVideo();
+//void introVideo();
+
 
 void IntroState::init() {
+    //Initilize managers
+    eventManager = &EventManager::getInstance();
+    eventManager->init();
 
+    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
+    renderManager = &RenderManager::getInstance();
+    renderManager->init(Game::getInstance().getRenderEngine());
+
+    //Once we've initialized the renderManager, we can do the same with our inputManager
+    inputManager = &InputManager::getInstance();
+    inputManager->init(Game::getInstance().getInputEngine());
+
+    //Bind functions
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting
 }
 
 void IntroState::update(float &accumulatedTime) {
-    double a = 0.5;
-    while(a < 1){
-        a += 0.000000001;
-    }
+    inputManager->update();
 
-    Game::getInstance().setState(&MainState::getInstance());
+    //Event manager has to be the last to be updated
+    eventManager->update();
+
+    std::cout<<"Whatsapp boys"<<std::endl;
 }
 
 void IntroState::draw() {
@@ -21,9 +41,20 @@ void IntroState::draw() {
 }
 
 void IntroState::close() {
-    
+    renderManager->close();
+    inputManager->close();
+    eventManager->close();
 }
 
+//==============================================
+// DELEGATES
+//============================================== 
+void multiplayerActivated(EventData eData) {
+    Game::getInstance().setState(&ClientLobbyState::getInstance());
+}
+void singleplayerActivated(EventData eData) {
+    Game::getInstance().setState(&MainState::getInstance());
+}
 //-----------------------------------
 //-----------------------------------
 //------------PROVISIONAL------------
