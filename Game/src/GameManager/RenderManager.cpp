@@ -108,6 +108,21 @@ IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGa
     return component;
 }
 
+IComponent::Pointer RenderManager::createObjectRenderComponentCylinder(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency) {
+
+    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    auto comp = newGameObject.getComponent<ObjectRenderComponent>();
+
+    renderFacade->addCylinder(component.get(), radius, length, tesselation, transparency);
+
+    return component;
+}
 
 //==============================================
 // DELEGATES
@@ -275,7 +290,10 @@ void RenderManager::createRenderNPC()
         transform.scale    = glm::vec3(1, 1, 1);
         collisionCylinder = ObjectManager::getInstance().createObject(id, transform);
 
-        RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "semiTransparente.png");
+        auto rad = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getRadius();
+        auto length = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getLength();
+
+        RenderManager::getInstance().createObjectRenderComponentCylinder(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "semiTransparente.png", rad, length, 10.f, true);
     }
 
     //Create camera render

@@ -150,12 +150,49 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
                 node->setMaterialTexture(0, var);
             }
             break;
+            default:
+            break;
+        }
+
+        //Set node transformation
+        node->setPosition(irrPos);
+        node->setRotation(irrRot);
+        node->setScale(irrSca);
+
+        nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
+    }
+}
+
+void RenderIrrlicht::addCylinder(IComponent* ptr, float radius, float length, int tesselation, bool transparency) {
+
+    ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr);
+
+    if(cmp != nullptr){
+
+        auto shape = cmp->getObjectShape();
+        auto obj = cmp->getGameObject();
+        //Transform the data to irrlicht type
+        auto pos = obj.getTransformData().position;
+        auto rot = obj.getTransformData().rotation;
+        auto sca = obj.getTransformData().scale;
+        irr::core::vector3df irrPos = irr::core::vector3df((float)pos.x,(float)pos.y, (float)pos.z);
+        irr::core::vector3df irrRot = irr::core::vector3df((float)rot.x,(float)rot.y, (float)rot.z);
+        irr::core::vector3df irrSca = irr::core::vector3df((float)sca.x,(float)sca.y, (float)sca.z);
+
+        irr::scene::ISceneNode * node;
+
+        //Initialize the node
+        switch(shape){
+
             case ObjectRenderComponent::Shape::Cylinder: {
-                auto plane = geometryCreator->createCylinderMesh(2,10,10);
+                auto plane = geometryCreator->createCylinderMesh(radius,length,tesselation);
                 node = sceneManager->addMeshSceneNode(plane);
                 auto var = videoDriver->getTexture(cmp->getImg().c_str());
                 node->setMaterialTexture(0, var);
-                node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+                if(transparency == true)
+                {
+                    node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+                }
             }
             break;
             default:

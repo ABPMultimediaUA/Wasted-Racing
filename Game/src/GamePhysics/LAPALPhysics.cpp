@@ -222,10 +222,10 @@ void LAPAL::updateCollisionMovement ( LAPAL::movementData& mData, const float dT
 //-------------COLLISIONS---------------
 //--------------------------------------
 
-//Checks 2D collision between circles
-bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const LAPAL::vec3f& pos2,const float& radius2) {
+//Checks 3D collision between circles
+bool LAPAL::checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const float& length1, const LAPAL::vec3f& pos2,const float& radius2, const float& length2) {
     if ( ( pos2.x-pos1.x ) * ( pos2.x-pos1.x )  + ( pos2.z-pos1.z ) * ( pos2.z-pos1.z ) < ( radius1 + radius2 ) * ( radius1 + radius2) ) // = (x² + z²)<tRadius²
-        if( abs(pos2.y-pos1.y) < (radius1 + radius2) )
+        if( abs(pos2.y-pos1.y) < (length1 + length2) )
             return true;
     return false;
 } 
@@ -439,7 +439,7 @@ bool LAPAL::position2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, 
 }
 
 //Calculates if a circle is inside a rectangle
-bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, const float radius) {
+bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const float length2, const LAPAL::vec3f& position, const float radius, const float length) {
 
     float distance;
 
@@ -455,7 +455,7 @@ bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const L
     distance = LAPAL::distance2DLinePoint(terrain.p4, terrain.p1, position);
     if( distance+radius < 0 ) return false;
 
-    if( abs(LAPAL::calculateExpectedY(terrain, position)-position.y)-radius > 1)
+    if( abs(LAPAL::calculateExpectedY(terrain, position)-(position.y - length/2))-length2 > 1)
         return false;
 
     return true;
