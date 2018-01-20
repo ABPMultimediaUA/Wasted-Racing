@@ -455,7 +455,7 @@ bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const f
     distance = LAPAL::distance2DLinePoint(terrain.p4, terrain.p1, position);
     if( distance+radius < 0 ) return false;
 
-    if( abs(LAPAL::calculateExpectedY(terrain, position)-(position.y - length/2))-length2 > 1)
+    if( abs(LAPAL::calculateExpectedY(terrain, position)-position.y)-(length2/2) > 1)
         return false;
 
     return true;
