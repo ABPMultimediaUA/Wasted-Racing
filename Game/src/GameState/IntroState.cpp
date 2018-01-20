@@ -34,7 +34,9 @@ void IntroState::update(float &accumulatedTime) {
     eventManager->update();*/
     std::cout<<"Whatsapp boys"<<std::endl;
 
-    Game::getInstance().setState(&MainState::getInstance());
+    Game game = Game::getInstance();
+    MainState main = MainState::getInstance();
+    game.setState(&main);
 
    
 }
