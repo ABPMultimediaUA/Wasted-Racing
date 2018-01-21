@@ -46,9 +46,11 @@ make_src:
 	$(MAKE) -C src 
 
 make_client:
+	g++ -I./../ -I/usr/X11R6/include -I./include -g -Wall -c -o bin/obj/main.o src/GameClient/main.cpp
 	$(MAKE) -C src/GameClient
 
 make_server:
+	g++ -I./../ -I/usr/X11R6/include -I./include -g -Wall -c -o bin/obj/main.o src/GameServer/main.cpp
 	$(MAKE) -C src/GameServer
 	
 make_gameF:

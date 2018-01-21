@@ -7,6 +7,8 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/InputManager.h"
 #include "../GameManager/RenderManager.h"
+#include <raknet/RakPeerInterface.h> 
+#include <raknet/MessageIdentifiers.h>
 
 class Game;
 
@@ -41,6 +43,10 @@ private:
     //==============================================================
     // Private data
     //==============================================================
+
+    //Variables for client, delete when state is working correctly
+    RakNet::RakPeerInterface* peer;
+
     //Input manager
     InputManager* inputManager;
     //Render manager
