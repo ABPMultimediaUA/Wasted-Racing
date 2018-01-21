@@ -59,7 +59,7 @@ void MainState::init() {
     scoreManager->init();
 
     addObjects();*/
-    std::cout<<"PERO Q COJONES PASA"<<std::endl;
+    std::cout<<"PERO Q COJONES PASA: "<< game <<std::endl;
 }
 
 void MainState::update(float &accumulatedTime) {

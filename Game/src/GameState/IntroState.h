@@ -8,6 +8,8 @@
 #include "../GameManager/InputManager.h"
 #include "../GameManager/RenderManager.h"
 
+class Game;
+
 class IntroState : public IGameState {
 
 public: 
@@ -39,7 +41,6 @@ private:
     //==============================================================
     // Private data
     //==============================================================
-
     //Input manager
     InputManager* inputManager;
     //Render manager

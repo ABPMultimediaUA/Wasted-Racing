@@ -51,22 +51,23 @@ void Game::close() {
 //====================================================
 void Game::Run() {
     //Initialize game
-    Game::init();
+    init();
     
     //Initialize timer
-    auto lastTime = std::chrono::high_resolution_clock::now();
-    float accumulatedTime = 0;
+    /*auto lastTime = std::chrono::high_resolution_clock::now();
+    float accumulatedTime = 0;*/
 
     //Start the run
     //execute game while staying
-    while(Game::stay){
+    while(stay){
+        std::cout<<"A ver, esto  no tiene sentido ninguno: "<< &Game::getInstance() <<std::endl;
 
         //Measure elapsed time
-        auto currTime = std::chrono::high_resolution_clock::now();
+       /* auto currTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed = currTime - lastTime;
         lastTime = currTime;
-        accumulatedTime += (float)elapsed.count();
-
+        accumulatedTime += (float)elapsed.count();*/
+         float accumulatedTime = 0.f;
         //Update the game once every maxTime
         state->update(accumulatedTime);
 

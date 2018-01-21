@@ -32,9 +32,10 @@ void IntroState::update(float &accumulatedTime) {
 
     //Event manager has to be the last to be updated
     eventManager->update();*/
-    std::cout<<"Whatsapp boys"<<std::endl;
+    std::cout<<"Whatsapp boys: "<< game <<std::endl;
 
-    Game::getInstance().setState(&MainState::getInstance());
+    game->setStay(false);
+    //game->setState(&MainState::getInstance());
 
    
 }
