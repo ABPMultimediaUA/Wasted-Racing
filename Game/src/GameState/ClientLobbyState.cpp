@@ -9,7 +9,8 @@ void ClientLobbyState::init() {
 
 void ClientLobbyState::update(float &accumulatedTime) {
 
-    //DESCOMENTAR SI DESPUÉS DE SEGUNDO Y MEDIO QUIERES QUE CAMBIE A MAIN_STATE
+    std::cout<<"Hola soy un bonito lobby de cliente, qué quieres que haga?"<<std::endl;
+    //DESCOMENTAR SI QUIERES QUE CAMBIE A MAIN_STATE
     //Game::getInstance().setState(&MainState::getInstance());
     
 }
