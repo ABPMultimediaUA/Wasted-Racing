@@ -15,7 +15,7 @@ public:
 		Plane,
 		Arrow,
 		Cylinder,
-		Line
+		Portion
 	};
 
     //Constructor

@@ -150,6 +150,14 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
                 node->setMaterialTexture(0, var);
             }
             break;
+            case ObjectRenderComponent::Shape::Portion: {
+                auto plane = sceneManager->getMesh("media/mesh/portion/portion.obj");
+                node = sceneManager->addMeshSceneNode(plane);
+                auto var = videoDriver->getTexture(cmp->getImg().c_str());
+                node->setMaterialTexture(0, var);
+                node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+            }
+            break;
             default:
             break;
         }
