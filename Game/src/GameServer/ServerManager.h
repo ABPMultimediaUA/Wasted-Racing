@@ -7,7 +7,7 @@
 //Maximum number of clients simultaneously
 #define MAXCLIENTS 8
 //Port of the server
-#define PORT 32090
+#define PORT 32091
 
 class ServerManager{
     public:
@@ -28,10 +28,10 @@ class ServerManager{
 
 
     private:
-        Raknet::RakPeerInterface* peer;
+        RakNet::RakPeerInterface* peer;
         RakNet::Packet* packet;
 
         //Function provided 
-        unsigned char GetPacketIdentifier(Packet *p);
+        unsigned char GetPacketIdentifier(RakNet::Packet *p);
 
 };

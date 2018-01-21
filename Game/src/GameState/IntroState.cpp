@@ -25,6 +25,18 @@ void IntroState::init() {
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
     EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting*/
+    std::cout << "Attempting to connect to server" << std::endl;
+    peer = RakNet::RakPeerInterface::GetInstance();
+    RakNet::SocketDescriptor socket(0, 	0);
+	socket.socketFamily = AF_INET;
+    peer->Startup(1, &socket, 1);
+    RakNet::ConnectionAttemptResult result;
+    result = peer->Connect("127.0.0.1", 32091, 0, 0);
+
+    if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
+    {
+        std::cout << "Connection Attempt Started Correctly" << std::endl;
+    }
 }
 
 void IntroState::update(float &accumulatedTime) {
@@ -32,11 +44,29 @@ void IntroState::update(float &accumulatedTime) {
 
     //Event manager has to be the last to be updated
     eventManager->update();*/
+    /*
     std::cout<<"Whatsapp boys"<<std::endl;
 
     Game game = Game::getInstance();
     MainState main = MainState::getInstance();
     game.setState(&main);
+*/
+    RakNet::Packet* result;
+    result = peer->Receive();
+    if(result)
+    {
+        switch(result->data[0])
+        {
+            case ID_CONNECTION_REQUEST_ACCEPTED:
+                std::cout << "Connection Accepted" << std::endl;
+                break;
+            case ID_CONNECTION_ATTEMPT_FAILED:
+                std::cout << "Connection Failed" << std::endl;
+                break;
+            default:
+                break;
+        }
+    }
 
    
 }

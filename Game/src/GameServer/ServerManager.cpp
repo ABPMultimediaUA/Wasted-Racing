@@ -1,10 +1,11 @@
 #include "ServerManager.h"
+#include <iostream>
 
 //Function provided by RakNet
 unsigned char ServerManager::GetPacketIdentifier(RakNet::Packet *p)
 {
 	if ((unsigned char)p->data[0] == ID_TIMESTAMP)
-		return (unsigned char) p->data[sizeof(MessageID) + sizeof(RakNet::Time)];
+		return (unsigned char) p->data[sizeof(RakNet::MessageID) + sizeof(RakNet::Time)];
 	else
 		return (unsigned char) p->data[0];
 }
@@ -12,7 +13,7 @@ unsigned char ServerManager::GetPacketIdentifier(RakNet::Packet *p)
 void ServerManager::init()
 {
     //First we get the instance of the peer
-	peer=RakNet::RakPeerInterface::getInstance();
+	peer=RakNet::RakPeerInterface::GetInstance();
 	//Then we initialize the socket and set his socketFamily (for default communication, use AF_INET)
 	RakNet::SocketDescriptor socket(PORT, 	0);
 	socket.socketFamily = AF_INET;
@@ -39,10 +40,12 @@ void ServerManager::update()
 
 	for (packet = peer->Receive(); packet; peer->DeallocatePacket(packet), packet = peer->Receive())
 	{
-		identifier=GetPacketIdentifier();
+		identifier=GetPacketIdentifier(packet);
 		switch(identifier)
 		{
-
+            default:
+                std::cout << "Receiving new packet" << std::endl;
+                break;
 		}
 	}
 
