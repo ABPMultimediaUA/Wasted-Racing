@@ -439,23 +439,20 @@ bool LAPAL::position2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, 
 }
 
 //Calculates if a circle is inside a rectangle
-bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, const float radius) {
+bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& nextPosition) {
 
-    float distance;
+    float height = 1;
 
-    distance = LAPAL::distance2DLinePoint(terrain.p1, terrain.p2, position);
-    if( distance+radius < 0 ) return false;
+    if( abs(LAPAL::calculateExpectedY(terrain, nextPosition)-nextPosition.y)-height > 1)
+        return false;
 
-    distance = LAPAL::distance2DLinePoint(terrain.p3, terrain.p4, position);
-    if( distance+radius < 0 ) return false;
-
-    distance = LAPAL::distance2DLinePoint(terrain.p2, terrain.p3, position);
-    if( distance+radius < 0 ) return false;
-
-    distance = LAPAL::distance2DLinePoint(terrain.p4, terrain.p1, position);
-    if( distance+radius < 0 ) return false;
-
-    if( abs(LAPAL::calculateExpectedY(terrain, position)-position.y)-radius > 1)
+    if ( !LAPAL::position2DLinePoint(terrain.p1, terrain.p2, nextPosition) ) 
+        return false;
+    if ( !LAPAL::position2DLinePoint(terrain.p2, terrain.p3, nextPosition) ) 
+        return false;
+    if ( !LAPAL::position2DLinePoint(terrain.p3, terrain.p4, nextPosition) ) 
+        return false;
+    if ( !LAPAL::position2DLinePoint(terrain.p4, terrain.p1, nextPosition) ) 
         return false;
 
     return true;

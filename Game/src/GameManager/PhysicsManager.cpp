@@ -143,7 +143,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
             } 
             else if(hisColl->getShape() == CollisionComponent::Shape::Rectangle) {
                 collision = LAPAL::checkCircleRectangleCollision(   hisColl->getRectangle(), 
-                                                                    nexPosition, ourColl->getRadius());
+                                                                    nexPosition );
             }
 
             //If collision is kinetic, apply collision physics
@@ -275,11 +275,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         glm::vec3 nextPosition;
 
         if(ourMovementData.vel != 0){
-            nextPosition = glm::vec3(
-                                ourMData.position.x + ourMovementData.velocity.x / ourMovementData.vel * radius,
-                                ourMData.position.y + ourMovementData.velocity.y / ourMovementData.vel * radius,
-                                ourMData.position.z + ourMovementData.velocity.z / ourMovementData.vel * radius
-                                );
+            nextPosition = glm::vec3( ourMData.position + ourMovementData.velocity / ourMovementData.vel * radius);
         }else{
             nextPosition = ourMData.position;
         }

@@ -66,6 +66,6 @@ namespace LAPAL {
     bool position2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1);
 
     //Calculates if a circle is inside a rectangle
-    bool checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, const float radius);
+    bool checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& nextPosition);
 
 }
