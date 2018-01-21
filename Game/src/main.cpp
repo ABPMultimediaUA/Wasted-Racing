@@ -12,7 +12,7 @@ int main(){
 	
 	std::cout << "Exiting game..." << std::endl;
 	
-	return 0;  
+	return 0;   
 
 }
 

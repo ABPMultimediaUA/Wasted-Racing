@@ -39,7 +39,7 @@ make_obj_dir:
 
 #Makes to execute
 make_src:
-	$(MAKE) -C src 
+	$(MAKE) -C src
 
 make_gameF:
 	$(MAKE) -C src/GameFacade

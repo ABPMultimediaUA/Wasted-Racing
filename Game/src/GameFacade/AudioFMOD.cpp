@@ -69,9 +69,6 @@ void AudioFMOD::update() {
     attributes.position.y = pos.y;
     attributes.position.z = pos.z;
 
-    
-    std::cout << pos.x << " " << pos.z << std::endl;
-
     ERRCHECK( FMOD_Studio_System_SetListenerAttributes(system, 0, &attributes) );
 
 
@@ -125,7 +122,6 @@ void AudioFMOD::closeAudioEngine() {
     ERRCHECK( FMOD_Studio_Bank_Unload(stringsBank) );
     ERRCHECK( FMOD_Studio_Bank_Unload(masterBank) );
 
-    ERRCHECK( FMOD_System_Release(lowLevelSystem ));
     ERRCHECK( FMOD_Studio_System_Release(system) );
 }
 
