@@ -275,13 +275,18 @@ void RenderManager::updateAIDebug()
             //Update Vision Cone
             point = AIDebugPoint[AIDebug].getTransformData().position;
 
-            transform.position = glm::vec3(point.x-10*cos(AIDebugPoint[AIDebug].getTransformData().rotation.y),
-                                    point.y, point.z+10*sin(AIDebugPoint[AIDebug].getTransformData().rotation.y));
-            transform.rotation = glm::vec3(0, 0, pi/2);
-            transform.scale    = glm::vec3(1, 1, 1);
+            auto rot = AIDebugPoint[AIDebug].getTransformData().rotation;
+            auto rad = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
+            auto ang = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getAngleVision();
+            auto length = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxLength();
 
-            visionCone->setTransformData(transform);
-            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(visionCone->getId(), transform);
+            transform.position = glm::vec3(point.x+cos(rot.y),
+                                    point.y, point.z-sin(rot.y));
+            transform.rotation = glm::vec3(rot.x, rot.y+pi/2, rot.z);
+            transform.scale    = glm::vec3(2*rad*sin(ang), length, rad*cos(ang));
+
+            visionTriangle->setTransformData(transform);
+            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(visionTriangle->getId(), transform);
         }
     }
 }
@@ -337,23 +342,26 @@ void RenderManager::createRenderNPC()
 
         rad = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
 
-        RenderManager::getInstance().createObjectRenderComponent(*visibilityArea.get(), ObjectRenderComponent::Shape::Cylinder, "black.jpg", rad, 0.1, 10.f, false);
+        RenderManager::getInstance().createObjectRenderComponent(*visibilityArea.get(), ObjectRenderComponent::Shape::Cylinder, "semiTransparent.jpg", rad, 1, 10.f, false);
         
         //Create Vision Cone
         id = 5003;
         point = AIDebugPoint[AIDebug].getTransformData().position;
 
-
-        transform.position = glm::vec3(point.x-10*cos(AIDebugPoint[AIDebug].getTransformData().rotation.y),
-                                point.y, point.z+10*sin(AIDebugPoint[AIDebug].getTransformData().rotation.y));
-        transform.rotation = glm::vec3(0, 0, pi/2);
-        transform.scale    = glm::vec3(1, 1, 1);
-        visionCone = ObjectManager::getInstance().createObject(id, transform);
+        auto rot = AIDebugPoint[AIDebug].getTransformData().rotation;
 
         rad = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
         length = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxLength();
 
-        RenderManager::getInstance().createObjectRenderComponent(*visionCone.get(), ObjectRenderComponent::Shape::Cone, "semiTransparente.png", 5, 10, 10.f, false);
+        auto ang = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getAngleVision();
+
+        transform.position = glm::vec3(point.x+cos(rot.y),
+                                point.y, point.z-sin(rot.y));
+        transform.rotation = glm::vec3(rot.x, rot.y+pi/2, rot.z);
+        transform.scale    = glm::vec3(2*rad*sin(ang), length, rad*cos(ang));
+        visionTriangle = ObjectManager::getInstance().createObject(id, transform);
+
+        RenderManager::getInstance().createObjectRenderComponent(*visionTriangle.get(), ObjectRenderComponent::Shape::Mesh, "triangle.obj");
     }
 
     //Create camera render
@@ -383,7 +391,7 @@ void RenderManager::deleteRenderNPC()
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
 
         //Delete Vision Cone
-        data.Id = visionCone->getId();
+        data.Id = visionTriangle->getId();
 
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
 

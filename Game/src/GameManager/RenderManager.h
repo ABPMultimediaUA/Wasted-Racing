@@ -51,8 +51,9 @@ public:
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr);
     IComponent::Pointer createLightRenderComponent(GameObject& newGameObject, LightRenderComponent::Type newType, float newRadius);
     IComponent::Pointer createCameraRenderComponent(GameObject& newGameObject);
+    //Create cylinder or cone
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency);
-
+    
     //Camera component getter and setter
     IComponent::Pointer getCameraComponent() { return cameraComponent; }
     void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
@@ -86,6 +87,6 @@ private:
     GameObject::Pointer marker;
     GameObject::Pointer collisionCylinder;
     GameObject::Pointer visibilityArea;
-    GameObject::Pointer visionCone;
+    GameObject::Pointer visionTriangle;
 
 };
