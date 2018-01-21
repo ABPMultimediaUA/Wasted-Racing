@@ -61,9 +61,11 @@ public:
     //AI Debug
     void renderAIDebug();
     void updateAIDebug();
-    void createRenderNPC(); //create camera and render next point of npc
-    void deleteRenderNPC(); //delete camera and render next point of npc
-
+    void createRenderNPC(); 
+    void deleteRenderNPC(); 
+    void createLinesObjects();
+    void deleteLinesObjects();
+    
 private:
 
     IRenderFacade* renderFacade;
@@ -88,5 +90,6 @@ private:
     GameObject::Pointer collisionCylinder;
     GameObject::Pointer visibilityArea;
     GameObject::Pointer visionTriangle;
+    std::vector<GameObject::Pointer> linesObjects;
 
 };

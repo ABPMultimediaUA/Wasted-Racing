@@ -186,10 +186,12 @@ void RenderManager::renderAIDebug()
                 RenderManager::getInstance().createObjectRenderComponent(*listObj[i].get(), ObjectRenderComponent::Shape::Sphere, "pool.jpg");
             }
         }
-        //deleteRenderNPC();
-
         //Next point marker
         createRenderNPC();
+
+        //Lines to objects
+        deleteLinesObjects();
+        createLinesObjects();
 
         if(lap == false)
         {
@@ -213,6 +215,9 @@ void RenderManager::renderAIDebug()
         //Delete next point marker
         deleteRenderNPC();
 
+        //Delete Lines to objects
+        deleteLinesObjects();
+
         //Set debug inactive
         AIDebug = 0;
         lap = false;
@@ -233,8 +238,6 @@ void RenderManager::updateAIDebug()
             auto player = npcs[i]->getGameObject();
             AIDebugPoint.push_back(player); 
         }
-
-
 
         glm::vec3 point;
         GameObject::TransformationData transform;
@@ -267,6 +270,7 @@ void RenderManager::updateAIDebug()
             auto rad = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
             auto ang = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getAngleVision();
             auto length = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxLength();
+            auto seenObjects = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getSeenObjects();
 
             //Update Visibility Area
             point = AIDebugPoint[AIDebug].getTransformData().position;
@@ -289,6 +293,12 @@ void RenderManager::updateAIDebug()
 
             visionTriangle->setTransformData(transform);
             RenderManager::getInstance().getRenderFacade()->updateObjectTransform(visionTriangle->getId(), transform);
+
+
+            //Lines to objects
+            deleteLinesObjects();
+            createLinesObjects();
+
         }
     }
 }
@@ -339,6 +349,8 @@ void RenderManager::createRenderNPC()
         rad = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
         length = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxLength();
 
+        auto seenObjects = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getSeenObjects();
+
         //Create Visibility Area
         id = 5002;
         point = AIDebugPoint[AIDebug].getTransformData().position;
@@ -352,17 +364,22 @@ void RenderManager::createRenderNPC()
 
         RenderManager::getInstance().createObjectRenderComponent(*visibilityArea.get(), ObjectRenderComponent::Shape::Cylinder, "redWithTransparency.png", rad, length, 10.f, true);
         
-        //Create Vision Cone
+        //Create Vision Triangle
         id = 5003;
         point = AIDebugPoint[AIDebug].getTransformData().position;
 
         transform.position = glm::vec3(point.x+cos(rot.y),
                                 point.y, point.z-sin(rot.y));
         transform.rotation = glm::vec3(rot.x, rot.y, rot.z);
-        transform.scale    = glm::vec3(2*rad*sin(ang), length, rad*cos(ang));
+        transform.scale    = glm::vec3(2*rad*sin(ang), length, 2*rad*cos(ang));
         visionTriangle = ObjectManager::getInstance().createObject(id, transform);
 
         RenderManager::getInstance().createObjectRenderComponent(*visionTriangle.get(), ObjectRenderComponent::Shape::Portion, "blackWithTransparency.png");
+        
+    }
+
+    if(AIDebug != 0)
+    {
     }
 
     //Create camera render
@@ -403,3 +420,67 @@ void RenderManager::deleteRenderNPC()
         AIDebugPoint.clear();
     }
 }
+
+void RenderManager::createLinesObjects()
+{
+
+    if(lap == true)
+    {
+        uint16_t id;
+        glm::vec3 point;
+        GameObject::TransformationData transform;
+        auto seenObjects = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getSeenObjects();
+        float pi = 3.14159265358979323846;
+
+        auto rot = AIDebugPoint[AIDebug].getTransformData().rotation;
+
+        //Create Lines Objects
+        for(unsigned int i = 0; i < seenObjects.size(); i++)
+        {
+            id = 5100+i;
+
+            point = AIDebugPoint[AIDebug].getTransformData().position;
+
+            float distance = (seenObjects[i]->getPosition().x - point.x) * (seenObjects[i]->getPosition().x - point.x) +
+						(seenObjects[i]->getPosition().y - point.y) * (seenObjects[i]->getPosition().y - point.y) +
+						(seenObjects[i]->getPosition().z - point.z) * (seenObjects[i]->getPosition().z - point.z);
+            distance = glm::sqrt(distance);
+
+            float distX = (seenObjects[i]->getPosition().x - point.x) * (seenObjects[i]->getPosition().x - point.x);
+            distX = glm::sqrt(distX);
+
+            auto angRot = glm::acos(distX/distance);
+
+            angRot = angRot*pi/180;
+
+            glm::vec3 vecDist = seenObjects[i]->getPosition() - point;
+
+            transform.position = glm::vec3((point.x + (vecDist.x/2)), (point.y), (point.z + (vecDist.z/2)));
+            transform.rotation = glm::vec3(0, 0, 0);
+            transform.scale    = glm::vec3(0.1*distance, 0.1, 0.1);
+            auto obj = ObjectManager::getInstance().createObject(id, transform);
+
+            RenderManager::getInstance().createObjectRenderComponent(*obj.get(), ObjectRenderComponent::Shape::Cube, "whiteWithTransparency.png");
+
+            linesObjects.push_back(obj);  
+        }
+    }
+}
+
+void RenderManager::deleteLinesObjects()
+{
+    if(lap == true)
+    {
+        EventData data;
+
+        //Delete Lines Objects
+        for(unsigned int i = 0; i < linesObjects.size(); i++)
+        {
+            data.Id = linesObjects[i]->getId();
+
+            EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+        }
+        linesObjects.clear();
+    }
+}
+
