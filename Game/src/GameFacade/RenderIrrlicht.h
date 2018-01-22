@@ -50,6 +50,9 @@ public:
     //Add an object to the game
     virtual void addObject(IComponent* ptr);
 
+    //Add an object to the game (Cylinder or Cone)
+    virtual void addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency);
+
     //Add a light to the game
     virtual void addLight(IComponent* ptr);
 

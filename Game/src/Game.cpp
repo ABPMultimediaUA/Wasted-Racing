@@ -339,7 +339,7 @@ void loadMap() {
 
                 xml_node<>* bbox = component->first_node("bbox");
                 LAPAL::plane3f terrain;
-                float radius;
+                float radius, height;
                 bool kinetic;
                 CollisionComponent::Type type = CollisionComponent::Type::Default;
 
@@ -367,6 +367,10 @@ void loadMap() {
                 if(component->first_attribute("radius") != nullptr)
                     radius = std::stof(component->first_attribute("radius")->value());
 
+                //Parse Height if given
+                if(component->first_attribute("height") != nullptr)
+                    height = std::stof(component->first_attribute("height")->value());
+
                 //Parse Kinetic
                 if(strcmp(component->first_attribute("kinetic")->value(),"true") == 0)
                     kinetic = true;
@@ -382,9 +386,9 @@ void loadMap() {
 
                 //Create COLLISION component
                 if(bbox != nullptr)
-                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), terrain, kinetic, type);
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), terrain, kinetic, height, type);
                 else
-                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), radius, kinetic, type);
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), radius, height, kinetic, type);
 
             }
 

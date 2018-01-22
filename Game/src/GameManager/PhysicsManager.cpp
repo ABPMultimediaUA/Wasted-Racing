@@ -140,12 +140,12 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
             
             //Depending on the shape to collide with, check collision with it
             if(hisColl->getShape() == CollisionComponent::Shape::Circle) {
-                collision = LAPAL::checkCircleCircleCollision(  nexPosition, ourColl->getRadius(), 
-                                                                hisColl->getGameObject().getTransformData().position, hisColl->getRadius());
+                collision = LAPAL::checkCircleCircleCollision(  nexPosition, ourColl->getRadius(), ourColl->getLength(),
+                                                                hisColl->getGameObject().getTransformData().position, hisColl->getRadius(), hisColl->getLength());
             } 
             else if(hisColl->getShape() == CollisionComponent::Shape::Rectangle) {
-                collision = LAPAL::checkCircleRectangleCollision(   hisColl->getRectangle(), 
-                                                                    nexPosition );
+                collision = LAPAL::checkCircleRectangleCollision(   hisColl->getRectangle(),  nexPosition,
+                                                                    hisColl->getLength(), ourColl->getLength());
             }
 
             //If collision is kinetic, apply collision physics
@@ -389,7 +389,7 @@ std::shared_ptr<TerrainComponent> PhysicsManager::getTerrainFromPos(LAPAL::vec3f
         
         auto terrain = std::dynamic_pointer_cast<TerrainComponent>(terrainComponentList[i]);
 
-        if(LAPAL::checkCircleRectangleCollision(terrain.get()->getTerrain(), pos))
+        if(LAPAL::checkCircleRectangleCollision(terrain.get()->getTerrain(), pos, 20, 0))
             return terrain;
     }
 
@@ -430,9 +430,9 @@ IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameOb
 }
 
 
-IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const float radius, const bool kinetic, const CollisionComponent::Type type) {
+IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const float radius, const float length, const bool kinetic, const CollisionComponent::Type type) {
 
-    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, radius, kinetic, type);
+    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, radius, length, kinetic, type);
 
     newGameObject.addComponent(component);
 
@@ -444,9 +444,9 @@ IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGame
     return component;
 }
 
-IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f plane, const bool kinetic, const CollisionComponent::Type type) {
+IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f plane, const bool kinetic, const float length, const CollisionComponent::Type type) {
 
-    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, kinetic, type);
+    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, kinetic, length, type);
 
     newGameObject.addComponent(component);
 

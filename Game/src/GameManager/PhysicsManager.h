@@ -59,8 +59,8 @@ public:
     //Component creators
     IComponent::Pointer createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass);
     IComponent::Pointer createTerrainComponent(GameObject& newGameObject, LAPAL::plane3f newPlane);
-    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const float radius, const bool kinetic, const CollisionComponent::Type type);
-    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f newPlane, const bool kinetic, const CollisionComponent::Type type);
+    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const float radius, const float length, const bool kinetic, const CollisionComponent::Type type);
+    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f newPlane, const bool kinetic, const float length, const CollisionComponent::Type type);
     void                createMovingCharacter(IComponent::Pointer moveComponent, IComponent::Pointer terrainComponent, IComponent::Pointer collisionComponent);
     IComponent::Pointer createRampComponent(GameObject& newGameObject, const float speed, const float cTime, const float dTime);
 

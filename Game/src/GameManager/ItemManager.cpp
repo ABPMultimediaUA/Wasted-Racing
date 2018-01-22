@@ -53,6 +53,8 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
 
     ItemHolders.push_back(std::dynamic_pointer_cast<ItemHolderComponent>(component));
 
+    //players.push_back(newGameObject); 
+
     return component;
 }
 
@@ -75,7 +77,7 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
     EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Create, data});
 
     RenderManager::getInstance().createObjectRenderComponent(obj, ObjectRenderComponent::Shape::Cube, "itemBox.png");
-    PhysicsManager::getInstance().createCollisionComponent(obj, 5, false, CollisionComponent::Type::ItemBox);
+    PhysicsManager::getInstance().createCollisionComponent(obj, 5, 5, false, CollisionComponent::Type::ItemBox);
 
 
     return component;
@@ -199,14 +201,14 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.3ds");
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::RedShell);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::RedShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f);
+    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
@@ -270,14 +272,14 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.3ds");
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::BlueShell);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::BlueShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0);
+    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0, 0);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
@@ -304,7 +306,7 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
     ob.get()->addComponent(component);
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "banana.3ds");
-    PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Banana);
+    PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, 1, false, CollisionComponent::Type::Banana);
 
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));

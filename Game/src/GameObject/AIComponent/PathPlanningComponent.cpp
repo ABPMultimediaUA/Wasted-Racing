@@ -112,8 +112,8 @@ void PathPlanningComponent::update(float dTime)
 				{
 					if(tour-distLastWay < 0)
 					{
-						//nextPos = ((tour/distLastWay) * (listNodes[lastPosVector].get()->getTransformData().position - pos)) + pos;
-						nextPos = listNodes[lastPosVector].get()->getTransformData().position;
+						nextPos = ((tour/distLastWay) * (listNodes[lastPosVector].get()->getTransformData().position - pos)) + pos;
+						//nextPos = listNodes[lastPosVector].get()->getTransformData().position;
 						return;
 					}
 					else

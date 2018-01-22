@@ -11,7 +11,11 @@ public:
 		Cube,
 		Sphere,
 		Mesh,
-		Plane
+		Cone,
+		Plane,
+		Arrow,
+		Cylinder,
+		Portion
 	};
 
     //Constructor

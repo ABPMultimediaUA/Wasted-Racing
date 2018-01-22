@@ -67,6 +67,7 @@ ORotArray = []
 OScaArray = []
 OFile     = []
 ORadius   = []
+OHeight   = []
 OId       = 20000
 
 #################################################################################
@@ -311,17 +312,18 @@ for line in objFile:
 
         OFile.append(aux[2])
         ORadius.append(aux[3])
+        OHeight.append(aux[4])
 
         #Set Rotation if given, and 0 if not
-        if len(aux) > 5 :
-            ORotArray.append(aux[4].split(':')[0] + ',' + aux[4].split(':')[1] + ',' + aux[4].split(':')[2])
+        if len(aux) > 6 :
+            ORotArray.append(aux[5].split(':')[0] + ',' + aux[5].split(':')[1] + ',' + aux[5].split(':')[2])
         else :
             ORotArray.append('0,0,0')
 
 
         #Set Scale if given, and 0 if not
-        if len(aux) > 6 :
-            OScaArray.append(aux[5].split(':')[0] + ',' + aux[5].split(':')[1] + ',' + aux[5].split(':')[2])
+        if len(aux) > 7 :
+            OScaArray.append(aux[6].split(':')[0] + ',' + aux[6].split(':')[1] + ',' + aux[6].split(':')[2])
         else :
             OScaArray.append('1,1,1')
 
@@ -560,7 +562,7 @@ for i in range( 0, len(OPosArray) ) :
 
     gameObject          =  '<object id=\"' + str(OId+i) + '\" pos=\"' + OPosArray[i] + '\" rot=\"' + ORotArray[i] + '\" sca=\"' + OScaArray[i] + '\">\n'
     renderComponent     =  '    <component name=\"render\"' + ' file=\"' + OFile[i] + '\" type=\"mesh\" />\n'
-    collisionComponent  =  '    <component name=\"collision\" radius=\"' + ORadius[i] + '\" kinetic=\"true\" type=\"default\" />\n'
+    collisionComponent  =  '    <component name=\"collision\" radius=\"' + ORadius[i] + '\" height=\"' + OHeight[i] + '\" kinetic=\"true\" type=\"default\" />\n'
     gameObjectEnd       =  '</object>\n'
 
     destFile.write(gameObject)
