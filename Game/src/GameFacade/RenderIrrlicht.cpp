@@ -3,6 +3,7 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/ObjectManager.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include <cmath>
 #include <string>
 
@@ -35,7 +36,9 @@ void RenderIrrlicht::openWindow(){
 }
 
 void RenderIrrlicht::updateWindow() {
-    updateCamera();
+
+    //updateCamera();
+
     int oM = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
     int oL = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
     int ML = ScoreManager::getInstance().getMaxLaps();
@@ -87,15 +90,21 @@ void RenderIrrlicht::addCamera() {
     camera->setPosition(irr::core::vector3df(0,0,0));
 }
 
-void RenderIrrlicht::updateCamera() {
+void RenderIrrlicht::interpolateCamera(float accTime, float maxTime) {
     //Get target position
     auto pos = cameraTarget->getTransformData().position;
 
     //Get target y angle
     float radianAngle = cameraTarget->getTransformData().rotation.y;
 
+    //Get interpolated distance to the player
+    float oldD = cameraTarget->getComponent<CameraRenderComponent>().get()->getOldDistance();
+    float newD = cameraTarget->getComponent<CameraRenderComponent>().get()->getDistance();
+
+    float distance = oldD + (accTime * (newD - oldD))/maxTime;
+
     camera->setTarget(irr::core::vector3df(pos.x, pos.y, pos.z));
-    camera->setPosition(irr::core::vector3df(pos.x - 30*cos(radianAngle), pos.y + 12, pos.z + 30*sin(radianAngle)));
+    camera->setPosition(irr::core::vector3df(pos.x - distance * cos(radianAngle), pos.y + distance * 0.4, pos.z + distance * sin(radianAngle)));
 }
 
 void RenderIrrlicht::addObject(IComponent* ptr) {

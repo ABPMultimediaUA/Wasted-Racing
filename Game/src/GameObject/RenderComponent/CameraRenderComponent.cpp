@@ -7,7 +7,7 @@ void CameraRenderComponent::init() {
     RenderManager::getInstance().getRenderFacade()->setCameraTarget(gameObject);
 }
 
-//Update
+//Update   
 void CameraRenderComponent::update(float dTime) {
 
 }

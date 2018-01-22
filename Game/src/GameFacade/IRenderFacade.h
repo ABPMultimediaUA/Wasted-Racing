@@ -73,7 +73,7 @@ public:
     virtual void addCamera() = 0;
 
     //Update the current camera
-    virtual void updateCamera() = 0;
+    virtual void interpolateCamera(float accTime, float maxTime) = 0;
 
     //Add an object to the game
     virtual void addObject(IComponent* ptr) = 0;

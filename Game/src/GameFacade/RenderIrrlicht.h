@@ -45,7 +45,7 @@ public:
     virtual void addCamera();
 
     //Update the current camera
-    virtual void updateCamera();
+    virtual void interpolateCamera(float accTime, float maxTime);
 
     //Add an object to the game
     virtual void addObject(IComponent* ptr);

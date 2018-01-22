@@ -161,7 +161,7 @@ void Game::Run() {
 
         //Always interpolate and draw the game 
         physicsManager->interpolate(accumulatedTime, maxTime);
-        renderManager->getRenderFacade()->updateCamera();
+        renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, maxTime);
 
         Game::draw();
         
