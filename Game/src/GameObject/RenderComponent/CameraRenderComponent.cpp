@@ -32,6 +32,7 @@ void CameraRenderComponent::update(float dTime) {
 
     //Get next camera position
     angleY += move.spin;
+    
     LAPAL::vec3f nextPlayerPos = LAPAL::vec3f( pos + move.velocity / move.vel * radius);
     if(move.vel == 0)
         nextPlayerPos = getGameObject().getTransformData().position;
@@ -45,7 +46,7 @@ void CameraRenderComponent::update(float dTime) {
     //Check if we are out of front bounds
     if(!LAPAL::position2DLinePoint(terr.p1, terr.p2, nextPosition)){
         if( terrain.get()->getNext() == nullptr ) {   //If there isn't next plane, collision
-            distance -= glm::length(nextPosition-currentPosition) * camVel * dTime;
+            distance -= camVel * dTime;
             count = 0;
         }
         //Check if our center is still in the same terrain
@@ -57,7 +58,7 @@ void CameraRenderComponent::update(float dTime) {
     //Check if we are out of right bounds
     if(!LAPAL::position2DLinePoint(terr.p2, terr.p3, nextPosition)){
         if( terrain.get()->getRight() == nullptr ) {   //If there isn't next plane, collision
-            distance -= glm::length(nextPosition-currentPosition) * camVel * dTime;
+            distance -= camVel * dTime;
             count = 0;
         }
         //Check if our center is still in the same terrain
@@ -69,7 +70,7 @@ void CameraRenderComponent::update(float dTime) {
     //Check if we are out of back bounds
     if(!LAPAL::position2DLinePoint(terr.p3, terr.p4, nextPosition)){
         if( terrain.get()->getPrev() == nullptr ) {   //If there isn't next plane, collision
-            distance -= glm::length(nextPosition-currentPosition) * camVel * dTime;
+            distance -= camVel * dTime;
             count = 0;
         }
         //Check if our center is still in the same terrain
@@ -81,7 +82,7 @@ void CameraRenderComponent::update(float dTime) {
     //Check if we are out of left bounds
     if(!LAPAL::position2DLinePoint(terr.p4, terr.p1, nextPosition)){
        if( terrain.get()->getLeft() == nullptr ) {   //If there isn't next plane, collision
-            distance -= glm::length(nextPosition-currentPosition) * camVel * dTime;
+            distance -= camVel * dTime;
             count = 0;
         }
         //Check if our center is still in the same terrain
@@ -97,6 +98,12 @@ void CameraRenderComponent::update(float dTime) {
 
     if (distance < 5)
         distance = 5;
+
+    if (distance > 30)
+        distance = 30;
+    
+    if (move.spin == 0)
+        distance = oldDistance;
 
 }
 
