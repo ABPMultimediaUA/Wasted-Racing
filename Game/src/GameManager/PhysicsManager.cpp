@@ -2,6 +2,7 @@
 #include "../GameObject/GameObject.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/RenderManager.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include <memory>
 #include <iostream>
 
@@ -80,6 +81,9 @@ void PhysicsManager::update(const float dTime) {
         gameObject.setNewTransformData(gameObject.getTransformData());
         
     }
+
+    //Update camera collision
+    RenderManager::getInstance().getRenderFacade()->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
 
 }
 

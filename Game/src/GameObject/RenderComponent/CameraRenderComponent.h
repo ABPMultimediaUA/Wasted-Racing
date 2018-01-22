@@ -14,6 +14,7 @@ public:
 		distance = 30;
 		oldDistance = distance;
 		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
+		count = 0;
 	}
 
 	//Destructor
@@ -46,5 +47,6 @@ private:
 	std::shared_ptr<TerrainComponent> terrain;
 	float distance;
 	float oldDistance;
+	int count;
 
 };
