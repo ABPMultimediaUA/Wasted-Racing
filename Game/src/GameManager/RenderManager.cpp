@@ -44,7 +44,7 @@ void RenderManager::init(int engine) {
 }
 
 void RenderManager::update() {
-    RenderManager::renderFacade->updateWindow();
+    renderFacade->updateWindow();
 }
 
 void RenderManager::draw() {

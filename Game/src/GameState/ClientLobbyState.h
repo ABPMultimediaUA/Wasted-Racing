@@ -3,6 +3,8 @@
 #include "IGameState.h"
 #include "MainState.h"
 #include "../Game.h"
+#include <raknet/RakPeerInterface.h> 
+#include <raknet/MessageIdentifiers.h>
 
 class ClientLobbyState : public IGameState {
 
@@ -32,6 +34,12 @@ public:
         return instance;
     };
 private:
+    //==============================================================
+    // Private data
+    //==============================================================
+
+    //Variables for client, delete when state is working correctly
+    RakNet::RakPeerInterface* peer;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;

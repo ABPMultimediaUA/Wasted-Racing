@@ -10,65 +10,21 @@ void singleplayerActivated(EventData eData);
 
 
 void IntroState::init() {
-    //Initilize managers
+    //Bind all managers that are going to be used
     eventManager = &EventManager::getInstance();
-    eventManager->init();
-
-    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
-    renderManager = &RenderManager::getInstance();
-    renderManager->init(Game::getInstance().getRenderEngine());
-
-    //Once we've initialized the renderManager, we can do the same with our inputManager
     inputManager = &InputManager::getInstance();
-    inputManager->init(Game::getInstance().getInputEngine());
 
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
     EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting*/
-    std::cout << "Attempting to connect to server" << std::endl;
-    peer = RakNet::RakPeerInterface::GetInstance();
-    RakNet::SocketDescriptor socket(0, 	0);
-	socket.socketFamily = AF_INET;
-    peer->Startup(1, &socket, 1);
-    RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("127.0.0.1", 32091, 0, 0);
-
-    if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
-    {
-        std::cout << "Connection Attempt Started Correctly" << std::endl;
-    }
 }
 
 void IntroState::update(float &accumulatedTime) {
+    //Update key events
     inputManager->update();
 
     //Event manager has to be the last to be updated
     eventManager->update();
-    /*
-    std::cout<<"Whatsapp boys"<<std::endl;
-
-    Game game = Game::getInstance();
-    MainState main = MainState::getInstance();
-    game.setState(&main);
-*/
-    RakNet::Packet* result;
-    result = peer->Receive();
-    if(result)
-    {
-        switch(result->data[0])
-        {
-            case ID_CONNECTION_REQUEST_ACCEPTED:
-                std::cout << "Connection Accepted" << std::endl;
-                break;
-            case ID_CONNECTION_ATTEMPT_FAILED:
-                std::cout << "Connection Failed" << std::endl;
-                break;
-            default:
-                break;
-        }
-    }
-
-   
 }
 
 void IntroState::draw() {
@@ -76,18 +32,24 @@ void IntroState::draw() {
 }
 
 void IntroState::close() {
-    renderManager->close();
-    inputManager->close();
-    eventManager->close();
+    
 }
 
 //==============================================
 // DELEGATES
 //============================================== 
 void multiplayerActivated(EventData eData) {
+    //Close this state
+    IntroState::getInstance().close();
+
+    //Initialize Client Lobby state a new
     Game::getInstance().setState(&ClientLobbyState::getInstance());
 }
 void singleplayerActivated(EventData eData) {
+    //Close this state
+    IntroState::getInstance().close();
+
+    //Initialize main state again
     Game::getInstance().setState(&MainState::getInstance());
 }
 //-----------------------------------
