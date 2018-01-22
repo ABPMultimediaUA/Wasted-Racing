@@ -9,15 +9,17 @@ VObject::VObject()
     b=0;
     radius=0;
     type=0;
+    length=0;
 }
 
-VObject::VObject(glm::vec3 p, float x, float y, float r, int t)
+VObject::VObject(glm::vec3 p, float x, float y, float r, int t, float l)
 {
     position=p;
     a=x;
     b=y;
     radius=r;
     type=t;
+    length=l;
 }
 
 //Destructor

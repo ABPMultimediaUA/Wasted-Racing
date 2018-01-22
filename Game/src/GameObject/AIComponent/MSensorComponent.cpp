@@ -75,12 +75,12 @@ void MSensorComponent::updateMapCollisions()
     
     //Calculate first point
     calculateABTerrainBack(point1, a_back, b_back);                            //Do the math
-    pvo = std::make_shared<VObject>(point1, a_back, b_back, 1.f, 1);  //generate VObject with the data
+    pvo = std::make_shared<VObject>(point1, a_back, b_back, 1.f, 1, 1.f);  //generate VObject with the data
     seenObjects.push_back(pvo);                                       //Add to seen objects
 
     //Calculate second point
     calculateABTerrainBack(point2, a_back, b_back);                            //Do the math
-    pvo = std::make_shared<VObject>(point2, a_back, b_back, 1.f, 1);  //generate VObject with the data
+    pvo = std::make_shared<VObject>(point2, a_back, b_back, 1.f, 1, 1.f);  //generate VObject with the data
     seenObjects.push_back(pvo);                                       //Add to seen objects
 
     //-------------------
@@ -219,7 +219,7 @@ void MSensorComponent::updateMapCollisions()
         LAPAL::calculateAB(pointS1 - position, vsensor->getSensorLeft(), vsensor->getSensorRight(), a_final, b_final);
 
         //Calculate left point
-        pvo = std::make_shared<VObject>(pointS1, a_final, b_final, 1.f, 1);    //generate VObject with the data
+        pvo = std::make_shared<VObject>(pointS1, a_final, b_final, 1.f, 1, 1.f);    //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
     }
 
@@ -231,7 +231,7 @@ void MSensorComponent::updateMapCollisions()
         LAPAL::calculateAB(pointS2 - position, vsensor->getSensorLeft(), vsensor->getSensorRight(), a_final2, b_final2);
 
         //Calculate right point
-        pvo = std::make_shared<VObject>(pointS2, a_final2, b_final2, 1.f, 1);    //generate VObject with the data
+        pvo = std::make_shared<VObject>(pointS2, a_final2, b_final2, 1.f, 1, 1.f);    //generate VObject with the data
         seenObjects.push_back(pvo);                                      //Add to seen objects
     }
 

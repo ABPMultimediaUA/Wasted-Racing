@@ -245,8 +245,18 @@ void RenderManager::updateAIDebug()
         //Update next point marker
         point = AIDebugPoint[AIDebug].getComponent<PathPlanningComponent>()->getNextPoint();
 
+        if(moveNextPos <= maxMoveNextPos/1.5)
+        {
+            point.y = point.y + moveNextPos;
+            moveNextPos = maxMoveNextPos;
+        }
+        else if(moveNextPos > maxMoveNextPos/1.5)
+        {
+            point.y = point.y + moveNextPos;
+            moveNextPos = moveNextPos - 0.1; 
+        } 
+
         transform.position = point;
-        transform.position.y = transform.position.y + 20;
         transform.rotation = glm::vec3(0, 0, 3.14);
         transform.scale    = glm::vec3(1, 1, 1);
 
@@ -325,7 +335,7 @@ void RenderManager::createRenderNPC()
         transform.scale    = glm::vec3(1, 1, 1);
         marker = ObjectManager::getInstance().createObject(id, transform);
 
-        RenderManager::getInstance().createObjectRenderComponent(*marker.get(), ObjectRenderComponent::Shape::Arrow, "pool.jpg");
+        RenderManager::getInstance().createObjectRenderComponent(*marker.get(), ObjectRenderComponent::Shape::Arrow, "blackWithTransparency.png");
 
         //Create Collision Cylinder
         id = 5001;
@@ -430,39 +440,34 @@ void RenderManager::createLinesObjects()
         glm::vec3 point;
         GameObject::TransformationData transform;
         auto seenObjects = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getSeenObjects();
-        float pi = 3.14159265358979323846;
-
-        auto rot = AIDebugPoint[AIDebug].getTransformData().rotation;
 
         //Create Lines Objects
         for(unsigned int i = 0; i < seenObjects.size(); i++)
         {
             id = 5100+i;
 
-            point = AIDebugPoint[AIDebug].getTransformData().position;
+            auto position = seenObjects[i]->getPosition();
 
-            float distance = (seenObjects[i]->getPosition().x - point.x) * (seenObjects[i]->getPosition().x - point.x) +
-						(seenObjects[i]->getPosition().y - point.y) * (seenObjects[i]->getPosition().y - point.y) +
-						(seenObjects[i]->getPosition().z - point.z) * (seenObjects[i]->getPosition().z - point.z);
-            distance = glm::sqrt(distance);
+            if(moveSeen <= maxMoveSeen/2)
+            {
+                position.y = position.y + seenObjects[i]->getLength() + moveSeen;
+                moveSeen = maxMoveSeen;
+            }
+            else if(moveSeen > maxMoveSeen/2)
+            {
+                position.y = position.y + seenObjects[i]->getLength() + moveSeen;
+                moveSeen = moveSeen - 0.1; 
+            } 
 
-            float distX = (seenObjects[i]->getPosition().x - point.x) * (seenObjects[i]->getPosition().x - point.x);
-            distX = glm::sqrt(distX);
-
-            auto angRot = glm::acos(distX/distance);
-
-            angRot = angRot*pi/180;
-
-            glm::vec3 vecDist = seenObjects[i]->getPosition() - point;
-
-            transform.position = glm::vec3((point.x + (vecDist.x/2)), (point.y), (point.z + (vecDist.z/2)));
-            transform.rotation = glm::vec3(0, 0, 0);
-            transform.scale    = glm::vec3(0.1*distance, 0.1, 0.1);
+            transform.position = position;            
+            transform.rotation = glm::vec3(0, 0, 180);
+            transform.scale    = glm::vec3(0.5, 0.5, 0.5);
             auto obj = ObjectManager::getInstance().createObject(id, transform);
 
-            RenderManager::getInstance().createObjectRenderComponent(*obj.get(), ObjectRenderComponent::Shape::Cube, "whiteWithTransparency.png");
+            RenderManager::getInstance().createObjectRenderComponent(*obj.get(), ObjectRenderComponent::Shape::Arrow, "redWithTransparency.png");
 
             linesObjects.push_back(obj);  
+            
         }
     }
 }
