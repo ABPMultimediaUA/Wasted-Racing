@@ -44,21 +44,15 @@ public:
     void interpolate(float accumulatedTime, const float maxTime);
 
 
-    //Static class getter
+    //Getters
     static PhysicsManager& getInstance();
-    std::vector<IComponent::Pointer>& getMoveComponentList()       {    return moveComponentList;        } //Move component list getter
-    std::vector<IComponent::Pointer>& getCollisionComponentList()  {    return collisionComponentList;   } //Collision component list getter
-    std::vector<MovingCharacter>& getMovingCharacterList()     {    return movingCharacterList;      }     //MovingCharacter component list getter
-    
-    MovingCharacter getMovingCharacter(uint16_t id){      //Get given moving character by object id from list
-        MovingCharacter mChar;
-        for(unsigned int i=0; i < movingCharacterList.size(); ++i){
-            if(movingCharacterList[i].moveComponent->getGameObject().getId() == id){
-                return movingCharacterList[i];
-            }
-        }
-        return mChar;
-    }
+    std::vector<IComponent::Pointer>& getMoveComponentList()        {    return moveComponentList;      } //Move component list getter
+    std::vector<IComponent::Pointer>& getCollisionComponentList()   {    return collisionComponentList; } //Collision component list getter
+    std::vector<IComponent::Pointer>& getTerrainComponentList()     {    return terrainComponentList;   } //Terrain component list getter
+    std::vector<MovingCharacter>& getMovingCharacterList()          {    return movingCharacterList;    } //MovingCharacter component list getter
+    MovingCharacter getMovingCharacter(uint16_t id);
+    std::shared_ptr<TerrainComponent> getTerrainFromPos(LAPAL::vec3f pos);
+
     //Setters
     void setCollisionComponentList(std::vector<IComponent::Pointer>& collision)            {    collisionComponentList = collision; }
 
@@ -81,6 +75,7 @@ private:
 
     std::vector<IComponent::Pointer> moveComponentList;
     std::vector<IComponent::Pointer> collisionComponentList;
+    std::vector<IComponent::Pointer> terrainComponentList;
     std::vector<MovingCharacter>     movingCharacterList;   //A list of the moving characters that can collide with terrain
 
 };

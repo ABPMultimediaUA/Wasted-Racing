@@ -10,6 +10,7 @@
 //==============================================
 void addMoveComponent(EventData eData); 
 void addCollisionComponent(EventData eData); 
+void addTerrainComponent(EventData eData); 
 void collideRamp(EventData eData);
 void collideBanana(EventData eData);
 void collideBlueShell(EventData eData);
@@ -33,6 +34,7 @@ void PhysicsManager::init() {
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::MoveComponent_Create, addMoveComponent});
     EventManager::getInstance().addListener(EventListener {EventType::CollisionComponent_Create, addCollisionComponent});
+    EventManager::getInstance().addListener(EventListener {EventType::TerrainComponent_Create, addTerrainComponent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, collideItemBox});
     EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, collideBanana});
@@ -369,6 +371,33 @@ void PhysicsManager::checkCollisionShellTerrain(GameObject& obj)
 }
 
 //==============================================================================
+// GETTER FUNCTIONS
+//==============================================================================
+PhysicsManager::MovingCharacter PhysicsManager::getMovingCharacter(uint16_t id) {
+        PhysicsManager::MovingCharacter mChar;
+        for(unsigned int i=0; i < movingCharacterList.size(); ++i){
+            if(movingCharacterList[i].moveComponent->getGameObject().getId() == id){
+                return movingCharacterList[i];
+            }
+        }
+        return mChar; 
+}
+
+std::shared_ptr<TerrainComponent> PhysicsManager::getTerrainFromPos(LAPAL::vec3f pos) {
+
+    for( unsigned int i=0; i < terrainComponentList.size(); ++i){
+        
+        auto terrain = std::dynamic_pointer_cast<TerrainComponent>(terrainComponentList[i]);
+
+        if(LAPAL::checkCircleRectangleCollision(terrain.get()->getTerrain(), pos))
+            return terrain;
+    }
+
+    return nullptr;
+
+}
+
+//==============================================================================
 // COMPONENT CREATOR FUNCTIONS
 //==============================================================================
 
@@ -466,6 +495,11 @@ void addMoveComponent(EventData data) {
 
 void addCollisionComponent(EventData data) {
     PhysicsManager::getInstance().getCollisionComponentList().push_back(data.Component);
+    data.Component.get()->init();
+}
+
+void addTerrainComponent(EventData data) {
+    PhysicsManager::getInstance().getTerrainComponentList().push_back(data.Component);
     data.Component.get()->init();
 }
 

@@ -180,24 +180,29 @@ void addObjects(){
     //===============================================================
     loadMap();
 
-    auto terrainCMP = ObjectManager::getInstance().getObject((uint16_t) 67).get()->getComponent<TerrainComponent>();
-    auto terrCMP = terrainCMP.get()->getTerrain();
+
+    
 
     id = 25000;
-    transform.position = glm::vec3(-35,10, -20);
+    transform.position = glm::vec3(-35,0, -20);
+
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, terrCMP, terrainCMP);
+    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     //===============================================================
     // ADD AI 
     //===============================================================
 
     id = 25001;
-    transform.position = glm::vec3(-35,10,0);
+    transform.position = glm::vec3(-35,0,0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, terrCMP, terrainCMP);
+    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     //===============================================================
     // Update to distribute all creation events
