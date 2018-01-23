@@ -157,6 +157,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
+    mData.player = 0;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "Link.obj");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 6, true, CollisionComponent::Type::Default);
@@ -200,6 +201,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
+    mData.player = 1;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "Link.obj");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 6, true, CollisionComponent::Type::Default);
@@ -243,6 +245,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
+    mData.player = 2;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "Link.obj");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 6, true, CollisionComponent::Type::Default);
@@ -286,6 +289,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
+    mData.player = 3;
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "Link.obj");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 6, true, CollisionComponent::Type::Default);

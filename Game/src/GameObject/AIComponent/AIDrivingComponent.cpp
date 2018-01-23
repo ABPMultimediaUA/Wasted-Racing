@@ -3,6 +3,8 @@
 #include "../../GameManager/WaypointManager.h"
 #include <memory>
 #include <iostream>
+#include <rapidxml/rapidxml.hpp>
+#include <fstream>
 
 //Initilizer
 void AIDrivingComponent::init() {
@@ -555,7 +557,7 @@ void AIDrivingComponent::centroidT2(float* cx, float* cy, float* area, float h, 
 
 void AIDrivingComponent::readValues()
 {
-    /*using namespace rapidxml;
+    using namespace rapidxml;
 
     xml_document<> doc;
     xml_node<> * root_node;
@@ -574,24 +576,85 @@ void AIDrivingComponent::readValues()
     // Iterate over the gameObjects, reading them
     for (xml_node<> * player = root_node; player; player = player->next_sibling()) {
 		
-		//////////////////////
-        //	Waypoint Values	//
-		//////////////////////
-		
-		//Left
-        wp_left_min = std::stof(player->first_attribute("wp_left_min")->value());
-        wp_left_c = std::stof(player->first_attribute("wp_left_c")->value());
-        wp_left_max = std::stof(player->first_attribute("wp_left_max")->value());
+		if(std::stoi(player->first_attribute("name")->value()) == 
+			getGameObject().getComponent<MoveComponent>().get()->getMovemententData().player){
 
-		//Center
-        wp_center_min = std::stof(player->first_attribute("wp_center_min")->value());
-        wp_center_c = std::stof(player->first_attribute("wp_center_c")->value());
-        wp_center_max = std::stof(player->first_attribute("wp_center_max")->value());
+			//Read Waypoint Data
+			xml_node<> * waypoint = player->first_node("waypoint");
 
-		//Right
-        wp_right_min = std::stof(player->first_attribute("wp_right_min")->value());
-        wp_right_c = std::stof(player->first_attribute("wp_right_c")->value());
-        wp_right_max = std::stof(player->first_attribute("wp_right_max")->value());
+			wp_left_min 	= std::stof(waypoint->first_node("left")->first_attribute("wp_left_min")->value());
+			wp_left_c   	= std::stof(waypoint->first_node("left")->first_attribute("wp_left_c")->value());
+			wp_left_max 	= std::stof(waypoint->first_node("left")->first_attribute("wp_left_max")->value());
+
+			wp_center_min 	= std::stof(waypoint->first_node("center")->first_attribute("wp_center_min")->value());
+			wp_center_c   	= std::stof(waypoint->first_node("center")->first_attribute("wp_center_c")->value());
+			wp_center_max 	= std::stof(waypoint->first_node("center")->first_attribute("wp_center_max")->value());
+
+			wp_right_min 	= std::stof(waypoint->first_node("right")->first_attribute("wp_right_min")->value());
+			wp_right_c   	= std::stof(waypoint->first_node("right")->first_attribute("wp_right_c")->value());
+			wp_right_max 	= std::stof(waypoint->first_node("right")->first_attribute("wp_right_max")->value());
+
+			//Read Obstacle Data
+			xml_node<> * obstacle = player->first_node("obstacle");
+
+			obs_left_min 	= std::stof(obstacle->first_node("left")->first_attribute("obs_left_min")->value());
+			obs_left_c   	= std::stof(obstacle->first_node("left")->first_attribute("obs_left_c")->value());
+			obs_left_max 	= std::stof(obstacle->first_node("left")->first_attribute("obs_left_max")->value());
+
+			obs_center_min 	= std::stof(obstacle->first_node("center")->first_attribute("obs_center_min")->value());
+			obs_center_c   	= std::stof(obstacle->first_node("center")->first_attribute("obs_center_c")->value());
+			obs_center_max 	= std::stof(obstacle->first_node("center")->first_attribute("obs_center_max")->value());
+
+			obs_right_min 	= std::stof(obstacle->first_node("right")->first_attribute("obs_right_min")->value());
+			obs_right_c   	= std::stof(obstacle->first_node("right")->first_attribute("obs_right_c")->value());
+			obs_right_max 	= std::stof(obstacle->first_node("right")->first_attribute("obs_right_max")->value());
+
+			//Read Box Data
+			xml_node<> * box = player->first_node("box");
+
+			box_left_min 	= std::stof(box->first_node("left")->first_attribute("box_left_min")->value());
+			box_left_c   	= std::stof(box->first_node("left")->first_attribute("box_left_c")->value());
+			box_left_max 	= std::stof(box->first_node("left")->first_attribute("box_left_max")->value());
+
+			box_center_min 	= std::stof(box->first_node("center")->first_attribute("box_center_min")->value());
+			box_center_c   	= std::stof(box->first_node("center")->first_attribute("box_center_c")->value());
+			box_center_max 	= std::stof(box->first_node("center")->first_attribute("box_center_max")->value());
+
+			box_right_min 	= std::stof(box->first_node("right")->first_attribute("box_right_min")->value());
+			box_right_c   	= std::stof(box->first_node("right")->first_attribute("box_right_c")->value());
+			box_right_max 	= std::stof(box->first_node("right")->first_attribute("box_right_max")->value());
+
+			//Read Ramp Data
+			xml_node<> * ramp = player->first_node("ramp");
+
+			rmp_left_min 	= std::stof(ramp->first_node("left")->first_attribute("rmp_left_min")->value());
+			rmp_left_c   	= std::stof(ramp->first_node("left")->first_attribute("rmp_left_c")->value());
+			rmp_left_max 	= std::stof(ramp->first_node("left")->first_attribute("rmp_left_max")->value());
+
+			rmp_center_min 	= std::stof(ramp->first_node("center")->first_attribute("rmp_center_min")->value());
+			rmp_center_c   	= std::stof(ramp->first_node("center")->first_attribute("rmp_center_c")->value());
+			rmp_center_max 	= std::stof(ramp->first_node("center")->first_attribute("rmp_center_max")->value());
+
+			rmp_right_min 	= std::stof(ramp->first_node("right")->first_attribute("rmp_right_min")->value());
+			rmp_right_c   	= std::stof(ramp->first_node("right")->first_attribute("rmp_right_c")->value());
+			rmp_right_max 	= std::stof(ramp->first_node("right")->first_attribute("rmp_right_max")->value());
+
+			//Read Walls Data
+			xml_node<> * walls = player->first_node("walls");
+
+			wls_left_min 	= std::stof(walls->first_node("left")->first_attribute("wls_left_min")->value());
+			wls_left_c   	= std::stof(walls->first_node("left")->first_attribute("wls_left_c")->value());
+			wls_left_max 	= std::stof(walls->first_node("left")->first_attribute("wls_left_max")->value());
+
+			wls_center_min 	= std::stof(walls->first_node("center")->first_attribute("wls_center_min")->value());
+			wls_center_c   	= std::stof(walls->first_node("center")->first_attribute("wls_center_c")->value());
+			wls_center_max 	= std::stof(walls->first_node("center")->first_attribute("wls_center_max")->value());
+
+			wls_right_min 	= std::stof(walls->first_node("right")->first_attribute("wls_right_min")->value());
+			wls_right_c   	= std::stof(walls->first_node("right")->first_attribute("wls_right_c")->value());
+			wls_right_max 	= std::stof(walls->first_node("right")->first_attribute("wls_right_max")->value());
+
 		
-    }*/
+		}
+    }
 }
