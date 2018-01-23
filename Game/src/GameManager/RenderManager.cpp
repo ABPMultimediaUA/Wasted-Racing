@@ -432,8 +432,6 @@ void RenderManager::createLinesObjects()
         auto seenObjects = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getSeenObjects();
         float pi = 3.14159265358979323846;
 
-        auto rot = AIDebugPoint[AIDebug].getTransformData().rotation;
-
         //Create Lines Objects
         for(unsigned int i = 0; i < seenObjects.size(); i++)
         {
