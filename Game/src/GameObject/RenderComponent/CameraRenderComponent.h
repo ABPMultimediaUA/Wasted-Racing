@@ -15,6 +15,7 @@ public:
 		oldDistance = distance;
 		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
 		count = 0;
+		spinDir = 1;
 	}
 
 	//Destructor
@@ -48,5 +49,6 @@ private:
 	float distance;
 	float oldDistance;
 	int count;
+	int spinDir;
 
 };

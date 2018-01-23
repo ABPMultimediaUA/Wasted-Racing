@@ -14,7 +14,7 @@ void CameraRenderComponent::init() {
 void CameraRenderComponent::update(float dTime) {
 
     //Camera velocity
-    const float camVel = 15;
+    const float camVel = 30;
 
     //Set oldDistance to currentDistance
     oldDistance = distance;
@@ -30,8 +30,13 @@ void CameraRenderComponent::update(float dTime) {
     auto move = getGameObject().getComponent<MoveComponent>().get()->getMovemententData();
     float radius = getGameObject().getComponent<CollisionComponent>().get()->getRadius();
 
+    if(move.spin < 0)
+        spinDir = 1;
+    else if (move.spin > 0)
+        spinDir = -1;
+
     //Get next camera position
-    angleY += move.spin;
+    angleY += move.max_spin * 5 * spinDir;
     
     LAPAL::vec3f nextPlayerPos = LAPAL::vec3f( pos + move.velocity / move.vel * radius);
     if(move.vel == 0)
@@ -94,7 +99,7 @@ void CameraRenderComponent::update(float dTime) {
     ++count;
 
     if(count > 5 && distance < 30)
-        distance += camVel * dTime;
+        distance += camVel * dTime / 2;
 
     if (distance < 5)
         distance = 5;
