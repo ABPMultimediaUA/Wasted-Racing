@@ -40,11 +40,11 @@ void Game::init() {
 
     //First we initialize renderManager, who creates a device and passes this reference to the inputManager
     renderManager = &RenderManager::getInstance();
-    renderManager->init(Game::getInstance().getRenderEngine());
+    renderManager->init(0);
 
     //Once we've initialized the renderManager, we can do the same with our inputManager
     inputManager = &InputManager::getInstance();
-    inputManager->init(Game::getInstance().getInputEngine());
+    inputManager->init(0);
 
     //Initialize object manager
     objectManager = &ObjectManager::getInstance();
@@ -133,7 +133,7 @@ void Game::close() {
 //====================================================
 void Game::Run() {
     //Initialize game
-    init();
+   init();
     
     //Initialize timer
     auto lastTime = std::chrono::high_resolution_clock::now();
@@ -147,13 +147,18 @@ void Game::Run() {
         std::chrono::duration<double> elapsed = currTime - lastTime;
         lastTime = currTime;
         accumulatedTime += (float)elapsed.count();
-        //Update the game once every maxTime
-        Game::update(accumulatedTime);
+
+        if(accumulatedTime > 1.0f/30.0f){
+            //Update the game once every maxTime
+            update(accumulatedTime);
+            accumulatedTime = 0.0f;
+        }
+
         //Always draw the game
-        Game::draw();
+        draw();
     }
 
-    Game::close();
+    close();
 }
 
 
