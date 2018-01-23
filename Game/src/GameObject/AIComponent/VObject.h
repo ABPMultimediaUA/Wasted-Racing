@@ -19,7 +19,7 @@ class VObject{
     private:
 
         glm::vec3 position;
-        float a, b, radius;
+        float a, b, radius, length;
         int type;
 
     public:
@@ -29,7 +29,7 @@ class VObject{
 
         //Constructors
         VObject();
-        VObject(glm::vec3 p, float x, float y, float r, int t);
+        VObject(glm::vec3 p, float x, float y, float r, int t, float l);
 
         //Destructor
         ~VObject();
@@ -39,6 +39,7 @@ class VObject{
         float getA()                {   return a;           };
         float getB()                {   return b;           };
         float getRadius()           {   return radius;      };
+        float getLength()           {   return length;      };
         int getType()               {   return type;        };
 
         //Setters
@@ -46,6 +47,7 @@ class VObject{
         void setA(float x)              {   a = x;          };
         void setB(float y)              {   b = y;          };
         void setRadius(float r)         {   radius = r;     };
+        void setLength(float l)         {   length = l;     };
         void setType(int t)             {   type = t;       };
 
         //Methods

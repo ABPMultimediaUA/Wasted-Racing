@@ -91,5 +91,9 @@ private:
     GameObject::Pointer visibilityArea;
     GameObject::Pointer visionTriangle;
     std::vector<GameObject::Pointer> linesObjects;
+    float moveSeen = 0;
+    float maxMoveSeen = 20.0;
+    float moveNextPos = 0;
+    float maxMoveNextPos = 30.0;
 
 };

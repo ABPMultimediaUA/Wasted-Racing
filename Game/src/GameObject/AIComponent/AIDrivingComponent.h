@@ -49,8 +49,36 @@ class AIDrivingComponent : public IComponent{
         //Returns in Cx and Cy. and the area of the trapezoid's X,Y positions of its centroid, given the height h
         static void centroidT2(float* cx, float* cy, float* area, float h, float limit1, float limit2, float limit3, float limit4);
     
+        //Read AI Values
+        void readValues();
+
         //setters
     
     private:
+
+    //Waypoints Values
+    float wp_left_min   = 0,        wp_left_c   = 0,        wp_left_max     = 0;
+    float wp_center_min = 0,        wp_center_c = 0,        wp_center_max   = 0;
+    float wp_right_min  = 0,        wp_right_c  = 0,        wp_right_max    = 0;
+
+    //Obstacles Values
+    float obs_left_min   = 0,        obs_left_c   = 0,        obs_left_max     = 0;
+    float obs_center_min = 0,        obs_center_c = 0,        obs_center_max   = 0;
+    float obs_right_min  = 0,        obs_right_c  = 0,        obs_right_max    = 0;
+
+    //Item Box Values
+    float box_left_min   = 0,        box_left_c   = 0,        box_left_max     = 0;
+    float box_center_min = 0,        box_center_c = 0,        box_center_max   = 0;
+    float box_right_min  = 0,        box_right_c  = 0,        box_right_max    = 0;
+
+    //Ramp Values
+    float rmp_left_min   = 0,        rmp_left_c   = 0,        rmp_left_max     = 0;
+    float rmp_center_min = 0,        rmp_center_c = 0,        rmp_center_max   = 0;
+    float rmp_right_min  = 0,        rmp_right_c  = 0,        rmp_right_max    = 0;
+
+    //Walls Values
+    float wls_left_min   = 0,        wls_left_c   = 0,        wls_left_max     = 0;
+    float wls_center_min = 0,        wls_center_c = 0,        wls_center_max   = 0;
+    float wls_right_min  = 0,        wls_right_c  = 0,        wls_right_max    = 0;
         
 };

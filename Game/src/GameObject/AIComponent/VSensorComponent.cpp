@@ -56,6 +56,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
         float distY = (objects[i].getTransformData().position.y - myPos.y) * (objects[i].getTransformData().position.y - myPos.y);
 
         float rad = objects[i].getComponent<CollisionComponent>()->getRadius();
+        float length = objects[i].getComponent<CollisionComponent>()->getRadius();
 
         if(rad != -1.f)
         {
@@ -71,7 +72,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
             {
                 if(objects[i].getComponent<CollisionComponent>()->getType() == CollisionComponent::Type::Default)
                 {
-                    pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 0); //generate VObject with the data
+                    pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 0, length); //generate VObject with the data
                     seenObjects.push_back(pvo);                                                     //Add to seen objects
                 }
                 else if(objects[i].getComponent<CollisionComponent>()->getType() == CollisionComponent::Type::ItemBox)
@@ -79,7 +80,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
                     if((distanceBox == -1 || distance < distanceBox) && objects[i].getComponent<ItemBoxComponent>()->getActive() == 1)
                     {
                         distanceBox = distance;
-                        box = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 1); //generate VObject with the data
+                        box = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 1, length); //generate VObject with the data
                     } 
                 }
                 else if(objects[i].getComponent<CollisionComponent>()->getType() == CollisionComponent::Type::Ramp)
@@ -87,7 +88,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
                     if(distanceRamp == -1 || distance < distanceRamp)
                     {
                         distanceRamp = distance;
-                        ramp = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 2); //generate VObject with the data
+                        ramp = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 2, length); //generate VObject with the data
                     } 
                 }
             }
