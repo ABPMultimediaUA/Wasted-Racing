@@ -546,3 +546,52 @@ void AIDrivingComponent::centroidT2(float* cx, float* cy, float* area, float h, 
 		*area = h * (a + b)*0.5f;
 	}
 }
+
+
+
+//==============================================
+// READ AI VALUES
+//==============================================
+
+void AIDrivingComponent::readValues()
+{
+    /*using namespace rapidxml;
+
+    xml_document<> doc;
+    xml_node<> * root_node;
+
+    //Read the file and put it into a char array
+    std::ifstream theFile("media/xml/AIValues.xml");
+	std::string buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
+	buffer.push_back('\0');
+
+	// Parse the buffer using the xml file parsing library into doc 
+	doc.parse<0>(&buffer[0]);
+
+    // Find our root node
+	root_node = doc.first_node("player");
+
+    // Iterate over the gameObjects, reading them
+    for (xml_node<> * player = root_node; player; player = player->next_sibling()) {
+		
+		//////////////////////
+        //	Waypoint Values	//
+		//////////////////////
+		
+		//Left
+        wp_left_min = std::stof(player->first_attribute("wp_left_min")->value());
+        wp_left_c = std::stof(player->first_attribute("wp_left_c")->value());
+        wp_left_max = std::stof(player->first_attribute("wp_left_max")->value());
+
+		//Center
+        wp_center_min = std::stof(player->first_attribute("wp_center_min")->value());
+        wp_center_c = std::stof(player->first_attribute("wp_center_c")->value());
+        wp_center_max = std::stof(player->first_attribute("wp_center_max")->value());
+
+		//Right
+        wp_right_min = std::stof(player->first_attribute("wp_right_min")->value());
+        wp_right_c = std::stof(player->first_attribute("wp_right_c")->value());
+        wp_right_max = std::stof(player->first_attribute("wp_right_max")->value());
+		
+    }*/
+}
