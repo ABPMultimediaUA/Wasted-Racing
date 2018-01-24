@@ -4,6 +4,7 @@
 #include "../../GameManager/WaypointManager.h"
 #include "../PhysicsComponent/MoveComponent.h"
 #include "../ScoreComponent.h"
+#include "../StartLineComponent.h"
 #include "AIDrivingComponent.h"
 
 class PathPlanningComponent : public IComponent{

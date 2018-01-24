@@ -6,7 +6,7 @@ void objectDeleteScore(EventData);
 
 ScoreManager::ScoreManager()
 {
-
+    maxLaps = 3;
 }
 
 ScoreManager::~ScoreManager()
@@ -38,6 +38,17 @@ IComponent::Pointer ScoreManager::createScoreComponent(GameObject& newGameObject
     newGameObject.addComponent(component);
 
     players.push_back(component);
+
+    return component;
+}
+
+IComponent::Pointer ScoreManager::createStartLineComponent(GameObject& newGameObject){
+
+    StartLineComponent::Pointer component = std::make_shared<StartLineComponent>(newGameObject);
+
+    newGameObject.addComponent(component);
+
+    startLines.push_back(component);
 
     return component;
 }

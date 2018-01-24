@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../GameObject/ScoreComponent.h"
+#include "../GameObject/StartLineComponent.h"
 #include "ScoreManager.h"
 #include <vector>
 #include <memory>
@@ -29,6 +30,8 @@ class ScoreManager {
         //Component creator
         IComponent::Pointer createScoreComponent(GameObject& newGameObject);
 
+        IComponent::Pointer createStartLineComponent(GameObject& newGameObject);
+
 
         //Getters
         std::vector<ScoreComponent::Pointer>& getPlayers() {return players;}
@@ -40,5 +43,6 @@ class ScoreManager {
 
     private:
         std::vector<ScoreComponent::Pointer> players;
+        std::vector<StartLineComponent::Pointer> startLines;
         int maxLaps;
 };

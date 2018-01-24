@@ -38,11 +38,14 @@ void RenderIrrlicht::updateWindow() {
     updateCamera();
     int oM = ObjectManager::getInstance().getObject(50).get()->getComponent<ScoreComponent>().get()->getPosition();
     int oL = ObjectManager::getInstance().getObject(50).get()->getComponent<ScoreComponent>().get()->getLap();
+    int ML = ScoreManager::getInstance().getMaxLaps();
     int iT = ObjectManager::getInstance().getObject(50).get()->getComponent<ItemHolderComponent>().get()->getItemType();
     irr::core::stringw stringLap = L"  LAP:";
     irr::core::stringw stringItm = L"  ITEM:";
     irr::core::stringw stringPos = L"  POSITION:";
     stringLap += oL;
+    stringLap += " / ";
+    stringLap += ML;
     switch(iT)
     {
         case -1: stringItm+="EMPTY";
@@ -72,7 +75,7 @@ void RenderIrrlicht::closeWindow() {
 
 void RenderIrrlicht::renderDraw() {
 
-    videoDriver->beginScene(true, true, irr::video::SColor(255,113,113,133));
+    videoDriver->beginScene(true, true, irr::video::SColor(255,150,150,255));
     sceneManager->drawAll();
     sceneManager->getGUIEnvironment()->drawAll();
     videoDriver->endScene();
@@ -101,7 +104,7 @@ void RenderIrrlicht::addLight() {
     l.Type = irr::video::E_LIGHT_TYPE::ELT_DIRECTIONAL;
     auto node = sceneManager->addLightSceneNode(0, irr::core::vector3df(0,0,0), irr::video::SColorf(1.0,1.0,1.0), 500); 
     node->setPosition(irr::core::vector3df(0,150,0));
-    sceneManager->setAmbientLight(irr::video::SColorf(0.2,0.2,0.2,1));
+    sceneManager->setAmbientLight(irr::video::SColorf(0.8,0.8,0.8,1));
 }
 
 void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
@@ -174,8 +177,15 @@ void RenderIrrlicht::addObject(IComponent::Pointer ptr) {
             break;
             case ObjectRenderComponent::Shape::Road: {
                 //auto plane = sceneManager->getMesh("media/mesh/circuit.3ds");
-                auto plane = sceneManager->getMesh("media/mesh/circuit.obj");
+                auto plane = sceneManager->getMesh("media/mesh/course/course.obj");
                 node = sceneManager->addMeshSceneNode(plane);
+            }
+            break;
+            case ObjectRenderComponent::Shape::StarLine: {
+                auto plane = geometryCreator->createPlaneMesh(irr::core::dimension2d<irr::f32>(1,1));
+                node = sceneManager->addMeshSceneNode(plane);
+                auto var = videoDriver->getTexture("media/img/starLine.png");
+                node->setMaterialTexture(0, var);
             }
             break;
             default:
