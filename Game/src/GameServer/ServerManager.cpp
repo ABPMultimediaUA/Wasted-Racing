@@ -54,7 +54,7 @@ void ServerManager::startGame()
 			{
 				case 0:
 					x=-35;
-					y=0;
+					y=5;
 					z=-20;
 					break;
 				case 1:
