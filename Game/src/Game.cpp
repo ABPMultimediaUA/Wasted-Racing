@@ -203,7 +203,7 @@ void addObjects(){
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
+/*
     id = 25002;
     transform.position = glm::vec3(-35,0,0);
     transform.rotation = glm::vec3(0,90,0);
@@ -243,7 +243,7 @@ void addObjects(){
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
+*/
     //===============================================================
     // Update to distribute all creation events
     //===============================================================

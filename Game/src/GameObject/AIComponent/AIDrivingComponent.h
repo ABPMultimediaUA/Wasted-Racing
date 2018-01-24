@@ -26,7 +26,7 @@ class AIDrivingComponent : public IComponent{
         void checkList();
 
         //Makes NPC turn a fixated angle based on data
-        static float girar(GameObject& myPos, std::vector<VObject::Pointer> array, std::vector<VObject::Pointer> walls, glm::vec3 waypoint, float a, float b);
+        float girar(GameObject& myPos, std::vector<VObject::Pointer> array, std::vector<VObject::Pointer> walls, glm::vec3 waypoint, float a, float b);
         
         //Makes NPC accelerate or brake based on data
         static float acelerar_frenar(GameObject& myPos, std::vector<VObject::Pointer>, float direction, float speed, float a_w, float b_w);
@@ -80,5 +80,27 @@ class AIDrivingComponent : public IComponent{
     float wls_left_min   = 0,        wls_left_c   = 0,        wls_left_max     = 0;
     float wls_center_min = 0,        wls_center_c = 0,        wls_center_max   = 0;
     float wls_right_min  = 0,        wls_right_c  = 0,        wls_right_max    = 0;
+
+    //Ratio1 Values
+    float wp_left_r1     = 0,        wp_right_r1      = 0;
+    float box_left_r1    = 0,        box_right_r1     = 0;
+
+    //Ratio2 Values
+    float wp_left_r2     = 0,        wp_right_r2      = 0;
+    float rmp_left_r2    = 0,        rmp_right_r2     = 0;
+
+    //Ratio3 Values
+    float wp_left_r3     = 0,        wp_right_r3      = 0;
+    float box_left_r3    = 0,        box_right_r3     = 0;
+    float rmp_left_r3    = 0,        rmp_right_r3     = 0;
+
+    //CentroidT1 Values
+    float ctd_left_r1     = 0,      ctd_center_r1   = 0,      ctd_right_r1  = 0;
+
+    //CentroidT2 Values
+    float ctd_left_r2     = 0,      ctd_center_r2   = 0,      ctd_right_r2  = 0;
+
+    //CentroidT3 Values
+    float ctd_left_r3     = 0,      ctd_center_r3   = 0,      ctd_right_r3  = 0;
         
 };

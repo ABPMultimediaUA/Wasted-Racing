@@ -241,6 +241,7 @@ void RenderManager::updateAIDebug()
 
         glm::vec3 point;
         GameObject::TransformationData transform;
+        auto rot = AIDebugPoint[AIDebug].getTransformData().rotation;
 
         //Update next point marker
         point = AIDebugPoint[AIDebug].getComponent<PathPlanningComponent>()->getNextPoint();
@@ -266,8 +267,12 @@ void RenderManager::updateAIDebug()
         //Update Collision Cylinder
         point = AIDebugPoint[AIDebug].getTransformData().position;
 
+        auto length = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getLength();
+
+        point.y = point.y-length/2;
+
         transform.position = point;
-        transform.rotation = glm::vec3(0, 0, 0);
+        transform.rotation = glm::vec3(rot.x, 0, rot.z);
         transform.scale    = glm::vec3(1, 1, 1);
 
         collisionCylinder->setTransformData(transform);
@@ -276,10 +281,9 @@ void RenderManager::updateAIDebug()
         if(AIDebug != 0)
         {
 
-            auto rot = AIDebugPoint[AIDebug].getTransformData().rotation;
-            auto rad = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
-            auto ang = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getAngleVision();
-            auto length = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxLength();
+            auto radV = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
+            auto angV = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getAngleVision();
+            auto lengthV = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxLength();
             auto seenObjects = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getSeenObjects();
 
             //Update Visibility Area
@@ -299,7 +303,7 @@ void RenderManager::updateAIDebug()
             transform.position = glm::vec3(point.x+cos(rot.y),
                                     point.y, point.z-sin(rot.y));
             transform.rotation = glm::vec3(rot.x, rot.y, rot.z);
-            transform.scale    = glm::vec3(rad*cos(ang), length, 2*rad*sin(ang));
+            transform.scale    = glm::vec3(radV*cos(angV), lengthV, 2*radV*sin(angV));
 
             visionTriangle->setTransformData(transform);
             RenderManager::getInstance().getRenderFacade()->updateObjectTransform(visionTriangle->getId(), transform);
@@ -321,12 +325,13 @@ void RenderManager::createRenderNPC()
     GameObject::TransformationData transform;
     float rad;
     float length;
+    auto rot = AIDebugPoint[AIDebug].getTransformData().rotation;
     //float pi = 3.14159265358979323846;
 
     if(lap == false)
     {
         //Create marker
-        id = 5000;
+        id = 30000;
         point = AIDebugPoint[AIDebug].getComponent<PathPlanningComponent>()->getNextPoint();
 
         transform.position = point;
@@ -338,31 +343,33 @@ void RenderManager::createRenderNPC()
         RenderManager::getInstance().createObjectRenderComponent(*marker.get(), ObjectRenderComponent::Shape::Arrow, "blackWithTransparency.png");
 
         //Create Collision Cylinder
-        id = 5001;
+        id = 30001;
         point = AIDebugPoint[AIDebug].getTransformData().position;
-
-        transform.position = point;
-        transform.rotation = glm::vec3(0, 0, 0);
-        transform.scale    = glm::vec3(1, 1, 1);
-        collisionCylinder = ObjectManager::getInstance().createObject(id, transform);
 
         rad = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getRadius();
         length = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getLength();
+
+        point.y = point.y-length/2;
+
+        transform.position = point;
+        transform.rotation = glm::vec3(rot.x, 0, rot.z);
+        transform.scale    = glm::vec3(1, 1, 1);
+        collisionCylinder = ObjectManager::getInstance().createObject(id, transform);
+
 
         RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, length, 10.f, true);
     }
     else if(lap == true && AIDebug != 0)
     {
 
-        auto rot = AIDebugPoint[AIDebug].getTransformData().rotation;
-        auto ang = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getAngleVision();
+        auto angV = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getAngleVision();
         rad = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxDistance();
         length = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getMaxLength();
 
         auto seenObjects = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getSeenObjects();
 
         //Create Visibility Area
-        id = 5002;
+        id = 30002;
         point = AIDebugPoint[AIDebug].getTransformData().position;
 
         transform.position = point;
@@ -375,13 +382,13 @@ void RenderManager::createRenderNPC()
         RenderManager::getInstance().createObjectRenderComponent(*visibilityArea.get(), ObjectRenderComponent::Shape::Cylinder, "redWithTransparency.png", rad, length, 10.f, true);
         
         //Create Vision Triangle
-        id = 5003;
+        id = 30003;
         point = AIDebugPoint[AIDebug].getTransformData().position;
 
         transform.position = glm::vec3(point.x+cos(rot.y),
                                 point.y, point.z-sin(rot.y));
         transform.rotation = glm::vec3(rot.x, rot.y, rot.z);
-        transform.scale    = glm::vec3(2*rad*sin(ang), length, 2*rad*cos(ang));
+        transform.scale    = glm::vec3(2*rad*sin(angV), length, 2*rad*cos(angV));
         visionTriangle = ObjectManager::getInstance().createObject(id, transform);
 
         RenderManager::getInstance().createObjectRenderComponent(*visionTriangle.get(), ObjectRenderComponent::Shape::Portion, "blackWithTransparency.png");
@@ -445,7 +452,7 @@ void RenderManager::createLinesObjects()
         //Create Lines Objects
         for(unsigned int i = 0; i < seenObjects.size(); i++)
         {
-            id = 5100+i;
+            id = 30100+i;
 
             auto position = seenObjects[i]->getPosition();
 
