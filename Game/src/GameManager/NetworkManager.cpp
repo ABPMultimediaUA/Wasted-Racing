@@ -1,5 +1,10 @@
 #include "NetworkManager.h"
 
+NetworkManager& NetworkManager::getInstance() {
+    static NetworkManager instance;
+    return instance;
+}
+
 void NetworkManager::init() {
     //Get instance of the peer
     peer = RakNet::RakPeerInterface::GetInstance();
@@ -22,7 +27,7 @@ void NetworkManager::initLobby(){
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("127.0.0.1", 39017, 0, 0);
+    result = peer->Connect("192.168.1.32", 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {
