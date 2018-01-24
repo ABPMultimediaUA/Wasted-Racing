@@ -17,6 +17,11 @@ void MultiMatchState::init() {
 }
 
 void MultiMatchState::update(float &accumulatedTime) {
+
+    //No capation
+    networkManager->update();
+    renderManager->update();
+    
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
         //Update managers
@@ -36,13 +41,10 @@ void MultiMatchState::updateManagers(float dTime){
     //Input manager has to be the first to be updated
     inputManager->update();
 
-    networkManager->update();
-
     physicsManager->update(dTime);
 
     //aiManager->update();
 
-    renderManager->update();
 
     waypointManager->update(dTime);
 
