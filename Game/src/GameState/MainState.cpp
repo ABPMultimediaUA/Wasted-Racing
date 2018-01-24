@@ -1,5 +1,7 @@
 #include "MainState.h"
 
+
+
 void MainState::init() {
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
@@ -13,7 +15,6 @@ void MainState::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
-
 }
 
 void MainState::update(float &accumulatedTime) {
@@ -26,8 +27,8 @@ void MainState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
     //Always interpolate
-    //physicsManager->interpolate(accumulatedTime, loopTime);
-    //renderManager->getRenderFacade()->updateCamera();
+    physicsManager->interpolate(accumulatedTime, loopTime);
+    renderManager->getRenderFacade()->updateCamera();
 
 }
 
@@ -35,13 +36,11 @@ void MainState::updateManagers(float dTime){
     //Input manager has to be the first to be updated
     inputManager->update();
 
-    //physicsManager->update(dTime);
+    physicsManager->update(dTime);
 
-    //aiManager->update();
+    aiManager->update();
 
-    /*renderManager->update();
-
-    
+    renderManager->update();
 
     waypointManager->update(dTime);
 
@@ -52,8 +51,6 @@ void MainState::updateManagers(float dTime){
     scoreManager->update();
 
     audioManager->update();
-    
-    */
 
     //Event manager has to be the last to be updated
     eventManager->update();
@@ -66,3 +63,4 @@ void MainState::draw() {
 void MainState::close() {
 
 }
+

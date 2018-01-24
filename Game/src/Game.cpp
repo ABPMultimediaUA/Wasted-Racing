@@ -20,58 +20,42 @@ void Game::init() {
     setStay(true);
 
     //Initial state
-    //setState(&IntroState::getInstance());
+    setState(&IntroState::getInstance());
 
     //Set engine to default
     setRenderEngine(0);
     setInputEngine(0);
 
+    audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
+    eventManager    = &EventManager::getInstance();     //Initilize event manager
+    renderManager   = &RenderManager::getInstance();    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
+    inputManager    = &InputManager::getInstance();     //Once we've initialized the renderManager, we can do the same with our inputManager
+    objectManager   = &ObjectManager::getInstance();    //Initialize object manager
+    physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
+    waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager 
+    aiManager       = &AIManager::getInstance();        //Initialize AI manager
+    sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
+    itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
+    scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
+
     //================================================================
     //INITIALIZE ALL MANAGERS
     //================================================================
-
     //Initialize true audio manager
-    audioManager = &AudioManager::getInstance();
     audioManager->init();
-
-    //Initilize managers
-    eventManager = &EventManager::getInstance();
-    eventManager->init();
-
     //First we initialize renderManager, who creates a device and passes this reference to the inputManager
-    renderManager = &RenderManager::getInstance();
     renderManager->init(0);
 
     //Once we've initialized the renderManager, we can do the same with our inputManager
-    inputManager = &InputManager::getInstance();
     inputManager->init(0);
 
-    //Initialize object manager
-    objectManager = &ObjectManager::getInstance();
+    eventManager->init();
     objectManager->init();
-
-    //Initialize physics manager
-    physicsManager = &PhysicsManager::getInstance();
     physicsManager->init();
-
-    //Initialize Waypoint Manager 
-    waypointManager = &WaypointManager::getInstance();
     waypointManager->init();
-
-    //Initialize AI manager
-    aiManager = &AIManager::getInstance();
     aiManager->init();
-
-    //Initialize Sensor manager
-    sensorManager = &SensorManager::getInstance();
     sensorManager->init();
-
-    //Initialize Sensor manager
-    itemManager = &ItemManager::getInstance();
     itemManager->init();
-
-    //Initialize Score Manager
-    scoreManager = &ScoreManager::getInstance();
     scoreManager->init();
 
     addObjects();
@@ -81,32 +65,14 @@ void Game::init() {
 //  GAME UPDATE
 //====================================================
 void Game::update(float dTime) {
-    inputManager->update();
 
-    physicsManager->update(dTime);
-
-    aiManager->update();
-
-    renderManager->update();
-
-    waypointManager->update(dTime);
-
-    sensorManager->update();
-
-    itemManager->update(dTime);
-    
-    scoreManager->update();
-
-    audioManager->update();
-
-    eventManager->update();
 }
 
 //====================================================
 //  GAME DRAW
 //====================================================
 void Game::draw() {
-    renderManager->draw();
+
 }
 
 //====================================================
@@ -133,7 +99,7 @@ void Game::close() {
 //====================================================
 void Game::Run() {
     //Initialize game
-   init();
+    init();
     
     //Initialize timer
     auto lastTime = std::chrono::high_resolution_clock::now();
@@ -148,14 +114,11 @@ void Game::Run() {
         lastTime = currTime;
         accumulatedTime += (float)elapsed.count();
 
-        if(accumulatedTime > 1.0f/30.0f){
-            //Update the game once every maxTime
-            update(accumulatedTime);
-            accumulatedTime = 0.0f;
-        }
+        //Update the game once every maxTime
+        state->update(accumulatedTime);
 
         //Always draw the game
-        draw();
+        state->draw();
     }
 
     close();
@@ -585,7 +548,7 @@ void addObjects(){
     //===============================================================
     // ADD RAMP COMPONENT
     //===============================================================
-   /* std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 250.0f,2.f,2.0f);
+    std::shared_ptr<IComponent> rampCP = PhysicsManager::getInstance().createRampComponent(*ob9.get(), 250.0f,2.f,2.0f);
 
 
     //===============================================================

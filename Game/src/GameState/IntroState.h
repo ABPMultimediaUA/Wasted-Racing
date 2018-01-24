@@ -45,6 +45,8 @@ private:
     InputManager* inputManager;
     //Event manager
     EventManager* eventManager;
+    //Render manager
+    RenderManager* renderManager;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;

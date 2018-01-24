@@ -11,8 +11,9 @@ void singleplayerActivated(EventData eData);
 
 void IntroState::init() {
     //Bind all managers that are going to be used
-    eventManager = &EventManager::getInstance();
-    inputManager = &InputManager::getInstance();
+    eventManager  = &EventManager::getInstance();
+    inputManager  = &InputManager::getInstance();
+    renderManager = &RenderManager::getInstance();
 
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
@@ -57,7 +58,7 @@ void singleplayerActivated(EventData eData) {
 //------------PROVISIONAL------------
 //-----------------------------------
 //-----------------------------------
-/*void introVideo(){
+void introVideo(){
 	//Play intro video
 	double currentSec = 0;
 
@@ -78,7 +79,7 @@ void singleplayerActivated(EventData eData) {
 
         //double now = (double) ( (int) (currentSec * 1000) ) / 1000.0; //4 decimals
 
-       /* std::string str = std::to_string(currentSec);
+        std::string str = std::to_string(currentSec);
         if(currentSec < 10.0){
             strcat(numbers, "0");
         }
@@ -95,4 +96,4 @@ void singleplayerActivated(EventData eData) {
         //addcurrentTime
         currentSec+=1/60.0;
 	}
-}*/
+}
