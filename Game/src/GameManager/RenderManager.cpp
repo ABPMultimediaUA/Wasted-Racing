@@ -267,10 +267,6 @@ void RenderManager::updateAIDebug()
         //Update Collision Cylinder
         point = AIDebugPoint[AIDebug].getTransformData().position;
 
-        auto length = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getLength();
-
-        point.y = point.y-length/2;
-
         transform.position = point;
         transform.rotation = glm::vec3(rot.x, 0, rot.z);
         transform.scale    = glm::vec3(1, 1, 1);
@@ -348,8 +344,6 @@ void RenderManager::createRenderNPC()
 
         rad = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getRadius();
         length = AIDebugPoint[AIDebug].getComponent<CollisionComponent>()->getLength();
-
-        point.y = point.y-length/2;
 
         transform.position = point;
         transform.rotation = glm::vec3(rot.x, 0, rot.z);
@@ -475,7 +469,6 @@ void RenderManager::createLinesObjects()
             RenderManager::getInstance().createObjectRenderComponent(*obj.get(), ObjectRenderComponent::Shape::Arrow, "redWithTransparency.png");
 
             linesObjects.push_back(obj);  
-            
         }
     }
 }
@@ -497,3 +490,12 @@ void RenderManager::deleteLinesObjects()
     }
 }
 
+
+//==============================================
+// CAMERA DEBUG
+//============================================== 
+
+void RenderManager::renderCameraDebug()
+{
+    std::cout<<"Holita vecinito"<<"\n";
+}

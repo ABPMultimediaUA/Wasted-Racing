@@ -71,6 +71,8 @@ enum EventType {
     Key_Back_Up,
     Key_DebugAI_Down,
     Key_DebugAI_Up,
+    Key_DebugCamera_Down,
+    Key_DebugCamera_Up,
     //GAME: Game related events
     Game_Start,
     Game_Close

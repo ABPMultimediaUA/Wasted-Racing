@@ -53,7 +53,6 @@ public:
     IComponent::Pointer createCameraRenderComponent(GameObject& newGameObject);
     //Create cylinder or cone
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency);
-    
     //Camera component getter and setter
     IComponent::Pointer getCameraComponent() { return cameraComponent; }
     void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
@@ -65,6 +64,9 @@ public:
     void deleteRenderNPC(); 
     void createLinesObjects();
     void deleteLinesObjects();
+
+    //Camera Debug
+    void renderCameraDebug();
     
 private:
 
@@ -83,6 +85,7 @@ private:
     //We store just one camera component, so we can't have more than 1
     IComponent::Pointer cameraComponent;
 
+    //Debug IA
     unsigned int AIDebug = 0;
     bool lap = false;
     std::vector<GameObject> AIDebugPoint;
@@ -95,5 +98,8 @@ private:
     float maxMoveSeen = 20.0;
     float moveNextPos = 0;
     float maxMoveNextPos = 30.0;
+
+    //Debug Camera
+    
 
 };
