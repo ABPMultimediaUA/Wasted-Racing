@@ -38,6 +38,9 @@ class ServerManager{
         //Number of players in the server (actually)
         int nPlayers;
 
+        ///////////////////////////////////////////////////
+        // FUNCTIONS 
+        ///////////////////////////////////////////////////
         //Function provided by RakNet
         unsigned char GetPacketIdentifier(RakNet::Packet *p);
 

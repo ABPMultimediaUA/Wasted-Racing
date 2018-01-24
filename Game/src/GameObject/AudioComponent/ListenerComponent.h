@@ -7,7 +7,7 @@ class ListenerComponent : public IComponent {
 public:
 
     //Constructor
-	ListenerComponent(GameObject& newGameObject) : IComponent(newGameObject) {};
+	ListenerComponent(GameObject& newGameObject) : IComponent(newGameObject) {}
 
 	//Destructor
 	virtual ~ListenerComponent() {};
