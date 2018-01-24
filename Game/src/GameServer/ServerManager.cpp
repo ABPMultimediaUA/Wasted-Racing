@@ -60,7 +60,7 @@ void ServerManager::startGame()
 				case 1:
 					z=-10;
 					break;
-				default;
+				default:
 					break;
 			}
 			//Reset and set the message to create player
