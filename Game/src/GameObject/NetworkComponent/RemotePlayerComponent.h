@@ -23,6 +23,13 @@ class RemotePlayerComponent : public IComponent{
         //Closer
         virtual void close() {};
 
+        //==============================================================
+        // Getters and setters
+        //==============================================================
+        int getServerId(){           return server_id;                    }; 
+        void setServerId(int id){    server_id = id;                      };
+
     private:
+        int server_id=-1;
     
 };

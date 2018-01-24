@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ObjectManager.h"
+#include "PhysicsManager.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include <raknet/RakPeerInterface.h> 
@@ -7,6 +9,7 @@
 #include <raknet/BitStream.h>
 #include "../GameServer/CustomIdentifiers.h"
 #include <iostream>
+#include <memory>
 
 class NetworkManager{
 
@@ -36,8 +39,18 @@ public:
     //Updates the lobby
     void updateLobby();
 
-    //Create remote player
+    //Create remote player component
     IComponent::Pointer createRemotePlayerComponent(GameObject& newGameObject);
+
+    //==============================================================
+    // Create Objects
+    //==============================================================
+
+    //Collocates the player in the map
+    void createPlayer(RakNet::Packet* packet);
+
+    //Creates a remote player in our game
+    void createRemotePlayer(RakNet::Packet* packet);
 
     //==============================================================
     // Getters and setters

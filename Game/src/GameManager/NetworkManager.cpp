@@ -13,6 +13,66 @@ void NetworkManager::init() {
     started = false;
 }
 
+void NetworkManager::createPlayer(RakNet::Packet* packet)
+{
+    int x, y, z;
+    RakNet::BitStream parser(packet->data, packet->length, false);
+    parser.IgnoreBytes(1);
+    //Server ID
+    parser.Read(server_id);
+    //Position
+    parser.Read(x);
+    parser.Read(y);
+    parser.Read(z);
+
+    auto trans = player.get()->getTransformData();
+    trans.position.x = x;
+    trans.position.y = y;
+    trans.position.z = z;
+    player.get()->setTransformData(trans);
+
+}
+
+void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
+{
+    int x, y, z, id;
+    RakNet::BitStream parser(packet->data, packet->length, false);
+    parser.IgnoreBytes(1);
+    parser.Read(id);
+    parser.Read(x);
+    parser.Read(y);
+    parser.Read(z);
+
+    GameObject::TransformationData trans;
+    trans.position.x = x;
+    trans.position.y = y;
+    trans.position.z = z;
+
+    trans.rotation.x = 0;
+    trans.rotation.y = 90;
+    trans.rotation.z = 0;
+
+    trans.scale.x    = 1;
+    trans.scale.y    = 1;
+    trans.scale.z    = 1;
+
+    ObjectManager::getInstance().createPlayer(trans,0, 2, 25001+id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(trans.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(trans.position));
+
+    bool found = false;
+    std::shared_ptr<RemotePlayerComponent> rPlayer;
+    for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
+    {
+        rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
+        if(rPlayer.get()->getServerId() == -1)
+        {
+            found = true;
+            rPlayer.get()->setServerId(id);
+        }
+    }
+}
+
 void NetworkManager::update() {
     RakNet::Packet* packet;
     packet = peer->Receive();
@@ -21,7 +81,10 @@ void NetworkManager::update() {
         switch(packet->data[0])
         {
             case ID_CREATE_PLAYER:
-                std::cout << "Creando player en su posicion" << std::endl;
+                createPlayer(packet);
+                break;
+            case ID_CREATE_REMOTE_PLAYER:
+                createRemotePlayer(packet);
                 break;
             default:
                 std::cout << "ALGO PASO" << std::endl;
