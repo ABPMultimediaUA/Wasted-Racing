@@ -84,6 +84,8 @@ void NetworkManager::broadcastPosition()
     stream.Write(trans.position.y);
     stream.Write(trans.position.z);
 
+    std::cout << "POSITION " << trans.position.x << " " << trans.position.y << " " << trans.position.z << std::endl;
+
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
 
