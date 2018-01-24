@@ -37,6 +37,7 @@ void Game::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
+    networkManager  = &NetworkManager::getInstance();     //Initialize Score Manager
 
     //================================================================
     //INITIALIZE ALL MANAGERS
@@ -56,6 +57,7 @@ void Game::init() {
     sensorManager->init();
     itemManager->init();
     scoreManager->init();
+    networkManager->init();
 
     addObjects();
 }
@@ -77,7 +79,7 @@ void Game::draw() {
 //  GAME CLOSE
 //====================================================
 void Game::close() {
-    //state->close();
+    state->close();
 
     //Close all managers
     physicsManager->close();
@@ -91,6 +93,7 @@ void Game::close() {
     itemManager->close();
     scoreManager->close();
     audioManager->close();
+    networkManager->close();
 }
 
 //====================================================

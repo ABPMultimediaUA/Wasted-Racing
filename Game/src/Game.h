@@ -21,6 +21,7 @@
 #include "GameManager/AudioManager.h"
 #include "GameManager/ScoreManager.h"
 #include "GameManager/ItemManager.h"
+#include "GameManager/NetworkManager.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
 
@@ -112,7 +113,8 @@ private:
     ItemManager* itemManager;
     //Score manager
     ScoreManager* scoreManager;
-
+    //Network manager
+    NetworkManager* networkManager;
 
     //Selected renderEngine
     int renderEngine;
