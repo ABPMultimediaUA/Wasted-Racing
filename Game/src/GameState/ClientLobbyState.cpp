@@ -1,5 +1,6 @@
 #include "ClientLobbyState.h"
 
+
 //Extra functions
 void introVideo();
 
@@ -30,6 +31,7 @@ void ClientLobbyState::update(float &accumulatedTime) {
                 std::cout << "Connection Accepted" << std::endl;
                 stream.Write((unsigned char)ID_GAME_START);
                 peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
+                Game::getInstance().setState(&MultiMatchState::getInstance());
                 break;
             case ID_CONNECTION_ATTEMPT_FAILED:
                 std::cout << "Connection Failed" << std::endl;

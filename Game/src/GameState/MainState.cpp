@@ -1,7 +1,5 @@
 #include "MainState.h"
 
-
-
 void MainState::init() {
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager

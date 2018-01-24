@@ -49,7 +49,6 @@ void Game::init() {
     //Once we've initialized the renderManager, we can do the same with our inputManager
     inputManager->init(0);
 
-    eventManager->init();
     objectManager->init();
     physicsManager->init();
     waypointManager->init();
