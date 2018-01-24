@@ -53,6 +53,16 @@ public:
     void createRemotePlayer(RakNet::Packet* packet);
 
     //==============================================================
+    // Network Communication Functions
+    //==============================================================
+
+    //Broadcasts the player position to the rest of players
+    void broadcastPosition();
+
+    //Receives a remote player position
+    void moveRemotePlayer(RakNet::Packet* packet);
+
+    //==============================================================
     // Getters and setters
     //==============================================================
     std::vector<IComponent::Pointer>& getRemotePlayerComponentList(){    return remotePlayerComponentList;} //Remote player component list getter

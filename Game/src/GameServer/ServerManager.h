@@ -52,4 +52,7 @@ class ServerManager{
         //Function to start the match from the lobby
         void startGame();
 
+        //Broadcast one players position
+        void broadcastPosition(RakNet::Packet* packet);
+
 };
