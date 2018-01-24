@@ -5,6 +5,9 @@
 #include "../Game.h"
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
+#include <raknet/BitStream.h>
+#include "../GameServer/CustomIdentifiers.h"
+#include <iostream>
 
 class ClientLobbyState : public IGameState {
 

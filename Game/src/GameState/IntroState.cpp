@@ -1,5 +1,5 @@
 #include "IntroState.h"
-#include <iostream>
+
 
 //Delegate functions
 void multiplayerActivated(EventData eData);
@@ -18,6 +18,7 @@ void IntroState::init() {
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
     EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting*/
+
 }
 
 void IntroState::update(float &accumulatedTime) {
@@ -58,7 +59,7 @@ void singleplayerActivated(EventData eData) {
 //------------PROVISIONAL------------
 //-----------------------------------
 //-----------------------------------
-void introVideo(){
+/*void introVideo(){
 	//Play intro video
 	double currentSec = 0;
 
@@ -78,7 +79,7 @@ void introVideo(){
         }*/
 
         //double now = (double) ( (int) (currentSec * 1000) ) / 1000.0; //4 decimals
-
+/**
         std::string str = std::to_string(currentSec);
         if(currentSec < 10.0){
             strcat(numbers, "0");
@@ -96,4 +97,4 @@ void introVideo(){
         //addcurrentTime
         currentSec+=1/60.0;
 	}
-}
+}*/
