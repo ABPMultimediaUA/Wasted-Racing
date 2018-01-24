@@ -2,6 +2,7 @@
 
 #include "ObjectManager.h"
 #include "PhysicsManager.h"
+#include "RenderManager.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include <raknet/RakPeerInterface.h> 
