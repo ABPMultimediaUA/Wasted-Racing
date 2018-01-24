@@ -21,10 +21,10 @@ endif
 MKDIR_P = mkdir -p
 
 #default target is Linux
-all: create_dir make_client make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameE make_gameP make_gameB make_gameA all_linux
+all: create_dir make_client make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameE make_gameP make_gameB make_gameA all_linux
 	$(warning Linking done!)
 
-server: create_dir make_server make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameE make_gameP make_gameB make_gameA all_linux_server
+server: create_dir make_server make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameE make_gameP make_gameB make_gameA all_linux_server
 	$(warning Linking done!)
 
 #we can also have Windows
