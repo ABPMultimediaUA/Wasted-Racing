@@ -33,6 +33,7 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     trans.position.z = z;
     player.get()->setNewTransformData(trans);
     player.get()->setOldTransformData(trans);
+    player.get()->setTransformData(trans);
 
 }
 
