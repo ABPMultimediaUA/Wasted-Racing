@@ -13,6 +13,7 @@ void MultiMatchState::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
+    networkManager  = &NetworkManager::getInstance();    //Initialize Sensor manager
 }
 
 void MultiMatchState::update(float &accumulatedTime) {
@@ -24,9 +25,10 @@ void MultiMatchState::update(float &accumulatedTime) {
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
     }
+    
     //Always interpolate
-        physicsManager->interpolate(accumulatedTime, loopTime);
-        renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
+    physicsManager->interpolate(accumulatedTime, loopTime);
+    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
 
 }
 
