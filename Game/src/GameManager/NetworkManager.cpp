@@ -29,7 +29,7 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     trans.position.x = x;
     trans.position.y = y;
     trans.position.z = z;
-    player.get()->setTransformData(trans);
+    player.get()->setNewTransformData(trans);
 
 }
 
@@ -56,6 +56,8 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
     trans.scale.x    = 1;
     trans.scale.y    = 1;
     trans.scale.z    = 1;
+
+    std::cout << "POSITION:" << x << " " << y << " " << z << std::endl;
 
     ObjectManager::getInstance().createPlayer(trans,0, 2, 25001+id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(trans.position).get()->getTerrain(), 
@@ -84,8 +86,6 @@ void NetworkManager::broadcastPosition()
     stream.Write((float)trans.position.x);
     stream.Write((float)trans.position.y);
     stream.Write((float)trans.position.z);
-
-    std::cout << "POSITION " << trans.position.x << " " << trans.position.y << " " << trans.position.z << std::endl;
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
