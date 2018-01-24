@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../GameObject/GameObject.h"
+#include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/BitStream.h>
@@ -34,11 +36,17 @@ public:
     //Updates the lobby
     void updateLobby();
 
+    //Create remote player
+    IComponent::Pointer createRemotePlayerComponent(GameObject& newGameObject);
+
     //==============================================================
     // Getters and setters
     //==============================================================
-    void setStarted(bool s){    started = s;    };
-    bool getStarted()      {    return started; };
+    std::vector<IComponent::Pointer>& getRemotePlayerComponentList(){    return remotePlayerComponentList;} //Remote player component list getter
+    void setPlayer(GameObject::Pointer p)                           {    player = p;                      };
+    void setStarted(bool s)                                         {    started = s;                     };
+    GameObject::Pointer getPlayer()                                 {    return player;                   };
+    bool getStarted()                                               {    return started;                  };
 
 private:
     //==============================================================
@@ -49,5 +57,15 @@ private:
 
     //MatchState started
     bool started;
+
+    //Own player
+    GameObject::Pointer player;
+
+    //Own id
+    //############################CAMBIAR A INT DE TIPO ESPECIFICO
+    int server_id;
+
+    //List of remotePlayerComponent
+    std::vector<IComponent::Pointer> remotePlayerComponentList;
 
 };

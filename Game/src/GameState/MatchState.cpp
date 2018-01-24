@@ -18,10 +18,7 @@ void MatchState::init() {
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
 
     //Add AI's to the game
-    //addAI();
-
-    //Update event manager
-    eventManager->update();
+    addAI();
 }
 
 void MatchState::update(float &accumulatedTime) {

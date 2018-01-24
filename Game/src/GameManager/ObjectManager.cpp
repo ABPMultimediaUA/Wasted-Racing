@@ -316,6 +316,7 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
         InputManager::getInstance().createInputComponent(*obj.get());
         RenderManager::getInstance().createCameraRenderComponent(*obj.get());
         AudioManager::getInstance().createListenerComponent(*obj.get());
+        NetworkManager::getInstance().setPlayer(obj);
     }
     else if(move == 1)
     {
@@ -324,6 +325,10 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
         SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle, 100.f, 10.f); 
         SensorManager::getInstance().createMSensorComponent(*obj.get(), 5.f, mData.angle);
         //RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+    }
+    else if(move == 2)
+    {
+        NetworkManager::getInstance().createRemotePlayerComponent(*obj.get());
     }
 }
 

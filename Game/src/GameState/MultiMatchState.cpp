@@ -25,7 +25,7 @@ void MultiMatchState::update(float &accumulatedTime) {
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
     }
-    
+
     //Always interpolate
     physicsManager->interpolate(accumulatedTime, loopTime);
     renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);

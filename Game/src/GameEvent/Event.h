@@ -39,6 +39,8 @@ enum EventType {
     ItemBoxComponent_Delete,
     ListenerComponent_Create,
     ListenerComponent_Delete,
+    RemotePlayerComponent_Create,
+    RemotePlayerComponent_Delete,
     //COLLISION: Events triggered to certain collisions
     RampComponent_Collision,
     StartLineComponent_Collision,

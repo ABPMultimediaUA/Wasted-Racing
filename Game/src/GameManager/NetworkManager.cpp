@@ -74,3 +74,17 @@ void NetworkManager::updateLobby(){
         peer->DeallocatePacket(result);
     }
 }
+
+IComponent::Pointer NetworkManager::createRemotePlayerComponent(GameObject& newGameObject) {
+
+        IComponent::Pointer component = std::make_shared<RemotePlayerComponent>(newGameObject);
+
+        newGameObject.addComponent(component);
+
+        EventData data;
+        data.Component = component;
+
+        EventManager::getInstance().addEvent(Event {EventType::RemotePlayerComponent_Create, data});
+
+        return component;
+    }
