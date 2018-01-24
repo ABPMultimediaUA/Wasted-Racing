@@ -15,7 +15,7 @@ void NetworkManager::init() {
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
 {
-    int x, y, z;
+    float x, y, z;
     RakNet::BitStream parser(packet->data, packet->length, false);
     parser.IgnoreBytes(1);
     //Server ID
@@ -25,11 +25,14 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     parser.Read(y);
     parser.Read(z);
 
+    std::cout << "POSITION:" << x << " " << y << " " << z << std::endl;
+
     auto trans = player.get()->getTransformData();
     trans.position.x = x;
     trans.position.y = y;
     trans.position.z = z;
     player.get()->setNewTransformData(trans);
+    player.get()->setOldTransformData(trans);
 
 }
 
@@ -56,8 +59,6 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
     trans.scale.x    = 1;
     trans.scale.y    = 1;
     trans.scale.z    = 1;
-
-    std::cout << "POSITION:" << x << " " << y << " " << z << std::endl;
 
     ObjectManager::getInstance().createPlayer(trans,0, 2, 25001+id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(trans.position).get()->getTerrain(), 
@@ -87,7 +88,7 @@ void NetworkManager::broadcastPosition()
     stream.Write((float)trans.position.y);
     stream.Write((float)trans.position.z);
 
-    std::cout<<"QUe pasa niggis: "<<trans.position.x << " - "<< trans.position.y << " - "<<trans.position.z <<std::endl;
+    std::cout << "BROADCASTPOSITION: " << trans.position.x << " " << trans.position.y << " " << trans.position.z << std::endl;
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
