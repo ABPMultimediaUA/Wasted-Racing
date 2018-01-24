@@ -36,38 +36,37 @@ void RenderIrrlicht::openWindow(){
 }
 
 void RenderIrrlicht::updateWindow() {
-
-    //updateCamera();
-
-    int oM = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
-    int oL = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
-    int ML = ScoreManager::getInstance().getMaxLaps();
-    int iT = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
-    irr::core::stringw stringLap = L"  LAP:";
-    irr::core::stringw stringItm = L"  ITEM:";
-    irr::core::stringw stringPos = L"  POSITION:";
-    stringLap += oL;
-    stringLap += " / ";
-    stringLap += ML;
-    switch(iT)
-    {
-        case -1: stringItm+="EMPTY";
-                 break;
-        case 0: stringItm+="RED SHELL";
-                 break;
-        case 1: stringItm+="BLUE SHELL";
-                 break;
-        case 2: stringItm+="BANANA";
-                 break;
-        case 3: stringItm+="MUSHROOM";
-                 break;
-        case 4: stringItm+="STAR";
-                 break;
+    if(cameraTarget){
+        int oM = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
+        int oL = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
+        int ML = ScoreManager::getInstance().getMaxLaps();
+        int iT = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+        irr::core::stringw stringLap = L"  LAP:";
+        irr::core::stringw stringItm = L"  ITEM:";
+        irr::core::stringw stringPos = L"  POSITION:";
+        stringLap += oL;
+        stringLap += " / ";
+        stringLap += ML;
+        switch(iT)
+        {
+            case -1: stringItm+="EMPTY";
+                        break;
+            case 0: stringItm+="RED SHELL";
+                        break;
+            case 1: stringItm+="BLUE SHELL";
+                        break;
+            case 2: stringItm+="BANANA";
+                        break;
+            case 3: stringItm+="MUSHROOM";
+                        break;
+            case 4: stringItm+="STAR";
+                        break;
+        }
+        stringPos += oM;
+        pos->setText(stringPos.c_str());
+        lap->setText(stringLap.c_str());
+        item->setText(stringItm.c_str());
     }
-    stringPos += oM;
-    pos->setText(stringPos.c_str());
-    lap->setText(stringLap.c_str());
-    item->setText(stringItm.c_str());
 }
 
 void RenderIrrlicht::closeWindow() {

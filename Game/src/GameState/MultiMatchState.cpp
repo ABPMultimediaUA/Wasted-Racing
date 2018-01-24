@@ -1,5 +1,8 @@
 #include "MultiMatchState.h"
 
+//Additional functions
+void createPlayer();
+
 void MultiMatchState::init() {
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
@@ -14,6 +17,8 @@ void MultiMatchState::init() {
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
     networkManager  = &NetworkManager::getInstance();    //Initialize Sensor manager
+
+    createPlayer();
 }
 
 void MultiMatchState::update(float &accumulatedTime) {
@@ -21,11 +26,11 @@ void MultiMatchState::update(float &accumulatedTime) {
     //No capation
     networkManager->update();
     renderManager->update();
-    
+
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
         //Update managers
-        updateManagers(accumulatedTime);
+        updateManagers(loopTime);
 
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
@@ -66,4 +71,17 @@ void MultiMatchState::draw() {
 
 void MultiMatchState::close() {
 
+}
+
+void createPlayer(){
+    uint16_t id = 25000;
+    GameObject::TransformationData transform;
+    
+    transform.position = glm::vec3(-35,0, -20);
+    transform.rotation = glm::vec3(0,90,0);
+    transform.scale    = glm::vec3(1,1,1);
+    
+    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 }

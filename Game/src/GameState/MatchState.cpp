@@ -16,16 +16,19 @@ void MatchState::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
-
+    
     //Add AI's to the game
     addAI();
 }
 
 void MatchState::update(float &accumulatedTime) {
+    //Out of loop
+    renderManager->update();
+
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
         //Update managers
-        updateManagers(accumulatedTime);
+        updateManagers(loopTime);
 
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
@@ -43,8 +46,6 @@ void MatchState::updateManagers(float dTime){
     physicsManager->update(dTime);
 
     aiManager->update();
-
-    renderManager->update();
 
     waypointManager->update(dTime);
 
@@ -74,6 +75,14 @@ void addAI(){
     GameObject::TransformationData transform;
     uint16_t id;
 
+    id = 25000;
+    transform.position = glm::vec3(-35,0, -20);
+
+    transform.rotation = glm::vec3(0,90,0);
+    transform.scale    = glm::vec3(1,1,1);
+    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
     id = 25001;
     transform.position = glm::vec3(-35,0,-10);
     transform.rotation = glm::vec3(0,90,0);

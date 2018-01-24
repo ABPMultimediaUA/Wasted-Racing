@@ -129,27 +129,10 @@ void Game::Run() {
 
 //Additional functions
 void addObjects(){
-
-    GameObject::TransformationData transform;
-    uint16_t id;
-
     //===============================================================
     // ADD PLAYER 
     //===============================================================
     loadMap();
-
-    id = 25000;
-    transform.position = glm::vec3(-35,0, -20);
-
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-    
-    //===============================================================
-    //  NETWORK ASSOCIATION
-    //===============================================================
 
     //===============================================================
     // Update to distribute all creation events
