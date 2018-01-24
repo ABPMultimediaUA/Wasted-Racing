@@ -15,6 +15,8 @@ enum EventType {
     GameObject_Delete,
     ObjectRenderComponent_Create,
     ObjectRenderComponent_Delete,
+    LightRenderComponent_Create,
+    LightRenderComponent_Delete,
     CameraRenderComponent_Create,
     CameraRenderComponent_Delete,
     InputComponent_Create,
@@ -35,6 +37,8 @@ enum EventType {
     MSensorComponent_Delete,
     ItemBoxComponent_Create,
     ItemBoxComponent_Delete,
+    ListenerComponent_Create,
+    ListenerComponent_Delete,
     //COLLISION: Events triggered to certain collisions
     RampComponent_Collision,
     StartLineComponent_Collision,
@@ -51,15 +55,6 @@ enum EventType {
     Key_TurnLeft_Up,
     Key_TurnRight_Down,
     Key_TurnRight_Up,
-    //Sound keys
-    Key_Flanger_Down,
-    Key_Flanger_Up,
-    Key_Decflanger_Down,
-    Key_Decflanger_Up,
-    Key_ActivateA_Down,
-    Key_ActivateA_Up,
-    Key_ActivateK_Down,
-    Key_ActivateK_Up,
     //PLAYER: Control keys
     Key_UseItem_Down,
     Key_UseItem_Up,
@@ -74,6 +69,8 @@ enum EventType {
     Key_Select_Up,
     Key_Back_Down,
     Key_Back_Up,
+    Key_DebugAI_Down,
+    Key_DebugAI_Up,
     //GAME: Game related events
     Game_Start,
     Game_Close,

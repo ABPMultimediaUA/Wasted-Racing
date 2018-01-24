@@ -58,9 +58,9 @@ void SensorManager::close() {
 
 
 //COMPONENT CREATORS
-IComponent::Pointer SensorManager::createVSensorComponent(GameObject& newGameObject, float angV, float angI, float md){
+IComponent::Pointer SensorManager::createVSensorComponent(GameObject& newGameObject, float angV, float angI, float md, float ml){
 
-    IComponent::Pointer component = std::make_shared<VSensorComponent>(newGameObject, angV, angI, md);
+    IComponent::Pointer component = std::make_shared<VSensorComponent>(newGameObject, angV, angI, md, ml);
 
     newGameObject.addComponent(component);
 

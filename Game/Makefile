@@ -28,7 +28,7 @@ server: create_dir make_server make_src make_gameF make_gameM make_gameS make_ga
 	$(warning Linking done!)
 
 #we can also have Windows
-win: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameE make_gameP make_gameB make_gameA all_windows
+win: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameE make_gameP make_gameB make_gameA all_windows
 	$(warning Linking done!)
 
 create_dir: make_bin_dir make_obj_dir
@@ -43,7 +43,7 @@ make_obj_dir:
 
 #Makes to execute
 make_src:
-	$(MAKE) -C src 
+	$(MAKE) -C src
 
 make_client:
 	g++ -I./../ -I/usr/X11R6/include -I./include -g -Wall -c -o bin/obj/main.o src/GameClient/main.cpp
@@ -76,6 +76,9 @@ make_gameO_I:
 	
 make_gameO_F:
 	$(MAKE) -C src/GameObject/PhysicsComponent
+
+make_gameO_AU:
+	$(MAKE) -C src/GameObject/AudioComponent
 
 make_gameE:
 	$(MAKE) -C src/GameEvent
@@ -118,7 +121,7 @@ info:
 ################################################################################
 # Windows 
 ################################################################################
-all_windows: LDFLAGS += -L./lib/win -lIrrlicht -lopengl32 -lm #-lfmod -lfmodstudio
+all_windows: LDFLAGS += -L./lib/win -lIrrlicht -lopengl32 -lm -lfmod -lfmodstudio
 all_windows:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
 

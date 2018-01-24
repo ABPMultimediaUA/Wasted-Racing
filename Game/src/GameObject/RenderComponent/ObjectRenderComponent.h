@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IRenderComponent.h"
+#include <string>
 
 class ObjectRenderComponent : public IRenderComponent {
 
@@ -10,15 +11,33 @@ public:
 		Cube,
 		Sphere,
 		Mesh,
-		Plane, 
-		Banana,
-		Shell,
-		StarLine,
-		Road
+		Cone,
+		Plane,
+		Arrow,
+		Cylinder,
+		Portion
 	};
 
     //Constructor
-	ObjectRenderComponent(GameObject& newGameObject, Shape newShape) : IRenderComponent(newGameObject), objectShape(newShape) {}
+	ObjectRenderComponent(GameObject& newGameObject, Shape newShape, const char* newStr) : IRenderComponent(newGameObject), objectShape(newShape) {
+
+		if(newShape == Shape::Mesh){
+
+			std::string folder = "";
+			int i = 0;
+
+			while(newStr[i]!='.'){
+				folder += newStr[i];
+				i++;
+			}
+
+			mesh = "media/mesh/" + folder + "/" + std::string(newStr);
+		}
+		else{
+			img = "media/img/" + std::string(newStr);
+		}
+
+	}
 
 	//Destructor
 	virtual ~ObjectRenderComponent() {};
@@ -39,9 +58,18 @@ public:
 		return objectShape;
 	}
 
+	std::string getMesh() {
+		return mesh;
+	}
+
+	std::string getImg() {
+		return img;
+	}
 
 private:
 
 	Shape objectShape;
+	std::string mesh;
+	std::string img;
 
 };

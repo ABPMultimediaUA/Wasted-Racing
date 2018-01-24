@@ -5,6 +5,7 @@
 
 #include "../GameManager/InputManager.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
 #include "../GameObject/GameObject.h"
 
 class GameObject;
@@ -72,16 +73,19 @@ public:
     virtual void addCamera() = 0;
 
     //Update the current camera
-    virtual void updateCamera() = 0;
+    virtual void interpolateCamera(float accTime, float maxTime) = 0;
 
     //Add an object to the game
-    virtual void addObject(IComponent::Pointer ptr) = 0;
+    virtual void addObject(IComponent* ptr) = 0;
 
-    //Delete an object of the game
-    virtual void deleteObject(IComponent::Pointer ptr) = 0;
+    //Add an object to the game
+    virtual void addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) = 0;
 
     //Add a light to the game
-    virtual void addLight() = 0;
+    virtual void addLight(IComponent* ptr) = 0;
+
+    //Delete an object or light of the game
+    virtual void deleteObject(IComponent* ptr) = 0;
 
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;

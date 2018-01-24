@@ -44,29 +44,23 @@ public:
     void interpolate(float accumulatedTime, const float maxTime);
 
 
-    //Static class getter
+    //Getters
     static PhysicsManager& getInstance();
-    std::vector<IComponent::Pointer>& getMoveComponentList()       {    return moveComponentList;        } //Move component list getter
-    std::vector<IComponent::Pointer>& getCollisionComponentList()  {    return collisionComponentList;   } //Collision component list getter
-    std::vector<MovingCharacter>& getMovingCharacterList()     {    return movingCharacterList;      }     //MovingCharacter component list getter
-    
-    MovingCharacter getMovingCharacter(uint16_t id){      //Get given moving character by object id from list
-        MovingCharacter mChar;
-        for(unsigned int i=0; i < movingCharacterList.size(); ++i){
-            if(movingCharacterList[i].moveComponent->getGameObject().getId() == id){
-                return movingCharacterList[i];
-            }
-        }
-        return mChar;
-    }
+    std::vector<IComponent::Pointer>& getMoveComponentList()        {    return moveComponentList;      } //Move component list getter
+    std::vector<IComponent::Pointer>& getCollisionComponentList()   {    return collisionComponentList; } //Collision component list getter
+    std::vector<IComponent::Pointer>& getTerrainComponentList()     {    return terrainComponentList;   } //Terrain component list getter
+    std::vector<MovingCharacter>& getMovingCharacterList()          {    return movingCharacterList;    } //MovingCharacter component list getter
+    MovingCharacter getMovingCharacter(uint16_t id);
+    std::shared_ptr<TerrainComponent> getTerrainFromPos(LAPAL::vec3f pos);
+
     //Setters
     void setCollisionComponentList(std::vector<IComponent::Pointer>& collision)            {    collisionComponentList = collision; }
 
     //Component creators
     IComponent::Pointer createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass);
     IComponent::Pointer createTerrainComponent(GameObject& newGameObject, LAPAL::plane3f newPlane);
-    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const float radius, const bool kinetic, const CollisionComponent::Type type);
-    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f newPlane, const bool kinetic, const CollisionComponent::Type type);
+    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const float radius, const float length, const bool kinetic, const CollisionComponent::Type type);
+    IComponent::Pointer createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f newPlane, const bool kinetic, const float length, const CollisionComponent::Type type);
     void                createMovingCharacter(IComponent::Pointer moveComponent, IComponent::Pointer terrainComponent, IComponent::Pointer collisionComponent);
     IComponent::Pointer createRampComponent(GameObject& newGameObject, const float speed, const float cTime, const float dTime);
 
@@ -81,6 +75,7 @@ private:
 
     std::vector<IComponent::Pointer> moveComponentList;
     std::vector<IComponent::Pointer> collisionComponentList;
+    std::vector<IComponent::Pointer> terrainComponentList;
     std::vector<MovingCharacter>     movingCharacterList;   //A list of the moving characters that can collide with terrain
 
 };

@@ -18,9 +18,10 @@ class ItemManager {
 
     private:
 
-        std::vector<std::shared_ptr<ItemHolderComponent>> ItemHolders;
+        std::vector<IComponent::Pointer> ItemHolders;
         std::vector<std::shared_ptr<IItemComponent>> ItemComponents;
         std::vector<std::shared_ptr<ItemBoxComponent>> ItemBoxes;
+        //std::vector<> players;
 
         //Item ids index
         int ids;
@@ -53,7 +54,7 @@ class ItemManager {
 
         //Getters
         std::vector<std::shared_ptr<IItemComponent>>& getItemComponents()                   {       return ItemComponents;       };
-        std::vector<std::shared_ptr<ItemHolderComponent>>& getItemHolderComponents()        {       return ItemHolders;       };
+        std::vector<IComponent::Pointer>& getItemHolderComponents()        {       return ItemHolders;       };
 
         //Item delete
         void deleteItem(IComponent::Pointer component);
