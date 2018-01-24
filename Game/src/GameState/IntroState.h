@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IGameState.h"
-#include "MainState.h"
+#include "MultiMatchState.h"
 #include "ClientLobbyState.h"
 #include "../Game.h"
 #include "../GameEvent/EventManager.h"
@@ -48,7 +48,6 @@ private:
     EventManager* eventManager;
     //Render manager
     RenderManager* renderManager;
-
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;

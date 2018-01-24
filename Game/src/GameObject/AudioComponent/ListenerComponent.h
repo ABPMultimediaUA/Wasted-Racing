@@ -20,7 +20,4 @@ public:
 
 	//Closer
 	virtual void close();
-
-private:
-
 };

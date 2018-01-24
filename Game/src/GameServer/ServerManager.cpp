@@ -39,10 +39,13 @@ void ServerManager::run()
 //Function to start the game when we are at the lobby
 void ServerManager::startGame()
 {
-	if(!started && nPlayers > 2)
+	if(!started && nPlayers > 1)
 	{
+		RakNet::BitStream stream;
 		started=true;
 		std::cout << "Starting game" << std::endl;
+		stream.Write((unsigned char)ID_GAME_START);
+		peer->send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 	}
 }
 

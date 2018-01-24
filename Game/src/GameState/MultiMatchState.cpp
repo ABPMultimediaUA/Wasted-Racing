@@ -1,6 +1,6 @@
-#include "MatchState.h"
+#include "MultiMatchState.h"
 
-void MatchState::init() {
+void MultiMatchState::init() {
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
     eventManager    = &EventManager::getInstance();     //Initilize event manager
@@ -15,7 +15,7 @@ void MatchState::init() {
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
 }
 
-void MatchState::update(float &accumulatedTime) {
+void MultiMatchState::update(float &accumulatedTime) {
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
         //Update managers
@@ -30,7 +30,7 @@ void MatchState::update(float &accumulatedTime) {
 
 }
 
-void MatchState::updateManagers(float dTime){
+void MultiMatchState::updateManagers(float dTime){
     //Input manager has to be the first to be updated
     inputManager->update();
 
@@ -54,11 +54,10 @@ void MatchState::updateManagers(float dTime){
     eventManager->update();
 }
 
-void MatchState::draw() {
+void MultiMatchState::draw() {
     renderManager->draw();
 }
 
-void MatchState::close() {
+void MultiMatchState::close() {
 
 }
-

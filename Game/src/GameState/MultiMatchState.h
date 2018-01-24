@@ -32,15 +32,15 @@
 
 class Game;
 
-class MatchState : public IGameState {
+class MultiMatchState : public IGameState {
 
 public: 
 
     //Constructor
-    MatchState (){ type = IGameState::MATCH; };
+    MultiMatchState (){ type = IGameState::MULTIMATCH; };
 
     //Destructor
-    virtual ~MatchState() {}
+    virtual ~MultiMatchState() {}
 
     //Initialization
     virtual void init();
@@ -58,8 +58,8 @@ public:
     virtual void close();
 
     //Static class getter
-    static MatchState& getInstance() {
-        static MatchState instance;
+    static MultiMatchState& getInstance() {
+        static MultiMatchState instance;
         return instance;
     };
 

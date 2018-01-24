@@ -13,16 +13,14 @@ void IntroState::init() {
     //Bind all managers that are going to be used
     eventManager  = &EventManager::getInstance();
     inputManager  = &InputManager::getInstance();
-    renderManager = &RenderManager::getInstance();
 
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting*/
-
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting
 }
 
 void IntroState::update(float &accumulatedTime) {
-    //Update key events
+    //Update input manager
     inputManager->update();
 
     //Event manager has to be the last to be updated
@@ -52,7 +50,7 @@ void singleplayerActivated(EventData eData) {
     IntroState::getInstance().close();
 
     //Initialize main state again
-    Game::getInstance().setState(&MainState::getInstance());
+    Game::getInstance().setState(&MatchState::getInstance());
 }
 //-----------------------------------
 //-----------------------------------
