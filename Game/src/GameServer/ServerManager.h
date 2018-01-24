@@ -3,6 +3,8 @@
 #include "../Game.h"
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
+#include <raknet/RakNetTypes.h>
+#include <vector>
 #include "CustomIdentifiers.h"
 
 //Maximum number of clients simultaneously
@@ -37,6 +39,9 @@ class ServerManager{
 
         //Number of players in the server (actually)
         int nPlayers;
+
+        //Vector of players addresses
+        std::vector<RakNet::SystemAddress> players;
 
         ///////////////////////////////////////////////////
         // FUNCTIONS 

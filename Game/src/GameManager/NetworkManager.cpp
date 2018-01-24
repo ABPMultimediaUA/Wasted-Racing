@@ -14,7 +14,20 @@ void NetworkManager::init() {
 }
 
 void NetworkManager::update() {
-
+    RakNet::Packet* packet;
+    packet = peer->Receive();
+    if(packet)
+    {
+        switch(packet->data[0])
+        {
+            case ID_CREATE_PLAYER:
+                std::cout << "Creando player en su posicion" << std::endl;
+                break;
+            default:
+                std::cout << "ALGO PASO" << std::endl;
+                break;
+        }
+    }
 }
 
 void NetworkManager::close() {
@@ -58,5 +71,6 @@ void NetworkManager::updateLobby(){
             default:
                 break;
         }
+        peer->DeallocatePacket(result);
     }
 }

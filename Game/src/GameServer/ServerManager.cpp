@@ -45,7 +45,10 @@ void ServerManager::startGame()
 		started=true;
 		std::cout << "Starting game" << std::endl;
 		stream.Write((unsigned char)ID_GAME_START);
-		peer->send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+		peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+		stream.Reset();
+		stream.Write((unsigned char)ID_CREATE_PLAYER);
+		peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, players[1], false);
 	}
 }
 
@@ -83,6 +86,7 @@ void ServerManager::update()
 				nPlayers++;
 				std::cout << "New client in the server" << std::endl;
 				std::cout << "Number of players: " << nPlayers << std::endl;
+				players.push_back(packet->systemAddress);
 				break;
 			case ID_GAME_START:
 				startGame();
