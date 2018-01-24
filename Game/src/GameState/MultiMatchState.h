@@ -19,6 +19,7 @@
 #include "../GameManager/AudioManager.h"
 #include "../GameManager/ScoreManager.h"
 #include "../GameManager/ItemManager.h"
+#include "../GameManager/NetworkManager.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameFacade/AudioFMOD.h"
 
@@ -83,13 +84,15 @@ private:
     //Audio Manager
     AudioManager* audioManager;
     //AI manager
-    AIManager* aiManager;
+    //AIManager* aiManager;
     //Sensor manager
     SensorManager* sensorManager;
     //Item manager
     ItemManager* itemManager;
     //Score manager
     ScoreManager* scoreManager;
+    //Network manager
+    NetworkManager* networkManager;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;

@@ -10,7 +10,7 @@ void ClientLobbyState::init() {
 }
 
 void ClientLobbyState::update(float &accumulatedTime) {
-    networkManager->update();
+    networkManager->updateLobby();
     if(networkManager->getStarted())
     {
         Game::getInstance().setState(&MultiMatchState::getInstance());

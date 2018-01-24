@@ -9,7 +9,7 @@ void MultiMatchState::init() {
     objectManager   = &ObjectManager::getInstance();    //Initialize object manager
     physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
     waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager 
-    aiManager       = &AIManager::getInstance();        //Initialize AI manager
+    //aiManager       = &AIManager::getInstance();        //Initialize AI manager
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
@@ -34,9 +34,11 @@ void MultiMatchState::updateManagers(float dTime){
     //Input manager has to be the first to be updated
     inputManager->update();
 
+    networkManager->update();
+
     physicsManager->update(dTime);
 
-    aiManager->update();
+    //aiManager->update();
 
     renderManager->update();
 

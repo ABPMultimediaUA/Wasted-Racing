@@ -1,5 +1,8 @@
 #include "MatchState.h"
 
+//additional functions
+void addAI();
+
 void MatchState::init() {
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
@@ -13,6 +16,12 @@ void MatchState::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
+
+    //Add AI's to the game
+    addAI();
+
+    //Update event manager
+    eventManager->update();
 }
 
 void MatchState::update(float &accumulatedTime) {
@@ -25,8 +34,8 @@ void MatchState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
     //Always interpolate
-        physicsManager->interpolate(accumulatedTime, loopTime);
-        renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
+    physicsManager->interpolate(accumulatedTime, loopTime);
+    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
 
 }
 
@@ -62,3 +71,57 @@ void MatchState::close() {
 
 }
 
+
+//Additional functions
+void addAI(){
+    GameObject::TransformationData transform;
+    uint16_t id;
+
+    id = 25001;
+    transform.position = glm::vec3(-35,0,-10);
+    transform.rotation = glm::vec3(0,90,0);
+    transform.scale    = glm::vec3(1,1,1);
+    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+
+    id = 25002;
+    transform.position = glm::vec3(-35,0,0);
+    transform.rotation = glm::vec3(0,90,0);
+    transform.scale    = glm::vec3(1,1,1);
+    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+
+    id = 25003;
+    transform.position = glm::vec3(-35,0,10);
+    transform.rotation = glm::vec3(0,90,0);
+    transform.scale    = glm::vec3(1,1,1);
+    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+
+    id = 25004;
+    transform.position = glm::vec3(-35,0,20);
+    transform.rotation = glm::vec3(0,90,0);
+    transform.scale    = glm::vec3(1,1,1);
+    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+
+    id = 25005;
+    transform.position = glm::vec3(-35,0,-30);
+    transform.rotation = glm::vec3(0,90,0);
+    transform.scale    = glm::vec3(1,1,1);
+    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+
+    id = 25006;
+    transform.position = glm::vec3(-35,0,-40);
+    transform.rotation = glm::vec3(0,90,0);
+    transform.scale    = glm::vec3(1,1,1);
+    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+}
