@@ -41,7 +41,7 @@ void ServerManager::startGame()
 {
 	if(!started && nPlayers > 1)
 	{
-		int x, y, z;
+		float x, y, z;
 		RakNet::BitStream stream;
 		started=true;
 		std::cout << "Starting game" << std::endl;
@@ -53,9 +53,9 @@ void ServerManager::startGame()
 			switch(i)
 			{
 				case 0:
-					x=-35;
-					y=5;
-					z=-20;
+					x=-35.f;
+					y=5.f;
+					z=-20.f;
 					break;
 				case 1:
 					z=-10;
