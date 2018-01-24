@@ -35,6 +35,8 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
 
 void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
 {
+
+    std::cout << "CREADO" << std::endl;
     int x, y, z, id;
     RakNet::BitStream parser(packet->data, packet->length, false);
     parser.IgnoreBytes(1);
