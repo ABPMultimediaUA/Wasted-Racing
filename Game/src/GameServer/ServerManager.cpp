@@ -41,14 +41,47 @@ void ServerManager::startGame()
 {
 	if(!started && nPlayers > 1)
 	{
+		int x, y, z;
 		RakNet::BitStream stream;
 		started=true;
 		std::cout << "Starting game" << std::endl;
 		stream.Write((unsigned char)ID_GAME_START);
 		peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-		stream.Reset();
-		stream.Write((unsigned char)ID_CREATE_PLAYER);
-		peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, players[1], false);
+		for(int i=0; i<nPlayers; i++)
+		{
+			//This switch marks the predefined positions for the players. Later this will be on map's info
+			switch(i)
+			{
+				case 0:
+					x=-35;
+					y=0;
+					z=-20;
+					break;
+				case 1:
+					z=-10;
+					break;
+				default:
+					break;
+			}
+			//Reset and set the message to create player
+			stream.Reset();
+			stream.Write((unsigned char)ID_CREATE_PLAYER);
+			//Its Network ID;
+			stream.Write(i);
+			//Its position, later will be removed
+			stream.Write(x);
+			stream.Write(y);
+			stream.Write(z);
+			peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, players[i], false);
+			//Repeat for broadcast
+			stream.Reset();
+			stream.Write((unsigned char)ID_CREATE_REMOTE_PLAYER);
+			stream.Write(i);
+			stream.Write(x);
+			stream.Write(y);
+			stream.Write(z);
+			peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, players[i], true);
+		}
 	}
 }
 
