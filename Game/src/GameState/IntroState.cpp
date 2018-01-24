@@ -12,17 +12,10 @@ void singleplayerActivated(EventData eData);
 
 
 void IntroState::init() {
-    //Initilize managers
-    /*eventManager = &EventManager::getInstance();
-    eventManager->init();
-
-    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
+    //Bind all managers that are going to be used
+    eventManager  = &EventManager::getInstance();
+    inputManager  = &InputManager::getInstance();
     renderManager = &RenderManager::getInstance();
-    renderManager->init(Game::getInstance().getRenderEngine());
-
-    //Once we've initialized the renderManager, we can do the same with our inputManager
-    inputManager = &InputManager::getInstance();
-    inputManager->init(Game::getInstance().getInputEngine());
 
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
@@ -42,10 +35,11 @@ void IntroState::init() {
 }
 
 void IntroState::update(float &accumulatedTime) {
-   /* inputManager->update();
+    //Update key events
+    inputManager->update();
 
     //Event manager has to be the last to be updated
-    eventManager->update();*/
+    eventManager->update();
     /*
     std::cout<<"Whatsapp boys"<<std::endl;
 
@@ -75,6 +69,7 @@ void IntroState::update(float &accumulatedTime) {
 
 
    
+    eventManager->update();
 }
 
 void IntroState::draw() {
@@ -82,18 +77,24 @@ void IntroState::draw() {
 }
 
 void IntroState::close() {
-   /* renderManager->close();
-    inputManager->close();
-    eventManager->close();*/
+    
 }
 
 //==============================================
 // DELEGATES
 //============================================== 
 void multiplayerActivated(EventData eData) {
+    //Close this state
+    IntroState::getInstance().close();
+
+    //Initialize Client Lobby state a new
     Game::getInstance().setState(&ClientLobbyState::getInstance());
 }
 void singleplayerActivated(EventData eData) {
+    //Close this state
+    IntroState::getInstance().close();
+
+    //Initialize main state again
     Game::getInstance().setState(&MainState::getInstance());
 }
 //-----------------------------------
@@ -101,7 +102,7 @@ void singleplayerActivated(EventData eData) {
 //------------PROVISIONAL------------
 //-----------------------------------
 //-----------------------------------
-/*void introVideo(){
+void introVideo(){
 	//Play intro video
 	double currentSec = 0;
 
@@ -122,7 +123,7 @@ void singleplayerActivated(EventData eData) {
 
         //double now = (double) ( (int) (currentSec * 1000) ) / 1000.0; //4 decimals
 
-       /* std::string str = std::to_string(currentSec);
+        std::string str = std::to_string(currentSec);
         if(currentSec < 10.0){
             strcat(numbers, "0");
         }
@@ -139,4 +140,4 @@ void singleplayerActivated(EventData eData) {
         //addcurrentTime
         currentSec+=1/60.0;
 	}
-}*/
+}

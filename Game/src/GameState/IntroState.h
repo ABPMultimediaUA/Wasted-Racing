@@ -7,8 +7,9 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/InputManager.h"
 #include "../GameManager/RenderManager.h"
-#include <raknet/RakPeerInterface.h> 
-#include <raknet/MessageIdentifiers.h>
+#include <raknet/RakPeerInterface.h>
+
+class Game;
 
 class IntroState : public IGameState {
 
@@ -41,16 +42,14 @@ private:
     //==============================================================
     // Private data
     //==============================================================
-
-    //Variables for client, delete when state is working correctly
-    RakNet::RakPeerInterface* peer;
-
     //Input manager
     InputManager* inputManager;
-    //Render manager
-    RenderManager* renderManager;
     //Event manager
     EventManager* eventManager;
+    //Render manager
+    RenderManager* renderManager;
+
+    RakNet::RakPeerInterface* peer;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;

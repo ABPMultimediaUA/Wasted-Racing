@@ -62,7 +62,7 @@ public:
     //Update the logo video
     virtual void updateLogo();
 
-private: 
+private:
 
     //Irrlicht own window
     irr::IrrlichtDevice* device;

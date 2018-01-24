@@ -26,9 +26,7 @@ int main(){
 	//initializing client
 	initClient();
 
-	Game game;
-	
-	game.Run();
+	Game::getInstance().Run();
 	
 	std::cout << "Exiting game..." << std::endl;
 	

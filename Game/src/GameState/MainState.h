@@ -22,6 +22,16 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameFacade/AudioFMOD.h"
 
+#include <memory>
+#include <iostream>
+#include <rapidxml/rapidxml.hpp>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <stdio.h>
+
+class Game;
+
 class MainState : public IGameState {
 
 public: 
@@ -58,7 +68,6 @@ private:
     //==============================================================
     // Private data
     //==============================================================
-
     //Object manager
     ObjectManager* objectManager;
     //Input manager
