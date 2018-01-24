@@ -75,14 +75,14 @@ void addAI(){
     GameObject::TransformationData transform;
     uint16_t id;
 
-    id = 25000;
+    /*id = 25000;
     transform.position = glm::vec3(-35,0, -20);
 
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));*/
     id = 25001;
     transform.position = glm::vec3(-35,0,-10);
     transform.rotation = glm::vec3(0,90,0);
