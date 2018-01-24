@@ -18,7 +18,7 @@ void MatchState::init() {
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
 
     //Add AI's to the game
-    addAI();
+    //addAI();
 
     //Update event manager
     eventManager->update();
