@@ -20,6 +20,9 @@ void ServerManager::init()
 
 	peer->Startup(MAXCLIENTS, &socket, 1);
 	peer->SetMaximumIncomingConnections(MAXCLIENTS);
+
+	nPlayers=0;
+	started=false;
 }
 
 void ServerManager::run()
@@ -33,6 +36,16 @@ void ServerManager::run()
 	}
 }
 
+//Function to start the game when we are at the lobby
+void ServerManager::startGame()
+{
+	if(!started && nPlayers > 2)
+	{
+		started=true;
+		std::cout << "Starting game" << std::endl;
+	}
+}
+
 void ServerManager::update()
 {
 	//identifier of the packet
@@ -43,6 +56,34 @@ void ServerManager::update()
 		identifier=GetPacketIdentifier(packet);
 		switch(identifier)
 		{
+			case ID_REMOTE_CONNECTION_LOST:
+				nPlayers--;
+				std::cout << "Client disconnected from the server" << std::endl;
+				std::cout << "Number of players: " << nPlayers << std::endl;
+				break;
+			case ID_CONNECTION_LOST:
+				nPlayers--;
+				std::cout << "Client disconnected from the server" << std::endl;
+				std::cout << "Number of players: " << nPlayers << std::endl;
+				break;
+			case ID_REMOTE_DISCONNECTION_NOTIFICATION:
+				nPlayers--;
+				std::cout << "Client disconnected from the server" << std::endl;
+				std::cout << "Number of players: " << nPlayers << std::endl;
+				break;
+			case ID_DISCONNECTION_NOTIFICATION:
+				nPlayers--;
+				std::cout << "Client disconnected from the server" << std::endl;
+				std::cout << "Number of players: " << nPlayers << std::endl;
+				break;
+			case ID_NEW_INCOMING_CONNECTION:
+				nPlayers++;
+				std::cout << "New client in the server" << std::endl;
+				std::cout << "Number of players: " << nPlayers << std::endl;
+				break;
+			case ID_GAME_START:
+				startGame();
+				break;
             default:
                 std::cout << "Receiving new packet" << std::endl;
                 break;

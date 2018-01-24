@@ -1,5 +1,7 @@
 #include "IntroState.h"
 #include <iostream>
+#include <raknet/BitStream.h>
+#include "../GameServer/CustomIdentifiers.h"
 
 //Delegate functions
 void multiplayerActivated(EventData eData);
@@ -31,7 +33,7 @@ void IntroState::init() {
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("127.0.0.1", 32091, 0, 0);
+    result = peer->Connect("127.0.0.1", 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {
@@ -52,6 +54,7 @@ void IntroState::update(float &accumulatedTime) {
     game.setState(&main);
 */
     RakNet::Packet* result;
+    RakNet::BitStream stream;
     result = peer->Receive();
     if(result)
     {
@@ -59,6 +62,8 @@ void IntroState::update(float &accumulatedTime) {
         {
             case ID_CONNECTION_REQUEST_ACCEPTED:
                 std::cout << "Connection Accepted" << std::endl;
+                stream.Write((unsigned char)ID_GAME_START);
+                peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
                 break;
             case ID_CONNECTION_ATTEMPT_FAILED:
                 std::cout << "Connection Failed" << std::endl;
@@ -67,6 +72,7 @@ void IntroState::update(float &accumulatedTime) {
                 break;
         }
     }
+
 
    
 }

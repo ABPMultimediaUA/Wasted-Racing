@@ -3,11 +3,12 @@
 #include "../Game.h"
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
+#include "CustomIdentifiers.h"
 
 //Maximum number of clients simultaneously
 #define MAXCLIENTS 8
 //Port of the server
-#define PORT 32091
+#define PORT 39017
 
 class ServerManager{
     public:
@@ -31,7 +32,16 @@ class ServerManager{
         RakNet::RakPeerInterface* peer;
         RakNet::Packet* packet;
 
-        //Function provided 
+        //If true, the game has started, if not, then we are in the lobby and accept new incomming connections
+        bool started;
+
+        //Number of players in the server (actually)
+        int nPlayers;
+
+        //Function provided by RakNet
         unsigned char GetPacketIdentifier(RakNet::Packet *p);
+
+        //Function to start the match from the lobby
+        void startGame();
 
 };
