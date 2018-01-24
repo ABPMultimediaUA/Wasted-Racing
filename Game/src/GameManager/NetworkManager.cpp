@@ -79,10 +79,10 @@ void NetworkManager::broadcastPosition()
     auto trans = player.get()->getTransformData();
 
     stream.Write((unsigned char)ID_REMOTE_PLAYER_MOVEMENT);
-    stream.Write(server_id);
-    stream.Write(trans.position.x);
-    stream.Write(trans.position.y);
-    stream.Write(trans.position.z);
+    stream.Write((int)server_id);
+    stream.Write((float)trans.position.x);
+    stream.Write((float)trans.position.y);
+    stream.Write((float)trans.position.z);
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
@@ -99,6 +99,7 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
     parser.Read(y);
     parser.Read(z);
 
+   
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
     for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
@@ -112,7 +113,8 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             trans.position.y = y;
             trans.position.z = z;
 
-            rPlayer.get()->getGameObject().setTransformData(trans);
+            rPlayer.get()->getGameObject().setNewTransformData(trans);
+            //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
         }
     }
 }
