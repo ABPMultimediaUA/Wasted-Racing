@@ -58,7 +58,7 @@ void ServerManager::startGame()
 					z=-20.f;
 					break;
 				case 1:
-					z=-10;
+					z=-10.f;
 					break;
 				default:
 					break;
