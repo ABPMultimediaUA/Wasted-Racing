@@ -51,6 +51,7 @@ void RenderManager::init(int engine) {
 void RenderManager::update() {
     RenderManager::renderFacade->updateWindow();
     updateAIDebug();
+    updateCameraDebug();
 }
 
 void RenderManager::draw() {
@@ -497,5 +498,59 @@ void RenderManager::deleteLinesObjects()
 
 void RenderManager::renderCameraDebug()
 {
-    std::cout<<"Holita vecinito"<<"\n";
+
+    AIDebugPointC.clear();
+    auto npcs = ItemManager::getInstance().getItemHolderComponents();
+    for(unsigned int i = 0; i < npcs.size(); ++i)
+    {
+        auto player = npcs[i]->getGameObject();
+        AIDebugPointC.push_back(player); 
+    }
+    
+    if(AIDebugC < AIDebugPointC.size()-1)
+    {   
+        if(lapC == true)
+        {
+            AIDebugC++;
+        }
+
+        createCameraRender();
+
+        if(lapC == false)
+        {
+            lapC = true;
+        }
+    }
+    else
+    {
+        deleteCameraRender();
+
+        AIDebugPointC.clear();
+        
+        //Set debug inactive
+        AIDebugC = 0;
+        lapC = false;
+    }
+
+}
+
+void RenderManager::updateCameraDebug()
+{
+
+}
+
+void RenderManager::createCameraRender()
+{
+    if(lapC == false)
+    {
+
+    }
+}
+
+void RenderManager::deleteCameraRender()
+{
+    if(lapC == true)
+    {
+        //renderFacade->deleteRectangle2D();
+    }
 }
