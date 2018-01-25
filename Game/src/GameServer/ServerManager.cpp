@@ -85,18 +85,18 @@ void ServerManager::startGame()
 	}
 }
 
-void ServerManager::broadcastPosition(RakNet::Packet* packet)
+void ServerManager::broadcastData(RakNet::Packet* packet)
 {
 	RakNet::BitStream stream(packet->data, packet->length, false);
 
 	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
 }
 
-void ServerManager::broadcastBoxCollision(RakNet::Packet* packet)
+void ServerManager::endGame(RakNet::Packet* packet)
 {
-	RakNet::BitStream stream(packet->data, packet->length, false);
+	broadcastData(packet);
 
-	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
+	started=false;
 }
 
 void ServerManager::update()
@@ -138,11 +138,14 @@ void ServerManager::update()
 			case ID_GAME_START:
 				startGame();
 				break;
+			case ID_GAME_ENDED:
+				endGame(packet);
+				break;
 			case ID_REMOTE_PLAYER_MOVEMENT:
-				broadcastPosition(packet);
+				broadcastData(packet);
 				break;
 			case ID_BOX_COLLISION:
-				broadcastBoxCollision(packet);
+				broadcastData(packet);
 				break;
             default:
                 std::cout << "Receiving new packet" << std::endl;

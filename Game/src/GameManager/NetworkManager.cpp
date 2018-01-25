@@ -4,6 +4,7 @@
 //////////// DELEGATE FUNCTIONS
 //////////////////////////////////////////////////////
 void itemBoxCollisionEvent(EventData eData);
+void startLineCollisionEvent(EventData eData);
 
 NetworkManager& NetworkManager::getInstance() {
     static NetworkManager instance;
@@ -19,6 +20,7 @@ void NetworkManager::init() {
 
     //Listeners
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::StartLineComponent_Collision, startLineCollisionEvent});
 }
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
@@ -174,6 +176,22 @@ void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
 
 }
 
+void NetworkManager::endGame()
+{
+    RakNet::BitStream stream;
+
+    stream.Write((unsigned char)ID_GAME_ENDED);
+    
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+
+    Game::getInstance().setState(&ClientLobbyState::getInstance());
+}
+
+void NetworkManager::remoteEndGame(RakNet::Packet* packet)
+{
+    Game::getInstance().setState(&ClientLobbyState::getInstance());
+}
+
 void NetworkManager::update() 
 {
     RakNet::Packet* packet;
@@ -182,6 +200,9 @@ void NetworkManager::update()
     {
         switch(packet->data[0])
         {
+            case ID_GAME_ENDED:
+                remoteEndGame(packet);
+                break;
             case ID_CREATE_PLAYER:
                 createPlayer(packet);
                 break;
@@ -277,4 +298,23 @@ IComponent::Pointer NetworkManager::createRemotePlayerComponent(GameObject& newG
 void itemBoxCollisionEvent(EventData eData)
 {
     NetworkManager::getInstance().itemBoxCollision(eData);
+}
+
+void startLineCollisionEvent(EventData eData)
+{
+    auto player = std::static_pointer_cast<MoveComponent>(eData.Component);
+
+    auto line = player->getGameObject().getComponent<StartLineComponent>();
+    if(line != nullptr) {
+        if(line->getActive() == true)
+        {
+            if(player->getGameObject().getId() == 25000)
+            {
+                if(player->getGameObject().getComponent<ScoreComponent>()->getLap()>ScoreManager::getInstance().getMaxLaps())
+                {
+                    NetworkManager::getInstance().endGame();
+                }
+            }
+        }
+    }
 }

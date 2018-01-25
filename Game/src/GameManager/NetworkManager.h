@@ -3,6 +3,7 @@
 #include "ObjectManager.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
+#include "NetworkManager.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
@@ -10,6 +11,7 @@
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/BitStream.h>
 #include "../GameServer/CustomIdentifiers.h"
+#include "../GameState/ClientLobbyState.h"
 #include <iostream>
 #include <memory>
 
@@ -75,6 +77,12 @@ public:
 
     //Receives the collision of a remote player with a box
     void remoteItemBoxCollision(RakNet::Packet* packet);
+
+    //Broadcasts the end of the game, because the player has crossed the start line in the last lap
+    void endGame();
+
+    //Receives the event of the game finishing
+    void remoteEndGame(RakNet::Packet* packet);
 
     //==============================================================
     // Getters and setters
