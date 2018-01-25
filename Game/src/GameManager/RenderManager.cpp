@@ -551,6 +551,6 @@ void RenderManager::deleteCameraRender()
 {
     if(lapC == true)
     {
-        cameraVision->deleteRectangle2D();
+        //renderFacade->deleteRectangle2D();
     }
 }
