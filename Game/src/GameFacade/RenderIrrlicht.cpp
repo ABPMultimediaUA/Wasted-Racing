@@ -38,36 +38,49 @@ void RenderIrrlicht::openWindow(){
 void RenderIrrlicht::updateWindow() {
 
     //updateCamera();
-
-    int oM = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
-    int oL = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
-    int ML = ScoreManager::getInstance().getMaxLaps();
-    int iT = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
-    irr::core::stringw stringLap = L"  LAP:";
-    irr::core::stringw stringItm = L"  ITEM:";
-    irr::core::stringw stringPos = L"  POSITION:";
-    stringLap += oL;
-    stringLap += " / ";
-    stringLap += ML;
-    switch(iT)
+    auto score = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>();
+    if(score != nullptr)
     {
-        case -1: stringItm+="EMPTY";
-                 break;
-        case 0: stringItm+="RED SHELL";
-                 break;
-        case 1: stringItm+="BLUE SHELL";
-                 break;
-        case 2: stringItm+="BANANA";
-                 break;
-        case 3: stringItm+="MUSHROOM";
-                 break;
-        case 4: stringItm+="STAR";
-                 break;
+        int oM = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
+        int oL = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
+        int ML = ScoreManager::getInstance().getMaxLaps();
+        int iT = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+        irr::core::stringw stringLap = L"  LAP:";
+        irr::core::stringw stringItm = L"  ITEM:";
+        irr::core::stringw stringPos = L"  POSITION:";
+        stringLap += oL;
+        stringLap += " / ";
+        stringLap += ML;
+        switch(iT)
+        {
+            case -1: stringItm+="EMPTY";
+                    break;
+            case 0: stringItm+="RED SHELL";
+                    break;
+            case 1: stringItm+="BLUE SHELL";
+                    break;
+            case 2: stringItm+="BANANA";
+                    break;
+            case 3: stringItm+="MUSHROOM";
+                    break;
+            case 4: stringItm+="STAR";
+                    break;
+        }
+        stringPos += oM;
+        pos->setText(stringPos.c_str());
+        lap->setText(stringLap.c_str());
+        item->setText(stringItm.c_str());
     }
-    stringPos += oM;
-    pos->setText(stringPos.c_str());
-    lap->setText(stringLap.c_str());
-    item->setText(stringItm.c_str());
+    else
+    {
+        irr::core::stringw stringLap = L"  LAP:";
+        irr::core::stringw stringItm = L"  ITEM:";
+        irr::core::stringw stringPos = L"  POSITION:";
+        
+        pos->setText(stringPos.c_str());
+        lap->setText(stringLap.c_str());
+        item->setText(stringItm.c_str());
+    }
 }
 
 void RenderIrrlicht::closeWindow() {
@@ -167,16 +180,31 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
                 node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
             }
             break;
+            case ObjectRenderComponent::Shape::Pyramid: {
+                auto plane = sceneManager->getMesh("media/mesh/pyramid/pyramid.obj");
+                node = sceneManager->addMeshSceneNode(plane);
+                auto var = videoDriver->getTexture(cmp->getImg().c_str());
+                node->setMaterialTexture(0, var);
+                node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+            }
+            break;
+            case ObjectRenderComponent::Shape::Rectangle2D: {
+                auto img = videoDriver->getTexture(cmp->getImg().c_str());
+                rectangle = sceneManager->getGUIEnvironment()->addImage(img, irr::core::position2d<irr::s32>(200,200));
+            }
+            break;
             default:
             break;
         }
+        if(shape != ObjectRenderComponent::Shape::Rectangle2D)
+        {
+            //Set node transformation
+            node->setPosition(irrPos);
+            node->setRotation(irrRot);
+            node->setScale(irrSca);
 
-        //Set node transformation
-        node->setPosition(irrPos);
-        node->setRotation(irrRot);
-        node->setScale(irrSca);
-
-        nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
+        }
+            nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
     }
 }
 
@@ -327,4 +355,9 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
         node->setRotation(vecRes);
         node->setScale(irrSca);
     }
+}
+
+void RenderIrrlicht::deleteRectangle()
+{
+    rectangle->remove();
 }

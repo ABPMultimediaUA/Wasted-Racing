@@ -90,6 +90,10 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
 
+    virtual void createRectangle2D()  = 0;
+
+    virtual void deleteRectangle2D()  = 0;
+
     //==============================================================
     // Window Related functions
     //==============================================================

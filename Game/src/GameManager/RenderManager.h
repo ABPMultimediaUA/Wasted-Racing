@@ -67,6 +67,9 @@ public:
 
     //Camera Debug
     void renderCameraDebug();
+    void updateCameraDebug();
+    void createCameraRender();
+    void deleteCameraRender();
     
 private:
 
@@ -100,6 +103,11 @@ private:
     float maxMoveNextPos = 30.0;
 
     //Debug Camera
+    unsigned int AIDebugC = 0;
+    bool lapC = false;
+    std::vector<GameObject> AIDebugPointC;
+    GameObject::Pointer cameraVision;
+    int aux = 0;
     
 
 };

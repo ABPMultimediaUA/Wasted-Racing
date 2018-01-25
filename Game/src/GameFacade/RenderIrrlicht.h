@@ -62,6 +62,10 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
+    virtual void createRectangle2D();
+
+    virtual void deleteRectangle2D();
+
 private: 
 
     //Irrlicht own window
@@ -89,5 +93,7 @@ private:
     irr::gui::IGUIStaticText* item;
 
     irr::gui::IGUIFont* font;
+
+    irr::gui::IGUIElement* rectangle;
 
 };
