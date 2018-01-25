@@ -2,6 +2,7 @@
 
 # Name of the executable created (.exe will be added automatically if necessary)
 TARGET := XKating
+TARGET_SERVER := Server_XKating
 
 # Path for the executable. Note that Irrlicht.dll should usually also be there for win32 systems
 BIN_PATH := bin/
@@ -20,11 +21,14 @@ endif
 MKDIR_P = mkdir -p
 
 #default target is Linux
-all: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameE make_gameP make_gameB make_gameA all_linux
+all: create_dir make_client make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameO_N make_gameE make_gameP make_gameB make_gameA all_linux
+	$(warning Linking done!)
+
+server: create_dir make_server make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameO_N make_gameE make_gameP make_gameB make_gameA all_linux_server
 	$(warning Linking done!)
 
 #we can also have Windows
-win: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameE make_gameP make_gameB make_gameA all_windows
+win: create_dir make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameO_N make_gameE make_gameP make_gameB make_gameA all_windows
 	$(warning Linking done!)
 
 create_dir: make_bin_dir make_obj_dir
@@ -41,6 +45,14 @@ make_obj_dir:
 make_src:
 	$(MAKE) -C src
 
+make_client:
+	g++ -I./../ -I/usr/X11R6/include -I./include -g -Wall -c -o bin/obj/main.o src/GameClient/main.cpp
+	$(MAKE) -C src/GameClient
+
+make_server:
+	g++ -I./../ -I/usr/X11R6/include -I./include -g -Wall -c -o bin/obj/main.o src/GameServer/main.cpp
+	$(MAKE) -C src/GameServer
+	
 make_gameF:
 	$(MAKE) -C src/GameFacade
 
@@ -68,6 +80,9 @@ make_gameO_F:
 make_gameO_AU:
 	$(MAKE) -C src/GameObject/AudioComponent
 
+make_gameO_N:
+	$(MAKE) -C src/GameObject/NetworkComponent
+
 make_gameE:
 	$(MAKE) -C src/GameEvent
 	
@@ -88,6 +103,14 @@ all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL -Wl,-rpath=./lib/linux/ra
 
 all_linux:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
+
+all_linux_server: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
+all_linux_server: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=./lib/linux/irrlicht
+all_linux_server: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=./lib/linux/fmod
+all_linux_server: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL -Wl,-rpath=./lib/linux/raknet
+
+all_linux_server:
+	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET_SERVER) $(LDFLAGS)
 
 clean: clean_linux
 	$(warning Cleaned!)

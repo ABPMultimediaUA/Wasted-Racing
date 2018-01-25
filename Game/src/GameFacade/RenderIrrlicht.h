@@ -62,7 +62,10 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
-private: 
+    //Update the logo video
+    virtual void updateLogo();
+
+private:
 
     //Irrlicht own window
     irr::IrrlichtDevice* device;

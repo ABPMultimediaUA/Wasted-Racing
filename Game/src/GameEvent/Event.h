@@ -39,6 +39,12 @@ enum EventType {
     ItemBoxComponent_Delete,
     ListenerComponent_Create,
     ListenerComponent_Delete,
+    RemotePlayerComponent_Create,
+    RemotePlayerComponent_Delete,
+    //OBJECTS: Creation events
+    Banana_Create,
+    RedShell_Create,
+    BlueShell_Create,
     //COLLISION: Events triggered to certain collisions
     RampComponent_Collision,
     StartLineComponent_Collision,
@@ -75,7 +81,12 @@ enum EventType {
     Key_DebugCamera_Up,
     //GAME: Game related events
     Game_Start,
-    Game_Close
+    Game_Close,
+    //TEST: test related events
+    Key_Multiplayer_Down,
+    Key_Singleplayer_Down,
+    Key_Multiplayer_Up,
+    Key_Singleplayer_Up
 };
 
 //Struct containg diferent types of data

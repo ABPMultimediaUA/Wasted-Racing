@@ -1,5 +1,12 @@
 #pragma once
 
+#include <iostream>
+#include "GameState/IGameState.h"
+#include "GameState/IntroState.h"
+#include "GameState/MainState.h"
+#include "GameState/MatchState.h"
+#include "GameState/ClientLobbyState.h"
+#include "GameState/MultiMatchState.h"
 #include "GameObject/GameObject.h"
 #include "GameObject/RenderComponent/ObjectRenderComponent.h"
 #include "GameObject/InputComponent.h"
@@ -17,10 +24,21 @@
 #include "GameManager/AudioManager.h"
 #include "GameManager/ScoreManager.h"
 #include "GameManager/ItemManager.h"
+#include "GameManager/NetworkManager.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
 
+#include <memory>
+#include <iostream>
+#include <rapidxml/rapidxml.hpp>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <stdio.h>
 
+class AIManager;
+class ObjectManager;
+class ItemManager;
 
 class Game {
 
@@ -30,10 +48,28 @@ public:
     Game() {}
 
     //Destructor
-    ~Game() {}
+    ~Game() { Game::close(); }
 
     //Infinite game loop
     void Run();
+
+    //State setter
+    void setState(IGameState::stateType type);
+
+    //Basic setters and getters
+    void setStay(bool s)       {     stay = s;              }//Stay setter
+    void setRenderEngine(int n){     renderEngine = n;      }//Engine setter
+    void setInputEngine(int n) {     inputEngine = n;       }//Input setter
+    int getRenderEngine()      {     return renderEngine;   }//Engine getter
+    int getInputEngine()       {     return inputEngine;    }//Input getter
+
+    //Static class getter
+    static Game& getInstance() {
+        static Game instance;
+        return instance;
+    };
+
+
 
 private:
 
@@ -53,21 +89,9 @@ private:
     //Shutdown
     void close();
 
-    //Engine setter
-    void renderEngineSetter(int n){
-        renderEngine = n;
-    }
-
-    //Engine setter
-    void inputEngineSetter(int n){
-        inputEngine = n;
-    }
-
-
     //==============================================================
     // Private data
     //==============================================================
-
     //Object manager
     ObjectManager* objectManager;
     //Input manager
@@ -90,6 +114,8 @@ private:
     ItemManager* itemManager;
     //Score manager
     ScoreManager* scoreManager;
+    //Network manager
+    NetworkManager* networkManager;
 
     //Selected renderEngine
     int renderEngine;
@@ -99,6 +125,6 @@ private:
     //Stay in the main loop
     bool stay;
 
-    float timeWait = 0.0f;
-
+    //current state
+    IGameState* state;
 };

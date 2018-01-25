@@ -4,7 +4,7 @@ void PauseState::init() {
 
 }
 
-void PauseState::update() {
+void PauseState::update(float &accumulatedTime) {
 
 }
 
