@@ -8,4 +8,4 @@
 	|______________________________________________________________________________|
 
 Acerca de la entrega:
-	-Modelados:
+	-Dentro de la Entrega "Modelado de Objetos" se ha modelado todos los ítems del juego. Se adjunta una imagen de los tres objetos, los objetos en formato Wavefront y una breve memoria de la realización de cada objeto.
