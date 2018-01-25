@@ -6,6 +6,8 @@
 #include "../GameManager/NetworkManager.h"
 #include <iostream>
 
+class Game;
+
 class ClientLobbyState : public IGameState {
 
 public: 

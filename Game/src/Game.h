@@ -1,9 +1,12 @@
 #pragma once
+
 #include <iostream>
 #include "GameState/IGameState.h"
 #include "GameState/IntroState.h"
 #include "GameState/MainState.h"
 #include "GameState/MatchState.h"
+#include "GameState/ClientLobbyState.h"
+#include "GameState/MultiMatchState.h"
 #include "GameObject/GameObject.h"
 #include "GameObject/RenderComponent/ObjectRenderComponent.h"
 #include "GameObject/InputComponent.h"
@@ -47,13 +50,7 @@ public:
     void Run();
 
     //State setter
-    void setState(IGameState* s){
-        //state changer
-        state = s;
-
-        //everytime we change state, we must initialize its operating data
-        state->init();
-    }
+    void setState(IGameState::stateType type);
 
     //Basic setters and getters
     void setStay(bool s)       {     stay = s;              }//Stay setter

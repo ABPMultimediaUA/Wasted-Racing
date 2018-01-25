@@ -43,14 +43,14 @@ void multiplayerActivated(EventData eData) {
     IntroState::getInstance().close();
 
     //Initialize Client Lobby state a new
-    Game::getInstance().setState(&ClientLobbyState::getInstance());
+    Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
 void singleplayerActivated(EventData eData) {
     //Close this state
     IntroState::getInstance().close();
 
-    //Initialize main state again
-    Game::getInstance().setState(&MatchState::getInstance());
+    //Initialize match state
+    Game::getInstance().setState(IGameState::stateType::MATCH);
 }
 //-----------------------------------
 //-----------------------------------

@@ -91,9 +91,18 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
     }
 }
 
-void NetworkManager::createBanana(RakNet::Packet* packet)
+void NetworkManager::createBanana(EventData eData)
 {
-    int id;
+
+}
+
+void NetworkManager::destroyBanana(EventData eData)
+{
+    
+}
+
+void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
+        int id;
     float x, y, z;
     RakNet::BitStream parser(packet->data, packet->length, false);
     parser.IgnoreBytes(1);
@@ -132,8 +141,7 @@ void NetworkManager::createBanana(RakNet::Packet* packet)
     }
 }
 
-void NetworkManager::destroyBanana(RakNet::Packet* packet)
-{
+void NetworkManager::remoteDestroyBanana(RakNet::Packet* packet){
     
 }
 
@@ -235,10 +243,10 @@ void NetworkManager::update()
                 remoteItemBoxCollision(packet);
                 break;
             case ID_CREATE_BANANA:
-                createBanana(packet);
+                remoteCreateBanana(packet);
                 break;
             case ID_DESTROY_BANANA:
-                destroyBanana(packet);
+                remoteDestroyBanana(packet);
                 break;
             default:
                 std::cout << "ALGO PASÓ PERO NO SABEMOS QUË" << std::endl;
@@ -342,9 +350,9 @@ void itemBoxCollisionEvent(EventData eData)
 
 void createBananaEvent(EventData eData)
 {
-    //NetworkManager::getInstance().createBanana(eData);
+    NetworkManager::getInstance().createBanana(eData);
 }
 
 void destroyBananaEvent(EventData eData){
-    //NetworkManager::getInstance().destroyBanana(eData);
+    NetworkManager::getInstance().destroyBanana(eData);
 }

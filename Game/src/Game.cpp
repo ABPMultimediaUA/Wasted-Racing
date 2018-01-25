@@ -20,7 +20,7 @@ void Game::init() {
     setStay(true);
 
     //Initial state
-    setState(&IntroState::getInstance());
+    setState(IGameState::stateType::INTRO);
 
     //Set engine to default
     setRenderEngine(0);
@@ -126,6 +126,30 @@ void Game::Run() {
     close();
 }
 
+//State setter
+void Game::setState(IGameState::stateType type){
+        //State changer
+        switch(type){
+            case IGameState::stateType::INTRO:
+                state = &IntroState::getInstance();
+                break;
+            case IGameState::stateType::CLIENTLOBBY:
+                state = &ClientLobbyState::getInstance();
+                break;
+            case IGameState::stateType::MATCH:
+                state = &MatchState::getInstance();
+                break;
+            case IGameState::stateType::MULTIMATCH:
+                state = &MultiMatchState::getInstance();
+                break;
+            default:
+                state = &IntroState::getInstance();
+                break;
+        }
+
+        //everytime we change state, we must initialize its operating data
+        state->init();
+    }
 
 //Additional functions
 void addObjects(){

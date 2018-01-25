@@ -61,12 +61,6 @@ public:
     //Creates a remote player in our game
     void createRemotePlayer(RakNet::Packet* packet);
 
-    //creates a banana item where it should be on the map
-    void createBanana(RakNet::Packet* packet);
-
-    //destroy a banana item where it should be on the map
-    void destroyBanana(RakNet::Packet* packet);
-
     //==============================================================
     // Network Communication Functions
     //==============================================================
@@ -76,6 +70,18 @@ public:
 
     //Receives a remote player position
     void moveRemotePlayer(RakNet::Packet* packet);
+
+    //send signal to create a banana
+    void createBanana(EventData eData);
+
+    //send signal to destroy a banana
+    void destroyBanana(EventData eData);
+
+    //creates a banana item where it should be on the map
+    void remoteCreateBanana(RakNet::Packet* packet);
+
+    //destroy a banana item where it should be on the map
+    void remoteDestroyBanana(RakNet::Packet* packet);
 
     //Broadcasts the collision with a box
     void itemBoxCollision(EventData eData);
