@@ -1,5 +1,10 @@
 #include "NetworkManager.h"
 
+
+//Delegates
+
+//=============================================
+
 NetworkManager& NetworkManager::getInstance() {
     static NetworkManager instance;
     return instance;
@@ -11,6 +16,9 @@ void NetworkManager::init() {
 
     //Match not started
     started = false;
+
+    //Binding functions
+
 }
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
@@ -80,7 +88,43 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
 
 void NetworkManager::createBanana(RakNet::Packet* packet)
 {
+    int id;
+    float x, y, z;
+    RakNet::BitStream parser(packet->data, packet->length, false);
+    parser.IgnoreBytes(1);
+    parser.Read(id);
+    parser.Read(x);
+    parser.Read(y);
+    parser.Read(z);
 
+    GameObject::TransformationData trans;
+    trans.position.x = x;
+    trans.position.y = y;
+    trans.position.z = z;
+
+    trans.rotation.x = 0;
+    trans.rotation.y = 90;
+    trans.rotation.z = 0;
+
+    trans.scale.x    = 1;
+    trans.scale.y    = 1;
+    trans.scale.z    = 1;
+
+    ObjectManager::getInstance().createPlayer(trans,0, 2, 25001+id, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(trans.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(trans.position));
+
+    bool found = false;
+    std::shared_ptr<RemotePlayerComponent> rPlayer;
+    for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
+    {
+        rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
+        if(rPlayer.get()->getServerId() == -1)
+        {
+            found = true;
+            rPlayer.get()->setServerId(id);
+        }
+    }
 }
 
 void NetworkManager::destroyBanana(RakNet::Packet* packet)
@@ -140,7 +184,6 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             trans.rotation.z = rz;
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
-            //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
         }
     }
 }
@@ -223,16 +266,38 @@ void NetworkManager::updateLobby(){
 
 IComponent::Pointer NetworkManager::createRemotePlayerComponent(GameObject& newGameObject) {
 
-        IComponent::Pointer component = std::make_shared<RemotePlayerComponent>(newGameObject);
+    IComponent::Pointer component = std::make_shared<RemotePlayerComponent>(newGameObject);
 
-        newGameObject.addComponent(component);
+    newGameObject.addComponent(component);
 
-        remotePlayerComponentList.push_back(component);
+    remotePlayerComponentList.push_back(component);
 
-        EventData data;
-        data.Component = component;
+    EventData data;
+    data.Component = component;
 
-        EventManager::getInstance().addEvent(Event {EventType::RemotePlayerComponent_Create, data});
+    EventManager::getInstance().addEvent(Event {EventType::RemotePlayerComponent_Create, data});
 
-        return component;
+    return component;
+}
+
+IComponent::Pointer NetworkManager::createRemoteItemComponent(GameObject& newGameObject, int type) {
+
+    IComponent::Pointer component = std::make_shared<RemoteItemComponent>(newGameObject, type);
+
+    newGameObject.addComponent(component);
+
+    if(type == 0){
+        component.setType(0);
+        remoteBananaComponentList.push_back(component);
     }
+    if(type == 1){
+        component.setType(1);
+        remoteRedShellComponentList.push_back(component);
+    }
+    if(type == 2){
+        component.setType(2);
+        remoteBlueShellComponentList.push_back(component);
+    }
+
+    return component;
+}

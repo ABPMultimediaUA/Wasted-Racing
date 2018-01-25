@@ -55,4 +55,10 @@ class ServerManager{
         //Broadcast one players position
         void broadcastPosition(RakNet::Packet* packet);
 
+        //Broadcast the creation of the banana
+        void broadcastCreateBanana(RakNet::Packet* packet);
+
+        //Broadcast the deletion of the banana
+        void broadcastDestroyBanana(RakNet::Packet* packet);
+
 };

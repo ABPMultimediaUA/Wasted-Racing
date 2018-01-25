@@ -5,6 +5,7 @@
 #include "RenderManager.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
+#include "../GameObject/NetworkComponent/RemoteItemComponent.h"
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/BitStream.h>
@@ -40,8 +41,14 @@ public:
     //Updates the lobby
     void updateLobby();
 
+    //==============================================================
+    // Create component
+    //==============================================================
     //Create remote player component
     IComponent::Pointer createRemotePlayerComponent(GameObject& newGameObject);
+
+    //Create remote player component
+    IComponent::Pointer createRemoteItemComponent(GameObject& newGameObject, int type);
 
     //==============================================================
     // Create Objects
@@ -72,11 +79,14 @@ public:
     //==============================================================
     // Getters and setters
     //==============================================================
-    std::vector<IComponent::Pointer>& getRemotePlayerComponentList(){    return remotePlayerComponentList;} //Remote player component list getter
-    void setPlayer(GameObject::Pointer p)                           {    player = p;                      };
-    void setStarted(bool s)                                         {    started = s;                     };
-    GameObject::Pointer getPlayer()                                 {    return player;                   };
-    bool getStarted()                                               {    return started;                  };
+    std::vector<IComponent::Pointer>& getRemotePlayerComponentList()   {    return remotePlayerComponentList;   } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteBananaComponentList()   {    return remoteBananaComponentList;   } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteRedShellComponentList() {    return remoteRedShellComponentList; } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){    return remoteBlueShellComponentList;} //Remote player component list getter
+    void setPlayer(GameObject::Pointer p)                              {    player = p;                         };
+    void setStarted(bool s)                                            {    started = s;                        };
+    GameObject::Pointer getPlayer()                                    {    return player;                      };
+    bool getStarted()                                                  {    return started;                     };
 
 private:
     //==============================================================
@@ -98,4 +108,12 @@ private:
     //List of remotePlayerComponent
     std::vector<IComponent::Pointer> remotePlayerComponentList;
 
+    //List of remotePlayerComponent
+    std::vector<IComponent::Pointer> remoteBananaComponentList;
+
+    //List of remotePlayerComponent
+    std::vector<IComponent::Pointer> remoteRedShellComponentList;
+
+    //List of remotePlayerComponent
+    std::vector<IComponent::Pointer> remoteBlueShellComponentList;
 };
