@@ -450,7 +450,7 @@ IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGame
 
 IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f plane, const bool kinetic, const float length, const CollisionComponent::Type type) {
 
-    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, kinetic, length, type);
+    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, length, kinetic, type);
 
     newGameObject.addComponent(component);
 
