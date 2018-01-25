@@ -1,5 +1,10 @@
 #include "NetworkManager.h"
 
+//////////////////////////////////////////////////////
+//////////// DELEGATE FUNCTIONS
+//////////////////////////////////////////////////////
+void itemBoxCollisionEvent(EventData eData);
+
 NetworkManager& NetworkManager::getInstance() {
     static NetworkManager instance;
     return instance;
@@ -11,6 +16,9 @@ void NetworkManager::init() {
 
     //Match not started
     started = false;
+
+    //Listeners
+    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
 }
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
@@ -145,7 +153,29 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
     }
 }
 
-void NetworkManager::update() {
+void NetworkManager::itemBoxCollision(EventData eData)
+{
+    RakNet::BitStream stream;
+
+    stream.Write((unsigned char)ID_BOX_COLLISION);
+    stream.Write(eData.CollComponent.get()->getGameObject().getId());
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+}
+
+void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
+{
+    RakNet::BitStream parser(packet->data, packet->length, false);
+    uint16_t id;
+
+    parser.IgnoreBytes(1);
+    parser.Read(id);
+    ObjectManager::getInstance().getObject(id).get()->getComponent<ItemBoxComponent>().get()->deactivateBox();
+
+}
+
+void NetworkManager::update() 
+{
     RakNet::Packet* packet;
     packet = peer->Receive();
     if(packet)
@@ -160,6 +190,9 @@ void NetworkManager::update() {
                 break;
             case ID_REMOTE_PLAYER_MOVEMENT:
                 moveRemotePlayer(packet);
+                break;
+            case ID_BOX_COLLISION:
+                remoteItemBoxCollision(packet);
                 break;
             case ID_CREATE_BANANA:
                 createBanana(packet);
@@ -236,3 +269,12 @@ IComponent::Pointer NetworkManager::createRemotePlayerComponent(GameObject& newG
 
         return component;
     }
+
+//==============================================
+// DELEGATES
+//============================================== 
+
+void itemBoxCollisionEvent(EventData eData)
+{
+    NetworkManager::getInstance().itemBoxCollision(eData);
+}

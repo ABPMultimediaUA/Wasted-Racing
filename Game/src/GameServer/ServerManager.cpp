@@ -92,6 +92,13 @@ void ServerManager::broadcastPosition(RakNet::Packet* packet)
 	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
 }
 
+void ServerManager::broadcastBoxCollision(RakNet::Packet* packet)
+{
+	RakNet::BitStream stream(packet->data, packet->length, false);
+
+	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
+}
+
 void ServerManager::update()
 {
 	//identifier of the packet
@@ -133,6 +140,9 @@ void ServerManager::update()
 				break;
 			case ID_REMOTE_PLAYER_MOVEMENT:
 				broadcastPosition(packet);
+				break;
+			case ID_BOX_COLLISION:
+				broadcastBoxCollision(packet);
 				break;
             default:
                 std::cout << "Receiving new packet" << std::endl;
