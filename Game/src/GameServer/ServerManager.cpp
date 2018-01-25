@@ -99,7 +99,13 @@ void ServerManager::broadcastCreateBanana(RakNet::Packet* packet)
 	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
 }
 
-void ServerManager::broadcastDestroyBanana(RakNet::Packet* packet)
+void ServerManager::broadcastDestroyBanana(RakNet::Packet* packet){
+	RakNet::BitStream stream(packet->data, packet->length, false);
+
+	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
+}
+
+void ServerManager::broadcastBoxCollision(RakNet::Packet* packet)
 {
 	RakNet::BitStream stream(packet->data, packet->length, false);
 
@@ -153,6 +159,9 @@ void ServerManager::update()
 				break;
 			case ID_DESTROY_BANANA:
 				broadcastDestroyBanana(packet);
+				break;
+			case ID_BOX_COLLISION:
+				broadcastBoxCollision(packet);
 				break;
             default:
                 std::cout << "Receiving new packet" << std::endl;

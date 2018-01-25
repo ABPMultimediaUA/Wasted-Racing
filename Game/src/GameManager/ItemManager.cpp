@@ -145,13 +145,15 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
 IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 {
-    
+    //Initial Data
     uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
     ItemManager::ids++;
 
+    //Get launcher object transform
     auto pos = obj.getTransformData().position;
 
+    //Set object offset position
     transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
@@ -212,17 +214,26 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
+    //Launch creation event
+    EventData data;
+    data.Object = ob;
+
+    EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, data});
+
     return component;
 }
 
 IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 {
+    //Initial Data
     uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
     ItemManager::ids++;
 
+    //Get launcher object transform
     auto pos = obj.getTransformData().position;
 
+    //Set object offset position
     transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
@@ -283,17 +294,26 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
+    //Launch creation event
+    EventData data;
+    data.Object = ob;
+
+    EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, data});
+
     return component;
 }
 
 IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 {
+    //Initial Data
     uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
     ItemManager::ids++;
 
+    //Get launcher object transform
     auto pos = obj.getTransformData().position;
 
+    //Set object offset position
     transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z+10*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
@@ -310,6 +330,12 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
+
+    //Launch creation event
+    EventData data;
+    data.Object = ob;
+
+    EventManager::getInstance().addEvent(Event {EventType::Banana_Create, data});
 
     return component;
 }

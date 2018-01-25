@@ -3,6 +3,7 @@
 #include "ObjectManager.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
+#include "../GameEvent/EventManager.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include "../GameObject/NetworkComponent/RemoteItemComponent.h"
@@ -75,6 +76,12 @@ public:
 
     //Receives a remote player position
     void moveRemotePlayer(RakNet::Packet* packet);
+
+    //Broadcasts the collision with a box
+    void itemBoxCollision(EventData eData);
+
+    //Receives the collision of a remote player with a box
+    void remoteItemBoxCollision(RakNet::Packet* packet);
 
     //==============================================================
     // Getters and setters

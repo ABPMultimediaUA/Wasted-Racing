@@ -46,6 +46,7 @@ class ServerManager{
         ///////////////////////////////////////////////////
         // FUNCTIONS 
         ///////////////////////////////////////////////////
+
         //Function provided by RakNet
         unsigned char GetPacketIdentifier(RakNet::Packet *p);
 
@@ -60,5 +61,8 @@ class ServerManager{
 
         //Broadcast the deletion of the banana
         void broadcastDestroyBanana(RakNet::Packet* packet);
+        
+        //Broadcast box collision
+        void broadcastBoxCollision(RakNet::Packet* packet);
 
 };

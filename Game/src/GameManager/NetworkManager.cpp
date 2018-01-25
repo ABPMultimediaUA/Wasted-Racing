@@ -1,8 +1,11 @@
 #include "NetworkManager.h"
 
-
-//Delegates
-
+//////////////////////////////////////////////////////
+//////////// DELEGATE FUNCTIONS
+//////////////////////////////////////////////////////
+void itemBoxCollisionEvent(EventData eData);
+void createBananaEvent(EventData eData);
+void destroyBananaEvent(EventData eData);
 //=============================================
 
 NetworkManager& NetworkManager::getInstance() {
@@ -17,8 +20,10 @@ void NetworkManager::init() {
     //Match not started
     started = false;
 
-    //Binding functions
-
+    //Listeners
+    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::Banana_Create,createBananaEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision,destroyBananaEvent});
 }
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
@@ -188,7 +193,29 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
     }
 }
 
-void NetworkManager::update() {
+void NetworkManager::itemBoxCollision(EventData eData)
+{
+    RakNet::BitStream stream;
+
+    stream.Write((unsigned char)ID_BOX_COLLISION);
+    stream.Write(eData.CollComponent.get()->getGameObject().getId());
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+}
+
+void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
+{
+    RakNet::BitStream parser(packet->data, packet->length, false);
+    uint16_t id;
+
+    parser.IgnoreBytes(1);
+    parser.Read(id);
+    ObjectManager::getInstance().getObject(id).get()->getComponent<ItemBoxComponent>().get()->deactivateBox();
+
+}
+
+void NetworkManager::update() 
+{
     RakNet::Packet* packet;
     packet = peer->Receive();
     if(packet)
@@ -203,6 +230,9 @@ void NetworkManager::update() {
                 break;
             case ID_REMOTE_PLAYER_MOVEMENT:
                 moveRemotePlayer(packet);
+                break;
+            case ID_BOX_COLLISION:
+                remoteItemBoxCollision(packet);
                 break;
             case ID_CREATE_BANANA:
                 createBanana(packet);
@@ -282,22 +312,39 @@ IComponent::Pointer NetworkManager::createRemotePlayerComponent(GameObject& newG
 
 IComponent::Pointer NetworkManager::createRemoteItemComponent(GameObject& newGameObject, int type) {
 
-    IComponent::Pointer component = std::make_shared<RemoteItemComponent>(newGameObject, type);
+    IComponent::Pointer component = std::make_shared<RemoteItemComponent>(newGameObject);
 
     newGameObject.addComponent(component);
 
     if(type == 0){
-        component.setType(0);
+        std::dynamic_pointer_cast<RemoteItemComponent>(component).get()->setType(0);
         remoteBananaComponentList.push_back(component);
     }
     if(type == 1){
-        component.setType(1);
+        std::dynamic_pointer_cast<RemoteItemComponent>(component).get()->setType(1);
         remoteRedShellComponentList.push_back(component);
     }
     if(type == 2){
-        component.setType(2);
+        std::dynamic_pointer_cast<RemoteItemComponent>(component).get()->setType(2);
         remoteBlueShellComponentList.push_back(component);
     }
 
     return component;
+}
+//==============================================
+// DELEGATES
+//============================================== 
+
+void itemBoxCollisionEvent(EventData eData)
+{
+    NetworkManager::getInstance().itemBoxCollision(eData);
+}
+
+void createBananaEvent(EventData eData)
+{
+    //NetworkManager::getInstance().createBanana(eData);
+}
+
+void destroyBananaEvent(EventData eData){
+    //NetworkManager::getInstance().destroyBanana(eData);
 }
