@@ -1,0 +1,17 @@
+	_______________________________________________________________________________
+	|  _    _           _           _   _   _                _           _         |
+	| | |  | |         | |         | | | | | |              | |         | |        |
+	| | |  | | __ _ ___| |_ ___  __| | | |_| | ___  _ __ ___| |__   __ _| |_ __ _  |
+	| | |/\| |/ _` / __| __/ _ \/ _` | |  _  |/ _ \| '__/ __| '_ \ / _` | __/ _` | |
+	| \  /\  / (_| \__ \ ||  __/ (_| | | | | | (_) | | | (__| | | | (_| | || (_| | |
+	|  \/  \/ \__,_|___/\__\___|\__,_| \_| |_/\___/|_|  \___|_| |_|\__,_|\__\__,_| |
+	|______________________________________________________________________________|
+
+Acerca de la entrega:
+	-Gestionar colisiones de la cámara: ahora cuando la cámara se acerca a los límites del terreno, se acerca al jugador para evitar salirse de la pista. Se adjunta un vídeo donde puede verse el comportamiento de la cámara en acción. El código de la cámara se puede encontrar en Game/src/GameObject/RenderComponent/CameraRenderComponent.*
+
+	-Creación de un cargador de niveles: ahora los niveles se leen a partir de un fichero con extensión Wavefront (.obj) generado en Blender. Este archivo se convierte con un programa hecho en Python a un XML que nuestro juego será capaz de leer. En nuestro juego, el nivel se crea leyendo el XML generado. Podemos encontrar en esta carpeta el Formato Propio para la Definición de Niveles, en Game/Parser encontramos el archivo de Blender y el conversor de OBJ a XML en Python. El lector del XML lo podemos encontrar en la función loadMap() de Game/src/Game.cpp.
+
+	-Sistema de depuración de colisiones de la cámara:
+
+	-Implementar el Patron State:

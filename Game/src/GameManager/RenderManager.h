@@ -48,13 +48,26 @@ public:
         return renderFacade;
     }
 
-    IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape);
+    IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr);
+    IComponent::Pointer createLightRenderComponent(GameObject& newGameObject, LightRenderComponent::Type newType, float newRadius);
     IComponent::Pointer createCameraRenderComponent(GameObject& newGameObject);
-
+    //Create cylinder or cone
+    IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency);
     //Camera component getter and setter
     IComponent::Pointer getCameraComponent() { return cameraComponent; }
     void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
 
+    //AI Debug
+    void renderAIDebug();
+    void updateAIDebug();
+    void createRenderNPC(); 
+    void deleteRenderNPC(); 
+    void createLinesObjects();
+    void deleteLinesObjects();
+
+    //Camera Debug
+    void renderCameraDebug();
+    
 private:
 
     IRenderFacade* renderFacade;
@@ -71,5 +84,22 @@ private:
 
     //We store just one camera component, so we can't have more than 1
     IComponent::Pointer cameraComponent;
+
+    //Debug IA
+    unsigned int AIDebug = 0;
+    bool lap = false;
+    std::vector<GameObject> AIDebugPoint;
+    GameObject::Pointer marker;
+    GameObject::Pointer collisionCylinder;
+    GameObject::Pointer visibilityArea;
+    GameObject::Pointer visionTriangle;
+    std::vector<GameObject::Pointer> linesObjects;
+    float moveSeen = 0;
+    float maxMoveSeen = 20.0;
+    float moveNextPos = 0;
+    float maxMoveNextPos = 30.0;
+
+    //Debug Camera
+    
 
 };

@@ -24,6 +24,8 @@ void jumpDownI(EventData eData);
 void driftUpI(EventData eData);
 void driftDownI(EventData eData);
 void useItemDownI(EventData eData);
+void useAIDebug(EventData eData);
+void useCameraDebug(EventData eData);
 
 //==============================================
 // INPUT COMPONENT FUNCTIONS
@@ -45,6 +47,8 @@ void InputComponent::init(){
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Down, driftDownI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Up, driftUpI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, useItemDownI});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_DebugAI_Down, useAIDebug});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_DebugCamera_Down, useCameraDebug});
 
 }
 
@@ -116,4 +120,10 @@ void driftUpI(EventData eData){
 void useItemDownI(EventData eData){
     auto obj = InputManager::getInstance().getComponent().get()->getGameObject();
     ItemManager::getInstance().createItem(obj);
+}
+void useAIDebug(EventData eData){
+    RenderManager::getInstance().renderAIDebug();
+}
+void useCameraDebug(EventData eData){
+    RenderManager::getInstance().renderCameraDebug();
 }

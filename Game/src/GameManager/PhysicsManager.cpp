@@ -2,6 +2,7 @@
 #include "../GameObject/GameObject.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/RenderManager.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include <memory>
 #include <iostream>
 
@@ -10,6 +11,7 @@
 //==============================================
 void addMoveComponent(EventData eData); 
 void addCollisionComponent(EventData eData); 
+void addTerrainComponent(EventData eData); 
 void collideRamp(EventData eData);
 void collideBanana(EventData eData);
 void collideBlueShell(EventData eData);
@@ -33,6 +35,7 @@ void PhysicsManager::init() {
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::MoveComponent_Create, addMoveComponent});
     EventManager::getInstance().addListener(EventListener {EventType::CollisionComponent_Create, addCollisionComponent});
+    EventManager::getInstance().addListener(EventListener {EventType::TerrainComponent_Create, addTerrainComponent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, collideItemBox});
     EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, collideBanana});
@@ -78,6 +81,9 @@ void PhysicsManager::update(const float dTime) {
         gameObject.setNewTransformData(gameObject.getTransformData());
         
     }
+
+    //Update camera collision
+    RenderManager::getInstance().getRenderFacade()->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
 
 }
 
@@ -138,12 +144,12 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
             
             //Depending on the shape to collide with, check collision with it
             if(hisColl->getShape() == CollisionComponent::Shape::Circle) {
-                collision = LAPAL::checkCircleCircleCollision(  nexPosition, ourColl->getRadius(), 
-                                                                hisColl->getGameObject().getTransformData().position, hisColl->getRadius());
+                collision = LAPAL::checkCircleCircleCollision(  nexPosition, ourColl->getRadius(), ourColl->getLength(),
+                                                                hisColl->getGameObject().getTransformData().position, hisColl->getRadius(), hisColl->getLength());
             } 
             else if(hisColl->getShape() == CollisionComponent::Shape::Rectangle) {
-                collision = LAPAL::checkCircleRectangleCollision(   hisColl->getRectangle(), 
-                                                                    nexPosition, ourColl->getRadius());
+                collision = LAPAL::checkCircleRectangleCollision(   hisColl->getRectangle(),  nexPosition,
+                                                                    hisColl->getLength(), ourColl->getLength());
             }
 
             //If collision is kinetic, apply collision physics
@@ -275,11 +281,7 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
         glm::vec3 nextPosition;
 
         if(ourMovementData.vel != 0){
-            nextPosition = glm::vec3(
-                                ourMData.position.x + ourMovementData.velocity.x / ourMovementData.vel * radius,
-                                ourMData.position.y + ourMovementData.velocity.y / ourMovementData.vel * radius,
-                                ourMData.position.z + ourMovementData.velocity.z / ourMovementData.vel * radius
-                                );
+            nextPosition = glm::vec3( ourMData.position + ourMovementData.velocity / ourMovementData.vel * radius);
         }else{
             nextPosition = ourMData.position;
         }
@@ -373,6 +375,33 @@ void PhysicsManager::checkCollisionShellTerrain(GameObject& obj)
 }
 
 //==============================================================================
+// GETTER FUNCTIONS
+//==============================================================================
+PhysicsManager::MovingCharacter PhysicsManager::getMovingCharacter(uint16_t id) {
+        PhysicsManager::MovingCharacter mChar;
+        for(unsigned int i=0; i < movingCharacterList.size(); ++i){
+            if(movingCharacterList[i].moveComponent->getGameObject().getId() == id){
+                return movingCharacterList[i];
+            }
+        }
+        return mChar; 
+}
+
+std::shared_ptr<TerrainComponent> PhysicsManager::getTerrainFromPos(LAPAL::vec3f pos) {
+
+    for( unsigned int i=0; i < terrainComponentList.size(); ++i){
+        
+        auto terrain = std::dynamic_pointer_cast<TerrainComponent>(terrainComponentList[i]);
+
+        if(LAPAL::checkCircleRectangleCollision(terrain.get()->getTerrain(), pos, 20, 0))
+            return terrain;
+    }
+
+    return nullptr;
+
+}
+
+//==============================================================================
 // COMPONENT CREATOR FUNCTIONS
 //==============================================================================
 
@@ -405,9 +434,9 @@ IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameOb
 }
 
 
-IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const float radius, const bool kinetic, const CollisionComponent::Type type) {
+IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const float radius, const float length, const bool kinetic, const CollisionComponent::Type type) {
 
-    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, radius, kinetic, type);
+    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, radius, length, kinetic, type);
 
     newGameObject.addComponent(component);
 
@@ -419,9 +448,9 @@ IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGame
     return component;
 }
 
-IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f plane, const bool kinetic, const CollisionComponent::Type type) {
+IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f plane, const bool kinetic, const float length, const CollisionComponent::Type type) {
 
-    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, kinetic, type);
+    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, kinetic, length, type);
 
     newGameObject.addComponent(component);
 
@@ -470,6 +499,11 @@ void addMoveComponent(EventData data) {
 
 void addCollisionComponent(EventData data) {
     PhysicsManager::getInstance().getCollisionComponentList().push_back(data.Component);
+    data.Component.get()->init();
+}
+
+void addTerrainComponent(EventData data) {
+    PhysicsManager::getInstance().getTerrainComponentList().push_back(data.Component);
     data.Component.get()->init();
 }
 

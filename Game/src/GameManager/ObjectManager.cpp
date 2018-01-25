@@ -157,9 +157,10 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
+    mData.player = 0;
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, true, CollisionComponent::Type::Default);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "Link.obj");
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
@@ -200,9 +201,10 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
+    mData.player = 1;
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, true, CollisionComponent::Type::Default);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "Link.obj");
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
@@ -243,9 +245,10 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
+    mData.player = 2;
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, true, CollisionComponent::Type::Default);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "Link.obj");
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
@@ -286,9 +289,10 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.max_acc = 40.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
+    mData.player = 3;
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, true, CollisionComponent::Type::Default);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "Link.obj");
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
@@ -311,12 +315,13 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
     {
         InputManager::getInstance().createInputComponent(*obj.get());
         RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+        AudioManager::getInstance().createListenerComponent(*obj.get());
     }
     else if(move == 1)
     {
         AIManager::getInstance().createAIDrivingComponent(*obj.get());
         AIManager::getInstance().createAIBattleComponent(*obj.get());
-        SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle, 100.f);
+        SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle, 100.f, 10.f); 
         SensorManager::getInstance().createMSensorComponent(*obj.get(), 5.f, mData.angle);
         //RenderManager::getInstance().createCameraRenderComponent(*obj.get());
     }

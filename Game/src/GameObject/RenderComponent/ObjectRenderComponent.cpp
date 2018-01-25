@@ -3,7 +3,7 @@
 
 //Initilizer
 void ObjectRenderComponent::init() {
-    RenderManager::getInstance().getRenderFacade()->addObject(shared_from_this());
+    RenderManager::getInstance().getRenderFacade()->addObject(this);
 }
 
 //Update
@@ -13,7 +13,7 @@ void ObjectRenderComponent::update(float dTime) {
 
 //Closer
 void ObjectRenderComponent::close() {
-    RenderManager::getInstance().getRenderFacade()->deleteObject(shared_from_this());
+    RenderManager::getInstance().getRenderFacade()->deleteObject(this);
 }
 
 //Drawer

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <glm/ext.hpp>
+#include "../GameObject/GameObject.h"
 
 class IAudioFacade{
 
@@ -16,22 +18,12 @@ public:
     //Destructor
     virtual ~IAudioFacade() {}
 
-    //Initializer
-    void init() {
-
-    }
-
-    //Closer
-    void close() {
-
-    }
-
     //==============================================================
     // Engine Related functions
     //==============================================================
 
     //Creates a window depending on the engine
-    virtual void openAudioEngine() = 0;
+    virtual void openAudioEngine(int lang) = 0;
 
     //Updates window info in the engine
     virtual void update() = 0;
@@ -43,20 +35,24 @@ public:
     // Audio Related functions
     //==============================================================
 
-    //Renders all the scene
-    virtual void playSound() = 0;
+    //Sets the basic volume of the game. Expected value between 0 and 1;
+    virtual void setVolume(float vol) = 0;
 
-    //Increases the flanger of the parameter
-    virtual void IncreaseFlanger() = 0;
+    //Sets the 3D position of the listener
+    virtual void setListenerPosition(glm::vec3 pos) = 0;
 
-    //Decreases the flanger of the parameter
-    virtual void DecreaseFlanger() = 0;
+    //Sets the gameObject to be the listener
+    void setListener(GameObject& newListener) {
+        listener = &newListener;
+    }
+    //Returns the gameObject that is listening
+    GameObject& getListener() {
+        return *listener;
+    }
 
-    //Pauses and unpauses Accept Event
-    virtual void stopA() = 0;
-
-    //Pauses and unpauses Cocodrile Event
-    virtual void stopK() = 0;
 protected:
+
+    //Listener
+    GameObject* listener;
 
 };
