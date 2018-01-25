@@ -98,6 +98,9 @@ void NetworkManager::broadcastPosition()
     stream.Write((float)trans.position.x);
     stream.Write((float)trans.position.y);
     stream.Write((float)trans.position.z);
+    stream.Write((float)trans.rotation.x);
+    stream.Write((float)trans.rotation.y);
+    stream.Write((float)trans.rotation.z);
 
     std::cout << "BROADCASTPOSITION: " << trans.position.x << " " << trans.position.y << " " << trans.position.z << std::endl;
 
@@ -107,7 +110,7 @@ void NetworkManager::broadcastPosition()
 void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
 {
     RakNet::BitStream parser(packet->data, packet->length, false);
-    float x, y, z;
+    float x, y, z, rx, ry, rz;
     int id;
 
     parser.IgnoreBytes(1);
@@ -115,7 +118,9 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
     parser.Read(x);
     parser.Read(y);
     parser.Read(z);
-
+    parser.Read(rx);
+    parser.Read(ry);
+    parser.Read(rz);
    
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
@@ -129,6 +134,10 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             trans.position.x = x;
             trans.position.y = y;
             trans.position.z = z;
+
+            trans.rotation.x = rx;
+            trans.rotation.y = ry;
+            trans.rotation.z = rz;
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
             //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
