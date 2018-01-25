@@ -41,6 +41,10 @@ enum EventType {
     ListenerComponent_Delete,
     RemotePlayerComponent_Create,
     RemotePlayerComponent_Delete,
+    //OBJECTS: Creation events
+    Banana_Create,
+    RedShell_Create,
+    BlueShell_Create,
     //COLLISION: Events triggered to certain collisions
     RampComponent_Collision,
     StartLineComponent_Collision,

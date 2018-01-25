@@ -1,6 +1,7 @@
  #pragma once
 
 #include <vector>
+#include "../GameEvent/EventManager.h"
 #include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/ItemComponent/ItemHolderComponent.h"
 #include "../GameObject/ItemComponent/ItemRedShellComponent.h"

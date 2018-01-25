@@ -33,9 +33,6 @@
 #include <fstream>
 #include <stdio.h>
 
-class ObjectManager;
-class NetworkManager;
-
 class Game {
 
 public: 

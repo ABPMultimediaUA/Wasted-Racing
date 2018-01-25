@@ -144,6 +144,12 @@ void ServerManager::update()
 			case ID_REMOTE_PLAYER_MOVEMENT:
 				broadcastData(packet);
 				break;
+			case ID_CREATE_BANANA:
+				broadcastData(packet);
+				break;
+			case ID_DESTROY_BANANA:
+				broadcastData(packet);
+				break;
 			case ID_BOX_COLLISION:
 				broadcastData(packet);
 				break;
