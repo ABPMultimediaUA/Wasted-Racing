@@ -36,6 +36,10 @@
 #include <fstream>
 #include <stdio.h>
 
+class AIManager;
+class ObjectManager;
+class ItemManager;
+
 class Game {
 
 public: 

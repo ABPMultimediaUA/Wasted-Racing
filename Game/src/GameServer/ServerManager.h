@@ -53,16 +53,10 @@ class ServerManager{
         //Function to start the match from the lobby
         void startGame();
 
-        //Broadcast one players position
-        void broadcastPosition(RakNet::Packet* packet);
+        //Function to end the match
+        void endGame();
 
-        //Broadcast the creation of the banana
-        void broadcastCreateBanana(RakNet::Packet* packet);
-
-        //Broadcast the deletion of the banana
-        void broadcastDestroyBanana(RakNet::Packet* packet);
-        
-        //Broadcast box collision
-        void broadcastBoxCollision(RakNet::Packet* packet);
+        //Broadcast one packet to the rest of the players
+        void broadcastData(RakNet::Packet* packet);
 
 };

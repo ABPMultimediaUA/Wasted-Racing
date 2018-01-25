@@ -7,6 +7,8 @@
 #include <iostream>
 
 class Game;
+class NetworkManager;
+class SensorManager;
 
 class ClientLobbyState : public IGameState {
 

@@ -32,6 +32,10 @@
 #include <stdio.h>
 
 class Game;
+class NetworkManager;
+class ObjectManager;
+class ItemManager;
+class SensorManager;
 
 class MultiMatchState : public IGameState {
 

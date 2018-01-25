@@ -31,6 +31,10 @@
 #include <stdio.h>
 
 class Game;
+class AIManager;
+class ObjectManager;
+class ItemManager;
+class SensorManager;
 
 class MatchState : public IGameState {
 

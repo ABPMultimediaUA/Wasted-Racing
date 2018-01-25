@@ -10,6 +10,7 @@
 #include <raknet/RakPeerInterface.h>
 
 class Game;
+class SensorManager;
 
 class IntroState : public IGameState {
 
