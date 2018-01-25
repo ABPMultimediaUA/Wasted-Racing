@@ -16,8 +16,7 @@ public:
 		Arrow,
 		Cylinder,
 		Portion,
-		Pyramid,
-		Rectangle2D
+		Pyramid
 	};
 
     //Constructor

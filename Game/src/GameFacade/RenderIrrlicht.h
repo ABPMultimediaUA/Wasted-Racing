@@ -94,6 +94,6 @@ private:
 
     irr::gui::IGUIFont* font;
 
-    irr::gui::IGUIElement* rectangle;
+    std::vector<irr::gui::IGUIElement*> rectangles;
 
 };

@@ -188,23 +188,17 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
                 node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
             }
             break;
-            case ObjectRenderComponent::Shape::Rectangle2D: {
-                auto img = videoDriver->getTexture(cmp->getImg().c_str());
-                rectangle = sceneManager->getGUIEnvironment()->addImage(img, irr::core::position2d<irr::s32>(200,200));
-            }
-            break;
             default:
             break;
         }
-        if(shape != ObjectRenderComponent::Shape::Rectangle2D)
-        {
-            //Set node transformation
-            node->setPosition(irrPos);
-            node->setRotation(irrRot);
-            node->setScale(irrSca);
+        
+        //Set node transformation
+        node->setPosition(irrPos);
+        node->setRotation(irrRot);
+        node->setScale(irrSca);
 
-        }
-            nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
+    
+        nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
     }
 }
 
@@ -357,7 +351,17 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
     }
 }
 
-void RenderIrrlicht::deleteRectangle()
+void RenderIrrlicht::createRectangle2D()
 {
-    rectangle->remove();
+    /*rectangle->remove();
+    case ObjectRenderComponent::Shape::Rectangle2D: {
+        auto img = videoDriver->getTexture(cmp->getImg().c_str());
+        rectangle = sceneManager->getGUIEnvironment()->addImage(img, irr::core::position2d<irr::s32>(200,200));
+    }
+    break;*/
+}
+
+void RenderIrrlicht::deleteRectangle2D()
+{
+    //rectangle->remove();
 }
