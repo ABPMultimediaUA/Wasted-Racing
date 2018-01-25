@@ -78,6 +78,16 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
     }
 }
 
+void NetworkManager::createBanana(RakNet::Packet* packet)
+{
+
+}
+
+void NetworkManager::destroyBanana(RakNet::Packet* packet)
+{
+    
+}
+
 void NetworkManager::broadcastPosition()
 {
     RakNet::BitStream stream;
@@ -142,8 +152,14 @@ void NetworkManager::update() {
             case ID_REMOTE_PLAYER_MOVEMENT:
                 moveRemotePlayer(packet);
                 break;
+            case ID_CREATE_BANANA:
+                createBanana(packet);
+                break;
+            case ID_DESTROY_BANANA:
+                destroyBanana(packet);
+                break;
             default:
-                std::cout << "ALGO PASO" << std::endl;
+                std::cout << "ALGO PASÓ PERO NO SABEMOS QUË" << std::endl;
                 break;
         }
         peer->DeallocatePacket(packet);

@@ -53,6 +53,12 @@ public:
     //Creates a remote player in our game
     void createRemotePlayer(RakNet::Packet* packet);
 
+    //creates a banana item where it should be on the map
+    void createBanana(RakNet::Packet* packet);
+
+    //destroy a banana item where it should be on the map
+    void destroyBanana(RakNet::Packet* packet);
+
     //==============================================================
     // Network Communication Functions
     //==============================================================
