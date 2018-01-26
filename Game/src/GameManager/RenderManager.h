@@ -76,11 +76,14 @@ public:
     void updateBattleDebug(float dTime);
     void createBattleRender();
     void deleteBattleRender();
-    void setRootBattle(std::string r)    {          root += " -> "+r;          }
-    void setEndRootBattle(bool b)        {          end = b;            }
-    bool getEndRootBattle()              {          return end;         }
-    void setWaitBattle(bool b)           {          wait = b;            }
-    bool getWaitBattle()                 {          return wait;         }
+    void setRootBattle(std::string r)                  {          root += " -> "+r;         }
+    void setEndRootBattle(bool b)                      {          end = b;                  }
+    bool getEndRootBattle()                            {          return end;               }
+    void setWaitBattle(bool b)                         {          wait = b;                 }
+    bool getWaitBattle()                               {          return wait;              }
+    bool getLapBattle()                                {          return lapB;              }
+    int getAINumberBattle()                            {          return AIDebugB;         }
+    std::vector<GameObject> getAIsBattle()             {          return AIDebugPointB;     }
     
 private:
 

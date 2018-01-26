@@ -366,7 +366,7 @@ void RenderManager::createRenderNPC()
 
         RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, length, 10.f, true);
     }
-    else if(lap == true && AIDebug != 0)
+    else if(lap == true && AIDebug == 1)
     {
 
         auto angV = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getAngleVision();
@@ -400,10 +400,6 @@ void RenderManager::createRenderNPC()
 
         RenderManager::getInstance().createObjectRenderComponent(*visionTriangle.get(), ObjectRenderComponent::Shape::Portion, "blackWithTransparency.png");
         
-    }
-
-    if(AIDebug != 0)
-    {
     }
 
     //Create camera render
@@ -698,6 +694,8 @@ void RenderManager::createBattleRender()
     }
     else if(lapB == true && AIDebugB != 0)
     {
+        root = " ";
+        renderFacade->setDescriptionText(root);
         if(timeP != maxTimeP)
         {
             renderFacade->createRectangleCol2D(glm::vec2(960,0), "media/img/green_rectangle.png");
@@ -730,6 +728,7 @@ void RenderManager::deleteBattleRender()
 
 void RenderManager::updateBattleDebug(float dTime)
 {
+    
     if(lapB == true && AIDebugB != 0)
     {
         if(end == false)

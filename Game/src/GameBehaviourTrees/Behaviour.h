@@ -3,6 +3,8 @@
 #include <memory>
  #include <string>
 #include "../GameManager/RenderManager.h"
+#include "../GameObject/IComponent.h" 
+#include "../GameObject/GameObject.h"
 
 enum class BehaviourState
 {

@@ -16,9 +16,13 @@ class UseItemAction : public Behaviour{
             {
                 ItemManager* itemManager = &ItemManager::getInstance();
                 itemManager->createItem(target);
-                RenderManager::getInstance().setRootBattle(name);
-                RenderManager::getInstance().setEndRootBattle(true);
-                RenderManager::getInstance().setWaitBattle(false);
+                auto player = RenderManager::getInstance().getAIsBattle()[RenderManager::getInstance().getAINumberBattle()];
+                if(player.getId() == target.getId())
+                {
+                    RenderManager::getInstance().setRootBattle(name);
+                    RenderManager::getInstance().setEndRootBattle(true);
+                    RenderManager::getInstance().setWaitBattle(false);
+                }
                 return BehaviourState::SUCCEEDED;
             }
 			return BehaviourState::FAILED;
@@ -45,6 +49,7 @@ class WaitAction : public Behaviour{
             aTime+=d;
             if(aTime>wTime)
             {
+
                 if(RenderManager::getInstance().getWaitBattle() == false)
                 {
                     RenderManager::getInstance().setRootBattle(name);
@@ -78,10 +83,14 @@ class ConditionFirstAction : public Behaviour {
             {
                 if(score->getPosition() == 1)
                 {
-                    RenderManager::getInstance().setRootBattle(name);
-                    RenderManager::getInstance().setEndRootBattle(false);
-                    RenderManager::getInstance().setWaitBattle(false);
-                    return BehaviourState::SUCCEEDED;
+                    auto player = RenderManager::getInstance().getAIsBattle()[RenderManager::getInstance().getAINumberBattle()];
+                    if(player.getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                        return BehaviourState::SUCCEEDED;
+                    }
                 }
             }
 
@@ -102,6 +111,7 @@ class ConditionEnemyBehindAction : public Behaviour {
             RenderManager::getInstance().setRootBattle(name);
             RenderManager::getInstance().setEndRootBattle(false);
             RenderManager::getInstance().setWaitBattle(false);
+            
             return BehaviourState::SUCCEEDED;
         }
     public:
@@ -124,9 +134,13 @@ class ConditionHasItemAction : public Behaviour {
             {
                 if(itemHolder->getItemType() != -1)
                 {
-                    RenderManager::getInstance().setRootBattle(name);
-                    RenderManager::getInstance().setEndRootBattle(false);
-                    RenderManager::getInstance().setWaitBattle(false);
+                    auto player = RenderManager::getInstance().getAIsBattle()[RenderManager::getInstance().getAINumberBattle()];
+                    if(player.getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -152,9 +166,13 @@ class ConditionHasItem1Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 0)
                 {
-                    RenderManager::getInstance().setRootBattle(name);
-                    RenderManager::getInstance().setEndRootBattle(false);
-                    RenderManager::getInstance().setWaitBattle(false);
+                    auto player = RenderManager::getInstance().getAIsBattle()[RenderManager::getInstance().getAINumberBattle()];
+                    if(player.getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -180,9 +198,13 @@ class ConditionHasItem2Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 1)
                 {
-                    RenderManager::getInstance().setRootBattle(name);
-                    RenderManager::getInstance().setEndRootBattle(false);
-                    RenderManager::getInstance().setWaitBattle(false);
+                    auto player = RenderManager::getInstance().getAIsBattle()[RenderManager::getInstance().getAINumberBattle()];
+                    if(player.getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -208,9 +230,13 @@ class ConditionHasItem3Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 2)
                 {
-                    RenderManager::getInstance().setRootBattle(name);
-                    RenderManager::getInstance().setEndRootBattle(false);
-                    RenderManager::getInstance().setWaitBattle(false);
+                    auto player = RenderManager::getInstance().getAIsBattle()[RenderManager::getInstance().getAINumberBattle()];
+                    if(player.getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -236,9 +262,13 @@ class ConditionHasItem4Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 3)
                 {
-                    RenderManager::getInstance().setRootBattle(name);
-                    RenderManager::getInstance().setEndRootBattle(false);
-                    RenderManager::getInstance().setWaitBattle(false);
+                    auto player = RenderManager::getInstance().getAIsBattle()[RenderManager::getInstance().getAINumberBattle()];
+                    if(player.getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -265,9 +295,13 @@ class ConditionHasItem5Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 4)
                 {
-                    RenderManager::getInstance().setRootBattle(name);
-                    RenderManager::getInstance().setEndRootBattle(false);
-                    RenderManager::getInstance().setWaitBattle(false);
+                    auto player = RenderManager::getInstance().getAIsBattle()[RenderManager::getInstance().getAINumberBattle()];
+                    if(player.getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
