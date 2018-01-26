@@ -105,7 +105,6 @@ void NetworkManager::createBanana(EventData eData)
     //Stream of raknet bits
     RakNet::BitStream stream;
 
-    std::cout<<" CREATE BANANA EN 1 "<<std::endl;
     stream.Write((unsigned char)ID_CREATE_BANANA);  //Send message create banana to server
     stream.Write((int)server_id);                   //Send Id of the player that created it
 
@@ -117,7 +116,7 @@ void NetworkManager::destroyBanana(EventData eData)
     RakNet::BitStream stream;
 
     stream.Write((unsigned char)ID_DESTROY_BANANA);
-    stream.Write((int)server_id);
+    stream.Write((int) eData.Id);   //Send server id of the banana
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
@@ -133,10 +132,35 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
 
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
-    std::cout<< "REMOTE CREATE BANANA 1 "<<std::endl;
     for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
+        if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the banana
+        {
+            found = true;
+            auto object = ItemManager::getInstance().createBanana(rPlayer.get()->getGameObject());
+            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
+        }
+    }
+    if(found == false)
+    {
+        auto object = ItemManager::getInstance().createBanana(*player.get());
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
+    }
+}
+
+void NetworkManager::remoteDestroyBanana(RakNet::Packet* packet){
+    int s_id;   //server object id
+    RakNet::BitStream parser(packet->data, packet->length, false);
+    parser.IgnoreBytes(1);
+    parser.Read(s_id);
+
+    bool found = false;
+    std::shared_ptr<RemoteItemComponent> rPlayer;
+    std::cout<< "REMOTE CREATE BANANA 1 "<<std::endl;
+    for(int i = 0; i<remoteBananaComponentList.size() && found == false; i++)
+    {
+        rPlayer = std::dynamic_pointer_cast<RemoteItemComponent>(remoteBananaComponentList[i]);
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the banana
         {
             found = true;
@@ -144,10 +168,6 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
             std::cout<< "REMOTE CREATE BANANA 2 "<<std::endl;
         }
     }
-}
-
-void NetworkManager::remoteDestroyBanana(RakNet::Packet* packet){
-    
 }
 
 
@@ -307,7 +327,7 @@ void NetworkManager::initLobby(){
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("192.168.1.32", 39017, 0, 0);
+    result = peer->Connect("192.168.1.8", 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {

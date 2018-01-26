@@ -96,7 +96,7 @@ void ServerManager::broadcastData(RakNet::Packet* packet)
 void ServerManager::broadcastObject(RakNet::Packet* packet)
 {
 	RakNet::BitStream stream(packet->data, packet->length, false);
-	stream.write((int)nObjects);
+	stream.Write((int)nObjects);
 
 	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
@@ -156,7 +156,7 @@ void ServerManager::update()
 			case ID_CREATE_BANANA:
 				broadcastObject(packet);
 				nObjects++;
-				std::cout << "Objeto numero "<<nObjects<< " creado." <<< std::endl;
+				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
 				break;
 			case ID_DESTROY_BANANA:
 				broadcastData(packet);

@@ -62,4 +62,7 @@ class ServerManager{
         //Broadcast one packet to the rest of the players
         void broadcastData(RakNet::Packet* packet);
 
+        //Broadcasts one playable object to the rest of the players
+        void broadcastObject(RakNet::Packet* packet);
+
 };
