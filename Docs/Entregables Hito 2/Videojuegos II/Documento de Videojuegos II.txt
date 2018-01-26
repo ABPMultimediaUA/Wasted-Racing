@@ -12,6 +12,17 @@ Acerca de la entrega:
 
 	-Creación de un cargador de niveles: ahora los niveles se leen a partir de un fichero con extensión Wavefront (.obj) generado en Blender. Este archivo se convierte con un programa hecho en Python a un XML que nuestro juego será capaz de leer. En nuestro juego, el nivel se crea leyendo el XML generado. Podemos encontrar en esta carpeta el Formato Propio para la Definición de Niveles, en Game/Parser encontramos el archivo de Blender y el conversor de OBJ a XML en Python. El lector del XML lo podemos encontrar en la función loadMap() de Game/src/Game.cpp.
 
-	-Sistema de depuración de colisiones de la cámara:
-
+	-Sistema de depuración de colisiones de la cámara: Pulsando la tecla F11, se mostraran:
+                        
+                        -Distancia de la camara al NPC
+                        -Si hay colision (TRUE) o si no (FALSE)
+                        
+                Podemos ver estos añadidos en:
+                
+                    -Game/src/GameObject/RenderComponent/CameraRenderComponent
+                    -Game/src/GameManager/RenderManager
+                    -Game/src/GameFacade/IRenderFacade
+                    -Game/src/GameFacade/RenderIrrlicht
+                    
+                    
 	-Implementar el Patron State:
