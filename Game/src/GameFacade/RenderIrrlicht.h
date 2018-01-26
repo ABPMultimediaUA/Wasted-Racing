@@ -71,6 +71,12 @@ public:
 
     virtual void drawGUI();
 
+    virtual void createItemIcon(glm::vec2 pos, std::string img);
+
+    virtual void deleteItemIcon();
+
+    virtual void updateItemIcon();
+
 
     //Get device
     irr::IrrlichtDevice* getDevice(){
@@ -116,5 +122,9 @@ private:
     irr::gui::IGUIFont* font;
 
     irr::gui::IGUIElement* rectangle;
+
+    irr::gui::IGUIElement* itemIMG;
+
+
 
 };

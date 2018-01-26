@@ -26,6 +26,8 @@ void RenderIrrlicht::openWindow(){
     item = sceneManager->getGUIEnvironment()->addStaticText(L"Item: ", irr::core::recti(0, 40, 200, 50));
     pos->setOverrideFont(font);
 
+    createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");
+
     addCamera();
     //sceneManager->setAmbientLight(irr::video::SColorf(0.8,0.8,0.8,1));
 
@@ -66,6 +68,7 @@ void RenderIrrlicht::updateWindow() {
         pos->setText(stringPos.c_str());
         lap->setText(stringLap.c_str());
         item->setText(stringItm.c_str());
+        updateItemIcon();
     }
 }
 
@@ -353,4 +356,58 @@ void RenderIrrlicht::deleteRectangle2D()
     if(rectangle != nullptr)
         std::cout<<"imagen: "<<rectangle<<std::endl;
         rectangle->remove();
+}
+
+
+void RenderIrrlicht::createItemIcon(glm::vec2 pos, std::string img)
+{
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+    auto image = videoDriver->getTexture(img.c_str());
+    itemIMG = sceneManager->getGUIEnvironment()->addImage(image, position);
+}
+
+void RenderIrrlicht::deleteItemIcon()
+{
+    if(itemIMG != nullptr)
+        itemIMG->remove();
+}
+
+void RenderIrrlicht::updateItemIcon(){
+
+    //int itemID = ObjectManager::getInstance().getObject(50).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+   
+    std::cout<<"entro en updateitem ------------------------------"<<std::endl;
+
+    /*switch(itemID){
+
+        case -1: //EMPTY
+               // deleteItemIcon();
+               //  createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");
+                 break;
+
+        case 0: //RED SHELL
+                //deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoRuedamini.png");
+                 break;
+
+        case 1: //BLUE SHELL
+                //deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoBombamini.png");
+                 break;
+
+        case 2: //BANANA
+                //deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoTrampamini.png");
+                 break;
+
+        case 3: //MUSHROOM
+                //deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoSetamini.png");
+                 break;
+
+        case 4: //STAR
+                //deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoBotellamini.png");
+                 break;
+    }*/
 }

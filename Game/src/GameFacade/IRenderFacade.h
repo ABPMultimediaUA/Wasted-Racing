@@ -99,6 +99,9 @@ public:
     
     virtual void drawGUI() = 0;
 
+    virtual void createItemIcon(glm::vec2 pos, std::string img)  = 0;
+
+    virtual void deleteItemIcon()  = 0;
 
     //==============================================================
     // Window Related functions
