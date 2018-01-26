@@ -541,68 +541,197 @@
 <object id="10000" pos="159.369110,-8.805283,21.625452" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="0" />
 </object>
-<object id="10001" pos="208.863037,-4.517919,-12.374216" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="100" level="1" />
-</object>
-<object id="10002" pos="362.127289,28.749218,-266.061096" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="100" level="2" />
-</object>
-<object id="10003" pos="476.844269,43.570534,-395.112396" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="100" level="3" />
-</object>
-<object id="10004" pos="554.446289,43.570534,-289.452698" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="100" level="4" />
-</object>
-<object id="10005" pos="646.899475,46.866203,311.083557" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="100" level="5" />
-</object>
-<object id="10006" pos="748.252075,52.970291,296.911926" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="150" level="6" />
-</object>
-<object id="10007" pos="1099.233276,165.223907,-99.709312" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="100" level="7" />
-</object>
-<object id="10008" pos="1132.270386,158.821106,-185.055145" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="100" level="8" />
-</object>
-<object id="10009" pos="1099.233276,98.267609,-534.697754" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="100" level="9" />
-</object>
-<object id="10010" pos="978.097229,54.431656,-807.253784" rot="0,0,0" sca="1,1,1">
-    <component name="waypoint" radius="100" level="10" />
-</object>
-<object id="10011" pos="898.257568,45.978004,-837.537781" rot="0,0,0" sca="1,1,1">
+<object id="10001" pos="599.263794,43.042969,119.552551" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="11" />
 </object>
-<object id="10012" pos="553.289978,44.814346,-625.142761" rot="0,0,0" sca="1,1,1">
+<object id="10002" pos="215.327454,-1.933828,-12.571314" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="1" />
+</object>
+<object id="10003" pos="288.384155,12.433760,-133.814392" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="3" />
+</object>
+<object id="10004" pos="255.741806,6.811660,-76.301643" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="2" />
+</object>
+<object id="10005" pos="384.756897,31.798771,-311.015808" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="4" />
+</object>
+<object id="10006" pos="439.801239,39.919582,-371.637360" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="5" />
+</object>
+<object id="10007" pos="498.227966,41.793613,-377.854950" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="6" />
+</object>
+<object id="10008" pos="535.533508,43.042969,-343.658173" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="7" />
+</object>
+<object id="10009" pos="555.740662,43.042969,-286.145447" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="8" />
+</object>
+<object id="10010" pos="572.839050,43.042969,-177.337555" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="9" />
+</object>
+<object id="10011" pos="586.828613,43.042969,-34.332901" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="10" />
+</object>
+<object id="10012" pos="629.660950,43.093925,257.635742" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="12" />
 </object>
-<object id="10013" pos="440.413208,44.814346,-580.799316" rot="0,0,0" sca="1,1,1">
+<object id="10013" pos="667.561890,43.093925,299.451172" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="13" />
 </object>
-<object id="10014" pos="363.326630,54.952126,-663.686035" rot="0,0,0" sca="1,1,1">
+<object id="10014" pos="733.623840,51.643044,292.974518" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="14" />
 </object>
-<object id="10015" pos="170.610229,124.849457,-1080.107300" rot="0,0,0" sca="1,1,1">
+<object id="10015" pos="789.323120,69.471634,256.705231" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="15" />
 </object>
-<object id="10016" pos="69.663544,126.450165,-1086.810791" rot="0,0,0" sca="1,1,1">
+<object id="10016" pos="870.929077,95.082893,177.689972" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="16" />
 </object>
-<object id="10017" pos="-22.106163,82.164070,-828.871582" rot="0,0,0" sca="1,1,1">
+<object id="10017" pos="949.944336,121.885277,87.016716" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="17" />
 </object>
-<object id="10018" pos="-88.639198,43.747215,-555.856689" rot="0,0,0" sca="1,1,1">
+<object id="10018" pos="1024.255005,144.991425,-6.247253" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="18" />
 </object>
-<object id="10019" pos="-458.012329,43.747215,-186.483643" rot="0,0,0" sca="1,1,1">
+<object id="10019" pos="1086.431030,161.666367,-87.076035" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="19" />
 </object>
-<object id="10020" pos="-318.063507,29.874462,-35.063622" rot="0,0,0" sca="1,1,1">
+<object id="10020" pos="1129.407104,156.587234,-159.407425" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="20" />
 </object>
-<object id="10021" pos="-472.911194,43.747215,-78.952377" rot="0,0,0" sca="1,1,1">
+<object id="10021" pos="1138.474487,144.130341,-241.013397" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="100" level="21" />
+</object>
+<object id="10022" pos="1135.883789,134.308609,-316.142700" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="22" />
+</object>
+<object id="10023" pos="1125.521118,116.012787,-421.064636" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="23" />
+</object>
+<object id="10024" pos="1098.661133,95.510490,-539.248718" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="24" />
+</object>
+<object id="10025" pos="1066.277832,78.327240,-642.875366" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="25" />
+</object>
+<object id="10026" pos="1028.713135,61.975327,-729.662659" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="26" />
+</object>
+<object id="10027" pos="996.329834,51.113335,-786.657288" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="27" />
+</object>
+<object id="10028" pos="962.651184,43.638294,-821.631287" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="28" />
+</object>
+<object id="10029" pos="912.133179,40.524750,-834.584595" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="29" />
+</object>
+<object id="10030" pos="860.319885,40.524750,-820.335938" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="30" />
+</object>
+<object id="10031" pos="814.983215,40.524750,-800.905945" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="31" />
+</object>
+<object id="10032" pos="756.693237,40.524750,-765.931946" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="32" />
+</object>
+<object id="10033" pos="681.563965,40.524750,-711.527954" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="33" />
+</object>
+<object id="10034" pos="526.124023,40.524750,-614.377991" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="34" />
+</object>
+<object id="10035" pos="461.357361,40.524750,-596.243347" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="35" />
+</object>
+<object id="10036" pos="410.839386,44.267056,-606.606018" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="36" />
+</object>
+<object id="10037" pos="378.456055,47.487797,-640.284668" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="37" />
+</object>
+<object id="10038" pos="346.072754,57.398109,-697.279358" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="38" />
+</object>
+<object id="10039" pos="283.896790,87.741722,-870.853943" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="40" />
+</object>
+<object id="10040" pos="314.984772,72.178825,-778.885315" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="39" />
+</object>
+<object id="10041" pos="233.378815,108.586876,-990.024536" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="41" />
+</object>
+<object id="10042" pos="198.404831,115.334152,-1040.542480" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="42" />
+</object>
+<object id="10043" pos="156.954178,118.622147,-1072.925781" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="43" />
+</object>
+<object id="10044" pos="115.503525,122.002663,-1081.993164" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="44" />
+</object>
+<object id="10045" pos="72.229668,118.622147,-1059.972534" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="45" />
+</object>
+<object id="10046" pos="43.732346,113.216339,-1021.112549" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="46" />
+</object>
+<object id="10047" pos="13.939688,100.408035,-951.164551" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="47" />
+</object>
+<object id="10048" pos="-11.966969,80.668709,-851.423950" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="48" />
+</object>
+<object id="10049" pos="-43.054962,60.262459,-711.528015" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="49" />
+</object>
+<object id="10050" pos="-67.666290,45.446606,-614.378052" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="50" />
+</object>
+<object id="10051" pos="-92.277618,45.363613,-557.383423" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="51" />
+</object>
+<object id="10052" pos="-133.728271,38.996277,-514.637451" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="52" />
+</object>
+<object id="10053" pos="-182.950912,40.551369,-469.300781" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="53" />
+</object>
+<object id="10054" pos="-242.536224,38.310349,-420.078125" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="54" />
+</object>
+<object id="10055" pos="-306.007538,38.310349,-366.969482" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="55" />
+</object>
+<object id="10056" pos="-409.634155,38.310349,-255.570862" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="56" />
+</object>
+<object id="10057" pos="-444.608154,38.310349,-207.643555" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="57" />
+</object>
+<object id="10058" pos="-467.924133,38.310349,-154.534912" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="58" />
+</object>
+<object id="10059" pos="-461.447479,38.310349,-102.721603" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="59" />
+</object>
+<object id="10060" pos="-414.815491,38.310349,-59.975620" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="60" />
+</object>
+<object id="10061" pos="-333.209534,28.693104,-35.364296" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="61" />
+</object>
+<object id="10062" pos="-230.878235,16.434044,-19.820303" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="62" />
+</object>
+<object id="10063" pos="-116.888947,2.729778,-9.457641" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="63" />
+</object>
+<object id="10064" pos="90.364304,-15.447044,21.630344" rot="0,0,0" sca="1,1,1">
+    <component name="waypoint" radius="100" level="64" />
 </object>
 <object id="14000" pos="158.731598,50.000000,26.318703" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
@@ -649,17 +778,17 @@
 <object id="16002" pos="78.523079,0.000000,15.191893" rot="45,45,45" sca="0.5,0.5,0.5">
     <component name="itemBox" />
 </object>
-<object id="18000" pos="154.235077,-9.988379,28.936253" rot="0,0,0" sca="10,1,26">
+<object id="18000" pos="40.60289,-6.88482,28.936253" rot="0,0,0" sca="10,1,26">
     <component name="render" file="ramp.jpg" type="plane" />
     <component name="collision" kinetic="false" type="ramp">
-        <bbox p1="149.235077,-9.988379,41.936253" p2="159.235077,-9.988379,41.936253" p3="159.235077,-9.988379,15.936253" p4="149.235077,-9.988379,15.936253" friction="0.2" />
+        <bbox p1="35.602890,-6.884820,41.936253" p2="45.602890,-6.884820,41.936253" p3="45.602890,-6.884820,15.936253" p4="35.602890,-6.884820,15.936253" friction="0.2" />
     </component>
     <component name="ramp" vel="300" cTime="1" dTime="1" />
 </object>
-<object id="18001" pos="114.637207,-9.988379,28.936252999999997" rot="0,0,0" sca="10,1,50">
+<object id="18001" pos="10.280479,-3.549213,6.152934999999999" rot="0,0,0" sca="10,1,50">
     <component name="render" file="ramp.jpg" type="plane" />
     <component name="collision" kinetic="false" type="ramp">
-        <bbox p1="109.637207,-9.988379,53.936253" p2="119.637207,-9.988379,53.936253" p3="119.637207,-9.988379,3.936253" p4="109.637207,-9.988379,3.936253" friction="0.2" />
+        <bbox p1="5.280479,-3.549213,31.152935" p2="15.280479,-3.549213,31.152935" p3="15.280479,-3.549213,-18.847065" p4="5.280479,-3.549213,-18.847065" friction="0.2" />
     </component>
     <component name="ramp" vel="300" cTime="1" dTime="1" />
 </object>

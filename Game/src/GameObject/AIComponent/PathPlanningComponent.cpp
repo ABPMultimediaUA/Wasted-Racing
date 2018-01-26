@@ -14,10 +14,6 @@ void PathPlanningComponent::update(float dTime)
 
 	auto pos = this->getGameObject().getTransformData().position;
 
-	/*std::cout<<"X: "<<pos.x<<"\n";
-	std::cout<<"Y: "<<pos.y<<"\n";
-	std::cout<<"Z: "<<pos.z<<"\n";*/
-
 	auto modSpeed = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
 
 	auto wpManager = &WaypointManager::getInstance();
@@ -112,8 +108,8 @@ void PathPlanningComponent::update(float dTime)
 				{
 					if(tour-distLastWay < 0)
 					{
-						nextPos = ((tour/distLastWay) * (listNodes[lastPosVector].get()->getTransformData().position - pos)) + pos;
-						//nextPos = listNodes[lastPosVector].get()->getTransformData().position;
+						//nextPos = ((tour/distLastWay) * (listNodes[lastPosVector].get()->getTransformData().position - pos)) + pos;
+						nextPos = listNodes[lastPosVector].get()->getTransformData().position;
 						return;
 					}
 					else

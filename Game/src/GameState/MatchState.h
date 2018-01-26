@@ -96,6 +96,6 @@ private:
     ScoreManager* scoreManager;
 
     //Update's loop time
-    const float loopTime = 1.0f/30.0f;
+    const float loopTime = 1.0f/60.0f;
 
 };
