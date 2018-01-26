@@ -226,7 +226,7 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the red shell
         {
             found = true;
-            auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
+            auto object = ItemManager::getInstance().createRedShell(rPlayer.get()->getGameObject());                 //Create object
             std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
@@ -308,7 +308,7 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the blue shell
         {
             found = true;
-            auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
+            auto object = ItemManager::getInstance().createBlueShell(rPlayer.get()->getGameObject());                //Create object
             std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
@@ -415,7 +415,6 @@ void NetworkManager::broadcastPositionRedShell()
     for(unsigned int i = 0; i<remoteRedShellComponentList.size(); i++){
         auto red_shell = std::dynamic_pointer_cast<RemoteItemComponent>(remoteRedShellComponentList[i]);
         stream.Reset();
-        std::cout<<"MI PAP ES :: "<<red_shell.get()->getParentId() << " Y ESTOY CON " <<server_id<<std::endl;
         if(red_shell.get()->getParentId() == server_id){
             int s_id = red_shell.get()->getServerId();
             auto trans = red_shell.get()->getGameObject().getTransformData();
@@ -428,7 +427,7 @@ void NetworkManager::broadcastPositionRedShell()
             stream.Write((float)trans.rotation.y);
             stream.Write((float)trans.rotation.z);
 
-                        std::cout << " BROADCASTEA EN: "<<trans.position.x << " _ "<< trans.position.y << " _ "<< trans.position.z << " _ "<< std::endl;
+            std::cout << " BROADCASTEA EN: "<<trans.position.x << " _ "<< trans.position.y << " _ "<< trans.position.z << " _ "<< std::endl;
 
 
             peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
