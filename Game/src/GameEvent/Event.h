@@ -40,6 +40,7 @@ enum EventType {
     ListenerComponent_Create,
     ListenerComponent_Delete,
     //COLLISION: Events triggered to certain collisions
+    Default_Collision,
     RampComponent_Collision,
     StartLineComponent_Collision,
     ItemBoxComponent_Collision,

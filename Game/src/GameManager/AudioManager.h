@@ -1,10 +1,17 @@
 #pragma once
 
-#include "../GameFacade/IAudioFacade.h"
+#include "../GameObject/GameObject.h"
+
+class IAudioFacade;
 
 class AudioManager{
 
 public: 
+
+    enum AudioType {
+        Character,
+        Environment
+    };
 
     //Constructor
     AudioManager() {}
