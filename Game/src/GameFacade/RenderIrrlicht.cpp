@@ -354,8 +354,8 @@ void RenderIrrlicht::createRectangle2D(glm::vec2 pos, std::string img)
 void RenderIrrlicht::deleteRectangle2D()
 {
     if(rectangle != nullptr)
-        std::cout<<"imagen: "<<rectangle<<std::endl;
         rectangle->remove();
+        
 }
 
 

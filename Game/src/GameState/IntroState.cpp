@@ -93,14 +93,14 @@ void singleplayerActivated(EventData eData) {
         char * numbers = new char[7];   //numbers and decimals to put
         char * systemCall = new char[std::strlen(part1)+std::strlen(part2)+8];  //entire message
 
-        /*if(currentSec<10.0){
+        if(currentSec<10.0){
             numbers[0] = '0';        //floor to unit
         }else{
             numbers = {'1',(char) (((int)currentSec%) % 10)} //obtain unit only
-        }*/
+        }
 
         //double now = (double) ( (int) (currentSec * 1000) ) / 1000.0; //4 decimals
-/**
+
         std::string str = std::to_string(currentSec);
         if(currentSec < 10.0){
             strcat(numbers, "0");
