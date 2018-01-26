@@ -1,6 +1,7 @@
  #pragma once
 
 #include <vector>
+#include <iostream>
 #include "../Game.h"
 #include "../GameState/IGameState.h"
 #include "../GameEvent/EventManager.h"
