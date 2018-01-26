@@ -79,7 +79,6 @@ void PhysicsManager::update(const float dTime) {
         calculateTerrainCollision(movingCharacterList[i], ourMove, ourTerr, ourColl, dTime);
 
         gameObject.setNewTransformData(gameObject.getTransformData());
-        
     }
 
     //Update camera collision
