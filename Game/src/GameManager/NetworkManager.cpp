@@ -194,8 +194,6 @@ void NetworkManager::createRedShell(EventData eData)
     stream.Write((unsigned char)ID_CREATE_RED_SHELL);  //Send message create red shell to server
     stream.Write((int)server_id);                      //Send Id of the player that created it
 
-    std::cout << "SE LANZA EL LANZAMIENTO DE ROJO DESDE NETWORK "<<std::endl;
-
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
 }
 
@@ -204,8 +202,6 @@ void NetworkManager::destroyRedShell(EventData eData)
     RakNet::BitStream stream;
 
     int s_id = ObjectManager::getInstance().getObject(eData.Id).get()->getComponent<RemoteItemComponent>()->getServerId();//get server id of the object
-
-    std::cout << "SE LANZA LA DESTRUCCION DE ROJO DESDE NETWORK "<<std::endl;
 
     stream.Write((unsigned char)ID_DESTROY_RED_SHELL);
     stream.Write((int) s_id);   //Send server id of the red shell
@@ -222,8 +218,6 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
     parser.Read(s_id);
     parser.Read(o_id);
 
-    std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 1111111111 "<<std::endl;
-
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
     for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
@@ -231,25 +225,19 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the red shell
         {
-            std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 222222222222222 AAAAAAAAAAAAAAA"<<std::endl;
-
             found = true;
             auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
             std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-
-            std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 222222222222222BBBBBBBBBBBBBB "<<std::endl;
+            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(server_id);   //Set parent id
         }
     }
     if(found == false)
     {
-        std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 3333333333333333333 AAAAAAAAAAA"<<std::endl;
-
         auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
         std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
         object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-
-        std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 3333333333333333333 BBBBBBBBBBBB"<<std::endl;
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(server_id);   //Set parent id
     }
 }
 
@@ -285,8 +273,6 @@ void NetworkManager::createBlueShell(EventData eData)
     //Stream of raknet bits
     RakNet::BitStream stream;
 
-    std::cout << "SE LANZA EL LANZAMIENTO DE AZUL DESDE NETWORK "<<std::endl;
-
     stream.Write((unsigned char)ID_CREATE_BLUE_SHELL);  //Send message create blue shell to server
     stream.Write((int)server_id);                   //Send Id of the player that created it
 
@@ -298,8 +284,6 @@ void NetworkManager::destroyBlueShell(EventData eData)
     RakNet::BitStream stream;
 
     int s_id = ObjectManager::getInstance().getObject(eData.Id).get()->getComponent<RemoteItemComponent>()->getServerId();//get server id of the object
-
-    std::cout << "SE LANZA LA DESTRUCCION DE AZUL DESDE NETWORK "<<std::endl;
 
     stream.Write((unsigned char)ID_DESTROY_BLUE_SHELL);
     stream.Write((int) s_id);   //Send server id of the blue shell
@@ -316,8 +300,6 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
     parser.Read(s_id);
     parser.Read(o_id);
 
-    std::cout << "SE LANZA LA CREACION DE AZUL AL NETWORK 1111111111 "<<std::endl;
-
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
     for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
@@ -325,24 +307,19 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the blue shell
         {
-
-            std::cout << "SE LANZA LA CREACION DE AZUL AL NETWORK 22222222aAAAAAAA "<<std::endl;
-
             found = true;
             auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
             std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-
-            std::cout << "SE LANZA LA CREACION DE AZUL AL NETWORK 222222222222BBBBBBBBBb "<<std::endl;
+            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(server_id);   //Set parent id
         }
     }
     if(found == false)
     {
-        std::cout << "SE LANZA LA CREACION DE AZUL AL NETWORK 3333333333 AAAAAAAAAAA "<<std::endl;
         auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
         std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
         object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-        std::cout << "SE LANZA LA CREACION DE AZUL AL NETWORK 3333333333 BBBBBBBBBBb "<<std::endl;
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(server_id);   //Set parent id
     }
 }
 
@@ -438,20 +415,21 @@ void NetworkManager::broadcastPositionRedShell()
     for(unsigned int i = 0; i<remoteRedShellComponentList.size(); i++){
         auto red_shell = std::dynamic_pointer_cast<RemoteItemComponent>(remoteRedShellComponentList[i]);
         stream.Reset();
-        int server_id = red_shell.get()->getServerId();
-        auto trans = red_shell.get()->getGameObject().getTransformData();
-        stream.Write((unsigned char)ID_REMOTE_RED_SHELL_MOVEMENT);
-        stream.Write((int)server_id);
-        stream.Write((float)trans.position.x);
-        stream.Write((float)trans.position.y);
-        stream.Write((float)trans.position.z);
-        stream.Write((float)trans.rotation.x);
-        stream.Write((float)trans.rotation.y);
-        stream.Write((float)trans.rotation.z);
+        if(red_shell.get()->getParentId() == server_id){
+            int s_id = red_shell.get()->getServerId();
+            auto trans = red_shell.get()->getGameObject().getTransformData();
+            stream.Write((unsigned char)ID_REMOTE_RED_SHELL_MOVEMENT);
+            stream.Write((int)s_id);
+            stream.Write((float)trans.position.x);
+            stream.Write((float)trans.position.y);
+            stream.Write((float)trans.position.z);
+            stream.Write((float)trans.rotation.x);
+            stream.Write((float)trans.rotation.y);
+            stream.Write((float)trans.rotation.z);
 
-        peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+            peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+        }
     }
-
 }
 
 void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
@@ -494,18 +472,20 @@ void NetworkManager::broadcastPositionBlueShell()
     RakNet::BitStream stream;
     for(unsigned int i = 0; i<remoteBlueShellComponentList.size(); i++){
         auto blue_shell = std::dynamic_pointer_cast<RemoteItemComponent>(remoteBlueShellComponentList[i]);
-        int server_id = blue_shell.get()->getServerId();
-        auto trans = blue_shell.get()->getGameObject().getTransformData();
-        stream.Reset();
-        stream.Write((int)server_id);
-        stream.Write((float)trans.position.x);
-        stream.Write((float)trans.position.y);
-        stream.Write((float)trans.position.z);
-        stream.Write((float)trans.rotation.x);
-        stream.Write((float)trans.rotation.y);
-        stream.Write((float)trans.rotation.z);
+        if( blue_shell.get()->getParentId() == server_id ){
+            int s_id = blue_shell.get()->getServerId();
+            auto trans = blue_shell.get()->getGameObject().getTransformData();
+            stream.Reset();
+            stream.Write((int)s_id);
+            stream.Write((float)trans.position.x);
+            stream.Write((float)trans.position.y);
+            stream.Write((float)trans.position.z);
+            stream.Write((float)trans.rotation.x);
+            stream.Write((float)trans.rotation.y);
+            stream.Write((float)trans.rotation.z);
 
-        peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+            peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+        }
     }
 }
 
@@ -649,12 +629,14 @@ void NetworkManager::update()
                 moveRemoteBlueShell(packet);
                 break;
             default:
-                std::cout << "ALGO PASÓ PERO NO SABEMOS QUË" << std::endl;
+                std::cout << "Mensaje recibido" << std::endl;
                 break;
         }
         peer->DeallocatePacket(packet);
     }
     broadcastPosition();
+    broadcastPositionRedShell();
+    broadcastPositionBlueShell();
 }
 
 void NetworkManager::close() {
