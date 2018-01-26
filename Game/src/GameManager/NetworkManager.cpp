@@ -232,19 +232,22 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the red shell
         {
             std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 222222222222222 AAAAAAAAAAAAAAA"<<std::endl;
-            found = true;
-            auto object = ItemManager::getInstance().createRedShell(rPlayer.get()->getGameObject());
-            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
 
-             std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 222222222222222BBBBBBBBBBBBBB "<<std::endl;
+            found = true;
+            auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
+            std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
+            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
+
+            std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 222222222222222BBBBBBBBBBBBBB "<<std::endl;
         }
     }
     if(found == false)
     {
         std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 3333333333333333333 AAAAAAAAAAA"<<std::endl;
 
-        auto object = ItemManager::getInstance().createRedShell(*player.get());
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
+        auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
+        std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
 
         std::cout << "SE LANZA LA CREACION DE ROJO AL NETWORK 3333333333333333333 BBBBBBBBBBBB"<<std::endl;
     }
@@ -324,9 +327,11 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
         {
 
             std::cout << "SE LANZA LA CREACION DE AZUL AL NETWORK 22222222aAAAAAAA "<<std::endl;
+
             found = true;
-            auto object = ItemManager::getInstance().createBlueShell(rPlayer.get()->getGameObject());
-            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
+            auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
+            std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
+            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
 
             std::cout << "SE LANZA LA CREACION DE AZUL AL NETWORK 222222222222BBBBBBBBBb "<<std::endl;
         }
@@ -334,8 +339,9 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
     if(found == false)
     {
         std::cout << "SE LANZA LA CREACION DE AZUL AL NETWORK 3333333333 AAAAAAAAAAA "<<std::endl;
-        auto object = ItemManager::getInstance().createBlueShell(*player.get());
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
+        auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
+        std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
         std::cout << "SE LANZA LA CREACION DE AZUL AL NETWORK 3333333333 BBBBBBBBBBb "<<std::endl;
     }
 }
