@@ -1,6 +1,8 @@
  #pragma once
 
 #include <vector>
+#include "../Game.h"
+#include "../GameState/IGameState.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/ItemComponent/ItemHolderComponent.h"
@@ -40,8 +42,12 @@ class ItemManager {
         void close();
 
         IComponent::Pointer createItemHolderComponent(GameObject& newGameObject);
-        IComponent::Pointer createItem(GameObject& obj);
         IComponent::Pointer createItemBox(GameObject& obj);
+
+        //====================================================
+        /////       ITEM CREATOR
+        //====================================================
+        IComponent::Pointer createItem(GameObject& obj);
 
         static ItemManager& getInstance();
 
@@ -54,7 +60,7 @@ class ItemManager {
         
 
         //Getters
-        std::vector<std::shared_ptr<IItemComponent>>& getItemComponents()                   {       return ItemComponents;       };
+        std::vector<std::shared_ptr<IItemComponent>>& getItemComponents()  {       return ItemComponents;    };
         std::vector<IComponent::Pointer>& getItemHolderComponents()        {       return ItemHolders;       };
 
         //Item delete

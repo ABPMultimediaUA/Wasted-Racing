@@ -4,6 +4,7 @@
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 #include "NetworkManager.h"
+#include "ItemManager.h"
 #include "../Game.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/GameObject.h"

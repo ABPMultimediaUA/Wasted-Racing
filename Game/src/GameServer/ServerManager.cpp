@@ -156,6 +156,7 @@ void ServerManager::update()
 			case ID_CREATE_BANANA:
 				broadcastObject(packet);
 				nObjects++;
+				std::cout << "Objeto numero "<<nObjects<< " creado." <<< std::endl;
 				break;
 			case ID_DESTROY_BANANA:
 				broadcastData(packet);

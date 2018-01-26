@@ -91,17 +91,36 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
     }
 }
 
+
+//=============================================
+// CREATE ITEMS
+//=============================================
+
+//Send message to the server to create banana
 void NetworkManager::createBanana(EventData eData)
 {
+    //Stream of raknet bits
     RakNet::BitStream stream;
-    auto trans = eData.Object.get()->getTransformData();
+    std::shared_ptr<RemotePlayerComponent> rPlayer;
+    bool found = false;
 
-    stream.Write((unsigned char)ID_CREATE_BANANA);
-    stream.Write((float)trans.position.x);
-    stream.Write((float)trans.position.y);
-    stream.Write((float)trans.position.z);
+    for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
+    {
+        //take component from list
+        rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
 
-    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+        //equipare
+        if( rPlayer.get()->getGameObject().getId() == eData.Id )    //Get the player with the ID of the
+        {
+            found = true;
+            stream.Write((unsigned char)ID_CREATE_BANANA);          //Send message create banana to server
+            stream.Write((int)rPlayer.get()->getServerId());        //Send Id of the player that created it
+
+            peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
+        }
+    }
+
+
 }
 
 void NetworkManager::destroyBanana(EventData eData)
@@ -115,41 +134,23 @@ void NetworkManager::destroyBanana(EventData eData)
 }
 
 void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
-        int id;
-    float x, y, z;
+    int s_id; //server player creator id
+    int o_id; //object server id
+
     RakNet::BitStream parser(packet->data, packet->length, false);
     parser.IgnoreBytes(1);
-    parser.Read(id);
-    parser.Read(x);
-    parser.Read(y);
-    parser.Read(z);
-
-    GameObject::TransformationData trans;
-    trans.position.x = x;
-    trans.position.y = y;
-    trans.position.z = z;
-
-    trans.rotation.x = 0;
-    trans.rotation.y = 90;
-    trans.rotation.z = 0;
-
-    trans.scale.x    = 1;
-    trans.scale.y    = 1;
-    trans.scale.z    = 1;
-
-    ObjectManager::getInstance().createPlayer(trans,0, 2, 25001+id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(trans.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(trans.position));
+    parser.Read(s_id);
+    parser.Read(o_id);
 
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
     for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
-        if(rPlayer.get()->getServerId() == -1)
+        if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the banana
         {
             found = true;
-            rPlayer.get()->setServerId(id);
+            ItemManager::getInstance().createBanana(rPlayer.get()->getGameObject());
         }
     }
 }
@@ -157,6 +158,11 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
 void NetworkManager::remoteDestroyBanana(RakNet::Packet* packet){
     
 }
+
+
+//=============================================
+// MOVING STUFF
+//=============================================
 
 void NetworkManager::broadcastPosition()
 {
@@ -233,6 +239,11 @@ void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
 
 }
 
+
+//=============================================
+// END GAME
+//=============================================
+
 void NetworkManager::endGame()
 {
     RakNet::BitStream stream;
@@ -251,6 +262,11 @@ void NetworkManager::remoteEndGame(RakNet::Packet* packet)
     setStarted(false);
     Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
+
+
+//=============================================
+// PRINCIPAL FUNCTIONS
+//=============================================
 
 void NetworkManager::update() 
 {
