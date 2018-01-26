@@ -54,7 +54,7 @@ class ServerManager{
         void startGame();
 
         //Function to end the match
-        void endGame();
+        void endGame(RakNet::Packet* packet);
 
         //Broadcast one packet to the rest of the players
         void broadcastData(RakNet::Packet* packet);
