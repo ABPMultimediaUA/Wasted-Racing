@@ -4,7 +4,7 @@ void MenuState::init() {
 
 }
 
-void MenuState::update() {
+void MenuState::update(float &accumulatedTime) {
 
 }
 

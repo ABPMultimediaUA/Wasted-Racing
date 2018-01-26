@@ -1,4 +1,5 @@
 #include "EventManager.h"
+#include <iostream>
 
 EventManager& EventManager::getInstance() {
     static EventManager instance;
@@ -10,12 +11,10 @@ void EventManager::init() {
 }
 
 void EventManager::update() {
-
     while(!EventManager::eventQueue.empty()){
         EventManager::processEvent(EventManager::eventQueue.front());
         EventManager::eventQueue.pop();
     }
-
 }
 
 void EventManager::close() {
