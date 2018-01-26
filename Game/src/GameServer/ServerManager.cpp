@@ -160,7 +160,28 @@ void ServerManager::update()
 				break;
 			case ID_DESTROY_BANANA:
 				broadcastData(packet);
-				nObjects--;
+				break;
+			case ID_CREATE_RED_SHELL:
+				broadcastObject(packet);
+				nObjects++;
+				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
+				break;
+			case ID_DESTROY_RED_SHELL:
+				broadcastData(packet);
+				break;
+			case ID_CREATE_BLUE_SHELL:
+				broadcastObject(packet);
+				nObjects++;
+				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
+				break;
+			case ID_DESTROY_BLUE_SHELL:
+				broadcastData(packet);
+				break;
+			case ID_REMOTE_RED_SHELL_MOVEMENT:
+				broadcastData(packet);
+				break;
+			case ID_REMOTE_BLUE_SHELL_MOVEMENT:
+				broadcastData(packet);
 				break;
 			case ID_BOX_COLLISION:
 				broadcastData(packet);
