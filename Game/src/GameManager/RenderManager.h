@@ -101,13 +101,16 @@ private:
     float maxMoveSeen = 20.0;
     float moveNextPos = 0;
     float maxMoveNextPos = 30.0;
+    bool activeDebugAI = false;
 
     //Debug Camera
     unsigned int AIDebugC = 0;
     bool lapC = false;
     std::vector<GameObject> AIDebugPointC;
     GameObject::Pointer cameraVision;
+    bool collisionC = false;
     int aux = 0;
+    bool activeDebugCamera = false;
     
 
 };

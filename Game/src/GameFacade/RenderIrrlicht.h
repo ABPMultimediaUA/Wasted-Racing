@@ -62,9 +62,42 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
-    virtual void createRectangle2D();
+
+    ///////////////////////////////
+    ///////      DEBUG      ///////    
+    ///////////////////////////////
+    
+    virtual void createRectangle2D(glm::vec2 pos, std::string img);
 
     virtual void deleteRectangle2D();
+    
+    virtual void createRectangleCol2D(glm::vec2 pos, std::string img);
+
+    virtual void deleteRectangleCol2D();
+
+    virtual void createTitleText(glm::vec2 pos, std::string text);
+
+    virtual void deleteTitleText();
+
+    virtual void setTitleText(std::string text);
+
+    virtual void createDescriptionText(glm::vec2 pos, std::string text);
+
+    virtual void deleteDescriptionText();
+
+    virtual void setDescriptionText(std::string text);
+
+    virtual void createSubTitleText(glm::vec2 pos, std::string text);
+
+    virtual void deleteSubTitleText();
+
+    virtual void setSubTitleText(std::string text);
+
+    virtual void createSubDescriptionText(glm::vec2 pos, std::string text);
+
+    virtual void deleteSubDescriptionText();
+
+    virtual void setSubDescriptionText(std::string text);
 
 private: 
 
@@ -94,6 +127,20 @@ private:
 
     irr::gui::IGUIFont* font;
 
-    std::vector<irr::gui::IGUIElement*> rectangles;
+    std::vector<irr::gui::IGUIElement*> rectanglesAI;
+
+
+    //Camera Debug
+    irr::gui::IGUIElement* rectangle;
+
+    irr::gui::IGUIElement* rectangleCol;
+
+    irr::gui::IGUIStaticText* title;
+
+    irr::gui::IGUIStaticText* description;
+
+    irr::gui::IGUIStaticText* subTitle;
+
+    irr::gui::IGUIStaticText* subDescription;
 
 };
