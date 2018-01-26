@@ -229,7 +229,6 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
             terrainComp = list[i].terrainComponent;
     }
 
-
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.3ds");
@@ -320,12 +319,6 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
-    //Launch creation event
-    EventData data;
-    data.Object = ob;
-
-    EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, data});
-
     return component;
 }
 
@@ -356,12 +349,6 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
     NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 0);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
-
-    //Launch creation event
-    EventData data;
-    data.Object = ob;
-
-    EventManager::getInstance().addEvent(Event {EventType::Banana_Create, data});
 
     return component;
 }
