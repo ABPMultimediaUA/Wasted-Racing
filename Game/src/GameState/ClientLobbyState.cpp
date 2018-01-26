@@ -6,7 +6,7 @@ void introVideo();
 
 void ClientLobbyState::init() {
     networkManager = &NetworkManager::getInstance();
-    if(!networkManager.getConected())
+    if(!networkManager->getConected())
     {
         networkManager->initLobby();
     }
