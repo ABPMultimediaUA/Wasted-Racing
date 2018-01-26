@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cstdint>
+#include <string>
 
 #include "../GameManager/InputManager.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
@@ -94,8 +95,10 @@ public:
     ///////////////////////////////
     ///////      DEBUG      ///////    
     ///////////////////////////////
+    //Update logo video
+    virtual void updateLogo() = 0;
 
-    virtual void createRectangle2D(glm::vec2 pos, std::string img)  = 0;
+    virtual void createRectangle2D(glm::vec2 pos, std::string img) = 0;
 
     virtual void deleteRectangle2D()  = 0;
     
@@ -126,6 +129,12 @@ public:
     virtual void deleteSubDescriptionText() = 0;
 
     virtual void setSubDescriptionText(std::string text) = 0;
+    
+    virtual void drawGUI() = 0;
+
+    virtual void createItemIcon(glm::vec2 pos, std::string img)  = 0;
+
+    virtual void deleteItemIcon()  = 0;
 
     //==============================================================
     // Window Related functions

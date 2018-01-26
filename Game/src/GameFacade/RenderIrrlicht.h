@@ -2,6 +2,7 @@
 
 #include <irrlicht.h>
 #include <map>
+#include <string>
 
 #include "IRenderFacade.h"
 
@@ -100,6 +101,34 @@ public:
     virtual void setSubDescriptionText(std::string text);
 
 private: 
+    //Update the logo video
+    virtual void updateLogo();
+
+    virtual void drawGUI();
+
+    virtual void createItemIcon(glm::vec2 pos, std::string img);
+
+    virtual void deleteItemIcon();
+
+    virtual void updateItemIcon();
+
+
+    //Get device
+    irr::IrrlichtDevice* getDevice(){
+        return device;
+    };
+
+    //Get videodriver
+    irr::video::IVideoDriver* getVideoDriver(){
+        return videoDriver;
+    };
+
+    //Get scenemanager
+    irr::scene::ISceneManager* getSceneManager(){
+        return sceneManager;
+    };
+
+private:
 
     //Irrlicht own window
     irr::IrrlichtDevice* device;
@@ -142,5 +171,9 @@ private:
     irr::gui::IGUIStaticText* subTitle;
 
     irr::gui::IGUIStaticText* subDescription;
+
+    irr::gui::IGUIElement* itemIMG;
+
+
 
 };
