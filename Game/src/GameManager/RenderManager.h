@@ -20,7 +20,7 @@ public:
     void init(int engine);
 
     //Update
-    void update();
+    void update(float dTime);
 
     //Draw
     void draw();
@@ -70,6 +70,17 @@ public:
     void updateCameraDebug();
     void createCameraRender();
     void deleteCameraRender();
+
+    //Debug Behaviour
+    void renderBattleDebug();
+    void updateBattleDebug(float dTime);
+    void createBattleRender();
+    void deleteBattleRender();
+    void setRootBattle(std::string r)    {          root += " -> "+r;          }
+    void setEndRootBattle(bool b)        {          end = b;            }
+    bool getEndRootBattle()              {          return end;         }
+    void setWaitBattle(bool b)           {          wait = b;            }
+    bool getWaitBattle()                 {          return wait;         }
     
 private:
 
@@ -111,6 +122,19 @@ private:
     bool collisionC = false;
     int aux = 0;
     bool activeDebugCamera = false;
+
+    //Debug Behaviour
+    unsigned int AIDebugB = 0;
+    bool lapB = false;
+    std::vector<GameObject> AIDebugPointB;
+    std::string title = "BEHAVIOUR";
+    std::string root = "";
+    bool end = false;
+    bool activeDebugBehaviour = false;
+    bool success = false;
+    float timeP = 5.0f;
+    float maxTimeP = 5.0f;
+    bool wait = false;
     
 
 };

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+ #include <string>
+#include "../GameManager/RenderManager.h"
 
 enum class BehaviourState
 {
@@ -31,6 +33,7 @@ class Behaviour
 
         virtual void Stop();
         virtual void Reset();
+        virtual std::string getName() = 0;
 
         bool Terminated() const;
 

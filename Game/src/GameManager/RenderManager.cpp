@@ -48,10 +48,11 @@ void RenderManager::init(int engine) {
     EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Delete, objectDeletedRender});
 }
 
-void RenderManager::update() {
+void RenderManager::update(float dTime) {
     RenderManager::renderFacade->updateWindow();
     updateAIDebug();
     updateCameraDebug();
+    updateBattleDebug(dTime);
 }
 
 void RenderManager::draw() {
@@ -163,7 +164,7 @@ void objectDeletedRender(EventData eData) {
 
 void RenderManager::renderAIDebug()
 {
-    if(activeDebugCamera == false)
+    if(activeDebugCamera == false && activeDebugBehaviour == false)
     {
         auto listObj = WaypointManager::getInstance().getWaypoints();
 
@@ -510,7 +511,7 @@ void RenderManager::deleteLinesObjects()
 void RenderManager::renderCameraDebug()
 {
 
-    if(activeDebugAI == false)
+    if(activeDebugAI == false && activeDebugBehaviour == false)
     {
         AIDebugPointC.clear();
         auto npcs = ItemManager::getInstance().getItemHolderComponents();
@@ -588,7 +589,7 @@ void RenderManager::updateCameraDebug()
             }
 
         }
-    }
+    } 
 }
 
 void RenderManager::createCameraRender()
@@ -631,3 +632,120 @@ void RenderManager::deleteCameraRender()
         RenderManager::getInstance().createCameraRenderComponent(*obj.get());
     }
 }
+
+
+//==============================================
+// BEHAVIOUR DEBUG
+//============================================== 
+
+void RenderManager::renderBattleDebug()
+{
+
+    if(activeDebugAI == false && activeDebugCamera == false)
+    {
+        AIDebugPointB.clear();
+        auto npcs = ItemManager::getInstance().getItemHolderComponents();
+        for(unsigned int i = 0; i < npcs.size(); ++i)
+        {
+            auto player = npcs[i]->getGameObject();
+            AIDebugPointB.push_back(player); 
+        }
+        
+        if(AIDebugB < AIDebugPointB.size()-1)
+        {   
+            if(activeDebugBehaviour == false)
+            {
+                activeDebugBehaviour = true;
+            }
+            if(lapB == true)
+            {
+                AIDebugB++;
+            }
+
+            createBattleRender();
+
+            if(lapB == false)
+            {
+                lapB = true;
+            }
+        }
+        else
+        {
+            if(activeDebugBehaviour == true)
+            {
+                activeDebugBehaviour = false;
+            }
+            deleteBattleRender();
+
+            AIDebugPointB.clear();
+            
+            //Set debug inactive
+            AIDebugB = 0;
+            lapB = false;
+        }
+    }
+
+}
+
+void RenderManager::createBattleRender()
+{
+    if(lapB == false)
+    {
+        renderFacade->createRectangle2D(glm::vec2(960,0), "media/img/white_rectangle.png");
+    }
+    else if(lapB == true && AIDebugB != 0)
+    {
+        renderFacade->createTitleText(glm::vec2(1100,50),title);
+        renderFacade->createDescriptionText(glm::vec2(1000,80),root);
+    }
+    //Create camera render
+    auto obj = ObjectManager::getInstance().getObject(AIDebugPointB[AIDebugB].getId());
+    RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+}
+ 
+void RenderManager::deleteBattleRender() 
+{
+    if(lapB == true)
+    {
+        renderFacade->deleteRectangle2D();
+        renderFacade->deleteTitleText();
+        renderFacade->deleteDescriptionText();
+
+        //Create camera render
+        auto obj = ObjectManager::getInstance().getObject(AIDebugPointB[0].getId());
+        RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+    }
+}
+
+void RenderManager::updateBattleDebug(float dTime)
+{
+    if(lapB == true && AIDebugB != 0)
+    {
+        if(end == false)
+        { 
+            renderFacade->setDescriptionText(root);
+            if(success == true)
+            {
+                if(timeP <= 0)
+                {
+                    root = " ";
+                    renderFacade->setDescriptionText(root);
+                    renderFacade->deleteRectangleCol2D();
+                    success = false;
+                    timeP = maxTimeP;
+                }
+                else
+                {
+                    timeP -= dTime;
+                }
+            }
+        }
+        else
+        {
+            renderFacade->createRectangleCol2D(glm::vec2(960,0), "media/img/green_rectangle.png");
+            success = true;
+            end = false;
+        }
+    }
+} 
+ 

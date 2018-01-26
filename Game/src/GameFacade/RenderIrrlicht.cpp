@@ -427,7 +427,7 @@ void RenderIrrlicht::createDescriptionText(glm::vec2 pos, std::string text)
 
     const wchar_t* txt = text_aux.c_str();
 
-    description = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+200,pos.y+50));
+    description = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+320,pos.y+100));
     description->setText(txt);
 }
 
@@ -492,7 +492,7 @@ void RenderIrrlicht::createSubDescriptionText(glm::vec2 pos, std::string text)
 
     const wchar_t* txt = text_aux.c_str();
 
-    subDescription = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+200,pos.y+50));
+    subDescription = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+180,pos.y+50));
     subDescription->setText(txt);
 }
 
