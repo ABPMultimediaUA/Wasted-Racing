@@ -40,8 +40,6 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     parser.Read(y);
     parser.Read(z);
 
-    std::cout << "POSITION:" << x << " " << y << " " << z << std::endl;
-
     auto trans = player.get()->getTransformData();
     trans.position.x = x;
     trans.position.y = y;
@@ -174,8 +172,6 @@ void NetworkManager::broadcastPosition()
     stream.Write((float)trans.rotation.y);
     stream.Write((float)trans.rotation.z);
 
-    std::cout << "BROADCASTPOSITION: " << trans.position.x << " " << trans.position.y << " " << trans.position.z << std::endl;
-
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
 
@@ -241,6 +237,8 @@ void NetworkManager::endGame()
 {
     RakNet::BitStream stream;
 
+    setStarted(false);
+
     stream.Write((unsigned char)ID_GAME_ENDED);
     
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
@@ -250,6 +248,7 @@ void NetworkManager::endGame()
 
 void NetworkManager::remoteEndGame(RakNet::Packet* packet)
 {
+    setStarted(false);
     Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
 
@@ -391,15 +390,13 @@ void startLineCollisionEvent(EventData eData)
     auto player = std::static_pointer_cast<MoveComponent>(eData.Component);
 
     auto line = player->getGameObject().getComponent<StartLineComponent>();
+
     if(line != nullptr) {
-        if(line->getActive() == true)
+        if(player->getGameObject().getId() == 25000)
         {
-            if(player->getGameObject().getId() == 25000)
+            if(player->getGameObject().getComponent<ScoreComponent>()->getLap()>ScoreManager::getInstance().getMaxLaps())
             {
-                if(player->getGameObject().getComponent<ScoreComponent>()->getLap()>ScoreManager::getInstance().getMaxLaps())
-                {
-                    NetworkManager::getInstance().endGame();
-                }
+                NetworkManager::getInstance().endGame();
             }
         }
     }
