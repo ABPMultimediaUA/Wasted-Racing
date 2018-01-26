@@ -8,4 +8,5 @@
 	|______________________________________________________________________________|
 
 Acerca de la entrega:
-	-Cartel
+	-Cartel: No es la entrega final del cartel, sino una entrega parcial para mostrar cómo
+		va el proceso de éste. Se incluye el archivo .psd y algunas capturas de su proceso.

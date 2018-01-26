@@ -11,3 +11,38 @@ Acerca de la entrega:
 	-Multijugador en red:
 
 	-Sistema de depuración visual de la IA:
+        
+        -Debug Logica Difusa y Sensor de Vista: Pulsando la tecla F9, se mostraran:
+                        
+                        -Caja colision NPC
+                        -Rango de vision 
+                        -Area de vision
+                        -Marcador siguinte punto
+                        -Marcadores de objetos visibles
+                        
+                Podemos ver estos añadidos en:
+                    
+                    -Game/src/GameObject/AIComponent/AIDrivingComponent
+                    -Game/src/GameManager/RenderManager
+                    -Game/src/GameFacade/IRenderFacade
+                    -Game/src/GameFacade/RenderIrrlicht
+                    
+                Ademas, los parametros de la logica difusa, son leidos desde:
+                    
+                    -Game/media/xml/SpeedAIValues
+                    -Game/media/xml/TurnAIValues
+                    
+                    
+        
+        -Debug Behaviour Tree: Pulsando la tecla F10, se mostraran:
+        
+                        -Ruta que sigue el Behaviour del NPC, hasta que conseguir un SUCCESS Action
+                        
+                        
+                Podemos ver estos añadidos en:
+                    
+                    -Game/src/GameBehaviourTrees/*
+                    -Game/src/GameObject/AIComponent/AIBattleComponent
+                    -Game/src/GameManager/RenderManager
+                    -Game/src/GameFacade/IRenderFacade
+                    -Game/src/GameFacade/RenderIrrlicht
