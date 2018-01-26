@@ -65,6 +65,13 @@ public:
     //Update the logo video
     virtual void updateLogo();
 
+    virtual void createRectangle2D(glm::vec2 pos, std::string img);
+
+    virtual void deleteRectangle2D();
+
+    virtual void drawGUI();
+
+
     //Get device
     irr::IrrlichtDevice* getDevice(){
         return device;
@@ -107,5 +114,7 @@ private:
     irr::gui::IGUIStaticText* item;
 
     irr::gui::IGUIFont* font;
+
+    irr::gui::IGUIElement* rectangle;
 
 };

@@ -44,10 +44,7 @@ class MainState : public IGameState {
 public: 
 
     //Constructor
-    MainState (){ 
-        type = IGameState::MAIN; 
-        fileName = "media/img/menuProv.png";
-    };
+    MainState (){ type = IGameState::MAIN;  };
 
     //Destructor
     virtual ~MainState() {}
@@ -103,10 +100,6 @@ private:
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;
-
-    //JUST FOR THE TEST
-    irr::gui::IGUIImage* img;
-    std::string fileName;
 
     //Irrlicht own window
     irr::IrrlichtDevice* device;

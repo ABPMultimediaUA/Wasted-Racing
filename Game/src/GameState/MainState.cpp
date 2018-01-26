@@ -15,9 +15,6 @@ void MainState::init() {
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
 
-    //Set an image on the main menu
-    device = renderManager->getRenderFacade()->getDevice();
-    videoDriver = renderManager->getRenderFacade()->getVideoDriver();
 }
 
 void MainState::update(float &accumulatedTime) {

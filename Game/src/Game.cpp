@@ -19,9 +19,6 @@ void Game::init() {
     //Say game loop is active
     setStay(true);
 
-    //Initial state
-    setState(IGameState::stateType::INTRO);
-
     //Set engine to default
     setRenderEngine(0);
     setInputEngine(0);
@@ -58,6 +55,9 @@ void Game::init() {
     itemManager->init();
     scoreManager->init();
     networkManager->init();
+
+    //Initial state
+    setState(IGameState::stateType::INTRO);
 
     addObjects();
 }

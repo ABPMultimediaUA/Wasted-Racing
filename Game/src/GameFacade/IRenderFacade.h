@@ -93,6 +93,13 @@ public:
     //Update logo video
     virtual void updateLogo() = 0;
 
+    virtual void createRectangle2D(glm::vec2 pos, std::string img)  = 0;
+
+    virtual void deleteRectangle2D()  = 0;
+    
+    virtual void drawGUI() = 0;
+
+
     //==============================================================
     // Window Related functions
     //==============================================================

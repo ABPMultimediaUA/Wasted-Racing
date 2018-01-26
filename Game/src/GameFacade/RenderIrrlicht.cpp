@@ -84,6 +84,14 @@ void RenderIrrlicht::renderDraw() {
  
 }
 
+void RenderIrrlicht::drawGUI(){
+    
+    videoDriver->beginScene(true, true, irr::video::SColor(255,150,150,255));
+    sceneManager->getGUIEnvironment()->drawAll();
+    videoDriver->endScene();
+ 
+}
+
 void RenderIrrlicht::addCamera() {
     camera = sceneManager->addCameraSceneNode();
     camera->setPosition(irr::core::vector3df(0,0,0));
@@ -330,4 +338,19 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
 
 void RenderIrrlicht::updateLogo(){
     
+}
+
+
+void RenderIrrlicht::createRectangle2D(glm::vec2 pos, std::string img)
+{
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+    auto image = videoDriver->getTexture(img.c_str());
+    rectangle = sceneManager->getGUIEnvironment()->addImage(image, position);
+}
+
+void RenderIrrlicht::deleteRectangle2D()
+{
+    if(rectangle != nullptr)
+        std::cout<<"imagen: "<<rectangle<<std::endl;
+        rectangle->remove();
 }
