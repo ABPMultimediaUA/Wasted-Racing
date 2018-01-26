@@ -36,6 +36,7 @@ bool InputIrrlicht::OnEvent(const irr::SEvent& event) {
         DetectKeyInput(KEY_KEY_T,Key_Drift_Down,Key_Drift_Up)
         DetectKeyInput(KEY_KEY_Q,Key_UseItem_Down,Key_UseItem_Up)
         DetectKeyInput(KEY_F9,Key_DebugAI_Down,Key_DebugAI_Up)
+        DetectKeyInput(KEY_F10,Key_DebugBehaviour_Down,Key_DebugBehaviour_Up)
         DetectKeyInput(KEY_F11,Key_DebugCamera_Down,Key_DebugCamera_Up)
     }
     if(event.EventType == irr::EET_MOUSE_INPUT_EVENT){

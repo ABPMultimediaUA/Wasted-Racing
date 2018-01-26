@@ -1,4 +1,5 @@
 #include "AIBattleComponent.h"
+#include <string>
 
 
 //This class defines the usage of a generic item in the Battle System
@@ -6,6 +7,7 @@ class UseItemAction : public Behaviour{
     public:
         UseItemAction(GameObject& t) : 
         target(t) {}
+        std::string getName() {     return name;    }
     protected:
         BehaviourState Update(float d)
         {
@@ -14,13 +16,20 @@ class UseItemAction : public Behaviour{
             {
                 ItemManager* itemManager = &ItemManager::getInstance();
                 itemManager->createItem(target);
+                auto player = RenderManager::getInstance().getAIsBattle();
+                if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
+                {
+                    RenderManager::getInstance().setRootBattle(name);
+                    RenderManager::getInstance().setEndRootBattle(true);
+                    RenderManager::getInstance().setWaitBattle(false);
+                }
                 return BehaviourState::SUCCEEDED;
             }
 			return BehaviourState::FAILED;
         }
     private:
         GameObject& target;
-
+        std::string name = "UseItemAction";
 };
 
 //This class defines the waiting action, when the player decides not to use the item
@@ -28,6 +37,7 @@ class WaitAction : public Behaviour{
     public:
         WaitAction(float w) :
         wTime(w) {}
+        std::string getName() {     return name;    }
         
     protected:
         void Initialized() override
@@ -39,6 +49,13 @@ class WaitAction : public Behaviour{
             aTime+=d;
             if(aTime>wTime)
             {
+
+                if(RenderManager::getInstance().getWaitBattle() == false)
+                {
+                    RenderManager::getInstance().setRootBattle(name);
+                    RenderManager::getInstance().setEndRootBattle(false);
+                    RenderManager::getInstance().setWaitBattle(true);
+                }
                 return BehaviourState::SUCCEEDED;
             }
 			return BehaviourState::RUNNING;
@@ -49,6 +66,7 @@ class WaitAction : public Behaviour{
         float wTime;
         //Acumulated time
         float aTime;
+        std::string name = "WaitAction";
 };
 
 //Condition that checks if the player is first or not
@@ -56,6 +74,7 @@ class ConditionFirstAction : public Behaviour {
     public:
         ConditionFirstAction(GameObject& t) :
         target(t) {}
+        std::string getName() {     return name;    }
     protected:
         BehaviourState Update(float d)
         {
@@ -64,7 +83,14 @@ class ConditionFirstAction : public Behaviour {
             {
                 if(score->getPosition() == 1)
                 {
-                    return BehaviourState::SUCCEEDED;
+                    auto player = RenderManager::getInstance().getAIsBattle();
+                    if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                        return BehaviourState::SUCCEEDED;
+                    }
                 }
             }
 
@@ -73,6 +99,7 @@ class ConditionFirstAction : public Behaviour {
 
     private:
         GameObject& target;
+        std::string name = "FirstAction";
 
 };
 
@@ -81,9 +108,16 @@ class ConditionEnemyBehindAction : public Behaviour {
     protected:
         BehaviourState Update(float d)
         {
+            RenderManager::getInstance().setRootBattle(name);
+            RenderManager::getInstance().setEndRootBattle(false);
+            RenderManager::getInstance().setWaitBattle(false);
+            
             return BehaviourState::SUCCEEDED;
         }
-
+    public:
+        std::string getName() {     return name;    }
+    private:
+        std::string name = "EnemyBehindAction";
 };
 
 //Condition that checks if the player has an item or not
@@ -91,6 +125,7 @@ class ConditionHasItemAction : public Behaviour {
     public:
         ConditionHasItemAction(GameObject& t) :
         target(t) {}
+        std::string getName() {     return name;    }
     protected:
         BehaviourState Update(float d)
         {
@@ -99,6 +134,13 @@ class ConditionHasItemAction : public Behaviour {
             {
                 if(itemHolder->getItemType() != -1)
                 {
+                    auto player = RenderManager::getInstance().getAIsBattle();
+                    if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -107,6 +149,7 @@ class ConditionHasItemAction : public Behaviour {
 
     private:
         GameObject& target;
+        std::string name = "HasItemAction";
 };
 
 //Condition that checks if the player has the item 1 or not
@@ -114,6 +157,7 @@ class ConditionHasItem1Action : public Behaviour {
     public:
         ConditionHasItem1Action(GameObject& t) :
         target(t) {}
+        std::string getName() {     return name;    }
     protected:
         BehaviourState Update(float d)
         {
@@ -122,6 +166,13 @@ class ConditionHasItem1Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 0)
                 {
+                    auto player = RenderManager::getInstance().getAIsBattle();
+                    if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -130,6 +181,7 @@ class ConditionHasItem1Action : public Behaviour {
 
     private:
         GameObject& target;
+        std::string name = "HasItem1Action";
 };
 
 //Condition that checks if the player has the item 2 or not
@@ -137,6 +189,7 @@ class ConditionHasItem2Action : public Behaviour {
     public:
         ConditionHasItem2Action(GameObject& t) :
         target(t) {}
+        std::string getName() {     return name;    }
     protected:
         BehaviourState Update(float d)
         {
@@ -145,6 +198,13 @@ class ConditionHasItem2Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 1)
                 {
+                    auto player = RenderManager::getInstance().getAIsBattle();
+                    if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -153,6 +213,7 @@ class ConditionHasItem2Action : public Behaviour {
 
     private:
         GameObject& target;
+        std::string name = "HasItem2Action";
 };
 
 //Condition that checks if the player has the item 3 or not
@@ -160,6 +221,7 @@ class ConditionHasItem3Action : public Behaviour {
     public:
         ConditionHasItem3Action(GameObject& t) :
         target(t) {}
+        std::string getName() {     return name;    }
     protected:
         BehaviourState Update(float d)
         {
@@ -168,6 +230,13 @@ class ConditionHasItem3Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 2)
                 {
+                    auto player = RenderManager::getInstance().getAIsBattle();
+                    if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -176,6 +245,7 @@ class ConditionHasItem3Action : public Behaviour {
 
     private:
         GameObject& target;
+        std::string name = "HasItem3Action";
 };
 
 //Condition that checks if the player has the item 4 or not
@@ -183,6 +253,7 @@ class ConditionHasItem4Action : public Behaviour {
     public:
         ConditionHasItem4Action(GameObject& t) :
         target(t) {}
+        std::string getName() {     return name;    }
     protected:
         BehaviourState Update(float d)
         {
@@ -191,6 +262,13 @@ class ConditionHasItem4Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 3)
                 {
+                    auto player = RenderManager::getInstance().getAIsBattle();
+                    if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -199,6 +277,7 @@ class ConditionHasItem4Action : public Behaviour {
 
     private:
         GameObject& target;
+        std::string name = "HasItem4Action";
 
 };
 
@@ -207,6 +286,7 @@ class ConditionHasItem5Action : public Behaviour {
     public:
         ConditionHasItem5Action(GameObject& t) :
         target(t) {}
+        std::string getName() {     return name;    }
     protected:
         BehaviourState Update(float d)
         {
@@ -215,6 +295,13 @@ class ConditionHasItem5Action : public Behaviour {
             {
                 if(itemHolder->getItemType() == 4)
                 {
+                    auto player = RenderManager::getInstance().getAIsBattle();
+                    if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
+                    {
+                        RenderManager::getInstance().setRootBattle(name);
+                        RenderManager::getInstance().setEndRootBattle(false);
+                        RenderManager::getInstance().setWaitBattle(false);
+                    }
                     return BehaviourState::SUCCEEDED;
                 }
             }
@@ -223,6 +310,7 @@ class ConditionHasItem5Action : public Behaviour {
 
     private:
         GameObject& target;
+        std::string name = "HasItem5Action";
 
 };
 

@@ -3,11 +3,14 @@
  #include "Behaviour.h"
  #include <vector>
  #include <memory>
+ #include <string>
+ #include <iostream>
 
  class Composite : public Behaviour 
  {
     protected:
         std::vector<Behaviour::Pointer> c_children;
+        std::string name = "Composite";
 
     public:
         typedef std::shared_ptr<Composite> Pointer;
@@ -20,5 +23,6 @@
 
         virtual void Stop() override;
         virtual void Reset() override;
+        std::string getName() {     return name;    }
 
  };

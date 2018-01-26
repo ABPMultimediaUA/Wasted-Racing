@@ -90,6 +90,43 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
 
+
+    ///////////////////////////////
+    ///////      DEBUG      ///////    
+    ///////////////////////////////
+
+    virtual void createRectangle2D(glm::vec2 pos, std::string img)  = 0;
+
+    virtual void deleteRectangle2D()  = 0;
+    
+    virtual void createRectangleCol2D(glm::vec2 pos, std::string img) = 0;
+
+    virtual void deleteRectangleCol2D() = 0;
+
+    virtual void createTitleText(glm::vec2 pos, std::string text) = 0;
+
+    virtual void deleteTitleText() = 0;
+
+    virtual void setTitleText(std::string text) = 0;
+
+    virtual void createDescriptionText(glm::vec2 pos, std::string text) = 0;
+
+    virtual void deleteDescriptionText() = 0;
+
+    virtual void setDescriptionText(std::string text) = 0;
+
+    virtual void createSubTitleText(glm::vec2 pos, std::string text) = 0;
+
+    virtual void deleteSubTitleText() = 0;
+
+    virtual void setSubTitleText(std::string text) = 0;
+
+    virtual void createSubDescriptionText(glm::vec2 pos, std::string text) = 0;
+
+    virtual void deleteSubDescriptionText() = 0;
+
+    virtual void setSubDescriptionText(std::string text) = 0;
+
     //==============================================================
     // Window Related functions
     //==============================================================

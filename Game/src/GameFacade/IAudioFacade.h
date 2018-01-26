@@ -3,6 +3,7 @@
 #include <string>
 #include <glm/ext.hpp>
 #include "../GameObject/GameObject.h"
+#include "../GameManager/AudioManager.h"
 
 class IAudioFacade{
 
@@ -40,6 +41,9 @@ public:
 
     //Sets the 3D position of the listener
     virtual void setListenerPosition(glm::vec3 pos) = 0;
+
+    //Creates an audio event instance
+    virtual void createAudioInstance(AudioManager::AudioType type, glm::vec3 pos, std::string parameters) = 0;
 
     //Sets the gameObject to be the listener
     void setListener(GameObject& newListener) {

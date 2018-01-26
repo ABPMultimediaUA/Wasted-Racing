@@ -90,7 +90,7 @@ void Game::update(float dTime) {
     }
     physicsManager->update(dTime);
 
-    renderManager->update();
+    renderManager->update(dTime);
 
     waypointManager->update(dTime);
 
