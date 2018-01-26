@@ -88,7 +88,7 @@ private:
     //Audio Manager
     AudioManager* audioManager;
     //AI manager
-    //AIManager* aiManager;
+    AIManager* aiManager;
     //Sensor manager
     SensorManager* sensorManager;
     //Item manager
