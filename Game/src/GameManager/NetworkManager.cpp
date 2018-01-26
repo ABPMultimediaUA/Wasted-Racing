@@ -343,7 +343,7 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
             //Send erase object event
             EventData data;
             data.Id = rItem.get()->getGameObject().getId();
-
+            
             EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
         }
     }
@@ -415,6 +415,7 @@ void NetworkManager::broadcastPositionRedShell()
     for(unsigned int i = 0; i<remoteRedShellComponentList.size(); i++){
         auto red_shell = std::dynamic_pointer_cast<RemoteItemComponent>(remoteRedShellComponentList[i]);
         stream.Reset();
+        std::cout<<"MI PAP ES :: "<<red_shell.get()->getParentId() << " Y ESTOY CON " <<server_id<<std::endl;
         if(red_shell.get()->getParentId() == server_id){
             int s_id = red_shell.get()->getServerId();
             auto trans = red_shell.get()->getGameObject().getTransformData();
@@ -426,6 +427,9 @@ void NetworkManager::broadcastPositionRedShell()
             stream.Write((float)trans.rotation.x);
             stream.Write((float)trans.rotation.y);
             stream.Write((float)trans.rotation.z);
+
+                        std::cout << " BROADCASTEA EN: "<<trans.position.x << " _ "<< trans.position.y << " _ "<< trans.position.z << " _ "<< std::endl;
+
 
             peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
         }
@@ -454,6 +458,8 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
         if(rPlayer.get()->getServerId() == id)
         {
             auto trans = rPlayer.get()->getGameObject().getTransformData();
+            std::cout << " PERO QUE COJONEs. ESTABA EN: "<<trans.position.x << " _ "<< trans.position.y << " _ "<< trans.position.z << " _ "<< std::endl;
+            std::cout << "TIENE QUE IR A: : "<<x << " _ "<< y << " _ "<< z << " _ "<< std::endl;
             trans.position.x = x;
             trans.position.y = y;
             trans.position.z = z;
@@ -461,6 +467,8 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
             trans.rotation.x = rx;
             trans.rotation.y = ry;
             trans.rotation.z = rz;
+
+            
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
         }
