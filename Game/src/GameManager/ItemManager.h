@@ -13,7 +13,7 @@
 #include "RenderManager.h"
 #include "PhysicsManager.h"
 #include "ObjectManager.h"
-
+#include "NetworkManager.h"
 
 class ItemManager {
 

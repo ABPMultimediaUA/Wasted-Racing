@@ -21,8 +21,9 @@ void ServerManager::init()
 	peer->Startup(MAXCLIENTS, &socket, 1);
 	peer->SetMaximumIncomingConnections(MAXCLIENTS);
 
-	nPlayers=0;
-	started=false;
+	nPlayers = 0;
+	nObjects = 0;
+	started  = false;
 }
 
 void ServerManager::run()
@@ -92,6 +93,14 @@ void ServerManager::broadcastData(RakNet::Packet* packet)
 	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
 }
 
+void ServerManager::broadcastObject(RakNet::Packet* packet)
+{
+	RakNet::BitStream stream(packet->data, packet->length, false);
+	stream.write((int)nObjects);
+
+	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
+}
+
 void ServerManager::endGame(RakNet::Packet* packet)
 {
 	broadcastData(packet);
@@ -145,10 +154,12 @@ void ServerManager::update()
 				broadcastData(packet);
 				break;
 			case ID_CREATE_BANANA:
-				broadcastData(packet);
+				broadcastObject(packet);
+				nObjects++;
 				break;
 			case ID_DESTROY_BANANA:
 				broadcastData(packet);
+				nObjects--;
 				break;
 			case ID_BOX_COLLISION:
 				broadcastData(packet);

@@ -95,12 +95,25 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
 
 void NetworkManager::createBanana(EventData eData)
 {
+    RakNet::BitStream stream;
+    auto trans = eData.Object.get()->getTransformData();
 
+    stream.Write((unsigned char)ID_CREATE_BANANA);
+    stream.Write((float)trans.position.x);
+    stream.Write((float)trans.position.y);
+    stream.Write((float)trans.position.z);
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
 
 void NetworkManager::destroyBanana(EventData eData)
 {
-    
+    RakNet::BitStream stream;
+
+    stream.Write((unsigned char)ID_DESTROY_BANANA);
+    stream.Write((int)server_id);
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
 
 void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
@@ -322,6 +335,10 @@ void NetworkManager::updateLobby(){
         peer->DeallocatePacket(result);
     }
 }
+
+//==============================================
+// CREATE COMPONENTS
+//============================================== 
 
 IComponent::Pointer NetworkManager::createRemotePlayerComponent(GameObject& newGameObject) {
 

@@ -135,6 +135,48 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 }
 
 
+IComponent::Pointer ItemManager::createItemMultiplayer(GameObject& obj){
+
+    auto itemHolder = obj.getComponent<ItemHolderComponent>();
+    int random = itemHolder->getItemType();
+
+    if(random == IItemComponent::ItemType::redShell)
+    {
+        itemHolder->setItemType(-1);
+        auto component = createRedShell(obj);
+        std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();
+        return component;
+    }
+    else if(random == IItemComponent::ItemType::blueShell)
+    {
+        itemHolder->setItemType(-1);
+        auto component = createBlueShell(obj);
+        std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init();
+        return component;
+    }
+    else if(random == IItemComponent::ItemType::banana)
+    {
+        itemHolder->setItemType(-1);
+        return createBanana(obj);
+    }
+    else if(random == IItemComponent::ItemType::mushroom)
+    {
+        itemHolder->setItemType(-1);
+        auto component = createMushroom(obj);
+        std::dynamic_pointer_cast<ItemMushroomComponent>(component)->init();
+        deleteItem(component);
+        return component;
+    }
+    else if(random == IItemComponent::ItemType::star)
+    {
+        itemHolder->setItemType(-1);
+        auto component = createStar(obj);
+        std::dynamic_pointer_cast<ItemStarComponent>(component)->init();
+        deleteItem(component);
+        return component;
+    }
+    return nullptr;
+}
 
 //////////////////////////////////////////////////////
 /////
@@ -211,6 +253,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
+    NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 1);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
@@ -291,6 +334,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0, 0);
+    NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 2);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
@@ -327,7 +371,7 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "banana.3ds");
     PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, 1, false, CollisionComponent::Type::Banana);
-
+    NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 0);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 

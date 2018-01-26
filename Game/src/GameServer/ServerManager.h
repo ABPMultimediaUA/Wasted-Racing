@@ -40,6 +40,9 @@ class ServerManager{
         //Number of players in the server (actually)
         int nPlayers;
 
+        //Number of objects in the server (actually)
+        int nObjects;
+
         //Vector of players addresses
         std::vector<RakNet::SystemAddress> players;
 
