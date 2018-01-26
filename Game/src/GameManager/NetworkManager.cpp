@@ -427,9 +427,6 @@ void NetworkManager::broadcastPositionRedShell()
             stream.Write((float)trans.rotation.y);
             stream.Write((float)trans.rotation.z);
 
-            std::cout << " BROADCASTEA EN: "<<trans.position.x << " _ "<< trans.position.y << " _ "<< trans.position.z << " _ "<< std::endl;
-
-
             peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
         }
     }
@@ -457,8 +454,6 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
         if(rPlayer.get()->getServerId() == id)
         {
             auto trans = rPlayer.get()->getGameObject().getTransformData();
-            std::cout << " PERO QUE COJONEs. ESTABA EN: "<<trans.position.x << " _ "<< trans.position.y << " _ "<< trans.position.z << " _ "<< std::endl;
-            std::cout << "TIENE QUE IR A: : "<<x << " _ "<< y << " _ "<< z << " _ "<< std::endl;
             trans.position.x = x;
             trans.position.y = y;
             trans.position.z = z;
