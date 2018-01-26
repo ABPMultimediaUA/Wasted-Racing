@@ -4,6 +4,7 @@
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 #include "NetworkManager.h"
+#include "ItemManager.h"
 #include "../Game.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/GameObject.h"
@@ -55,7 +56,7 @@ public:
     IComponent::Pointer createRemoteItemComponent(GameObject& newGameObject, int type);
 
     //==============================================================
-    // Create Objects
+    // Create players
     //==============================================================
 
     //Collocates the player in the map
@@ -65,7 +66,7 @@ public:
     void createRemotePlayer(RakNet::Packet* packet);
 
     //==============================================================
-    // Network Communication Functions
+    //  MOVE STUFF
     //==============================================================
 
     //Broadcasts the player position to the rest of players
@@ -74,6 +75,23 @@ public:
     //Receives a remote player position
     void moveRemotePlayer(RakNet::Packet* packet);
 
+    //Broadcasts all the red shells position to the rest of players
+    void broadcastPositionRedShell();
+
+    //Receives a remote red shell position
+    void moveRemoteRedShell(RakNet::Packet* packet);
+
+    //Broadcasts the blue shells position to the rest of players
+    void broadcastPositionBlueShell();
+
+    //Receives a remote blue shell position
+    void moveRemoteBlueShell(RakNet::Packet* packet);
+
+    //==============================================================
+    //  Create Objects
+    //==============================================================
+
+    //--------------------------------------------------------
     //send signal to create a banana
     void createBanana(EventData eData);
 
@@ -85,6 +103,38 @@ public:
 
     //destroy a banana item where it should be on the map
     void remoteDestroyBanana(RakNet::Packet* packet);
+    //--------------------------------------------------------
+
+
+    //--------------------------------------------------------
+    //send signal to create a red shell
+    void createRedShell(EventData eData);
+
+    //send signal to destroy a red shell
+    void destroyRedShell(EventData eData);
+
+    //creates a red shell item where it should be on the map
+    void remoteCreateRedShell(RakNet::Packet* packet);
+
+    //destroy a red shell item where it should be on the map
+    void remoteDestroyRedShell(RakNet::Packet* packet);
+    //--------------------------------------------------------
+
+
+    //--------------------------------------------------------
+    //send signal to create a blue shell
+    void createBlueShell(EventData eData);
+
+    //send signal to destroy a blue shell
+    void destroyBlueShell(EventData eData);
+
+    //creates a blue shell item where it should be on the map
+    void remoteCreateBlueShell(RakNet::Packet* packet);
+
+    //destroy a blue shell item where it should be on the map
+    void remoteDestroyBlueShell(RakNet::Packet* packet);
+    //--------------------------------------------------------
+
 
     //Broadcasts the collision with a box
     void itemBoxCollision(EventData eData);
@@ -107,8 +157,10 @@ public:
     std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){    return remoteBlueShellComponentList;} //Remote player component list getter
     void setPlayer(GameObject::Pointer p)                              {    player = p;                         };
     void setStarted(bool s)                                            {    started = s;                        };
+    void setConected(bool s)                                           {    conected = s;                       };
     GameObject::Pointer getPlayer()                                    {    return player;                      };
     bool getStarted()                                                  {    return started;                     };
+    bool getConected()                                                 {    return conected;                    };
 
 private:
     //==============================================================
@@ -119,6 +171,7 @@ private:
 
     //MatchState started
     bool started;
+    bool conected;
 
     //Own player
     GameObject::Pointer player;

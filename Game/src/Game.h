@@ -60,6 +60,7 @@ public:
     void setStay(bool s)       {     stay = s;              }//Stay setter
     void setRenderEngine(int n){     renderEngine = n;      }//Engine setter
     void setInputEngine(int n) {     inputEngine = n;       }//Input setter
+    IGameState* getState()     {     return state;          }//State getter
     int getRenderEngine()      {     return renderEngine;   }//Engine getter
     int getInputEngine()       {     return inputEngine;    }//Input getter
 

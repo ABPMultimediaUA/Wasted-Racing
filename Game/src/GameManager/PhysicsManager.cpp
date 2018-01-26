@@ -182,6 +182,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                 else if(hisColl->getType() == CollisionComponent::Type::Banana)
                 {
                     EventData data;
+                    data.Id             = hisColl->getGameObject().getId();
                     data.Component      = std::static_pointer_cast<IComponent>(move);
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 

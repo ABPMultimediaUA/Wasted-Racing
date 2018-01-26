@@ -40,6 +40,9 @@ class ServerManager{
         //Number of players in the server (actually)
         int nPlayers;
 
+        //Number of objects in the server (actually)
+        int nObjects;
+
         //Vector of players addresses
         std::vector<RakNet::SystemAddress> players;
 
@@ -54,9 +57,12 @@ class ServerManager{
         void startGame();
 
         //Function to end the match
-        void endGame();
+        void endGame(RakNet::Packet* packet);
 
         //Broadcast one packet to the rest of the players
         void broadcastData(RakNet::Packet* packet);
+
+        //Broadcasts one playable object to the rest of the players
+        void broadcastObject(RakNet::Packet* packet);
 
 };

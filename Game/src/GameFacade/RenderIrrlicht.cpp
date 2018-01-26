@@ -374,40 +374,39 @@ void RenderIrrlicht::deleteItemIcon()
 
 void RenderIrrlicht::updateItemIcon(){
 
-    //int itemID = ObjectManager::getInstance().getObject(50).get()->getComponent<ItemHolderComponent>().get()->getItemType();
-   
-    std::cout<<"entro en updateitem ------------------------------"<<std::endl;
+    int itemID = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
 
-    /*switch(itemID){
+
+    switch(itemID){
 
         case -1: //EMPTY
-               // deleteItemIcon();
-               //  createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");
+                 deleteItemIcon();
+                 createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");
                  break;
 
         case 0: //RED SHELL
-                //deleteItemIcon();
+                deleteItemIcon();
                 createItemIcon(glm::vec2(50,50), "media/img/iconoRuedamini.png");
                  break;
 
         case 1: //BLUE SHELL
-                //deleteItemIcon();
+                deleteItemIcon();
                 createItemIcon(glm::vec2(50,50), "media/img/iconoBombamini.png");
                  break;
 
         case 2: //BANANA
-                //deleteItemIcon();
+                deleteItemIcon();
                 createItemIcon(glm::vec2(50,50), "media/img/iconoTrampamini.png");
                  break;
 
         case 3: //MUSHROOM
-                //deleteItemIcon();
+                deleteItemIcon();
                 createItemIcon(glm::vec2(50,50), "media/img/iconoSetamini.png");
                  break;
 
         case 4: //STAR
-                //deleteItemIcon();
+                deleteItemIcon();
                 createItemIcon(glm::vec2(50,50), "media/img/iconoBotellamini.png");
                  break;
-    }*/
+    }
 }
