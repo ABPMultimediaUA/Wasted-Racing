@@ -135,7 +135,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     {
         itemHolder->setItemType(-1);
         if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
-            
+            std::cout<<" ENTRAMOS EN ITEM MANAGER A TIRAR"<<std::endl;
             //Launch creation event
             EventData data;
             data.Id = obj.getId();
