@@ -9,8 +9,6 @@
 
 Acerca de la entrega:
 	-Multijugador en red:
-
-	-Sistema de depuración visual de la IA:
         
         -Debug Logica Difusa y Sensor de Vista: Pulsando la tecla F9, se mostraran:
                         
@@ -20,7 +18,7 @@ Acerca de la entrega:
                         -Marcador siguinte punto
                         -Marcadores de objetos visibles
                         
-                Podemos ver estos añadidos en:
+                Podemos ver estos añadidos en el video "IADebug.mp4" y en:
                     
                     -Game/src/GameObject/AIComponent/AIDrivingComponent
                     -Game/src/GameManager/RenderManager
@@ -39,7 +37,7 @@ Acerca de la entrega:
                         -Ruta que sigue el Behaviour del NPC, hasta que conseguir un SUCCESS Action
                         
                         
-                Podemos ver estos añadidos en:
+                Podemos ver estos añadidos en el video "BehaviourDebug.mp4" y en:
                     
                     -Game/src/GameBehaviourTrees/*
                     -Game/src/GameObject/AIComponent/AIBattleComponent

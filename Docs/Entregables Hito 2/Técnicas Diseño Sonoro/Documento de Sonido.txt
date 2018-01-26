@@ -11,3 +11,4 @@ Acerca de la entrega:
 	-Se ha cambiado la API de FMOD de C++ a C. Se han actualizado las librerías. Esto se puede comprobar en Game/src/GameFacade/AudioFMOD.*
 
 	-También se ha creado un evento situado en 3D que reproduce todas las voces en Español a partir de un parámetro de personaje y un parámetro de pista. Se adjunta en la entrega el proyecto de FMODStudio. El evento se puede escuchar reproduciéndose automáticamente tanto en Linux como en Windows.
+	Para compilar ejecutar "make" desde la carpeta Game/ en Linux o "make win" en Windows.
