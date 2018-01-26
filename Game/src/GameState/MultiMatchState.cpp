@@ -16,7 +16,7 @@ void MultiMatchState::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
-    networkManager  = &NetworkManager::getInstance();    //Initialize Sensor manager
+    networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
 
     createPlayer();
 }
