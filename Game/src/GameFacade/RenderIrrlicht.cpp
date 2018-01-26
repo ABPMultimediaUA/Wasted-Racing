@@ -26,6 +26,8 @@ void RenderIrrlicht::openWindow(){
     item = sceneManager->getGUIEnvironment()->addStaticText(L"Item: ", irr::core::recti(0, 40, 200, 50));
     pos->setOverrideFont(font);
 
+    createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");
+
     addCamera();
     //sceneManager->setAmbientLight(irr::video::SColorf(0.8,0.8,0.8,1));
 
@@ -66,6 +68,7 @@ void RenderIrrlicht::updateWindow() {
         pos->setText(stringPos.c_str());
         lap->setText(stringLap.c_str());
         item->setText(stringItm.c_str());
+        updateItemIcon();
     }
 }
 
@@ -79,6 +82,14 @@ void RenderIrrlicht::renderDraw() {
 
     videoDriver->beginScene(true, true, irr::video::SColor(255,150,150,255));
     sceneManager->drawAll();
+    sceneManager->getGUIEnvironment()->drawAll();
+    videoDriver->endScene();
+ 
+}
+
+void RenderIrrlicht::drawGUI(){
+    
+    videoDriver->beginScene(true, true, irr::video::SColor(255,150,150,255));
     sceneManager->getGUIEnvironment()->drawAll();
     videoDriver->endScene();
  
@@ -330,4 +341,72 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
 
 void RenderIrrlicht::updateLogo(){
     
+}
+
+
+void RenderIrrlicht::createRectangle2D(glm::vec2 pos, std::string img)
+{
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+    auto image = videoDriver->getTexture(img.c_str());
+    rectangle = sceneManager->getGUIEnvironment()->addImage(image, position);
+}
+
+void RenderIrrlicht::deleteRectangle2D()
+{
+    if(rectangle != nullptr)
+        rectangle->remove();
+        
+}
+
+
+void RenderIrrlicht::createItemIcon(glm::vec2 pos, std::string img)
+{
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+    auto image = videoDriver->getTexture(img.c_str());
+    itemIMG = sceneManager->getGUIEnvironment()->addImage(image, position);
+}
+
+void RenderIrrlicht::deleteItemIcon()
+{
+    if(itemIMG != nullptr)
+        itemIMG->remove();
+}
+
+void RenderIrrlicht::updateItemIcon(){
+
+    int itemID = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+
+
+    switch(itemID){
+
+        case -1: //EMPTY
+                 deleteItemIcon();
+                 createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");
+                 break;
+
+        case 0: //RED SHELL
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoRuedamini.png");
+                 break;
+
+        case 1: //BLUE SHELL
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoBombamini.png");
+                 break;
+
+        case 2: //BANANA
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoTrampamini.png");
+                 break;
+
+        case 3: //MUSHROOM
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoSetamini.png");
+                 break;
+
+        case 4: //STAR
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoBotellamini.png");
+                 break;
+    }
 }

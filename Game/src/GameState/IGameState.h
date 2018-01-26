@@ -31,4 +31,5 @@ public:
     virtual void close() = 0;
 
     stateType type;     //Type of state
+
 };

@@ -52,7 +52,7 @@ public:
 
     //Add an object to the game (Cylinder or Cone)
     virtual void addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency);
-
+    
     //Add a light to the game
     virtual void addLight(IComponent* ptr);
 
@@ -64,6 +64,34 @@ public:
 
     //Update the logo video
     virtual void updateLogo();
+
+    virtual void createRectangle2D(glm::vec2 pos, std::string img);
+
+    virtual void deleteRectangle2D();
+
+    virtual void drawGUI();
+
+    virtual void createItemIcon(glm::vec2 pos, std::string img);
+
+    virtual void deleteItemIcon();
+
+    virtual void updateItemIcon();
+
+
+    //Get device
+    irr::IrrlichtDevice* getDevice(){
+        return device;
+    };
+
+    //Get videodriver
+    irr::video::IVideoDriver* getVideoDriver(){
+        return videoDriver;
+    };
+
+    //Get scenemanager
+    irr::scene::ISceneManager* getSceneManager(){
+        return sceneManager;
+    };
 
 private:
 
@@ -92,5 +120,11 @@ private:
     irr::gui::IGUIStaticText* item;
 
     irr::gui::IGUIFont* font;
+
+    irr::gui::IGUIElement* rectangle;
+
+    irr::gui::IGUIElement* itemIMG;
+
+
 
 };

@@ -91,7 +91,7 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
 
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
-    for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
         if(rPlayer.get()->getServerId() == -1)
@@ -142,7 +142,7 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
 
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
-    for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the banana
@@ -167,7 +167,7 @@ void NetworkManager::remoteDestroyBanana(RakNet::Packet* packet){
 
     bool found = false;
     std::shared_ptr<RemoteItemComponent> rItem;
-    for(int i = 0; i<remoteBananaComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remoteBananaComponentList.size() && found == false; i++)
     {
         rItem = std::dynamic_pointer_cast<RemoteItemComponent>(remoteBananaComponentList[i]);
         if(rItem.get()->getServerId() == s_id)    //find the Id of the item
@@ -220,7 +220,7 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
 
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
-    for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the red shell
@@ -248,7 +248,7 @@ void NetworkManager::remoteDestroyRedShell(RakNet::Packet* packet){
 
     bool found = false;
     std::shared_ptr<RemoteItemComponent> rItem;
-    for(int i = 0; i<remoteRedShellComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remoteRedShellComponentList.size() && found == false; i++)
     {
         rItem = std::dynamic_pointer_cast<RemoteItemComponent>(remoteRedShellComponentList[i]);
         if(rItem.get()->getServerId() == s_id)    //find the Id of the item
@@ -301,7 +301,7 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
 
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
-    for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the blue shell
@@ -329,7 +329,7 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
 
     bool found = false;
     std::shared_ptr<RemoteItemComponent> rItem;
-    for(int i = 0; i<remoteBlueShellComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remoteBlueShellComponentList.size() && found == false; i++)
     {
         rItem = std::dynamic_pointer_cast<RemoteItemComponent>(remoteBlueShellComponentList[i]);
         if(rItem.get()->getServerId() == s_id)    //find the Id of the item
@@ -386,7 +386,7 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
    
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
-    for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
         if(rPlayer.get()->getServerId() == id)
@@ -414,7 +414,7 @@ void NetworkManager::broadcastPositionRedShell()
 {
     RakNet::BitStream stream;
     
-    for(int i = 0; i<remoteRedShellComponentList.size(); i++){
+    for(unsigned int i = 0; i<remoteRedShellComponentList.size(); i++){
         auto red_shell = std::dynamic_pointer_cast<RemoteItemComponent>(remoteRedShellComponentList[i]);
         stream.Reset();
         int server_id = red_shell.get()->getServerId();
@@ -449,7 +449,7 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
     parser.Read(rz);
    
     std::shared_ptr<RemoteItemComponent> rPlayer;
-    for(int i = 0; i<remoteRedShellComponentList.size(); i++)
+    for(unsigned int i = 0; i<remoteRedShellComponentList.size(); i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemoteItemComponent>(remoteRedShellComponentList[i]);
         if(rPlayer.get()->getServerId() == id)
@@ -471,7 +471,7 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
 void NetworkManager::broadcastPositionBlueShell()
 {
     RakNet::BitStream stream;
-    for(int i = 0; i<remoteBlueShellComponentList.size(); i++){
+    for(unsigned int i = 0; i<remoteBlueShellComponentList.size(); i++){
         auto blue_shell = std::dynamic_pointer_cast<RemoteItemComponent>(remoteBlueShellComponentList[i]);
         int server_id = blue_shell.get()->getServerId();
         auto trans = blue_shell.get()->getGameObject().getTransformData();
@@ -505,7 +505,7 @@ void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
    
     bool found = false;
     std::shared_ptr<RemoteItemComponent> rPlayer;
-    for(int i = 0; i<remoteBlueShellComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remoteBlueShellComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemoteItemComponent>(remoteBlueShellComponentList[i]);
         if(rPlayer.get()->getServerId() == id)

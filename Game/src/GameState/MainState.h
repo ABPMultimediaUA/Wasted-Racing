@@ -21,6 +21,8 @@
 #include "../GameManager/ItemManager.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameFacade/AudioFMOD.h"
+#include "../GameFacade/RenderIrrlicht.h"
+#include "../GameManager/RenderManager.h"
 
 #include <memory>
 #include <iostream>
@@ -29,6 +31,7 @@
 #include <vector>
 #include <fstream>
 #include <stdio.h>
+
 
 class Game;
 class AIManager;
@@ -41,7 +44,7 @@ class MainState : public IGameState {
 public: 
 
     //Constructor
-    MainState (){ type = IGameState::MAIN; };
+    MainState (){ type = IGameState::MAIN;  };
 
     //Destructor
     virtual ~MainState() {}
@@ -97,6 +100,15 @@ private:
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;
+
+    //Irrlicht own window
+    irr::IrrlichtDevice* device;
+
+    //Irrlicht scene manager
+    irr::scene::ISceneManager* sceneManager;
+
+    //Irrlicht video manager
+    irr::video::IVideoDriver* videoDriver;
 
 
 };

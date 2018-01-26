@@ -25,6 +25,7 @@ void driftDown(EventData eData);
 void useItemUp(EventData eData);
 void useItemDown(EventData eData);
 void debugAIDown(EventData eData);
+void debugCameraDown(EventData eData);
 void addInputComponent(EventData data);
 
 //==============================================
@@ -62,6 +63,7 @@ void InputManager::init(int engine){
     EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Up, useItemUp});
     EventManager::getInstance().addListener(EventListener {EventType::InputComponent_Create, addInputComponent});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugAI_Down, debugAIDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_DebugCamera_Down, debugCameraDown});
   
 }
 
@@ -149,6 +151,9 @@ void useItemUp(EventData eData){
 }
 void debugAIDown(EventData eData){
     std::cout << "Use debug button pressed!" << std::endl;
+}
+void debugCameraDown(EventData eData){
+    //std::cout << "Use debug button pressed!" << std::endl;
 }
 void addInputComponent(EventData data) {
     InputManager::getInstance().setComponent(data.Component);
