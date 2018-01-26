@@ -33,10 +33,10 @@ void NetworkManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::StartLineComponent_Collision, startLineCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::Banana_Create,createBananaEvent});
     EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision,destroyBananaEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::RedShell_Create,createRedShellEvent});
+    /*EventManager::getInstance().addListener(EventListener {EventType::RedShell_Create,createRedShellEvent});
     EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision,destroyRedShellEvent});
     EventManager::getInstance().addListener(EventListener {EventType::BlueShell_Create,createBlueShellEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision,destroyBlueShellEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision,destroyBlueShellEvent});*/
 }
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
@@ -365,6 +365,7 @@ void NetworkManager::broadcastPosition()
     stream.Write((float)trans.rotation.y);
     stream.Write((float)trans.rotation.z);
 
+    std::cout<< "MANDO MI POS: "<<trans.position.x << " _ " << trans.position.y << " _ " << trans.position.z <<std::endl;
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
 
@@ -392,6 +393,9 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
         {
             found = true;
             auto trans = rPlayer.get()->getGameObject().getTransformData();
+
+            std::cout<< "RECIBO SU POS ANTIGUA: "<<trans.position.x << " _ " << trans.position.y << " _ " << trans.position.z <<std::endl;
+
             trans.position.x = x;
             trans.position.y = y;
             trans.position.z = z;
@@ -400,6 +404,7 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             trans.rotation.y = ry;
             trans.rotation.z = rz;
 
+            std::cout<< "RECIBO SU POS NUEVA: "<<trans.position.x << " _ " << trans.position.y << " _ " << trans.position.z <<std::endl;
             rPlayer.get()->getGameObject().setNewTransformData(trans);
         }
     }
@@ -616,6 +621,12 @@ void NetworkManager::update()
             case ID_DESTROY_BLUE_SHELL:
                 remoteDestroyBlueShell(packet);
                 break;
+            case ID_REMOTE_RED_SHELL_MOVEMENT:
+                moveRemoteRedShell(packet);
+                break;
+            case ID_REMOTE_BLUE_SHELL_MOVEMENT:
+                moveRemoteBlueShell(packet);
+                break;
             default:
                 std::cout << "ALGO PASÓ PERO NO SABEMOS QUË" << std::endl;
                 break;
@@ -747,7 +758,7 @@ void destroyBananaEvent(EventData eData){
     NetworkManager::getInstance().destroyBanana(eData);
 }
 
-void createRedShellEvent(EventData eData)
+/*void createRedShellEvent(EventData eData)
 {
     NetworkManager::getInstance().createRedShell(eData);
 }
@@ -763,4 +774,4 @@ void createBlueShellEvent(EventData eData)
 
 void destroyBlueShellEvent(EventData eData){
     NetworkManager::getInstance().destroyBlueShell(eData);
-}
+}*/

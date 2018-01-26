@@ -36,6 +36,7 @@ class NetworkManager;
 class ObjectManager;
 class ItemManager;
 class SensorManager;
+class AIManager;
 
 class MultiMatchState : public IGameState {
 
