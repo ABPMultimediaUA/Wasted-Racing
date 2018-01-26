@@ -144,7 +144,7 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
     }
     if(found == false)
     {
-        ItemManager::getInstance.createBanana(player.get()->getGameObject());
+        ItemManager::getInstance().createBanana(player.get()->getGameObject());
     }
 }
 
