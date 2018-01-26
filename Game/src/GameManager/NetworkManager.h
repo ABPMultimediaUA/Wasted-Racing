@@ -107,8 +107,10 @@ public:
     std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){    return remoteBlueShellComponentList;} //Remote player component list getter
     void setPlayer(GameObject::Pointer p)                              {    player = p;                         };
     void setStarted(bool s)                                            {    started = s;                        };
+    void setConected(bool s)                                           {    conected = s;                       };
     GameObject::Pointer getPlayer()                                    {    return player;                      };
     bool getStarted()                                                  {    return started;                     };
+    bool getConected()                                                 {    return conected;                    };
 
 private:
     //==============================================================
@@ -119,6 +121,7 @@ private:
 
     //MatchState started
     bool started;
+    bool conected;
 
     //Own player
     GameObject::Pointer player;
