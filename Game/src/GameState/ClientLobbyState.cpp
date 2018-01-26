@@ -6,7 +6,10 @@ void introVideo();
 
 void ClientLobbyState::init() {
     networkManager = &NetworkManager::getInstance();
-    networkManager->initLobby();
+    if(!networkManager.getConected())
+    {
+        networkManager->initLobby();
+    }
 }
 
 void ClientLobbyState::update(float &accumulatedTime) {

@@ -21,6 +21,9 @@ void NetworkManager::init() {
     //Match not started
     started = false;
 
+    //Conexion has not started
+    conected = false;
+
     //Listeners
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::StartLineComponent_Collision, startLineCollisionEvent});
@@ -334,6 +337,7 @@ void NetworkManager::updateLobby(){
         {
             case ID_CONNECTION_REQUEST_ACCEPTED:
                 std::cout << "Connection Accepted" << std::endl;
+                conected = true;
                 stream.Write((unsigned char)ID_GAME_START);
                 peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
                 break;
