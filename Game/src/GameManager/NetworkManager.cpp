@@ -104,32 +104,12 @@ void NetworkManager::createBanana(EventData eData)
 {
     //Stream of raknet bits
     RakNet::BitStream stream;
-    std::shared_ptr<RemotePlayerComponent> rPlayer;
-    bool found = false;
 
     std::cout<<" CREATE BANANA EN 1 "<<std::endl;
     stream.Write((unsigned char)ID_CREATE_BANANA);  //Send message create banana to server
     stream.Write((int)server_id);                   //Send Id of the player that created it
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
-    
-    /*for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
-    {
-        //take component from list
-        rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
-
-        if( rPlayer.get()->getGameObject().getId() == eData.Id )    //Get the player with the ID of the
-        {
-            std::cout<<" CREATE BANANA EN 2 "<<std::endl;
-            found = true;
-            stream.Write((unsigned char)ID_CREATE_BANANA);          //Send message create banana to server
-            stream.Write((int)rPlayer.get()->getServerId());        //Send Id of the player that created it
-
-            peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
-        }
-    }*/
-
-
 }
 
 void NetworkManager::destroyBanana(EventData eData)
@@ -151,7 +131,6 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
     parser.Read(s_id);
     parser.Read(o_id);
 
-    std::cout<<" REMOTE CREATE BANANA EN 1 "<<std::endl;
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
     for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
@@ -159,8 +138,6 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the banana
         {
-
-            std::cout<<" REMOTE CREATE BANANA EN 2 "<<std::endl;
             found = true;
             ItemManager::getInstance().createBanana(rPlayer.get()->getGameObject());
         }
@@ -433,7 +410,6 @@ void startLineCollisionEvent(EventData eData)
 
 void createBananaEvent(EventData eData)
 {
-    std::cout<<" NETWORK MANAGER EN EL DELEGATO" <<std::endl;
     NetworkManager::getInstance().createBanana(eData);
 }
 
