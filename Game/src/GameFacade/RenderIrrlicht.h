@@ -65,6 +65,21 @@ public:
     //Update the logo video
     virtual void updateLogo();
 
+    //Get device
+    irr::IrrlichtDevice* getDevice(){
+        return device;
+    };
+
+    //Get videodriver
+    irr::video::IVideoDriver* getVideoDriver(){
+        return videoDriver;
+    };
+
+    //Get scenemanager
+    irr::scene::ISceneManager* getSceneManager(){
+        return sceneManager;
+    };
+
 private:
 
     //Irrlicht own window

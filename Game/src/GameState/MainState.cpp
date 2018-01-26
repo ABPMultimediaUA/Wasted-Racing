@@ -1,5 +1,6 @@
 #include "MainState.h"
 
+
 void MainState::init() {
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
@@ -13,6 +14,10 @@ void MainState::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
+
+    //Set an image on the main menu
+    device = renderManager->getRenderFacade()->getDevice();
+    videoDriver = renderManager->getRenderFacade()->getVideoDriver();
 }
 
 void MainState::update(float &accumulatedTime) {
