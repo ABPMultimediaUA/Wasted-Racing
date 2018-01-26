@@ -692,11 +692,18 @@ void RenderManager::createBattleRender()
     if(lapB == false)
     {
         renderFacade->createRectangle2D(glm::vec2(960,0), "media/img/white_rectangle.png");
+        renderFacade->createTitleText(glm::vec2(1100,50),title);
+        renderFacade->createDescriptionText(glm::vec2(1000,80),root);
+        renderFacade->setDescriptionText("NO BEHAVIOUR, YOU ARE THE PLAYER, PUSH F10 AGAIN");
     }
     else if(lapB == true && AIDebugB != 0)
     {
-        renderFacade->createTitleText(glm::vec2(1100,50),title);
-        renderFacade->createDescriptionText(glm::vec2(1000,80),root);
+        if(timeP != maxTimeP)
+        {
+            renderFacade->createRectangleCol2D(glm::vec2(960,0), "media/img/green_rectangle.png");
+            success = true;
+            end = false;
+        }
     }
     //Create camera render
     auto obj = ObjectManager::getInstance().getObject(AIDebugPointB[AIDebugB].getId());
@@ -710,6 +717,10 @@ void RenderManager::deleteBattleRender()
         renderFacade->deleteRectangle2D();
         renderFacade->deleteTitleText();
         renderFacade->deleteDescriptionText();
+        if(timeP != maxTimeP)
+        {
+            renderFacade->deleteRectangleCol2D();
+        }
 
         //Create camera render
         auto obj = ObjectManager::getInstance().getObject(AIDebugPointB[0].getId());
