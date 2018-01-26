@@ -232,8 +232,11 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
     }
     if(found == false)
     {
+        std::cout << "MAYBE" << std::endl;
         auto object = ItemManager::getInstance().createRedShell(*player.get());
+        std::cout << "MAYBE2" << std::endl;
         object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
+        std::cout << "MAYBE3" << std::endl;
     }
 }
 
@@ -310,8 +313,11 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
     }
     if(found == false)
     {
+        std::cout << "MAYBE" << std::endl;
         auto object = ItemManager::getInstance().createBlueShell(*player.get());
+        std::cout << "MAYBE2" << std::endl;
         object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
+        std::cout << "MAYBE3" << std::endl;
     }
 }
 
