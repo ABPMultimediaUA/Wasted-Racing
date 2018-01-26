@@ -229,7 +229,7 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
             auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
             std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(server_id);   //Set parent id
+            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
         }
     }
     if(found == false)
@@ -237,7 +237,7 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
         auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
         std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
         object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(server_id);   //Set parent id
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
     }
 }
 
@@ -311,7 +311,7 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
             auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
             std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(server_id);   //Set parent id
+            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
         }
     }
     if(found == false)
@@ -319,7 +319,7 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
         auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
         std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
         object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(server_id);   //Set parent id
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
     }
 }
 
