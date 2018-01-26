@@ -2,13 +2,11 @@
 
 #include <memory>
 #include <iostream>
-#include <rapidxml/rapidxml.hpp>
-#include <string>
 #include <vector>
-#include <fstream>
 #include <chrono>
 #include <stdio.h>
 
+//Additional functions
 void addObjects();
 void loadMap();
 std::vector<std::string> split(const std::string& s, const char& c);
@@ -19,55 +17,47 @@ std::vector<std::string> split(const std::string& s, const char& c);
 void Game::init() {
 
     //Say game loop is active
-    Game::stay = true;
+    setStay(true);
 
     //Set engine to default
-    Game::renderEngineSetter(0);
-    Game::inputEngineSetter(0);
+    setRenderEngine(0);
+    setInputEngine(0);
 
+    audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
+    eventManager    = &EventManager::getInstance();     //Initilize event manager
+    renderManager   = &RenderManager::getInstance();    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
+    inputManager    = &InputManager::getInstance();     //Once we've initialized the renderManager, we can do the same with our inputManager
+    objectManager   = &ObjectManager::getInstance();    //Initialize object manager
+    physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
+    waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager 
+    aiManager       = &AIManager::getInstance();        //Initialize AI manager
+    sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
+    itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
+    scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
+    networkManager  = &NetworkManager::getInstance();     //Initialize Score Manager
+
+    //================================================================
+    //INITIALIZE ALL MANAGERS
+    //================================================================
     //Initialize true audio manager
-    audioManager = &AudioManager::getInstance();
     audioManager->init();
-
-    //Initilize managers
-    eventManager = &EventManager::getInstance();
-    eventManager->init();
-
     //First we initialize renderManager, who creates a device and passes this reference to the inputManager
-    renderManager = &RenderManager::getInstance();
-    renderManager->init(Game::renderEngine);
+    renderManager->init(0);
 
     //Once we've initialized the renderManager, we can do the same with our inputManager
-    inputManager = &InputManager::getInstance();
-    inputManager->init(Game::inputEngine);
+    inputManager->init(0);
 
-    //Initialize object manager
-    objectManager = &ObjectManager::getInstance();
     objectManager->init();
-
-    //Initialize physics manager
-    physicsManager = &PhysicsManager::getInstance();
     physicsManager->init();
-
-    //Initialize Waypoint Manager 
-    waypointManager = &WaypointManager::getInstance();
     waypointManager->init();
-
-    //Initialize AI manager
-    aiManager = &AIManager::getInstance();
     aiManager->init();
-
-    //Initialize Sensor manager
-    sensorManager = &SensorManager::getInstance();
     sensorManager->init();
-
-    //Initialize Sensor manager
-    itemManager = &ItemManager::getInstance();
     itemManager->init();
-
-    //Initialize Score Manager
-    scoreManager = &ScoreManager::getInstance();
     scoreManager->init();
+    networkManager->init();
+
+    //Initial state
+    setState(IGameState::stateType::INTRO);
 
     addObjects();
 }
@@ -77,173 +67,106 @@ void Game::init() {
 //====================================================
 void Game::update(float dTime) {
 
-    //Input manager has to be the first to be updated
-    if(timeWait <= 0) 
-    {
-        inputManager->update();
-        
-        aiManager->update();
-    }
-    else
-    {
-        timeWait -= dTime; 
-    }
-    physicsManager->update(dTime);
-
-    renderManager->update();
-
-    waypointManager->update(dTime);
-
-    sensorManager->update();
-
-    itemManager->update(dTime);
-    
-    scoreManager->update();
-
-    audioManager->update();
-
-    //Event manager has to be the last to be updated
-    eventManager->update();
-
-
 }
 
 //====================================================
 //  GAME DRAW
 //====================================================
 void Game::draw() {
-    renderManager->draw();
 }
 
 //====================================================
 //  GAME CLOSE
 //====================================================
 void Game::close() {
+    state->close();
 
+    //Close all managers
     physicsManager->close();
     renderManager->close();
     inputManager->close();
     eventManager->close();
     waypointManager->close();
     aiManager->close();
+    audioManager->close();
     sensorManager->close();
     itemManager->close();
     scoreManager->close();
-    audioManager->close();
+    networkManager->close();
 }
 
 //====================================================
 //  GAME LOOP
 //====================================================
 void Game::Run() {
-
-    Game::init();
-
+    //Initialize game
+    init();
+    
+    //Initialize timer
     auto lastTime = std::chrono::high_resolution_clock::now();
     float accumulatedTime = 0;
-    const float maxTime = 1.0f/60.0f;
 
-    while(Game::stay){
-
+    //Start the run
+    //execute game while staying
+    while(stay){
         //Measure elapsed time
         auto currTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed = currTime - lastTime;
         lastTime = currTime;
-
         accumulatedTime += (float)elapsed.count();
 
         //Update the game once every maxTime
-        if(accumulatedTime > maxTime){
-            Game::update(accumulatedTime);
-            Game::stay = objectManager->getGameRunning();
-            accumulatedTime = 0;
-        }
+        state->update(accumulatedTime);
 
-        //Always interpolate and draw the game 
-        physicsManager->interpolate(accumulatedTime, maxTime);
-        renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, maxTime);
-
-        Game::draw();
-        
+        //Always draw the game
+        state->draw();
     }
-    Game::close();
+
+    close();
 }
 
+//State setter
+void Game::setState(IGameState::stateType type){
+        //State changer
+        switch(type){
+            case IGameState::stateType::INTRO:
+                state = &IntroState::getInstance();
+                break;
+            case IGameState::stateType::CLIENTLOBBY:
+                state = &ClientLobbyState::getInstance();
+                break;
+            case IGameState::stateType::MATCH:
+                state = &MatchState::getInstance();
+                break;
+            case IGameState::stateType::MULTIMATCH:
+                state = &MultiMatchState::getInstance();
+                break;
+            default:
+                state = &IntroState::getInstance();
+                break;
+        }
 
+        //everytime we change state, we must initialize its operating data
+        state->init();
+    }
+
+//Additional functions
 void addObjects(){
-
-    GameObject::TransformationData transform;
-    uint16_t id;
-
     //===============================================================
     // ADD PLAYER 
     //===============================================================
     loadMap();
 
-
+    uint16_t id = 25000;
+    GameObject::TransformationData transform;
     
-
-    id = 25000;
     transform.position = glm::vec3(-35,0, -20);
-
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
+    
     ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    //===============================================================
-    // ADD AI 
-    //===============================================================
-
-    id = 25001;
-    transform.position = glm::vec3(-35,0,-10);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-/*
-    id = 25002;
-    transform.position = glm::vec3(-35,0,0);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    id = 25003;
-    transform.position = glm::vec3(-35,0,10);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    id = 25004;
-    transform.position = glm::vec3(-35,0,20);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    id = 25005;
-    transform.position = glm::vec3(-35,0,-30);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    id = 25006;
-    transform.position = glm::vec3(-35,0,-40);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-*/
     //===============================================================
     // Update to distribute all creation events
     //===============================================================
@@ -330,7 +253,7 @@ void loadMap() {
                 //Read FRICTION from XML
                 terrain.fric = std::stof(bbox->first_attribute("friction")->value());
                 //Calculate terrain angles in X and Z
-                LAPAL::calculateRotationsXZ(terrain);
+                //LAPAL::calculateRotationsXZ(terrain);
 
                 //Create TERRAIN component
                 PhysicsManager::getInstance().createTerrainComponent(*obj.get(), terrain);

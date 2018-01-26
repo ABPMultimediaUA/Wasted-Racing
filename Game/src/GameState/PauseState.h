@@ -16,7 +16,7 @@ public:
     virtual void init();
 
     //Updater
-    virtual void update();
+    virtual void update(float &accumulatedTime);
 
     //Drawer
     virtual void draw();

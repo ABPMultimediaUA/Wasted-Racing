@@ -167,6 +167,13 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                 else {  //The object is not static
                         calculateMovingCollision(move, hisMove, dTime);
                 }
+
+                EventData data;
+                data.Component      = std::static_pointer_cast<IComponent>(move);
+                data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                EventManager::getInstance().addEvent(Event {EventType::Default_Collision, data});
+
             }
             //If collision isn't kinetic, react with events depending on the collision type
             else if(collision && !hisColl->getKinetic()){
@@ -182,6 +189,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                 else if(hisColl->getType() == CollisionComponent::Type::Banana)
                 {
                     EventData data;
+                    data.Id             = hisColl->getGameObject().getId();
                     data.Component      = std::static_pointer_cast<IComponent>(move);
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 

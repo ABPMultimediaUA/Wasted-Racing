@@ -26,6 +26,8 @@ void RenderIrrlicht::openWindow(){
     item = sceneManager->getGUIEnvironment()->addStaticText(L"Item: ", irr::core::recti(0, 40, 200, 50));
     pos->setOverrideFont(font);
 
+    createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");
+
     addCamera();
     //sceneManager->setAmbientLight(irr::video::SColorf(0.8,0.8,0.8,1));
 
@@ -70,6 +72,7 @@ void RenderIrrlicht::updateWindow() {
         pos->setText(stringPos.c_str());
         lap->setText(stringLap.c_str());
         item->setText(stringItm.c_str());
+        updateItemIcon();
     }
     else
     {
@@ -80,6 +83,7 @@ void RenderIrrlicht::updateWindow() {
         pos->setText(stringPos.c_str());
         lap->setText(stringLap.c_str());
         item->setText(stringItm.c_str());
+        updateItemIcon();
     }
 }
 
@@ -93,6 +97,14 @@ void RenderIrrlicht::renderDraw() {
 
     videoDriver->beginScene(true, true, irr::video::SColor(255,150,150,255));
     sceneManager->drawAll();
+    sceneManager->getGUIEnvironment()->drawAll();
+    videoDriver->endScene();
+ 
+}
+
+void RenderIrrlicht::drawGUI(){
+    
+    videoDriver->beginScene(true, true, irr::video::SColor(255,150,150,255));
     sceneManager->getGUIEnvironment()->drawAll();
     videoDriver->endScene();
  
@@ -191,7 +203,7 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
             default:
             break;
         }
-        
+
         //Set node transformation
         node->setPosition(irrPos);
         node->setRotation(irrRot);
@@ -351,17 +363,221 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
     }
 }
 
-void RenderIrrlicht::createRectangle2D()
+
+
+    ///////////////////////////////
+    ///////      DEBUG      ///////    
+    ///////////////////////////////
+
+void RenderIrrlicht::updateLogo(){
+    
+}
+
+
+void RenderIrrlicht::createRectangle2D(glm::vec2 pos, std::string img)
 {
-    /*rectangle->remove();
-    case ObjectRenderComponent::Shape::Rectangle2D: {
-        auto img = videoDriver->getTexture(cmp->getImg().c_str());
-        rectangle = sceneManager->getGUIEnvironment()->addImage(img, irr::core::position2d<irr::s32>(200,200));
-    }
-    break;*/
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+    auto image = videoDriver->getTexture(img.c_str());
+    rectangle = sceneManager->getGUIEnvironment()->addImage(image, position);
 }
 
 void RenderIrrlicht::deleteRectangle2D()
 {
-    //rectangle->remove();
+    if(rectangle != nullptr)
+        rectangle->remove();
+}
+
+void RenderIrrlicht::createRectangleCol2D(glm::vec2 pos, std::string img)
+{
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+    auto image = videoDriver->getTexture(img.c_str());
+    rectangleCol = sceneManager->getGUIEnvironment()->addImage(image, position);
+}
+
+void RenderIrrlicht::deleteRectangleCol2D()
+{
+    rectangleCol->remove();
+}
+
+///////////////////
+/// TITLE
+///////////////////
+
+void RenderIrrlicht::createTitleText(glm::vec2 pos, std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    title = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+200,pos.y+50));
+    title->setText(txt);
+}
+
+void RenderIrrlicht::deleteTitleText()
+{
+    title->remove();
+}
+
+
+void RenderIrrlicht::setTitleText(std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    title->setText(txt);
+}
+
+///////////////////
+/// DESCRIPTION
+///////////////////
+
+void RenderIrrlicht::createDescriptionText(glm::vec2 pos, std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    description = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+320,pos.y+100));
+    description->setText(txt);
+}
+
+void RenderIrrlicht::deleteDescriptionText()
+{
+    description->remove();
+}
+
+void RenderIrrlicht::setDescriptionText(std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    description->setText(txt);
+}
+
+///////////////////
+/// SUBTITLE
+///////////////////
+
+void RenderIrrlicht::createSubTitleText(glm::vec2 pos, std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    subTitle = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+200,pos.y+50));
+    subTitle->setText(txt);
+}
+
+void RenderIrrlicht::deleteSubTitleText()
+{
+    subTitle->remove();
+}
+
+
+void RenderIrrlicht::setSubTitleText(std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    subTitle->setText(txt);
+}
+
+///////////////////
+/// SUBDESCRIPTION
+///////////////////
+
+void RenderIrrlicht::createSubDescriptionText(glm::vec2 pos, std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    subDescription = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+180,pos.y+50));
+    subDescription->setText(txt);
+}
+
+void RenderIrrlicht::deleteSubDescriptionText()
+{
+    subDescription->remove();
+}
+
+void RenderIrrlicht::setSubDescriptionText(std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    subDescription->setText(txt);
+}
+
+
+void RenderIrrlicht::createItemIcon(glm::vec2 pos, std::string img)
+{
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+    auto image = videoDriver->getTexture(img.c_str());
+    itemIMG = sceneManager->getGUIEnvironment()->addImage(image, position);
+}
+
+void RenderIrrlicht::deleteItemIcon()
+{
+    if(itemIMG != nullptr)
+        itemIMG->remove();
+}
+
+void RenderIrrlicht::updateItemIcon(){
+
+    int itemID = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+
+
+    switch(itemID){
+
+        case -1: //EMPTY
+                 deleteItemIcon();
+                 createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");
+                 break;
+
+        case 0: //RED SHELL
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoRuedamini.png");
+                 break;
+
+        case 1: //BLUE SHELL
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoBombamini.png");
+                 break;
+
+        case 2: //BANANA
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoTrampamini.png");
+                 break;
+
+        case 3: //MUSHROOM
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoSetamini.png");
+                 break;
+
+        case 4: //STAR
+                deleteItemIcon();
+                createItemIcon(glm::vec2(50,50), "media/img/iconoBotellamini.png");
+                 break;
+    }
 }

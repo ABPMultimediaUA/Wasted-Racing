@@ -48,10 +48,11 @@ void RenderManager::init(int engine) {
     EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Delete, objectDeletedRender});
 }
 
-void RenderManager::update() {
+void RenderManager::update(float dTime) {
     RenderManager::renderFacade->updateWindow();
     updateAIDebug();
     updateCameraDebug();
+    updateBattleDebug(dTime);
 }
 
 void RenderManager::draw() {
@@ -163,65 +164,76 @@ void objectDeletedRender(EventData eData) {
 
 void RenderManager::renderAIDebug()
 {
-    auto listObj = WaypointManager::getInstance().getWaypoints();
-
-    AIDebugPoint.clear();
-    auto npcs = ItemManager::getInstance().getItemHolderComponents();
-    for(unsigned int i = 0; i < npcs.size(); ++i)
+    if(activeDebugCamera == false && activeDebugBehaviour == false)
     {
-        auto player = npcs[i]->getGameObject();
-        AIDebugPoint.push_back(player); 
-    }
-    
-    if(AIDebug < AIDebugPoint.size()-1)
-    {   
-        if(lap == true)
+        auto listObj = WaypointManager::getInstance().getWaypoints();
+
+        AIDebugPoint.clear();
+        auto npcs = ItemManager::getInstance().getItemHolderComponents();
+        for(unsigned int i = 0; i < npcs.size(); ++i)
         {
-            AIDebug++;
+            auto player = npcs[i]->getGameObject();
+            AIDebugPoint.push_back(player); 
         }
-        //Waypoint marker
-        if(lap == false)
-        {
-            for(unsigned int i = 0; i < listObj.size(); ++i) 
+        
+        if(AIDebug < AIDebugPoint.size()-1)
+        {   
+            if(activeDebugAI == false)
             {
-                RenderManager::getInstance().createObjectRenderComponent(*listObj[i].get(), ObjectRenderComponent::Shape::Sphere, "pool.jpg");
+                activeDebugAI = true;
+            }
+            if(lap == true)
+            {
+                AIDebug++;
+            }
+            //Waypoint marker
+            if(lap == false)
+            {
+                for(unsigned int i = 0; i < listObj.size(); ++i) 
+                {
+                    RenderManager::getInstance().createObjectRenderComponent(*listObj[i].get(), ObjectRenderComponent::Shape::Sphere, "pool.jpg");
+                }
+            }
+            //Next point marker
+            createRenderNPC();
+
+            //Lines to objects
+            deleteLinesObjects();
+            createLinesObjects();
+
+            if(lap == false)
+            {
+                lap = true;
             }
         }
-        //Next point marker
-        createRenderNPC();
-
-        //Lines to objects
-        deleteLinesObjects();
-        createLinesObjects();
-
-        if(lap == false)
+        else
         {
-            lap = true;
+            if(activeDebugAI == true)
+            {
+                activeDebugAI = false;
+            }
+            //Delete Waypoint marker
+            for(unsigned int i = 0; i < listObj.size(); ++i) 
+            {
+                EventData data;
+                data.Id = listObj[i]->getId();
+
+                EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Delete, data});
+
+                auto component = listObj[i]->getComponent<ObjectRenderComponent>().get();
+                renderFacade->deleteObject(component);
+            }
+
+            //Delete next point marker
+            deleteRenderNPC();
+
+            //Delete Lines to objects
+            deleteLinesObjects();
+
+            //Set debug inactive
+            AIDebug = 0;
+            lap = false;
         }
-    }
-    else
-    {
-        //Delete Waypoint marker
-        for(unsigned int i = 0; i < listObj.size(); ++i) 
-        {
-            EventData data;
-            data.Id = listObj[i]->getId();
-
-            EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Delete, data});
-
-            auto component = listObj[i]->getComponent<ObjectRenderComponent>().get();
-            renderFacade->deleteObject(component);
-        }
-
-        //Delete next point marker
-        deleteRenderNPC();
-
-        //Delete Lines to objects
-        deleteLinesObjects();
-
-        //Set debug inactive
-        AIDebug = 0;
-        lap = false;
     }
 }
 
@@ -354,7 +366,7 @@ void RenderManager::createRenderNPC()
 
         RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, length, 10.f, true);
     }
-    else if(lap == true && AIDebug != 0)
+    else if(lap == true && AIDebug == 1)
     {
 
         auto angV = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getAngleVision();
@@ -388,10 +400,6 @@ void RenderManager::createRenderNPC()
 
         RenderManager::getInstance().createObjectRenderComponent(*visionTriangle.get(), ObjectRenderComponent::Shape::Portion, "blackWithTransparency.png");
         
-    }
-
-    if(AIDebug != 0)
-    {
     }
 
     //Create camera render
@@ -499,58 +507,255 @@ void RenderManager::deleteLinesObjects()
 void RenderManager::renderCameraDebug()
 {
 
-    AIDebugPointC.clear();
-    auto npcs = ItemManager::getInstance().getItemHolderComponents();
-    for(unsigned int i = 0; i < npcs.size(); ++i)
+    if(activeDebugAI == false && activeDebugBehaviour == false)
     {
-        auto player = npcs[i]->getGameObject();
-        AIDebugPointC.push_back(player); 
-    }
-    
-    if(AIDebugC < AIDebugPointC.size()-1)
-    {   
-        if(lapC == true)
-        {
-            AIDebugC++;
-        }
-
-        createCameraRender();
-
-        if(lapC == false)
-        {
-            lapC = true;
-        }
-    }
-    else
-    {
-        deleteCameraRender();
-
         AIDebugPointC.clear();
+        auto npcs = ItemManager::getInstance().getItemHolderComponents();
+        for(unsigned int i = 0; i < npcs.size(); ++i)
+        {
+            auto player = npcs[i]->getGameObject();
+            AIDebugPointC.push_back(player); 
+        }
         
-        //Set debug inactive
-        AIDebugC = 0;
-        lapC = false;
+        if(AIDebugC < AIDebugPointC.size()-1)
+        {   
+            if(activeDebugCamera == false)
+            {
+                activeDebugCamera = true;
+            }
+            if(lapC == true)
+            {
+                AIDebugC++;
+            }
+
+            createCameraRender();
+
+            if(lapC == false)
+            {
+                lapC = true;
+            }
+        }
+        else
+        {
+            if(activeDebugCamera == true)
+            {
+                activeDebugCamera = false;
+            }
+            deleteCameraRender();
+
+            AIDebugPointC.clear();
+            
+            //Set debug inactive
+            AIDebugC = 0;
+            lapC = false;
+        }
     }
 
 }
 
 void RenderManager::updateCameraDebug()
 {
+    if(lapC == true)
+    {
+        auto camera = AIDebugPointC[AIDebugC].getComponent<CameraRenderComponent>();
+        if(camera != nullptr)
+        {
+            float dist = camera->getDistance();
+            float maxDist = camera->getMaxDistance();
+            std::string text = "";
+            text += std::to_string(dist);
+            renderFacade->setDescriptionText(text);
+            if(maxDist - dist == 0)
+            {
+                renderFacade->setSubDescriptionText("FALSE");
+                if(collisionC == true)
+                {
+                    renderFacade->deleteRectangleCol2D();
+                    collisionC = false;
+                }
+            }
+            else
+            {
+                renderFacade->setSubDescriptionText("TRUE");
+                if(collisionC == false)
+                {
+                    renderFacade->createRectangleCol2D(glm::vec2(960,0), "media/img/red_rectangle.png");
+                    collisionC = true;
+                }
+            }
 
+        }
+    } 
 }
 
 void RenderManager::createCameraRender()
 {
     if(lapC == false)
     {
+        renderFacade->createRectangle2D(glm::vec2(960,0), "media/img/white_rectangle.png");
 
+        renderFacade->createTitleText(glm::vec2(1060,50),"DISTANCIA JUGADOR-CAMARA");
+
+        renderFacade->createDescriptionText(glm::vec2(1100,70), "");
+
+        renderFacade->createSubTitleText(glm::vec2(1080,110),"COLISION CAMARA");
+
+        renderFacade->createSubDescriptionText(glm::vec2(1105,130), "");
     }
+
+    //Create camera render
+    auto obj = ObjectManager::getInstance().getObject(AIDebugPointC[AIDebugC].getId());
+    RenderManager::getInstance().createCameraRenderComponent(*obj.get());
 }
 
 void RenderManager::deleteCameraRender()
 {
     if(lapC == true)
     {
-        //renderFacade->deleteRectangle2D();
+        renderFacade->deleteRectangle2D();
+        if(collisionC == true)
+        {
+            renderFacade->deleteRectangleCol2D();
+            collisionC = false;
+        }
+        renderFacade->deleteTitleText();
+        renderFacade->deleteDescriptionText();
+        renderFacade->deleteSubTitleText();
+        renderFacade->deleteSubDescriptionText();
+
+        //Create camera render
+        auto obj = ObjectManager::getInstance().getObject(AIDebugPointC[0].getId());
+        RenderManager::getInstance().createCameraRenderComponent(*obj.get());
     }
 }
+
+
+//==============================================
+// BEHAVIOUR DEBUG
+//============================================== 
+
+void RenderManager::renderBattleDebug()
+{
+
+    if(activeDebugAI == false && activeDebugCamera == false)
+    {
+        AIDebugPointB.clear();
+        auto npcs = ItemManager::getInstance().getItemHolderComponents();
+        for(unsigned int i = 0; i < npcs.size(); ++i)
+        {
+            auto player = npcs[i]->getGameObject();
+            AIDebugPointB.push_back(player); 
+        }
+        
+        if(AIDebugB < AIDebugPointB.size()-1)
+        {   
+            if(activeDebugBehaviour == false)
+            {
+                activeDebugBehaviour = true;
+            }
+            if(lapB == true)
+            {
+                AIDebugB++;
+            }
+
+            createBattleRender();
+
+            if(lapB == false)
+            {
+                lapB = true;
+            }
+        }
+        else
+        {
+            if(activeDebugBehaviour == true)
+            {
+                activeDebugBehaviour = false;
+            }
+            deleteBattleRender();
+
+            AIDebugPointB.clear();
+            
+            //Set debug inactive
+            AIDebugB = 0;
+            lapB = false;
+        }
+    }
+
+}
+
+void RenderManager::createBattleRender()
+{
+    if(lapB == false)
+    {
+        renderFacade->createRectangle2D(glm::vec2(960,0), "media/img/white_rectangle.png");
+        renderFacade->createTitleText(glm::vec2(1100,50),title);
+        renderFacade->createDescriptionText(glm::vec2(1000,80),root);
+        renderFacade->setDescriptionText("NO BEHAVIOUR, YOU ARE THE PLAYER, PUSH F10 AGAIN");
+    }
+    else if(lapB == true && AIDebugB != 0)
+    {
+        root = " ";
+        renderFacade->setDescriptionText(root);
+        if(timeP != maxTimeP)
+        {
+            renderFacade->createRectangleCol2D(glm::vec2(960,0), "media/img/green_rectangle.png");
+            success = true;
+            end = false;
+        }
+    }
+    //Create camera render
+    auto obj = ObjectManager::getInstance().getObject(AIDebugPointB[AIDebugB].getId());
+    RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+}
+ 
+void RenderManager::deleteBattleRender() 
+{
+    if(lapB == true)
+    {
+        renderFacade->deleteRectangle2D();
+        renderFacade->deleteTitleText();
+        renderFacade->deleteDescriptionText();
+        if(timeP != maxTimeP)
+        {
+            renderFacade->deleteRectangleCol2D();
+        }
+
+        //Create camera render
+        auto obj = ObjectManager::getInstance().getObject(AIDebugPointB[0].getId());
+        RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+    }
+}
+
+void RenderManager::updateBattleDebug(float dTime)
+{
+    
+    if(lapB == true && AIDebugB != 0)
+    {
+        if(end == false)
+        { 
+            renderFacade->setDescriptionText(root);
+            if(success == true)
+            {
+                if(timeP <= 0)
+                {
+                    root = " ";
+                    renderFacade->setDescriptionText(root);
+                    renderFacade->deleteRectangleCol2D();
+                    success = false;
+                    timeP = maxTimeP;
+                }
+                else
+                {
+                    timeP -= dTime;
+                }
+            }
+        }
+        else
+        {
+            renderFacade->createRectangleCol2D(glm::vec2(960,0), "media/img/green_rectangle.png");
+            success = true;
+            end = false;
+        }
+    }
+} 
+ 

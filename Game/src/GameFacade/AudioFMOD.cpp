@@ -1,6 +1,6 @@
 #include "AudioFMOD.h"
 #include "../GameEvent/EventManager.h"
-#include "../GameManager/AudioManager.h"
+#include "../GameObject/PhysicsComponent/MoveComponent.h"
 
 
 //==============================================================================================================================
@@ -20,7 +20,7 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 //==============================================================================================================================
 // DELEGATES DECLARATIONS
 //==============================================================================================================================
-
+void addDefaultCollision(EventData eData); 
 
 //==============================================================================================================================
 // AUDIO FMOD FUNCTIONS
@@ -53,6 +53,7 @@ void AudioFMOD::openAudioEngine(int lang) {
 
     //Listeners
 
+    WorldUnits = 0.05;
 
     player = 0;
     track = 0;
@@ -65,12 +66,14 @@ void AudioFMOD::update() {
     //Update listener position
     FMOD_3D_ATTRIBUTES attributes;
     auto pos = getListener().getTransformData().position;
-    attributes.position.x = pos.x;
-    attributes.position.y = pos.y;
-    attributes.position.z = pos.z;
+    auto vel = getListener().getComponent<MoveComponent>().get()->getMovemententData().velocity;
+    auto ang = getListener().getComponent<MoveComponent>().get()->getMovemententData().angle;
+    attributes.position = { pos.x * WorldUnits, pos.y * WorldUnits, pos.z * WorldUnits };
+    attributes.velocity = { vel.x * WorldUnits, vel.y * WorldUnits, vel.z * WorldUnits };
+    attributes.forward = { -std::cos(ang), 0.0f, -std::sin(ang) };
+    attributes.up = { 0.0f, -1.0f, 0.0f };
 
     ERRCHECK( FMOD_Studio_System_SetListenerAttributes(system, 0, &attributes) );
-
 
     //=================================================================
     FMOD_STUDIO_PLAYBACK_STATE state;
@@ -97,9 +100,9 @@ void AudioFMOD::update() {
         }
 
         FMOD_3D_ATTRIBUTES attributes;
-        attributes.position.x = 0;
+        attributes.position.x = 76 * WorldUnits;
         attributes.position.y = 0;
-        attributes.position.z = 0;
+        attributes.position.z = 9 * WorldUnits;
         FMOD_Studio_EventInstance_Set3DAttributes(characterInstance, &attributes);
 
         ERRCHECK( FMOD_Studio_EventInstance_Start(characterInstance) );
@@ -135,6 +138,20 @@ void AudioFMOD::setListenerPosition(glm::vec3 pos) {
 
 }
 
+//Creates an audio event instance
+void AudioFMOD::createAudioInstance(AudioManager::AudioType type, glm::vec3 pos, std::string parameters) {
+
+}
+
 //==============================================================================================================================
 // DELEGATE FUNCTIONS
 //==============================================================================================================================
+void addDefaultCollision(EventData eData) {
+
+    int player = std::dynamic_pointer_cast<MoveComponent>(eData.Component).get()->getMovemententData().player;
+    int track = 5;
+    glm::vec3 pos = eData.Component.get()->getGameObject().getTransformData().position;
+
+    AudioManager::getInstance().getAudioFacade()->createAudioInstance(AudioManager::AudioType::Character, pos, "player:" + std::to_string(player) + ",track:" + std::to_string(track));
+
+}
