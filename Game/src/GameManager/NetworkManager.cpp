@@ -133,6 +133,7 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
 
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
+    std::cout<< "REMOTE CREATE BANANA 1 "<<std::endl;
     for(int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
@@ -140,6 +141,7 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
         {
             found = true;
             ItemManager::getInstance().createBanana(rPlayer.get()->getGameObject());
+            std::cout<< "REMOTE CREATE BANANA 2 "<<std::endl;
         }
     }
 }
