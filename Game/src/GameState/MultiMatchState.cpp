@@ -25,7 +25,7 @@ void MultiMatchState::update(float &accumulatedTime) {
 
     //No capation
     networkManager->update();
-    renderManager->update();
+    renderManager->update(accumulatedTime);
 
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){

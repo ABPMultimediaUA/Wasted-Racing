@@ -30,7 +30,7 @@ void IntroState::update(float &accumulatedTime) {
     inputManager->update();
 
     //Render manager update
-    renderManager->update();
+    renderManager->update(accumulatedTime);
 
     //Event manager has to be the last to be updated
     eventManager->update();

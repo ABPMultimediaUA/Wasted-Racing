@@ -23,7 +23,7 @@ void MatchState::init() {
 
 void MatchState::update(float &accumulatedTime) {
     //Out of loop
-    renderManager->update();
+    renderManager->update(accumulatedTime);
 
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){

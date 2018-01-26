@@ -38,7 +38,11 @@ void RenderIrrlicht::openWindow(){
 }
 
 void RenderIrrlicht::updateWindow() {
-    if(cameraTarget){
+
+    //updateCamera();
+    auto score = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>();
+    if(score != nullptr)
+    {
         int oM = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
         int oL = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
         int ML = ScoreManager::getInstance().getMaxLaps();
@@ -52,19 +56,30 @@ void RenderIrrlicht::updateWindow() {
         switch(iT)
         {
             case -1: stringItm+="EMPTY";
-                        break;
+                    break;
             case 0: stringItm+="RED SHELL";
-                        break;
+                    break;
             case 1: stringItm+="BLUE SHELL";
-                        break;
+                    break;
             case 2: stringItm+="BANANA";
-                        break;
+                    break;
             case 3: stringItm+="MUSHROOM";
-                        break;
+                    break;
             case 4: stringItm+="STAR";
-                        break;
+                    break;
         }
         stringPos += oM;
+        pos->setText(stringPos.c_str());
+        lap->setText(stringLap.c_str());
+        item->setText(stringItm.c_str());
+        updateItemIcon();
+    }
+    else
+    {
+        irr::core::stringw stringLap = L"  LAP:";
+        irr::core::stringw stringItm = L"  ITEM:";
+        irr::core::stringw stringPos = L"  POSITION:";
+        
         pos->setText(stringPos.c_str());
         lap->setText(stringLap.c_str());
         item->setText(stringItm.c_str());
@@ -177,6 +192,14 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
                 node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
             }
             break;
+            case ObjectRenderComponent::Shape::Pyramid: {
+                auto plane = sceneManager->getMesh("media/mesh/pyramid/pyramid.obj");
+                node = sceneManager->addMeshSceneNode(plane);
+                auto var = videoDriver->getTexture(cmp->getImg().c_str());
+                node->setMaterialTexture(0, var);
+                node->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+            }
+            break;
             default:
             break;
         }
@@ -186,6 +209,7 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
         node->setRotation(irrRot);
         node->setScale(irrSca);
 
+    
         nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
     }
 }
@@ -339,6 +363,12 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
     }
 }
 
+
+
+    ///////////////////////////////
+    ///////      DEBUG      ///////    
+    ///////////////////////////////
+
 void RenderIrrlicht::updateLogo(){
     
 }
@@ -355,7 +385,148 @@ void RenderIrrlicht::deleteRectangle2D()
 {
     if(rectangle != nullptr)
         rectangle->remove();
-        
+}
+
+void RenderIrrlicht::createRectangleCol2D(glm::vec2 pos, std::string img)
+{
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+    auto image = videoDriver->getTexture(img.c_str());
+    rectangleCol = sceneManager->getGUIEnvironment()->addImage(image, position);
+}
+
+void RenderIrrlicht::deleteRectangleCol2D()
+{
+    rectangleCol->remove();
+}
+
+///////////////////
+/// TITLE
+///////////////////
+
+void RenderIrrlicht::createTitleText(glm::vec2 pos, std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    title = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+200,pos.y+50));
+    title->setText(txt);
+}
+
+void RenderIrrlicht::deleteTitleText()
+{
+    title->remove();
+}
+
+
+void RenderIrrlicht::setTitleText(std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    title->setText(txt);
+}
+
+///////////////////
+/// DESCRIPTION
+///////////////////
+
+void RenderIrrlicht::createDescriptionText(glm::vec2 pos, std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    description = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+320,pos.y+100));
+    description->setText(txt);
+}
+
+void RenderIrrlicht::deleteDescriptionText()
+{
+    description->remove();
+}
+
+void RenderIrrlicht::setDescriptionText(std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    description->setText(txt);
+}
+
+///////////////////
+/// SUBTITLE
+///////////////////
+
+void RenderIrrlicht::createSubTitleText(glm::vec2 pos, std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    subTitle = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+200,pos.y+50));
+    subTitle->setText(txt);
+}
+
+void RenderIrrlicht::deleteSubTitleText()
+{
+    subTitle->remove();
+}
+
+
+void RenderIrrlicht::setSubTitleText(std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    subTitle->setText(txt);
+}
+
+///////////////////
+/// SUBDESCRIPTION
+///////////////////
+
+void RenderIrrlicht::createSubDescriptionText(glm::vec2 pos, std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    subDescription = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+180,pos.y+50));
+    subDescription->setText(txt);
+}
+
+void RenderIrrlicht::deleteSubDescriptionText()
+{
+    subDescription->remove();
+}
+
+void RenderIrrlicht::setSubDescriptionText(std::string text)
+{
+    std::wstring text_aux;
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    const wchar_t* txt = text_aux.c_str();
+
+    subDescription->setText(txt);
 }
 
 

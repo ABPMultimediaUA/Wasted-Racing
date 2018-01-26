@@ -40,7 +40,7 @@ void MainState::updateManagers(float dTime){
 
     aiManager->update();
 
-    renderManager->update();
+    renderManager->update(dTime);
 
     waypointManager->update(dTime);
 

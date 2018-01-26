@@ -166,6 +166,13 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                 else {  //The object is not static
                         calculateMovingCollision(move, hisMove, dTime);
                 }
+
+                EventData data;
+                data.Component      = std::static_pointer_cast<IComponent>(move);
+                data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                EventManager::getInstance().addEvent(Event {EventType::Default_Collision, data});
+
             }
             //If collision isn't kinetic, react with events depending on the collision type
             else if(collision && !hisColl->getKinetic()){
@@ -452,7 +459,7 @@ IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGame
 
 IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f plane, const bool kinetic, const float length, const CollisionComponent::Type type) {
 
-    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, kinetic, length, type);
+    IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, length, kinetic, type);
 
     newGameObject.addComponent(component);
 
