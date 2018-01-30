@@ -1,4 +1,5 @@
 #include "MultiMatchState.h"
+#include "../Game.h"
 
 //Additional functions
 void createPlayer();
@@ -17,6 +18,8 @@ void MultiMatchState::init() {
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
+
+    Game::getInstance().setAccumulatedTime(0);
 
     createPlayer();
 }

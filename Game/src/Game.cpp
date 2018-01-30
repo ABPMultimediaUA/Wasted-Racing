@@ -104,7 +104,7 @@ void Game::Run() {
     
     //Initialize timer
     auto lastTime = std::chrono::high_resolution_clock::now();
-    float accumulatedTime = 0;
+    accumulatedTime = 0;
 
     //Start the run
     //execute game while staying

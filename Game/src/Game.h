@@ -55,6 +55,8 @@ public:
 
     //State setter
     void setState(IGameState::stateType type);
+    void setAccumulatedTime(float time) {   accumulatedTime = time;    } //Set accumulated time
+
 
     //Basic setters and getters
     void setStay(bool s)       {     stay = s;              }//Stay setter
@@ -63,6 +65,7 @@ public:
     IGameState* getState()     {     return state;          }//State getter
     int getRenderEngine()      {     return renderEngine;   }//Engine getter
     int getInputEngine()       {     return inputEngine;    }//Input getter
+    float getAccumulatedTime() {     return accumulatedTime;}//Get accumulated time
 
     //Static class getter
     static Game& getInstance() {
@@ -128,4 +131,8 @@ private:
 
     //current state
     IGameState* state;
+
+    //Accumulate time in game
+    float accumulatedTime;
+
 };

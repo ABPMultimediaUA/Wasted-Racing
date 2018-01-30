@@ -1,5 +1,5 @@
 #include "IntroState.h"
-
+#include "../Game.h"
 
 //Delegate functions
 void multiplayerActivated(EventData eData);
@@ -22,6 +22,8 @@ void IntroState::init() {
     //Set an image on the main menu
     renderManager->getRenderFacade()->createRectangle2D(glm::vec2(renderManager->getRenderFacade()->getWindow().size.x/2-600, renderManager->getRenderFacade()->getWindow().size.y/2-331), "media/img/menuProv.png");
     renderManager->getRenderFacade()->drawGUI();
+
+    Game::getInstance().setAccumulatedTime(0);
 
 }
 
