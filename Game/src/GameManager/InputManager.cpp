@@ -98,61 +98,61 @@ IComponent::Pointer InputManager::createInputComponent(GameObject& newGameObject
 // DELEGATES
 //==============================================
 void selectedDown(EventData eData){
-    std::cout << "Select button pressed!" << std::endl;
+    //std::cout << "Select button pressed!" << std::endl;
 }
 void selectedUp(EventData eData){
-    std::cout << "Select button released!" << std::endl;
+    //std::cout << "Select button released!" << std::endl;
 }
 void backDown(EventData eData){
-    std::cout << "Back button pressed!" << std::endl;
+    //std::cout << "Back button pressed!" << std::endl;
 }
 void backUp(EventData eData){
-    std::cout << "Back button released!" << std::endl;
+    //std::cout << "Back button released!" << std::endl;
 }
 void advanceDown(EventData eData) {
-    std::cout << "Advance button pressed!" << std::endl;
+    //std::cout << "Advance button pressed!" << std::endl;
 }
 void advanceUp(EventData eData) {
-    std::cout << "Advance button released!" << std::endl;
+    //std::cout << "Advance button released!" << std::endl;
 }
 void brakeDown(EventData eData) {
-    std::cout << "Brake button pressed!" << std::endl;
+    //std::cout << "Brake button pressed!" << std::endl;
 }
 void brakeUp(EventData eData) {
-    std::cout << "Brake button released!" << std::endl;
+    //std::cout << "Brake button released!" << std::endl;
 }
 void turnLeftDown(EventData eData) {
-    std::cout << "Left turn button pressed!" << std::endl;
+    //std::cout << "Left turn button pressed!" << std::endl;
 }
 void turnLeftUp(EventData eData) {
-    std::cout << "Left turn button released!" << std::endl;
+    //std::cout << "Left turn button released!" << std::endl;
 }
 void turnRightDown(EventData eData) {
-    std::cout << "Right turn button pressed!" << std::endl;
+    //std::cout << "Right turn button pressed!" << std::endl;
 }
 void turnRightUp(EventData eData) {
-    std::cout << "Right turn button released!" << std::endl;
+    //std::cout << "Right turn button released!" << std::endl;
 }
 void jumpDown(EventData eData){
-    std::cout << "Jump button pressed!" << std::endl;
+    //std::cout << "Jump button pressed!" << std::endl;
 }
 void jumpUp(EventData eData){
-    std::cout << "Jump button released!" << std::endl;
+    //std::cout << "Jump button released!" << std::endl;
 }
 void driftUp(EventData eData){
-    std::cout << "Drift button pressed!" << std::endl;
+    //std::cout << "Drift button pressed!" << std::endl;
 }
 void driftDown(EventData eData){
-    std::cout << "Drift button released!" << std::endl;
+    //std::cout << "Drift button released!" << std::endl;
 }
 void useItemDown(EventData eData){
-    std::cout << "Use item button pressed!" << std::endl;
+    //std::cout << "Use item button pressed!" << std::endl;
 }
 void useItemUp(EventData eData){
-    std::cout << "Use item button released!" << std::endl;
+    //std::cout << "Use item button released!" << std::endl;
 }
 void debugAIDown(EventData eData){
-    std::cout << "Use debug button pressed!" << std::endl;
+    //std::cout << "Use debug button pressed!" << std::endl;
 }
 void debugCameraDown(EventData eData){
     //std::cout << "Use debug button pressed!" << std::endl;
