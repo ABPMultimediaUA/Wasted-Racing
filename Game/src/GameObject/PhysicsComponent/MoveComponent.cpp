@@ -42,7 +42,6 @@ void MoveComponent::update(float dTime) {
     trans.rotation.z = mData.angZ;
     trans.rotation.x = mData.angX;
 
-
     //Set final transform of position
     getGameObject().setTransformData(trans);
     //auto id = getGameObject().getId();
