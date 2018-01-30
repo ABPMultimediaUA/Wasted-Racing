@@ -24,11 +24,10 @@ void MatchState::init() {
 void MatchState::update(float &accumulatedTime) {
     //Out of loop
     renderManager->update(accumulatedTime);
-
     //If time surpassed the loopTime
-    if(accumulatedTime > loopTime){
+    if(accumulatedTime >= loopTime){
         //Update managers
-        updateManagers(loopTime);
+        updateManagers(accumulatedTime);
 
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
@@ -36,7 +35,8 @@ void MatchState::update(float &accumulatedTime) {
     //Always interpolate
     physicsManager->interpolate(accumulatedTime, loopTime);
     renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
-
+    
+      
 }
 
 void MatchState::updateManagers(float dTime){

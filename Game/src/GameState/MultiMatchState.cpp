@@ -30,7 +30,7 @@ void MultiMatchState::update(float &accumulatedTime) {
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
         //Update managers
-        updateManagers(loopTime);
+        updateManagers(accumulatedTime);
 
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
