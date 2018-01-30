@@ -48,7 +48,7 @@ public:
     Game() {}
 
     //Destructor
-    ~Game() { Game::close(); }
+    ~Game() {}
 
     //Infinite game loop
     void Run();
