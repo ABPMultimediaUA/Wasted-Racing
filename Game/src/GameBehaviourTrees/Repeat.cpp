@@ -9,7 +9,7 @@ BehaviourState Repeat::Update(float d)
             d_child->Reset();
         }
         d_child->Tick(d);
-
+        
         return BehaviourState::RUNNING;
     }
     return BehaviourState::INVALID;

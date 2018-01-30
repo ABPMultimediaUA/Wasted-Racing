@@ -49,6 +49,18 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
     newGameObject.get()->addComponent(component);
 
     listSubNodes->push_back(newGameObject);
+
+    for(unsigned int i=0;i<listSubNodes->size();i++){
+        auto rad1 = listSubNodes->at(i).get()->getComponent<WaypointComponent>()->getLevel();
+        for(unsigned int x=i+1;x<listSubNodes->size()-1;x++){
+            auto rad2 = listSubNodes->at(x).get()->getComponent<WaypointComponent>()->getLevel();
+            if(rad1>rad2){
+                auto aux=listSubNodes->at(i);
+                listSubNodes->at(i)=listSubNodes->at(x);
+                listSubNodes->at(x)=aux;
+            }
+        }
+    }
         
     //RenderManager::getInstance().createObjectRenderComponent(*newGameObject.get(), ObjectRenderComponent::Shape::Sphere);
 

@@ -1,6 +1,10 @@
  #pragma once
 
 #include <vector>
+#include <iostream>
+#include "../Game.h"
+#include "../GameState/IGameState.h"
+#include "../GameEvent/EventManager.h"
 #include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/ItemComponent/ItemHolderComponent.h"
 #include "../GameObject/ItemComponent/ItemRedShellComponent.h"
@@ -12,15 +16,16 @@
 #include "RenderManager.h"
 #include "PhysicsManager.h"
 #include "ObjectManager.h"
-
+#include "NetworkManager.h"
 
 class ItemManager {
 
     private:
 
-        std::vector<std::shared_ptr<ItemHolderComponent>> ItemHolders;
+        std::vector<IComponent::Pointer> ItemHolders;
         std::vector<std::shared_ptr<IItemComponent>> ItemComponents;
         std::vector<std::shared_ptr<ItemBoxComponent>> ItemBoxes;
+        //std::vector<> players;
 
         //Item ids index
         int ids;
@@ -38,8 +43,12 @@ class ItemManager {
         void close();
 
         IComponent::Pointer createItemHolderComponent(GameObject& newGameObject);
-        IComponent::Pointer createItem(GameObject& obj);
         IComponent::Pointer createItemBox(GameObject& obj);
+
+        //====================================================
+        /////       ITEM CREATOR
+        //====================================================
+        IComponent::Pointer createItem(GameObject& obj);
 
         static ItemManager& getInstance();
 
@@ -52,8 +61,8 @@ class ItemManager {
         
 
         //Getters
-        std::vector<std::shared_ptr<IItemComponent>>& getItemComponents()                   {       return ItemComponents;       };
-        std::vector<std::shared_ptr<ItemHolderComponent>>& getItemHolderComponents()        {       return ItemHolders;       };
+        std::vector<std::shared_ptr<IItemComponent>>& getItemComponents()  {       return ItemComponents;    };
+        std::vector<IComponent::Pointer>& getItemHolderComponents()        {       return ItemHolders;       };
 
         //Item delete
         void deleteItem(IComponent::Pointer component);

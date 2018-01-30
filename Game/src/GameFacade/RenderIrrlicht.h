@@ -2,6 +2,7 @@
 
 #include <irrlicht.h>
 #include <map>
+#include <string>
 
 #include "IRenderFacade.h"
 
@@ -45,21 +46,89 @@ public:
     virtual void addCamera();
 
     //Update the current camera
-    virtual void updateCamera();
+    virtual void interpolateCamera(float accTime, float maxTime);
 
     //Add an object to the game
-    virtual void addObject(IComponent::Pointer ptr);
+    virtual void addObject(IComponent* ptr);
+
+    //Add an object to the game (Cylinder or Cone)
+    virtual void addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency);
+    
+    //Add a light to the game
+    virtual void addLight(IComponent* ptr);
 
     //Delete an object of the game
-    virtual void deleteObject(IComponent::Pointer ptr);
-
-    //Add a light to the game
-    virtual void addLight();
+    virtual void deleteObject(IComponent* ptr);
 
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
+
+    ///////////////////////////////
+    ///////      DEBUG      ///////    
+    ///////////////////////////////
+    
+    virtual void createRectangle2D(glm::vec2 pos, std::string img);
+
+    virtual void deleteRectangle2D();
+    
+    virtual void createRectangleCol2D(glm::vec2 pos, std::string img);
+
+    virtual void deleteRectangleCol2D();
+
+    virtual void createTitleText(glm::vec2 pos, std::string text);
+
+    virtual void deleteTitleText();
+
+    virtual void setTitleText(std::string text);
+
+    virtual void createDescriptionText(glm::vec2 pos, std::string text);
+
+    virtual void deleteDescriptionText();
+
+    virtual void setDescriptionText(std::string text);
+
+    virtual void createSubTitleText(glm::vec2 pos, std::string text);
+
+    virtual void deleteSubTitleText();
+
+    virtual void setSubTitleText(std::string text);
+
+    virtual void createSubDescriptionText(glm::vec2 pos, std::string text);
+
+    virtual void deleteSubDescriptionText();
+
+    virtual void setSubDescriptionText(std::string text);
+
 private: 
+    //Update the logo video
+    virtual void updateLogo();
+
+    virtual void drawGUI();
+
+    virtual void createItemIcon(glm::vec2 pos, std::string img);
+
+    virtual void deleteItemIcon();
+
+    virtual void updateItemIcon();
+
+
+    //Get device
+    irr::IrrlichtDevice* getDevice(){
+        return device;
+    };
+
+    //Get videodriver
+    irr::video::IVideoDriver* getVideoDriver(){
+        return videoDriver;
+    };
+
+    //Get scenemanager
+    irr::scene::ISceneManager* getSceneManager(){
+        return sceneManager;
+    };
+
+private:
 
     //Irrlicht own window
     irr::IrrlichtDevice* device;
@@ -86,5 +155,25 @@ private:
     irr::gui::IGUIStaticText* item;
 
     irr::gui::IGUIFont* font;
+
+    std::vector<irr::gui::IGUIElement*> rectanglesAI;
+
+
+    //Camera Debug
+    irr::gui::IGUIElement* rectangle;
+
+    irr::gui::IGUIElement* rectangleCol;
+
+    irr::gui::IGUIStaticText* title;
+
+    irr::gui::IGUIStaticText* description;
+
+    irr::gui::IGUIStaticText* subTitle;
+
+    irr::gui::IGUIStaticText* subDescription;
+
+    irr::gui::IGUIElement* itemIMG;
+
+
 
 };

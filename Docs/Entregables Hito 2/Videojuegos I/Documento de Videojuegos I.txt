@@ -1,0 +1,66 @@
+	_______________________________________________________________________________
+	|  _    _           _           _   _   _                _           _         |
+	| | |  | |         | |         | | | | | |              | |         | |        |
+	| | |  | | __ _ ___| |_ ___  __| | | |_| | ___  _ __ ___| |__   __ _| |_ __ _  |
+	| | |/\| |/ _` / __| __/ _ \/ _` | |  _  |/ _ \| '__/ __| '_ \ / _` | __/ _` | |
+	| \  /\  / (_| \__ \ ||  __/ (_| | | | | | (_) | | | (__| | | | (_| | || (_| | |
+	|  \/  \/ \__,_|___/\__\___|\__,_| \_| |_/\___/|_|  \___|_| |_|\__,_|\__\__,_| |
+	|______________________________________________________________________________|
+
+Acerca de la entrega:
+	-Multijugador en tiempo real: 
+        El multijugador consta de un cliente que hace peticiones a un servidor dedicado, a un puerto e IP's concreto.
+            >El valor del puerto de escucha del servidor se ajusta en Game/src/GameServer/ServerManager.h
+            >El valor del puerto e IP's al que intenta conectar el cliente se ajusta en Game/src/GameManager/NetworkManager.cpp/linea 638 en el métido initLobby(),  en la función peer->Connect();
+    
+        Se debe de inicializar primero el servidor y luego el cliente para poder jugar. La partida inicia en cuanto 2 jugadores se han conectado al servidor.
+            >Para compilar el servidor se usa el comando "make server" dentro de la carpeta Game/ en una terminal.
+            >Para compilar el cliente se usa el comando "make" dentro de la carpeta Game/ en una terminal.
+            >Para ejecutar el servidor se usa el binario Game/bin/Server_XKating
+            >Para ejecutar el cliente se usa el binario Game/bin/XKating
+            
+        Para iniciar una partida ambos clientes deben de pulsar 5 para intentar conectar con el servidor. Una vez estén ambos conectados el servidor comentará automáticamente.
+        
+        Las carpetas y archivos que forman parte del entregable se pueden encontrar en:
+            >Game/src/GameClient/*.cpp && *.h
+            >Game/src/GameServer/*.cpp && *.h
+            >Game/src/GameManager/NetworkManager.cpp && NetworkManager.h
+            >Game/src/GameObject/NetworkComponent/*.cpp && *.h
+            
+            
+	-Sistema de depuración visual in-game de la IA:
+        
+        -Debug Logica Difusa y Sensor de Vista: Pulsando la tecla F9, se mostraran:
+                        
+                        -Caja colision NPC
+                        -Rango de vision 
+                        -Area de vision
+                        -Marcador siguinte punto
+                        -Marcadores de objetos visibles
+                        
+                Podemos ver estos añadidos en:
+                    
+                    -Game/src/GameObject/AIComponent/AIDrivingComponent
+                    -Game/src/GameManager/RenderManager
+                    -Game/src/GameFacade/IRenderFacade
+                    -Game/src/GameFacade/RenderIrrlicht
+                    
+                Ademas, los parametros de la logica difusa, son leidos desde:
+                    
+                    -Game/media/xml/SpeedAIValues
+                    -Game/media/xml/TurnAIValues
+                    
+                    
+        
+        -Debug Behaviour Tree: Pulsando la tecla F10, se mostraran:
+        
+                        -Ruta que sigue el Behaviour del NPC, hasta que conseguir un SUCCESS Action
+                        
+                        
+                Podemos ver estos añadidos en:
+                    
+                    -Game/src/GameBehaviourTrees/*
+                    -Game/src/GameObject/AIComponent/AIBattleComponent
+                    -Game/src/GameManager/RenderManager
+                    -Game/src/GameFacade/IRenderFacade
+                    -Game/src/GameFacade/RenderIrrlicht

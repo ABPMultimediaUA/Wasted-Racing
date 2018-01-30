@@ -9,6 +9,8 @@
 #include "AIManager.h"
 #include "SensorManager.h"
 #include "ScoreManager.h"
+#include "AudioManager.h"
+#include "NetworkManager.h"
 
 class ObjectManager{
 

@@ -29,7 +29,7 @@ namespace LAPAL {
     //-------------COLLISIONS---------------
     //--------------------------------------
     //Checks colision between circles
-    bool checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const LAPAL::vec3f& pos2,const float& radius2);
+    bool checkCircleCircleCollision(const LAPAL::vec3f& pos1,const float& radius1, const float& length1, const LAPAL::vec3f& pos2,const float& radius2, const float& length2);
 
     //Assuming there's collision, changes velocity of every object after collision
     void calculateElasticCollision(LAPAL::vec3f& vel1, const LAPAL::vec3f& pos1, const float& mass1, LAPAL::vec3f& vel2, const LAPAL::vec3f& pos2, const float& mass2);
@@ -66,6 +66,6 @@ namespace LAPAL {
     bool position2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, const LAPAL::vec3f& p1);
 
     //Calculates if a circle is inside a rectangle
-    bool checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& position, const float radius);
+    bool checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& nextPosition, const float length, const float length2);
 
 }

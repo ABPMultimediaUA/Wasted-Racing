@@ -61,9 +61,9 @@ void ScoreManager::update()
 {
     std::vector<ScoreComponent::Pointer> ordered;
     std::vector<ScoreComponent::Pointer> auxiliar;
-    uint32_t j, pos, ordCount;
+    uint32_t j, pos;
     int score;
-    bool found, aux;
+    bool found;
 
     pos=1;
     if(players.size()>0)
@@ -80,7 +80,7 @@ void ScoreManager::update()
                 score = players[i].get()->getScore();
                 for(j=0; j<ordered.size() && found==false; j++)
                 {
-                    if(score>ordered[j].get()->getScore())
+                    if((score>ordered[j].get()->getScore()) || (score == ordered[j].get()->getScore() && players[i].get()->getActualDistance() < ordered[j].get()->getActualDistance()))
                     {
                         ordered.insert(ordered.begin()+j, players[i]);
                         found=true;
@@ -92,70 +92,6 @@ void ScoreManager::update()
                 }
             }
         }
-        ordCount=0;
-        aux = true;
-        for(unsigned int i=0; i<ordered.size(); i++)
-        {
-            if(i==ordered.size()-1)
-            {
-                aux = false;
-            }
-            if(aux && ordered[i].get()->getScore() == ordered[i+1].get()->getScore())
-            {
-                ordCount++;
-                if(ordCount==1)
-                {
-                    auxiliar.push_back(ordered[i]);
-                }
-                else
-                {
-                    found=false;
-                    for(j=0; j<auxiliar.size() && found==false; j++)
-                    {
-                        if(ordered[i].get()->getActualDistance() < auxiliar[j].get()->getActualDistance())
-                        {
-                            auxiliar.insert(auxiliar.begin()+j, ordered[i]);
-                            found=true;
-                        }
-                    }
-                    if(found==false)
-                    {
-                        auxiliar.push_back(ordered[i]);
-                    }
-                }
-            }
-            else
-            {
-                if(ordCount>0)
-                {
-                    found = false;
-                    for(j=0; j<auxiliar.size() && found==false; j++)
-                    {
-                        if(ordered[i].get()->getActualDistance() < auxiliar[j].get()->getActualDistance())
-                        {
-                            auxiliar.insert(auxiliar.begin()+j, ordered[i]);
-                            found=true;
-                        }
-                    }
-                    if(found == false)
-                    {
-                        auxiliar.push_back(ordered[i]);
-                    }
-                    for(j=0; j<=ordCount; j++)
-                    {
-                        ordered.erase(ordered.begin()+(i-ordCount));
-                    }
-                    for(j=auxiliar.size()-1;j<auxiliar.size(); --j)
-                    {
-                        ordered.insert(ordered.begin()+(i-1), auxiliar[j]);
-                    }
-                    auxiliar.clear();
-                    ordCount=0;
-                }
-            }
-
-        }
-
         for(unsigned int i=0; i<ordered.size(); i++)
         {
             ordered[i].get()->setPosition(pos);

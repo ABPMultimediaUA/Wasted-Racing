@@ -50,6 +50,7 @@ public:
     IComponent::Pointer createAIDrivingComponent(GameObject& newGameObject);
     IComponent::Pointer createAIBattleComponent(GameObject& newGameObject);
 
+
 private:
     std::vector<IComponent::Pointer> objectsAI;
     std::vector<IComponent::Pointer> battleAI;

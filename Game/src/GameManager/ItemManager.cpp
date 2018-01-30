@@ -53,6 +53,8 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
 
     ItemHolders.push_back(std::dynamic_pointer_cast<ItemHolderComponent>(component));
 
+    //players.push_back(newGameObject); 
+
     return component;
 }
 
@@ -74,8 +76,8 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
     ItemBoxes.push_back(std::dynamic_pointer_cast<ItemBoxComponent>(component));
     EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Create, data});
 
-    RenderManager::getInstance().createObjectRenderComponent(obj, ObjectRenderComponent::Shape::Cube);
-    PhysicsManager::getInstance().createCollisionComponent(obj, 5, false, CollisionComponent::Type::ItemBox);
+    RenderManager::getInstance().createObjectRenderComponent(obj, ObjectRenderComponent::Shape::Cube, "itemBox.png");
+    PhysicsManager::getInstance().createCollisionComponent(obj, 5, 5, false, CollisionComponent::Type::ItemBox);
 
 
     return component;
@@ -97,21 +99,51 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     if(random == IItemComponent::ItemType::redShell)
     {
         itemHolder->setItemType(-1);
-        auto component = createRedShell(obj);
-        std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();
-        return component;
+        if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
+
+            //Launch creation event
+            EventData data;
+            data.Id = obj.getId();
+
+            EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, data});
+
+        }else{
+            auto component = createRedShell(obj);
+            std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();     
+            return component;      
+        }
     }
     else if(random == IItemComponent::ItemType::blueShell)
     {
         itemHolder->setItemType(-1);
-        auto component = createBlueShell(obj);
-        std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init();
-        return component;
+        if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
+            
+            //Launch creation event
+            EventData data;
+            data.Id = obj.getId();
+
+            EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, data});
+
+        }else{
+
+            auto component = createBlueShell(obj);
+            std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init();
+            return component;
+        }
     }
     else if(random == IItemComponent::ItemType::banana)
     {
         itemHolder->setItemType(-1);
-        return createBanana(obj);
+        if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
+            //Launch creation event
+            EventData data;
+            data.Id = obj.getId();
+
+            EventManager::getInstance().addEvent(Event {EventType::Banana_Create, data});
+        }else{
+        
+            return createBanana(obj);
+        }
     }
     else if(random == IItemComponent::ItemType::mushroom)
     {
@@ -133,7 +165,6 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 }
 
 
-
 //////////////////////////////////////////////////////
 /////
 /////       ITEM CREATE
@@ -143,13 +174,15 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
 IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 {
-    
+    //Initial Data
     uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
     ItemManager::ids++;
 
+    //Get launcher object transform
     auto pos = obj.getTransformData().position;
 
+    //Set object offset position
     transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
@@ -195,18 +228,18 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
             terrainComp = list[i].terrainComponent;
     }
 
-
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Shell);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::RedShell);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.3ds");
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::RedShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f);
+    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
+    NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 1);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
@@ -215,12 +248,15 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
 IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 {
+    //Initial Data
     uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
     ItemManager::ids++;
 
+    //Get launcher object transform
     auto pos = obj.getTransformData().position;
 
+    //Set object offset position
     transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
@@ -269,15 +305,16 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Shell);
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, false, CollisionComponent::Type::BlueShell);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.3ds");
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::BlueShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
     WaypointManager::getInstance().createPathPlanningComponent(ob);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0);
+    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0, 0);
+    NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 2);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
@@ -286,12 +323,15 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
 IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 {
+    //Initial Data
     uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
     ItemManager::ids++;
 
+    //Get launcher object transform
     auto pos = obj.getTransformData().position;
 
+    //Set object offset position
     transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z+10*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
@@ -303,9 +343,9 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
     ob.get()->addComponent(component);
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Banana);
-    PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, false, CollisionComponent::Type::Banana);
-
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "banana.3ds");
+    PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, 1, false, CollisionComponent::Type::Banana);
+    NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 0);
 
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 

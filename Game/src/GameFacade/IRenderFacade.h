@@ -2,9 +2,11 @@
 
 #include <iostream>
 #include <cstdint>
+#include <string>
 
 #include "../GameManager/InputManager.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
 #include "../GameObject/GameObject.h"
 
 class GameObject;
@@ -72,19 +74,67 @@ public:
     virtual void addCamera() = 0;
 
     //Update the current camera
-    virtual void updateCamera() = 0;
+    virtual void interpolateCamera(float accTime, float maxTime) = 0;
 
     //Add an object to the game
-    virtual void addObject(IComponent::Pointer ptr) = 0;
+    virtual void addObject(IComponent* ptr) = 0;
 
-    //Delete an object of the game
-    virtual void deleteObject(IComponent::Pointer ptr) = 0;
+    //Add an object to the game
+    virtual void addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) = 0;
 
     //Add a light to the game
-    virtual void addLight() = 0;
+    virtual void addLight(IComponent* ptr) = 0;
+
+    //Delete an object or light of the game
+    virtual void deleteObject(IComponent* ptr) = 0;
 
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
+
+
+    ///////////////////////////////
+    ///////      DEBUG      ///////    
+    ///////////////////////////////
+    //Update logo video
+    virtual void updateLogo() = 0;
+
+    virtual void createRectangle2D(glm::vec2 pos, std::string img) = 0;
+
+    virtual void deleteRectangle2D()  = 0;
+    
+    virtual void createRectangleCol2D(glm::vec2 pos, std::string img) = 0;
+
+    virtual void deleteRectangleCol2D() = 0;
+
+    virtual void createTitleText(glm::vec2 pos, std::string text) = 0;
+
+    virtual void deleteTitleText() = 0;
+
+    virtual void setTitleText(std::string text) = 0;
+
+    virtual void createDescriptionText(glm::vec2 pos, std::string text) = 0;
+
+    virtual void deleteDescriptionText() = 0;
+
+    virtual void setDescriptionText(std::string text) = 0;
+
+    virtual void createSubTitleText(glm::vec2 pos, std::string text) = 0;
+
+    virtual void deleteSubTitleText() = 0;
+
+    virtual void setSubTitleText(std::string text) = 0;
+
+    virtual void createSubDescriptionText(glm::vec2 pos, std::string text) = 0;
+
+    virtual void deleteSubDescriptionText() = 0;
+
+    virtual void setSubDescriptionText(std::string text) = 0;
+    
+    virtual void drawGUI() = 0;
+
+    virtual void createItemIcon(glm::vec2 pos, std::string img)  = 0;
+
+    virtual void deleteItemIcon()  = 0;
 
     //==============================================================
     // Window Related functions

@@ -16,7 +16,7 @@ class VSensorComponent : public ISensorComponent{
 
         //Constructors
         VSensorComponent(GameObject& newGameObject);
-        VSensorComponent(GameObject& newGameObject, float angV, float angI, float md); //AngV = angle of vision in degrees, AngI = angle of init in radians
+        VSensorComponent(GameObject& newGameObject, float angV, float angI, float md, float ml); //AngV = angle of vision in degrees, AngI = angle of init in radians
         
         //Destructor
         virtual ~VSensorComponent() {};
@@ -42,6 +42,8 @@ class VSensorComponent : public ISensorComponent{
         glm::vec3 getSensorRight()                               {   return sensorRight;    };
         float getAngleInitial()                                  {   return angleInitial;   };
         float getAngleVision()                                   {   return angleVision;    };
+        float getMaxDistance()                                   {   return maxDistance;    };
+        float getMaxLength()                                   {   return maxLength;    };
 
         void setAngleInitial(float a)                            {   angleInitial = a;      };
         void setAngleVision(float a)                             {   angleVision = a;       };
@@ -59,6 +61,7 @@ class VSensorComponent : public ISensorComponent{
         std::vector<VObject::Pointer> seenObjects;
 
         float maxDistance;
+        float maxLength;
 
 
 };

@@ -1,4 +1,5 @@
 #include "AIManager.h"
+#include <rapidxml/rapidxml.hpp>
 
 
 //==============================================
@@ -157,3 +158,4 @@ void objectDeleteAIBattle(EventData eData) {
         }
     }
 }
+

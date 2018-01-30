@@ -10,9 +10,10 @@ ISensorComponent(newGameObject)
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
     maxDistance = 100.f;
+    maxLength = 20.f;
 }       
 
-VSensorComponent::VSensorComponent(GameObject& newGameObject, float angV, float angI, float md) :
+VSensorComponent::VSensorComponent(GameObject& newGameObject, float angV, float angI, float md, float ml) :
 ISensorComponent(newGameObject)
 {
     angleInitial=angI;
@@ -22,6 +23,7 @@ ISensorComponent(newGameObject)
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 
     maxDistance = md;
+    maxLength = ml;
 }
 
 //Checks the objects seen and stores the ones seen in the seenObjects vector
@@ -50,14 +52,18 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
 						(objects[i].getTransformData().position.y - myPos.y) * (objects[i].getTransformData().position.y - myPos.y) +
 						(objects[i].getTransformData().position.z - myPos.z) * (objects[i].getTransformData().position.z - myPos.z);
         
+
+        float distY = (objects[i].getTransformData().position.y - myPos.y) * (objects[i].getTransformData().position.y - myPos.y);
+
         float rad = objects[i].getComponent<CollisionComponent>()->getRadius();
+        float length = objects[i].getComponent<CollisionComponent>()->getRadius();
 
         if(rad != -1.f)
         {
             distance -= rad;
         }
 
-        if(distance < maxDistance*maxDistance || maxDistance == 0)
+        if((distance < maxDistance*maxDistance || maxDistance == 0) && (distY < maxLength*maxLength || maxLength == 0))
         {
             calculateAB(objects[i].getTransformData().position, a, b);       //Do the math
 
@@ -66,7 +72,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
             {
                 if(objects[i].getComponent<CollisionComponent>()->getType() == CollisionComponent::Type::Default)
                 {
-                    pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 0); //generate VObject with the data
+                    pvo = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 0, length); //generate VObject with the data
                     seenObjects.push_back(pvo);                                                     //Add to seen objects
                 }
                 else if(objects[i].getComponent<CollisionComponent>()->getType() == CollisionComponent::Type::ItemBox)
@@ -74,7 +80,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
                     if((distanceBox == -1 || distance < distanceBox) && objects[i].getComponent<ItemBoxComponent>()->getActive() == 1)
                     {
                         distanceBox = distance;
-                        box = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 1); //generate VObject with the data
+                        box = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 1, length); //generate VObject with the data
                     } 
                 }
                 else if(objects[i].getComponent<CollisionComponent>()->getType() == CollisionComponent::Type::Ramp)
@@ -82,7 +88,7 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
                     if(distanceRamp == -1 || distance < distanceRamp)
                     {
                         distanceRamp = distance;
-                        ramp = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 2); //generate VObject with the data
+                        ramp = std::make_shared<VObject>(objects[i].getTransformData().position, a, b, rad, 2, length); //generate VObject with the data
                     } 
                 }
             }
