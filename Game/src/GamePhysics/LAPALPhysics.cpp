@@ -114,7 +114,7 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     }
 
     if(!mData.drift){
-        mData.angle += mData.spin;
+        mData.angle += mData.spin * dTime * 50;
     }
 }
 

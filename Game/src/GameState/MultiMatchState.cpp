@@ -1,4 +1,5 @@
 #include "MultiMatchState.h"
+#include "../Game.h"
 
 //Additional functions
 void createPlayer();
@@ -18,6 +19,8 @@ void MultiMatchState::init() {
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
 
+    Game::getInstance().setAccumulatedTime(0);
+
     createPlayer();
 }
 
@@ -30,7 +33,7 @@ void MultiMatchState::update(float &accumulatedTime) {
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
         //Update managers
-        updateManagers(loopTime);
+        updateManagers(accumulatedTime);
 
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
