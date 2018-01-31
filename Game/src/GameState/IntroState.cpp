@@ -14,6 +14,7 @@ void IntroState::init() {
     eventManager  = &EventManager::getInstance();
     inputManager  = &InputManager::getInstance();
     renderManager = &RenderManager::getInstance();
+    objectManager = &ObjectManager::getInstance();
 
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
@@ -36,6 +37,8 @@ void IntroState::update(float &accumulatedTime) {
 
     //Event manager has to be the last to be updated
     eventManager->update();
+
+    Game::getInstance().setStay(objectManager->getGameRunning());
 }
 
 void IntroState::draw() {
