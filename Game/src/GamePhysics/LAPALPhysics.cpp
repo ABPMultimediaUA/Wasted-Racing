@@ -65,6 +65,9 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
         mData.vel = mData.vel * 0.99f;
         mData.acc = mData.acc * 0.99f;
     }
+
+    if(mData.colVel.x > 0 || mData.colVel.y > 0 || mData.colVel.z > 0)
+        mData.vel = 0;
 }
 
 //Updates vector velocity
@@ -204,8 +207,9 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
 void LAPAL::updateCollisionMovement ( LAPAL::movementData& mData, const float dTime) {
 
     const float cons = 5; //factor of vel reduction over time
+    const float min = 0.3; //minimum velocity of colVel
 
-    if(abs(mData.colVel.x) > 0.1 || abs(mData.colVel.z) > 0.1) {
+    if(abs(mData.colVel.x) > min || abs(mData.colVel.z) > min) {
 
         mData.velocity.x += mData.colVel.x;
         mData.velocity.z += mData.colVel.z;
@@ -213,6 +217,9 @@ void LAPAL::updateCollisionMovement ( LAPAL::movementData& mData, const float dT
         mData.colVel.x -= mData.colVel.x*dTime*cons;
         mData.colVel.z -= mData.colVel.z*dTime*cons;
 
+    }
+    else{
+        mData.colVel = { 0, 0, 0};
     }
 
 }

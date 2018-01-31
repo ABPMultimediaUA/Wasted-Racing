@@ -4,6 +4,9 @@
 #include "MainState.h"
 #include "../GameFacade/RenderIrrlicht.h"
 #include "../GameManager/RenderManager.h"
+#include "../GameManager/ObjectManager.h"
+#include "../GameManager/InputManager.h"
+#include "../GameEvent/EventManager.h"
 #include "../Game.h"
 #include "../GameManager/NetworkManager.h"
 #include <iostream>
@@ -49,9 +52,14 @@ private:
 
     //NetworkManager
     NetworkManager* networkManager;
-
     //RenderManager
     RenderManager* renderManager;
+    //ObjectManager
+    ObjectManager* objectManager;
+    //InputManager
+    InputManager* inputManager;
+    //EventManager
+    EventManager* eventManager;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;
