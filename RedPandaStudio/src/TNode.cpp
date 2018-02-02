@@ -1,19 +1,16 @@
 #include "TNode.h"
 
-
-
 TNode::~TNode()
 {
     delete father;
     delete entity;
 
-    for(int i = 0; i < child.size(); i++)
+    for(unsigned int i = 0; i < child.size(); i++)
     {
         delete child[i];
     }
     child.clear();
 }
-
 
 ///////////////////////////////
 /////       SETTERS       /////
@@ -21,11 +18,8 @@ TNode::~TNode()
 
 bool TNode::setEntity(TEntity* e)
 {
-    if(e = entity)
-    {
-        return true;
-    }
-    return false;
+    e = entity;
+    return true;
 }
 
 
@@ -43,7 +37,7 @@ TEntity* TNode::getEntity()
     return entity;
 }
 
-vector<TNode*> TNode::getChild()
+std::vector<TNode*> TNode::getChild()
 {
     return child;
 }
@@ -55,23 +49,22 @@ vector<TNode*> TNode::getChild()
 
 bool TNode::addChild(TNode* c)
 {
-    if(child.push_back(c))
-    {
-        return true;
-    }
-    return false;
+    //Push_back es una funcion void, siempre insertará el valor que se le pasa
+    //Y en caso de que no lo consiga, lanzará una excepción 'bad_alloc' parando la ejecución
+    child.push_back(c);
+    return true;
 }
 
 bool TNode::removeChild(TNode* c)
 {
-    for(int i = 0; i < child.size(); i++)
+    for(unsigned int i = 0; i < child.size(); i++)
     {
         if(c == child[i])
         {
-            if(child.erase(child.begin()+i))
-            {
-                return true;
-            }
+            //Erase devuelve un iterator al elemento que sigue al borrado o una excepción si se intenta
+            //borrar algo fuera de rango
+            child.erase(child.begin()+i);
+            return true;
         }
     }
     return false;
@@ -80,7 +73,7 @@ bool TNode::removeChild(TNode* c)
 void TNode::draw()
 {
     entity->beginDraw();
-    for(int i = 0; i < child.size(); i++)
+    for(unsigned int i = 0; i < child.size(); i++)
     {
         child[i]->draw();
     }
