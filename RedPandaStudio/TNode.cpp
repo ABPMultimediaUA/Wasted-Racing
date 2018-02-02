@@ -16,6 +16,20 @@ TNode::~TNode()
 
 
 ///////////////////////////////
+/////       SETTERS       /////
+///////////////////////////////
+
+bool TNode::setEntity(TEntity* e)
+{
+    if(e = entity)
+    {
+        return true;
+    }
+    return false;
+}
+
+
+///////////////////////////////
 /////       GETTERS       /////
 ///////////////////////////////
 
@@ -63,3 +77,12 @@ bool TNode::removeChild(TNode* c)
     return false;
 }
 
+void TNode::draw()
+{
+    entity->beginDraw();
+    for(int i = 0; i < child.size(); i++)
+    {
+        child[i]->draw();
+    }
+    entity->endDraw();
+}
