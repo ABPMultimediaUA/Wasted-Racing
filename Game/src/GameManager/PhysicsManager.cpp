@@ -79,7 +79,6 @@ void PhysicsManager::update(const float dTime) {
         calculateTerrainCollision(movingCharacterList[i], ourMove, ourTerr, ourColl, dTime);
 
         gameObject.setNewTransformData(gameObject.getTransformData());
-        
     }
 
     //Update camera collision
@@ -206,6 +205,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                 else if(hisColl->getType() == CollisionComponent::Type::BlueShell && coll == ScoreManager::getInstance().getPlayers()[0].get()->getGameObject().getComponent<CollisionComponent>())
                 {
                     EventData data;
+                    data.Id             = hisColl->getGameObject().getId();
                     data.Component      = std::static_pointer_cast<IComponent>(move);
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 
@@ -214,6 +214,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                 else if(hisColl->getType() == CollisionComponent::Type::RedShell)
                 {
                     EventData data;
+                    data.Id             = hisColl->getGameObject().getId();
                     data.Component      = std::static_pointer_cast<IComponent>(move);
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 

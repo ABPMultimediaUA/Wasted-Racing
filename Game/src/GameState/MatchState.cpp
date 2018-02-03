@@ -1,4 +1,5 @@
 #include "MatchState.h"
+#include "../Game.h"
 
 //additional functions
 void addAI();
@@ -16,6 +17,8 @@ void MatchState::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
+
+    Game::getInstance().setAccumulatedTime(0);
     
     //Add AI's to the game
     addAI();
@@ -24,19 +27,17 @@ void MatchState::init() {
 void MatchState::update(float &accumulatedTime) {
     //Out of loop
     renderManager->update(accumulatedTime);
-
     //If time surpassed the loopTime
-    if(accumulatedTime > loopTime){
+    if(accumulatedTime >= loopTime){
         //Update managers
-        updateManagers(loopTime);
-
+        updateManagers(accumulatedTime);
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
     }
     //Always interpolate
     physicsManager->interpolate(accumulatedTime, loopTime);
     renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
-
+    
 }
 
 void MatchState::updateManagers(float dTime){
@@ -89,7 +90,7 @@ void addAI(){
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25002;
     transform.position = glm::vec3(-35,0,0);
@@ -107,7 +108,7 @@ void addAI(){
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
-    id = 25004;
+    /*id = 25004;
     transform.position = glm::vec3(-35,0,20);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
@@ -129,5 +130,5 @@ void addAI(){
     transform.scale    = glm::vec3(1,1,1);
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));*/
 }

@@ -8,22 +8,23 @@
 	|______________________________________________________________________________|
 
 Acerca de la entrega:
-
-	-Gestionar colisiones de la cámara: ahora cuando la cámara se acerca a los límites del terreno, se acerca al jugador para evitar salirse de la pista. Se adjunta un vídeo donde puede verse el comportamiento de la cámara en acción. El código de la cámara se puede encontrar en Game/src/GameObject/RenderComponent/CameraRenderComponent.*
-
-	-Creación de un cargador de niveles: ahora los niveles se leen a partir de un fichero con extensión Wavefront (.obj) generado en Blender. Este archivo se convierte con un programa hecho en Python a un XML que nuestro juego será capaz de leer. En nuestro juego, el nivel se crea leyendo el XML generado. Podemos encontrar en esta carpeta el Formato Propio para la Definición de Niveles, en Game/Parser encontramos el archivo de Blender y el conversor de OBJ a XML en Python. El lector del XML lo podemos encontrar en la función loadMap() de Game/src/Game.cpp.
-
-	-Sistema de depuración de colisiones de la cámara: Pulsando la tecla F11, se mostraran:
+	-Gestión de colisiones de la cámara: ahora cuando la cámara se acerca a los límites del terreno, se acerca al jugador para evitar salirse de la pista. Se adjunta un vídeo donde puede verse el comportamiento de la cámara en acción. El código de la cámara se puede encontrar en Game/src/GameObject/RenderComponent/CameraRenderComponent.*
+	
+	-Gestión de colisiones de la cámara (sistema de depuración para ver colisiones): Pulsando la tecla F11, se mostraran:
                         
                         -Distancia de la camara al NPC
                         -Si hay colision (TRUE) o si no (FALSE)
                         
-                Podemos ver estos añadidos en el video "Camera Debug.mp4" y en:
+                Podemos ver estos añadidos en:
                 
                     -Game/src/GameObject/RenderComponent/CameraRenderComponent
                     -Game/src/GameManager/RenderManager
                     -Game/src/GameFacade/IRenderFacade
                     -Game/src/GameFacade/RenderIrrlicht
                     
-                    
-	-Implementar el Patron State:
+	-Creación de un cargador de niveles: ahora los niveles se leen a partir de un fichero con extensión Wavefront (.obj) generado en Blender. Este archivo se convierte con un programa hecho en Python a un XML que nuestro juego será capaz de leer. En nuestro juego, el nivel se crea leyendo el XML generado. Podemos encontrar en esta carpeta el Formato Propio para la Definición de Niveles, en Game/Parser encontramos el archivo de Blender y el conversor de OBJ a XML en Python. El lector del XML lo podemos encontrar en la función loadMap() de Game/src/Game.cpp.
+                
+	-Implementación de menús: Fase inicial. El juego transiciona entre estados mediante una serie de condiciones, y actualiza los "Managers" necesarios únicamente para ese estado. El cambio entre estados se gestiona con la clase principal "Game.cpp" sobre la cual se invoca el método setState() pasándole el identificador del estado a cambiar. Podemos encontrar en esta carpeta el video "Menu.mp4" que muestra el menú provisional para ejecutar el juego.
+        
+                Podemos ver los contenidos del menú (Patrón state y menú inicial) en:
+                    -Game/src/GameState/*.cpp ; *.h

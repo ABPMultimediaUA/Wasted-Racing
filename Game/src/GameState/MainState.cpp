@@ -1,4 +1,5 @@
 #include "MainState.h"
+#include "../Game.h"
 
 
 void MainState::init() {
@@ -14,6 +15,8 @@ void MainState::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
+
+    Game::getInstance().setAccumulatedTime(0);
 
 }
 

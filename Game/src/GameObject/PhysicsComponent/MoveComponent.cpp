@@ -11,7 +11,7 @@ void MoveComponent::init() {
 
 //Update
 void MoveComponent::update(float dTime) {
-
+        
     //get transform data
     auto position = getGameObject().getTransformData().position;
 
@@ -44,7 +44,6 @@ void MoveComponent::update(float dTime) {
 
     //Set final transform of position
     getGameObject().setTransformData(trans);
-
     //auto id = getGameObject().getId();
     //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
     

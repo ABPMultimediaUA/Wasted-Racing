@@ -11,6 +11,7 @@
 Consideraciones generales:
 	-El juego se puede ejecutar desde el binario que se adjunta, en Linux. 
 	-El juego puede ser compilado ejecutando el comando 'make' desde la carpeta 'Game' de Wasted-Racing. Para asegurar la correcta compilación, se recomienda ejecutar previamente el comando 'make clean'. El comando 'make win' permite compilar el juego en Windows, usando MinGW para compilar.
+    -Técnicas Avanzados de Gráficos no tiene entregable en este Hito 2.
 
 XKating - WastedHorchata © 2017
 	●	Pablo López Iborra

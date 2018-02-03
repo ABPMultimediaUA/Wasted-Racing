@@ -1,5 +1,5 @@
 #include "IntroState.h"
-
+#include "../Game.h"
 
 //Delegate functions
 void multiplayerActivated(EventData eData);
@@ -14,6 +14,7 @@ void IntroState::init() {
     eventManager  = &EventManager::getInstance();
     inputManager  = &InputManager::getInstance();
     renderManager = &RenderManager::getInstance();
+    objectManager = &ObjectManager::getInstance();
 
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
@@ -22,6 +23,8 @@ void IntroState::init() {
     //Set an image on the main menu
     renderManager->getRenderFacade()->createRectangle2D(glm::vec2(renderManager->getRenderFacade()->getWindow().size.x/2-600, renderManager->getRenderFacade()->getWindow().size.y/2-331), "media/img/menuProv.png");
     renderManager->getRenderFacade()->drawGUI();
+
+    Game::getInstance().setAccumulatedTime(0);
 
 }
 
@@ -34,6 +37,8 @@ void IntroState::update(float &accumulatedTime) {
 
     //Event manager has to be the last to be updated
     eventManager->update();
+
+    Game::getInstance().setStay(objectManager->getGameRunning());
 }
 
 void IntroState::draw() {
