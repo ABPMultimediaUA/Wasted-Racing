@@ -1,6 +1,7 @@
 #pragma once
 #include "TEntity.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 class TTransform : public TEntity{
 
@@ -13,11 +14,16 @@ public:
     TTransform() {}
     ~TTransform() {}
 
-    void identity();
-    void transpose() {}
+    bool identity();
+    bool transpose();
 
-    void traslate(float x, float y, float z) {}
-    void rotate(float x, float y, float z, float w) {}
+    bool translate(float x, float y, float z);
+    bool rotate(float x, float y, float z, float w);
+
+    bool inverse();
+
+    glm::vec4 multiplyVector(glm::vec4 v);
+    glm::mat4 multiplyMatrix(glm::mat4 m);
 
     //Setters
     void setMatrix(glm::mat4 m)         {       matrix = m;         }
