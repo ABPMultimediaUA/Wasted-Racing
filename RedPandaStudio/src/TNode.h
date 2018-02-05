@@ -13,17 +13,20 @@ public:
     ~TNode();
 
     //Setters
-    bool setEntity(TEntity* e);
+    bool setEntity(TEntity* e)                  {       e = entity;     
+                                                        return true;        }
 
     //Getters
-    TNode* getFather();
-    TEntity* getEntity();
-    std::vector<TNode*> getChild();
+    TNode* getFather()                          {       return father;      }
+    TEntity* getEntity()                        {       return entity;      }
+    std::vector<TNode*> getChild()              {       return child;       }
 
     //Methods
     bool addChild(TNode* c);
     bool removeChild(TNode* c);
+    TNode* searchChild(unsigned int c);
 
+    //Draw tree
     void draw();
 
 private:

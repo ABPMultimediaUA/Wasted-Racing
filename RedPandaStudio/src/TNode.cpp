@@ -12,36 +12,6 @@ TNode::~TNode()
     child.clear();
 }
 
-///////////////////////////////
-/////       SETTERS       /////
-///////////////////////////////
-
-bool TNode::setEntity(TEntity* e)
-{
-    e = entity;
-    return true;
-}
-
-
-///////////////////////////////
-/////       GETTERS       /////
-///////////////////////////////
-
-TNode* TNode::getFather()
-{
-    return father;
-}
-
-TEntity* TNode::getEntity()
-{
-    return entity;
-}
-
-std::vector<TNode*> TNode::getChild()
-{
-    return child;
-}
-
 
 ///////////////////////////////
 /////       METHODS       /////
@@ -69,6 +39,19 @@ bool TNode::removeChild(TNode* c)
     }
     return false;
 }
+
+TNode* TNode::searchChild(unsigned int c)
+{
+    if(c > 0 && c < child.size()-1)
+    {
+        return nullptr;
+    }
+    return child[c];
+}
+
+///////////////////////////////
+/////        DRAW         /////
+///////////////////////////////
 
 void TNode::draw()
 {

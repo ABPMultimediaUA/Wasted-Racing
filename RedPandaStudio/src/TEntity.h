@@ -5,7 +5,7 @@ class TEntity{
 public:
 
     TEntity() {}
-    ~TEntity() {}
+    virtual ~TEntity() = 0;
 
     virtual void beginDraw() = 0;
     virtual void endDraw() = 0;
