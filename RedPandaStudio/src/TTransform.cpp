@@ -1,7 +1,5 @@
 #include "TTransform.h"
 
-
-
 bool TTransform::identity()
 {
     matrix = glm::mat4(1.0);
