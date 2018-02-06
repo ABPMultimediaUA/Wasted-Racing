@@ -30,7 +30,7 @@ public:
     glm::mat4 getMatrix()               {       return matrix;      }
 
     //Draw Methods
-    void beginDraw() {}
-    void endDraw() {}
+    void beginDraw();
+    void endDraw();
 
 };
