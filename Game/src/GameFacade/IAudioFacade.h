@@ -40,15 +40,16 @@ public:
     virtual void setVolume(float vol) = 0;
 
     //Sets the 3D position of the listener
-    virtual void setListenerPosition(glm::vec3 pos) = 0;
+    virtual void setListenerPosition() = 0;
 
-    //Creates an audio event instance
-    virtual void createAudioInstance(AudioManager::AudioType type, glm::vec3 pos, std::string parameters) = 0;
+    //Getters
+    virtual float getVolume() = 0;
 
     //Sets the gameObject to be the listener
     void setListener(GameObject& newListener) {
         listener = &newListener;
     }
+
     //Returns the gameObject that is listening
     GameObject& getListener() {
         return *listener;
