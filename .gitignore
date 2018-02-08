@@ -9,5 +9,6 @@ RedPandaStudio/bin/obj
 RedPandaStudio/bin/test
 RedPandaStudio/bin/test.sh
 RedPandaStudio/bin/libRedPanda.so
+RedPandaStudio/bin/main.o
 .vscode/
 Game/.vscode/
