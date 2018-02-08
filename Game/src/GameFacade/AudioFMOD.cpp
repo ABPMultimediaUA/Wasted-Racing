@@ -62,10 +62,7 @@ void AudioFMOD::openAudioEngine(int lang) {
     }
     else{
 
-        LOAD_EVENT(CharacterES, CharacterES);
-
     }
-
 
     //Listeners
 
@@ -94,11 +91,11 @@ void AudioFMOD::update() {
 //Closer
 void AudioFMOD::closeAudioEngine() {
 
-    //We should do a release for every class, instance and description
+    for(auto description : eventDescriptions)
+        ERRCHECK( FMOD_Studio_EventDescription_ReleaseAllInstances(description.second) );
 
-    //##############################################################################
-    // HACER UN CLOSER PARA CADA COSA EN LOS MAPAS ETC
-    //##############################################################################
+    for(auto bank : banks)
+        ERRCHECK( FMOD_Studio_Bank_Unload(bank.second) );
 
     ERRCHECK( FMOD_Studio_Bank_Unload(stringsBank) );
     ERRCHECK( FMOD_Studio_Bank_Unload(masterBank) );
