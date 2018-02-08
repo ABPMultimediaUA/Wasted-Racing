@@ -37,6 +37,7 @@ bool InputIrrlicht::OnEvent(const irr::SEvent& event) {
         DetectKeyInput(KEY_KEY_Q,Key_UseItem_Down,Key_UseItem_Up)
         DetectKeyInput(KEY_KEY_5,Key_Multiplayer_Down,Key_Multiplayer_Up)
         DetectKeyInput(KEY_KEY_6,Key_Singleplayer_Down,Key_Singleplayer_Up)
+        DetectKeyInput(KEY_F8,Key_DebugNetwork_Down,Key_DebugNetwork_Up)
         DetectKeyInput(KEY_F9,Key_DebugAI_Down,Key_DebugAI_Up)
         DetectKeyInput(KEY_F10,Key_DebugBehaviour_Down,Key_DebugBehaviour_Up)
         DetectKeyInput(KEY_F11,Key_DebugCamera_Down,Key_DebugCamera_Up)

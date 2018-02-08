@@ -25,6 +25,7 @@
 #include "GameManager/ScoreManager.h"
 #include "GameManager/ItemManager.h"
 #include "GameManager/NetworkManager.h"
+#include "GameManager/DebugManager.h"
 #include "GameEvent/EventManager.h"
 #include "GameFacade/AudioFMOD.h"
 
@@ -39,6 +40,7 @@
 class AIManager;
 class ObjectManager;
 class ItemManager;
+class DebugManager;
 
 class Game {
 
@@ -50,8 +52,11 @@ public:
     //Destructor
     ~Game() {}
 
-    //Infinite game loop
+    //Infinite game client loop
     void Run();
+
+    //Infinite Server side loop
+    void RunServer();
 
     //State setter
     void setState(IGameState::stateType type);
@@ -59,6 +64,7 @@ public:
 
 
     //Basic setters and getters
+    bool isServer()            {     return server;         }//Returns true if this is the server
     void setStay(bool s)       {     stay = s;              }//Stay setter
     void setRenderEngine(int n){     renderEngine = n;      }//Engine setter
     void setInputEngine(int n) {     inputEngine = n;       }//Input setter
@@ -84,8 +90,11 @@ private:
     //Initialization
     void init();
 
-    //Update
+    //Update client
     void update(float dTime);
+
+    //Update server
+    void updateServer();
 
     //Render draw
     void draw();
@@ -120,7 +129,8 @@ private:
     ScoreManager* scoreManager;
     //Network manager
     NetworkManager* networkManager;
-
+    //Debug manager
+    DebugManager* debugManager;
     //Selected renderEngine
     int renderEngine;
     //Selected inputEngine
@@ -128,6 +138,9 @@ private:
 
     //Stay in the main loop
     bool stay;
+
+    //If true, the game is initiated inside the server
+    bool server;
 
     //current state
     IGameState* state;

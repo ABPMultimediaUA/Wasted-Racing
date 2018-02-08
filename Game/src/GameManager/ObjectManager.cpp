@@ -2,6 +2,15 @@
 #include "../GameEvent/EventManager.h"
 #include <iostream>
 
+//////////////////////////////////////////////
+//            THINGS TO DO HERE
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+/*
+>Change the functions that create characters, because it's awful.
+>Check if using .txt would be a better idea or just plain encrypted non-accesible data.
+*/
+
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
