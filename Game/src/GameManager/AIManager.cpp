@@ -57,7 +57,7 @@ void AIManager::update() {
                 //get all objects that are seen to the visual sensor
                 std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
                 std::vector<VObject::Pointer> mapCollisions = mSensorComponent->getMapCollisions();
-               
+                //seenObjects.insert(seenObjects.end(),mapCollisions.begin(),mapCollisions.end());      //Adding the 2 collision maps
 
                 //Set angle of the sensors to the NPC one
                 vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);

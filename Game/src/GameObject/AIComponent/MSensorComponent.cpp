@@ -6,7 +6,7 @@ MSensorComponent::MSensorComponent(GameObject& newGameObject) :
 ISensorComponent(newGameObject)
 {
     angleInitial=newGameObject.getTransformData().rotation.y * 3.141592653589f / 180.f;
-    angleVision=5.0 * 3.141592653589f / 180.f;
+    angleVision=30.0 * 3.141592653589f / 180.f;
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 }       
@@ -50,7 +50,7 @@ void MSensorComponent::updateMapCollisions()
     //-------------------
     //TERRAIN BACK POINTS
     //-------------------
-    glm::vec3 point1, point2;
+   /* glm::vec3 point1, point2;
     switch(terrain.direction){
         case 0:
             point1 = terrain.p1;
@@ -82,7 +82,7 @@ void MSensorComponent::updateMapCollisions()
     calculateABTerrainBack(point2, a_back, b_back);                            //Do the math
     pvo = std::make_shared<VObject>(point2, a_back, b_back, 1.f, 1, 1.f);  //generate VObject with the data
     seenObjects.push_back(pvo);                                       //Add to seen objects
-
+*/
     //-------------------
     //FRONT POINTS CHECK
     //-------------------
@@ -91,7 +91,7 @@ void MSensorComponent::updateMapCollisions()
     bool contactL = false, contactR = false;    //Sentinels checking contact of one of the rays
 
     //Front
-    if(terrC->getNext() == nullptr){
+    if(terrC->getRight() == nullptr){
         float a = 0.f, b = 0.f;
         glm::vec3 vAB           = - (terrain.p3 - terrain.p2);  //Vector de los puntos superiores
         glm::vec3 relativePoint = terrain.p2 - position;        //Vector from position to p2
@@ -119,7 +119,7 @@ void MSensorComponent::updateMapCollisions()
     }
 
     //Right
-    if(terrC->getRight() == nullptr){
+    if(terrC->getPrev() == nullptr){
         float a = 0.f, b = 0.f;
         glm::vec3 vAB           = - (terrain.p4 - terrain.p3);  //Vector de los puntos de la derecha
         glm::vec3 relativePoint = terrain.p3 - position;        //Vector from position to p3
@@ -150,7 +150,7 @@ void MSensorComponent::updateMapCollisions()
     }
 
     //Down
-    if(terrC->getPrev() == nullptr){
+    if(terrC->getLeft() == nullptr){
 
         float a = 0.f, b = 0.f;
         glm::vec3 vAB           = - (terrain.p1 - terrain.p4);  //Vector de los puntos de abajo
@@ -177,12 +177,12 @@ void MSensorComponent::updateMapCollisions()
             if(a > 0.f && b >= 0.f && b <= 1.f){
                 contactR    = true;
                 pointS2     = terrain.p4 - b * vAB;
-            }
+            }   
         }
     }
 
     //Left
-    if(terrC->getLeft() == nullptr){
+    if(terrC->getNext() == nullptr){
         float a = 0.f, b = 0.f;
         glm::vec3 vAB           = -(terrain.p2 - terrain.p1);   //Vector de los puntos de la izquierda
         glm::vec3 relativePoint = terrain.p1 - position;        //Vector from position to p4
@@ -219,8 +219,8 @@ void MSensorComponent::updateMapCollisions()
         LAPAL::calculateAB(pointS1 - position, vsensor->getSensorLeft(), vsensor->getSensorRight(), a_final, b_final);
 
         //Calculate left point
-        pvo = std::make_shared<VObject>(pointS1, a_final, b_final, 1.f, 1, 1.f);    //generate VObject with the data
-        seenObjects.push_back(pvo);                                      //Add to seen objects
+        pvo = std::make_shared<VObject>(pointS1, a_final, b_final, 1.f, 0, 1.f);    //generate VObject with the data
+        seenObjects.push_back(pvo);                                                 //Add to seen objects
     }
 
 
@@ -231,8 +231,8 @@ void MSensorComponent::updateMapCollisions()
         LAPAL::calculateAB(pointS2 - position, vsensor->getSensorLeft(), vsensor->getSensorRight(), a_final2, b_final2);
 
         //Calculate right point
-        pvo = std::make_shared<VObject>(pointS2, a_final2, b_final2, 1.f, 1, 1.f);    //generate VObject with the data
-        seenObjects.push_back(pvo);                                      //Add to seen objects
+        pvo = std::make_shared<VObject>(pointS2, a_final2, b_final2, 1.f, 0, 1.f);    //generate VObject with the data
+        seenObjects.push_back(pvo);                                                   //Add to seen objects
     }
 
 

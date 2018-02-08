@@ -323,7 +323,7 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
         AIManager::getInstance().createAIDrivingComponent(*obj.get());
         AIManager::getInstance().createAIBattleComponent(*obj.get());
         SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle, 100.f, 10.f); 
-        SensorManager::getInstance().createMSensorComponent(*obj.get(), 5.f, mData.angle);
+        SensorManager::getInstance().createMSensorComponent(*obj.get(), 30.f, mData.angle);
         //RenderManager::getInstance().createCameraRenderComponent(*obj.get());
     }
     else if(move == 2)

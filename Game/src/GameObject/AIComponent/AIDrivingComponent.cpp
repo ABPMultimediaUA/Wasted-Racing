@@ -59,7 +59,7 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 	//If we have collisions to collide with
 	if(array.size()>0){
 		float atan_obs 	 = 0.0f, atan_box = 0.0f;
-		//float atan_walls 	 = 0.0f;
+		float atan_walls 	 = 0.0f;
 		float obs_left   = 0.f, obs_center = 0.f, obs_right = 0.f;
 		float box_left   = 0.f, box_center = 0.f, box_right = 0.f;
 		float rmp_left   = 0.f, rmp_center = 0.f, rmp_right = 0.f;
@@ -120,7 +120,7 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 		}
 
 
-		/*for(unsigned i = 0; i<walls.size(); ++i){
+		for(unsigned i = 0; i<walls.size(); ++i){
 			atan_walls = (glm::atan(walls[i].get()->getA(),walls[i].get()->getB()) / 3.14159265358979323846264338327f );
 			//collisions
 			if(atan_walls <=-0.75){ 	//Same process as the waypoint
@@ -131,15 +131,15 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 			obs_right 	+= inferL(atan_walls	,wls_right_min		,wls_right_c	,wls_right_max 	);
 
 			obs_count++;
-		}*/
+		}
 
 		float types = ramp + box;
 
 		if(obs_count != 0)
 		{
-			obs_left   = obs_left 	/ ((array.size() /*+ walls.size()*/) - types);					// (array.size() - types) because two items can be box and ramp
-			obs_center = obs_center / ((array.size() /*+ walls.size()*/) - types);
-			obs_right  = obs_right 	/ ((array.size() /*+ walls.size()*/) - types);
+			obs_left   = obs_left 	/ ((array.size() + walls.size()) - types);					// (array.size() - types) because two items can be box and ramp
+			obs_center = obs_center / ((array.size() + walls.size()) - types);
+			obs_right  = obs_right 	/ ((array.size() + walls.size()) - types);
 		}
 
 
