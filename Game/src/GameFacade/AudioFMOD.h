@@ -60,8 +60,8 @@ private:
     FMOD_STUDIO_BANK* masterBank;
     FMOD_STUDIO_BANK* stringsBank;
 
-    std::map<std::string, FMOD::Studio::Bank*> banks;
-    std::map<std::string, FMOD::Studio::EventDescription*> eventDescriptions;
+    std::map<std::string, FMOD_STUDIO_BANK*> banks;
+    std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*> eventDescriptions;
     std::map<std::string, ISoundEvent*> soundEvents;
 
     float worldUnits;

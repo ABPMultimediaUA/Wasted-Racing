@@ -4,8 +4,10 @@
 
 
 //==============================================================================================================================
-// ERROR MANAGEMENT
+// MACROS
 //==============================================================================================================================
+
+//Error management
 void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 {
     if (result != FMOD_OK)
@@ -17,9 +19,23 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 
 #define ERRCHECK(_result) ERRCHECK_fn(_result, __FILE__, __LINE__)
 
+//Macro for importing new Banks ands EventDescriptions
+#define LOAD_EVENT(bank, event) \
+    if (banks.find(#bank) == banks.end()) { \
+        banks.insert(std::pair<std::string, FMOD_STUDIO_BANK*>(#bank, nullptr)); \
+        ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/"#bank".bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &banks[#bank])); \
+    } \
+    if (eventDescriptions.find(#event) == eventDescriptions.end()) { \
+        eventDescriptions.insert(std::pair<std::string, FMOD_STUDIO_EVENTDESCRIPTION*>(#event, nullptr)); \
+        ERRCHECK(FMOD_Studio_System_GetEvent(system, "event:/"#event,  &eventDescriptions[#event])); \
+    }
+    
+
 //==============================================================================================================================
 // DELEGATES DECLARATIONS
 //==============================================================================================================================
+
+
 
 
 //==============================================================================================================================
@@ -41,8 +57,12 @@ void AudioFMOD::openAudioEngine(int lang) {
 
     if(lang == 1){
 
+        LOAD_EVENT(CharacterES, CharacterES);
+
     }
     else{
+
+        LOAD_EVENT(CharacterES, CharacterES);
 
     }
 
