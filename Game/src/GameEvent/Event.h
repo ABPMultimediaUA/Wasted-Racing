@@ -41,6 +41,8 @@ enum EventType {
     ListenerComponent_Delete,
     RemotePlayerComponent_Create,
     RemotePlayerComponent_Delete,
+    DebugNetworkComponent_Create,
+    DebugNetworkComponent_Delete,
     //OBJECTS: Creation events
     Banana_Create,
     RedShell_Create,
@@ -71,21 +73,24 @@ enum EventType {
     Key_Kneel_Up,
     Key_Drift_Up,
     Key_Drift_Down,
-    //PLAYER: Menu control keys
+    //MENUs: Menu control
     Key_Select_Down,
     Key_Select_Up,
     Key_Back_Down,
     Key_Back_Up,
+    //DEBUG: Select debug
     Key_DebugAI_Down,
     Key_DebugAI_Up,
     Key_DebugCamera_Down,
     Key_DebugCamera_Up,
     Key_DebugBehaviour_Down,
     Key_DebugBehaviour_Up,
+    Key_DebugNetwork_Down,
+    Key_DebugNetwork_Up,
     //GAME: Game related events
     Game_Start,
     Game_Close,
-    //TEST: test related events
+    //CHOOSE: Choose game type
     Key_Multiplayer_Down,
     Key_Singleplayer_Down,
     Key_Multiplayer_Up,

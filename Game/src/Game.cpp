@@ -35,6 +35,7 @@ void Game::init() {
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
     networkManager  = &NetworkManager::getInstance();     //Initialize Score Manager
+    debugManager    = &DebugManager::getInstance();     //Initialize Score Manager
 
     //================================================================
     //INITIALIZE ALL MANAGERS
@@ -55,6 +56,7 @@ void Game::init() {
     itemManager->init();
     scoreManager->init();
     networkManager->init();
+    debugManager->init();
 
     //Initial state
     setState(IGameState::stateType::INTRO);
@@ -66,6 +68,10 @@ void Game::init() {
 //  GAME UPDATE
 //====================================================
 void Game::update(float dTime) {
+
+}
+
+void Game::updateServer() {
 
 }
 
@@ -93,15 +99,20 @@ void Game::close() {
     itemManager->close();
     scoreManager->close();
     networkManager->close();
+    debugManager->close();
 }
 
 //====================================================
 //  GAME LOOP
 //====================================================
+//Client side
 void Game::Run() {
     //Initialize game
     init();
     
+    //This is the client
+    server = false;
+
     //Initialize timer
     auto lastTime = std::chrono::high_resolution_clock::now();
     accumulatedTime = 0;
@@ -124,6 +135,26 @@ void Game::Run() {
 
     close();
 }
+
+void Game::RunServer() {
+    //Initialize game
+    init();
+    
+    //This is the client
+    server = true;
+
+    //Start the run
+    //execute game while staying
+    while(stay){
+        updateServer();
+    }
+
+    close();
+}
+
+//===============================================================
+// ADDITIONAL FUNCTIONS
+//===============================================================
 
 //State setter
 void Game::setState(IGameState::stateType type){
@@ -150,10 +181,10 @@ void Game::setState(IGameState::stateType type){
         state->init();
     }
 
-//Additional functions
+//adding minimum objects needed to play the game
 void addObjects(){
     //===============================================================
-    // ADD PLAYER 
+    // add player 
     //===============================================================
     loadMap();
 

@@ -20,6 +20,7 @@
 #include "../GameManager/ScoreManager.h"
 #include "../GameManager/ItemManager.h"
 #include "../GameManager/NetworkManager.h"
+#include "../GameManager/DebugManager.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameFacade/AudioFMOD.h"
 
@@ -37,6 +38,7 @@ class ObjectManager;
 class ItemManager;
 class SensorManager;
 class AIManager;
+class DebugManager;
 
 class MultiMatchState : public IGameState {
 
@@ -98,6 +100,8 @@ private:
     ScoreManager* scoreManager;
     //Network manager
     NetworkManager* networkManager;
+    //Debug manager
+    DebugManager* debugManager;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;

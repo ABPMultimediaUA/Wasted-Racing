@@ -18,6 +18,7 @@ void MultiMatchState::init() {
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
+    debugManager    = &DebugManager::getInstance();     //Initialize Debug manager
 
     Game::getInstance().setAccumulatedTime(0);
 
@@ -28,6 +29,7 @@ void MultiMatchState::update(float &accumulatedTime) {
 
     //No capation
     networkManager->update();
+    debugManager->update();
     renderManager->update(accumulatedTime);
 
     //If time surpassed the loopTime
@@ -62,7 +64,7 @@ void MultiMatchState::updateManagers(float dTime){
     scoreManager->update();
 
     audioManager->update();
-
+    
     //Event manager has to be the last to be updated
     eventManager->update();
 }

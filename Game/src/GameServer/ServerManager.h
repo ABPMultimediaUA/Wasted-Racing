@@ -29,6 +29,12 @@ class ServerManager{
         //Receives the packets and updates the info of the game
         void update();
 
+        //==============================================================
+        // Getters and setters
+        //==============================================================
+        int getNPlayers()                            {  return nPlayers;       };
+        int getNObjects()                            {  return nObjects;       };
+        RakNet::SystemAddress getPlayerAddress(int i){  return players.at(i); };
 
     private:
         RakNet::RakPeerInterface* peer;

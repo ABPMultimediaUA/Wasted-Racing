@@ -1,5 +1,16 @@
 #include "NetworkManager.h"
 
+
+//////////////////////////////////////////////
+//            THINGS TO DO HERE
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+/*
+>Add Debug callers
+*/
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+
 //////////////////////////////////////////////////////
 //////////// DELEGATE FUNCTIONS
 //////////////////////////////////////////////////////
@@ -12,32 +23,6 @@ void destroyRedShellEvent(EventData eData);
 void createBlueShellEvent(EventData eData);
 void destroyBlueShellEvent(EventData eData);
 //=============================================
-
-NetworkManager& NetworkManager::getInstance() {
-    static NetworkManager instance;
-    return instance;
-}
-
-void NetworkManager::init() {
-    //Get instance of the peer
-    peer = RakNet::RakPeerInterface::GetInstance();
-
-    //Match not started
-    started = false;
-
-    //Conexion has not started
-    conected = false;
-
-    //Listeners
-    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::StartLineComponent_Collision, startLineCollisionEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::Banana_Create,createBananaEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision,destroyBananaEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::RedShell_Create,createRedShellEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision,destroyRedShellEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::BlueShell_Create,createBlueShellEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision,destroyBlueShellEvent});
-}
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
 {
@@ -583,59 +568,124 @@ void NetworkManager::remoteEndGame(RakNet::Packet* packet)
 // PRINCIPAL FUNCTIONS
 //=============================================
 
+NetworkManager& NetworkManager::getInstance() {
+    static NetworkManager instance;
+    return instance;
+}
+
+void NetworkManager::init() {
+    //Get instance of the peer
+    peer = RakNet::RakPeerInterface::GetInstance();
+
+    //Match not started
+    started = false;
+
+    //Conexion has not started
+    connected = false;
+
+    //Listeners
+    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::StartLineComponent_Collision, startLineCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::Banana_Create,createBananaEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision,destroyBananaEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::RedShell_Create,createRedShellEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision,destroyRedShellEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BlueShell_Create,createBlueShellEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision,destroyBlueShellEvent});
+}
+
 void NetworkManager::update() 
 {
+    //Received packet
     RakNet::Packet* packet;
+
+    //Receive from the RakPeerInterface
     packet = peer->Receive();
+
+    //If a packet exists
     if(packet)
     {
+        //Based on the first byte, determine which packet type is it, then execute accordingly
         switch(packet->data[0])
         {
             case ID_GAME_ENDED:
                 remoteEndGame(packet);
+                lastPacket = ID_GAME_ENDED;
                 break;
+
             case ID_CREATE_PLAYER:
                 createPlayer(packet);
+                lastPacket = ID_CREATE_PLAYER;
                 break;
+                
             case ID_CREATE_REMOTE_PLAYER:
                 createRemotePlayer(packet);
+                lastPacket = ID_CREATE_REMOTE_PLAYER;
                 break;
+
             case ID_REMOTE_PLAYER_MOVEMENT:
                 moveRemotePlayer(packet);
+                lastPacket = ID_REMOTE_PLAYER_MOVEMENT;
                 break;
+
             case ID_BOX_COLLISION:
                 remoteItemBoxCollision(packet);
+                lastPacket = ID_BOX_COLLISION;
                 break;
+
             case ID_CREATE_BANANA:
                 remoteCreateBanana(packet);
+                lastPacket = ID_CREATE_BANANA;
                 break;
+
             case ID_DESTROY_BANANA:
                 remoteDestroyBanana(packet);
+                lastPacket = ID_DESTROY_BANANA;
                 break;
+
             case ID_CREATE_RED_SHELL:
                 remoteCreateRedShell(packet);
+                lastPacket = ID_CREATE_RED_SHELL;
                 break;
+
             case ID_DESTROY_RED_SHELL:
                 remoteDestroyRedShell(packet);
+                lastPacket = ID_DESTROY_RED_SHELL;
                 break;
+
             case ID_CREATE_BLUE_SHELL:
                 remoteCreateBlueShell(packet);
+                lastPacket = ID_CREATE_BLUE_SHELL;
                 break;
+
             case ID_DESTROY_BLUE_SHELL:
                 remoteDestroyBlueShell(packet);
+                lastPacket = ID_DESTROY_BLUE_SHELL;
                 break;
+
             case ID_REMOTE_RED_SHELL_MOVEMENT:
                 moveRemoteRedShell(packet);
+                lastPacket = ID_REMOTE_RED_SHELL_MOVEMENT;
                 break;
+
             case ID_REMOTE_BLUE_SHELL_MOVEMENT:
                 moveRemoteBlueShell(packet);
+                lastPacket = ID_REMOTE_BLUE_SHELL_MOVEMENT;
                 break;
+
             default:
                 std::cout << "Mensaje recibido" << std::endl;
                 break;
         }
+
+        //Debug information
+        lastSender = packet->systemAddress;
+
+        //Free packet
         peer->DeallocatePacket(packet);
     }
+
+    //Always broadcast position of items in each iteration
     broadcastPosition();
     broadcastPositionRedShell();
     broadcastPositionBlueShell();
@@ -645,13 +695,17 @@ void NetworkManager::close() {
 
 }
 
+
+//==============================================
+// LOBBY FUNCTIONS
+//============================================== 
 void NetworkManager::initLobby(){
     std::cout << "Attempting to connect to server" << std::endl;
     RakNet::SocketDescriptor socket(0, 	0);
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("192.168.1.32", 39017, 0, 0);
+    result = peer->Connect("192.168.1.12", 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {
@@ -669,7 +723,7 @@ void NetworkManager::updateLobby(){
         {
             case ID_CONNECTION_REQUEST_ACCEPTED:
                 std::cout << "Connection Accepted" << std::endl;
-                conected = true;
+                connected = true;
                 stream.Write((unsigned char)ID_GAME_START);
                 peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
                 break;
@@ -732,6 +786,8 @@ IComponent::Pointer NetworkManager::createRemoteItemComponent(GameObject& newGam
 // DELEGATES
 //============================================== 
 
+//============================================== 
+//Collision events
 void itemBoxCollisionEvent(EventData eData)
 {
     NetworkManager::getInstance().itemBoxCollision(eData);
@@ -753,7 +809,8 @@ void startLineCollisionEvent(EventData eData)
         }
     }
 }
-
+//============================================== 
+//Functions that create or destroy objects
 void createBananaEvent(EventData eData)
 {
     NetworkManager::getInstance().createBanana(eData);

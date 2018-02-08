@@ -27,24 +27,24 @@ void HUDInGame::addButton(glm::vec2 pos, glm::vec2 siz, bool vis, bool act, cons
 void HUDInGame::init(){
 
     //CHANGE THE POSITION RELATED TO THE WINDOW SIZE
-    empty = addImage(glm::vec2(50, 50), glm::vec2(25, 25), true, false, "media/img/emptyBox.png", 500);
-    banana = addImage(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/banana.png", 500);
-    star = addImage(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/star.png", 500);
-    blueshell = addImage(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/blueshell.png", 500);
-    redshell = addImage(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/redshell.png", 500);
-    mushroom = addImage(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/mushroom.png", 500);
+    empty = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), true, false, "media/img/emptyBox.png", 500);
+    banana = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/banana.png", 500);
+    star = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/star.png", 500);
+    blueshell = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/blueshell.png", 500);
+    redshell = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/redshell.png", 500);
+    mushroom = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/mushroom.png", 500);
 
 
-    laptxt = addImage(glm::vec2(50, 250), glm::vec2(50, 25), true, false, "media/img/lap.png", 500);
-    lapnum1 = addImage(glm::vec2(50, 250), glm::vec2(25, 25), true, false, "media/img/lap1.png", 500);//the sprite will be 1/3, 2/3, 3/3 etc
-    lapnum1 = addImage(glm::vec2(50, 250), glm::vec2(25, 25), true, false, "media/img/lap1.png", 500);
-    lapnum1 = addImage(glm::vec2(50, 250), glm::vec2(25, 25), true, false, "media/img/lap1.png", 500);
+    laptxt = addSprite(glm::vec2(50, 250), glm::vec2(50, 25), true, false, "media/img/lap.png", 500);
+    lapnum1 = addSprite(glm::vec2(50, 250), glm::vec2(25, 25), true, false, "media/img/lap1.png", 500);//the sprite will be 1/3, 2/3, 3/3 etc
+    lapnum1 = addSprite(glm::vec2(50, 250), glm::vec2(25, 25), true, false, "media/img/lap1.png", 500);
+    lapnum1 = addSprite(glm::vec2(50, 250), glm::vec2(25, 25), true, false, "media/img/lap1.png", 500);
 
-    postxt = addImage(glm::vec2(250, 50), glm::vec2(55, 25), true, false, "media/img/position.png", 500);
-    posnum1 = addImage(glm::vec2(250, 50), glm::vec2(25, 25), true, false, "media/img/1.png", 500); 
-    posnum2 = addImage(glm::vec2(250, 50), glm::vec2(25, 25), true, false, "media/img/2.png", 500); 
-    posnum3 = addImage(glm::vec2(250, 50), glm::vec2(25, 25), true, false, "media/img/3.png", 500); 
-    posnum4 = addImage(glm::vec2(250, 50), glm::vec2(25, 25), true, false, "media/img/4.png", 500); 
+    postxt = addSprite(glm::vec2(250, 50), glm::vec2(55, 25), true, false, "media/img/position.png", 500);
+    posnum1 = addSprite(glm::vec2(250, 50), glm::vec2(25, 25), true, false, "media/img/1.png", 500); 
+    posnum2 = addSprite(glm::vec2(250, 50), glm::vec2(25, 25), true, false, "media/img/2.png", 500); 
+    posnum3 = addSprite(glm::vec2(250, 50), glm::vec2(25, 25), true, false, "media/img/3.png", 500); 
+    posnum4 = addSprite(glm::vec2(250, 50), glm::vec2(25, 25), true, false, "media/img/4.png", 500); 
 
 }
 

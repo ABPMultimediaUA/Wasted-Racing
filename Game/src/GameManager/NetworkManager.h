@@ -3,7 +3,6 @@
 #include "ObjectManager.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
-#include "NetworkManager.h"
 #include "ItemManager.h"
 #include "../Game.h"
 #include "../GameEvent/EventManager.h"
@@ -157,11 +156,13 @@ public:
     std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){    return remoteBlueShellComponentList;} //Remote player component list getter
     void setPlayer(GameObject::Pointer p)                              {    player = p;                         };
     void setStarted(bool s)                                            {    started = s;                        };
-    void setConected(bool s)                                           {    conected = s;                       };
+    void setConnected(bool s)                                           {    connected = s;                       };
     GameObject::Pointer getPlayer()                                    {    return player;                      };
     bool getStarted()                                                  {    return started;                     };
-    bool getConected()                                                 {    return conected;                    };
-
+    bool getConnected()                                                 {    return connected;                    };
+    customMessages getLastPacket()                                     {    return lastPacket;                  }; //Returns last packet received
+    RakNet::SystemAddress  getLastSender()                             {    return lastSender;                  }; //Returns last packet sender
+    
 private:
     //==============================================================
     // Private data
@@ -171,14 +172,17 @@ private:
 
     //MatchState started
     bool started;
-    bool conected;
+    bool connected;
 
     //Own player
     GameObject::Pointer player;
 
     //Own id
-    //############################CAMBIAR A INT DE TIPO ESPECIFICO
     int server_id;
+
+    //Debug info
+    customMessages lastPacket;
+    RakNet::SystemAddress lastSender;
 
     //List of remotePlayerComponent
     std::vector<IComponent::Pointer> remotePlayerComponentList;
