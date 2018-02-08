@@ -7,6 +7,7 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameManager/InputManager.h"
 #include "../GameManager/RenderManager.h"
+#include "../GameManager/ObjectManager.h"
 #include <raknet/RakPeerInterface.h>
 #include <iostream>
 
@@ -50,6 +51,8 @@ private:
     EventManager* eventManager;
     //Render manager
     RenderManager* renderManager;
+    //Object manager
+    ObjectManager* objectManager;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;

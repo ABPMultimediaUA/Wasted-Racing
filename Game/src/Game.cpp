@@ -349,9 +349,9 @@ void loadMap() {
 
                 //Create COLLISION component
                 if(bbox != nullptr)
-                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), terrain, kinetic, height, type);
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), terrain, kinetic, 10, type);
                 else
-                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), radius, height, kinetic, type);
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), radius, 10, kinetic, type);
 
             }
 
