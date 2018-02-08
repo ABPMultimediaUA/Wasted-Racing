@@ -20,11 +20,11 @@ endif
 MKDIR_P = mkdir -p
 
 #default target is Linux
-all: create_dir make_src all_linux
+all: create_dir make_src make_fac all_linux
 	$(warning Linking done!)
 
 #we can also have Windows
-win: create_dir make_src all_windows
+win: create_dir make_src make_fac all_windows
 	$(warning Linking done!)
 
 create_dir: make_bin_dir make_obj_dir
@@ -40,6 +40,9 @@ make_obj_dir:
 #Makes to execute
 make_src:
 	$(MAKE) -C src
+
+make_fac:
+	$(MAKE) -C src/Facade
 
 # target specific settings
 #all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
