@@ -101,22 +101,30 @@ all_linux: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht
 all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
 all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
 
+sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/ && bin/XKating"
+
 all_linux:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
+	rm -rf $(BIN_PATH)$(TARGET).sh
+	@echo -e $(sh_value) >> $(BIN_PATH)$(TARGET).sh
+	chmod +x $(BIN_PATH)$(TARGET).sh	
 
 all_linux_server: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
-all_linux_server: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=./lib/linux/irrlicht
-all_linux_server: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=./lib/linux/fmod
-all_linux_server: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL -Wl,-rpath=./lib/linux/raknet
+all_linux_server: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht
+all_linux_server: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
+all_linux_server: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
 
 all_linux_server:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET_SERVER) $(LDFLAGS)
+	rm -rf $(BIN_PATH)$(TARGET_SERVER).sh
+	@echo -e $(sh_value) >> $(BIN_PATH)$(TARGET_SERVER).sh
+	chmod +x $(BIN_PATH)$(TARGET_SERVER).sh	
 
 clean: clean_linux
 	$(warning Cleaned!)
 
 clean_linux:
-	rm -r $(BIN_PATH)$(OBJ_PATH)
+	rm -rf $(BIN_PATH)$(OBJ_PATH)
 
 info:
 	$(info $(shell ls $(BIN_PATH)$(OBJ_PATH)))

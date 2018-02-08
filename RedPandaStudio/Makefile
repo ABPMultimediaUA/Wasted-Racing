@@ -67,10 +67,10 @@ info:
 #	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
 
 
-incH := "\#"
-incQ := \"\\n
-includeP := $(incH)include \"
-incSH := "export LD_LIBRARY_PATH=./bin/ && ./bin/test"
+hashtag := "\#"
+newline := \"\\n
+includeCommand := $(hashtag)include \"
+sh_value := "export LD_LIBRARY_PATH=./bin/ && ./bin/test"
 
 test: remdir makedir copyfiles includefiles compile makesh
 	$(warning Done!)
@@ -86,16 +86,15 @@ copyfiles:
 	cp -r ./src/Facade/*.h ./inc
 
 includefiles:
-	@echo -e $(addprefix $(includeP), $(addsuffix $(incQ),$(shell ls ./inc))) >> ./inc/RedPanda.h
+	@echo -e $(addprefix $(includeCommand), $(addsuffix $(newline),$(shell ls ./inc))) >> ./inc/RedPanda.h
 	
-
 compile:
 	g++ -I./inc -c -o bin/main.o main.cpp
 	g++ -o bin/test bin/main.o -L./bin -lRedPanda
 
 makesh:
 	rm -rf ./bin/test.sh
-	@echo -e $(incSH) >> ./bin/test.sh
+	@echo -e $(sh_value) >> ./bin/test.sh
 	chmod +x ./bin/test.sh
 
 
