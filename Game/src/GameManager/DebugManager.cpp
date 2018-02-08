@@ -103,11 +103,43 @@ void DebugManager::updateDebugNetwork(){
                     break;
 
                 case ID_REMOTE_PLAYER_MOVEMENT:
-                    std::cout<<"Se ha movido otro jugador"<<std::endl;
+                    //std::cout<<"Se ha movido otro jugador"<<std::endl;
                     break;
 
                 case ID_BOX_COLLISION:
                     std::cout<<"Colisión con caja"<<std::endl;
+                    break;
+                
+                case ID_CREATE_BANANA:
+                    std::cout<<"Banana creada por: "<<std::endl;
+                    break;
+
+                case ID_DESTROY_BANANA:
+                    std::cout<<"Banana destruida por: "<<std::endl;
+                    break;
+                
+                case ID_CREATE_RED_SHELL:
+                    std::cout<<"Caparazon rojo creado por: "<<std::endl;
+                    break;
+
+                case ID_DESTROY_RED_SHELL:
+                    std::cout<<"Caparazon rojo destruido por: "<<std::endl;
+                    break;
+
+                case ID_CREATE_BLUE_SHELL:
+                    std::cout<<"Caparazon azul creado por: "<<std::endl;
+                    break;
+                
+                case ID_DESTROY_BLUE_SHELL:
+                    std::cout<<"Caparazón azul destruido por: "<<std::endl;
+                    break;
+
+                case ID_REMOTE_RED_SHELL_MOVEMENT:
+                    //std::cout<<"Caparazon rojo movido"<<std::endl;
+                    break;
+
+                case ID_REMOTE_BLUE_SHELL_MOVEMENT:
+                    //std::cout<<"Caparazón azul movido"<<std::endl;
                     break;
 
                 default:
