@@ -4,6 +4,8 @@ Game/bin/XKating.exe
 Game/bin/Server_XKating
 Game/bin/Server_XKating.exe
 RedPandaStudio/bin/obj
+RedPandaStudio/bin/test
+RedPandaStudio/bin/test.sh
 RedPandaStudio/bin/libRedPanda.so
 .vscode/
 Game/.vscode/
