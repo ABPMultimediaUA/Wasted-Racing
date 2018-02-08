@@ -1,7 +1,4 @@
-#include "ISoundEvent.h"
-
-//We have to declare somewhere our factory
-//std::map<std::string, SoundFactory*> ISoundEvent::factories = std::map<std::string, SoundFactory*>();
+#include "ISoundEvent.h" 
 
 //Play Sound once
 void ISoundEvent::start()

@@ -15,7 +15,7 @@ class ISoundEvent;
     class newClass##Factory : public SoundFactory { \
     public: \
         newClass##Factory() { \
-            ISoundEvent::registerFactory(#newClass, this); \
+            ISoundEvent::registerFactory(ISoundEvent::getFactoryMap(), #newClass, this); \
         } \
         virtual ISoundEvent* createSound() { \
             return new newClass(); \
@@ -32,6 +32,10 @@ public:
 
 };
 
+//Typedef Map Factory 
+typedef std::map<std::string, SoundFactory*> FactoryMap;
+    
+//ISoundEventClass
 class ISoundEvent {
     
 public:
@@ -64,19 +68,25 @@ public:
     virtual bool isPlaying();
 
     //Register a new factory for sounds
-    static void registerFactory (const std::string& name, SoundFactory* factory) {
-        factories[name] = factory;
+    static void registerFactory (FactoryMap map, const std::string& name, SoundFactory* factory) {
+        map[name] = factory;
+    }
+
+    //Create a new factory map 
+    //(we create it inside a function in order to control the instation order of the static map variable,
+    //if we didn't do so, we would get a segmentation fault error in the map)
+    static FactoryMap& getFactoryMap() {
+        static FactoryMap map;
+        return map;
     }
 
     //Create a new instance of a sound
-    ISoundEvent* createSound(const std::string& name) {
-        return factories[name]->createSound();
+    ISoundEvent* createSound(FactoryMap map, const std::string& name) {
+        return map[name]->createSound();
     }
     
 protected:
 
     FMOD_STUDIO_EVENTINSTANCE* soundInstance = NULL;
-
-    static std::map<std::string, SoundFactory*> factories;
 
 };

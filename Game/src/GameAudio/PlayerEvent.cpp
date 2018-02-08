@@ -1,3 +1,4 @@
 #include "PlayerEvent.h"
 
-//REGISTER_FACTORY(PlayerEvent)
+REGISTER_FACTORY(PlayerEvent)
+ 
