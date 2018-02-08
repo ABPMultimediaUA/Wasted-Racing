@@ -8,7 +8,7 @@ class TEntity{
 public:
 
     TEntity() {}
-    virtual ~TEntity() = 0;
+    virtual ~TEntity() {};
 
     virtual void beginDraw() = 0;
     virtual void endDraw() = 0;
@@ -17,7 +17,7 @@ public:
 //and use getters&setters for it's management
 protected:
     //Model Matrix
-    static glm::mat4 modelMatrix;
+    //static glm::mat4 modelMatrix;
 
     //View Matrix
     static glm::mat4 viewMatrix;
@@ -26,5 +26,5 @@ protected:
     static glm::mat4 projectionMatrix;
 
     //Matrix Stack
-    static std::stack<glm::mat4> matrixStack;
+    //static std::stack<glm::mat4> matrixStack;
 };

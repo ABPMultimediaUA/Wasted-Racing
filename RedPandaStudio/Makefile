@@ -45,10 +45,7 @@ make_fac:
 	$(MAKE) -C src/Facade
 
 # target specific settings
-#all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
-#all_linux: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=./lib/linux/irrlicht
-#all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=./lib/linux/fmod
-#all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL -Wl,-rpath=./lib/linux/raknet
+all_linux: LDFLAGS +=  -lsfml-graphics -lsfml-window -lsfml-graphics
 
 all_linux:
 	$(CXX) $(CXXFLAGS) -shared -o $(BIN_PATH)$(TARGET).so $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) $(LDFLAGS)
@@ -69,6 +66,37 @@ info:
 #all_windows:
 #	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
 
+
+incH := "\#"
+incQ := \"\\n
+includeP := $(incH)include \"
+incSH := "export LD_LIBRARY_PATH=./bin/ && ./bin/test"
+
+test: remdir makedir copyfiles includefiles compile makesh
+	$(warning Done!)
+	
+remdir:
+	rm -rf ./inc
+
+makedir:
+	mkdir -p ./inc
+
+copyfiles:
+	cp -r ./src/*.h ./inc
+	cp -r ./src/Facade/*.h ./inc
+
+includefiles:
+	@echo -e $(addprefix $(includeP), $(addsuffix $(incQ),$(shell ls ./inc))) >> ./inc/RedPanda.h
+	
+
+compile:
+	g++ -I./inc -c -o bin/main.o main.cpp
+	g++ -o bin/test bin/main.o -L./bin -lRedPanda
+
+makesh:
+	rm -rf ./bin/test.sh
+	@echo -e $(incSH) >> ./bin/test.sh
+	chmod +x ./bin/test.sh
 
 
 .PHONY: all clean clean_linux info install win

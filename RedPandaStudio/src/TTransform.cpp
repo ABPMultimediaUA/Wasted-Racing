@@ -45,12 +45,12 @@ glm::mat4 TTransform::multiplyMatrix(glm::mat4 m)
 
 void TTransform::beginDraw()
 {
-    matrixStack.push(matrix);
-    modelMatrix = matrix * modelMatrix;
+    //matrixStack.push(matrix);
+    //modelMatrix = matrix * modelMatrix;
 }
 
 void TTransform::endDraw()
 {
-    matrix = matrixStack.top();
-    matrixStack.pop();
+    //matrix = matrixStack.top();
+    //matrixStack.pop();
 }
