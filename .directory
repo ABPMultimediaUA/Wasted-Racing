@@ -1,6 +1,7 @@
 [Dolphin]
-Timestamp=2018,1,24,2,51,6
+<<<<<<< HEAD
+Timestamp=2018,2,8,20,6,38
+=======
+Timestamp=2018,2,8,20,20,22
+>>>>>>> master
 Version=4
-
-[Settings]
-HiddenFilesShown=true

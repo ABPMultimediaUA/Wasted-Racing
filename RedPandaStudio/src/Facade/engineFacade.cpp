@@ -1,10 +1,12 @@
 #include "engineFacade.h"
-
+#include <iostream>
 
 void EngineFacade::init()
 {
-    window->create(sf::VideoMode(width, height), "X-Kating");
-
+    std::cout << "XKating Window: Width -> " << width << " Height -> " << height << std::endl;
+    
+    window = new sf::RenderWindow(sf::VideoMode(width, height), "XKating");
+    
     window->setFramerateLimit(60);
 
     while(window->isOpen())

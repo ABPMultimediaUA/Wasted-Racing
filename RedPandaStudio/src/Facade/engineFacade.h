@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 
 
 class EngineFacade{
@@ -26,7 +26,7 @@ public:
 
 private:
 
-    sf::Window* window;
+    sf::RenderWindow* window;
     int width, height;
 
 };
