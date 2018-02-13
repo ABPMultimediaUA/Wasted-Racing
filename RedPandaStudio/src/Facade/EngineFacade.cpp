@@ -19,6 +19,6 @@ void EngineFacade::init(TNode* e)
         }
         window->setActive();
         window->display();
-        //e->draw();
+        e->draw();
     }
 } 

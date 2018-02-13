@@ -12,7 +12,6 @@ int main() {
 
     //---- Crear la estructura del árbol ----
     TNode *Escena = new TNode();
-    ef.init(Escena);
     TNode *RotaLuz = new TNode(Escena);
     TNode *RotaCam = new TNode(Escena);
     TNode *RotaCoche = new TNode(Escena);
@@ -25,6 +24,7 @@ int main() {
     RotaLuz->addChild (TraslaLuz);
     RotaCam->addChild (TraslaCam);
     RotaCoche->addChild (TraslaCoche);
+
     
     //---- Añadir las entidades a los nodos ----
     TTransform *TransfRotaLuz = new TTransform ();
@@ -48,12 +48,15 @@ int main() {
     TraslaCam->addChild (NCam);
     TraslaCoche->addChild (NChasis);
 
+
     TLight *EntLuz = new TLight();
     TCamera *EntCam = new TCamera(45);
     TMesh *MallaChasis = new TMesh();
     NLuz->setEntity(EntLuz);
     NCam->setEntity(EntCam);
     NChasis->setEntity(MallaChasis);
+
+    ef.init(Escena);
 
     //---- Recorrer el árbol (dibujarlo) ----
     Escena->draw();

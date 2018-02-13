@@ -2,5 +2,8 @@
 
 void TMesh::beginDraw()
 {
-    mesh->draw();
+    if(mesh)
+    {
+        mesh->draw();
+    }
 }
