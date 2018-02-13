@@ -24,7 +24,5 @@ bool TResourceMesh::loadResource()
 
 void TResourceMesh::draw()
 {
-    std::cout << "Entro" << std::endl;
     glDrawArrays(GL_TRIANGLES, vertex[0], nTriangles);
-    std::cout << "Entro2" << std::endl;
 }

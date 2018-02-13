@@ -3,7 +3,7 @@
 #include <vector>
 #include <string.h>
 #include <iostream>
-#include "TResource.h"
+#include "TResourceMesh.h"
 
 class ResourceManager {
     public:
@@ -15,9 +15,9 @@ class ResourceManager {
         //////////////////////////////////////////////////////////////////////
 
         //Gets the resource from the vector, and if it's not loaded, loads it to the vector and returns him
-        TResource* getResource(char* n);
+        TResourceMesh* getResource(char* n);
 
     private:
-        std::vector<TResource*> resources;
+        std::vector<TResourceMesh*> resources;
 
 };

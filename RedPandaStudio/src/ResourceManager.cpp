@@ -1,9 +1,9 @@
 #include "ResourceManager.h"
 
-TResource* ResourceManager::getResource(char* n)
+TResourceMesh* ResourceManager::getResource(char* n)
 {
     unsigned int i;
-    TResource* res=NULL;
+    TResourceMesh* res=NULL;
     bool found = false;
 
     //First we look in memory loaded resources
@@ -18,7 +18,7 @@ TResource* ResourceManager::getResource(char* n)
     //If it's not loaded, we create a new resource and try to load it
     if(found == false)
     {
-        res = new TResource();
+        res = new TResourceMesh();
         res->setName(n);
         if(res->loadResource())
         {
@@ -26,6 +26,5 @@ TResource* ResourceManager::getResource(char* n)
         }
     }
     
-    std::cout<<"11111"<<res<<"\n";
     return res;
 }

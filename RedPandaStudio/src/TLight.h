@@ -5,7 +5,7 @@
 class TLight : public TEntity{
 
 private:
-    
+    float intensity = 1.0f;
 
 public:
 
@@ -13,7 +13,7 @@ public:
     ~TLight() {}
 
     //Draw Methods
-    void beginDraw() {}
+    void beginDraw();
     void endDraw() {}
 
 };

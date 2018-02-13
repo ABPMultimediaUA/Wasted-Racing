@@ -14,7 +14,6 @@ int main() {
     ResourceManager rM;
     TResource* ob = rM.getResource(n);
 
-            std::cout<<"Hola"<<"\n";
     //---- Crear la estructura del árbol ----
     TNode *Escena = new TNode();
     TNode *RotaLuz = new TNode(Escena);
