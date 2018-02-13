@@ -1,6 +1,6 @@
 #include "TCamera.h"
 
-TCamera::TCamera()
+TCamera::TCamera(float z)
 {
     parallel=false;
 
@@ -11,6 +11,9 @@ TCamera::TCamera()
     bottom=2.f;
     near=1.f;
     far=2.f;
+    zoom = z;
+
+    projectionMatrix() = glm::perspective(zoom, (float)1280 / (float)720, near, far);
 }
 
 void TCamera::setCameraParameters(float l, float r, float t, float b, float n, float f)
@@ -21,4 +24,11 @@ void TCamera::setCameraParameters(float l, float r, float t, float b, float n, f
     bottom=b;
     near=n;
     far=f;
+
+    projectionMatrix() = glm::perspective(zoom, (float)1280 / (float)720, near, far);
+}
+
+void TCamera::beginDraw()
+{
+    viewMatrix() = modelMatrix();
 }

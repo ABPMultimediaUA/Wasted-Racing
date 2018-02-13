@@ -1,9 +1,12 @@
 #pragma once
 #include "TEntity.h"
+#include <iostream>
+#include <GL/gl.h>
+#include <glm/ext.hpp>
 
 class TCamera : public TEntity {
     public:
-        TCamera();
+        TCamera(float z);
         ~TCamera() {}
 
 
@@ -15,10 +18,15 @@ class TCamera : public TEntity {
 
         void setCameraParameters(float l, float r, float t, float b, float n, float f);
 
+        void beginDraw();
+        void endDraw() {}
+
+
     private:
         // Definition of the camera
         float left, right, top, bottom, near, far;
         //Parallel or perspective; False == persective, true == parallel
         bool parallel;
+        GLfloat zoom;
 
 };
