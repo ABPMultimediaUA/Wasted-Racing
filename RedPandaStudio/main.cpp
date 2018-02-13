@@ -9,10 +9,10 @@ int main() {
     ef.setHeight(720);
     ef.setName("XKating");
 
-    ef.init();
 
     //---- Crear la estructura del árbol ----
     TNode *Escena = new TNode();
+    ef.init(Escena);
     TNode *RotaLuz = new TNode(Escena);
     TNode *RotaCam = new TNode(Escena);
     TNode *RotaCoche = new TNode(Escena);
@@ -57,6 +57,7 @@ int main() {
 
     //---- Recorrer el árbol (dibujarlo) ----
     Escena->draw();
+
 
     return 0;
 

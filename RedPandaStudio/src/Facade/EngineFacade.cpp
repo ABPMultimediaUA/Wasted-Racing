@@ -1,7 +1,7 @@
 #include "EngineFacade.h"
 #include <iostream>
 
-void EngineFacade::init()
+void EngineFacade::init(TNode* e)
 {
     std::cout <<name<<" Window: Width -> " << width << " Height -> " << height << std::endl;
     
@@ -19,5 +19,6 @@ void EngineFacade::init()
         }
         window->setActive();
         window->display();
+        //e->draw();
     }
 } 

@@ -45,7 +45,7 @@ make_fac:
 	$(MAKE) -C src/Facade
 
 # target specific settings
-all_linux: LDFLAGS +=  -lsfml-graphics -lsfml-window -lsfml-graphics
+all_linux: LDFLAGS +=  -lsfml-graphics -lsfml-window -lsfml-graphics -lassimp
 
 all_linux:
 	$(CXX) $(CXXFLAGS) -shared -o $(BIN_PATH)$(TARGET).so $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) $(LDFLAGS)
