@@ -3,7 +3,7 @@
 TResource* ResourceManager::getResource(char* n)
 {
     unsigned int i;
-    TResource* res;
+    TResource* res=NULL;
     bool found = false;
 
     //First we look in memory loaded resources
@@ -18,6 +18,7 @@ TResource* ResourceManager::getResource(char* n)
     //If it's not loaded, we create a new resource and try to load it
     if(found == false)
     {
+        res = new TResource();
         res->setName(n);
         if(res->loadResource())
         {
