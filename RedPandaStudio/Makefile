@@ -54,7 +54,7 @@ clean: clean_linux
 	$(warning Cleaned!)
 
 clean_linux:
-	rm -r $(BIN_PATH)$(OBJ_PATH)
+	rm -rf $(BIN_PATH)$(OBJ_PATH)
 
 info:
 	$(info $(shell ls $(BIN_PATH)$(OBJ_PATH)))
