@@ -5,7 +5,9 @@ class TResource{
         TResource() {};
         ~TResource() {};
 
-        virtual void loadResource() = 0;
+        virtual bool loadResource() = 0;
+
+        virtual void draw() = 0;
 
         //////////////////////////////////////////////////////////////////////
         /////////////// GETTERS & SETTERS
@@ -14,7 +16,7 @@ class TResource{
         char* getName()                                          {   return name;    };
         void  setName(char* n)                                   {   name=n;         };
 
-    private:
+    protected:
         char*  name;
 
         //Maybe a ID variable should be added in order to manage the resources optimally
