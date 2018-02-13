@@ -7,7 +7,7 @@ bool TResourceMesh::loadResource()
 
     if(scene)
     {
-        for(int i = 0; i<scene->mNumMeshes; i++)
+        for(unsigned int i = 0; i<scene->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[i];
             vertex = (int*)&mesh->mVertices[0][0];
