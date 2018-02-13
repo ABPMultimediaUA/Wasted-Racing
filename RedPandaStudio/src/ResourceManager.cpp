@@ -6,6 +6,7 @@ TResource* ResourceManager::getResource(char* n)
     TResource* res;
     bool found = false;
 
+    //First we look in memory loaded resources
     for(i=0; i<resources.size() && found == false; i++)
     {
         if(strcmp(n, resources[i]->getName()) == 0)
@@ -14,9 +15,14 @@ TResource* ResourceManager::getResource(char* n)
             res=resources[i];
         }
     }
+    //If it's not loaded, we create a new resource and try to load it
     if(found == false)
     {
-        
+        res->setName(n);
+        if(res->loadResource())
+        {
+            resources.push_back(res);
+        }
     }
 
     return res;
