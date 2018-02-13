@@ -90,7 +90,7 @@ includefiles:
 	
 compile:
 	g++ -I./inc -c -o bin/main.o main.cpp
-	g++ -o bin/test bin/main.o -L./bin -lRedPanda
+	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin
 
 makesh:
 	rm -rf ./bin/test.sh

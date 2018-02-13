@@ -1,13 +1,14 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <string>
 
 
 class EngineFacade{
 
 public:
 
-    EngineFacade(){};
+    EngineFacade()          {       name = "window";        };
     ~EngineFacade(){};
 
     void init();
@@ -17,6 +18,7 @@ public:
     //Setters
     void setWidth(int w)                {       width = w;      }
     void setHeight(int h)               {       height = h;     }
+    void setName(std::string n)         {       name = n;       }
 
     //Getters
     sf::Window* getWindow()             {       return window;          }
@@ -28,5 +30,6 @@ private:
 
     sf::RenderWindow* window;
     int width, height;
+    std::string name;
 
 };

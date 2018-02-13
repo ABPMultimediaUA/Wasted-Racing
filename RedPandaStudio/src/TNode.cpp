@@ -1,5 +1,12 @@
 #include "TNode.h"
 
+TNode::TNode()
+{
+    father = nullptr;
+    entity = nullptr;
+}
+
+
 TNode::~TNode()
 {
     delete father;
@@ -55,10 +62,17 @@ TNode* TNode::searchChild(unsigned int c)
 
 void TNode::draw()
 {
-    entity->beginDraw();
+        
+    if(entity != nullptr)
+    {
+        entity->beginDraw();
+    }
     for(unsigned int i = 0; i < child.size(); i++)
     {
         child[i]->draw();
     }
-    entity->endDraw();
+    if(entity != nullptr)
+    {
+        entity->endDraw();
+    }
 }
