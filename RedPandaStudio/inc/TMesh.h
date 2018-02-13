@@ -2,13 +2,13 @@
 
 #include <iostream>
 #include "TEntity.h"
-#include "TResourceMesh.h"
+#include "TResource.h"
 
 
 class TMesh : public TEntity{
 
 private:
-    TResourceMesh* mesh;
+    TResource* mesh;
 
 public:
 
@@ -25,6 +25,6 @@ public:
     /////////////// GETTERS & SETTERS
     //////////////////////////////////////////////////////////////////////
 
-    TResourceMesh* getMesh()                                 {   return mesh;    };
-    void  setMesh(TResourceMesh* m)                          {   mesh=m;         };
+    TResource* getMesh()                                 {   return mesh;    };
+    void  setMesh(TResource* m)                          {   mesh=m;         };
 };

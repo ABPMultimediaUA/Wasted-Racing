@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string.h>
+#include <iostream>
 #include "TResource.h"
 
 class ResourceManager {

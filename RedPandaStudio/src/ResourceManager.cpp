@@ -25,6 +25,7 @@ TResource* ResourceManager::getResource(char* n)
             resources.push_back(res);
         }
     }
-
+    
+    std::cout<<"11111"<<res<<"\n";
     return res;
 }

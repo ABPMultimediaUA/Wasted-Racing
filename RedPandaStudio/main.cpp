@@ -9,7 +9,12 @@ int main() {
     ef.setHeight(720);
     ef.setName("XKating");
 
+    char* n = "Link/Link.obj";
 
+    ResourceManager rM;
+    TResource* ob = rM.getResource(n);
+
+            std::cout<<"Hola"<<"\n";
     //---- Crear la estructura del árbol ----
     TNode *Escena = new TNode();
     TNode *RotaLuz = new TNode(Escena);
@@ -52,6 +57,8 @@ int main() {
     TLight *EntLuz = new TLight();
     TCamera *EntCam = new TCamera(45);
     TMesh *MallaChasis = new TMesh();
+    MallaChasis->setMesh(ob);
+            std::cout<<"adios"<<"\n";
     NLuz->setEntity(EntLuz);
     NCam->setEntity(EntCam);
     NChasis->setEntity(MallaChasis);
@@ -59,7 +66,7 @@ int main() {
     ef.init(Escena);
 
     //---- Recorrer el árbol (dibujarlo) ----
-    Escena->draw();
+    //Escena->draw();
 
 
     return 0;
