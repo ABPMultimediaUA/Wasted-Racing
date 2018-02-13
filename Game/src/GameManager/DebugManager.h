@@ -36,7 +36,19 @@ class DebugManager{
         //DebugNetworkComponent creator
 	    IComponent::Pointer createDebugNetworkComponent(GameObject& newGameObject);
     
+        //==============================================
+        // INITIALIZE DEBUGS
+        //==============================================
+        //Initialize network debugging
+        void initDebugNetwork();
 
+        //==============================================
+        // CLEAN DEBUGS
+        //==============================================
+        //Erase all the elements that are part of the network debug
+        void cleanDebugNetwork();
+
+        
         //==============================================================
         // Getters and setters
         //==============================================================
@@ -53,6 +65,8 @@ class DebugManager{
         //==============================================================
         // Private data
         //==============================================================
+        
+        //VIGILS
         //Checks if debug AI is on
         bool debugAI;
 
@@ -67,10 +81,15 @@ class DebugManager{
 
         //MANAGERS
         NetworkManager* networkManager;
+        RenderManager*  renderManager;
 
-        //==============================================================
-        // Private functions
-        //==============================================================
+        //-----------------TEST
+        int32_t id_magica;
+        int lol;
+
+        //==============================================
+        // UPDATE DEBUGS
+        //==============================================
         //Updates the AI debug
         void updateDebugAI();
 

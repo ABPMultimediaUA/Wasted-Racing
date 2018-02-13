@@ -91,6 +91,51 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
 
+    //==============================================================
+    //  VISUAL INTERFACE
+    //==============================================================
+
+    //Adds an image on the specific point given with the image specified
+    virtual int32_t addImage(glm::vec2 pos, std::string img) = 0;
+
+    //Substitutes an image with another at the same position
+    virtual void changeImage(int32_t id, std::string img) = 0;
+
+    //Deletes specified rectangle by its index in the rectangle array
+    virtual void deleteImage(int32_t id) = 0;
+
+    //Clean images off of the screen
+    virtual void cleanImages() = 0;
+
+    //Add rectangle of the given color and alpha channel, at the specified position with the given size
+    virtual int32_t addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a) = 0;
+
+    //Change color of the rectangle known by the id given
+    virtual void changeRectangleColor(int32_t id, int r, int g, int b, int a) = 0;
+
+    //Deletes the rectangle with the passed id
+    virtual void deleteRectangleColor(int32_t id) = 0;
+
+    //Clean all rectangles off of the screen
+    virtual void cleanRectangles() = 0;
+
+    //Adds specified text at the specified point
+    virtual int32_t addText(glm::vec2 pos, std::string text) = 0;
+
+    //Adds specified text at the specified point with specified size
+    virtual int32_t addText(glm::vec2 pos, glm::vec2 size, std::string text) = 0;
+
+    //Changes the specified text with the given message
+    virtual void changeText(int32_t id, std::string text) = 0;
+
+    //deletes text in the specified position of the text array
+    virtual void deleteText(int32_t id) = 0;
+
+    //Erase all text from the screen
+    virtual void cleanTexts() = 0;
+
+    //Erase all visual interface elements from the screen
+    virtual void cleanInterface() = 0;
 
     ///////////////////////////////
     ///////      DEBUG      ///////    

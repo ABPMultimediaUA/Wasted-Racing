@@ -63,11 +63,57 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
+    //==============================================================
+    //  VISUAL INTERFACE
+    //==============================================================
+
+    //Adds an image on the specific point given with the "color" specified
+    virtual int32_t addImage(glm::vec2 pos, std::string img);
+
+    //Substitutes an image with another in the same position
+    virtual void changeImage(int32_t id, std::string img);
+
+    //Deletes specified rectangle by its index in the rectangle array
+    virtual void deleteImage(int32_t id);
+
+    //Clean rectangles off of the screen
+    virtual void cleanImages();
+
+    //Add rectangle of the given color and alpha channel, at the specified position with the given size
+    virtual int32_t addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a);
+
+    //Change color of the rectangle known by the id given
+    virtual void changeRectangleColor(int32_t id, int r, int g, int b, int a);
+    
+    //Deletes the rectangle with the passed id
+    virtual void deleteRectangleColor(int32_t id);
+
+    //Clean all rectangles off of the screen
+    virtual void cleanRectangles();
+
+    //Adds specified text in the specified point
+    virtual int32_t addText(glm::vec2 pos, std::string text);
+
+    //Adds specified text in the specified point with specified size
+    virtual int32_t addText(glm::vec2 pos, glm::vec2 size, std::string text);
+
+    //Changes the specified text with the given message
+    virtual void changeText(int32_t id, std::string text);
+
+    //deletes text in the specified position of the text array
+    virtual void deleteText(int32_t id);
+
+    //Erase all text from the screen
+    virtual void cleanTexts();
+
+    //Erase all Visual interface elements off the screen
+    virtual void cleanInterface();
 
     ///////////////////////////////
     ///////      DEBUG      ///////    
     ///////////////////////////////
     
+    //Funciones inútiles que deberían de ser vaporizadas en el infierno digital
     virtual void createRectangle2D(glm::vec2 pos, std::string img);
 
     virtual void deleteRectangle2D();
@@ -101,6 +147,10 @@ public:
     virtual void setSubDescriptionText(std::string text);
 
 private: 
+    //==============================================================
+    // PRIVATE FUNCTIONS
+    //==============================================================
+
     //Update the logo video
     virtual void updateLogo();
 
@@ -128,7 +178,14 @@ private:
         return sceneManager;
     };
 
-private:
+
+    //==============================================================
+    // PRIVATE DATA
+    //==============================================================
+
+    ////////////////////
+    // MAIN DATA
+    ////////////////////
 
     //Irrlicht own window
     irr::IrrlichtDevice* device;
@@ -148,6 +205,19 @@ private:
     //Irrlicht camera
     irr::scene::ICameraSceneNode* camera;
 
+    ////////////////////
+    // GUI DATA
+    ////////////////////
+
+    //Array of present GUI elements
+    irr::s32 GUIId = 0;
+    std::vector<irr::gui::IGUIImage*> GUIImageArray;
+    std::vector<irr::gui::IGUIStaticText*> GUITextArray;
+    std::vector<irr::gui::IGUIImage*> GUIRectangleColorArray;
+
+    ////////////////////
+    // *****TO ERASE*****
+    ////////////////////
     irr::gui::IGUIStaticText* pos;
 
     irr::gui::IGUIStaticText* lap;

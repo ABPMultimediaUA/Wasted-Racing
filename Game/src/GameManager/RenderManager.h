@@ -44,6 +44,7 @@ public:
         return renderComponentTree;
     }
 
+    //Get render facade functions
     IRenderFacade* getRenderFacade() {
         return renderFacade;
     }
@@ -56,6 +57,68 @@ public:
     //Camera component getter and setter
     IComponent::Pointer getCameraComponent() { return cameraComponent; }
     void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
+
+    //==============================================
+    // VISUAL INTERFACE
+    //==============================================
+    
+    /////////////
+    //  IMAGES
+    /////////////
+
+    //Adds a rectangle on the specific point given with the specified image
+    int32_t createImage(glm::vec2 pos, std::string img);
+
+    //Delete image specified by its id
+    void deleteImage(int32_t id);
+
+    //Delete images specified inside the vector of ids
+    void deleteImages(std::vector<int32_t>* ids);
+
+    //Clean images off of the visual interface
+    void cleanImages();
+
+    /////////////
+    //  COLOR RECTANGLES
+    /////////////
+
+    //Add rectangle of the given color and alpha channel, at the specified position with the given size
+    int32_t createRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a = 255);
+
+    //Change color of the rectangle known by the id given
+    void changeRectangleColor(int32_t id, int r, int g, int b, int a);
+    
+    //Deletes the rectangle with the passed id
+    void deleteRectangleColor(int32_t id);
+
+    //Clean all rectangles off of the screen
+    void cleanRectangles();
+
+    /////////////
+    //  TEXT
+    /////////////
+
+    //Add specified text in the specified point
+    int32_t createText(glm::vec2 pos, std::string text);
+
+    //Add specified text in the specified point with specified size
+    int32_t createText(glm::vec2 pos, glm::vec2 size, std::string text);
+
+    //Change the specified text with the given message
+    void changeText(int32_t id, std::string text);
+
+    //Delete text with the specified id
+    void deleteText(int32_t id);
+
+    //Delete texts within the array of idss
+    void deleteTexts(std::vector<int32_t>* ids);
+
+    //Erase all text from the screen
+    void cleanTexts();
+
+    //Erase all interface elements off of the screen
+    void cleanVI();
+
 
     //AI Debug
     void renderAIDebug();

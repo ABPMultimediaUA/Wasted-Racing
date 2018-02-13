@@ -32,12 +32,17 @@ void DebugManager::init(){
 
     //Connection to the network manager (continuous access)
     networkManager = &NetworkManager::getInstance();
+    renderManager  = &RenderManager::getInstance();
 
     //Add listeners
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugAI_Down,swapDebugAI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugBehaviour_Down, swapDebugBehaviour});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugCamera_Down,swapDebugCamera});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugNetwork_Down,swapDebugNetwork});
+
+    //_______________TEST
+    id_magica = -1;
+    lol = 0;
 }
 
 void DebugManager::update(){
@@ -64,7 +69,25 @@ void DebugManager::close(){
 }
 
 //==============================================
-// PRIVATE FUNCTIONS
+// INITIALIZE DEBUGS
+//==============================================
+void DebugManager::initDebugNetwork()
+{
+    renderManager->createImage(glm::vec2(0,0), "media/img/green_rectangle.png");
+    id_magica = renderManager->createRectangleColor(glm::vec2(200,200),glm::vec2(350,300), 255, 255, 0, 255);
+    renderManager->createText(glm::vec2(200,200),"Qué pasa chavales");
+}
+
+//==============================================
+// CLEAN DEBUGS
+//==============================================
+void DebugManager::cleanDebugNetwork()
+{
+    renderManager->cleanVI();
+}
+
+//==============================================
+// UPDATE DEBUGS
 //==============================================
 
 void DebugManager::updateDebugAI(){
@@ -86,8 +109,6 @@ void DebugManager::updateDebugNetwork(){
 
         //Match debug
         if(networkManager->getStarted()){
-            std::cout<<"_-_-_-_-_-_-_-_-_-_-_-_-_"<<std::endl;
-            std::cout<<"Todo bien en Minneapolis"<<std::endl;
             //Switch the last packet info
             switch(networkManager->getLastPacket()){
                 case ID_GAME_ENDED:
@@ -146,9 +167,15 @@ void DebugManager::updateDebugNetwork(){
                     std::cout << "Mensaje recibido" << std::endl;
                     break;
             }
-            std::cout<<"-_-_-_-_-_-_-_-_-_-_-_-_-"<<std::endl;
         }
     }
+
+    //_________________TEST
+    lol++;
+    if(lol>5000000){
+        lol = 0;
+    }
+    renderManager->changeRectangleColor(id_magica, (lol)%256,(lol/2)%256,(lol/3)%256,255);
 }
 
 //==============================================
@@ -173,24 +200,31 @@ IComponent::Pointer createDebugNetworkComponent(GameObject& newGameObject){
 //==============================================
 // DELEGATE FUNCTIONS
 //==============================================
-//Intializes AI debug
+//Swaps AI debug state
 void swapDebugAI(EventData eData)
 {
     DebugManager::getInstance().setDebugAI(!DebugManager::getInstance().getDebugAI());
 }
 
-//Intializes Battle Behaviour debug
+//Swaps Battle Behaviour debug state
 void swapDebugBehaviour(EventData eData){
     DebugManager::getInstance().setDebugBehaviour(!DebugManager::getInstance().getDebugBehaviour());
 }
 
-//Intializes Camera debug
+//Swaps Camera debug state
 void swapDebugCamera(EventData eData)
 {
     DebugManager::getInstance().setDebugCamera(!DebugManager::getInstance().getDebugCamera());
 }
 
-//Intializes Network debug
+//Swap Network debug state
 void swapDebugNetwork(EventData eData){
     DebugManager::getInstance().setDebugNetwork(!DebugManager::getInstance().getDebugNetwork());
+    
+    //See if it shoulde be initialized or closed
+    if(DebugManager::getInstance().getDebugNetwork()){
+        DebugManager::getInstance().initDebugNetwork();
+    }else{
+        DebugManager::getInstance().cleanDebugNetwork();
+    }
 }

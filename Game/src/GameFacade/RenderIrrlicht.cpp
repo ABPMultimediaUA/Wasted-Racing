@@ -581,3 +581,252 @@ void RenderIrrlicht::updateItemIcon(){
                  break;
     }
 }
+
+//==============================================================
+// VISUAL INTERFACE
+//==============================================================
+
+int32_t RenderIrrlicht::addImage(glm::vec2 pos, std::string img)
+{
+    //Create position in 2D inside the screen
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+
+    //Get the texture/img of the rectangle
+    auto image = videoDriver->getTexture(img.c_str());
+
+    //Insert the image on the scene
+    irr::gui::IGUIImage* element = sceneManager->getGUIEnvironment()->addImage(image, position);
+    //Add it to the array
+    GUIImageArray.push_back(element);
+
+    //Set ID
+    element->setID(GUIId);
+    GUIId++;
+
+    //Return the id
+    int32_t id = (int32_t) element->getID();
+    return id;
+}
+
+void RenderIrrlicht::changeImage(int32_t id, std::string img)
+{
+    for(unsigned int i = 0; i < GUIImageArray.size(); i++){
+        if(id == GUIImageArray.at(i)->getID()){
+            //Load image as ITexture*
+            auto image = videoDriver->getTexture(img.c_str());
+
+            //Set the image to the object
+            GUIImageArray.at(i)->setImage(image);
+        }
+    }
+}
+
+void RenderIrrlicht::deleteImage(int32_t id)
+{
+    //Search for the GUI element
+    for(unsigned int i = 0; i < GUIImageArray.size(); i++){
+        if(id == GUIImageArray.at(i)->getID()){
+            
+            //Delete the element
+            GUIImageArray.at(i)->remove();
+
+            //Delete from array
+            GUIImageArray.erase(GUIImageArray.begin()+i);
+        }
+    }   
+}
+
+void RenderIrrlicht::cleanImages()
+{
+    //Clear array of members
+    for(unsigned int i = 0; i < GUIImageArray.size(); i++){
+        //Erase each image
+        GUIImageArray.at(i)->remove();
+    }
+
+    //Clean array
+    GUIImageArray.clear();
+}
+
+int32_t RenderIrrlicht::addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a)
+{
+    //Create position and size in 2D inside the screen
+    irr::core::rect<irr::s32> rectangle(pos.x, pos.y, pos.x + size.x, pos.y + size.y);
+
+    //Insert element inside the scene
+    irr::gui::IGUIImage* element = sceneManager->getGUIEnvironment()->addImage(rectangle);
+
+    //Apply color
+    irr::video::SColor color((int32_t) a, (int32_t) r, (int32_t) g, (int32_t) b);
+    element->setColor(color);                                           //Color applied
+    std::string white_texture("media/img/white_rectangle.png");         //White texture loading
+    element->setImage(videoDriver->getTexture(white_texture.c_str()));  //White texture
+    element->setUseAlphaChannel(true);                                  //Alpha channel
+    
+    //Add it to the array
+    GUIRectangleColorArray.push_back(element);
+
+    //Set ID
+    element->setID(GUIId);
+    GUIId++;
+
+    //Return the id*/
+    int32_t id = (int32_t) element->getID();
+    return id;
+}
+
+void RenderIrrlicht::changeRectangleColor(int32_t id, int r, int g, int b, int a)
+{
+    for(unsigned int i = 0; i < GUIRectangleColorArray.size(); i++){
+        if(id == GUIRectangleColorArray.at(i)->getID()){
+            //Create color
+            irr::video::SColor color((int32_t) a, (int32_t) r, (int32_t) g, (int32_t) b);
+
+            //Set the image to the object
+            GUIRectangleColorArray.at(i)->setColor(color);
+        }
+    }
+}
+    
+void RenderIrrlicht::deleteRectangleColor(int32_t id)
+{
+    //Search for the GUI element
+    for(unsigned int i = 0; i < GUIRectangleColorArray.size(); i++){
+        if(id == GUIRectangleColorArray.at(i)->getID()){
+            
+            //Delete the element
+            GUIRectangleColorArray.at(i)->remove();
+
+            //Delete from array
+            GUIRectangleColorArray.erase(GUIRectangleColorArray.begin()+i);
+        }
+    }
+}
+
+void RenderIrrlicht::cleanRectangles()
+{
+    //Clear array of members
+    for(unsigned int i = 0; i < GUIRectangleColorArray.size(); i++){
+        //Erase each rectangle
+        GUIRectangleColorArray.at(i)->remove();
+    }
+
+    //Clean array
+    GUIRectangleColorArray.clear();
+}
+
+int32_t RenderIrrlicht::addText(glm::vec2 pos, std::string text)
+{
+    //Auxiliar text for transposition
+    std::wstring text_aux;
+
+    //Converting to wstring type
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    //Converting to irrlicht inner text type
+    const wchar_t* txt = text_aux.c_str();
+
+    //Adding to scene rectangle text
+    irr::gui::IGUIStaticText* element = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+200,pos.y+50));
+
+    //Set text
+    //element->setText(txt);
+
+    //Set ID
+    element->setID(GUIId);
+    GUIId++;
+
+    //Add to array of GUI elements
+    GUITextArray.push_back(element);
+
+    //Return the id
+    int32_t id = (int32_t) element->getID();
+    return id;
+}
+
+int32_t RenderIrrlicht::addText(glm::vec2 pos, glm::vec2 size, std::string text)
+{
+    //Auxiliar text for transposition
+    std::wstring text_aux;
+
+    //Converting to wstring type
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    //Converting to irrlicht inner text type
+    const wchar_t* txt = text_aux.c_str();
+
+    //Adding to scene rectangle text
+    irr::gui::IGUIStaticText* element = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+size.x,pos.y+size.y));
+
+    //Set text inside the element
+    //element->setText(txt);
+
+    //Set ID
+    element->setID(GUIId);
+    GUIId++;
+
+    //Add to array of GUI elements
+    GUITextArray.push_back(element);
+
+    //Return the id
+    int32_t id = (int32_t) element->getID();
+    return id;
+};
+
+void RenderIrrlicht::changeText(int32_t id, std::string text)
+{
+    //Search for the GUI element
+    for(unsigned int i = 0; i < GUITextArray.size(); i++){
+        if(id == GUITextArray.at(i)->getID()){
+            
+            //Auxiliar text for transposition
+            std::wstring text_aux;
+
+            //Converting to wstring type
+            for(unsigned int i = 0; i < text.length(); ++i)
+            text_aux += wchar_t( text[i] );
+
+            //Converting to irrlicht inner text type
+            const wchar_t* txt = text_aux.c_str();
+
+            //Change text
+            GUITextArray.at(i)->setText(txt);
+        }
+    }  
+}
+
+void RenderIrrlicht::deleteText(int32_t id)
+{
+    //Search for the GUI element
+    for(unsigned int i = 0; i < GUITextArray.size(); i++){
+        if(id == GUITextArray.at(i)->getID()){
+            
+            //Delete the element
+            GUITextArray.at(i)->remove();
+
+            //Delete from array
+            GUITextArray.erase(GUITextArray.begin()+i);
+        }
+    }  
+}
+ 
+void RenderIrrlicht::cleanTexts()
+{
+    //Clear array of texts
+    for(unsigned int i = 0; i < GUITextArray.size(); i++){
+        //Erase each text
+        GUITextArray.at(i)->remove();
+    }
+
+    //Clean array
+    GUITextArray.clear();
+}
+
+void RenderIrrlicht::cleanInterface()
+{
+    //Invoke the erasing images for every type of GUI resource
+    cleanImages();
+    cleanTexts();
+}
