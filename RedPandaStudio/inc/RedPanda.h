@@ -7,5 +7,6 @@
  #include "TMesh.h"
  #include "TNode.h"
  #include "TResource.h"
+ #include "TResourceMesh.h"
  #include "TTransform.h"
 

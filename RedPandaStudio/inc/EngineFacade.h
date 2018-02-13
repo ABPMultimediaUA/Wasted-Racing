@@ -12,7 +12,7 @@ public:
     EngineFacade()          {       name = "window";        };
     ~EngineFacade(){};
 
-    void init();
+    void init(TNode* e);
     void update(){};
     void close(){};
 
