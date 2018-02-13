@@ -1,8 +1,11 @@
-#include "engineFacade.h"
+#include "EngineFacade.h"
+ #include "ResourceManager.h"
  #include "TAnimation.h"
+ #include "TCamera.h"
  #include "TEntity.h"
  #include "TLight.h"
  #include "TMesh.h"
  #include "TNode.h"
+ #include "TResource.h"
  #include "TTransform.h"
 

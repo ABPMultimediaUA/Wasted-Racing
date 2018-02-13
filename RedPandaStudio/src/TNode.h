@@ -2,18 +2,20 @@
 
 #include <vector>
 #include "TEntity.h"
+#include <iostream>
 
 class TNode{
 
 public:
 
+    TNode();
     TNode(TNode* f) : father(f) {}
     TNode(TNode* f, TEntity* e) : father(f), entity(e) {}
 
     ~TNode();
 
     //Setters
-    bool setEntity(TEntity* e)                  {       e = entity;     
+    bool setEntity(TEntity* e)                  {       entity = e;  
                                                         return true;        }
 
     //Getters

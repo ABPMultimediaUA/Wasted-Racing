@@ -2,6 +2,7 @@
 
 #include <glm/ext.hpp>
 #include <stack>
+#include <iostream>
 
 class TEntity{
 
@@ -18,25 +19,25 @@ public:
 protected:
 
     //Model Matrix
-    static glm::mat4& getModelMatrix() {
+    static glm::mat4& modelMatrix() {
         static glm::mat4 matrix;
         return matrix;
     };
 
     //View Matrix
-    static glm::mat4& getViewMatrix() {
+    static glm::mat4& viewMatrix() {
         static glm::mat4 matrix;
         return matrix;
     };
 
     //Projection Matrix
-    static glm::mat4& getProjectionMatrix() {
+    static glm::mat4& projectionMatrix() {
         static glm::mat4 matrix;
         return matrix;
     };
 
     //Matrix Stack
-    static std::stack<glm::mat4>& getMatrixStack() {
+    static std::stack<glm::mat4>& matrixStack() {
         static std::stack<glm::mat4> matrix;
         return matrix;
     };
