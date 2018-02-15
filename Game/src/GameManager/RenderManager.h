@@ -67,7 +67,7 @@ public:
     /////////////
 
     //Adds a rectangle on the specific point given with the specified image
-    int32_t createImage(glm::vec2 pos, std::string img);
+    int32_t createImage(std::string img, glm::vec2 pos);
 
     //Delete image specified by its id
     void deleteImage(int32_t id);
@@ -83,7 +83,7 @@ public:
     /////////////
 
     //Add rectangle of the given color and alpha channel, at the specified position with the given size
-    int32_t createRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a = 255);
+    int32_t createRectangleColor(glm::vec2 pos, glm::vec2 size, int r = 255, int g = 255, int b = 255, int a = 255);
 
     //Change color of the rectangle known by the id given
     void changeRectangleColor(int32_t id, int r, int g, int b, int a);
@@ -99,13 +99,19 @@ public:
     /////////////
 
     //Add specified text in the specified point
-    int32_t createText(glm::vec2 pos, std::string text);
-
-    //Add specified text in the specified point with specified size
-    int32_t createText(glm::vec2 pos, glm::vec2 size, std::string text);
+    int32_t createText( std::string text, glm::vec2 pos = glm::vec2(0,0), int r = 255, int g = 255, int b = 255, int a = 255, glm::vec2 size = glm::vec2(20,50), std::string fontFile = "");
 
     //Change the specified text with the given message
     void changeText(int32_t id, std::string text);
+
+   //Changes the font of the game
+    void changeFontText(int32_t id, std::string fontFile);
+
+    //Changes the color of the text specified by the id
+    void changeColorText(int32_t id, int r, int g, int b, int a);
+
+    //Changes the color of the background of the text specified by the id
+    void changeBackgroundColorText(int32_t id, int r, int g, int b, int a);
 
     //Delete text with the specified id
     void deleteText(int32_t id);
@@ -119,6 +125,10 @@ public:
     //Erase all interface elements off of the screen
     void cleanVI();
 
+    //==============================================
+    // GETTERS AND SETTERS
+    //==============================================
+    void setDebugState(bool d){ debugState = d; };
 
     //AI Debug
     void renderAIDebug();
@@ -149,8 +159,14 @@ public:
     std::vector<GameObject> getAIsBattle()             {          return AIDebugPointB;     }
     
 private:
-
+    //==============================================================
+    // PRIVATE DATA
+    //==============================================================
+    //Render facade
     IRenderFacade* renderFacade;
+
+    //Debug state checker
+    bool debugState;
 
     //When we start adding components, we add them in a list,
     //Once we've added them all, we split them in a QuadTree structure

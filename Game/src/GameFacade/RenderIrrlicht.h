@@ -66,9 +66,18 @@ public:
     //==============================================================
     //  VISUAL INTERFACE
     //==============================================================
+    ////////////
+    //  HUD RELATED
+    ////////////
 
+    //Updates item icon in the HUD
+    virtual void updateItemIcon();
+    
+    ////////////
+    //  Image
+    ////////////
     //Adds an image on the specific point given with the "color" specified
-    virtual int32_t addImage(glm::vec2 pos, std::string img);
+    virtual int32_t addImage( std::string img, glm::vec2 pos);
 
     //Substitutes an image with another in the same position
     virtual void changeImage(int32_t id, std::string img);
@@ -78,6 +87,10 @@ public:
 
     //Clean rectangles off of the screen
     virtual void cleanImages();
+
+    ////////////
+    //  Rectangle
+    ////////////
 
     //Add rectangle of the given color and alpha channel, at the specified position with the given size
     virtual int32_t addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a);
@@ -91,14 +104,24 @@ public:
     //Clean all rectangles off of the screen
     virtual void cleanRectangles();
 
-    //Adds specified text in the specified point
-    virtual int32_t addText(glm::vec2 pos, std::string text);
+    ////////////
+    //  Text
+    ////////////
 
-    //Adds specified text in the specified point with specified size
-    virtual int32_t addText(glm::vec2 pos, glm::vec2 size, std::string text);
+    //Adds specified text at the specified point with specified size, with the specified color and font
+    virtual int32_t addText( std::string text, glm::vec2 pos, int r, int g, int b, int a, glm::vec2 size, std::string font);
 
     //Changes the specified text with the given message
     virtual void changeText(int32_t id, std::string text);
+
+    //Changes the font of the game
+    virtual void changeFontText(int32_t id, std::string fontFile);
+
+    //Changes the color of the text specified by the id
+    virtual void changeColorText(int32_t id, int r, int g, int b, int a);
+
+    //Changes the color of the background of the text specified by the id
+    virtual void changeBackgroundColorText(int32_t id, int r, int g, int b, int a);
 
     //deletes text in the specified position of the text array
     virtual void deleteText(int32_t id);
@@ -159,8 +182,6 @@ private:
     virtual void createItemIcon(glm::vec2 pos, std::string img);
 
     virtual void deleteItemIcon();
-
-    virtual void updateItemIcon();
 
 
     //Get device

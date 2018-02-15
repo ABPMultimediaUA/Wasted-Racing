@@ -94,9 +94,18 @@ public:
     //==============================================================
     //  VISUAL INTERFACE
     //==============================================================
+    ////////////
+    //  HUD RELATED
+    ////////////
 
+    //Updates item icon in the HUD
+    virtual void updateItemIcon() = 0;
+    
+    ////////////
+    //  Image
+    ////////////
     //Adds an image on the specific point given with the image specified
-    virtual int32_t addImage(glm::vec2 pos, std::string img) = 0;
+    virtual int32_t addImage( std::string img, glm::vec2 pos) = 0;
 
     //Substitutes an image with another at the same position
     virtual void changeImage(int32_t id, std::string img) = 0;
@@ -106,6 +115,10 @@ public:
 
     //Clean images off of the screen
     virtual void cleanImages() = 0;
+
+    ////////////
+    //  Rectangle
+    ////////////
 
     //Add rectangle of the given color and alpha channel, at the specified position with the given size
     virtual int32_t addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a) = 0;
@@ -119,14 +132,24 @@ public:
     //Clean all rectangles off of the screen
     virtual void cleanRectangles() = 0;
 
-    //Adds specified text at the specified point
-    virtual int32_t addText(glm::vec2 pos, std::string text) = 0;
+    ////////////
+    //  Text
+    ////////////
 
-    //Adds specified text at the specified point with specified size
-    virtual int32_t addText(glm::vec2 pos, glm::vec2 size, std::string text) = 0;
+    //Adds specified text at the specified point with specified size, with the specified color and font
+    virtual int32_t addText( std::string text, glm::vec2 pos = glm::vec2(0,0) , int r = 255, int g = 255, int b = 255, int a = 255, glm::vec2 size = glm::vec2(20,50), std::string font = "") = 0;
 
     //Changes the specified text with the given message
     virtual void changeText(int32_t id, std::string text) = 0;
+
+    //Changes the font of the game
+    virtual void changeFontText(int32_t id, std::string font) = 0;
+
+    //Changes the color of the text specified by the id
+    virtual void changeColorText(int32_t id, int r, int g, int b, int a) = 0;
+
+    //Changes the color of the background of the text specified by the id
+    virtual void changeBackgroundColorText(int32_t id, int r, int g, int b, int a) = 0;
 
     //deletes text in the specified position of the text array
     virtual void deleteText(int32_t id) = 0;

@@ -39,10 +39,6 @@ void DebugManager::init(){
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugBehaviour_Down, swapDebugBehaviour});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugCamera_Down,swapDebugCamera});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugNetwork_Down,swapDebugNetwork});
-
-    //_______________TEST
-    id_magica = -1;
-    lol = 0;
 }
 
 void DebugManager::update(){
@@ -65,22 +61,114 @@ void DebugManager::update(){
 }
 
 void DebugManager::close(){
-
+    //Clean all debugs
+    cleanDebugAI();
+    cleanDebugBehaviour();
+    cleanDebugCamera();
+    cleanDebugNetwork();
 }
 
 //==============================================
 // INITIALIZE DEBUGS
 //==============================================
+
+void DebugManager::initDebugAI()
+{
+
+}
+
+void DebugManager::initDebugBehaviour()
+{
+
+}
+
+void DebugManager::initDebugCamera()
+{
+
+}
+
 void DebugManager::initDebugNetwork()
 {
-    renderManager->createImage(glm::vec2(0,0), "media/img/green_rectangle.png");
-    id_magica = renderManager->createRectangleColor(glm::vec2(200,200),glm::vec2(350,300), 255, 255, 0, 255);
-    renderManager->createText(glm::vec2(200,200),"Qué pasa chavales");
+    //Auxiliar data
+    int32_t auxIdText;
+    int widthText = 250;
+    int separationText = 20;
+    int leftOffset = 5;
+    int actualHeight = 10;
+    int textr = 0, textg = 0, textb = 0, textalpha = 255;
+    std::string textFont("media/font/Razor_m.png");
+
+    //Last message received board illuminated and value
+    idLastMessageBoard = renderManager->createRectangleColor(glm::vec2(0,0),glm::vec2(widthText * 2,400), 255, 255, 255, 200);
+
+    //Generate message and push its id to the list, then generate spacing down below
+    auxIdText = renderManager->createText("Last received server message", glm::vec2(leftOffset,actualHeight), textr-20, textg-255, textb-255, textalpha, glm::vec2(widthText * 2,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+    actualHeight += separationText+5;
+
+    auxIdText = renderManager->createText("Player created: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+    actualHeight += separationText;
+
+    auxIdText = renderManager->createText("Box collision: ", glm::vec2(leftOffset,actualHeight),textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+    actualHeight += separationText;
+
+    auxIdText = renderManager->createText("Trap created: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+    actualHeight += separationText;
+
+    auxIdText = renderManager->createText("Trap destroyed: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+    actualHeight += separationText;
+
+    auxIdText = renderManager->createText("Tire created: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+    actualHeight += separationText;
+
+    auxIdText = renderManager->createText("Tire destroyed: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+    actualHeight += separationText;
+    
+    auxIdText = renderManager->createText("Bomb created: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+    actualHeight += separationText;
+
+    auxIdText = renderManager->createText("Bomb destroyed: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+    actualHeight += separationText;
+
+    //Set a default value to the last id message
+    idLastMessageText = auxIdText;
+
+    //Each data for each player: system address, server_id actual position
+
+    //Each object on the map data: player creator (server_id), actual position 
+
+    //renderManager->createImage("media/img/green_rectangle.png", glm::vec2(0,0));
+    //id_magica = renderManager->createRectangleColor(glm::vec2(200,200),glm::vec2(350,300), 255, 255, 0, 255);
+    //renderManager->createText("Qué pasa chavales", glm::vec2(200,200), 125,125,255, 255, glm::vec2(200,200), "media/font/D3Groovitmapism.png");
 }
 
 //==============================================
 // CLEAN DEBUGS
 //==============================================
+
+void DebugManager::cleanDebugAI()
+{
+    renderManager->cleanVI();
+}
+
+void DebugManager::cleanDebugBehaviour()
+{
+    renderManager->cleanVI();
+}
+
+void DebugManager::cleanDebugCamera()
+{
+    renderManager->cleanVI();
+}
+
 void DebugManager::cleanDebugNetwork()
 {
     renderManager->cleanVI();
@@ -112,47 +200,46 @@ void DebugManager::updateDebugNetwork(){
             //Switch the last packet info
             switch(networkManager->getLastPacket()){
                 case ID_GAME_ENDED:
-                    std::cout<<"El juego ha terminao"<<std::endl;
+                    std::cout<<"Game ended."<<std::endl;
                     break;
 
                 case ID_CREATE_PLAYER:
-                    std::cout<<"Se crea al personaje principal"<<std::endl;
+                    setActiveLastMessage(idLastMessageTexts.at(1));
                     break;
                     
                 case ID_CREATE_REMOTE_PLAYER:
-                    std::cout<<"Se ha conectado otro jugador"<<std::endl;
+                    setActiveLastMessage(idLastMessageTexts.at(1));
                     break;
 
                 case ID_REMOTE_PLAYER_MOVEMENT:
-                    //std::cout<<"Se ha movido otro jugador"<<std::endl;
                     break;
 
                 case ID_BOX_COLLISION:
-                    std::cout<<"Colisión con caja"<<std::endl;
+                    setActiveLastMessage(idLastMessageTexts.at(2));
                     break;
                 
                 case ID_CREATE_BANANA:
-                    std::cout<<"Banana creada por: "<<std::endl;
+                    setActiveLastMessage(idLastMessageTexts.at(3));
                     break;
 
                 case ID_DESTROY_BANANA:
-                    std::cout<<"Banana destruida por: "<<std::endl;
+                    setActiveLastMessage(idLastMessageTexts.at(4));
                     break;
                 
                 case ID_CREATE_RED_SHELL:
-                    std::cout<<"Caparazon rojo creado por: "<<std::endl;
+                    setActiveLastMessage(idLastMessageTexts.at(5));
                     break;
 
                 case ID_DESTROY_RED_SHELL:
-                    std::cout<<"Caparazon rojo destruido por: "<<std::endl;
+                    setActiveLastMessage(idLastMessageTexts.at(6));
                     break;
 
                 case ID_CREATE_BLUE_SHELL:
-                    std::cout<<"Caparazon azul creado por: "<<std::endl;
+                    setActiveLastMessage(idLastMessageTexts.at(7));
                     break;
                 
                 case ID_DESTROY_BLUE_SHELL:
-                    std::cout<<"Caparazón azul destruido por: "<<std::endl;
+                    setActiveLastMessage(idLastMessageTexts.at(8));
                     break;
 
                 case ID_REMOTE_RED_SHELL_MOVEMENT:
@@ -169,14 +256,20 @@ void DebugManager::updateDebugNetwork(){
             }
         }
     }
-
-    //_________________TEST
-    lol++;
-    if(lol>5000000){
-        lol = 0;
-    }
-    renderManager->changeRectangleColor(id_magica, (lol)%256,(lol/2)%256,(lol/3)%256,255);
 }
+
+//==============================================
+// NETWORK PARTICULAR FUNCTIONS
+//==============================================
+void DebugManager::setActiveLastMessage(uint32_t id){
+    //Change color of last message to white
+    renderManager->changeBackgroundColorText( idLastMessageText, 255,255,255,255);
+
+    //Change color of new message to green
+    renderManager->changeBackgroundColorText( id, 0,255,0,255);
+    idLastMessageText = id;
+}
+
 
 //==============================================
 // MANAGING COMPONENTS
@@ -204,17 +297,73 @@ IComponent::Pointer createDebugNetworkComponent(GameObject& newGameObject){
 void swapDebugAI(EventData eData)
 {
     DebugManager::getInstance().setDebugAI(!DebugManager::getInstance().getDebugAI());
+
+    //See if it shoulde be initialized or closed
+    if(DebugManager::getInstance().getDebugAI()){
+        //Clean rest of debugs
+        DebugManager::getInstance().cleanDebugCamera();
+        DebugManager::getInstance().cleanDebugBehaviour();
+        DebugManager::getInstance().cleanDebugNetwork();
+
+        DebugManager::getInstance().initDebugAI();
+
+        //Change to debug state
+        RenderManager::getInstance().setDebugState(true);
+    }else{
+        DebugManager::getInstance().cleanDebugAI();
+
+        //Close normal state
+        RenderManager::getInstance().setDebugState(false);
+    }
 }
 
 //Swaps Battle Behaviour debug state
 void swapDebugBehaviour(EventData eData){
     DebugManager::getInstance().setDebugBehaviour(!DebugManager::getInstance().getDebugBehaviour());
+
+    //See if it shoulde be initialized or closed
+    if(DebugManager::getInstance().getDebugBehaviour()){
+        //Clean rest of debugs
+        DebugManager::getInstance().cleanDebugCamera();
+        DebugManager::getInstance().cleanDebugNetwork();
+        DebugManager::getInstance().cleanDebugAI();
+
+        DebugManager::getInstance().initDebugBehaviour();
+
+        //Change to debug state
+        RenderManager::getInstance().setDebugState(true);
+
+    }else{
+        DebugManager::getInstance().cleanDebugBehaviour();
+
+        //Change to normal state
+        RenderManager::getInstance().setDebugState(false);
+    }
 }
 
 //Swaps Camera debug state
 void swapDebugCamera(EventData eData)
 {
     DebugManager::getInstance().setDebugCamera(!DebugManager::getInstance().getDebugCamera());
+
+    //See if it shoulde be initialized or closed
+    if(DebugManager::getInstance().getDebugCamera()){
+        //Clean rest of debugs
+        DebugManager::getInstance().cleanDebugNetwork();
+        DebugManager::getInstance().cleanDebugBehaviour();
+        DebugManager::getInstance().cleanDebugAI();
+
+        DebugManager::getInstance().initDebugCamera();
+
+        //Change to debug state
+        RenderManager::getInstance().setDebugState(true);
+    }else{
+        DebugManager::getInstance().cleanDebugCamera();
+
+        //Change to normal state
+        RenderManager::getInstance().setDebugState(false);
+    }
+
 }
 
 //Swap Network debug state
@@ -223,6 +372,11 @@ void swapDebugNetwork(EventData eData){
     
     //See if it shoulde be initialized or closed
     if(DebugManager::getInstance().getDebugNetwork()){
+        //Clean rest of debugs
+        DebugManager::getInstance().cleanDebugCamera();
+        DebugManager::getInstance().cleanDebugBehaviour();
+        DebugManager::getInstance().cleanDebugAI();
+
         DebugManager::getInstance().initDebugNetwork();
     }else{
         DebugManager::getInstance().cleanDebugNetwork();

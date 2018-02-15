@@ -39,16 +39,36 @@ class DebugManager{
         //==============================================
         // INITIALIZE DEBUGS
         //==============================================
-        //Initialize network debugging
+
+         //Initialize AI driving debugging
+        void initDebugAI();
+
+         //Initialize Battle behaviour debugging
+        void initDebugBehaviour();
+
+         //Initialize Camera debugging
+        void initDebugCamera();
+
+        //Initialize Network debugging
         void initDebugNetwork();
+
 
         //==============================================
         // CLEAN DEBUGS
         //==============================================
+
+        //Erase all the elements that are part of the AI driving debug
+        void cleanDebugAI();
+
+        //Erase all the elements that are part of the Battle Behaviour debug
+        void cleanDebugBehaviour();
+
+        //Erase all the elements that are part of the Camera debug
+        void cleanDebugCamera();
+                
         //Erase all the elements that are part of the network debug
         void cleanDebugNetwork();
 
-        
         //==============================================================
         // Getters and setters
         //==============================================================
@@ -83,9 +103,17 @@ class DebugManager{
         NetworkManager* networkManager;
         RenderManager*  renderManager;
 
-        //-----------------TEST
-        int32_t id_magica;
-        int lol;
+        //NetworkData
+        int32_t idLastMessageBoard;
+        std::vector<int32_t> idLastMessageTexts;
+        int32_t idLastMessageText;
+
+        //==============================================
+        // NETWORK PARTICULAR FUNCTIONS
+        //==============================================
+
+        void setActiveLastMessage(uint32_t id);
+
 
         //==============================================
         // UPDATE DEBUGS

@@ -5,6 +5,17 @@
 #include "WaypointManager.h"
 #include "AIManager.h"
 
+//////////////////////////////////////////////
+//            THINGS TO DO HERE
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+/*
+>Add proper close function
+>Transmute everything to debug manager (of the debug part)
+*/
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
@@ -32,8 +43,12 @@ void RenderManager::init(int engine) {
 
     }
 
+    //Render init
     renderFacade->init(1280, 720, false, false);
     renderFacade->openWindow();
+
+    //Data init
+    debugState = false;
 
     //QuadTree data init
     //maxObjPerNode = 2;
@@ -49,10 +64,14 @@ void RenderManager::init(int engine) {
 }
 
 void RenderManager::update(float dTime) {
-    RenderManager::renderFacade->updateWindow();
-    updateAIDebug();
-    updateCameraDebug();
-    updateBattleDebug(dTime);
+    renderFacade->updateWindow();
+    if(debugState){
+        updateAIDebug();
+        updateCameraDebug();
+        updateBattleDebug(dTime);
+    }else{
+        renderFacade->updateItemIcon();
+    }
 }
 
 void RenderManager::draw() {
@@ -769,10 +788,15 @@ void RenderManager::updateBattleDebug(float dTime)
 //==============================================
 // VISUAL INTERFACE
 //==============================================
-int32_t RenderManager::createImage(glm::vec2 pos, std::string img)
+
+/////////////
+//  IMAGE
+/////////////
+
+int32_t RenderManager::createImage(std::string img, glm::vec2 pos)
 {
     //Invoke creating function and return id
-    return renderFacade->addImage(pos,img);
+    return renderFacade->addImage(img, pos);
 }
 
 void RenderManager::deleteImage(int32_t id)
@@ -784,7 +808,7 @@ void RenderManager::deleteImage(int32_t id)
 void RenderManager::deleteImages(std::vector<int32_t>* ids)
 {
     //Invoke façade function for all the elements
-    for(int i = 0; i < ids->size(); i++){
+    for(unsigned int i = 0; i < ids->size(); i++){
         renderFacade->deleteImage(ids->at(i));
     }
 }
@@ -795,6 +819,10 @@ void RenderManager::cleanImages()
     renderFacade->cleanImages();
 }
 
+/////////////
+//  RECTANGLE
+/////////////
+
 int32_t RenderManager::createRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a)
 {
     return renderFacade->addRectangleColor(pos,size,r,g,b,a);
@@ -802,29 +830,26 @@ int32_t RenderManager::createRectangleColor(glm::vec2 pos, glm::vec2 size, int r
 
 void RenderManager::changeRectangleColor(int32_t id, int r, int g, int b, int a)
 {
-    return renderFacade->changeRectangleColor(id,r,g,b,a);
+    return renderFacade->changeRectangleColor(id, r, g, b, a);
 }
     
 void RenderManager::deleteRectangleColor(int32_t id)
 {
-
+    renderFacade->deleteRectangleColor(id);
 }
 
 void RenderManager::cleanRectangles()
 {
-
+    renderFacade->cleanRectangles();
 }
 
-int32_t RenderManager::createText(glm::vec2 pos, std::string text)
+/////////////
+//  TEXT
+/////////////
+int32_t RenderManager::createText( std::string text, glm::vec2 pos, int r, int g, int b, int a, glm::vec2 size , std::string fontFile)
 {
     //Invoke façade function
-    return renderFacade->addText(pos,text);
-}
-
-int32_t RenderManager::createText(glm::vec2 pos, glm::vec2 size, std::string text)
-{
-    //Invoke façade function
-    return renderFacade->addText(pos,size,text);
+    return renderFacade->addText(text, pos,  r, g, b , a, size, fontFile);
 }
 
 void RenderManager::changeText(int32_t id, std::string text)
@@ -833,16 +858,30 @@ void RenderManager::changeText(int32_t id, std::string text)
     renderFacade->changeText(id, text);
 }
 
+void RenderManager::changeFontText(int32_t id, std::string fontFile)
+{
+    renderFacade->changeFontText(id, fontFile);
+}
+
+void RenderManager::changeColorText(int32_t id, int r, int g, int b, int a)
+{
+    renderFacade->changeColorText(id, r, g, b, a);
+}
+
+void RenderManager::changeBackgroundColorText(int32_t id, int r, int g, int b, int a)
+{
+    renderFacade->changeBackgroundColorText(id, r, g, b, a);
+}
+
 void RenderManager::deleteText(int32_t id)
 {
-    //Invoke façade function
     renderFacade->deleteText(id);
 }
 
 void RenderManager::deleteTexts(std::vector<int32_t>* ids)
 {
     //Invoke façade function for every member
-    for(int i = 0; i < ids->size(); i++){
+    for(unsigned int i = 0; i < ids->size(); i++){
         renderFacade->deleteText(ids->at(i));
     }
 }
