@@ -194,9 +194,9 @@ int main() {
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile("Link/prueba_cubo.obj", aiProcess_JoinIdenticalVertices);
+    const aiScene* scene = importer.ReadFile("Link/Link.obj", aiProcess_JoinIdenticalVertices);
     GLfloat *vertex, *normals, *textures;
-    GLint vertexIndices[36] = {1,3,4,8,6,5,5,2,1,6,3,2,3,8,4,1,8,5,1,2,3,8,7,6,5,6,2,6,7,3,3,7,8,1,4,8};;
+    GLint* vertexIndices;
 
     aiMesh* mesh = scene->mMeshes[0];
     int nFaces = mesh->mNumFaces;
@@ -207,15 +207,14 @@ int main() {
     memcpy(&vertex[0], mesh->mVertices, 3 * sizeof(float) * nVertex);
 
     //We assume we are always working with triangles
-    unsigned int faceIndex = 0;
-    
 
-    //for(unsigned int i = 0; i < nVertex * 3; i++){
-    //    std::cout << vertex[i] << std::endl;
-    //}
-    for(unsigned int i = 0; i < 36; i++){
-        vertexIndices[i] -= 1;
-        std::cout << vertexIndices[i] << std::endl;
+    vertexIndices = (GLint *)malloc(sizeof(GLint) * nFaces * 3);
+    unsigned int faceIndex = 0;
+
+    for(unsigned int j = 0; j<nFaces; j++)
+    {
+        memcpy(&vertexIndices[faceIndex], mesh->mFaces[j].mIndices, 3 * sizeof(unsigned int));
+        faceIndex += 3;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +228,7 @@ int main() {
     Projection = glm::perspective(glm::radians(45.0f), (float) 16 / (float)9, 0.1f, 100.0f);
 
     glm::mat4& View = Escena->getEntity()->viewMatrix();
-    View = glm::lookAt( glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+    View = glm::lookAt( glm::vec3(15,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
 
     glm::mat4& Model = Escena->getEntity()->modelMatrix();
     Model = glm::mat4(1.0f);
@@ -272,11 +271,11 @@ int main() {
         glEnableVertexAttribArray(0);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[1]);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), &vertexIndices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 
 
         //We order to draw here
-        glDrawElements(GL_TRIANGLES, nTriangles, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);
 
         ///////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////

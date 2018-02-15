@@ -9,5 +9,5 @@ uniform mat4 ProjectionMatrix;
 
 void main()
 {
-    gl_Position = vertexPosition * ProjectionMatrix * ViewMatrix * ModelMatrix;
+    gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 }
