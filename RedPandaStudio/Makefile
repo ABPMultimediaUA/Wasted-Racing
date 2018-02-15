@@ -45,7 +45,7 @@ make_fac:
 	$(MAKE) -C src/Facade
 
 # target specific settings
-all_linux: LDFLAGS +=  -lsfml-graphics -lsfml-window -lsfml-graphics -lassimp -lGLEW -lGLU -lGL
+all_linux: LDFLAGS +=  -lsfml-graphics -lsfml-window -lsfml-system -lassimp -lGLEW -lGLU -lGL
 
 all_linux:
 	$(CXX) $(CXXFLAGS) -shared -o $(BIN_PATH)$(TARGET).so $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) $(LDFLAGS)
@@ -90,7 +90,7 @@ includefiles:
 	
 compile:
 	g++ -I./inc -c -o bin/main.o main.cpp
-	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin
+	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW
 
 makesh:
 	rm -rf ./bin/test.sh
