@@ -196,7 +196,7 @@ int main() {
     Projection = glm::perspective(glm::radians(45.0f), (float) 16 / (float)9, 0.1f, 100.0f);
 
     glm::mat4& View = Escena->getEntity()->viewMatrix();
-    View = glm::lookAt( glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+    View = glm::lookAt( glm::vec3(40,3,30), glm::vec3(0,0,0), glm::vec3(0,1,0) );
 
     glm::mat4& Model = Escena->getEntity()->modelMatrix();
     Model = glm::mat4(1.0f);
@@ -210,6 +210,10 @@ int main() {
 
     while(window->isOpen())
     {
+        glUniformMatrix4fv(model, 1, GL_FALSE, &Escena->getEntity()->modelMatrix()[0][0]);
+        glUniformMatrix4fv(view, 1, GL_FALSE, &Escena->getEntity()->viewMatrix()[0][0]);
+        glUniformMatrix4fv(projection, 1, GL_FALSE, &Escena->getEntity()->projectionMatrix()[0][0]);
+
         sf::Event event;
         while (window->pollEvent(event))
         {
@@ -219,10 +223,6 @@ int main() {
         window->setActive();
         window->display();
         Escena->draw();
-
-        glUniformMatrix4fv(model, 1, GL_FALSE, &Escena->getEntity()->modelMatrix()[0][0]);
-        glUniformMatrix4fv(view, 1, GL_FALSE, &Escena->getEntity()->viewMatrix()[0][0]);
-        glUniformMatrix4fv(projection, 1, GL_FALSE, &Escena->getEntity()->projectionMatrix()[0][0]);
     }
 
 

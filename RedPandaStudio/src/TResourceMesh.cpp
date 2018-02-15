@@ -14,11 +14,13 @@ bool TResourceMesh::loadResource()
             aiMesh* mesh = scene->mMeshes[i];
             int nFaces = mesh->mNumFaces;
             //We get the vertex, normals and textures arrays and prepare them for OpenGL calls
-            vertex = &mesh->mVertices[0][0];
+            
             normals = mesh->mNormals[0][0];
             textures = mesh->mTextureCoords[0][0][0];
             nTriangles += nFaces;
             nVertex = mesh->mNumVertices;
+            vertex = (float *)malloc(sizeof(float) * nVertex * 3);
+            memcpy(&vertex[0], mesh->mVertices, 3 * sizeof(float) * nVertex);
 
             //We assume we are always working with triangles
             vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 3);
