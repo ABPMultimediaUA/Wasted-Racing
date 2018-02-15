@@ -196,7 +196,7 @@ int main() {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile("Link/prueba_cubo.obj", aiProcess_JoinIdenticalVertices);
     GLfloat *vertex, *normals, *textures;
-    GLint* vertexIndices;
+    GLint vertexIndices[36] = {1,3,4,8,6,5,5,2,1,6,3,2,3,8,4,1,8,5,1,2,3,8,7,6,5,6,2,6,7,3,3,7,8,1,4,8};;
 
     aiMesh* mesh = scene->mMeshes[0];
     int nFaces = mesh->mNumFaces;
@@ -207,26 +207,16 @@ int main() {
     memcpy(&vertex[0], mesh->mVertices, 3 * sizeof(float) * nVertex);
 
     //We assume we are always working with triangles
-    vertexIndices = (GLint *)malloc(sizeof(GLint) * nFaces * 3);
     unsigned int faceIndex = 0;
-
-    for(unsigned int j = 0; j<nFaces; j++)
-    {
-        memcpy(&vertexIndices[faceIndex], mesh->mFaces[j].mIndices, 4 * sizeof(unsigned int));
-        faceIndex += 4;
-    }
-
-    for(unsigned int j = 0; j<nFaces * 4; j++)
-    {
-        std::cout << "Indice " << j << ": " << vertexIndices[j] << std::endl;
-    }
+    
 
     //for(unsigned int i = 0; i < nVertex * 3; i++){
     //    std::cout << vertex[i] << std::endl;
     //}
-    //for(unsigned int i = 0; i < nVertex * 3; i++){
-    //    std::cout << normals[i] << std::endl;
-    //}
+    for(unsigned int i = 0; i < 36; i++){
+        vertexIndices[i] -= 1;
+        std::cout << vertexIndices[i] << std::endl;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,19 +263,20 @@ int main() {
         //////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////
 
+        GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *2);
+        glGenBuffers(2, vboHandles);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
         glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(
-           0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-           3,                  // size
-           GL_FLOAT,           // type
-           GL_FALSE,           // normalized?
-           0,                  // stride
-           (void*)0            // array buffer offset
-        );
-        // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, nTriangles); // Starting from vertex 0; 3 vertices total -> 1 triangle
-        glDisableVertexAttribArray(0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[1]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), &vertexIndices, GL_STATIC_DRAW);
+
+
+        //We order to draw here
+        glDrawElements(GL_TRIANGLES, nTriangles, GL_UNSIGNED_INT, 0);
 
         ///////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////
