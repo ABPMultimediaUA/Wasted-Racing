@@ -90,7 +90,6 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 		printf("%s\n", &ProgramErrorMessage[0]);
 	}
 
-	
 	glDetachShader(ProgramID, VertexShaderID);
 	glDetachShader(ProgramID, FragmentShaderID);
 	
@@ -182,13 +181,20 @@ int main() {
         std::cout << "GLEW initialized" << std::endl;
     }
 
+
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);    
 
+
+
     GLuint programID = LoadShaders( "test.vertexshader", "test.fragmentshader" );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(programID);
+
+    GLuint model = glGetUniformLocation(programID, "ModelMatrix");   
+    GLuint view  = glGetUniformLocation(programID, "ViewMatrix");
+    GLuint projection = glGetUniformLocation(programID, "ProjectionMatrix");
 
     sf::ContextSettings settingss = window->getSettings();
     std::cout << "version:" << settingss.majorVersion << "." << settingss.minorVersion << std::endl;
@@ -204,6 +210,10 @@ int main() {
         window->setActive();
         window->display();
         Escena->draw();
+
+        glUniformMatrix4fv(model, 1, GL_FALSE, &Escena->getEntity()->modelMatrix()[0][0]);
+        glUniformMatrix4fv(view, 1, GL_FALSE, &Escena->getEntity()->viewMatrix()[0][0]);
+        glUniformMatrix4fv(projection, 1, GL_FALSE, &Escena->getEntity()->projectionMatrix()[0][0]);
     }
 
 

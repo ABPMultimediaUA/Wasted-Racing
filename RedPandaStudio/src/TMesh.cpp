@@ -4,6 +4,7 @@ void TMesh::beginDraw()
 {
     if(mesh)
     {
+        
         mesh->draw();
     }
 }
