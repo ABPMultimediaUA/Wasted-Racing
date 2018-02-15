@@ -90,7 +90,7 @@ includefiles:
 	
 compile:
 	g++ -I./inc -c -o bin/main.o main.cpp
-	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW
+	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW -lassimp
 
 makesh:
 	rm -rf ./bin/test.sh

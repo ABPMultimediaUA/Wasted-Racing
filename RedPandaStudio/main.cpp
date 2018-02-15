@@ -4,6 +4,9 @@
 #include <sstream>
 #include <GL/glew.h>
 #include <SFML/Graphics.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path){
@@ -187,6 +190,47 @@ int main() {
     glBindVertexArray(VertexArrayID);    
 
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile("Link/Link.obj", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+
+    GLfloat *vertex, *normals, *textures;
+    GLint* vertexIndices;
+
+    aiMesh* mesh = scene->mMeshes[0];
+
+    int nFaces = mesh->mNumFaces;
+    int nTriangles = mesh->mNumFaces;
+    int nVertex = mesh->mNumVertices;
+
+    vertex = (float *)malloc(sizeof(float) * nVertex * 3);
+    memcpy(&vertex[0], mesh->mVertices, 3 * sizeof(float) * nVertex);
+    normals = (float *)malloc(sizeof(float) * nVertex * 3);
+    memcpy(&normals[0], mesh->mNormals, 3 * sizeof(float) * nVertex);
+    textures = (float *)malloc(sizeof(float) * nVertex * 4);
+    memcpy(&textures[0], mesh->mTextureCoords, 4 * sizeof(float) * nVertex);
+
+    //We assume we are always working with triangles
+    vertexIndices = (GLint *)malloc(sizeof(GLint) * nFaces * 3);
+    unsigned int faceIndex = 0;
+
+    for(unsigned int j = 0; j<nFaces; j++)
+    {
+        memcpy(&vertexIndices[faceIndex], mesh->mFaces[j].mIndices, 3 * sizeof(unsigned int));
+        faceIndex += 3;
+    }
+
+    //for(unsigned int i = 0; i < nVertex * 3; i++){
+    //    std::cout << vertex[i] << std::endl;
+    //}
+    //for(unsigned int i = 0; i < nVertex * 3; i++){
+    //    std::cout << normals[i] << std::endl;
+    //}
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     GLuint programID = LoadShaders( "test.vertexshader", "test.fragmentshader" );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -205,6 +249,18 @@ int main() {
     GLuint view  = glGetUniformLocation(programID, "ViewMatrix");
     GLuint projection = glGetUniformLocation(programID, "ProjectionMatrix");
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+    GLuint vertexbuffer;
+    // Generate 1 buffer, put the resulting identifier in vertexbuffer
+    glGenBuffers(1, &vertexbuffer);
+    // The following commands will talk about our 'vertexbuffer' buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+
+
     sf::ContextSettings settingss = window->getSettings();
     std::cout << "version:" << settingss.majorVersion << "." << settingss.minorVersion << std::endl;
 
@@ -214,6 +270,27 @@ int main() {
         glUniformMatrix4fv(view, 1, GL_FALSE, &Escena->getEntity()->viewMatrix()[0][0]);
         glUniformMatrix4fv(projection, 1, GL_FALSE, &Escena->getEntity()->projectionMatrix()[0][0]);
 
+
+        //////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////
+
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glVertexAttribPointer(
+           0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+           3,                  // size
+           GL_FLOAT,           // type
+           GL_FALSE,           // normalized?
+           0,                  // stride
+           (void*)0            // array buffer offset
+        );
+        // Draw the triangle !
+        glDrawArrays(GL_TRIANGLES, 0, nTriangles); // Starting from vertex 0; 3 vertices total -> 1 triangle
+        glDisableVertexAttribArray(0);
+
+        ///////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////
+
         sf::Event event;
         while (window->pollEvent(event))
         {
@@ -222,7 +299,6 @@ int main() {
         }
         window->setActive();
         window->display();
-        Escena->draw();
     }
 
 
