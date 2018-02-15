@@ -1,8 +1,7 @@
 #pragma once
 
 #include "TResource.h"
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <GL/glew.h>
 #include <GL/glut.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -20,11 +19,14 @@ class TResourceMesh : public TResource {
         void draw();
 
     private:
-        //GLint vs GLfloat
-        GLint* vertex, normals, textures;
-        //What's the difference??
-        GLfloat* triangleVertex, triangleNormals, triangleText;
+        //Vertex info
+        GLfloat* vertex, normals, textures;
+        //Vertex indices
+        GLuint* vertexIndices;
+        //Number of faces (assuming faces are triangles, what we currently are forcing)
         long nTriangles;
+        //Number of vertex
+        long nVertex;
 
 
 };
