@@ -118,50 +118,50 @@ int main() {
 
     //---- Crear la estructura del árbol ----
     TNode *Escena = new TNode();
-    TNode *RotaLuz = new TNode(Escena);
-    TNode *RotaCam = new TNode(Escena);
+    //TNode *RotaLuz = new TNode(Escena);
+    //TNode *RotaCam = new TNode(Escena);
     TNode *RotaCoche = new TNode(Escena);
-    Escena->addChild (RotaLuz);
-    Escena->addChild (RotaCam);
+    //Escena->addChild (RotaLuz);
+    //Escena->addChild (RotaCam);
     Escena->addChild (RotaCoche);
-    TNode *TraslaLuz = new TNode(RotaLuz);
-    TNode *TraslaCam = new TNode(RotaCam);
+    //TNode *TraslaLuz = new TNode(RotaLuz);
+    //TNode *TraslaCam = new TNode(RotaCam);
     TNode *TraslaCoche = new TNode(RotaCoche);
-    RotaLuz->addChild (TraslaLuz);
-    RotaCam->addChild (TraslaCam);
+    //RotaLuz->addChild (TraslaLuz);
+    //RotaCam->addChild (TraslaCam);
     RotaCoche->addChild (TraslaCoche);
 
     
     //---- Añadir las entidades a los nodos ----
-    TTransform *TransfRotaLuz = new TTransform ();
-    TTransform *TransfRotaCam = new TTransform ();
+    //TTransform *TransfRotaLuz = new TTransform ();
+    //TTransform *TransfRotaCam = new TTransform ();
     TTransform *TransfRotaCoche = new TTransform ();
-    RotaLuz->setEntity(TransfRotaLuz);
-    RotaCam->setEntity(TransfRotaCam);
+    //RotaLuz->setEntity(TransfRotaLuz);
+    //RotaCam->setEntity(TransfRotaCam);
     RotaCoche->setEntity(TransfRotaCoche);
 
-    TTransform *TransfTraslaLuz = new TTransform ();
-    TTransform *TransfTraslaCam = new TTransform ();
+    //TTransform *TransfTraslaLuz = new TTransform ();
+    //TTransform *TransfTraslaCam = new TTransform ();
     TTransform *TransfTraslaCoche = new TTransform ();
-    TraslaLuz->setEntity(TransfTraslaLuz);
-    TraslaCam->setEntity(TransfTraslaCam);
+    //TraslaLuz->setEntity(TransfTraslaLuz);
+    //TraslaCam->setEntity(TransfTraslaCam);
     TraslaCoche->setEntity(TransfTraslaCoche);
 
-    TNode *NLuz = new TNode(Escena);
-    TNode *NCam = new TNode(Escena);
+    //TNode *NLuz = new TNode(Escena);
+    //TNode *NCam = new TNode(Escena);
     TNode *NChasis = new TNode(Escena);
-    TraslaLuz->addChild (NLuz);
-    TraslaCam->addChild (NCam);
+    //TraslaLuz->addChild (NLuz);
+    //TraslaCam->addChild (NCam);
     TraslaCoche->addChild (NChasis);
 
 
-    TLight *EntLuz = new TLight();
-    TCamera *EntCam = new TCamera(45);
+    //TLight *EntLuz = new TLight();
+    //TCamera *EntCam = new TCamera(45);
     TMesh *MallaChasis = new TMesh();
     MallaChasis->setMesh(ob);
             std::cout<<"adios"<<"\n";
-    NLuz->setEntity(EntLuz);
-    NCam->setEntity(EntCam);
+    //NLuz->setEntity(EntLuz);
+    //NCam->setEntity(EntCam);
     NChasis->setEntity(MallaChasis);
 
 
@@ -196,7 +196,7 @@ int main() {
     Projection = glm::perspective(glm::radians(45.0f), (float) 16 / (float)9, 0.1f, 100.0f);
 
     glm::mat4& View = Escena->getEntity()->viewMatrix();
-    View = glm::lookAt( glm::vec3(40,3,30), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+    View = glm::lookAt( glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
 
     glm::mat4& Model = Escena->getEntity()->modelMatrix();
     Model = glm::mat4(1.0f);
