@@ -194,7 +194,7 @@ int main() {
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile("Link/prueba_cubo.obj", aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+    const aiScene* scene = importer.ReadFile("Link/prueba_cubo.obj", aiProcess_JoinIdenticalVertices);
     GLfloat *vertex, *normals, *textures;
     GLint* vertexIndices;
 
@@ -212,8 +212,13 @@ int main() {
 
     for(unsigned int j = 0; j<nFaces; j++)
     {
-        memcpy(&vertexIndices[faceIndex], mesh->mFaces[j].mIndices, 3 * sizeof(unsigned int));
-        faceIndex += 3;
+        memcpy(&vertexIndices[faceIndex], mesh->mFaces[j].mIndices, 4 * sizeof(unsigned int));
+        faceIndex += 4;
+    }
+
+    for(unsigned int j = 0; j<nFaces * 4; j++)
+    {
+        std::cout << "Indice " << j << ": " << vertexIndices[j] << std::endl;
     }
 
     //for(unsigned int i = 0; i < nVertex * 3; i++){
