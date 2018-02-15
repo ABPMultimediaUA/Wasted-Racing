@@ -192,6 +192,15 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(programID);
 
+    glm::mat4& Projection = Escena->getEntity()->projectionMatrix();
+    Projection = glm::perspective(glm::radians(45.0f), (float) 16 / (float)9, 0.1f, 100.0f);
+
+    glm::mat4& View = Escena->getEntity()->viewMatrix();
+    View = glm::lookAt( glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+
+    glm::mat4& Model = Escena->getEntity()->modelMatrix();
+    Model = glm::mat4(1.0f);
+
     GLuint model = glGetUniformLocation(programID, "ModelMatrix");   
     GLuint view  = glGetUniformLocation(programID, "ViewMatrix");
     GLuint projection = glGetUniformLocation(programID, "ProjectionMatrix");
