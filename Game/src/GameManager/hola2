@@ -680,9 +680,7 @@ void NetworkManager::update()
 
         //Debug information: sender
         char* sender;
-        //////THIS IS HELL//////////////////////////////
-        //packet->systemAddress.ToString(false, sender);
-        ////////////////////////////////////////////////
+        packet->systemAddress.ToString(false, sender);
         lastSenders.push_back(sender);
 
         //PROVISIONAL DATA

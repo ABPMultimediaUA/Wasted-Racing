@@ -150,18 +150,19 @@ public:
     //==============================================================
     // Getters and setters
     //==============================================================
-    std::vector<IComponent::Pointer>& getRemotePlayerComponentList()   {    return remotePlayerComponentList;   } //Remote player component list getter
-    std::vector<IComponent::Pointer>& getRemoteBananaComponentList()   {    return remoteBananaComponentList;   } //Remote player component list getter
-    std::vector<IComponent::Pointer>& getRemoteRedShellComponentList() {    return remoteRedShellComponentList; } //Remote player component list getter
-    std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){    return remoteBlueShellComponentList;} //Remote player component list getter
-    void setPlayer(GameObject::Pointer p)                              {    player = p;                         };
-    void setStarted(bool s)                                            {    started = s;                        };
-    void setConnected(bool s)                                           {    connected = s;                       };
-    GameObject::Pointer getPlayer()                                    {    return player;                      };
-    bool getStarted()                                                  {    return started;                     };
-    bool getConnected()                                                 {    return connected;                    };
-    customMessages getLastPacket()                                     {    return lastPacket;                  }; //Returns last packet received
-    RakNet::SystemAddress  getLastSender()                             {    return lastSender;                  }; //Returns last packet sender
+    std::vector<IComponent::Pointer>& getRemotePlayerComponentList()   {  return remotePlayerComponentList;   } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteBananaComponentList()   {  return remoteBananaComponentList;   } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteRedShellComponentList() {  return remoteRedShellComponentList; } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){  return remoteBlueShellComponentList;} //Remote player component list getter
+    void setPlayer(GameObject::Pointer p)                              {  player = p;                         };
+    void setStarted(bool s)                                            {  started = s;                        };
+    void setConnected(bool s)                                          {  connected = s;                      };
+    GameObject::Pointer getPlayer()                                    {  return player;                      };
+    bool getStarted()                                                  {  return started;                     };
+    bool getConnected()                                                {  return connected;                   };
+    std::list<customMessages>* getLastPackets()                        {  return &lastPackets;                }; //Returns last packets received
+    std::list<char*>*  getLastSenders()                                {  return &lastSenders;                }; //Returns last packets' Senders
+    std::list<unsigned char*>*  getLastData()                          {  return &lastData;                   }; //Returns last packets' data
     
 private:
     //==============================================================
@@ -181,8 +182,9 @@ private:
     int server_id;
 
     //Debug info
-    customMessages lastPacket;
-    RakNet::SystemAddress lastSender;
+    std::list<customMessages> lastPackets;
+    std::list<unsigned char*> lastData;
+    std::list<char*>          lastSenders;
 
     //List of remotePlayerComponent
     std::vector<IComponent::Pointer> remotePlayerComponentList;

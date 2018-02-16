@@ -104,16 +104,20 @@ class DebugManager{
         RenderManager*  renderManager;
 
         //NetworkData
-        int32_t idLastMessageBoard;
-        std::vector<int32_t> idLastMessageTexts;
-        int32_t idLastMessageText;
+        int32_t idLastMessageBoard;                 //id of the board
+        std::vector<int32_t> idLastMessageTexts;    //id of all the last messages
+        int32_t idLastMessageText;                  //last sent message
+        std::vector<int32_t> idLastDataTexts;       //id of all the last data of the last messages
 
         //==============================================
         // NETWORK PARTICULAR FUNCTIONS
         //==============================================
 
+        //Set last active message received to green
         void setActiveLastMessage(uint32_t id);
 
+        //Update last information received from the message with the id given
+        void updateNetworkText(uint32_t id, std::string text);
 
         //==============================================
         // UPDATE DEBUGS

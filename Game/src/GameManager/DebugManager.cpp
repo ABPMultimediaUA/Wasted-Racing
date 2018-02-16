@@ -102,41 +102,100 @@ void DebugManager::initDebugNetwork()
     idLastMessageBoard = renderManager->createRectangleColor(glm::vec2(0,0),glm::vec2(widthText * 2,400), 255, 255, 255, 200);
 
     //Generate message and push its id to the list, then generate spacing down below
+    //------------------------------------------------------------------------------
     auxIdText = renderManager->createText("Last received server message", glm::vec2(leftOffset,actualHeight), textr-20, textg-255, textb-255, textalpha, glm::vec2(widthText * 2,separationText), textFont);
     idLastMessageTexts.push_back(auxIdText);
-    actualHeight += separationText+5;
 
+    actualHeight += separationText+5;
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
     auxIdText = renderManager->createText("Player created: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
     idLastMessageTexts.push_back(auxIdText);
-    actualHeight += separationText;
 
+    auxIdText = renderManager->createText("", glm::vec2(leftOffset+widthText,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastDataTexts.push_back(auxIdText);
+
+    actualHeight += separationText;
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
     auxIdText = renderManager->createText("Box collision: ", glm::vec2(leftOffset,actualHeight),textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
     idLastMessageTexts.push_back(auxIdText);
-    actualHeight += separationText;
 
+    auxIdText = renderManager->createText("", glm::vec2(leftOffset+widthText,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastDataTexts.push_back(auxIdText);
+    
+    actualHeight += separationText;
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
     auxIdText = renderManager->createText("Trap created: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
     idLastMessageTexts.push_back(auxIdText);
-    actualHeight += separationText;
 
+    auxIdText = renderManager->createText("", glm::vec2(leftOffset+widthText,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastDataTexts.push_back(auxIdText);
+
+    actualHeight += separationText;
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
     auxIdText = renderManager->createText("Trap destroyed: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
     idLastMessageTexts.push_back(auxIdText);
-    actualHeight += separationText;
 
+    auxIdText = renderManager->createText("", glm::vec2(leftOffset+widthText,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastDataTexts.push_back(auxIdText);
+
+    actualHeight += separationText;
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
     auxIdText = renderManager->createText("Tire created: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
     idLastMessageTexts.push_back(auxIdText);
-    actualHeight += separationText;
 
+    auxIdText = renderManager->createText("", glm::vec2(leftOffset+widthText,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastDataTexts.push_back(auxIdText);
+    
+    actualHeight += separationText;
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
     auxIdText = renderManager->createText("Tire destroyed: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
     idLastMessageTexts.push_back(auxIdText);
+
+    auxIdText = renderManager->createText("", glm::vec2(leftOffset+widthText,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastDataTexts.push_back(auxIdText);
+
     actualHeight += separationText;
-    
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
     auxIdText = renderManager->createText("Bomb created: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
     idLastMessageTexts.push_back(auxIdText);
-    actualHeight += separationText;
 
+    auxIdText = renderManager->createText("", glm::vec2(leftOffset+widthText,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastDataTexts.push_back(auxIdText);
+
+    actualHeight += separationText;
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
     auxIdText = renderManager->createText("Bomb destroyed: ", glm::vec2(leftOffset,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
     idLastMessageTexts.push_back(auxIdText);
-    actualHeight += separationText;
+
+    auxIdText = renderManager->createText("", glm::vec2(leftOffset+widthText,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastDataTexts.push_back(auxIdText);
+
+    actualHeight += separationText+5;
+    //------------------------------------------------------------------------------
+
+    //------------------------------------------------------------------------------
+    auxIdText = renderManager->createText("Last sender: ", glm::vec2(leftOffset,actualHeight), textr-200, textg-20, textb-100, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastMessageTexts.push_back(auxIdText);
+
+    auxIdText = renderManager->createText("", glm::vec2(leftOffset+widthText,actualHeight), textr, textg, textb, textalpha, glm::vec2(widthText,separationText), textFont);
+    idLastDataTexts.push_back(auxIdText);
+    //------------------------------------------------------------------------------
 
     //Set a default value to the last id message
     idLastMessageText = auxIdText;
@@ -197,62 +256,89 @@ void DebugManager::updateDebugNetwork(){
 
         //Match debug
         if(networkManager->getStarted()){
-            //Switch the last packet info
-            switch(networkManager->getLastPacket()){
-                case ID_GAME_ENDED:
-                    std::cout<<"Game ended."<<std::endl;
-                    break;
+            //Process all packets
+            while(!networkManager->getLastPackets()->empty()){
+                //Get first packet to process and remove it from the list
+                customMessages lastPacket = networkManager->getLastPackets()->front();
+                networkManager->getLastPackets()->pop_front();
 
-                case ID_CREATE_PLAYER:
-                    setActiveLastMessage(idLastMessageTexts.at(1));
-                    break;
+                //Get last data and load it at string, then remove it from the list
+                char* lastData = reinterpret_cast<char*>(networkManager->getLastData()->front());
+                networkManager->getLastData()->pop_front();
+                std::string lastDataString(lastData);
+
+                switch(lastPacket){
+                    case ID_GAME_ENDED:
+                        std::cout<<"Game ended."<<std::endl;
+                        break;
+
+                    case ID_CREATE_PLAYER:
+                        setActiveLastMessage(idLastMessageTexts.at(1));
+                        updateNetworkText(idLastDataTexts.at(0), lastDataString);
+                        break;
+                        
+                    case ID_CREATE_REMOTE_PLAYER:
+                        setActiveLastMessage(idLastMessageTexts.at(1));
+                        updateNetworkText(idLastDataTexts.at(0), lastDataString);
+                        break;
+
+                    case ID_REMOTE_PLAYER_MOVEMENT:
+                        break;
+
+                    case ID_BOX_COLLISION:
+                        setActiveLastMessage(idLastMessageTexts.at(2));
+                        updateNetworkText(idLastDataTexts.at(1), lastDataString);
+                        break;
                     
-                case ID_CREATE_REMOTE_PLAYER:
-                    setActiveLastMessage(idLastMessageTexts.at(1));
-                    break;
+                    case ID_CREATE_BANANA:
+                        setActiveLastMessage(idLastMessageTexts.at(3));
+                        updateNetworkText(idLastDataTexts.at(2), lastDataString);
+                        break;
 
-                case ID_REMOTE_PLAYER_MOVEMENT:
-                    break;
+                    case ID_DESTROY_BANANA:
+                        setActiveLastMessage(idLastMessageTexts.at(4));
+                        updateNetworkText(idLastDataTexts.at(3), lastDataString);
+                        break;
+                    
+                    case ID_CREATE_RED_SHELL:
+                        setActiveLastMessage(idLastMessageTexts.at(5));
+                        updateNetworkText(idLastDataTexts.at(4), lastDataString);
+                        break;
 
-                case ID_BOX_COLLISION:
-                    setActiveLastMessage(idLastMessageTexts.at(2));
-                    break;
-                
-                case ID_CREATE_BANANA:
-                    setActiveLastMessage(idLastMessageTexts.at(3));
-                    break;
+                    case ID_DESTROY_RED_SHELL:
+                        setActiveLastMessage(idLastMessageTexts.at(6));
+                        updateNetworkText(idLastDataTexts.at(5), lastDataString);
+                        break;
 
-                case ID_DESTROY_BANANA:
-                    setActiveLastMessage(idLastMessageTexts.at(4));
-                    break;
-                
-                case ID_CREATE_RED_SHELL:
-                    setActiveLastMessage(idLastMessageTexts.at(5));
-                    break;
+                    case ID_CREATE_BLUE_SHELL:
+                        setActiveLastMessage(idLastMessageTexts.at(7));
+                        updateNetworkText(idLastDataTexts.at(6), lastDataString);
+                        break;
+                    
+                    case ID_DESTROY_BLUE_SHELL:
+                        setActiveLastMessage(idLastMessageTexts.at(8));
+                        updateNetworkText(idLastDataTexts.at(7), lastDataString);
+                        break;
 
-                case ID_DESTROY_RED_SHELL:
-                    setActiveLastMessage(idLastMessageTexts.at(6));
-                    break;
+                    case ID_REMOTE_RED_SHELL_MOVEMENT:
+                        //std::cout<<"Caparazon rojo movido"<<std::endl;
+                        break;
 
-                case ID_CREATE_BLUE_SHELL:
-                    setActiveLastMessage(idLastMessageTexts.at(7));
-                    break;
-                
-                case ID_DESTROY_BLUE_SHELL:
-                    setActiveLastMessage(idLastMessageTexts.at(8));
-                    break;
+                    case ID_REMOTE_BLUE_SHELL_MOVEMENT:
+                        //std::cout<<"Caparazón azul movido"<<std::endl;
+                        break;
 
-                case ID_REMOTE_RED_SHELL_MOVEMENT:
-                    //std::cout<<"Caparazon rojo movido"<<std::endl;
-                    break;
+                    default:
+                        std::cout << "Mensaje recibido" << std::endl;
+                        break;
+                }
 
-                case ID_REMOTE_BLUE_SHELL_MOVEMENT:
-                    //std::cout<<"Caparazón azul movido"<<std::endl;
-                    break;
 
-                default:
-                    std::cout << "Mensaje recibido" << std::endl;
-                    break;
+                //Get last sender and show it
+                char* lastSender = reinterpret_cast<char*>(networkManager->getLastSenders()->front());  //Get it from the list
+                networkManager->getLastSenders()->pop_front();                                          //Erase from list
+                std::string lastSenderString(lastSender);                                               //transform into string
+                updateNetworkText(idLastDataTexts.at(8), lastSenderString);                             //Show it
             }
         }
     }
@@ -261,13 +347,19 @@ void DebugManager::updateDebugNetwork(){
 //==============================================
 // NETWORK PARTICULAR FUNCTIONS
 //==============================================
-void DebugManager::setActiveLastMessage(uint32_t id){
+void DebugManager::setActiveLastMessage(uint32_t id)
+{
     //Change color of last message to white
     renderManager->changeBackgroundColorText( idLastMessageText, 255,255,255,255);
 
     //Change color of new message to green
     renderManager->changeBackgroundColorText( id, 0,255,0,255);
     idLastMessageText = id;
+}
+
+void DebugManager::updateNetworkText(uint32_t id, std::string text){
+    //Change text of the message with the given id
+    renderManager->changeText( id, text);
 }
 
 
