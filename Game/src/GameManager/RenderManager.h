@@ -129,7 +129,7 @@ public:
     // GETTERS AND SETTERS
     //==============================================
     void setDebugState(bool d){ debugState = d; };
-
+    
     //AI Debug
     void renderAIDebug();
     void updateAIDebug();

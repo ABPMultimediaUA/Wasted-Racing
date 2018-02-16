@@ -204,9 +204,8 @@ void DebugManager::initDebugNetwork()
 
     //Each object on the map data: player creator (server_id), actual position 
 
-    //renderManager->createImage("media/img/green_rectangle.png", glm::vec2(0,0));
-    //id_magica = renderManager->createRectangleColor(glm::vec2(200,200),glm::vec2(350,300), 255, 255, 0, 255);
-    //renderManager->createText("Qué pasa chavales", glm::vec2(200,200), 125,125,255, 255, glm::vec2(200,200), "media/font/D3Groovitmapism.png");
+    //Initialize debug state in network manager
+    networkManager->setDebugNetworkState(true);
 }
 
 //==============================================
@@ -231,6 +230,7 @@ void DebugManager::cleanDebugCamera()
 void DebugManager::cleanDebugNetwork()
 {
     renderManager->cleanVI();
+    networkManager->setDebugNetworkState(false);
 }
 
 //==============================================

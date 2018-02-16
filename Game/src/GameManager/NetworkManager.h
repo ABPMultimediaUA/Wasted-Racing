@@ -157,11 +157,12 @@ public:
     void setPlayer(GameObject::Pointer p)                              {  player = p;                         };
     void setStarted(bool s)                                            {  started = s;                        };
     void setConnected(bool s)                                          {  connected = s;                      };
+    void setDebugNetworkState(bool s)                                  {  debugNetworkState = s;              };
     GameObject::Pointer getPlayer()                                    {  return player;                      };
     bool getStarted()                                                  {  return started;                     };
     bool getConnected()                                                {  return connected;                   };
     std::list<customMessages>* getLastPackets()                        {  return &lastPackets;                }; //Returns last packets received
-    std::list<char*>*  getLastSenders()                                {  return &lastSenders;                }; //Returns last packets' Senders
+    std::list<int>*  getLastSenders()                                  {  return &lastSenders;                }; //Returns last packets' Senders
     std::list<unsigned char*>*  getLastData()                          {  return &lastData;                   }; //Returns last packets' data
     
 private:
@@ -182,9 +183,10 @@ private:
     int server_id;
 
     //Debug info
+    bool debugNetworkState = false;
     std::list<customMessages> lastPackets;
     std::list<unsigned char*> lastData;
-    std::list<char*>          lastSenders;
+    std::list<int>          lastSenders;
 
     //List of remotePlayerComponent
     std::vector<IComponent::Pointer> remotePlayerComponentList;
