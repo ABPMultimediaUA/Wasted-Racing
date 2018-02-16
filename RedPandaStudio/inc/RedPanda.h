@@ -1,5 +1,4 @@
-#include "EngineFacade.h"
- #include "ResourceManager.h"
+#include "ResourceManager.h"
  #include "TAnimation.h"
  #include "TCamera.h"
  #include "TEntity.h"

@@ -83,7 +83,7 @@ makedir:
 
 copyfiles:
 	cp -r ./src/*.h ./inc
-	cp -r ./src/Facade/*.h ./inc
+	#cp -r ./src/Facade/*.h ./inc
 
 includefiles:
 	@echo -e $(addprefix $(includeCommand), $(addsuffix $(newline),$(shell ls ./inc))) >> ./inc/RedPanda.h
