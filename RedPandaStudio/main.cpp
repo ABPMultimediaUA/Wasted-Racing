@@ -185,6 +185,13 @@ int main() {
     }
 
 
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+    glColor3ub(255,255,255);
+
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);    
@@ -203,8 +210,22 @@ int main() {
     int nTriangles = mesh->mNumFaces;
     int nVertex = mesh->mNumVertices;
 
+
     vertex = (float *)malloc(sizeof(float) * nVertex * 3);
     memcpy(&vertex[0], mesh->mVertices, 3 * sizeof(float) * nVertex);
+
+    normals = (float *)malloc(sizeof(float) * nVertex * 3);
+    memcpy(&normals[0], mesh->mNormals, 3 * sizeof(float) * nVertex);
+
+    if(mesh->HasTextureCoords(0))
+    {
+        textures=(float *)malloc(sizeof(float)*2*nVertex);
+        for(unsigned int k = 0; k<nVertex;k++)
+        {
+            textures[k*2] = mesh->mTextureCoords[0][k].x;
+            textures[k*2+1] = mesh->mTextureCoords[0][k].y;
+        }
+    }
 
     //We assume we are always working with triangles
 
@@ -217,6 +238,28 @@ int main() {
         faceIndex += 3;
     }
 
+    const char* path = "Link/YoungLink_grp.png";
+    int sizeX, sizeY;
+    GLuint textureID;
+
+    sf::Image image;
+    image.loadFromFile(path);
+    sizeX = image.getSize().x;
+    sizeY = image.getSize().y;
+
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glEnable(GL_TEXTURE_2D);
+
+    
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)sizeX, (GLsizei)sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -225,7 +268,7 @@ int main() {
     glUseProgram(programID);
 
     glm::mat4& Projection = Escena->getEntity()->projectionMatrix();
-    Projection = glm::perspective(glm::radians(45.0f), (float) 16 / (float)9, 0.1f, 100.0f);
+    Projection = glm::perspective(glm::radians(45.0f), (float) 16 / (float)9, 1.0f, 100.0f);
 
     glm::mat4& View = Escena->getEntity()->viewMatrix();
     View = glm::lookAt( glm::vec3(15,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
@@ -262,15 +305,25 @@ int main() {
         //////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////
 
-        GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *2);
-        glGenBuffers(2, vboHandles);
+        GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
+        glGenBuffers(4, vboHandles);
 
         glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
         glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
         glEnableVertexAttribArray(0);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[1]);
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        glEnableVertexAttribArray(1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        glEnableVertexAttribArray(2);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 
 
