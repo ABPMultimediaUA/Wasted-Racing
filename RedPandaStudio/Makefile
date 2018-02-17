@@ -75,6 +75,8 @@ sh_value := "export LD_LIBRARY_PATH=./bin/ && ./bin/test"
 test: remdir makedir copyfiles includefiles compile makesh
 	$(warning Done!)
 	
+testl: remdir makedir copyfiles includefiles compilel makesh
+
 remdir:
 	rm -rf ./inc
 
@@ -92,10 +94,17 @@ compile:
 	g++ -I./inc -c -o bin/main.o main.cpp
 	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW -lassimp
 
+compilel:
+	g++ -I./inc -c -o bin/main.o mainDeLuis.cpp
+	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW -lassimp
+
 makesh:
 	rm -rf ./bin/test.sh
 	@echo -e $(sh_value) >> ./bin/test.sh
 	chmod +x ./bin/test.sh
+
+
+
 
 
 .PHONY: all clean clean_linux info install win
