@@ -26,7 +26,7 @@ bool TResourceMesh::loadResource()
             vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 3);
             unsigned int faceIndex = 0;
 
-            for(unsigned int j = 0; j<nFaces; j++)
+            for(int j = 0; j<nFaces; j++)
             {
                 memcpy(&vertexIndices[faceIndex], mesh->mFaces[j].mIndices, 3 * sizeof(unsigned int));
                 faceIndex += 3;
