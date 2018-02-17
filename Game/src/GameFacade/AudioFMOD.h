@@ -49,6 +49,9 @@ public:
 
     //Getters
     virtual float getVolume() { return gameVolume; }
+    std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*>& getEventDescriptions() {  return eventDescriptions;   }
+    float getWorldUnits()   {   return worldUnits; }
+
 
 private: 
 

@@ -1,4 +1,4 @@
-#include "ISoundEvent.h" 
+#include "ISoundEvent.h"  
 
 //Play Sound once
 void ISoundEvent::start()
@@ -8,7 +8,7 @@ void ISoundEvent::start()
         FMOD_Studio_EventInstance_Start(soundInstance);
     }
 }
-
+ 
 //Stop sound inmediately 
 void ISoundEvent::stop()
 {

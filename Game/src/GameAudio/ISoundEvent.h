@@ -7,6 +7,9 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include "../GameEvent/EventManager.h"
+
+class AudioFMOD;
 
 class ISoundEvent;
 
@@ -68,7 +71,7 @@ public:
     virtual bool isPlaying();
 
     //Register a new factory for sounds
-    static void registerFactory (FactoryMap map, const std::string& name, SoundFactory* factory) {
+    static void registerFactory (FactoryMap& map, const std::string& name, SoundFactory* factory) {
         map[name] = factory;
     }
 
@@ -81,9 +84,13 @@ public:
     }
 
     //Create a new instance of a sound
-    ISoundEvent* createSound(FactoryMap map, const std::string& name) {
+    static ISoundEvent* createSound(FactoryMap map, const std::string& name) {
         return map[name]->createSound();
     }
+
+    //Create a new instance out of an event
+    virtual void initalizeSound(AudioFMOD*, const EventData&) = 0;
+    
     
 protected:
 

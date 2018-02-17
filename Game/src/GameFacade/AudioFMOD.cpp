@@ -34,7 +34,7 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 //==============================================================================================================================
 // DELEGATES DECLARATIONS
 //==============================================================================================================================
-
+void shootRampCollisionEvent(EventData e);
 
 
 
@@ -65,7 +65,7 @@ void AudioFMOD::openAudioEngine(int lang) {
     }
 
     //Listeners
-
+    EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, shootRampCollisionEvent});
 
     //Game veriables
     worldUnits = 0.05;
@@ -128,3 +128,12 @@ void AudioFMOD::setListenerPosition() {
 //==============================================================================================================================
 // DELEGATE FUNCTIONS
 //==============================================================================================================================
+void shootRampCollisionEvent(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "RampCollisionEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+    delete sound;
+
+  
+}
