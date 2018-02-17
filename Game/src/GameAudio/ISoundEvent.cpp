@@ -1,4 +1,4 @@
-#include "ISoundEvent.h"
+#include "ISoundEvent.h"  
 
 //Play Sound once
 void ISoundEvent::start()
@@ -8,9 +8,15 @@ void ISoundEvent::start()
         FMOD_Studio_EventInstance_Start(soundInstance);
     }
 }
-
+ 
 //Stop sound inmediately 
 void ISoundEvent::stop()
+{
+
+}
+
+//Pause the sound
+void ISoundEvent::pause() 
 {
 
 }
@@ -20,10 +26,9 @@ void ISoundEvent::setVolume(float vol)
 {
     if(vol>=0 && vol<=1)
     {
-        volume=vol;
-        FMOD_Studio_EventInstance_SetVolume(soundInstance, volume);
+        FMOD_Studio_EventInstance_SetVolume(soundInstance, vol);
     }
-}
+} 
 
 //Change sound Gain
 void ISoundEvent::setGain(float gain)

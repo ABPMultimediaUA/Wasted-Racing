@@ -4,8 +4,10 @@
 
 
 //==============================================================================================================================
-// ERROR MANAGEMENT
+// MACROS
 //==============================================================================================================================
+
+//Error management
 void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 {
     if (result != FMOD_OK)
@@ -17,10 +19,24 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 
 #define ERRCHECK(_result) ERRCHECK_fn(_result, __FILE__, __LINE__)
 
+//Macro for importing new Banks ands EventDescriptions
+#define LOAD_EVENT(bank, event) \
+    if (banks.find(#bank) == banks.end()) { \
+        banks.insert(std::pair<std::string, FMOD_STUDIO_BANK*>(#bank, nullptr)); \
+        ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/"#bank".bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &banks[#bank])); \
+    } \
+    if (eventDescriptions.find(#event) == eventDescriptions.end()) { \
+        eventDescriptions.insert(std::pair<std::string, FMOD_STUDIO_EVENTDESCRIPTION*>(#event, nullptr)); \
+        ERRCHECK(FMOD_Studio_System_GetEvent(system, "event:/"#event,  &eventDescriptions[#event])); \
+    }
+    
+
 //==============================================================================================================================
 // DELEGATES DECLARATIONS
 //==============================================================================================================================
-void addDefaultCollision(EventData eData); 
+void shootRampCollisionEvent(EventData e);
+
+
 
 //==============================================================================================================================
 // AUDIO FMOD FUNCTIONS
@@ -40,74 +56,32 @@ void AudioFMOD::openAudioEngine(int lang) {
     ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
 
     if(lang == 1){
-        ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/CharacterES.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &characterBank));
 
+        LOAD_EVENT(CharacterES, CharacterES);
 
-        ERRCHECK(FMOD_Studio_System_GetEvent(system, "event:/CharacterES", &characterDescription));
-        ERRCHECK(FMOD_Studio_EventDescription_CreateInstance(characterDescription, &characterInstance));
+    }
+    else{
+
     }
 
-    else
-        ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/CharacterES.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &characterBank));
-
-
     //Listeners
+    EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, shootRampCollisionEvent});
 
-    WorldUnits = 0.05;
+    //Game veriables
+    worldUnits = 0.05;
+    gameVolume = 1.0;
 
-    player = 0;
-    track = 0;
-    change = true;
 }
 
 //Updater
 void AudioFMOD::update() {
 
-    //Update listener position
-    FMOD_3D_ATTRIBUTES attributes;
-    auto pos = getListener().getTransformData().position;
-    auto vel = getListener().getComponent<MoveComponent>().get()->getMovemententData().velocity;
-    auto ang = getListener().getComponent<MoveComponent>().get()->getMovemententData().angle;
-    attributes.position = { pos.x * WorldUnits, pos.y * WorldUnits, pos.z * WorldUnits };
-    attributes.velocity = { vel.x * WorldUnits, vel.y * WorldUnits, vel.z * WorldUnits };
-    attributes.forward = { -std::cos(ang), 0.0f, -std::sin(ang) };
-    attributes.up = { 0.0f, -1.0f, 0.0f };
+    //Update listener position and orientation
+    setListenerPosition();
 
-    ERRCHECK( FMOD_Studio_System_SetListenerAttributes(system, 0, &attributes) );
-
-    //=================================================================
-    FMOD_STUDIO_PLAYBACK_STATE state;
-
-    FMOD_Studio_EventInstance_GetPlaybackState(characterInstance, &state);
-
-    if(state==FMOD_STUDIO_PLAYBACK_STOPPED)
-    {
-        
-        FMOD_Studio_EventInstance_SetParameterValue(characterInstance, "player", (float)player);
-        FMOD_Studio_EventInstance_SetParameterValue(characterInstance, "track", (float)track);
-
-        if(change)
-            change = false;
-        else
-            change = true;
-
-        if(change){
-            track++;
-            if(track>8){
-                track=0;
-                player++;
-            }
-        }
-
-        FMOD_3D_ATTRIBUTES attributes;
-        attributes.position.x = 76 * WorldUnits;
-        attributes.position.y = 0;
-        attributes.position.z = 9 * WorldUnits;
-        FMOD_Studio_EventInstance_Set3DAttributes(characterInstance, &attributes);
-
-        ERRCHECK( FMOD_Studio_EventInstance_Start(characterInstance) );
-    }
-    //=================================================================
+    //##############################################################################
+    // UPDATEAR AQUI EVENTOS Y TAL
+    //##############################################################################
 
     //Update FMOD system
     ERRCHECK( FMOD_Studio_System_Update(system) );
@@ -117,11 +91,12 @@ void AudioFMOD::update() {
 //Closer
 void AudioFMOD::closeAudioEngine() {
 
-    //We should do a release for every class, instance and description
+    for(auto description : eventDescriptions)
+        ERRCHECK( FMOD_Studio_EventDescription_ReleaseAllInstances(description.second) );
 
-    ERRCHECK( FMOD_Studio_EventDescription_ReleaseAllInstances(characterDescription) );
+    for(auto bank : banks)
+        ERRCHECK( FMOD_Studio_Bank_Unload(bank.second) );
 
-    ERRCHECK( FMOD_Studio_Bank_Unload(characterBank) );
     ERRCHECK( FMOD_Studio_Bank_Unload(stringsBank) );
     ERRCHECK( FMOD_Studio_Bank_Unload(masterBank) );
 
@@ -130,28 +105,35 @@ void AudioFMOD::closeAudioEngine() {
 
 //Sets the basic volume of the game. Expected value between 0 and 1;
 void AudioFMOD::setVolume(float vol) {
-
+    gameVolume = vol;
 }
 
 //Sets the 3D position of the listener
-void AudioFMOD::setListenerPosition(glm::vec3 pos) {
+void AudioFMOD::setListenerPosition() {
 
-}
+    //Update listener position
+    FMOD_3D_ATTRIBUTES attributes;
+    auto pos = getListener().getTransformData().position;
+    auto vel = getListener().getComponent<MoveComponent>().get()->getMovemententData().velocity;
+    auto ang = getListener().getComponent<MoveComponent>().get()->getMovemententData().angle;
+    attributes.position = { pos.x * worldUnits, pos.y * worldUnits, pos.z * worldUnits };
+    attributes.velocity = { vel.x * worldUnits, vel.y * worldUnits, vel.z * worldUnits };
+    attributes.forward = { -std::cos(ang), 0.0f, -std::sin(ang) };
+    attributes.up = { 0.0f, -1.0f, 0.0f };
 
-//Creates an audio event instance
-void AudioFMOD::createAudioInstance(AudioManager::AudioType type, glm::vec3 pos, std::string parameters) {
+    ERRCHECK( FMOD_Studio_System_SetListenerAttributes(system, 0, &attributes) );
 
 }
 
 //==============================================================================================================================
 // DELEGATE FUNCTIONS
 //==============================================================================================================================
-void addDefaultCollision(EventData eData) {
+void shootRampCollisionEvent(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "RampCollisionEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+    delete sound;
 
-    int player = std::dynamic_pointer_cast<MoveComponent>(eData.Component).get()->getMovemententData().player;
-    int track = 5;
-    glm::vec3 pos = eData.Component.get()->getGameObject().getTransformData().position;
-
-    AudioManager::getInstance().getAudioFacade()->createAudioInstance(AudioManager::AudioType::Character, pos, "player:" + std::to_string(player) + ",track:" + std::to_string(track));
-
+  
 }
