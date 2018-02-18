@@ -2,6 +2,11 @@
 
 #include "../GameFacade/IRenderFacade.h"
 #include "QuadTree.h"
+#include "../GameFacade/RenderIrrlicht.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
+#include "WaypointManager.h"
+#include "AIManager.h"
 #include <vector>
 
 class RenderManager{

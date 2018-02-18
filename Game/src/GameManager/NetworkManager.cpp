@@ -49,8 +49,8 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Server initiated this, so id must be -1
-        lastSenders.push_back(-1);
+        //Server initiated this, so id must be -1 (or the player itself)
+        lastSenders.push_back(server_id);
     }
 
 }
@@ -98,8 +98,8 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
             ////////////
             //If debug state is on
             if(debugNetworkState){
-                //Server initiated this, so id must be -1
-                lastSenders.push_back(-1);
+                //Server initiated this, so id must be -1 (or the id of the player)
+                lastSenders.push_back(id);
             }
         }
     }
@@ -508,6 +508,11 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             trans.rotation.z = rz;
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
+
+            //If there is debug, update position of the cylinders
+            if(debugNetworkState){
+                
+            }
         }
     }
 }
@@ -565,8 +570,6 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
             trans.rotation.x = rx;
             trans.rotation.y = ry;
             trans.rotation.z = rz;
-
-            
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
         }
@@ -754,16 +757,10 @@ void NetworkManager::update()
 
             case ID_CREATE_PLAYER:
                 createPlayer(packet);
-                lastPackets.push_back(ID_CREATE_PLAYER);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
                 
             case ID_CREATE_REMOTE_PLAYER:
                 createRemotePlayer(packet);
-                lastPackets.push_back(ID_CREATE_REMOTE_PLAYER);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
 
             case ID_REMOTE_PLAYER_MOVEMENT:

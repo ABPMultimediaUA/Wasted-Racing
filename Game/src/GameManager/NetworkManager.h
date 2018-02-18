@@ -162,8 +162,8 @@ public:
     bool getStarted()                                                  {  return started;                     };
     bool getConnected()                                                {  return connected;                   };
     std::list<customMessages>* getLastPackets()                        {  return &lastPackets;                }; //Returns last packets received
-    std::list<int>*  getLastSenders()                                  {  return &lastSenders;                }; //Returns last packets' Senders
-    std::list<unsigned char*>*  getLastData()                          {  return &lastData;                   }; //Returns last packets' data
+    std::list<int>*            getLastSenders()                        {  return &lastSenders;                }; //Returns last packets' Senders
+    std::list<unsigned char*>* getLastData()                           {  return &lastData;                   }; //Returns last packets' data
     
 private:
     //==============================================================
@@ -186,7 +186,7 @@ private:
     bool debugNetworkState = false;
     std::list<customMessages> lastPackets;
     std::list<unsigned char*> lastData;
-    std::list<int>          lastSenders;
+    std::list<int>            lastSenders;
 
     //List of remotePlayerComponent
     std::vector<IComponent::Pointer> remotePlayerComponentList;

@@ -30,8 +30,8 @@ void MainState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
     //Always interpolate
-        physicsManager->interpolate(accumulatedTime, loopTime);
-        renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
+    physicsManager->interpolate(accumulatedTime, loopTime);
+    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
 
 }
 

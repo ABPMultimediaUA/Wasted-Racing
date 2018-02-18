@@ -1,16 +1,10 @@
 #include "RenderManager.h"
-#include "../GameFacade/RenderIrrlicht.h"
-#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "../GameObject/RenderComponent/CameraRenderComponent.h"
-#include "WaypointManager.h"
-#include "AIManager.h"
 
 //////////////////////////////////////////////
 //            THINGS TO DO HERE
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 /*
->Add proper close function
 >Transmute everything to debug manager (of the debug part)
 */
 //////////////////////////////////////////////
@@ -83,7 +77,7 @@ void RenderManager::close(){
     renderComponentList.clear();
 
     //Clear all interface elements
-
+    clearVI();
 }
 
 void RenderManager::splitQuadTree(){

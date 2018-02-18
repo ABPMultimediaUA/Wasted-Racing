@@ -41,8 +41,8 @@ enum EventType {
     ListenerComponent_Delete,
     RemotePlayerComponent_Create,
     RemotePlayerComponent_Delete,
-    DebugNetworkComponent_Create,
-    DebugNetworkComponent_Delete,
+    TrackerDNComponent_Create,
+    TrackerDNComponent_Delete,
     //OBJECTS: Creation events
     Banana_Create,
     RedShell_Create,

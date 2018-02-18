@@ -2,9 +2,12 @@
 
 #include "RenderManager.h"
 #include "NetworkManager.h"
+#include "ObjectManager.h"
 #include "../GameEvent/EventManager.h"
+#include "../GameObject/GameObject.h"
 #include "../GameObject/InputComponent.h"
 #include "../GameObject/NetworkComponent/DebugNetworkComponent.h"
+#include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include "../GameServer/CustomIdentifiers.h"
 
 class NetworkManager;
@@ -34,7 +37,7 @@ class DebugManager{
         };
 
         //DebugNetworkComponent creator
-	    IComponent::Pointer createDebugNetworkComponent(GameObject& newGameObject);
+	    IComponent::Pointer createTrackerDNComponent(GameObject& newGameObject, int server_id, int type);
     
         //==============================================
         // INITIALIZE DEBUGS
@@ -69,6 +72,9 @@ class DebugManager{
         //Erase all the elements that are part of the network debug
         void cleanDebugNetwork();
 
+        //Erase all the elements from the lists of the network debug
+        void cleanDebugNetworkLists();
+
         //==============================================================
         // Getters and setters
         //==============================================================
@@ -102,12 +108,15 @@ class DebugManager{
         //MANAGERS
         NetworkManager* networkManager;
         RenderManager*  renderManager;
+        ObjectManager*  objectManager;
 
         //NetworkData
-        int32_t idLastMessageBoard;                 //id of the board
-        std::vector<int32_t> idLastMessageTexts;    //id of all the last messages
-        int32_t idLastMessageText;                  //last sent message
-        std::vector<int32_t> idLastDataTexts;       //id of all the last data of the last messages
+        std::vector<int32_t> idCylynderDN;                          //id of all cylinders following the position sent by the server
+        int32_t idLastMessageBoard;                                 //id of the board
+        std::vector<int32_t> idLastMessageTexts;                    //id of all the last messages
+        int32_t idLastMessageText;                                  //last sent message
+        std::vector<int32_t> idLastDataTexts;                       //id of all the last data of the last messages  
+        std::vector<IComponent::Pointer> remotePlayerComponentList; //List of remotePlayerComponent
 
         //==============================================
         // NETWORK PARTICULAR FUNCTIONS

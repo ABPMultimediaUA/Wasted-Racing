@@ -33,6 +33,7 @@ void DebugManager::init(){
     //Connection to the network manager (continuous access)
     networkManager = &NetworkManager::getInstance();
     renderManager  = &RenderManager::getInstance();
+    objectManager  = &Objectmanager::getInstance();
 
     //Add listeners
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugAI_Down,swapDebugAI});
@@ -89,6 +90,10 @@ void DebugManager::initDebugCamera()
 
 void DebugManager::initDebugNetwork()
 {
+
+    //Clean lists to prevent collapsed messages
+    cleanDebugNetworkLists();
+
     //Auxiliar data
     int32_t auxIdText;
     int widthText = 250;
@@ -99,7 +104,7 @@ void DebugManager::initDebugNetwork()
     std::string textFont("media/font/Razor_m.png");
 
     //Last message received board illuminated and value
-    idLastMessageBoard = renderManager->createRectangleColor(glm::vec2(0,0),glm::vec2(widthText * 2,400), 255, 255, 255, 200);
+    idLastMessageBoard = renderManager->createRectangleColor(glm::vec2(0,0),glm::vec2(widthText * 2+10,400), 255, 255, 255, 200);
 
     //Generate message and push its id to the list, then generate spacing down below
     //------------------------------------------------------------------------------
@@ -201,11 +206,51 @@ void DebugManager::initDebugNetwork()
     idLastMessageText = auxIdText;
 
     //Each data for each player: system address, server_id actual position
+    for(int i = 0; i < networkManager->getRemotePlayerComponentList().size(); i++){
+        //Auxiliar variables
+        int id       = 31000+i; //for every player, generate an ID of the network tracker (2 of them)
+        int id2      = 31000+i+networkManager->getRemotePlayerComponentList().size();
+
+        float height = 5.f;     //Height of the cylinder
+        float rad    = 10.f;    //Radius of the cylinder
+
+        //Get initial position
+        GameObject::TransformationData point = AIDebugPoint[AIDebug].getTransformData();
+        
+        //Clean the transforms
+        GameObject::TransformationData transform;
+        transform.position = point.position;
+        transform.rotation = glm::vec3(0, 0, 3.141592653589f);
+        transform.scale    = glm::vec3(1, 1, 1);
+
+        GameObject::TransformationData transform2;
+        transform2.position = point.position;
+        transform2.rotation = glm::vec3(0, 0, 3.141592653589f);
+        transform2.scale    = glm::vec3(1, 1, 1);
+
+        //Create cylinders
+        GameObject::Pointer collisionCylinder = ObjectManager::getInstance().createObject(id, transform);
+        GameObject::Pointer collisionCylinder2 = ObjectManager::getInstance().createObject(id2, transform);
+
+        //Create render component
+        RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, length, 10.f, true);
+        RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder2.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, length, 10.f, true);
+        
+        //Create tracker component
+        auto objective = std::dynamic_pointer_cast<RemoteItemComponent>(getRemotePlayerComponentList[i]);
+        createTrackerDNComponent(*collisionCylinder.get(), objective.get()->getServerId(), 'a');
+        createTrackerDNComponent(*collisionCylinder2.get(), objective.get()->getServerId(), 'b');
+
+        //Update list of ids
+        idCylynderDN.push_back(id);
+        idCylynderDN.push_back(id2);
+    }
 
     //Each object on the map data: player creator (server_id), actual position 
 
     //Initialize debug state in network manager
     networkManager->setDebugNetworkState(true);
+
 }
 
 //==============================================
@@ -229,8 +274,40 @@ void DebugManager::cleanDebugCamera()
 
 void DebugManager::cleanDebugNetwork()
 {
+    //Clean interface
     renderManager->cleanVI();
+
+    //Set network to false
     networkManager->setDebugNetworkState(false);
+
+
+
+    //Delete trackers
+    for(int i = 0; i < idCylynderDN.size(); i++){
+        EventData data;
+
+        //Delete marker
+        data.Id = marker->getId();
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+    }
+
+    //Clean lists
+    cleanDebugNetworkLists();
+}
+
+void DebugManager::cleanDebugNetworkLists()
+{
+    //Free network lists
+    networkManager->getLastPackets()->clear();
+    networkManager->getLastData()->clear();
+    networkManager->getLastSenders()->clear();
+
+    //Clear internal lists
+    idLastDataTexts.clear();
+    idCylynderDN.clear();         
+    idLastMessageTexts.clear();   
+    idLastDataTexts.clear();      
 }
 
 //==============================================
@@ -258,14 +335,20 @@ void DebugManager::updateDebugNetwork(){
         if(networkManager->getStarted()){
             //Process all packets
             while(!networkManager->getLastPackets()->empty()){
-                //Get first packet to process and remove it from the list
-                customMessages lastPacket = networkManager->getLastPackets()->front();
-                networkManager->getLastPackets()->pop_front();
-
                 //Get last data and load it at string, then remove it from the list
                 char* lastData = reinterpret_cast<char*>(networkManager->getLastData()->front());
                 networkManager->getLastData()->pop_front();
                 std::string lastDataString(lastData);
+
+                //Get last sender and show it
+                int lastSender = networkManager->getLastSenders()->front();  //Get it from the list
+                networkManager->getLastSenders()->pop_front();               //Erase from list
+                std::string lastSenderString = std::to_string(lastSender);   //transform into string
+                updateNetworkText(idLastDataTexts.at(8), lastSenderString);  //Show it
+
+                //Get first packet to process and remove it from the list
+                customMessages lastPacket = networkManager->getLastPackets()->front();
+                networkManager->getLastPackets()->pop_front();
 
                 switch(lastPacket){
                     case ID_GAME_ENDED:
@@ -283,6 +366,7 @@ void DebugManager::updateDebugNetwork(){
                         break;
 
                     case ID_REMOTE_PLAYER_MOVEMENT:
+                        updateCylinderDN(lastSender);
                         break;
 
                     case ID_BOX_COLLISION:
@@ -332,14 +416,8 @@ void DebugManager::updateDebugNetwork(){
                         std::cout << "Mensaje recibido" << std::endl;
                         break;
                 }
-
-
-                //Get last sender and show it
-                char* lastSender = reinterpret_cast<char*>(networkManager->getLastSenders()->front());  //Get it from the list
-                networkManager->getLastSenders()->pop_front();                                          //Erase from list
-                std::string lastSenderString(lastSender);                                               //transform into string
-                updateNetworkText(idLastDataTexts.at(8), lastSenderString);                             //Show it
             }
+
         }
     }
 }
@@ -362,21 +440,27 @@ void DebugManager::updateNetworkText(uint32_t id, std::string text){
     renderManager->changeText( id, text);
 }
 
+void DebugManager::updateCylinderDN(int id){
+    //Update the position of the trackers
+    for(){
+        
+    }
+}
 
 //==============================================
 // MANAGING COMPONENTS
 //==============================================
 
-IComponent::Pointer createDebugNetworkComponent(GameObject& newGameObject){
+IComponent::Pointer createTrackerDNComponent(GameObject& newGameObject, int server_id, char type){
 
-    IComponent::Pointer component = std::make_shared<DebugNetworkComponent>(newGameObject);
+    IComponent::Pointer component = std::make_shared<TrackerDNComponent>(newGameObject, server_id, type);
 
     newGameObject.addComponent(component);
 
     EventData data;
     data.Component = component;
 
-    EventManager::getInstance().addEvent(Event {EventType::DebugNetworkComponent_Create, data});
+    EventManager::getInstance().addEvent(Event {EventType::TrackerDNComponent_Create, data});
 
     return component;
 }
