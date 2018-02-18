@@ -164,7 +164,7 @@ void addObjects(){
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     
-    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
+    ObjectManager::getInstance().createPlayer(transform, 3, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
     //===============================================================
