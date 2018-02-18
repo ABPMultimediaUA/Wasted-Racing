@@ -100,8 +100,9 @@ all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -
 all_linux: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht
 all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
 all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
+all_linux: LDFLAGS += -L./lib/linux -lRedPanda
 
-sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/ && bin/XKating"
+sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/:lib/linux && bin/XKating"
 
 all_linux:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
@@ -113,6 +114,7 @@ all_linux_server: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext 
 all_linux_server: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht
 all_linux_server: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
 all_linux_server: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
+all_linux: LDFLAGS += -L./lib/linux -lRedPanda
 
 all_linux_server:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET_SERVER) $(LDFLAGS)

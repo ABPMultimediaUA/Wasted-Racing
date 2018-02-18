@@ -15,7 +15,7 @@
 #include <fstream>
 #include <sstream>
 
-#include <RedPanda.h>
+#include "RedPanda.h"
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
