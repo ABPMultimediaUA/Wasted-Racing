@@ -103,6 +103,28 @@ makesh:
 	@echo -e $(sh_value) >> ./bin/test.sh
 	chmod +x ./bin/test.sh
 
+################################################################################
+# To update GraphicsEngine in  the Game
+################################################################################
+port: remdirP makedirP copyfilesP compileP
+	$(warning Done!)
+
+remdirP:
+	rm -rf ../Game/include/redpanda
+
+makedirP:
+	mkdir -p ../Game/include/redpanda
+
+copyfilesP:
+	cp -r ./inc/*.h ../Game/include/redpanda
+	cp ./src/Facade/RedPandaStudio.h ../Game/include/redpanda
+
+compileP: all 
+	cp ./bin/libRedPanda.so ../Game/lib/linux
+
+
+
+
 
 
 

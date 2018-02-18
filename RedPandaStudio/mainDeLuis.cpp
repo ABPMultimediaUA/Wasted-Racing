@@ -1,17 +1,12 @@
-#include <RedPanda.h>
-#include "src/Facade/EngineFacade.h"
+#include "src/Facade/RedPandaStudio.h"
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <GL/glew.h>
-#include <SFML/Graphics.hpp>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+
 
 int main() {
 
-    std::cout << "HEY :D" << std::endl;
+    rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,32,0,false,false);
+
+    getchar();
 
     return 0;
 
