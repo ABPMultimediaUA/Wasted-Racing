@@ -53,8 +53,8 @@ void RedPandaStudio::initSFMLWindow(int width, int height, int depth, int framer
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "test.vertexshader";
-    const char * fragment_file_path = "test.fragmentshader";
+    const char * vertex_file_path = "/home/luis/WastedHorchata/Wasted-Racing/RedPandaStudio/test.vertexshader";
+    const char * fragment_file_path = "/home/luis/WastedHorchata/Wasted-Racing/RedPandaStudio/test.fragmentshader";
 
     if (glewInit() != GLEW_OK) {
         std::cerr << "Falló al inicializar GLEW\n" << std::endl;

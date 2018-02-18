@@ -56,10 +56,12 @@ void Game::init() {
     scoreManager->init();
     networkManager->init();
 
-    //Initial state
-    setState(IGameState::stateType::INTRO);
-
     addObjects();
+
+    //Initial state
+    setState(IGameState::stateType::MATCH);
+
+    
 }
 
 //====================================================

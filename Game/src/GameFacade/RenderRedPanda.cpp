@@ -17,7 +17,9 @@ void RenderRedPanda::openWindow() {
 }
 
 //Updates window info in the engine
-void RenderRedPanda::updateWindow() { }
+void RenderRedPanda::updateWindow() { 
+
+}
 
 //Closes engine window
 void RenderRedPanda::closeWindow() { }
