@@ -20,8 +20,8 @@ void Game::init() {
     setStay(true);
 
     //Set engine to default
-    setRenderEngine(0);
-    setInputEngine(0);
+    setRenderEngine(1);
+    setInputEngine(1);
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
     eventManager    = &EventManager::getInstance();     //Initilize event manager
@@ -42,10 +42,10 @@ void Game::init() {
     //Initialize true audio manager
     audioManager->init();
     //First we initialize renderManager, who creates a device and passes this reference to the inputManager
-    renderManager->init(0);
+    renderManager->init(getRenderEngine());
 
     //Once we've initialized the renderManager, we can do the same with our inputManager
-    inputManager->init(0);
+    inputManager->init(getInputEngine());
 
     objectManager->init();
     physicsManager->init();

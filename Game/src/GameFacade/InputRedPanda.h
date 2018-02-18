@@ -44,7 +44,7 @@ public:
     virtual void closeInput();
 
     //==============================================================
-    // Irrlicht Related functions
+    // Input Related functions
     //==============================================================
 
 private: 

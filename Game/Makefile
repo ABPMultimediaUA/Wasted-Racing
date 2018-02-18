@@ -106,6 +106,7 @@ all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
 all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
 all_linux: LDFLAGS += -L./lib/linux/sfml -lsfml-graphics -lsfml-window -lsfml-system
 all_linux: LDFLAGS += -L./lib/linux -lRedPanda 
+all_linux: LDFLAGS += -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod -Wl,-rpath=lib/linux/raknet -Wl,-rpath=lib/linux/sfml -Wl,-rpath=lib/linux
 
 sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/:lib/linux && bin/XKating"
 

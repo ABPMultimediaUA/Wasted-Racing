@@ -6,6 +6,7 @@
 #include <string>
 
 #include "IRenderFacade.h"
+#include "InputRedPanda.h"
 
 #include "../GameManager/InputManager.h"
 
