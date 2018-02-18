@@ -100,11 +100,11 @@ make_gameA:
 	$(MAKE) -C src/GameAudio
 
 # target specific settings
-all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
+all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor -lsfml-graphics -lsfml-window -lsfml-system
 all_linux: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht
 all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
 all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
-all_linux: LDFLAGS += -L./lib/linux -lRedPanda
+all_linux: LDFLAGS += -L./lib/linux -lRedPanda 
 
 sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/:lib/linux && bin/XKating"
 

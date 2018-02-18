@@ -6,6 +6,15 @@
 
 #include <redpanda/RedPandaStudio.h>
 
+//Define macros
+#define DetectKeyInput(TheKey,Event_Down,Event_Up) \
+    if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::TheKey) { \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Down}); \
+    } \
+    else if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::TheKey){ \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Up}); \
+    };
+
 
 class InputRedPanda : public IInputFacade {
 

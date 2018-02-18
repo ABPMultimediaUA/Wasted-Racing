@@ -4,6 +4,7 @@
 //                               INCLUDES                                //
 //=========================================================================
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 
 #include <GL/glew.h>
 
