@@ -18,6 +18,8 @@
 #include "ObjectManager.h"
 #include "NetworkManager.h"
 
+class Game;
+
 class NetworkManager;
 
 class ItemManager {

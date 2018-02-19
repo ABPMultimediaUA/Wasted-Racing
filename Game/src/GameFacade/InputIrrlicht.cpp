@@ -1,9 +1,5 @@
 #include "InputIrrlicht.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameManager/RenderManager.h"
-#include "../Game.h"
 
-#include <iostream>
 
 void InputIrrlicht::openInput(uintptr_t dev) {
 

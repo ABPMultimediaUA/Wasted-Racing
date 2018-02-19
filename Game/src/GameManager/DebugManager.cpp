@@ -494,6 +494,17 @@ void swapDebugAI(EventData eData)
         //Close normal state
         RenderManager::getInstance().setDebugState(false);
     }
+
+
+    //
+    //
+    //
+    //
+    //
+    //
+    //______________UwU UNTIL PABLO CLEANS IT
+    RenderManager::getInstance().renderAIDebug();
+
 }
 
 //Swaps Battle Behaviour debug state
@@ -518,6 +529,21 @@ void swapDebugBehaviour(EventData eData){
         //Change to normal state
         RenderManager::getInstance().setDebugState(false);
     }
+
+
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //______________UwU UNTIL PABLO CLEANS IT
+    RenderManager::getInstance().renderBattleDebug();
 }
 
 //Swaps Camera debug state
@@ -543,6 +569,17 @@ void swapDebugCamera(EventData eData)
         RenderManager::getInstance().setDebugState(false);
     }
 
+    ///
+    //
+    ///
+    //
+    //
+    //
+    //
+    //
+    ///
+    ///_____________UNTIL PABLO CLEANS IT
+    RenderManager::getInstance().renderCameraDebug();
 }
 
 //Swap Network debug state

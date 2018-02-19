@@ -1,8 +1,14 @@
 #include "ItemManager.h"
 
+//==============================================
+// DELEGATES DECLARATIONS
+//==============================================
 void objectDeleteItem(EventData eData);
 void objectDeleteHolder(EventData);
 
+//==============================================
+// MAIN FUNCTIONS
+//==============================================
 ItemManager::ItemManager()
 {
     ids = 6000;
@@ -39,11 +45,9 @@ void ItemManager::close(){
 }
 
 
-//////////////////////////////////////////////////////
-/////
-/////       ItemHolderComponent DELETE
-/////
-//////////////////////////////////////////////////////
+//==============================================
+// COMPONENT CREATOR
+//==============================================
 
 IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameObject){
 
@@ -58,11 +62,9 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
     return component;
 }
 
-//////////////////////////////////////////////////////
-/////
-/////       ITEM BOX CREATOR
-/////
-//////////////////////////////////////////////////////
+//==============================================
+// BOX CREATOR
+//==============================================
 
 IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 
@@ -84,12 +86,9 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 }
 
 
-//////////////////////////////////////////////////////
-/////
-/////       ITEM CREATOR
-/////
-//////////////////////////////////////////////////////
-
+//==============================================
+// ITEM CREATOR
+//==============================================
 
 IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
@@ -165,12 +164,9 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 }
 
 
-//////////////////////////////////////////////////////
-/////
-/////       ITEM CREATE
-/////
-//////////////////////////////////////////////////////
-
+//==============================================
+// ITEM CREATOR DERIVATED FUNCTIONS
+//==============================================
 
 IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 {
@@ -398,11 +394,9 @@ IComponent::Pointer ItemManager::createStar(GameObject& obj)
     return component;
 }
 
-//////////////////////////////////////////////////////
-/////
-/////       ITEM DELETE
-/////
-//////////////////////////////////////////////////////
+//==============================================
+// ITEM DELETE
+//==============================================
 
 void ItemManager::deleteItem(IComponent::Pointer component)
 {
@@ -414,11 +408,9 @@ void ItemManager::deleteItem(IComponent::Pointer component)
 
 }
 
-//////////////////////////////////////////////////////
-/////
-/////       DELEGATES
-/////
-//////////////////////////////////////////////////////
+//==============================================
+// DELEGATES
+//==============================================
 
 void objectDeleteItem(EventData eData) {
 

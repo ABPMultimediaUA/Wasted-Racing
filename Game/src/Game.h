@@ -1,19 +1,25 @@
 #pragma once
 
+//External includes
+#include <memory>
+#include <vector>
+#include <chrono>
+#include <stdio.h>
 #include <iostream>
+#include <rapidxml/rapidxml.hpp>
+#include <string>
+#include <fstream>
+#include <stdio.h>
+
+//State includes
 #include "GameState/IGameState.h"
 #include "GameState/IntroState.h"
 #include "GameState/MainState.h"
 #include "GameState/MatchState.h"
 #include "GameState/ClientLobbyState.h"
 #include "GameState/MultiMatchState.h"
-#include "GameObject/GameObject.h"
-#include "GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "GameObject/InputComponent.h"
-#include "GameObject/PhysicsComponent/MoveComponent.h"
-#include "GameObject/PhysicsComponent/RampComponent.h"
-#include "GameObject/ItemComponent/ItemBoxComponent.h"
-#include "GameObject/AIComponent/WaypointComponent.h"
+
+//Managers
 #include "GameManager/InputManager.h"
 #include "GameManager/RenderManager.h"
 #include "GameManager/ObjectManager.h"
@@ -27,19 +33,22 @@
 #include "GameManager/NetworkManager.h"
 #include "GameManager/DebugManager.h"
 #include "GameEvent/EventManager.h"
+
+//Other includes
+#include "GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "GameObject/ItemComponent/ItemBoxComponent.h"
+#include "GameObject/AIComponent/WaypointComponent.h"
 #include "GameFacade/AudioFMOD.h"
 
-#include <memory>
-#include <iostream>
-#include <rapidxml/rapidxml.hpp>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <stdio.h>
+class IntroState;
+class MultiMatchState;
+class MatchState;
+class ClientLobbyState;
+class MultiMatchState;
+class ItemManager;
 
 class AIManager;
 class ObjectManager;
-class ItemManager;
 class DebugManager;
 
 class Game {

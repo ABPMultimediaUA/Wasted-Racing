@@ -1,11 +1,5 @@
 #include "Game.h"
 
-#include <memory>
-#include <iostream>
-#include <vector>
-#include <chrono>
-#include <stdio.h>
-
 //Additional functions
 void addObjects();
 void loadMap();

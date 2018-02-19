@@ -1,7 +1,11 @@
 #pragma once
 
+#include <iostream>
 #include <map>
 #include "../GameObject/GameObject.h"
+
+//Managers include
+#include "../GameEvent/EventManager.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 #include "ItemManager.h"

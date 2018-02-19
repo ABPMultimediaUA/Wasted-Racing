@@ -1,6 +1,4 @@
 #include "ObjectManager.h"
-#include "../GameEvent/EventManager.h"
-#include <iostream>
 
 //////////////////////////////////////////////
 //            THINGS TO DO HERE

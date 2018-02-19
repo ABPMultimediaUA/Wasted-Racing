@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "../GameObject/PhysicsComponent/CollisionComponent.h"
 #include "../GameObject/PhysicsComponent/TerrainComponent.h"
 #include "../GameObject/PhysicsComponent/RampComponent.h"
@@ -10,7 +11,6 @@
 #include "../GameObject/ItemComponent/ItemStarComponent.h"
 #include "../GameObject/StartLineComponent.h"
 #include "../GameObject/ScoreComponent.h"
-#include <vector>
 
 class PhysicsManager{
 

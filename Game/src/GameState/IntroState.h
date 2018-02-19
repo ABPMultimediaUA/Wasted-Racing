@@ -1,18 +1,9 @@
 #pragma once
 
-#include "IGameState.h"
-#include "MultiMatchState.h"
-#include "ClientLobbyState.h"
-#include "../Game.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameManager/InputManager.h"
-#include "../GameManager/RenderManager.h"
-#include "../GameManager/ObjectManager.h"
-#include <raknet/RakPeerInterface.h>
 #include <iostream>
+#include "../Game.h"
 
 class Game;
-class SensorManager;
 
 class IntroState : public IGameState {
 

@@ -1,7 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include "../GameFacade/IInputFacade.h"
 #include "../GameObject/InputComponent.h"
+
 
 class InputManager{
 

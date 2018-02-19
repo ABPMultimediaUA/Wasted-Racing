@@ -1,7 +1,4 @@
 #include "InputManager.h"
-#include "../GameFacade/InputIrrlicht.h"
-
-#include <iostream>
 
 //==============================================
 // DELEGATES DECLARATIONS
