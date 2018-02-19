@@ -114,15 +114,15 @@ int main() {
     ef.setWidth(1280);
     ef.setHeight(720);
     ef.setName("XKating");
-/*
+
     char* n = "Link/Link.obj";
 
     ResourceManager rM;
     TResource* ob = rM.getResource(n);
-*/
+
     //---- Crear la estructura del árbol ----
     TNode *Escena = new TNode();
-  /*  //TNode *RotaLuz = new TNode(Escena);
+   //TNode *RotaLuz = new TNode(Escena);
     //TNode *RotaCam = new TNode(Escena);
     TNode *RotaCoche = new TNode(Escena);
     //Escena->addChild (RotaLuz);
@@ -168,7 +168,7 @@ int main() {
     //NCam->setEntity(EntCam);
     NChasis->setEntity(MallaChasis);
 
-*/
+
     //=====================================================================================
     // OPENGL TEST
     //=====================================================================================
@@ -201,7 +201,7 @@ int main() {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Assimp::Importer importer;
+   /* Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile("Link/Link.obj", aiProcess_JoinIdenticalVertices);
     GLfloat *vertex, *normals, *textures;
     GLint* vertexIndices;
@@ -258,7 +258,7 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
 	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)sizeX, (GLsizei)sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)sizeX, (GLsizei)sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());*/
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -284,13 +284,13 @@ int main() {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    GLuint vertexbuffer;
+   /* GLuint vertexbuffer;
     // Generate 1 buffer, put the resulting identifier in vertexbuffer
     glGenBuffers(1, &vertexbuffer);
     // The following commands will talk about our 'vertexbuffer' buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);*/
 
 
     sf::ContextSettings settingss = window->getSettings();
@@ -305,7 +305,7 @@ int main() {
 
         //////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////
-
+         /* 
         GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
         glGenBuffers(4, vboHandles);
 
@@ -329,7 +329,7 @@ int main() {
 
 
         //We order to draw here
-        glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);*/
 
         ///////////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////
@@ -340,6 +340,7 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window->close();
         }
+        Escena->draw();
         window->setActive();
         window->display();
     }

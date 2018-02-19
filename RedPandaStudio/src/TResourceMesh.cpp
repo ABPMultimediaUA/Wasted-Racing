@@ -15,12 +15,14 @@ bool TResourceMesh::loadResource()
             int nFaces = mesh->mNumFaces;
             //We get the vertex, normals and textures arrays and prepare them for OpenGL calls
             
-            normals = mesh->mNormals[0][0];
-            //textures = mesh->mTextureCoords[0][0][0];
             nTriangles += nFaces;
             nVertex = mesh->mNumVertices;
+
             vertex = (float *)malloc(sizeof(float) * nVertex * 3);
             memcpy(&vertex[0], mesh->mVertices, 3 * sizeof(float) * nVertex);
+
+            normals = (float *)malloc(sizeof(float) * nVertex * 3);
+            memcpy(&normals[0], mesh->mNormals, 3 * sizeof(float) * nVertex);
 
             //We assume we are always working with triangles
             vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 3);
@@ -40,20 +42,25 @@ bool TResourceMesh::loadResource()
 
 void TResourceMesh::draw()
 {
-    GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *2);
-    glGenBuffers(2, vboHandles);
+    GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *3);
+    glGenBuffers(3, vboHandles);
 
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(0);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[1]);
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[2]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 
 
     //We order to draw here
-    glDrawElements(GL_TRIANGLES, nTriangles, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);
 
 
 }
