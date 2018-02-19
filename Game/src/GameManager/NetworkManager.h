@@ -5,8 +5,6 @@
 #include "RenderManager.h"
 #include "ItemManager.h"
 #include "../Game.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameObject/GameObject.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include "../GameObject/NetworkComponent/RemoteItemComponent.h"
 #include <raknet/RakPeerInterface.h> 

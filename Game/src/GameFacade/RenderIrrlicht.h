@@ -3,10 +3,15 @@
 #include <irrlicht.h>
 #include <map>
 #include <string>
+#include <cmath>
 
 #include "IRenderFacade.h"
+#include "InputIrrlicht.h"
+#include "../GameEvent/EventManager.h"
+#include "../GameManager/ObjectManager.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 
-#include "../GameManager/InputManager.h"
 
 class RenderIrrlicht : public IRenderFacade {
 

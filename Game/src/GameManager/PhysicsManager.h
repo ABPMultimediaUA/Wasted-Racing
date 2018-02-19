@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../GameObject/PhysicsComponent/MoveComponent.h"
 #include "../GameObject/PhysicsComponent/CollisionComponent.h"
 #include "../GameObject/PhysicsComponent/TerrainComponent.h"
 #include "../GameObject/PhysicsComponent/RampComponent.h"

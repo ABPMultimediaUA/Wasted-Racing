@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../IComponent.h"
 #include "MoveComponent.h"
-#include "../../GamePhysics/LAPALPhysics.h"
 
 class CollisionComponent : public IComponent {
 

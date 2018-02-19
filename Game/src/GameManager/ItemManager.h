@@ -18,6 +18,8 @@
 #include "ObjectManager.h"
 #include "NetworkManager.h"
 
+class NetworkManager;
+
 class ItemManager {
 
     private:

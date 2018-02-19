@@ -1,8 +1,6 @@
 #pragma once
 
 #include "IRenderComponent.h"
-
-#include "../PhysicsComponent/TerrainComponent.h"
 #include "../../GameManager/PhysicsManager.h"
 
 class CameraRenderComponent : public IRenderComponent {

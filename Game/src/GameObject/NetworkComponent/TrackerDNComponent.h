@@ -28,8 +28,8 @@ class TrackerDNComponent : public IComponent{
         //==============================================================
         int getObjective()       { return objective; }
         void setObjective(int o) { objective = o;    }
-        char getObjective()      { return objective; }
-        void setObjective(char t){ type = t;         }
+        char getType()           { return type;      }
+        void setType(char t)     { type = t;         }
     
     private:
         //==============================================================

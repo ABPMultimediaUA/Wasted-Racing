@@ -1,7 +1,7 @@
 #pragma once
 
-#include "IRenderComponent.h"
 #include <string>
+#include "IRenderComponent.h"
 
 class ObjectRenderComponent : public IRenderComponent {
 

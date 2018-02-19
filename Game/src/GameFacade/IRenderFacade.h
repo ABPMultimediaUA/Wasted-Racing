@@ -5,8 +5,6 @@
 #include <string>
 
 #include "../GameManager/InputManager.h"
-#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "../GameObject/RenderComponent/LightRenderComponent.h"
 #include "../GameObject/GameObject.h"
 
 class GameObject;

@@ -235,7 +235,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
-    WaypointManager::getInstance().createPathPlanningComponent(ob);
+    WaypointManager::getInstance().createPathPlanningComponent(ob, WaypointManager::getInstance().getWaypoints());
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
@@ -310,7 +310,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
-    WaypointManager::getInstance().createPathPlanningComponent(ob);
+    WaypointManager::getInstance().createPathPlanningComponent(ob, WaypointManager::getInstance().getWaypoints());
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0, 0);

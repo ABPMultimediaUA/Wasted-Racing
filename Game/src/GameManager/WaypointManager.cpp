@@ -1,18 +1,24 @@
 #include "WaypointManager.h"
 
-
-
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
 
 void objectDeletePathPlanning(EventData eData);
 
+//==============================================
+// MAIN FUNCTIONS
+//==============================================
 
+WaypointManager::WaypointManager()
+{
 
-WaypointManager& WaypointManager::getInstance() {
-    static WaypointManager instance;
-    return instance;
+}
+
+WaypointManager::~WaypointManager()
+{
+//check how remove vector
+    delete listSubNodes;
 }
 
 void WaypointManager::init() {
@@ -67,9 +73,9 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
     return component;
 }
 
-IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Pointer newGameObject)
+IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Pointer newGameObject, std::vector<GameObject::Pointer>& list)
 {
-    IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get());
+    IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get(), list);
 
     newGameObject.get()->addComponent(component);
 
@@ -88,32 +94,6 @@ IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Poi
 //Constructor and Destructor
 //==============================================
 
-WaypointManager::WaypointManager()
-{
-
-}
-
-WaypointManager::~WaypointManager()
-{
-//check how remove vector
-    delete listSubNodes;
-}
-
-//==============================================
-//Getters
-//==============================================
-
-std::vector<GameObject::Pointer> WaypointManager::getWaypoints()
-{
-    return *listSubNodes;
-}
-
-
-////////////////////////////////////////////
-//
-//      DELEGATES
-//
-////////////////////////////////////////////
 
 
 void objectDeletePathPlanning(EventData eData) {

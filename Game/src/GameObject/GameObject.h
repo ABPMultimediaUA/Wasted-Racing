@@ -7,7 +7,6 @@
 #include <memory>
 
 #include "IComponent.h"
-
 #include "../GameEvent/EventManager.h"
 
 class GameObject {
