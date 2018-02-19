@@ -42,8 +42,8 @@ bool TResourceMesh::loadResource()
 
 void TResourceMesh::draw()
 {
-    GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *3);
-    glGenBuffers(3, vboHandles);
+    GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
+    glGenBuffers(4, vboHandles);
 
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
@@ -55,9 +55,13 @@ void TResourceMesh::draw()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(1);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[2]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    glEnableVertexAttribArray(2);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 
     //We order to draw here
     glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);

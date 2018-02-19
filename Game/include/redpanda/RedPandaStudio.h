@@ -66,9 +66,15 @@ private:
     //////////////////////////////
     //  VARIABLES
     sf::RenderWindow* window;
-    GLuint programID;
     TNode *scene;
     ResourceManager *resourceManager;
+
+    //////////////////////////////
+    //  OPENGL VARIABLES
+    GLuint programID;
+    GLuint model;
+    GLuint view;
+    GLuint projection;
 
 };
 

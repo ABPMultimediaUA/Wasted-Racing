@@ -20,7 +20,7 @@ class TResourceMesh : public TResource {
 
     private:
         //Vertex info
-        GLfloat* vertex, normals, textures;
+        GLfloat* vertex, *normals, *textures;
         //Vertex indices
         GLuint* vertexIndices;
         //Number of faces (assuming faces are triangles, what we currently are forcing)

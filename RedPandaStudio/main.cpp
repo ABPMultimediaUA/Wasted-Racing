@@ -189,10 +189,6 @@ int main() {
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-    glEnable(GL_LIGHTING);
-    glDisable(GL_BLEND);
-    glColor3ub(255,255,255);
-
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);    
@@ -313,7 +309,7 @@ int main() {
         glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
         glEnableVertexAttribArray(0);
-
+        
         glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
         glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);

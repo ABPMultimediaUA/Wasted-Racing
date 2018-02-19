@@ -18,8 +18,13 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 void RedPandaStudio::updateDevice() {
 
+	glUniformMatrix4fv(model, 1, GL_FALSE, &scene->getEntity()->modelMatrix()[0][0]);
+    glUniformMatrix4fv(view, 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
+    glUniformMatrix4fv(projection, 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
+
 	window->clear();
     scene->draw();
+	window->setActive();
 	window->display();
 
 }
@@ -170,6 +175,13 @@ void RedPandaStudio::initOpenGL() {
     //Give the ProgramID to our engine
     setProgramID(ProgramID);
 
+	glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+
+	model = glGetUniformLocation(programID, "ModelMatrix");   
+    view  = glGetUniformLocation(programID, "ViewMatrix");
+    projection = glGetUniformLocation(programID, "ProjectionMatrix");
+
 }
 
 void RedPandaStudio::initScene() {
@@ -184,13 +196,11 @@ void RedPandaStudio::initScene() {
 
     //Initilize View Matrix
     glm::mat4& View = scene->getEntity()->viewMatrix();
-    View = glm::lookAt( glm::vec3(1,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+    View = glm::lookAt( glm::vec3(15,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
 
     //Initilize Model Matrix
     glm::mat4& Model = scene->getEntity()->modelMatrix();
-    Model = glm::mat4(0.0f);
-
-
+    Model = glm::mat4(1.0f);
 }
 
 //////////////////////////////
