@@ -268,7 +268,7 @@ int main() {
     Projection = glm::perspective(glm::radians(45.0f), (float) 16 / (float)9, 1.0f, 100.0f);
 
     glm::mat4& View = Escena->getEntity()->viewMatrix();
-    View = glm::lookAt( glm::vec3(15,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+    View = glm::lookAt( glm::vec3(-15,-3,-3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
 
     glm::mat4& Model = Escena->getEntity()->modelMatrix();
     Model = glm::mat4(1.0f);
