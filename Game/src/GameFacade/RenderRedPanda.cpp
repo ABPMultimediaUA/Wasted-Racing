@@ -50,7 +50,7 @@ void RenderRedPanda::addObject(IComponent* ptr) {
 
     ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr);
 
-    if(cmp != nullptr){
+    if(cmp != nullptr && cmp->getGameObject().getId() == 25000){
 
         auto shape = cmp->getObjectShape();
         auto obj = cmp->getGameObject();
@@ -65,7 +65,7 @@ void RenderRedPanda::addObject(IComponent* ptr) {
         switch(shape){
 
             case ObjectRenderComponent::Shape::Mesh: {
-                node = device->createObjectNode(device->getSceneRoot(), pos, cmp->getMesh().c_str());
+                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str());
                 std::cout << cmp->getMesh() << std::endl;
             }
             break;
