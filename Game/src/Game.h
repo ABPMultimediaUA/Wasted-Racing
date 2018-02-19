@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 //State includes
-#include "GameState/IGameState.h"
+#include "GlobalVariables.h"
 #include "GameState/IntroState.h"
 #include "GameState/MainState.h"
 #include "GameState/MatchState.h"
