@@ -33,8 +33,28 @@ bool TResourceMesh::loadResource()
                 memcpy(&vertexIndices[faceIndex], mesh->mFaces[j].mIndices, 3 * sizeof(unsigned int));
                 faceIndex += 3;
             }
+            if(mesh->HasTextureCoords(0))
+            {
+                textures=(float *)malloc(sizeof(float)*2*nVertex);
+                for(unsigned int k = 0; k<nVertex;k++)
+                {
+                    textures[k*2] = mesh->mTextureCoords[0][k].x;
+                    textures[k*2+1] = mesh->mTextureCoords[0][k].y;
+                }
+            }
 
         }
+
+        if(image.loadFromFile("Link/YoungLink_grp.png"))
+        {
+            std::cout << "LOADING" << std::endl;
+        }
+        sizeX = image.getSize().x;
+        sizeY = image.getSize().y;
+
+        std::cout << "X: " << sizeX << std::endl;
+        std::cout << "Y: " << sizeY << std::endl;
+
         return true;
     }
     return false;
@@ -42,6 +62,23 @@ bool TResourceMesh::loadResource()
 
 void TResourceMesh::draw()
 {
+    
+    GLuint textureID;
+    
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glEnable(GL_TEXTURE_2D);
+
+    //glActiveTexture(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+	//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)sizeX, (GLsizei)sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
+
+
+
     GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
     glGenBuffers(4, vboHandles);
 
