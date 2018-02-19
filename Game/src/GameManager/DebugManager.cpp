@@ -280,14 +280,12 @@ void DebugManager::cleanDebugNetwork()
     //Set network to false
     networkManager->setDebugNetworkState(false);
 
-
-
     //Delete trackers
     for(int i = 0; i < idCylynderDN.size(); i++){
         EventData data;
 
         //Delete marker
-        data.Id = marker->getId();
+        data.Id = idCylynderDN[i];
 
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
@@ -442,8 +440,8 @@ void DebugManager::updateNetworkText(uint32_t id, std::string text){
 
 void DebugManager::updateCylinderDN(int id){
     //Update the position of the trackers
-    for(){
-        
+    for(int i = 0; i < trackerDNComponentList.size(); i++){
+        std::shared_ptr<RemoteItemComponent> cyl = std::dynamic_pointer_cast<RemoteItemComponent>(remotePlayerComponentList[i]);
     }
 }
 
@@ -452,11 +450,16 @@ void DebugManager::updateCylinderDN(int id){
 //==============================================
 
 IComponent::Pointer createTrackerDNComponent(GameObject& newGameObject, int server_id, char type){
-
+    //make component
     IComponent::Pointer component = std::make_shared<TrackerDNComponent>(newGameObject, server_id, type);
 
+    //Add to object
     newGameObject.addComponent(component);
 
+    //Add to list
+    trackerDNComponentList.push_back(component);
+
+    //Send creation event
     EventData data;
     data.Component = component;
 

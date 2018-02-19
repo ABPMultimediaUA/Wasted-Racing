@@ -6,7 +6,7 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/InputComponent.h"
-#include "../GameObject/NetworkComponent/DebugNetworkComponent.h"
+#include "../GameObject/NetworkComponent/TrackerDNComponent.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include "../GameServer/CustomIdentifiers.h"
 
@@ -116,7 +116,7 @@ class DebugManager{
         std::vector<int32_t> idLastMessageTexts;                    //id of all the last messages
         int32_t idLastMessageText;                                  //last sent message
         std::vector<int32_t> idLastDataTexts;                       //id of all the last data of the last messages  
-        std::vector<IComponent::Pointer> remotePlayerComponentList; //List of remotePlayerComponent
+        std::vector<IComponent::Pointer> trackerDNComponentList;    //List of all trackers
 
         //==============================================
         // NETWORK PARTICULAR FUNCTIONS
