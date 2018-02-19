@@ -2,6 +2,8 @@
 
 namespace rps{
 
+//////////////////////////////
+//  DEVICE CONSTRUCTORS
 RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, int framerate, bool vsync, bool fullscreen){
 
     static RedPandaStudio rps;
@@ -11,6 +13,14 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
     rps.initScene();
 
     return rps;
+
+}
+
+void RedPandaStudio::updateDevice() {
+
+	window->clear();
+    scene->draw();
+	window->display();
 
 }
 
@@ -180,6 +190,93 @@ void RedPandaStudio::initScene() {
     glm::mat4& Model = scene->getEntity()->modelMatrix();
     Model = glm::mat4(0.0f);
 
+
+}
+
+//////////////////////////////
+//  NODE CONSTRUCTORS
+TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 position, const char* mesh) {
+
+	//Check parent node is valid
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+
+		//Create new transformation
+		TTransform* t = new TTransform();
+		t->identity();
+		t->translate(position.x, position.y, position.z);
+		TNode* transform = new TNode(parent, t);
+
+		//Create new mesh entity
+		TMesh* m = new TMesh();
+		m->setMesh(resourceManager->getResource(mesh));
+		TNode* mesh = new TNode(transform, m);
+
+		//Link tree
+		transform->addChild(mesh);
+		parent->addChild(transform);
+
+		//Return transform
+		return transform;
+	}
+	else{
+		return nullptr;
+	}
+}
+
+TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
+
+	return parent;
+
+}
+
+TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position) {
+
+	return parent;
+
+}
+
+//////////////////////////////
+//  TRANSFORMATION FACADE
+void translateNode(TNode* node, glm::vec3 position) {
+
+	TTransform* t;
+
+	//Check the transform is valid
+	if(node != nullptr && (t = dynamic_cast<TTransform*>(node->getEntity())) != nullptr ) {
+
+		t->translate(position.x, position.y, position.z);
+
+	}
+
+}
+
+void rotateNode(TNode* node, float rotation, int axis) {
+
+	TTransform* t;
+
+	//Check the transform is valid
+	if(node != nullptr && (t = dynamic_cast<TTransform*>(node->getEntity())) != nullptr ) {
+
+		if(axis == 0)
+			t->rotate(1, 0, 0, rotation);
+		if(axis == 1)
+			t->rotate(0, 1, 0, rotation);
+		if(axis == 2)
+			t->rotate(0, 0, 1, rotation);
+	}
+
+}
+
+void scaleNode(TNode* node, glm::vec3 scale) {
+
+	TTransform* t;
+
+	//Check the transform is valid
+	if(node != nullptr && (t = dynamic_cast<TTransform*>(node->getEntity())) != nullptr ) {
+
+		t->scale(scale.x, scale.y, scale.z);
+
+	}
 
 }
 

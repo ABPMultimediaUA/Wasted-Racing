@@ -120,7 +120,7 @@ private:
     rps::RedPandaStudio* device;
 
     //RedPanda node map
-    //std::map<uint16_t, rps::TNode*> nodeMap;
+    std::map<uint16_t, TNode*> nodeMap;
 
     //Irrlicht camera
     //rps::TNode* camera;

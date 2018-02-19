@@ -13,11 +13,11 @@ class TResource{
         /////////////// GETTERS & SETTERS
         //////////////////////////////////////////////////////////////////////
 
-        char* getName()                                          {   return name;    };
-        void  setName(char* n)                                   {   name=n;         };
+        const char* getName()                                          {   return name;    };
+        void  setName(const char* n)                                   {   name=n;         };
 
     protected:
-        char*  name;
+        const char*  name;
 
         //Maybe a ID variable should be added in order to manage the resources optimally
 };

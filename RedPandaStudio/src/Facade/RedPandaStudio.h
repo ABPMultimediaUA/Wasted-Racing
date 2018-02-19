@@ -34,7 +34,14 @@ public:
     //////////////////////////////
     //  DEVICE CONSTRUCTORS
     static RedPandaStudio& createDevice(int width, int height, int depth, int framerate, bool vsync, bool fullscreen);
+    void updateDevice();
     void dropDevice();
+
+    //////////////////////////////
+    //  NODE CONSTRUCTORS
+    TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh);
+    TNode* createCamera(TNode* parent, glm::vec3 position);
+    TNode* createLight(TNode* parent, glm::vec3 position);
 
     //////////////////////////////
     //  GETTERS
@@ -64,5 +71,11 @@ private:
     ResourceManager *resourceManager;
 
 };
+
+//Transformation facade
+void translateNode(TNode* node, glm::vec3 position);
+void rotateNode(TNode* node, float rotation, int axis);
+void scaleNode(TNode* node, glm::vec3 scale);
+
 
 }

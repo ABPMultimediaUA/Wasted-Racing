@@ -16,7 +16,7 @@ bool TResourceMesh::loadResource()
             //We get the vertex, normals and textures arrays and prepare them for OpenGL calls
             
             normals = mesh->mNormals[0][0];
-            textures = mesh->mTextureCoords[0][0][0];
+            //textures = mesh->mTextureCoords[0][0][0];
             nTriangles += nFaces;
             nVertex = mesh->mNumVertices;
             vertex = (float *)malloc(sizeof(float) * nVertex * 3);

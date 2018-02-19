@@ -22,14 +22,22 @@ void RenderRedPanda::updateWindow() {
 }
 
 //Closes engine window
-void RenderRedPanda::closeWindow() { }
+void RenderRedPanda::closeWindow() { 
+
+    device->dropDevice();
+
+}
 
 
 //==============================================================
 // Render Related functions
 //==============================================================
 //Renders all the scene
-void RenderRedPanda::renderDraw() { }
+void RenderRedPanda::renderDraw() {
+
+    device->updateDevice();
+
+}
 
 //Add a camera to the game
 void RenderRedPanda::addCamera() { }
@@ -38,7 +46,37 @@ void RenderRedPanda::addCamera() { }
 void RenderRedPanda::interpolateCamera(float accTime, float maxTime) { }
 
 //Add an object to the game
-void RenderRedPanda::addObject(IComponent* ptr) { }
+void RenderRedPanda::addObject(IComponent* ptr) { 
+
+    ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr);
+
+    if(cmp != nullptr){
+
+        auto shape = cmp->getObjectShape();
+        auto obj = cmp->getGameObject();
+        //Transform the data to irrlicht type
+        auto pos = obj.getTransformData().position;
+        auto rot = obj.getTransformData().rotation;
+        auto sca = obj.getTransformData().scale;
+
+        TNode * node;
+
+        //Initialize the node
+        switch(shape){
+
+            case ObjectRenderComponent::Shape::Mesh: {
+                node = device->createObjectNode(device->getSceneRoot(), pos, cmp->getMesh().c_str());
+                std::cout << cmp->getMesh() << std::endl;
+            }
+            break;
+            default:
+            break;
+        }
+    
+        nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
+    }
+
+}
 
 //Add an object to the game (Cylinder or Cone)
 void RenderRedPanda::addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) { }

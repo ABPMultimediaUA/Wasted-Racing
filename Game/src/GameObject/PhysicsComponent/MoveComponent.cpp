@@ -49,28 +49,28 @@ void MoveComponent::update(float dTime) {
     
     //===========================================================================================
     // DEBUG
-    if(getGameObject().getId() == 25000){
-        system("clear");
-        //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
-        std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
-        //std::cout << " ANG X " << trans.rotation.x << " ANG Y " << trans.rotation.y << " ANG Z " << trans.rotation.z << std::endl;
-        //std::cout << " POS Y " << trans.position.y << std::endl;
-        std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
-        std::cout << " INCR ANGLE: " << mData.spin_inc << std::endl;
-        std::cout << " ANGULO VELOCIDAD: " << mData.spin << std::endl;
-        std::cout << " ANGULO GIRO: " << mData.angle << std::endl;
-        std::cout << " Velocidad " << mData.vel << std::endl;
-        //std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
-        //std::cout << " VEL Y " << mData.velY << std::endl;
-    
-    
-        /*if (mData.jump == false){
-            std::cout << " No estoy saltando " << std::endl;
-        }
-        else{
-            std::cout << " Sí estoy saltando " << std::endl;
-        }*/
-    }
+    //if(getGameObject().getId() == 25000){
+    //    system("clear");
+    //    //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
+    //    std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
+    //    //std::cout << " ANG X " << trans.rotation.x << " ANG Y " << trans.rotation.y << " ANG Z " << trans.rotation.z << std::endl;
+    //    //std::cout << " POS Y " << trans.position.y << std::endl;
+    //    std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
+    //    std::cout << " INCR ANGLE: " << mData.spin_inc << std::endl;
+    //    std::cout << " ANGULO VELOCIDAD: " << mData.spin << std::endl;
+    //    std::cout << " ANGULO GIRO: " << mData.angle << std::endl;
+    //    std::cout << " Velocidad " << mData.vel << std::endl;
+    //    //std::cout << " Terrain angles. X: " << terrain.rotX <<", Z: "<<terrain.rotZ << std::endl;
+    //    //std::cout << " VEL Y " << mData.velY << std::endl;
+    //
+    //
+    //    /*if (mData.jump == false){
+    //        std::cout << " No estoy saltando " << std::endl;
+    //    }
+    //    else{
+    //        std::cout << " Sí estoy saltando " << std::endl;
+    //    }*/
+    //}
     
     //=========================================================================================*/
 }

@@ -17,6 +17,7 @@ public:
 
     bool translate(float x, float y, float z);
     bool rotate(float x, float y, float z, float w);
+    bool scale(float x, float y, float z);
 
     bool inverse();
 

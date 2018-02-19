@@ -20,12 +20,16 @@ bool TTransform::translate(float x, float y, float z)
 
 bool TTransform::rotate(float x, float y, float z, float w)
 {
-    glm::mat4 rotateY = glm::rotate(matrix, w, glm::vec3(0.0f, y, 0.0f));
-    glm::mat4 rotateX = glm::rotate(rotateY, w, glm::vec3(x, 0.0f, 0.0f));
-    glm::mat4 rotateZ = glm::rotate(rotateX, w, glm::vec3(0.0f, 0.0f, z));
-    matrix = rotateZ;
+    glm::mat4 rotateY = glm::rotate(matrix, w, glm::vec3(x, y, z));
+    matrix = rotateY;
     return true;
 } 
+
+bool TTransform::scale(float x, float y, float z) 
+{
+    matrix = glm::scale(matrix, glm::vec3(x,y,z));
+    return true;
+}
 
 bool TTransform::inverse()
 {

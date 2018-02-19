@@ -15,7 +15,7 @@ class ResourceManager {
         //////////////////////////////////////////////////////////////////////
 
         //Gets the resource from the vector, and if it's not loaded, loads it to the vector and returns him
-        TResourceMesh* getResource(char* n);
+        TResourceMesh* getResource(const char* n);
 
     private:
         std::vector<TResourceMesh*> resources;

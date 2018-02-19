@@ -1,6 +1,6 @@
 #include "ResourceManager.h"
 
-TResourceMesh* ResourceManager::getResource(char* n)
+TResourceMesh* ResourceManager::getResource(const char* n)
 {
     unsigned int i;
     TResourceMesh* res=NULL;
@@ -19,6 +19,7 @@ TResourceMesh* ResourceManager::getResource(char* n)
     if(found == false)
     {
         res = new TResourceMesh();
+
         res->setName(n);
         if(res->loadResource())
         {
