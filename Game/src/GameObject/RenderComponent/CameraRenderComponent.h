@@ -33,15 +33,15 @@ public:
 	virtual void draw();
 
 	//Getters
-	std::shared_ptr<TerrainComponent> 	getTerrain() 	{	return terrain;		}
-	float 								getDistance()	{	return distance;	}
+	std::shared_ptr<TerrainComponent> 	getTerrain() 		{	return terrain;		}
+	float 								getDistance()		{	return distance;	}
 	float 								getMaxDistance()	{	return maxDistance;	}
-	float 								getOldDistance(){	return oldDistance; }
+	float 								getOldDistance()	{	return oldDistance; }
 
 	//Setters
 	void setTerrain(std::shared_ptr<TerrainComponent> t) 	{	terrain = t; 		}
 	void setDistance(float d) 								{ 	distance = d; 		}
-	void setMaxDistance(float d) 								{ 	maxDistance = d; 		}
+	void setMaxDistance(float d) 							{ 	maxDistance = d;	}
 	void setOldDistance(float d) 							{ 	oldDistance = d; 	}
 
 private:

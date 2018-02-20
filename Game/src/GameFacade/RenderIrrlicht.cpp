@@ -1,7 +1,7 @@
 #include "RenderIrrlicht.h"
 
 //==============================================================
-// MAIN FUNCTIONS
+// Engine Related functions
 //==============================================================
 
 void RenderIrrlicht::openWindow(){
@@ -36,52 +36,6 @@ void RenderIrrlicht::openWindow(){
 
 void RenderIrrlicht::updateWindow() {
 
-    //updateCamera();
-    auto score = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>();
-    if(score != nullptr)
-    {
-        int oM = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
-        int oL = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
-        int ML = ScoreManager::getInstance().getMaxLaps();
-        int iT = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
-        irr::core::stringw stringLap = L"  LAP:";
-        irr::core::stringw stringItm = L"  ITEM:";
-        irr::core::stringw stringPos = L"  POSITION:";
-        stringLap += oL;
-        stringLap += " / ";
-        stringLap += ML;
-        switch(iT)
-        {
-            case -1: stringItm+="EMPTY";
-                    break;
-            case 0: stringItm+="RED SHELL";
-                    break;
-            case 1: stringItm+="BLUE SHELL";
-                    break;
-            case 2: stringItm+="BANANA";
-                    break;
-            case 3: stringItm+="MUSHROOM";
-                    break;
-            case 4: stringItm+="STAR";
-                    break;
-        }
-        stringPos += oM;
-        pos->setText(stringPos.c_str());
-        lap->setText(stringLap.c_str());
-        item->setText(stringItm.c_str());
-        //updateItemIcon();
-    }
-    else
-    {
-        irr::core::stringw stringLap = L"  LAP:";
-        irr::core::stringw stringItm = L"  ITEM:";
-        irr::core::stringw stringPos = L"  POSITION:";
-        
-        pos->setText(stringPos.c_str());
-        lap->setText(stringLap.c_str());
-        item->setText(stringItm.c_str());
-        //updateItemIcon();
-    }
 }
 
 void RenderIrrlicht::closeWindow() {
@@ -89,6 +43,10 @@ void RenderIrrlicht::closeWindow() {
     device->drop();
 
 }
+
+//==============================================================
+// Render Related functions
+//==============================================================
 
 void RenderIrrlicht::renderDraw() {
 
@@ -582,6 +540,10 @@ void RenderIrrlicht::updateItemIcon(){
 //==============================================================
 // VISUAL INTERFACE
 //==============================================================
+void updateHUD(int oM, int oL, int ML, int iT)
+{
+
+}
 
 ////////////
 //  Image

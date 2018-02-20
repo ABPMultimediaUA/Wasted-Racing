@@ -7,7 +7,6 @@
 
 #include "IRenderFacade.h"
 #include "InputIrrlicht.h"
-#include "../GameManager/ObjectManager.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
 #include "../GameObject/RenderComponent/CameraRenderComponent.h"
 
@@ -75,7 +74,7 @@ public:
     ////////////
 
     //Update entire HUD
-    virtual void updateHUD();
+    virtual void updateHUD(int oM, int oL, int ML, int iT);
 
     //Updates item icon in the HUD
     virtual void updateItemIcon();

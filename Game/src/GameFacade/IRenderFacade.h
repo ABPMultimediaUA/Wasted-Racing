@@ -93,7 +93,7 @@ public:
     ////////////
 
     //Update entire HUD
-    virtual void updateHUD() = 0;
+    virtual void updateHUD(int pos, int lap, int maxLaps, int item) = 0;
 
     //Updates item icon in the HUD
     virtual void updateItemIcon() = 0;

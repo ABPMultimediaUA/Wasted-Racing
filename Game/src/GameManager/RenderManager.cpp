@@ -19,7 +19,7 @@ void addCameraRenderComponent(EventData data);
 void objectDeletedRender(EventData eData);
 
 //==============================================
-// RENDER MANAGER FUNCTIONS
+// MAIN FUNCTIONS
 //============================================== 
 
 RenderManager& RenderManager::getInstance() {
@@ -84,6 +84,10 @@ void RenderManager::splitQuadTree(){
     //renderComponentTree.init(maxObjPerNode, updateRange, renderComponentList, x0, x1, y0, y1);
     //renderComponentTree.divide();
 }
+
+//==============================================
+// CREATOR FUNCTIONS
+//============================================== 
 
 IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr) {
 
@@ -782,6 +786,67 @@ void RenderManager::updateBattleDebug(float dTime)
 //==============================================
 // VISUAL INTERFACE
 //==============================================
+/////////////
+//  HUD
+/////////////
+
+void RenderManager::initHUD()
+{
+    //Create all values
+    lapHUD_ID = createText("LAP: ", glm::vec2(0, 300),255,255,255, glm::vec2(500,25));
+    positionHUD_ID = createText("ITEM: ", glm::vec2(0, 325),255,255,255, glm::vec2(500,25));
+    itemHUD_ID = createText("POSITION: ", glm::vec2(0, 350),255,255,255, glm::vec2(500,25));
+}
+
+void RenderManager::updateHUD()
+{
+    //If there is score
+    auto score = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>();
+    if(score)
+    {
+        //Get data
+        int pos = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
+        int lap = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
+        int maxLaps = ScoreManager::getInstance().getMaxLaps();
+        int item = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+
+        //Change position text
+        std::string number = std::to_string(pos);
+        std::string s("POSITION: "+number);
+        changeText(positionHUD_ID, s);
+
+        //Change lap text
+        std::string number2 = std::to_string(lap);
+        std::string number3 = std::to_string(maxLaps);
+        s = std::string("LAP: "+lap+"/"+maxLaps);
+        changeText(lapHUD_ID, s);
+
+        //Change item text
+        s = std::string("ITEM: ");
+        switch(item)
+        {
+            case -1: s+="EMPTY";
+                    break;
+            case 0: s+="RED SHELL";
+                    break;
+            case 1: s+="BLUE SHELL";
+                    break;
+            case 2: s+="BANANA";
+                    break;
+            case 3: s+="MUSHROOM";
+                    break;
+            case 4: s+="STAR";
+                    break;
+        }
+        changeText(itemHUD_ID, s);
+    }
+    else
+    {
+        changeText(lapHUD_ID, "LAP:  ");
+        changeText(positionHUD_ID, "POSITION:  ");
+        changeText(itemHUD_ID, "ITEM:  ");
+    }
+}
 
 /////////////
 //  IMAGE

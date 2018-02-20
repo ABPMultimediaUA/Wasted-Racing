@@ -3,8 +3,12 @@
 #include <vector>
 #include "QuadTree.h"
 #include "../GameFacade/RenderIrrlicht.h"
+#include "../GameObject/ScoreComponent.h"
+#include "../GameObject/ItemComponent/ItemHolderComponent.h"
 #include "WaypointManager.h"
 #include "AIManager.h"
+#include "ObjectManager.h"
+#include "ScoreManager.h"
 
 class RenderManager{
 
@@ -174,6 +178,13 @@ private:
     //Once we've added them all, we split them in a QuadTree structure
     std::vector<IComponent::Pointer>      renderComponentList;
     QuadTree                              renderComponentTree;
+
+    //==============================================================
+    // HUD DATA
+    //==============================================================
+    int32_t lapHUD_ID;      //Lap text ID
+    int32_t positionHUD_ID; //Position text ID
+    int32_t itemHUD_ID;     //Item text ID
 
     //Data for the quadTree
     //unsigned int maxObjPerNode;
