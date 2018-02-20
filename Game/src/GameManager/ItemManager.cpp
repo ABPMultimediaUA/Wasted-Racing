@@ -3,6 +3,7 @@
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
+void createItemEvent(EventData eData);
 void objectDeleteItem(EventData eData);
 void objectDeleteHolder(EventData);
 
@@ -21,7 +22,11 @@ ItemManager& ItemManager::getInstance(){
 }
 
 void ItemManager::init(){
+    //Global Variables holder
+    globalVariables = &GlobalVariables::getInstance();
 
+    //Initalize listeners
+    EventManager::getInstance().addListener(EventListener {EventType::Item_Create, createItemEvent});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteItem});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteHolder});
 
@@ -98,7 +103,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     if(random == IItemComponent::ItemType::redShell)
     {
         itemHolder->setItemType(-1);
-        if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
+        if(globalVariables->getGameState()->type == IGameState::stateType::MULTIMATCH){
 
             //Launch creation event
             EventData data;
@@ -115,7 +120,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     else if(random == IItemComponent::ItemType::blueShell)
     {
         itemHolder->setItemType(-1);
-        if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
+        if(globalVariables->getGameState()->type == IGameState::stateType::MULTIMATCH){
             
             //Launch creation event
             EventData data;
@@ -133,7 +138,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     else if(random == IItemComponent::ItemType::banana)
     {
         itemHolder->setItemType(-1);
-        if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
+        if(globalVariables->getGameState()->type == IGameState::stateType::MULTIMATCH){
             //Launch creation event
             EventData data;
             data.Id = obj.getId();
@@ -411,6 +416,11 @@ void ItemManager::deleteItem(IComponent::Pointer component)
 //==============================================
 // DELEGATES
 //==============================================
+
+void createItemEvent(EventData eData) {
+    ItemManager::getInstance().createItem(eData.Object);
+}
+
 
 void objectDeleteItem(EventData eData) {
 

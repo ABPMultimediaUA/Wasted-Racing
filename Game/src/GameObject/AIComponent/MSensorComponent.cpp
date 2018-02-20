@@ -1,5 +1,4 @@
 #include "MSensorComponent.h"
-#include <iostream>
 
 //Constructors
 MSensorComponent::MSensorComponent(GameObject& newGameObject) : 

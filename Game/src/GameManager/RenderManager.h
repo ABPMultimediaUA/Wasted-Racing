@@ -1,10 +1,10 @@
 #pragma once
 
+#include <vector>
 #include "QuadTree.h"
 #include "../GameFacade/RenderIrrlicht.h"
 #include "WaypointManager.h"
 #include "AIManager.h"
-#include <vector>
 
 class RenderManager{
 

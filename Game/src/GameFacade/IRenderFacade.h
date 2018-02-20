@@ -4,10 +4,8 @@
 #include <cstdint>
 #include <string>
 
-#include "../GameManager/InputManager.h"
 #include "../GameObject/GameObject.h"
-
-class GameObject;
+#include "../GameManager/InputManager.h"
 
 //Window data structures
 struct vec2d {

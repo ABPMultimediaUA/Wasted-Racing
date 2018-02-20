@@ -106,6 +106,9 @@ void driftUpI(EventData eData){
     comp->isDrifting(false);
 }
 void useItemDownI(EventData eData){
-    auto obj = getGameObject();
-    ItemManager::getInstance().createItem(obj);
+    eData.Object = getGameObject();
+    EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
+
+    //auto obj = getGameObject();
+   // ItemManager::getInstance().createItem(obj);
 }

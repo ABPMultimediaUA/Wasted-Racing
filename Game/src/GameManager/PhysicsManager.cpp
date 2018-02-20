@@ -1,10 +1,4 @@
 #include "PhysicsManager.h"
-#include "../GameObject/GameObject.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameManager/RenderManager.h"
-#include "../GameObject/RenderComponent/CameraRenderComponent.h"
-#include <memory>
-#include <iostream>
 
 //==============================================
 // DELEGATES DECLARATIONS

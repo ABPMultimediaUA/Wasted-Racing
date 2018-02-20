@@ -1,7 +1,8 @@
+
 #pragma once
 
 #include <memory>
- #include <string>
+#include <string>
 #include "../GameManager/RenderManager.h"
 #include "../GameObject/IComponent.h" 
 #include "../GameObject/GameObject.h"

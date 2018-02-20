@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include "../PhysicsComponent/MoveComponent.h"
 #include "../StartLineComponent.h"
 #include "AIDrivingComponent.h"

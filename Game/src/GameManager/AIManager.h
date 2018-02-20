@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <iostream>
+#include <vector>
 #include "../GameObject/AIComponent/AIDrivingComponent.h"
 #include "../GameObject/AIComponent/AIBattleComponent.h"
 #include "../GameObject/AIComponent/VSensorComponent.h"
@@ -8,11 +11,7 @@
 #include "../GameObject/AIComponent/VObject.h"
 #include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
-#include "../GameObject/GameObject.h"
 #include "../GameEvent/EventManager.h"
-#include <memory>
-#include <iostream>
-#include <vector>
 
 class AIManager{
 

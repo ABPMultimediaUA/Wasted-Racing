@@ -17,6 +17,7 @@ void Game::init() {
     setRenderEngine(0);
     setInputEngine(0);
 
+    globalVariables = &GlobalVariables::getInstancec(); //Initialize global variables bush
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
     eventManager    = &EventManager::getInstance();     //Initilize event manager
     renderManager   = &RenderManager::getInstance();    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
@@ -155,24 +156,24 @@ void Game::setState(IGameState::stateType type){
         //State changer
         switch(type){
             case IGameState::stateType::INTRO:
-                state = &IntroState::getInstance();
+                globalVariables->setGameState(&IntroState::getInstance());
                 break;
             case IGameState::stateType::CLIENTLOBBY:
-                state = &ClientLobbyState::getInstance();
+                globalVariables->setGameState(ClientLobbyState::getInstance());
                 break;
             case IGameState::stateType::MATCH:
-                state = &MatchState::getInstance();
+                globalVariables->setGameState(MatchState::getInstance());
                 break;
             case IGameState::stateType::MULTIMATCH:
-                state = &MultiMatchState::getInstance();
+                globalVariables->setGameState(&MultiMatchState::getInstance());
                 break;
             default:
-                state = &IntroState::getInstance();
+                globalVariables->setGameState(IntroState::getInstance());
                 break;
         }
 
         //everytime we change state, we must initialize its operating data
-        state->init();
+        globalVariables->getGameState()->init();
     }
 
 //adding minimum objects needed to play the game

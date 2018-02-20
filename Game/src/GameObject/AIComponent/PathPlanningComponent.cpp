@@ -1,5 +1,4 @@
 #include "PathPlanningComponent.h"
-#include <iostream>
  
 
 PathPlanningComponent::PathPlanningComponent(GameObject& newGameObject, std::vector<GameObject::Pointer>& list) : IComponent(newGameObject) 

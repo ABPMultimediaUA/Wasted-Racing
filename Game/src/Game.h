@@ -11,13 +11,8 @@
 #include <fstream>
 #include <stdio.h>
 
-//State includes
+//Basic include
 #include "GlobalVariables.h"
-#include "GameState/IntroState.h"
-#include "GameState/MainState.h"
-#include "GameState/MatchState.h"
-#include "GameState/ClientLobbyState.h"
-#include "GameState/MultiMatchState.h"
 
 //Managers
 #include "GameManager/InputManager.h"
@@ -40,12 +35,18 @@
 #include "GameObject/AIComponent/WaypointComponent.h"
 #include "GameFacade/AudioFMOD.h"
 
+//State includes
+#include "GameState/IntroState.h"
+#include "GameState/MainState.h"
+#include "GameState/MatchState.h"
+#include "GameState/ClientLobbyState.h"
+#include "GameState/MultiMatchState.h"
+
 class IntroState;
 class MultiMatchState;
 class MatchState;
 class ClientLobbyState;
 class MultiMatchState;
-class ItemManager;
 
 class AIManager;
 class ObjectManager;
@@ -114,6 +115,8 @@ private:
     //==============================================================
     // Private data
     //==============================================================
+    //Global Variables
+    GlobalVariables* globalVariables;
     //Object manager
     ObjectManager* objectManager;
     //Input manager

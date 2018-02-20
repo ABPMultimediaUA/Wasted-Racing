@@ -44,6 +44,7 @@ enum EventType {
     TrackerDNComponent_Create,
     TrackerDNComponent_Delete,
     //OBJECTS: Creation events
+    Item_Create,
     Banana_Create,
     RedShell_Create,
     BlueShell_Create,

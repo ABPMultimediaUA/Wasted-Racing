@@ -53,19 +53,23 @@ public:
 	void updateMaxSpeedOverTime(const float dTime);
 	void updateJump(LAPAL::movementData& mData, glm::vec3& trans, LAPAL::plane3f t);
 
-	//Mass and Data getters and setters
-	LAPAL::movementData getMovemententData() 						{ 	return mData; 	}
-	const float 		getMass()									{ 	return mass;  	}
-	LAPAL::plane3f		getTerrain()								{ 	return terrain;   }
+    //==========================================
+    // GETTERS AND SETTERS
+    //==========================================
+	LAPAL::movementData getMovemententData() 						{ 	return mData; 		}
+	const float 		getMass()									{ 	return mass;  		}
+	LAPAL::plane3f		getTerrain()								{ 	return terrain;  	}
 	void 				setMovementData(LAPAL::movementData data) 	{ 	mData = data;   	}
 	void 				setMass(const float newMass)				{ 	mass = newMass; 	}
 	void				setTerrain(LAPAL::plane3f p) 				{ 	terrain = p;		}
 
 private:
-
-    LAPAL::movementData mData;
-	LAPAL::plane3f		terrain;
-	float mass;
+    //==========================================
+    // PRIVATE DATA
+    //==========================================
+    LAPAL::movementData mData; 		//Personal movement data
+	LAPAL::plane3f		terrain; 	//Terrain it is on top of
+	float mass; 					//Mass of the object/player
 
 	//Data for movement changes
 	float constantAlteredTime;		//Time during max_speed is constant

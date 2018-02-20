@@ -1,5 +1,14 @@
 #pragma once
 
+
+//GLOBAL PROBLEMS
+/*
+    >RenderManager works in AIBattleComponent, even though not included. Change method when migrating to debug manager
+
+
+*/
+//////////////////
+
 #include "GameState/IGameState.h"
 
 class GlobalVariables{
@@ -20,13 +29,13 @@ class GlobalVariables{
         //==========================================
         // GETTERS AND SETTERS
         //==========================================
-        void setGameState(IGameState::stateType t){ game = t;    };
-        IGameState::stateType getGameState()      { return game; };
+        void setGameState(IGameState* t){ game = t;    };
+        IGameState* getGameState()      { return game; };
 
     private:
 
         //==========================================
         // GLOBAL VARIABLES
         //==========================================
-        IGameState::stateType game; 
+        IGameState* game; 
 };

@@ -1,6 +1,12 @@
 #pragma once
 
 #include <vector>
+#include <memory>
+#include <iostream>
+#include "../GameObject/GameObject.h"
+#include "../GameEvent/EventManager.h"
+#include "../GameManager/RenderManager.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include "../GameObject/PhysicsComponent/CollisionComponent.h"
 #include "../GameObject/PhysicsComponent/TerrainComponent.h"
 #include "../GameObject/PhysicsComponent/RampComponent.h"

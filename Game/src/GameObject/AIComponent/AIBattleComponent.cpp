@@ -1,5 +1,4 @@
 #include "AIBattleComponent.h"
-#include <string>
 
 
 //This class defines the usage of a generic item in the Battle System
@@ -19,6 +18,7 @@ class UseItemAction : public Behaviour{
                 auto player = RenderManager::getInstance().getAIsBattle();
                 if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
                 {
+                    // DELETE ALL OF THIS
                     RenderManager::getInstance().setRootBattle(name);
                     RenderManager::getInstance().setEndRootBattle(true);
                     RenderManager::getInstance().setWaitBattle(false);

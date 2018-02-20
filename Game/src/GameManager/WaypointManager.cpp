@@ -17,7 +17,6 @@ WaypointManager::WaypointManager()
 
 WaypointManager::~WaypointManager()
 {
-//check how remove vector
     delete listSubNodes;
 }
 
@@ -32,6 +31,7 @@ void WaypointManager::update(float dTime) {
     //I doubt it too
     //I hope Fran reads this
 
+    //Update all pathplanning component if they are not inside items
     for(unsigned int i=0; i < pathPlanningComponentList.size(); i++)
     {
         auto iItemComponent = pathPlanningComponentList[i]->getGameObject().getComponent<IItemComponent>().get();
@@ -50,15 +50,20 @@ void WaypointManager::close() {
 
 IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer newGameObject, float r, int lvl)
 {
+    //Create shared pointer
     IComponent::Pointer component = std::make_shared<WaypointComponent>(*newGameObject.get(), r, lvl);
 
+    //Add component to the object
     newGameObject.get()->addComponent(component);
 
+    //Add to list of waypoints
     listSubNodes->push_back(newGameObject);
 
+    //Search for its place on the list of waypoints
     for(unsigned int i=0;i<listSubNodes->size();i++){
         auto rad1 = listSubNodes->at(i).get()->getComponent<WaypointComponent>()->getLevel();
         for(unsigned int x=i+1;x<listSubNodes->size()-1;x++){
+            //bubble sort
             auto rad2 = listSubNodes->at(x).get()->getComponent<WaypointComponent>()->getLevel();
             if(rad1>rad2){
                 auto aux=listSubNodes->at(i);
@@ -67,18 +72,19 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
             }
         }
     }
-        
-    //RenderManager::getInstance().createObjectRenderComponent(*newGameObject.get(), ObjectRenderComponent::Shape::Sphere);
 
     return component;
 }
 
 IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Pointer newGameObject, std::vector<GameObject::Pointer>& list)
 {
+    //Creade pointer
     IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get(), list);
 
+    //Add component to the object
     newGameObject.get()->addComponent(component);
 
+    //add to the list of components
     pathPlanningComponentList.push_back(component);
 
     return component;
@@ -99,9 +105,10 @@ IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Poi
 void objectDeletePathPlanning(EventData eData) {
 
     auto& PathPlanningComponentList = WaypointManager::getInstance().getPathPlanningList();
-
+    //Seach for component if given ID
     for(unsigned int i = 0; i<PathPlanningComponentList.size(); ++i) {
         if(eData.Id == PathPlanningComponentList[i].get()->getGameObject().getId()) {
+            //and erase it
             PathPlanningComponentList.erase(PathPlanningComponentList.begin() + i);
             return;
         }

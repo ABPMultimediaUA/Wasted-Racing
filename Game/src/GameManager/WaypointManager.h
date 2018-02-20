@@ -1,10 +1,8 @@
 #pragma once
 
-#include "RenderManager.h"
-#include "../GameObject/AIComponent/WaypointComponent.h"
+#include <vector>
 #include "../GameObject/AIComponent/PathPlanningComponent.h"
 #include "../GameObject/ItemComponent/IItemComponent.h"
-#include <vector>
 
 class PathPlanningComponent;
 
