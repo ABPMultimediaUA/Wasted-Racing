@@ -22,10 +22,15 @@ void RedPandaStudio::updateDevice() {
     glUniformMatrix4fv(view, 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
     glUniformMatrix4fv(projection, 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
 
-	window->clear();
-    scene->draw();
-	window->setActive();
+
+	
+	
+	scene->draw();
+	window->setActive(false);
+	window->pushGLStates();
+	window->setActive(true);
 	window->display();
+	window->popGLStates();
 
 }
 
