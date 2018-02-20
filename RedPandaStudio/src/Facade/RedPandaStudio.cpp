@@ -73,8 +73,8 @@ void RedPandaStudio::initSFMLWindow(int width, int height, int depth, int framer
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "/home/luis/WastedHorchata/Wasted-Racing/RedPandaStudio/test.vertexshader";
-    const char * fragment_file_path = "/home/luis/WastedHorchata/Wasted-Racing/RedPandaStudio/test.fragmentshader";
+    const char * vertex_file_path = "test.vertexshader";
+    const char * fragment_file_path = "test.fragmentshader";
 
     if (glewInit() != GLEW_OK) {
         std::cerr << "Falló al inicializar GLEW\n" << std::endl;
@@ -201,7 +201,7 @@ void RedPandaStudio::initScene() {
 
     //Initilize View Matrix
     glm::mat4& View = scene->getEntity()->viewMatrix();
-    View = glm::lookAt( glm::vec3(15,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+    View = glm::lookAt( glm::vec3(-10,15,-3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
 
     //Initilize Model Matrix
     glm::mat4& Model = scene->getEntity()->modelMatrix();

@@ -13,7 +13,7 @@ varying vec2 UV_Coordinates;
 
 void main()
 {
-    vec4 LightPos = ViewMatrix*vec4( 100, 5, -90, 1);
+    vec4 LightPos = ViewMatrix*vec4( -100, -20, -90, 1);
     vec3 P = vec3(ViewMatrix * ModelMatrix * vertexPosition);	            // Posición del vértice
 	vec3 N = vec3(ViewMatrix * ModelMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
 
@@ -28,7 +28,7 @@ void main()
     float attenuation = 80.0/(0.25+(0.01*d)+(0.003*d*d));
     diffuse = diffuse*attenuation;
 
-    v_Color = vec4(0.4, 0.4, 0.0, 1.0) * (ambient + diffuse);
+    v_Color = vec4(1.0, 1.0, 1.0, 1.0) * (ambient + diffuse);
 
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 
