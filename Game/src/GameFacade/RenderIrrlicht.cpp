@@ -1,5 +1,9 @@
 #include "RenderIrrlicht.h"
 
+//==============================================================
+// MAIN FUNCTIONS
+//==============================================================
+
 void RenderIrrlicht::openWindow(){
 
     irr::video::E_DRIVER_TYPE driverType = irr::video::E_DRIVER_TYPE::EDT_OPENGL;

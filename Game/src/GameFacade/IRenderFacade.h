@@ -1,10 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include <cstdint>
 #include <string>
 
-#include "../GameObject/GameObject.h"
 #include "../GameManager/InputManager.h"
 
 //Window data structures
@@ -93,6 +91,9 @@ public:
     ////////////
     //  HUD RELATED
     ////////////
+
+    //Update entire HUD
+    virtual void updateHUD() = 0;
 
     //Updates item icon in the HUD
     virtual void updateItemIcon() = 0;

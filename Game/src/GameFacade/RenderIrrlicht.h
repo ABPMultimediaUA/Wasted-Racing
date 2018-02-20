@@ -74,6 +74,9 @@ public:
     //  HUD RELATED
     ////////////
 
+    //Update entire HUD
+    virtual void updateHUD();
+
     //Updates item icon in the HUD
     virtual void updateItemIcon();
     
@@ -92,9 +95,9 @@ public:
     //Clean rectangles off of the screen
     virtual void cleanImages();
 
-    ////////////
+    /////////////
     //  Rectangle
-    ////////////
+    /////////////
 
     //Add rectangle of the given color and alpha channel, at the specified position with the given size
     virtual int32_t addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a);

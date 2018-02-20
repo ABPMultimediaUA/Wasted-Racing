@@ -1,10 +1,7 @@
 #pragma once
 
-#include <cstdint>
 #include <stdint.h>
 #include <list>
-#include <glm/glm.hpp>
-#include <memory>
 
 #include "IComponent.h"
 #include "../GameEvent/EventManager.h"

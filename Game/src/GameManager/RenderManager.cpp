@@ -58,7 +58,7 @@ void RenderManager::init(int engine) {
 }
 
 void RenderManager::update(float dTime) {
-    renderFacade->updateWindow();
+    renderFacade->updateHUD();
     if(debugState){
         updateAIDebug();
         updateCameraDebug();
