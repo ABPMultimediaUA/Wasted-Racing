@@ -42,6 +42,9 @@ public:
         return instance;
     };
 
+    //Interpolate
+    void interpolate(float &accumulatedTime);
+
 private:
     
     //==============================================================

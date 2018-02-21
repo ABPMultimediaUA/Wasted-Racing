@@ -206,7 +206,7 @@ void DebugManager::initDebugNetwork()
     idLastMessageText = auxIdText;
 
     //Each data for each player: system address, server_id actual position
-    for(int i = 0; i < networkManager->getRemotePlayerComponentList().size(); i++){
+    for(unsigned int i = 0; i < networkManager->getRemotePlayerComponentList().size(); i++){
         //Auxiliar variables
         int id       = 31000+i; //for every player, generate an ID of the network tracker (2 of them)
         int id2      = 31000+i+networkManager->getRemotePlayerComponentList().size();
@@ -215,7 +215,7 @@ void DebugManager::initDebugNetwork()
         float rad    = 10.f;    //Radius of the cylinder
 
         //Get initial position
-        GameObject::TransformationData point = AIDebugPoint[AIDebug].getTransformData();
+        GameObject::TransformationData point = networkManager->getRemotePlayerComponentList()[i]->getGameObject().getTransformData();
         
         //Clean the transforms
         GameObject::TransformationData transform;
@@ -233,11 +233,11 @@ void DebugManager::initDebugNetwork()
         GameObject::Pointer collisionCylinder2 = ObjectManager::getInstance().createObject(id2, transform);
 
         //Create render component
-        RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, length, 10.f, true);
-        RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder2.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, length, 10.f, true);
+        RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, height, 10.f, true);
+        RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder2.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, height, 10.f, true);
         
         //Create tracker component
-        auto objective = std::dynamic_pointer_cast<RemoteItemComponent>(getRemotePlayerComponentList[i]);
+        auto objective = std::dynamic_pointer_cast<RemoteItemComponent>(networkManager->getRemotePlayerComponentList()[i]);
         createTrackerDNComponent(*collisionCylinder.get(), objective.get()->getServerId(), 'a');
         createTrackerDNComponent(*collisionCylinder2.get(), objective.get()->getServerId(), 'b');
 
@@ -281,7 +281,7 @@ void DebugManager::cleanDebugNetwork()
     networkManager->setDebugNetworkState(false);
 
     //Delete trackers
-    for(int i = 0; i < idCylynderDN.size(); i++){
+    for(unsigned int i = 0; i < idCylynderDN.size(); i++){
         EventData data;
 
         //Delete marker
@@ -440,8 +440,8 @@ void DebugManager::updateNetworkText(uint32_t id, std::string text){
 
 void DebugManager::updateCylinderDN(int id){
     //Update the position of the trackers
-    for(int i = 0; i < trackerDNComponentList.size(); i++){
-        std::shared_ptr<RemoteItemComponent> cyl = std::dynamic_pointer_cast<RemoteItemComponent>(remotePlayerComponentList[i]);
+    for(unsigned int i = 0; i < trackerDNComponentList.size(); i++){
+        std::shared_ptr<RemoteItemComponent> cyl = std::dynamic_pointer_cast<RemoteItemComponent>(networkManager->getRemotePlayerComponentList()[i]);
     }
 }
 
@@ -449,7 +449,7 @@ void DebugManager::updateCylinderDN(int id){
 // MANAGING COMPONENTS
 //==============================================
 
-IComponent::Pointer createTrackerDNComponent(GameObject& newGameObject, int server_id, char type){
+IComponent::Pointer DebugManager::createTrackerDNComponent(GameObject& newGameObject, int server_id, char type){
     //make component
     IComponent::Pointer component = std::make_shared<TrackerDNComponent>(newGameObject, server_id, type);
 

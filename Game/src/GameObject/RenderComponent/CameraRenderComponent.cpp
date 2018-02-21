@@ -1,13 +1,8 @@
 #include "CameraRenderComponent.h"
-#include "../../GameManager/RenderManager.h"
-#include <iostream>
-
-class MoveComponent;
-class TerrainComponent;
 
 //Initilizer
 void CameraRenderComponent::init() {
-    RenderManager::getInstance().getRenderFacade()->setCameraTarget(gameObject);
+
 }
 
 //Update   

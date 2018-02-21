@@ -40,6 +40,7 @@ void RenderManager::init(int engine) {
     //Render init
     renderFacade->init(1280, 720, false, false);
     renderFacade->openWindow();
+    initHUD();
 
     //Data init
     debugState = false;
@@ -58,7 +59,13 @@ void RenderManager::init(int engine) {
 }
 
 void RenderManager::update(float dTime) {
+    //Update HUD
     renderFacade->updateHUD();
+
+    //Update camera collision
+    renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
+
+    //Update debug if debug mode activated
     if(debugState){
         updateAIDebug();
         updateCameraDebug();
@@ -66,6 +73,7 @@ void RenderManager::update(float dTime) {
     }else{
         renderFacade->updateItemIcon();
     }
+
 }
 
 void RenderManager::draw() {
@@ -127,6 +135,9 @@ IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGa
     data.Component = component;
 
     EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
+
+    //Set camera target to this camera, since it was created
+    renderFacade->setCameraTarget(*obj.get());
 
     return component;
 }
@@ -425,7 +436,7 @@ void RenderManager::createRenderNPC()
 
     //Create camera render
     auto obj = ObjectManager::getInstance().getObject(AIDebugPoint[AIDebug].getId());
-    RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+    RenderManager::getInstance().(*obj.get());
 }
 
 void RenderManager::deleteRenderNPC()

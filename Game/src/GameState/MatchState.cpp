@@ -34,10 +34,9 @@ void MatchState::update(float &accumulatedTime) {
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
     }
+
     //Always interpolate
-    physicsManager->interpolate(accumulatedTime, loopTime);
-    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
-    
+    interpolate(accumulatedTime);
 }
 
 void MatchState::updateManagers(float dTime){
@@ -46,7 +45,7 @@ void MatchState::updateManagers(float dTime){
 
     physicsManager->update(dTime);
 
-    aiManager->update();
+    aiManager->update(dTime);
 
     waypointManager->update(dTime);
 
@@ -64,6 +63,23 @@ void MatchState::updateManagers(float dTime){
 
 void MatchState::draw() {
     renderManager->draw();
+}
+
+void MatchState::interpolate(float &accumulatedTime) {
+    //Interpolate positions
+    physicsManager->interpolate(accumulatedTime, loopTime);
+
+    //Update each position in Render Manager
+    for(unsigned int i=0; i<physicsManager->getMovingCharacterList().size(); ++i){
+        //Interpolate every moving object
+        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getId(), 
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getTransformData()
+        );
+    }
+
+    //Update camera position
+    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
 }
 
 void MatchState::close() {

@@ -34,6 +34,9 @@ public:
     //Drawer
     virtual void draw();
 
+    //Interpolate function
+    void interpolate(float &accumulatedTime);
+    
     //Shutdown
     virtual void close();
 

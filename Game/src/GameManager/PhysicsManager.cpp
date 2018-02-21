@@ -76,7 +76,7 @@ void PhysicsManager::update(const float dTime) {
     }
 
     //Update camera collision
-    RenderManager::getInstance().getRenderFacade()->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
+    //RenderManager::getInstance().getRenderFacade()->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
 
 }
 
@@ -110,8 +110,8 @@ void PhysicsManager::interpolate(float accumulatedTime, const float maxTime) {
 
         gameObject.setTransformData(currTrans);
 
-        auto id = gameObject.getId();
-        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, currTrans);
+        //auto id = gameObject.getId();
+        //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, currTrans);
 
     }
 

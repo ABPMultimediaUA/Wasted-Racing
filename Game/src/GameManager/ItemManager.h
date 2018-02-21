@@ -4,7 +4,6 @@
 #include <iostream>
 #include "../GlobalVariables.h"
 #include "../GameEvent/EventManager.h"
-#include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/ItemComponent/ItemHolderComponent.h"
 #include "../GameObject/ItemComponent/ItemRedShellComponent.h"
 #include "../GameObject/ItemComponent/ItemBlueShellComponent.h"
@@ -12,8 +11,8 @@
 #include "../GameObject/ItemComponent/ItemMushroomComponent.h"
 #include "../GameObject/ItemComponent/ItemStarComponent.h"
 #include "../GameObject/ItemComponent/ItemBoxComponent.h"
-#include "RenderManager.h"
 #include "PhysicsManager.h"
+#include "RenderManager.h"
 #include "ObjectManager.h"
 #include "NetworkManager.h"
 

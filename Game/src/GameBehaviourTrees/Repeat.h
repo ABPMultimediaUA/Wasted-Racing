@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Decorator.h"
 #include <string>
- #include <iostream>
+#include <iostream>
+#include "Decorator.h"
 
 class Repeat : public Decorator
 {

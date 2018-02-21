@@ -78,7 +78,7 @@ public:
     void setStay(bool s)       {     stay = s;              }//Stay setter
     void setRenderEngine(int n){     renderEngine = n;      }//Engine setter
     void setInputEngine(int n) {     inputEngine = n;       }//Input setter
-    IGameState* getState()     {     return state;          }//State getter
+    //IGameState* getState()     {     return state;          }//State getter
     int getRenderEngine()      {     return renderEngine;   }//Engine getter
     int getInputEngine()       {     return inputEngine;    }//Input getter
     float getAccumulatedTime() {     return accumulatedTime;}//Get accumulated time
@@ -155,7 +155,7 @@ private:
     bool server;
 
     //current state
-    IGameState* state;
+    //IGameState* state;
 
     //Accumulate time in game
     float accumulatedTime;

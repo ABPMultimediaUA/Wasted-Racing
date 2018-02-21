@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Behaviour.h"
 #include <string>
- #include <iostream>
+#include <iostream>
+#include "Behaviour.h"
 
 class Decorator : public Behaviour
 {

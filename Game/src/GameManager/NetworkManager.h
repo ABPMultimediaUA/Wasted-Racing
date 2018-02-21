@@ -1,5 +1,10 @@
 #pragma once
 
+#include <iostream>
+#include <memory>
+#include <raknet/RakPeerInterface.h> 
+#include <raknet/MessageIdentifiers.h>
+#include <raknet/BitStream.h>
 #include "ObjectManager.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
@@ -7,13 +12,8 @@
 #include "../Game.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include "../GameObject/NetworkComponent/RemoteItemComponent.h"
-#include <raknet/RakPeerInterface.h> 
-#include <raknet/MessageIdentifiers.h>
-#include <raknet/BitStream.h>
 #include "../GameServer/CustomIdentifiers.h"
 #include "../GameState/IGameState.h"
-#include <iostream>
-#include <memory>
 
 class NetworkManager{
 

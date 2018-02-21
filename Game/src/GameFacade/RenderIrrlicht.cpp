@@ -1,6 +1,14 @@
 #include "RenderIrrlicht.h"
 
 //==============================================================
+// THINGS TO DO
+/*
+    >REMOVE THE COMPONENTS BY GENERALIZING FUNCTIONS AND USING PARAMETERS,
+        IT'S NOT THAT HARD FFS
+*/
+//==============================================================
+
+//==============================================================
 // Engine Related functions
 //==============================================================
 
@@ -500,7 +508,7 @@ void RenderIrrlicht::deleteItemIcon()
 
 void RenderIrrlicht::updateItemIcon(){
 
-    int itemID = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+    /*int itemID = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
 
 
     switch(itemID){
@@ -534,7 +542,7 @@ void RenderIrrlicht::updateItemIcon(){
                 deleteItemIcon();
                 createItemIcon(glm::vec2(50,50), "media/img/iconoBotellamini.png");
                  break;
-    }
+    }*/
 }
 
 //==============================================================

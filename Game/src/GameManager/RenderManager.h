@@ -3,12 +3,9 @@
 #include <vector>
 #include "QuadTree.h"
 #include "../GameFacade/RenderIrrlicht.h"
-#include "../GameObject/ScoreComponent.h"
-#include "../GameObject/ItemComponent/ItemHolderComponent.h"
 #include "WaypointManager.h"
 #include "AIManager.h"
 #include "ObjectManager.h"
-#include "ScoreManager.h"
 
 class RenderManager{
 
@@ -67,7 +64,15 @@ public:
     //==============================================
     // VISUAL INTERFACE
     //==============================================
-    
+    /////////////
+    //  HUD
+    /////////////
+    //Initializes HUD
+    void initHUD();
+
+    //Updates HUD
+    void updateHUD();
+
     /////////////
     //  IMAGES
     /////////////

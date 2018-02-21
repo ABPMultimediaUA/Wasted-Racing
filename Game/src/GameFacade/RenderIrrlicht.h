@@ -7,6 +7,7 @@
 
 #include "IRenderFacade.h"
 #include "InputIrrlicht.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
 #include "../GameObject/RenderComponent/CameraRenderComponent.h"
 

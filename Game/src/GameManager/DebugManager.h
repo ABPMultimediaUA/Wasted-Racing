@@ -1,14 +1,14 @@
 #pragma once
 
-#include "RenderManager.h"
-#include "NetworkManager.h"
-#include "ObjectManager.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/InputComponent.h"
 #include "../GameObject/NetworkComponent/TrackerDNComponent.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include "../GameServer/CustomIdentifiers.h"
+#include "RenderManager.h"
+#include "NetworkManager.h"
+#include "ObjectManager.h"
 
 class NetworkManager;
 
@@ -37,7 +37,7 @@ class DebugManager{
         };
 
         //DebugNetworkComponent creator
-	    IComponent::Pointer createTrackerDNComponent(GameObject& newGameObject, int server_id, int type);
+	    IComponent::Pointer createTrackerDNComponent(GameObject& newGameObject, int server_id, char type);
     
         //==============================================
         // INITIALIZE DEBUGS
@@ -127,6 +127,9 @@ class DebugManager{
 
         //Update last information received from the message with the id given
         void updateNetworkText(uint32_t id, std::string text);
+
+        //Update individual trackers of objects
+        void updateCylinderDN(int id);
 
         //==============================================
         // UPDATE DEBUGS

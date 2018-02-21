@@ -1,5 +1,4 @@
 #include "MultiMatchState.h"
-#include "../Game.h"
 
 //Additional functions
 void createPlayer();
@@ -42,8 +41,7 @@ void MultiMatchState::update(float &accumulatedTime) {
     }
 
     //Always interpolate
-    physicsManager->interpolate(accumulatedTime, loopTime);
-    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
+    interpolate(accumulatedTime);
 
 }
 
@@ -53,7 +51,7 @@ void MultiMatchState::updateManagers(float dTime){
 
     physicsManager->update(dTime);
 
-    aiManager->update();
+    aiManager->update(dTime);
 
     waypointManager->update(dTime);
 
@@ -72,6 +70,24 @@ void MultiMatchState::updateManagers(float dTime){
 void MultiMatchState::draw() {
     renderManager->draw();
 }
+
+void MultiMatchState::interpolate(float &accumulatedTime) {
+    //Interpolate positions
+    physicsManager->interpolate(accumulatedTime, loopTime);
+
+    //Update each position in Render Manager
+    for(unsigned int i=0; i<physicsManager->getMovingCharacterList().size(); ++i){
+        //Interpolate every moving object
+        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getId(), 
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getTransformData()
+        );
+    }
+
+    //Update camera position
+    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
+}
+
 
 void MultiMatchState::close() {
 

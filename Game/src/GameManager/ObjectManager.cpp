@@ -318,22 +318,34 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 void ObjectManager::createMove(GameObject::Pointer obj, int move)
 {
     auto mData = obj->getComponent<MoveComponent>()->getMovemententData();
+    //The player
     if(move == 0)
     {
+        //Create input
         InputManager::getInstance().createInputComponent(*obj.get());
+
+        //Create camera focused on player
         RenderManager::getInstance().createCameraRenderComponent(*obj.get());
+
+        //Create audio listener
         AudioManager::getInstance().createListenerComponent(*obj.get());
+
+        //Set player as the main
         NetworkManager::getInstance().setPlayer(obj);
     }
+    //The AI
     else if(move == 1)
     {
+        //Instantiate both AI's and sensors
         AIManager::getInstance().createAIDrivingComponent(*obj.get());
         AIManager::getInstance().createAIBattleComponent(*obj.get());
         SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle, 100.f, 10.f); 
         SensorManager::getInstance().createMSensorComponent(*obj.get(), 30.f, mData.angle);
     }
+    //Online player imitator
     else if(move == 2)
     {
+        //Create remote player
         NetworkManager::getInstance().createRemotePlayerComponent(*obj.get());
     }
 }

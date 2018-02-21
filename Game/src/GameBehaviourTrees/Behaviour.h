@@ -1,10 +1,8 @@
 
 #pragma once
 
-#include <memory>
 #include <string>
-#include "../GameManager/RenderManager.h"
-#include "../GameObject/IComponent.h" 
+#include <memory>
 #include "../GameObject/GameObject.h"
 
 enum class BehaviourState

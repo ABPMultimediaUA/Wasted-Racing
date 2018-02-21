@@ -30,8 +30,7 @@ void MainState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
     //Always interpolate
-    physicsManager->interpolate(accumulatedTime, loopTime);
-    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
+    interpolate(accumulatedTime);
 
 }
 
@@ -41,7 +40,7 @@ void MainState::updateManagers(float dTime){
 
     physicsManager->update(dTime);
 
-    aiManager->update();
+    aiManager->update(dTime);
 
     renderManager->update(dTime);
 
@@ -61,6 +60,23 @@ void MainState::updateManagers(float dTime){
 
 void MainState::draw() {
     renderManager->draw();
+}
+
+void MainState::interpolate(float &accumulatedTime) {
+    //Interpolate positions
+    physicsManager->interpolate(accumulatedTime, loopTime);
+
+    //Update each position in Render Manager
+    for(unsigned int i=0; i<physicsManager->getMovingCharacterList().size(); ++i){
+        //Interpolate every moving object
+        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getId(), 
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getTransformData()
+        );
+    }
+
+    //Update camera position
+    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
 }
 
 void MainState::close() {
