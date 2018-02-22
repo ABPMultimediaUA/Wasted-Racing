@@ -44,49 +44,7 @@ void AIManager::update() {
     }
     else if (changeAI == false)
     {
-        for(unsigned int i=0; i<objectsAI.size(); ++i){
-            //Get components needed for the movement
-            auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI[i]).get();
-            auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
-            auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
-            auto mSensorComponent = aiDrivingComponent->getGameObject().getComponent<MSensorComponent>().get();
-            auto pathPlanningComponent = aiDrivingComponent->getGameObject().getComponent<PathPlanningComponent>().get();
-            auto iItemComponent = aiDrivingComponent->getGameObject().getComponent<IItemComponent>().get();
-
-            if(aiDrivingComponent && moveComponent && vSensorComponent && mSensorComponent && iItemComponent == nullptr){
-                //get all objects that are seen to the visual sensor
-                std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
-                std::vector<VObject::Pointer> mapCollisions = mSensorComponent->getMapCollisions();
-               
-
-                //Set angle of the sensors to the NPC one
-                vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
-                mSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
-                
-                //Get next waypoint
-                pathPlanningComponent->setSeconds(1);
-                glm::vec3 objective = pathPlanningComponent->getNextPoint();
-
-
-                //Update A and B of the objective
-                float a = 0.f,b = 0.f;
-                vSensorComponent->calculateAB(objective, a, b);
-
-                auto myPos = aiDrivingComponent->getGameObject();
-
-                float turnValue = aiDrivingComponent->girar(myPos, seenObjects, mapCollisions, objective, a, b);
-                float speedValue = aiDrivingComponent->acelerar_frenar(myPos, seenObjects, turnValue, moveComponent->getMovemententData().vel, a, b); 
-                //----------------------------------
-
-                //Send signal of movement
-                //Turn
-
-                moveComponent->changeSpin(turnValue );
-
-                moveComponent->isMoving(true);
-                moveComponent->changeAcc(speedValue);
-            }
-        }
+        updateDriving();
         changeAI = true;
     }
 }
@@ -159,3 +117,54 @@ void objectDeleteAIBattle(EventData eData) {
     }
 }
 
+
+//==============================================
+// UPDATE DRIVING
+//==============================================
+
+void AIManager::updateDriving()
+{
+    for(unsigned int i=0; i<objectsAI.size(); ++i){
+        //Get components needed for the movement
+        auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI[i]).get();
+        auto moveComponent = aiDrivingComponent->getGameObject().getComponent<MoveComponent>().get();
+        auto vSensorComponent = aiDrivingComponent->getGameObject().getComponent<VSensorComponent>().get();
+        auto mSensorComponent = aiDrivingComponent->getGameObject().getComponent<MSensorComponent>().get();
+        auto pathPlanningComponent = aiDrivingComponent->getGameObject().getComponent<PathPlanningComponent>().get();
+        auto iItemComponent = aiDrivingComponent->getGameObject().getComponent<IItemComponent>().get();
+
+        if(aiDrivingComponent && moveComponent && vSensorComponent && mSensorComponent && iItemComponent == nullptr){
+            //get all objects that are seen to the visual sensor
+            std::vector<VObject::Pointer> seenObjects  = vSensorComponent->getSeenObjects();
+            std::vector<VObject::Pointer> mapCollisions = mSensorComponent->getMapCollisions();
+            
+
+            //Set angle of the sensors to the NPC one
+            vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
+            mSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
+            
+            //Get next waypoint
+            pathPlanningComponent->setSeconds(1);
+            glm::vec3 objective = pathPlanningComponent->getNextPoint();
+
+
+            //Update A and B of the objective
+            float a = 0.f,b = 0.f;
+            vSensorComponent->calculateAB(objective, a, b);
+
+            auto myPos = aiDrivingComponent->getGameObject();
+
+            float turnValue = aiDrivingComponent->girar(myPos, seenObjects, mapCollisions, objective, a, b);
+            float speedValue = aiDrivingComponent->acelerar_frenar(myPos, seenObjects, turnValue, moveComponent->getMovemententData().vel, a, b); 
+            //----------------------------------
+
+            //Send signal of movement
+            //Turn
+
+            moveComponent->changeSpin(turnValue );
+
+            moveComponent->isMoving(true);
+            moveComponent->changeAcc(speedValue);
+        }
+    }
+}

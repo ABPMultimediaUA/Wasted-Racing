@@ -50,9 +50,13 @@ public:
     IComponent::Pointer createAIDrivingComponent(GameObject& newGameObject);
     IComponent::Pointer createAIBattleComponent(GameObject& newGameObject);
 
+    //Update AI driving
+    void updateDriving();
 
 private:
     std::vector<IComponent::Pointer> objectsAI;
     std::vector<IComponent::Pointer> battleAI;
     bool changeAI;
+
+    float distanceLoD = 100;
 };
