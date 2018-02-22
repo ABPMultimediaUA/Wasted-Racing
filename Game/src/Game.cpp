@@ -1,6 +1,12 @@
 #include "Game.h"
 
-//Additional functions
+//====================================================
+//  DELEGATE DECLARATIONS
+//====================================================
+
+//====================================================
+//  ADDITIONAL FUNCTIONS
+//====================================================
 void addObjects();
 void loadMap();
 std::vector<std::string> split(const std::string& s, const char& c);
@@ -57,6 +63,9 @@ void Game::init() {
     setState(IGameState::stateType::INTRO);
 
     addObjects();
+
+    //Change state listener
+
 }
 
 //====================================================
@@ -474,4 +483,13 @@ void loadMap() {
     //Update every thing that has been created
     EventManager::getInstance().update();
 
+}
+
+//====================================================
+//  DELEGATE FUNCTIONS
+//====================================================
+//Functions that create or destroy objects
+void setStateEvent(EventData eData)
+{
+    Game::getInstance().setState(eData.Id);
 }

@@ -91,6 +91,7 @@ enum EventType {
     //GAME: Game related events
     Game_Start,
     Game_Close,
+    State_Change,
     //CHOOSE: Choose game type
     Key_Multiplayer_Down,
     Key_Singleplayer_Down,

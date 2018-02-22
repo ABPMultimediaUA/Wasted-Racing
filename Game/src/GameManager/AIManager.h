@@ -3,7 +3,6 @@
 #include <memory>
 #include <iostream>
 #include <vector>
-#include "../GameEvent/EventManager.h"
 #include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/AIComponent/MSensorComponent.h"
 #include "../GameObject/AIComponent/AIBattleComponent.h"

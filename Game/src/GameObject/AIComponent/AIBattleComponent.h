@@ -1,12 +1,12 @@
 #pragma once
 
 #include "../IComponent.h"
+#include "../../GameEvent/EventManager.h"
 #include "../../GameObject/ScoreComponent.h"
 #include "../../GameBehaviourTrees/DynamicSelector.h"
 #include "../../GameBehaviourTrees/Repeat.h"
 #include "../../GameBehaviourTrees/Selector.h"
 #include "../../GameBehaviourTrees/Sequence.h"
-#include "../../GameManager/ItemManager.h"
 
 class AIBattleComponent : public IComponent {
     public:

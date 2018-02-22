@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "../GameObject/AIComponent/MSensorComponent.h"
-#include "ObjectManager.h"
 #include "PhysicsManager.h"
 
 class SensorManager{

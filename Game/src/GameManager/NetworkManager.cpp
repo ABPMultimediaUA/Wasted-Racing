@@ -694,13 +694,14 @@ void NetworkManager::endGame()
     
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 
-    Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
+    
+    //Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
 
 void NetworkManager::remoteEndGame(RakNet::Packet* packet)
 {
     setStarted(false);
-    Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
+    //Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
 
 

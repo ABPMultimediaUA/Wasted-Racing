@@ -17,6 +17,7 @@
 #include "NetworkManager.h"
 
 class NetworkManager;
+class ObjectManager;
 
 class ItemManager {
     public:

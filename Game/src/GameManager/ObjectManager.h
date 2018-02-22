@@ -7,14 +7,18 @@
 //Managers include
 #include "../GameEvent/EventManager.h"
 #include "PhysicsManager.h"
-#include "RenderManager.h"
 #include "ItemManager.h"
 #include "WaypointManager.h"
 #include "AIManager.h"
+#include "RenderManager.h"
 #include "SensorManager.h"
 #include "ScoreManager.h"
 #include "AudioManager.h"
 #include "NetworkManager.h"
+
+class ItemManager;
+class RenderManager;
+class NetworkManager;
 
 class ObjectManager{
 

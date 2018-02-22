@@ -1,15 +1,17 @@
 #pragma once
 
+#include "../GameServer/CustomIdentifiers.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/InputComponent.h"
 #include "../GameObject/NetworkComponent/TrackerDNComponent.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
-#include "../GameServer/CustomIdentifiers.h"
 #include "RenderManager.h"
 #include "NetworkManager.h"
 #include "ObjectManager.h"
 
+class ObjectManager;
+class RenderManager;
 class NetworkManager;
 
 class DebugManager{

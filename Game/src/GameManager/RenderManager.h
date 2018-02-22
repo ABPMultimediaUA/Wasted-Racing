@@ -7,6 +7,8 @@
 #include "AIManager.h"
 #include "ObjectManager.h"
 
+class ObjectManager;
+
 class RenderManager{
 
 public: 

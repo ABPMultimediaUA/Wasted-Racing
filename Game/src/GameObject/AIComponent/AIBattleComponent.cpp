@@ -10,11 +10,18 @@ class UseItemAction : public Behaviour{
     protected:
         BehaviourState Update(float d)
         {
+            //If the AI has an object, spawn it
             auto itemHolder = target.getComponent<ItemHolderComponent>().get();
             if(itemHolder)
             {
-                ItemManager* itemManager = &ItemManager::getInstance();
-                itemManager->createItem(target);
+                //ItemManager* itemManager = &ItemManager::getInstance();
+                //itemManager->createItem(target);
+                //Create event, fill it and send it
+                EventData data;
+                data.Object = target;
+                EventManager::getInstance().addEvent(Event {EventType::Item_Create, data});
+
+                //Debug behaviour --- TO BE SENT TO DEBUG MANAGER
                 auto player = RenderManager::getInstance().getAIsBattle();
                 if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
                 {
