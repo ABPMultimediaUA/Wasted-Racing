@@ -46,7 +46,7 @@ void MatchState::updateManagers(float dTime){
 
     physicsManager->update(dTime);
 
-    aiManager->update();
+    aiManager->update(dTime);
 
     waypointManager->update(dTime);
 

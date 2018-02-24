@@ -1,5 +1,7 @@
 #pragma once
 
+
+#include "InputManager.h"
 #include "../GameObject/AIComponent/AIDrivingComponent.h"
 #include "../GameObject/AIComponent/AIBattleComponent.h"
 #include "../GameObject/AIComponent/VSensorComponent.h"
@@ -28,7 +30,7 @@ public:
     void init();
 
     //Update
-    void update();
+    void update(float dTime);
 
     //Shutdown
     void close();
@@ -51,12 +53,15 @@ public:
     IComponent::Pointer createAIBattleComponent(GameObject& newGameObject);
 
     //Update AI driving
-    void updateDriving();
+    void updateDriving(AIDrivingComponent* aiDrivingComponent);
+
+    //Level of Detail
+    void calculateLoD(GameObject AI, float dTime);
 
 private:
     std::vector<IComponent::Pointer> objectsAI;
     std::vector<IComponent::Pointer> battleAI;
     bool changeAI;
 
-    float distanceLoD = 100;
+    float distanceLoD;
 };
