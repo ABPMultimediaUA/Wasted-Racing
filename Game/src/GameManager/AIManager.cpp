@@ -253,7 +253,7 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     trans.position = nextPos;
     
     AIObject->setNewTransformData(trans);
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(AIObject.get()->getId(), trans);
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(AI.getId(), trans);
 
     ////////////////////////////////////
     /////    ASSIGN RANDOM ITEM    /////
