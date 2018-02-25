@@ -1,8 +1,8 @@
 #pragma once
 
 #include "RenderManager.h"
-#include "../GameObject/AIComponent/WaypointComponent.h"
 #include "../GameObject/AIComponent/PathPlanningComponent.h"
+#include "../GameObject/AIComponent/WaypointComponent.h"
 #include "../GameObject/ItemComponent/IItemComponent.h"
 #include <vector>
 
@@ -49,6 +49,9 @@ public:
     //Setters
 
 
+    //Update PathPlanning
+    void updatePathPlanning(IComponent::Pointer pathPlanning, float dTime);
+
 
 private:
 
@@ -57,5 +60,6 @@ private:
 
     std::vector<GameObject::Pointer> *listSubNodes;
 
+    float distanceLoD; //////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 
 };

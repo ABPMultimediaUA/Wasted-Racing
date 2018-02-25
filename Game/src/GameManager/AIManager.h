@@ -63,5 +63,5 @@ private:
     std::vector<IComponent::Pointer> battleAI;
     bool changeAI;
 
-    float distanceLoD;
+    float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 };

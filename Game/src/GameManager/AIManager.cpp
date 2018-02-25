@@ -63,6 +63,8 @@ GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
                                 (posPlayer.y - posAI.y) * (posPlayer.y - posAI.y) +
                                 (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
 
+                            
+            //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
             if(distPlayerAI <= distanceLoD*distanceLoD)
             {
                 updateDriving(aiDrivingComponent);
@@ -203,6 +205,10 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
 {
     GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(AI.getId());
     auto trans = AIObject->getTransformData();
+
+    auto maxSpeed = AIObject->getComponent<MoveComponent>()->getMovemententData().max_vel;
+
+    auto distCover = (maxSpeed * maxSpeed) * dTime;
 
     trans.position.x = 0;
     trans.position.y = 0;
