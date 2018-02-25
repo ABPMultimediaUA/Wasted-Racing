@@ -210,12 +210,74 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
 
     auto distCover = (maxSpeed * maxSpeed) * dTime;
 
-    trans.position.x = 0;
-    trans.position.y = 0;
-    trans.position.z = 0;
-    
-    trans.rotation.y += 1*M_PI/180;
+    auto waypoints = WaypointManager::getInstance().getWaypoints();
 
+    unsigned int posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
+
+    float distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
+						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
+						     (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
+	
+
+    float radius = waypoints[posVector].get()->getComponent<WaypointComponent>()->getRadius();
+    
+
+    if(distaneActualWay <= (radius*radius))
+    {
+        if(posVector < waypoints.size()-1)
+        {
+            posVector++;
+            AIObject->getComponent<PathPlanningComponent>()->setLastPosVector(posVector);
+            posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
+
+            distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
+						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
+						     (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
+	
+        }
+        else if(posVector == waypoints.size()-1)
+        {
+            AIObject->getComponent<StartLineComponent>()->setActive(true);
+            AIObject->getComponent<PathPlanningComponent>()->setLastPosVector(0);
+            posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
+
+            distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
+						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
+						     (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
+	
+        }
+    }
+
+    auto nextPos = ((distCover/distaneActualWay) * (waypoints[posVector].get()->getTransformData().position - trans.position)) + trans.position;
+    //auto nextPos = waypoints[posVector].get()->getTransformData().position;
+    trans.position = nextPos;
+    
     AIObject->setNewTransformData(trans);
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(AIObject.get()->getId(), trans);
+
+    ////////////////////////////////////
+    /////    ASSIGN RANDOM ITEM    /////
+    ////////////////////////////////////
+    if(posVector%2 == 0)
+    {
+        auto itemHolder = AIObject->getComponent<ItemHolderComponent>();
+
+        if(itemHolder->getItemType() == -1){
+            srand (time(NULL));
+            int random;
+            if(AIObject->getComponent<ScoreComponent>()->getPosition() == 1)
+            {
+                random = rand() % 3 + 2;
+            }
+            else
+            {
+                random = rand() % 5;
+            }
+
+            itemHolder->setItemType(random);
+        }
+    }
+    /////////////////////////////////////////////////////////////////////////
+    ///////     AJUSTAR EL BEHAVIOUR THREE A QUE SE USE SIEMPRE EL ITEM
+    /////////////////////////////////////////////////////////////////////////
 }

@@ -58,7 +58,7 @@ private:
     std::vector<IComponent::Pointer>      waypointComponentList;
     std::vector<IComponent::Pointer>      pathPlanningComponentList;
 
-    std::vector<GameObject::Pointer> *listSubNodes;
+    std::vector<GameObject::Pointer>      *listSubNodes;
 
     float distanceLoD; //////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 
