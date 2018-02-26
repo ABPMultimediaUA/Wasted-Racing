@@ -104,7 +104,7 @@ private:
     void update(float dTime);
 
     //Update server
-    void updateServer();
+    void updateServer(float dTime);
 
     //Render draw
     void draw();

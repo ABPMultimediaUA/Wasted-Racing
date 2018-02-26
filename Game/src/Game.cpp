@@ -77,8 +77,22 @@ void Game::update(float dTime) {
 
 }
 
-void Game::updateServer() {
+void Game::updateServer(float dTime) {
+    //Input manager has to be the first to be updated
+    physicsManager->update(dTime);
 
+    aiManager->update(dTime);
+
+    waypointManager->update(dTime);
+
+    sensorManager->update();
+
+    itemManager->update(dTime);
+    
+    scoreManager->update();
+    
+    //Event manager has to be the last to be updated
+    eventManager->update();
 }
 
 //====================================================
@@ -149,10 +163,21 @@ void Game::RunServer() {
     //This is the client
     server = true;
 
+    //Initialize server timer (global time for each player)
+    auto lastTime = std::chrono::high_resolution_clock::now();
+    accumulatedTime = 0;
+
     //Start the run
     //execute game while staying
     while(stay){
-        updateServer();
+        //Measure elapsed time
+        auto currTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = currTime - lastTime;
+        lastTime = currTime;
+        accumulatedTime += (float)elapsed.count();
+
+        //update server
+        updateServer(accumulatedTime);
     }
 
     close();
