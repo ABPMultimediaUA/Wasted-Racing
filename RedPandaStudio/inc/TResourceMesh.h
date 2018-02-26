@@ -6,7 +6,6 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <SFML/Graphics.hpp>
 
 
 class TResourceMesh : public TResource {
@@ -29,10 +28,4 @@ class TResourceMesh : public TResource {
         long nTriangles;
         //Number of vertex
         long nVertex;
-
-
-        sf::Image image;
-        int sizeX, sizeY;
-
-
 };

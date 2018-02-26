@@ -218,7 +218,7 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 position, const
 
 		//Create new mesh entity
 		TMesh* m = new TMesh();
-		m->setMesh(resourceManager->getResource(mesh));
+		m->setMesh(resourceManager->getResourceMesh(mesh));
 		TNode* mesh = new TNode(transform, m);
 
 		//Link tree

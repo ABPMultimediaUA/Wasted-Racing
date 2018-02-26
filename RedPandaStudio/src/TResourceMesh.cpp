@@ -1,5 +1,4 @@
 #include "TResourceMesh.h"
-#include <iostream>
 
 bool TResourceMesh::loadResource()
 {
@@ -8,7 +7,6 @@ bool TResourceMesh::loadResource()
 
     if(scene)
     {
-        std::cout << "Succesfully loaded" << std::endl;
         for(unsigned int i = 0; i<scene->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[i];
@@ -44,17 +42,6 @@ bool TResourceMesh::loadResource()
             }
 
         }
-
-        if(image.loadFromFile("Link/YoungLink_grp.png"))
-        {
-            std::cout << "LOADING" << std::endl;
-        }
-        sizeX = image.getSize().x;
-        sizeY = image.getSize().y;
-
-        std::cout << "X: " << sizeX << std::endl;
-        std::cout << "Y: " << sizeY << std::endl;
-
         return true;
     }
     return false;
@@ -62,41 +49,29 @@ bool TResourceMesh::loadResource()
 
 void TResourceMesh::draw()
 {
-    
-    GLuint textureID;
-    
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glEnable(GL_TEXTURE_2D);
-
-    //glActiveTexture(GL_TEXTURE_2D);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
-	//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)sizeX, (GLsizei)sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-
-
-
+    //Generate an array of 4 buffer identifiers
     GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
     glGenBuffers(4, vboHandles);
 
+    //Bind and pass to OpenGL the first array (vertex coordinates)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(0);
 
+    //Bind and pass to OpenGL the second array (vertex normals)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(1);
 
+    //Bind and pass to OpenGL the third array (vertex texture coordinates)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(2);
 
+    //Bind and pass to OpenGL the fourth array (vertex indices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 

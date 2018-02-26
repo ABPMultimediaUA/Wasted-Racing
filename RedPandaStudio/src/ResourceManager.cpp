@@ -1,18 +1,18 @@
 #include "ResourceManager.h"
 
-TResourceMesh* ResourceManager::getResource(const char* n)
+TResourceMesh* ResourceManager::getResourceMesh(const char* n)
 {
     unsigned int i;
     TResourceMesh* res=NULL;
     bool found = false;
 
     //First we look in memory loaded resources
-    for(i=0; i<resources.size() && found == false; i++)
+    for(i=0; i<meshes.size() && found == false; i++)
     {
-        if(strcmp(n, resources[i]->getName()) == 0)
+        if(strcmp(n, meshes[i]->getName()) == 0)
         {
             found = true;
-            res=resources[i];
+            res=meshes[i];
         }
     }
     //If it's not loaded, we create a new resource and try to load it
@@ -23,7 +23,98 @@ TResourceMesh* ResourceManager::getResource(const char* n)
         res->setName(n);
         if(res->loadResource())
         {
-            resources.push_back(res);
+            meshes.push_back(res);
+        }
+    }
+    
+    return res;
+}
+
+TResourceMaterial* ResourceManager::getResourceMaterial(const char* n)
+{
+    unsigned int i;
+    TResourceMaterial* res=NULL;
+    bool found = false;
+
+    //First we look in memory loaded resources
+    for(i=0; i<materials.size() && found == false; i++)
+    {
+        if(strcmp(n, materials[i]->getName()) == 0)
+        {
+            found = true;
+            res=materials[i];
+        }
+    }
+    //If it's not loaded, we create a new resource and try to load it
+    if(found == false)
+    {
+        res = new TResourceMaterial();
+
+        res->setName(n);
+        if(res->loadResource())
+        {
+            materials.push_back(res);
+        }
+    }
+    
+    return res;
+}
+
+
+TResourceTexture* ResourceManager::getResourceTexture(const char* n)
+{
+    unsigned int i;
+    TResourceTexture* res=NULL;
+    bool found = false;
+
+    //First we look in memory loaded resources
+    for(i=0; i<textures.size() && found == false; i++)
+    {
+        if(strcmp(n, textures[i]->getName()) == 0)
+        {
+            found = true;
+            res=textures[i];
+        }
+    }
+    //If it's not loaded, we create a new resource and try to load it
+    if(found == false)
+    {
+        res = new TResourceTexture();
+
+        res->setName(n);
+        if(res->loadResource())
+        {
+            textures.push_back(res);
+        }
+    }
+    
+    return res;
+}
+
+TResourceShader* ResourceManager::getResourceShader(const char* n)
+{
+    unsigned int i;
+    TResourceShader* res=NULL;
+    bool found = false;
+
+    //First we look in memory loaded resources
+    for(i=0; i<shaders.size() && found == false; i++)
+    {
+        if(strcmp(n, shaders[i]->getName()) == 0)
+        {
+            found = true;
+            res=shaders[i];
+        }
+    }
+    //If it's not loaded, we create a new resource and try to load it
+    if(found == false)
+    {
+        res = new TResourceShader();
+
+        res->setName(n);
+        if(res->loadResource())
+        {
+            shaders.push_back(res);
         }
     }
     
