@@ -3,10 +3,8 @@
 //=========================================================================
 //                               INCLUDES                                //
 //=========================================================================
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-
 #include <GL/glew.h>
+#include <SDL2/SDL.h>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -45,27 +43,28 @@ public:
 
     //////////////////////////////
     //  GETTERS
-    sf::RenderWindow* getWindow()   {   return window;      }
+    SDL_Window* getWindow()   {   return window;      }
     GLuint getProgramID()           {   return programID;   }
     TNode* getSceneRoot()           {   return scene;       }
     ResourceManager* getResourceManager() { return resourceManager;  }
 
     //////////////////////////////
     //  SETTERS
-    void setWindow(sf::RenderWindow* rw )   {   window = rw;    }
+    void setWindow(SDL_Window* rw )   {   window = rw;    }
     void setProgramID(GLuint pID)           {   programID = pID;}     
 
 private: 
 
     //////////////////////////////
     //  FUNCTIONS
-    void initSFMLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen);
+    void initSDLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen);
     void initOpenGL();
     void initScene();
 
     //////////////////////////////
     //  VARIABLES
-    sf::RenderWindow* window;
+    SDL_Window* window;
+    SDL_GLContext context;
     TNode *scene;
     ResourceManager *resourceManager;
 
