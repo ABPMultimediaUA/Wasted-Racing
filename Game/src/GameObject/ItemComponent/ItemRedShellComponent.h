@@ -2,6 +2,7 @@
 
 #include "IItemComponent.h"
 #include "../../GameManager/ScoreManager.h"
+#include "../../GameManager/WaypointManager.h"
 #include "../AIComponent/VSensorComponent.h"
 
 class ItemRedShellComponent : public IItemComponent

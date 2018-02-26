@@ -60,7 +60,7 @@ void RenderManager::init(int engine) {
 
 void RenderManager::update(float dTime) {
     //Update HUD
-    renderFacade->updateHUD();
+    updateHUD();
 
     //Update camera collision
     renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
@@ -81,11 +81,11 @@ void RenderManager::draw() {
 }
 
 void RenderManager::close(){
+    //Clear all interface elements
+    renderFacade->cleanInterface();
+
     //Clear render component list
     renderComponentList.clear();
-
-    //Clear all interface elements
-    clearVI();
 }
 
 void RenderManager::splitQuadTree(){
@@ -137,7 +137,7 @@ IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGa
     EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
 
     //Set camera target to this camera, since it was created
-    renderFacade->setCameraTarget(*obj.get());
+    renderFacade->setCameraTarget(newGameObject);
 
     return component;
 }
@@ -436,7 +436,7 @@ void RenderManager::createRenderNPC()
 
     //Create camera render
     auto obj = ObjectManager::getInstance().getObject(AIDebugPoint[AIDebug].getId());
-    RenderManager::getInstance().(*obj.get());
+    RenderManager::getInstance().createCameraRenderComponent(*obj.get());
 }
 
 void RenderManager::deleteRenderNPC()
@@ -804,22 +804,22 @@ void RenderManager::updateBattleDebug(float dTime)
 void RenderManager::initHUD()
 {
     //Create all values
-    lapHUD_ID = createText("LAP: ", glm::vec2(0, 300),255,255,255, glm::vec2(500,25));
-    positionHUD_ID = createText("ITEM: ", glm::vec2(0, 325),255,255,255, glm::vec2(500,25));
-    itemHUD_ID = createText("POSITION: ", glm::vec2(0, 350),255,255,255, glm::vec2(500,25));
+    lapHUD_ID = createText("LAP: ", glm::vec2(0, 300),255,255,255,255, glm::vec2(500,25));
+    positionHUD_ID = createText("ITEM: ", glm::vec2(0, 325),255,255,255,255, glm::vec2(500,25));
+    itemHUD_ID = createText("POSITION: ", glm::vec2(0, 350),255,255,255,255, glm::vec2(500,25));
 }
 
 void RenderManager::updateHUD()
 {
     //If there is score
-    auto score = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>();
+    auto score = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>();
     if(score)
     {
         //Get data
-        int pos = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
-        int lap = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
+        int pos = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
+        int lap = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>().get()->getLap();
         int maxLaps = ScoreManager::getInstance().getMaxLaps();
-        int item = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+        int item = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
 
         //Change position text
         std::string number = std::to_string(pos);
@@ -829,7 +829,7 @@ void RenderManager::updateHUD()
         //Change lap text
         std::string number2 = std::to_string(lap);
         std::string number3 = std::to_string(maxLaps);
-        s = std::string("LAP: "+lap+"/"+maxLaps);
+        s = std::string("LAP: "+number2+"/"+number3);
         changeText(lapHUD_ID, s);
 
         //Change item text

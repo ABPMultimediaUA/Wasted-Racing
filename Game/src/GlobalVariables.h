@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameState/IGameState.h"
+#include "GameObject/GameObject.h"
 
 class GlobalVariables{
 
@@ -20,16 +21,16 @@ class GlobalVariables{
         //==========================================
         // GETTERS AND SETTERS
         //==========================================
-        void setGameState(IGameState* t){ 
-                                            game = t;
-                                            game->init();
-                                        };
-        IGameState* getGameState()      { return game; };
+        void setGameState(IGameState::stateType t){ game = t;       };
+        IGameState::stateType getGameState()      { return game;    };
+        void setPlayer(GameObject* p)             { player = p;     };
+        GameObject* getPlayer()                   { return player;  };
 
     private:
 
         //==========================================
         // GLOBAL VARIABLES
         //==========================================
-        IGameState* game; 
+        IGameState::stateType game; 
+        GameObject* player; 
 };

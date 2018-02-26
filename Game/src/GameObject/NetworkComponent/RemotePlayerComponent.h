@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../IComponent.h"
 #include "../GameObject.h"
 
 class RemotePlayerComponent : public IComponent{

@@ -33,7 +33,7 @@ void DebugManager::init(){
     //Connection to the network manager (continuous access)
     networkManager = &NetworkManager::getInstance();
     renderManager  = &RenderManager::getInstance();
-    objectManager  = &Objectmanager::getInstance();
+    objectManager  = &ObjectManager::getInstance();
 
     //Add listeners
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugAI_Down,swapDebugAI});

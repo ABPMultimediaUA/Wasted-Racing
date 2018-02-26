@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <map>
-#include "../GameObject/GameObject.h"
+#include "../GlobalVariables.h"
 
 //Managers include
 #include "../GameEvent/EventManager.h"

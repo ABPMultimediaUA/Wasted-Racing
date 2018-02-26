@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameObject.h"
+#include "../GlobalVariables.h"
 #include "../GameEvent/EventManager.h"
 //#include "../GameManager/ItemManager.h"
 #include "PhysicsComponent/MoveComponent.h"

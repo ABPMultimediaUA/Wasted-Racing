@@ -103,7 +103,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     if(random == IItemComponent::ItemType::redShell)
     {
         itemHolder->setItemType(-1);
-        if(globalVariables->getGameState()->type == IGameState::stateType::MULTIMATCH){
+        if(globalVariables->getGameState() == IGameState::stateType::MULTIMATCH){
 
             //Launch creation event
             EventData data;
@@ -120,7 +120,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     else if(random == IItemComponent::ItemType::blueShell)
     {
         itemHolder->setItemType(-1);
-        if(globalVariables->getGameState()->type == IGameState::stateType::MULTIMATCH){
+        if(globalVariables->getGameState() == IGameState::stateType::MULTIMATCH){
             
             //Launch creation event
             EventData data;
@@ -138,7 +138,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     else if(random == IItemComponent::ItemType::banana)
     {
         itemHolder->setItemType(-1);
-        if(globalVariables->getGameState()->type == IGameState::stateType::MULTIMATCH){
+        if(globalVariables->getGameState() == IGameState::stateType::MULTIMATCH){
             //Launch creation event
             EventData data;
             data.Id = obj.getId();
@@ -236,7 +236,10 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
-    WaypointManager::getInstance().createPathPlanningComponent(ob, WaypointManager::getInstance().getWaypoints());
+
+    //Create path planning component
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
@@ -311,7 +314,11 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
-    WaypointManager::getInstance().createPathPlanningComponent(ob, WaypointManager::getInstance().getWaypoints());
+
+
+    //Create path planning component
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0, 0);
@@ -418,9 +425,12 @@ void ItemManager::deleteItem(IComponent::Pointer component)
 //==============================================
 
 void createItemEvent(EventData eData) {
-    ItemManager::getInstance().createItem(eData.Object);
-}
+    //get the player with the input
+    GameObject* player = GlobalVariables::getInstance().getPlayer();
 
+    //Create the item
+    ItemManager::getInstance().createItem(*player);
+}
 
 void objectDeleteItem(EventData eData) {
 

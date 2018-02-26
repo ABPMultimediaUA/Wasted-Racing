@@ -548,11 +548,6 @@ void RenderIrrlicht::updateItemIcon(){
 //==============================================================
 // VISUAL INTERFACE
 //==============================================================
-void updateHUD(int oM, int oL, int ML, int iT)
-{
-
-}
-
 ////////////
 //  Image
 ////////////

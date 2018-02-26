@@ -6,14 +6,15 @@
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/BitStream.h>
 #include "../GlobalVariables.h"
-#include "PhysicsManager.h"
-#include "ObjectManager.h"
-#include "ItemManager.h"
-#include "../Game.h"
+#include "../GameServer/CustomIdentifiers.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include "../GameObject/NetworkComponent/RemoteItemComponent.h"
-#include "../GameServer/CustomIdentifiers.h"
-#include "../GameState/IGameState.h"
+#include "PhysicsManager.h"
+#include "ItemManager.h"
+#include "ObjectManager.h"
+
+class ItemManager;
+class ObjectManager;
 
 class NetworkManager{
 

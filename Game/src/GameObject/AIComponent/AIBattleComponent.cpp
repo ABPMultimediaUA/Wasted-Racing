@@ -14,12 +14,13 @@ class UseItemAction : public Behaviour{
             auto itemHolder = target.getComponent<ItemHolderComponent>().get();
             if(itemHolder)
             {
-                //ItemManager* itemManager = &ItemManager::getInstance();
-                //itemManager->createItem(target);
+                ItemManager* itemManager = &ItemManager::getInstance();
+                itemManager->createItem(target);
+                
                 //Create event, fill it and send it
-                EventData data;
-                data.Object = target;
-                EventManager::getInstance().addEvent(Event {EventType::Item_Create, data});
+                /*EventData data;
+                data.Object = std::make_shared<GameObject>(target);
+                EventManager::getInstance().addEvent(Event {EventType::Item_Create, data});*/
 
                 //Debug behaviour --- TO BE SENT TO DEBUG MANAGER
                 auto player = RenderManager::getInstance().getAIsBattle();

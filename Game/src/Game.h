@@ -155,7 +155,7 @@ private:
     bool server;
 
     //current state
-    //IGameState* state;
+    IGameState* state;
 
     //Accumulate time in game
     float accumulatedTime;

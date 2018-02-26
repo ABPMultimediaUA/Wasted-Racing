@@ -177,7 +177,9 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     ScoreManager::getInstance().createScoreComponent(*ob.get());
     ScoreManager::getInstance().createStartLineComponent(*ob.get());
 
-    WaypointManager::getInstance().createPathPlanningComponent(ob, WaypointManager::getInstance().getWaypoints());
+    //Create path planning component
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
     return ob;
 
@@ -221,7 +223,9 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     ScoreManager::getInstance().createScoreComponent(*ob.get());
     ScoreManager::getInstance().createStartLineComponent(*ob.get());
 
-    WaypointManager::getInstance().createPathPlanningComponent(ob, WaypointManager::getInstance().getWaypoints());
+    //Create path planning component
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
     return ob;
 
@@ -265,7 +269,9 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     ScoreManager::getInstance().createScoreComponent(*ob.get());
     ScoreManager::getInstance().createStartLineComponent(*ob.get());
 
-    WaypointManager::getInstance().createPathPlanningComponent(ob, WaypointManager::getInstance().getWaypoints());
+    //Create path planning component
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
     return ob;
 
@@ -309,7 +315,9 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     ScoreManager::getInstance().createScoreComponent(*ob.get());
     ScoreManager::getInstance().createStartLineComponent(*ob.get());
 
-    WaypointManager::getInstance().createPathPlanningComponent(ob, WaypointManager::getInstance().getWaypoints());
+    //Create path planning component
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
     return ob;
 
@@ -332,6 +340,10 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
 
         //Set player as the main
         NetworkManager::getInstance().setPlayer(obj);
+
+        //Set player as a global variable
+        GlobalVariables::getInstance().setPlayer(obj.get());
+        
     }
     //The AI
     else if(move == 1)
@@ -354,10 +366,9 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
 // DELEGATES
 //============================================== 
 void objectCreated(EventData eData) {
-
-    ObjectManager::getInstance().(eData.Object);
-
+    ObjectManager::getInstance().addObject(eData.Object);
 }
+
 void objectDeleted(EventData eData) {
 
     ObjectManager::getInstance().deleteObject(eData.Id);

@@ -73,10 +73,6 @@ public:
     ////////////
     //  HUD RELATED
     ////////////
-
-    //Update entire HUD
-    virtual void updateHUD(int oM, int oL, int ML, int iT);
-
     //Updates item icon in the HUD
     virtual void updateItemIcon();
     

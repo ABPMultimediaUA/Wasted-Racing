@@ -3,6 +3,7 @@
 //====================================================
 //  DELEGATE DECLARATIONS
 //====================================================
+void setStateEvent(EventData eData);
 
 //====================================================
 //  ADDITIONAL FUNCTIONS
@@ -65,6 +66,7 @@ void Game::init() {
     addObjects();
 
     //Change state listener
+    EventManager::getInstance().addListener(EventListener {EventType::State_Change, setStateEvent});
 
 }
 
@@ -89,7 +91,7 @@ void Game::draw() {
 //  GAME CLOSE
 //====================================================
 void Game::close() {
-    globalVariables->getGameState()->close();
+    state->close();
 
     //Close all managers
     physicsManager->close();
@@ -131,10 +133,10 @@ void Game::Run() {
         accumulatedTime += (float)elapsed.count();
 
         //Update the game once every maxTime
-        globalVariables->getGameState()->update(accumulatedTime);
+        state->update(accumulatedTime);
 
         //Always draw the game
-        globalVariables->getGameState()->draw();
+        state->draw();
     }
 
     close();
@@ -164,22 +166,33 @@ void Game::RunServer() {
 void Game::setState(IGameState::stateType type){
         //State changer
         switch(type){
+            //////
+            // set in global variables the type of game and keep the pointer here
+            //////
             case IGameState::stateType::INTRO:
-                globalVariables->setGameState((IGameState* )&IntroState::getInstance());
+                globalVariables->setGameState(IntroState::getInstance().type);
+                state = &IntroState::getInstance();
                 break;
             case IGameState::stateType::CLIENTLOBBY:
-                globalVariables->setGameState((IGameState* )&ClientLobbyState::getInstance());
+                globalVariables->setGameState(ClientLobbyState::getInstance().type);
+                state = &ClientLobbyState::getInstance();
                 break;
             case IGameState::stateType::MATCH:
-                globalVariables->setGameState((IGameState* )&MatchState::getInstance());
+                globalVariables->setGameState(MatchState::getInstance().type);
+                state = &MatchState::getInstance();
                 break;
             case IGameState::stateType::MULTIMATCH:
-                globalVariables->setGameState((IGameState* )&MultiMatchState::getInstance());
+                globalVariables->setGameState(MultiMatchState::getInstance().type);
+                state = &MultiMatchState::getInstance();
                 break;
             default:
-                globalVariables->setGameState((IGameState* )&IntroState::getInstance());
+                globalVariables->setGameState(IntroState::getInstance().type);
+                state = &IntroState::getInstance();
                 break;
         }
+
+        //Initialize state here
+        state->init();
     }
 
 //adding minimum objects needed to play the game
@@ -199,6 +212,7 @@ void addObjects(){
     ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+
     //===============================================================
     // Update to distribute all creation events
     //===============================================================
@@ -491,5 +505,5 @@ void loadMap() {
 //Functions that create or destroy objects
 void setStateEvent(EventData eData)
 {
-    Game::getInstance().setState(eData.Id);
+    Game::getInstance().setState((IGameState::stateType) eData.Id);
 }

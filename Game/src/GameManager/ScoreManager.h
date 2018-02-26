@@ -3,7 +3,6 @@
 #include <vector>
 #include <cstdint>
 #include "../GameObject/ScoreComponent.h"
-#include "../GameObject/StartLineComponent.h"
 
 class ScoreManager {
     public:

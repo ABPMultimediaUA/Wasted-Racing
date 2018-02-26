@@ -7,6 +7,10 @@
 #include "../../GameBehaviourTrees/Repeat.h"
 #include "../../GameBehaviourTrees/Selector.h"
 #include "../../GameBehaviourTrees/Sequence.h"
+#include "../../GameManager/RenderManager.h"
+#include "../../GameManager/ItemManager.h"
+
+class ItemManager;
 
 class AIBattleComponent : public IComponent {
     public:

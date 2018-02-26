@@ -686,21 +686,31 @@ void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
 
 void NetworkManager::endGame()
 {
-    RakNet::BitStream stream;
-
+    //Set online game as finished
     setStarted(false);
 
+    //Send same information to other players
+    RakNet::BitStream stream;
     stream.Write((unsigned char)ID_GAME_ENDED);
-    
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 
-    
+    //Send change state event
+    EventData data;
+    data.Id = IGameState::stateType::CLIENTLOBBY;
+    EventManager::getInstance().addEvent(Event {EventType::State_Change, data});
     //Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
 
 void NetworkManager::remoteEndGame(RakNet::Packet* packet)
 {
+    //Set online game as finished
     setStarted(false);
+    
+    //Send change state event
+    EventData data;
+    data.Id = IGameState::stateType::CLIENTLOBBY;
+    EventManager::getInstance().addEvent(Event {EventType::State_Change, data});
+
     //Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
 
@@ -860,7 +870,7 @@ void NetworkManager::initLobby(){
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("192.168.1.17", 39017, 0, 0);
+    result = peer->Connect("192.168.1.136", 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {

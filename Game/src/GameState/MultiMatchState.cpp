@@ -18,7 +18,7 @@ void MultiMatchState::init() {
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
     debugManager    = &DebugManager::getInstance();     //Initialize Debug manager
-
+    
     Game::getInstance().setAccumulatedTime(0);
 
     createPlayer();
@@ -26,45 +26,53 @@ void MultiMatchState::init() {
 
 void MultiMatchState::update(float &accumulatedTime) {
 
-    //No capation
+    //No gelding
     networkManager->update();
     debugManager->update();
     renderManager->update(accumulatedTime);
-
+    
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
         //Update managers
         updateManagers(accumulatedTime);
-
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
     }
 
     //Always interpolate
     interpolate(accumulatedTime);
-
 }
 
 void MultiMatchState::updateManagers(float dTime){
     //Input manager has to be the first to be updated
+        std::cout<<"Debug manual porque mira: 5555AAAAA"<<std::endl;
     inputManager->update();
+        std::cout<<"Debug manual porque mira: 555BBBB"<<std::endl;
 
     physicsManager->update(dTime);
+        std::cout<<"Debug manual porque mira: CCCC"<<std::endl;
 
     aiManager->update(dTime);
+        std::cout<<"Debug manual porque mira: 555DDDDDD"<<std::endl;
 
     waypointManager->update(dTime);
+        std::cout<<"Debug manual porque mira: 555EEEEE"<<std::endl;
 
     sensorManager->update();
+        std::cout<<"Debug manual porque mira: 5555FFFF"<<std::endl;
 
     itemManager->update(dTime);
+        std::cout<<"Debug manual porque mira: 555GGGGGA"<<std::endl;
     
     scoreManager->update();
+        std::cout<<"Debug manual porque mira: 5555HHHHHHH"<<std::endl;
 
     audioManager->update();
+        std::cout<<"Debug manual porque mira: 5555IIIIII"<<std::endl;
     
     //Event manager has to be the last to be updated
     eventManager->update();
+        std::cout<<"Debug manual porque mira: 5555JJJJJJJJJ"<<std::endl;
 }
 
 void MultiMatchState::draw() {

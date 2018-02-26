@@ -6,13 +6,11 @@
 #include "AIDrivingComponent.h"
 #include "WaypointComponent.h"
 
-class WaypointManager;
-
 class PathPlanningComponent : public IComponent{
 public:
 
     //Constructor
-    PathPlanningComponent(GameObject& newGameObject);
+    PathPlanningComponent(GameObject& newGameObject, std::vector<GameObject::Pointer>& list);
 
     //Destructor
     ~PathPlanningComponent() {};
