@@ -45,7 +45,7 @@ make_fac:
 	$(MAKE) -C src/Facade
 
 # target specific settings
-all_linux: LDFLAGS += -lassimp -lGLEW -lGLU -lGL -L./lib -lsfml-graphics -lsfml-window -lsfml-system
+all_linux: LDFLAGS += -lassimp -lGLEW -lGLU -lGL -L./lib -lsfml-graphics -lsfml-window -lsfml-system -lSDL2
 
 all_linux:
 	$(CXX) $(CXXFLAGS) -shared -o $(BIN_PATH)$(TARGET).so $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) $(LDFLAGS)
@@ -92,11 +92,11 @@ includefiles:
 	
 compile:
 	g++ -I./inc -c -o bin/main.o main.cpp
-	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW -lassimp
+	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW -lassimp -lSDL2
 
 compilel:
 	g++ -I./inc -c -o bin/main.o mainDeLuis.cpp
-	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW -lassimp
+	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW -lassimp -lSDL2
 
 makesh:
 	rm -rf ./bin/test.sh

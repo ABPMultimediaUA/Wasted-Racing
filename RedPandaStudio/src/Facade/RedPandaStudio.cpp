@@ -8,7 +8,7 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
     static RedPandaStudio rps;
 
-    rps.initSFMLWindow(width, height, depth, framerate, vsync, fullscreen);
+    rps.initSDLWindow(width, height, depth, framerate, vsync, fullscreen);
     rps.initOpenGL();
     rps.initScene();
 
@@ -18,51 +18,71 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 void RedPandaStudio::updateDevice() {
 
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
 	glUniformMatrix4fv(model, 1, GL_FALSE, &scene->getEntity()->modelMatrix()[0][0]);
     glUniformMatrix4fv(view, 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
     glUniformMatrix4fv(projection, 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
 
-	window->clear();
-    scene->draw();
-	window->setActive();
-	window->display();
+	scene->draw();
+
+	SDL_GL_SwapWindow(window);
 
 }
 
 void RedPandaStudio::dropDevice() {
 
-    window->close();
-    delete window;
+	// Delete our OpengL context
+	SDL_GL_DeleteContext(context);
+	SDL_DestroyWindow(window);
+	SDL_Quit();
 
     //delete scene;
     delete resourceManager;
 
 }
 
-void RedPandaStudio::initSFMLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen) {
+void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen) {
 
-    //Specify OpenGL version
-    sf::ContextSettings settings = sf::ContextSettings(0,0,0,4.5,0);
-    settings.depthBits = depth;
-    uint32_t style;
+    // Initialize SDL 
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	  std::cerr << "Couldn't init SDL" << std::endl;
+	SDL_GL_LoadLibrary(NULL);
 
-    //Specify fullscreen
-    if(fullscreen)
-        style = sf::Style::Fullscreen;
-    else
-        style = sf::Style::Default;
+	// Request an OpenGL 4.5 context (should be core)
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+	// Also request a depth buffer
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, depth);
 
-    //Create window
-    sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(1280, 720), "XKating", style, settings);
+	// Create the window
+	if (fullscreen) {
+	  window = SDL_CreateWindow(
+	    "XKating", 
+	    SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+	    0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL
+	  );
+	} else {
+	  window = SDL_CreateWindow(
+	    "XKating", 
+	    SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
+	    width, height, SDL_WINDOW_OPENGL
+	  );
+	}
 
-    window->setFramerateLimit(framerate);
-    window->setVerticalSyncEnabled(vsync);
+	if(vsync){
+		SDL_GL_SetSwapInterval(1);
+	}
+
+	context = SDL_GL_CreateContext(window);
 
     //Give window to RedPandaStudio
     setWindow(window);
 
     //Output message
-    std::cout << "SFML Window opened..." << std::endl;
+    std::cout << "SDL Window opened..." << std::endl;
 
 }
 
@@ -70,6 +90,8 @@ void RedPandaStudio::initOpenGL() {
 
     const char * vertex_file_path = "test.vertexshader";
     const char * fragment_file_path = "test.fragmentshader";
+
+	glewExperimental = GL_TRUE;
 
     if (glewInit() != GLEW_OK) {
         std::cerr << "Falló al inicializar GLEW\n" << std::endl;
