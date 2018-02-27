@@ -44,14 +44,12 @@ public:
     //////////////////////////////
     //  GETTERS
     SDL_Window* getWindow()   {   return window;      }
-    GLuint getProgramID()           {   return programID;   }
     TNode* getSceneRoot()           {   return scene;       }
     ResourceManager* getResourceManager() { return resourceManager;  }
 
     //////////////////////////////
     //  SETTERS
-    void setWindow(SDL_Window* rw )   {   window = rw;    }
-    void setProgramID(GLuint pID)           {   programID = pID;}     
+    void setWindow(SDL_Window* rw )   {   window = rw;    }   
 
 private: 
 
@@ -67,13 +65,6 @@ private:
     SDL_GLContext context;
     TNode *scene;
     ResourceManager *resourceManager;
-
-    //////////////////////////////
-    //  OPENGL VARIABLES
-    GLuint programID;
-    GLuint model;
-    GLuint view;
-    GLuint projection;
 
 };
 

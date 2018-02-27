@@ -20,9 +20,9 @@ void RedPandaStudio::updateDevice() {
 
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	glUniformMatrix4fv(model, 1, GL_FALSE, &scene->getEntity()->modelMatrix()[0][0]);
-    glUniformMatrix4fv(view, 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
-    glUniformMatrix4fv(projection, 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
+	glUniformMatrix4fv(scene->getEntity()->getModelID(), 1, GL_FALSE, &scene->getEntity()->modelMatrix()[0][0]);
+    glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
+    glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
 
 	scene->draw();
 
@@ -83,6 +83,10 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
     //Output message
     std::cout << "SDL Window opened..." << std::endl;
+
+	//Initilize Scene and ResourceManager here
+	scene = new TNode();
+    resourceManager = new ResourceManager();
 
 }
 
@@ -195,22 +199,21 @@ void RedPandaStudio::initOpenGL() {
     glUseProgram(ProgramID);
 
     //Give the ProgramID to our engine
-    setProgramID(ProgramID);
+    scene->getEntity()->setProgramID(ProgramID);
 
 	glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-	model = glGetUniformLocation(programID, "ModelMatrix");   
-    view  = glGetUniformLocation(programID, "ViewMatrix");
-    projection = glGetUniformLocation(programID, "ProjectionMatrix");
+	GLuint model = glGetUniformLocation(ProgramID, "ModelMatrix");   
+    GLuint view  = glGetUniformLocation(ProgramID, "ViewMatrix");
+    GLuint projection = glGetUniformLocation(ProgramID, "ProjectionMatrix");
+	scene->getEntity()->setModelID(model);
+	scene->getEntity()->setViewID(view);
+	scene->getEntity()->setProjectionID(projection);
 
 }
 
 void RedPandaStudio::initScene() {
-
-    scene = new TNode();
-    resourceManager = new ResourceManager();
-
 
     //Initialize Projection Matrix
     glm::mat4& Projection = scene->getEntity()->projectionMatrix();
