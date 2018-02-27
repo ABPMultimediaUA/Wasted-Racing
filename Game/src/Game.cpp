@@ -21,8 +21,8 @@ void Game::init() {
     setStay(true);
 
     //Set engine to default
-    setRenderEngine(0);
-    setInputEngine(0);
+    setRenderEngine(1);
+    setInputEngine(1);
 
     globalVariables = &GlobalVariables::getInstance(); //Initialize global variables bush
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
@@ -45,10 +45,10 @@ void Game::init() {
     //Initialize true audio manager
     audioManager->init();
     //First we initialize renderManager, who creates a device and passes this reference to the inputManager
-    renderManager->init(0);
+    renderManager->init(getRenderEngine());
 
     //Once we've initialized the renderManager, we can do the same with our inputManager
-    inputManager->init(0);
+    inputManager->init(getInputEngine());
 
     objectManager->init();
     physicsManager->init();
@@ -60,8 +60,10 @@ void Game::init() {
     networkManager->init();
     debugManager->init();
 
+    addObjects();
+
     //Initial state
-    setState(IGameState::stateType::INTRO);
+    setState(IGameState::stateType::MATCH);
 
     addObjects();
 
@@ -234,7 +236,7 @@ void addObjects(){
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     
-    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
+    ObjectManager::getInstance().createPlayer(transform, 3, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 

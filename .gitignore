@@ -12,3 +12,9 @@ RedPandaStudio/bin/libRedPanda.so
 RedPandaStudio/bin/main.o
 .vscode/
 Game/.vscode/
+.DS_Store
+Game/.DS_Store
+Game/bin/.DS_Store
+Game/lib/.DS_Store
+Game/lib/linux/.DS_Store
+Game/lib/mac/.DS_Store

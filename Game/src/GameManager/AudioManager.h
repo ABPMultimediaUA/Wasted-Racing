@@ -8,11 +8,6 @@ class AudioManager{
 
 public: 
 
-    enum AudioType {
-        Character,
-        Environment
-    };
-
     //Constructor
     AudioManager() {}
 

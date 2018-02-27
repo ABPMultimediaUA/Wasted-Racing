@@ -34,7 +34,7 @@ void RenderManager::init(int engine) {
         renderFacade = new RenderIrrlicht();
     }
     else {
-
+        //renderFacade = new RenderRedPanda();
     }
 
     //Render init
