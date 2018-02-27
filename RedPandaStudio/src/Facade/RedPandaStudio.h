@@ -37,7 +37,7 @@ public:
 
     //////////////////////////////
     //  NODE CONSTRUCTORS
-    TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh);
+    TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh, const char* text);
     TNode* createCamera(TNode* parent, glm::vec3 position);
     TNode* createLight(TNode* parent, glm::vec3 position);
 

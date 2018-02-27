@@ -227,7 +227,7 @@ void RedPandaStudio::initScene() {
 
 //////////////////////////////
 //  NODE CONSTRUCTORS
-TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 position, const char* mesh) {
+TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 position, const char* mesh, const char* text) {
 
 	//Check parent node is valid
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
@@ -241,6 +241,8 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 position, const
 		//Create new mesh entity
 		TMesh* m = new TMesh();
 		m->setMesh(resourceManager->getResourceMesh(mesh));
+		m->setTexture(resourceManager->getResourceTexture(text));
+		m->setTextActive(true);
 		TNode* mesh = new TNode(transform, m);
 
 		//Link tree
