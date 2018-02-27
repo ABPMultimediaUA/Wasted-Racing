@@ -28,12 +28,7 @@
 #include "GameManager/NetworkManager.h"
 #include "GameManager/DebugManager.h"
 #include "GameEvent/EventManager.h"
-
-//Other includes
-#include "GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "GameObject/ItemComponent/ItemBoxComponent.h"
-#include "GameObject/AIComponent/WaypointComponent.h"
-#include "GameFacade/AudioFMOD.h"
+#include "GameServer/ServerManager.h"
 
 //State includes
 #include "GameState/IntroState.h"
@@ -74,11 +69,9 @@ public:
 
 
     //Basic setters and getters
-    bool isServer()            {     return server;         }//Returns true if this is the server
     void setStay(bool s)       {     stay = s;              }//Stay setter
     void setRenderEngine(int n){     renderEngine = n;      }//Engine setter
     void setInputEngine(int n) {     inputEngine = n;       }//Input setter
-    //IGameState* getState()     {     return state;          }//State getter
     int getRenderEngine()      {     return renderEngine;   }//Engine getter
     int getInputEngine()       {     return inputEngine;    }//Input getter
     float getAccumulatedTime() {     return accumulatedTime;}//Get accumulated time
@@ -100,6 +93,9 @@ private:
     //Initialization
     void init();
 
+    //Initialization
+    void initServer();
+
     //Update client
     void update(float dTime);
 
@@ -111,6 +107,9 @@ private:
 
     //Shutdown
     void close();
+
+    //Shutdown
+    void closeServer();
 
     //==============================================================
     // Private data
@@ -150,9 +149,6 @@ private:
 
     //Stay in the main loop
     bool stay;
-
-    //If true, the game is initiated inside the server
-    bool server;
 
     //current state
     IGameState* state;

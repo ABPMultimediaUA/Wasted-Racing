@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Game.h"
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/RakNetTypes.h>

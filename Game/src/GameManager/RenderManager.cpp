@@ -144,15 +144,20 @@ IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGa
 
 IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency) {
 
+    //Instantiate the component as shared pointer
     IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
 
+    //Add component to object
     newGameObject.addComponent(component);
 
+    //Create event data
     EventData data;
     data.Component = component;
 
-    auto comp = newGameObject.getComponent<ObjectRenderComponent>();
+    //Create event
+    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
 
+    //add object to the render
     renderFacade->addObject(component.get(), radius, length, tesselation, transparency);
 
     return component;

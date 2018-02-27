@@ -431,7 +431,8 @@ IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameOb
     EventData data;
     data.Component = component;
 
-    EventManager::getInstance().addEvent(Event {EventType::TerrainComponent_Create, data});
+    //______>No need for now
+    //EventManager::getInstance().addEvent(Event {EventType::TerrainComponent_Create, data});
 
     return component;
 }
@@ -487,7 +488,8 @@ IComponent::Pointer PhysicsManager::createRampComponent(GameObject& newGameObjec
     EventData data;
     data.Component = component;
 
-    EventManager::getInstance().addEvent(Event {EventType::RampComponent_Create, data});
+    //________>Not needed now
+    //EventManager::getInstance().addEvent(Event {EventType::RampComponent_Create, data});
 
     return component;
 }

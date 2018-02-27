@@ -25,7 +25,11 @@ class GlobalVariables{
         IGameState::stateType getGameState()      { return game;    };
         void setPlayer(GameObject* p)             { player = p;     };
         GameObject* getPlayer()                   { return player;  };
-
+        void setServer(bool s)                    { server = s;     };
+        bool getServer()                          { return server;  };
+        void setOnline(bool o)                    { online = o;     };
+        bool getOnline()                          { return online;  };
+        
     private:
 
         //==========================================
@@ -33,6 +37,8 @@ class GlobalVariables{
         //==========================================
         IGameState::stateType game; 
         GameObject* player; 
+        bool server;
+        bool online;
 
         //==========================================
         // AI DATA

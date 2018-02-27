@@ -50,6 +50,7 @@ void EventManager::processEvent(Event event){
         auto eventListenerList = auxEventListenerList->second;
 
         for(auto eventListener : eventListenerList) {
+                std::cout<<"jeje:"<<event.data.Id<<std::endl;
                 eventListener.listener(event.data);
         }
     }
