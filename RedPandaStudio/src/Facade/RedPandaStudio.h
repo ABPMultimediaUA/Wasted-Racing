@@ -37,8 +37,12 @@ public:
 
     //////////////////////////////
     //  NODE CONSTRUCTORS
-    TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh, const char* text);
+
+    //Creates an object and returns a TMesh
+    TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh, const char* text); 
+    //Creates a camera and returns a TCamera
     TNode* createCamera(TNode* parent, glm::vec3 position);
+    //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position);
 
     //////////////////////////////
@@ -69,6 +73,7 @@ private:
 };
 
 //Transformation facade
+    //Input node has to be of type Mesh/Light/Camera
 void translateNode(TNode* node, glm::vec3 position);
 void rotateNode(TNode* node, float rotation, int axis);
 void scaleNode(TNode* node, glm::vec3 scale);

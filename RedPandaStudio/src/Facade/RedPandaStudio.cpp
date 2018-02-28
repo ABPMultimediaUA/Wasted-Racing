@@ -275,12 +275,33 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position) {
 //  TRANSFORMATION FACADE
 void translateNode(TNode* node, glm::vec3 position) {
 
-	TTransform* t;
+	TEntity* t;
 
-	//Check the transform is valid
-	if(node != nullptr && (t = dynamic_cast<TTransform*>(node->getEntity())) != nullptr ) {
+	//Check the input is a mesh, camera or light
+	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
 
-		t->translate(position.x, position.y, position.z);
+		TTransform* tr = (TTransform*)node->getFather()->getEntity();
+
+		tr->translate(position.x, position.y, position.z);
+
+	}
+
+}
+
+void scaleNode(TNode* node, glm::vec3 scale) {
+
+	TEntity* t;
+
+	//Check the input is a mesh, camera or light
+	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
+
+		TTransform* tr = (TTransform*)node->getFather()->getFather()->getEntity();
+
+		tr->scale(scale.x, scale.y, scale.z);
 
 	}
 
@@ -288,30 +309,21 @@ void translateNode(TNode* node, glm::vec3 position) {
 
 void rotateNode(TNode* node, float rotation, int axis) {
 
-	TTransform* t;
+	TEntity* t;
 
-	//Check the transform is valid
-	if(node != nullptr && (t = dynamic_cast<TTransform*>(node->getEntity())) != nullptr ) {
+	//Check the input is a mesh, camera or light
+	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
+
+		TTransform* tr = (TTransform*)node->getFather()->getFather()->getFather()->getEntity();
 
 		if(axis == 0)
-			t->rotate(1, 0, 0, rotation);
+			tr->rotate(1, 0, 0, rotation);
 		if(axis == 1)
-			t->rotate(0, 1, 0, rotation);
+			tr->rotate(0, 1, 0, rotation);
 		if(axis == 2)
-			t->rotate(0, 0, 1, rotation);
-	}
-
-}
-
-void scaleNode(TNode* node, glm::vec3 scale) {
-
-	TTransform* t;
-
-	//Check the transform is valid
-	if(node != nullptr && (t = dynamic_cast<TTransform*>(node->getEntity())) != nullptr ) {
-
-		t->scale(scale.x, scale.y, scale.z);
-
+			tr->rotate(0, 0, 1, rotation);
 	}
 
 }
