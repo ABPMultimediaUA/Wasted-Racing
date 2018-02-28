@@ -57,5 +57,7 @@ void TTransform::beginDraw()
 void TTransform::endDraw()
 {
     matrix = matrixStack().top();
+    glm::mat4& mM= modelMatrix();
+    mM = matrixStack().top();
     matrixStack().pop();
 }

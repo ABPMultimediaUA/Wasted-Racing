@@ -44,22 +44,22 @@ public:
 
     //Setters for initilization
     static void setProgramID(GLuint p)     {   programID = p;  }
-    static void setModelID(GLuint m)       {   model = m;      }
-    static void setViewID(GLuint v)        {   view = v;       }
-    static void setProjectionID(GLuint p)  {   projection = p; }
+    static void setModelID(GLuint m)       {   modelID = m;      }
+    static void setViewID(GLuint v)        {   viewID = v;       }
+    static void setProjectionID(GLuint p)  {   projectionID = p; }
 
     //Getters
     static GLuint getProgramID()       {   return programID;   }
-    static GLuint getModelID()         {   return model;       }
-    static GLuint getViewID()          {   return view;        }
-    static GLuint getProjectionID()    {   return projection;  }
+    static GLuint getModelID()         {   return modelID;       }
+    static GLuint getViewID()          {   return viewID;        }
+    static GLuint getProjectionID()    {   return projectionID;  }
 
 protected:
 
     //Global variables for OpenGL
     static GLuint programID;
-    static GLuint model;
-    static GLuint view;
-    static GLuint projection;
+    static GLuint modelID;
+    static GLuint viewID;
+    static GLuint projectionID;
 
 };

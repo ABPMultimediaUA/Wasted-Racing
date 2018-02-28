@@ -20,7 +20,6 @@ void RedPandaStudio::updateDevice() {
 
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	glUniformMatrix4fv(scene->getEntity()->getModelID(), 1, GL_FALSE, &scene->getEntity()->modelMatrix()[0][0]);
     glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
     glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
 

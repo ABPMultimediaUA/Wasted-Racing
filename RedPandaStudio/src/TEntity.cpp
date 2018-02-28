@@ -1,6 +1,6 @@
 #include "TEntity.h"
 
 GLuint TEntity::programID;
-GLuint TEntity::model;
-GLuint TEntity::view;
-GLuint TEntity::projection;
+GLuint TEntity::modelID;
+GLuint TEntity::viewID;
+GLuint TEntity::projectionID;
