@@ -96,12 +96,7 @@ void RedPandaStudio::initOpenGL() {
 
 	glewExperimental = GL_TRUE;
 
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "Falló al inicializar GLEW\n" << std::endl;
-    }
-    else {
-        std::cout << "GLEW initialized" << std::endl;
-    }
+	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
 
     //Init VBO
     GLuint VertexArrayID;
@@ -229,30 +224,39 @@ void RedPandaStudio::initScene() {
 
 //////////////////////////////
 //  NODE CONSTRUCTORS
-TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 position, const char* mesh, const char* text) {
+TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char* mesh, const char* text) {
 
 	//Check parent node is valid
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
 
-		//Create new transformation
-		TTransform* t = new TTransform();
-		t->identity();
-		t->translate(position.x, position.y, position.z);
-		TNode* transform = new TNode(parent, t);
+		//Create new transformation tree
+		//Rotation transformation
+		TTransform* tR = new TTransform();
+		tR->identity();
+		TNode* transformR = new TNode(parent, tR);
+		parent->addChild(transformR);
+		//Scale transformation
+		TTransform* tS = new TTransform();
+		tS->identity();
+		TNode* transformS = new TNode(transformR, tS);
+		transformR->addChild(transformS);
+		//Translation transformation
+		TTransform* tT = new TTransform();
+		tT->identity();
+		tT->translate(pos.x, pos.y, pos.z);
+		TNode* transformT = new TNode(transformS, tT);
+		transformS->addChild(transformT);
 
 		//Create new mesh entity
 		TMesh* m = new TMesh();
 		m->setMesh(resourceManager->getResourceMesh(mesh));
 		m->setTexture(resourceManager->getResourceTexture(text));
 		m->setTextActive(true);
-		TNode* mesh = new TNode(transform, m);
+		TNode* mesh = new TNode(transformT, m);
+		transformT->addChild(mesh);
 
-		//Link tree
-		transform->addChild(mesh);
-		parent->addChild(transform);
-
-		//Return transform
-		return transform;
+		//Return mesh
+		return mesh;
 	}
 	else{
 		return nullptr;

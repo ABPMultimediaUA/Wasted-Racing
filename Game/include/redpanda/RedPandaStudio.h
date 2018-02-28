@@ -3,10 +3,8 @@
 //=========================================================================
 //                               INCLUDES                                //
 //=========================================================================
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-
 #include <GL/glew.h>
+#include <SDL2/SDL.h>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -39,46 +37,43 @@ public:
 
     //////////////////////////////
     //  NODE CONSTRUCTORS
-    TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh);
+
+    //Creates an object and returns a TMesh
+    TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh, const char* text); 
+    //Creates a camera and returns a TCamera
     TNode* createCamera(TNode* parent, glm::vec3 position);
+    //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position);
 
     //////////////////////////////
     //  GETTERS
-    sf::RenderWindow* getWindow()   {   return window;      }
-    GLuint getProgramID()           {   return programID;   }
+    SDL_Window* getWindow()   {   return window;      }
     TNode* getSceneRoot()           {   return scene;       }
     ResourceManager* getResourceManager() { return resourceManager;  }
 
     //////////////////////////////
     //  SETTERS
-    void setWindow(sf::RenderWindow* rw )   {   window = rw;    }
-    void setProgramID(GLuint pID)           {   programID = pID;}     
+    void setWindow(SDL_Window* rw )   {   window = rw;    }   
 
 private: 
 
     //////////////////////////////
     //  FUNCTIONS
-    void initSFMLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen);
+    void initSDLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen);
     void initOpenGL();
     void initScene();
 
     //////////////////////////////
     //  VARIABLES
-    sf::RenderWindow* window;
+    SDL_Window* window;
+    SDL_GLContext context;
     TNode *scene;
     ResourceManager *resourceManager;
-
-    //////////////////////////////
-    //  OPENGL VARIABLES
-    GLuint programID;
-    GLuint model;
-    GLuint view;
-    GLuint projection;
 
 };
 
 //Transformation facade
+    //Input node has to be of type Mesh/Light/Camera
 void translateNode(TNode* node, glm::vec3 position);
 void rotateNode(TNode* node, float rotation, int axis);
 void scaleNode(TNode* node, glm::vec3 scale);

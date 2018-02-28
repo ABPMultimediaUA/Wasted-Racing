@@ -7,6 +7,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+
 class TResourceMesh : public TResource {
     public:
         TResourceMesh() {};
@@ -27,6 +28,4 @@ class TResourceMesh : public TResource {
         long nTriangles;
         //Number of vertex
         long nVertex;
-
-
 };

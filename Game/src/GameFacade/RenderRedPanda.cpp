@@ -6,8 +6,8 @@
 //Creates a window depending on the engine
 void RenderRedPanda::openWindow() { 
 
-    device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,32,0,window.vsync,window.fullscreen);
-
+    device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
+    
     InputRedPanda* receiver = new InputRedPanda();
 
     uintptr_t aux = reinterpret_cast<uintptr_t>(device->getWindow());
@@ -65,7 +65,7 @@ void RenderRedPanda::addObject(IComponent* ptr) {
         switch(shape){
 
             case ObjectRenderComponent::Shape::Mesh: {
-                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str());
+                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str(), "/home/luis/WastedHorchata/Wasted-Racing/Game/media/mesh/Link/YoungLink_grp.png");
                 std::cout << cmp->getMesh() << std::endl;
             }
             break;

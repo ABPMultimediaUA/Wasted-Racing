@@ -10,6 +10,8 @@ int main() {
     while(1){
         rps->updateDevice();
         rps::rotateNode(t, 0.01, 1);
+        rps::scaleNode(t, glm::vec3(0.999,0.999,0.999));
+        rps::translateNode(t,glm::vec3(0,0,0.01));
     }
     
 
