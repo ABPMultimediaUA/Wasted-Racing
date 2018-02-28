@@ -162,7 +162,7 @@ void addObjects(){
     uint16_t id = 25000;
     GameObject::TransformationData transform;
     
-    transform.position = glm::vec3(-35,0, -20);
+    transform.position = glm::vec3(0,0, 0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     

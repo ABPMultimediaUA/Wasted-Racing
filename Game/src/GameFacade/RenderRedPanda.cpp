@@ -50,31 +50,24 @@ void RenderRedPanda::addObject(IComponent* ptr) {
 
     ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr);
 
-    if(cmp != nullptr && cmp->getGameObject().getId() == 25000){
+    auto shape = cmp->getObjectShape();
+    auto obj = cmp->getGameObject();
+    auto pos = obj.getTransformData().position;
 
-        auto shape = cmp->getObjectShape();
-        auto obj = cmp->getGameObject();
-        //Transform the data to irrlicht type
-        auto pos = obj.getTransformData().position;
-        auto rot = obj.getTransformData().rotation;
-        auto sca = obj.getTransformData().scale;
-
-        TNode * node;
-
-        //Initialize the node
-        switch(shape){
-
-            case ObjectRenderComponent::Shape::Mesh: {
-                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str(), "/home/luis/WastedHorchata/Wasted-Racing/Game/media/mesh/Link/YoungLink_grp.png");
-                std::cout << cmp->getMesh() << std::endl;
-            }
-            break;
-            default:
-            break;
+    TNode * node;
+    //Initialize the node
+    if(obj.getId()!=20000)
+    switch(shape){
+        case ObjectRenderComponent::Shape::Mesh: {
+            node = device->createObjectNode(device->getSceneRoot(), pos, cmp->getMesh().c_str(), "/home/luis/WastedHorchata/Wasted-Racing/Game/media/mesh/Link/YoungLink_grp.png");
+            std::cout << cmp->getMesh() << std::endl;
         }
-    
-        nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
+        break;
+        default:
+        break;
     }
+
+    nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
 
 }
 
@@ -88,7 +81,26 @@ void RenderRedPanda::addLight(IComponent* ptr) { }
 void RenderRedPanda::deleteObject(IComponent* ptr) { }
 
 //Change the position of an object in-game
-void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::TransformationData transform) { }
+void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::TransformationData transform) { 
+
+    auto pos = transform.position;
+    auto rot = transform.rotation;
+    auto sca = transform.scale;
+
+    auto iterator = nodeMap.find(id);
+    if(iterator != nodeMap.end()){
+
+        auto node = iterator->second;
+
+        rps::rotateNode(node, rot.y, 1);
+        rps::rotateNode(node, rot.x, 0);
+        rps::rotateNode(node, rot.z, 2);
+
+        rps::scaleNode(node, sca);
+
+        rps::translateNode(node, pos);
+    }
+}
 
 ///////////////////////////////
 ///////      DEBUG      ///////    

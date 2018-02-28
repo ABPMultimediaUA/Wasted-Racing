@@ -215,7 +215,7 @@ void RedPandaStudio::initScene() {
 
     //Initilize View Matrix
     glm::mat4& View = scene->getEntity()->viewMatrix();
-    View = glm::lookAt( glm::vec3(-10,15,-3), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+    View = glm::lookAt( glm::vec3(-10,5,0), glm::vec3(0,0,0), glm::vec3(0,1,0) );
 
     //Initilize Model Matrix
     glm::mat4& Model = scene->getEntity()->modelMatrix();
