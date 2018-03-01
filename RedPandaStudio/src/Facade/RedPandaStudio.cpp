@@ -91,8 +91,8 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "test.vertexshader";
-    const char * fragment_file_path = "test.fragmentshader";
+    const char * vertex_file_path = "test.vert";
+    const char * fragment_file_path = "test.frag";
 
 	glewExperimental = GL_TRUE;
 
@@ -272,6 +272,10 @@ TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position) {
 
 	return parent;
+
+}
+
+void RedPandaStudio::deleteObject(TNode* leaf) {
 
 }
 

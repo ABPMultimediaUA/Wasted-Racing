@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 #include <RedPanda.h>
 
@@ -44,6 +45,8 @@ public:
     TNode* createCamera(TNode* parent, glm::vec3 position);
     //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position);
+    //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
+    void deleteObject(TNode* leaf);
 
     //////////////////////////////
     //  GETTERS
