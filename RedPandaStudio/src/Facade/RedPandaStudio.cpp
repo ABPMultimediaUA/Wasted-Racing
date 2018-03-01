@@ -230,15 +230,11 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
 
 		//Create new transformation tree
-		TTransform* tI = new TTransform();
-		tI->identity();
-		TNode* transformI = new TNode(parent, tI);
-		parent->addChild(transformI); //****************WROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONNNNNNNNNNNNNNGGGGGGGGGGGGGGGGGGGGGGGGG
 		//Rotation transformation
 		TTransform* tR = new TTransform();
 		tR->identity();
-		TNode* transformR = new TNode(transformI, tR);
-		transformI->addChild(transformR);
+		TNode* transformR = new TNode(parent, tR);
+		parent->addChild(transformR);
 		//Scale transformation
 		TTransform* tS = new TTransform();
 		tS->identity();
