@@ -16,7 +16,7 @@ uniform int numLights;
 
 struct Light {
    vec4 position;
-   vec4 intensities;
+   vec4 intensity;
 };
 uniform Light light[maxLights];
 
@@ -24,8 +24,7 @@ uniform Light light[maxLights];
 void main()
 {
 
-    float ambient = 0.15;                               // (15% de int. ambiente)
-	float diffuse = 0.0;
+    float ambient = 0.10;                               // (15% de int. ambiente)
 
     v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -34,6 +33,8 @@ void main()
 
     for(int i = 0; i < numLights && i < maxLights; i++){
 
+        float diffuse = 0.0;
+
         vec4 LightPos = ViewMatrix * light[i].position;
 
 	    float d = length(LightPos.xyz - P);			        // distancia de la luz
@@ -41,14 +42,14 @@ void main()
 
         diffuse = max(dot(N, L), 0.0);		            // Cálculo de la int. difusa
         // Cálculo de la atenuación
-        float attenuation = 80.0/(0.25+(0.01*d)+(0.003*d*d));
+        float attenuation = 80.0/(0.25+(0.1*d)+(0.03*d*d));
         diffuse = diffuse * attenuation;
 
-        v_Color += light[i].intensities * diffuse;
+        v_Color += light[i].intensity * diffuse;
 
     }
 
-    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient + diffuse);
+    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient);
 
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 

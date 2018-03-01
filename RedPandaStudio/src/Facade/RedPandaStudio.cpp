@@ -23,6 +23,8 @@ void RedPandaStudio::updateDevice() {
     glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
     glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
 
+	renderLights();
+
 	scene->draw();
 
 	SDL_GL_SwapWindow(window);
@@ -230,22 +232,7 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
 
 		//Create new transformation tree
-		//Rotation transformation
-		TTransform* tR = new TTransform();
-		tR->identity();
-		TNode* transformR = new TNode(parent, tR);
-		parent->addChild(transformR);
-		//Scale transformation
-		TTransform* tS = new TTransform();
-		tS->identity();
-		TNode* transformS = new TNode(transformR, tS);
-		transformR->addChild(transformS);
-		//Translation transformation
-		TTransform* tT = new TTransform();
-		tT->identity();
-		tT->translate(pos.x, pos.y, pos.z);
-		TNode* transformT = new TNode(transformS, tT);
-		transformS->addChild(transformT);
+		TNode* transformT = addRotScaPos(parent, pos);
 
 		//Create new mesh entity
 		TMesh* m = new TMesh();
@@ -269,14 +256,101 @@ TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 
 }
 
-TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position) {
+TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity) {
 
-	return parent;
+	//Check parent node is valid
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+
+		//Create new transformation tree
+		TNode* transformT = addRotScaPos(parent, position);
+
+		//Create new mesh entity
+		TLight* l = new TLight(intensity);
+		TNode* light = new TNode(transformT, l);
+		transformT->addChild(light);
+
+		//Register light
+		lights.push_back(light);
+
+		//Return mesh
+		return light;
+	}
+	else{
+		return nullptr;
+	}
 
 }
 
 void RedPandaStudio::deleteObject(TNode* leaf) {
 
+}
+
+TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {
+
+		//Rotation transformation
+		TTransform* tR = new TTransform();
+		tR->identity();
+		TNode* transformR = new TNode(parent, tR);
+		parent->addChild(transformR);
+
+		//Scale transformation
+		TTransform* tS = new TTransform();
+		tS->identity();
+		TNode* transformS = new TNode(transformR, tS);
+		transformR->addChild(transformS);
+
+		//Translation transformation
+		TTransform* tT = new TTransform();
+		tT->identity();
+		tT->translate(pos.x, pos.y, pos.z);
+		TNode* transformT = new TNode(transformS, tT);
+		transformS->addChild(transformT);
+
+		return transformT;
+
+}
+
+////////////////////////////////////
+//  LIGHTS AND CAMERA MANAGEMENT
+void RedPandaStudio::renderLights() {
+
+	for(unsigned int i = 0; i < lights.size(); i++){
+
+		glm::mat4 mat = glm::mat4(1.0);
+
+		calculateNodeTransform(lights[i], mat);
+
+		glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+
+		std::string lightName = std::string("light[" + std::to_string(i) + "].position");
+		GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
+		glUniform4fv(posID, 1, &pos[0]);
+
+		std::string lightName2 = std::string("light[" + std::to_string(i) + "].intensity");
+		GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
+		TLight* l = (TLight*)lights[i]->getEntity();
+		glUniform4fv(intID, 1, &l->getIntensity()[0]);
+	}
+
+	GLuint numL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numLights");
+	glUniform1i(numL, lights.size());
+
+}
+void RedPandaStudio::renderCamera() {
+
+}
+
+//Recursive function. Should receive an identity as input. Returns the accumulated transformation
+void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat) {
+
+	if(node!= nullptr && node->getFather() != nullptr) {
+
+		TTransform* t = dynamic_cast<TTransform*>(node->getEntity());
+		if( t != nullptr) 
+			mat *= t->getMatrix(); 
+
+		calculateNodeTransform(node->getFather(), mat);
+	}
 }
 
 //////////////////////////////

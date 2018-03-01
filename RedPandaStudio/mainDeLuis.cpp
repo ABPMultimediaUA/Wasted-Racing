@@ -6,8 +6,14 @@ int main() {
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
 
-    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "Link/Link.obj", "Link/YoungLink_grp.png");
-    TNode* t1 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(2,0,0), "Link/Link.obj", "Link/YoungLink_grp.png");
+    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,-2), "Link/Link.obj", "Link/YoungLink_grp.png");
+    TNode* t1 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,2), "Link/Link.obj", "Link/YoungLink_grp.png");
+
+    rps::scaleNode(t, glm::vec3(0.5,0.5,0.5));
+    rps::scaleNode(t1, glm::vec3(0.5,0.5,0.5));
+
+    TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
+    TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
 
     bool quit = true;
     SDL_Event event;
@@ -26,25 +32,23 @@ int main() {
         }
 
         rps::rotateNode(t, 0.01, 1);
-        rps::scaleNode(t, glm::vec3(0.999,0.999,0.999));
-        rps::translateNode(t,glm::vec3(0.01,0,0.01));
-        rps::translateNode(t1,glm::vec3(-0.01,0,-0.01));
+        rps::rotateNode(t1, -0.01, 1);
+        rps::scaleNode(t,glm::vec3(0.999,0.999,0.999));
+        rps::scaleNode(t1,glm::vec3(1.001,1.001,1.001));
+        rps::translateNode(t,glm::vec3(0,0.005,0));
+        rps::translateNode(t1,glm::vec3(0,-0.005,0));
+        //rps::scaleNode(t, glm::vec3(0.995,0.995,0.995));
+        //rps::translateNode(t,glm::vec3(0.01,0,0.01));
+        //rps::translateNode(t1,glm::vec3(-0.01,0,-0.01));
+        //rps::translateNode(light0,glm::vec3(0,0,-0.02));
+        //rps::translateNode(light1,glm::vec3(0,0,0.02));
         rps->updateDevice();
-
-
-
 
     }
 
     rps->dropDevice();
 
     /*
-    std::cout << t->getFather()->getFather()->getFather()->getFather() << std::endl;
-    std::cout << t1->getFather()->getFather()->getFather()->getFather() << std::endl;
-
-    std::cout << t->getFather()->getFather()->getFather() << std::endl;
-    std::cout << t1->getFather()->getFather()->getFather() << std::endl;
-
     std::cout << std::endl;
     std::cout << t->getFather()->getFather()->getFather()->getFather()->getFather()->getChild().size() << std::endl;
     std::cout << t->getFather()->getFather()->getFather()->getFather()->getChild().size() << std::endl;
@@ -54,42 +58,10 @@ int main() {
     std::cout << t->getChild().size() << std::endl;
     std::cout << std::endl;
 
-    std::cout << std::endl;
-    std::cout << t1->getFather()->getFather()->getFather()->getFather()->getFather()->getChild().size() << std::endl;
-    std::cout << t1->getFather()->getFather()->getFather()->getFather()->getChild().size() << std::endl;
-    std::cout << t1->getFather()->getFather()->getFather()->getChild().size() << std::endl;
-    std::cout << t1->getFather()->getFather()->getChild().size() << std::endl;
-    std::cout << t1->getFather()->getChild().size() << std::endl;
-    std::cout << t1->getChild().size() << std::endl;
-    std::cout << std::endl;
-
-    TTransform* q = (TTransform*)t->getFather()->getEntity();
-
-    std::cout << q->getMatrix()[0][0] << " " << q->getMatrix()[0][1] << " " << q->getMatrix()[0][2] << " " << q->getMatrix()[0][3] << " " << std::endl;
-    std::cout << q->getMatrix()[1][0] << " " << q->getMatrix()[1][1] << " " << q->getMatrix()[1][2] << " " << q->getMatrix()[1][3] << " " << std::endl;
-    std::cout << q->getMatrix()[2][0] << " " << q->getMatrix()[2][1] << " " << q->getMatrix()[2][2] << " " << q->getMatrix()[2][3] << " " << std::endl;
-    std::cout << q->getMatrix()[3][0] << " " << q->getMatrix()[3][1] << " " << q->getMatrix()[3][2] << " " << q->getMatrix()[3][3] << " " << std::endl;
-    std::cout << std::endl;
-    rps::translateNode(t,glm::vec3(0.01,0,0.01));
-    rps->updateDevice();
-    std::cout << q->getMatrix()[0][0] << " " << q->getMatrix()[0][1] << " " << q->getMatrix()[0][2] << " " << q->getMatrix()[0][3] << " " << std::endl;
-    std::cout << q->getMatrix()[1][0] << " " << q->getMatrix()[1][1] << " " << q->getMatrix()[1][2] << " " << q->getMatrix()[1][3] << " " << std::endl;
-    std::cout << q->getMatrix()[2][0] << " " << q->getMatrix()[2][1] << " " << q->getMatrix()[2][2] << " " << q->getMatrix()[2][3] << " " << std::endl;
-    std::cout << q->getMatrix()[3][0] << " " << q->getMatrix()[3][1] << " " << q->getMatrix()[3][2] << " " << q->getMatrix()[3][3] << " " << std::endl;
-    std::cout << std::endl;
-    rps::translateNode(t,glm::vec3(0.01,0,0.01));
-    rps->updateDevice();
-    std::cout << q->getMatrix()[0][0] << " " << q->getMatrix()[0][1] << " " << q->getMatrix()[0][2] << " " << q->getMatrix()[0][3] << " " << std::endl;
-    std::cout << q->getMatrix()[1][0] << " " << q->getMatrix()[1][1] << " " << q->getMatrix()[1][2] << " " << q->getMatrix()[1][3] << " " << std::endl;
-    std::cout << q->getMatrix()[2][0] << " " << q->getMatrix()[2][1] << " " << q->getMatrix()[2][2] << " " << q->getMatrix()[2][3] << " " << std::endl;
-    std::cout << q->getMatrix()[3][0] << " " << q->getMatrix()[3][1] << " " << q->getMatrix()[3][2] << " " << q->getMatrix()[3][3] << " " << std::endl;
-    std::cout << std::endl;
-    rps::translateNode(t,glm::vec3(0.01,0,0.01));
-    rps->updateDevice();
-    std::cout << q->getMatrix()[0][0] << " " << q->getMatrix()[0][1] << " " << q->getMatrix()[0][2] << " " << q->getMatrix()[0][3] << " " << std::endl;
-    std::cout << q->getMatrix()[1][0] << " " << q->getMatrix()[1][1] << " " << q->getMatrix()[1][2] << " " << q->getMatrix()[1][3] << " " << std::endl;
-    std::cout << q->getMatrix()[2][0] << " " << q->getMatrix()[2][1] << " " << q->getMatrix()[2][2] << " " << q->getMatrix()[2][3] << " " << std::endl;
-    std::cout << q->getMatrix()[3][0] << " " << q->getMatrix()[3][1] << " " << q->getMatrix()[3][2] << " " << q->getMatrix()[3][3] << " " << std::endl;
+    std::cout << mat[0][0] << " " << mat[0][1] << " " << mat[0][2] << " " << mat[0][3] << " " << std::endl;
+    std::cout << mat[1][0] << " " << mat[1][1] << " " << mat[1][2] << " " << mat[1][3] << " " << std::endl;
+    std::cout << mat[2][0] << " " << mat[2][1] << " " << mat[2][2] << " " << mat[2][3] << " " << std::endl;
+    std::cout << mat[3][0] << " " << mat[3][1] << " " << mat[3][2] << " " << mat[3][3] << " " << std::endl;
     std::cout << std::endl;
     */
     return 0;
