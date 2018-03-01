@@ -108,8 +108,8 @@ all_linux: LDFLAGS += -L./lib/linux/sfml -lsfml-graphics -lsfml-window -lsfml-sy
 all_linux: LDFLAGS += -L./lib/linux -lRedPanda 
 all_linux: LDFLAGS += -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod -Wl,-rpath=lib/linux/raknet -Wl,-rpath=lib/linux/sfml -Wl,-rpath=lib/linux
 
-sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/ && bin/XKating"
-sh_server_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/ && bin/Server_XKating"
+sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/:lib/linnux && bin/XKating"
+sh_server_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/:lib/linux && bin/Server_XKating"
 
 all_linux:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)

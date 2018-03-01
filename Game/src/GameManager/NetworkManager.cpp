@@ -14,15 +14,44 @@
 //////////////////////////////////////////////////////
 //////////// DELEGATE FUNCTIONS
 //////////////////////////////////////////////////////
-void itemBoxCollisionEvent(EventData eData);
+/*void itemBoxCollisionEvent(EventData eData);
 void startLineCollisionEvent(EventData eData);
 void createBananaEvent(EventData eData);
 void destroyBananaEvent(EventData eData);
 void createRedShellEvent(EventData eData);
 void destroyRedShellEvent(EventData eData);
 void createBlueShellEvent(EventData eData);
-void destroyBlueShellEvent(EventData eData);
+void destroyBlueShellEvent(EventData eData);   */ 
+void sendAdvanceDown(EventData eData);
+void sendAdvanceUp(EventData eData);
+void sendBrakeDown(EventData eData);
+void sendBrakeUp(EventData eData);
+void sendTurnLeftDown(EventData eData);
+void sendTurnLeftUp(EventData eData);
+void sendTurnRightDown(EventData eData);
+void sendTurnRightUp(EventData eData);
+void sendJumpDown(EventData eData);
+void sendJumpUp(EventData eData);
+void sendDriftDown(EventData eData);
+void sendDriftUp(EventData eData);
+void sendUseItemDown(EventData eData);
 //=============================================
+
+//==============================================
+// PLAYER FUNCTIONS
+//============================================== 
+
+void NetworkManager::sendInput(EventType event)
+{
+    //Stream of raknet bits
+    RakNet::BitStream stream;
+
+    stream.Write((unsigned char)ID_INPUT);  //Send message to receive input from the player
+    stream.Write((int)server_id);           //Send Id of the player that created it
+    stream.Write((EventType) event);        //Type of input sent
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
+}
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
 {
@@ -79,7 +108,7 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
     trans.scale.y    = 1;
     trans.scale.z    = 1;
 
-    ObjectManager::getInstance().createPlayer(trans,0, 2, 25001+id, 
+    ObjectManager::getInstance().createPlayer(trans, 0, 2, 25001+id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(trans.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(trans.position));
 
@@ -698,6 +727,7 @@ void NetworkManager::endGame()
     EventData data;
     data.Id = IGameState::stateType::CLIENTLOBBY;
     EventManager::getInstance().addEvent(Event {EventType::State_Change, data});
+
     //Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
 
@@ -735,14 +765,29 @@ void NetworkManager::init() {
     connected = false;
 
     //Listeners
-    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
+    /*EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::StartLineComponent_Collision, startLineCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::Banana_Create,createBananaEvent});
     EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision,destroyBananaEvent});
     EventManager::getInstance().addListener(EventListener {EventType::RedShell_Create,createRedShellEvent});
     EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision,destroyRedShellEvent});
     EventManager::getInstance().addListener(EventListener {EventType::BlueShell_Create,createBlueShellEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision,destroyBlueShellEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision,destroyBlueShellEvent});*/
+
+    //Bind keyboard functions (only needed)
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Advance_Down, sendAdvanceDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Advance_Up, sendAdvanceUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Brake_Down, sendBrakeDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Brake_Up, sendBrakeUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_TurnLeft_Down, sendTurnLeftDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_TurnLeft_Up, sendTurnLeftUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Down, sendTurnRightDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Up, sendTurnRightUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Down, sendJumpDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Up, sendJumpUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Down, sendDriftDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Up, sendDriftUp});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, sendUseItemDown});
 }
 
 void NetworkManager::update() 
@@ -954,7 +999,7 @@ IComponent::Pointer NetworkManager::createRemoteItemComponent(GameObject& newGam
 
 //============================================== 
 //Collision events
-void itemBoxCollisionEvent(EventData eData) //Collision with an item
+/*void itemBoxCollisionEvent(EventData eData) //Collision with an item
 {
     NetworkManager::getInstance().itemBoxCollision(eData);
 }
@@ -978,10 +1023,10 @@ void startLineCollisionEvent(EventData eData) //Collision of the player with the
             }
         }
     }
-}
+}*/
 //============================================== 
 //Functions that create or destroy objects
-void createBananaEvent(EventData eData)
+/*void createBananaEvent(EventData eData)
 {
     NetworkManager::getInstance().createBanana(eData);
 }
@@ -1006,4 +1051,60 @@ void createBlueShellEvent(EventData eData)
 
 void destroyBlueShellEvent(EventData eData){
     NetworkManager::getInstance().destroyBlueShell(eData);
+}*/
+
+//============================================== 
+//Bing keyboard functions to be sent
+void sendAdvanceDown(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_Advance_Down);
 }
+void sendAdvanceUp(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_Advance_Up);
+}
+void sendBrakeDown(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_Brake_Down);
+}
+void sendBrakeUp(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_Brake_Up);
+}
+void sendTurnLeftDown(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_TurnLeft_Down);
+}
+void sendTurnLeftUp(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_TurnLeft_Up);
+}
+void sendTurnRightDown(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_TurnRight_Down);
+}
+void sendTurnRightUp(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_TurnRight_Up);
+}
+void sendJumpDown(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_Jump_Down);
+}
+void sendJumpUp(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_Jump_Up);
+}
+void sendDriftDown(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_Drift_Down);
+}
+void sendDriftUp(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_Drift_Up);
+}
+void sendUseItemDown(EventData eData)
+{
+    NetworkManager::getInstance().sendInput(EventType::Key_UseItem_Down);
+}
+

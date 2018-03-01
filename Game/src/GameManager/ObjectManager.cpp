@@ -141,7 +141,7 @@ void ObjectManager::createPlayer(GameObject::TransformationData tansform, int ty
 
 GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent)
 {
-    auto ob = ObjectManager::getInstance().createObject(id, tansform);
+    auto ob = createObject(id, tansform);
     
     LAPAL::movementData mData;
     mData.mov = false;

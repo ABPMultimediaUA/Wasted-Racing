@@ -74,89 +74,11 @@ void Game::init() {
     EventManager::getInstance().addListener(EventListener {EventType::State_Change, setStateEvent});
 }
 
-void Game::initServer()
-{
-    //Initial data set
-    globalVariables = &GlobalVariables::getInstance(); //Initialize global variables bush
-    globalVariables->setServer(true);                  //The server
-
-    //Say game loop is active
-    setStay(true);
-
-    //Set engine to default
-    setRenderEngine(0);
-    setInputEngine(0);
-
-    audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
-    eventManager    = &EventManager::getInstance();     //Initilize event manager
-    renderManager   = &RenderManager::getInstance();    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
-    inputManager    = &InputManager::getInstance();     //Once we've initialized the renderManager, we can do the same with our inputManager
-    objectManager   = &ObjectManager::getInstance();    //Initialize object manager
-    physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
-    waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager 
-    aiManager       = &AIManager::getInstance();        //Initialize AI manager
-    sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
-    itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
-    scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
-    networkManager  = &NetworkManager::getInstance();     //Initialize Score Manager
-    debugManager    = &DebugManager::getInstance();     //Initialize Score Manager
-
-    //================================================================
-    //INITIALIZE ALL MANAGERS
-    //================================================================
-    //Initialize true audio manager
-    audioManager->init();
-
-    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
-    renderManager->init(getRenderEngine());
-
-    //Once we've initialized the renderManager, we can do the same with our inputManager
-    inputManager->init(getInputEngine());
-
-    //Initalize the rest
-    objectManager->init();
-    physicsManager->init();
-    waypointManager->init();
-    aiManager->init();
-    sensorManager->init();
-    itemManager->init();
-    scoreManager->init();
-    networkManager->init();
-    debugManager->init();
-
-    //Add initial objects
-    addObjects();
-
-    //Initial state
-    setState(IGameState::stateType::INTRO);
-
-    //Change state listener
-    EventManager::getInstance().addListener(EventListener {EventType::State_Change, setStateEvent});
-}
-
 //====================================================
 //  GAME UPDATE
 //====================================================
 void Game::update(float dTime) {
 
-}
-
-void Game::updateServer(float dTime) {
-    //Input manager has to be the first to be updated
-    physicsManager->update(dTime);
-
-    aiManager->update(dTime);
-
-    waypointManager->update(dTime);
-
-    sensorManager->update();
-
-    itemManager->update(dTime);
-    
-    scoreManager->update();
-    
-    //Event manager has to be the last to be updated
-    eventManager->update();
 }
 
 //====================================================
@@ -169,24 +91,6 @@ void Game::draw() {
 //  GAME CLOSE
 //====================================================
 void Game::close() {
-    state->close();
-
-    //Close all managers
-    physicsManager->close();
-    renderManager->close();
-    inputManager->close();
-    eventManager->close();
-    waypointManager->close();
-    aiManager->close();
-    audioManager->close();
-    sensorManager->close();
-    itemManager->close();
-    scoreManager->close();
-    networkManager->close();
-    debugManager->close();
-}
-
-void Game::closeServer() {
     state->close();
 
     //Close all managers
@@ -232,30 +136,6 @@ void Game::Run() {
     }
 
     close();
-}
-
-void Game::RunServer() {
-    //Initialize the server
-    initServer();
-
-    //Initialize server timer (global time for each player)
-    auto lastTime = std::chrono::high_resolution_clock::now();
-    accumulatedTime = 0;
-
-    //Start the run
-    //execute game while staying
-    while(stay){
-        //Measure elapsed time
-        auto currTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> elapsed = currTime - lastTime;
-        lastTime = currTime;
-        accumulatedTime += (float)elapsed.count();
-
-        //update server
-        updateServer(accumulatedTime);
-    }
-
-    closeServer();
 }
 
 //===============================================================

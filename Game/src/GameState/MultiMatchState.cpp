@@ -27,6 +27,7 @@ void MultiMatchState::init() {
 void MultiMatchState::update(float &accumulatedTime) {
 
     //No gelding
+    inputManager->update();
     networkManager->update();
     debugManager->update();
     renderManager->update(accumulatedTime);
@@ -41,38 +42,26 @@ void MultiMatchState::update(float &accumulatedTime) {
 
     //Always interpolate
     interpolate(accumulatedTime);
+
+    //Event manager has to be the last to be updated
+    eventManager->update();
 }
 
 void MultiMatchState::updateManagers(float dTime){
-    //Input manager has to be the first to be updated
-        std::cout<<"Debug manual porque mira: 5555AAAAA"<<std::endl;
-    inputManager->update();
-        std::cout<<"Debug manual porque mira: 555BBBB"<<std::endl;
 
     physicsManager->update(dTime);
-        std::cout<<"Debug manual porque mira: CCCC"<<std::endl;
 
     aiManager->update(dTime);
-        std::cout<<"Debug manual porque mira: 555DDDDDD"<<std::endl;
 
     waypointManager->update(dTime);
-        std::cout<<"Debug manual porque mira: 555EEEEE"<<std::endl;
 
     sensorManager->update();
-        std::cout<<"Debug manual porque mira: 5555FFFF"<<std::endl;
 
     itemManager->update(dTime);
-        std::cout<<"Debug manual porque mira: 555GGGGGA"<<std::endl;
     
     scoreManager->update();
-        std::cout<<"Debug manual porque mira: 5555HHHHHHH"<<std::endl;
 
     audioManager->update();
-        std::cout<<"Debug manual porque mira: 5555IIIIII"<<std::endl;
-    
-    //Event manager has to be the last to be updated
-    eventManager->update();
-        std::cout<<"Debug manual porque mira: 5555JJJJJJJJJ"<<std::endl;
 }
 
 void MultiMatchState::draw() {

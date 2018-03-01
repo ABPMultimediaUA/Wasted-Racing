@@ -54,8 +54,11 @@ public:
     IComponent::Pointer createRemoteItemComponent(GameObject& newGameObject, int type);
 
     //==============================================================
-    // Create players
+    // Player functions
     //==============================================================
+
+    //Sends input from the player to the server so it executes actions
+    void sendInput(EventType event);
 
     //Collocates the player in the map
     void createPlayer(RakNet::Packet* packet);

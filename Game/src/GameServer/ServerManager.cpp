@@ -1,6 +1,15 @@
 #include "ServerManager.h"
 #include <iostream>
 
+//====================================================
+//  ADDITIONAL FUNCTIONS
+//====================================================
+void loadMapServer();
+std::vector<std::string> splitServer(const std::string& s, const char& c);
+
+//====================================================
+//  MAIN FUNCTIONS
+//====================================================
 //Function provided by RakNet
 unsigned char ServerManager::GetPacketIdentifier(RakNet::Packet *p)
 {
@@ -18,71 +27,69 @@ void ServerManager::init()
 	RakNet::SocketDescriptor socket(PORT, 	0);
 	socket.socketFamily = AF_INET;
 
+	//Set number max of clients based on defined value
 	peer->Startup(MAXCLIENTS, &socket, 1);
 	peer->SetMaximumIncomingConnections(MAXCLIENTS);
 
+	//Set initial variables
 	nPlayers = 0;
 	nObjects = 0;
 	started  = false;
+
+	/////
+	//Set game variables
+	/////
+	
+	//Initial data set
+    globalVariables = &GlobalVariables::getInstance(); //Initialize global variables bush
+    globalVariables->setServer(true);                  //The server
+
+    eventManager    = &EventManager::getInstance();     //Initilize event manager
+    objectManager   = &ObjectManager::getInstance();    //Initialize object manager
+    physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
+    waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager 
+    aiManager       = &AIManager::getInstance();        //Initialize AI manager
+    sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
+    itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
+    scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
+
+    //================================================================
+    //INITIALIZE ALL MANAGERS
+    //================================================================
+
+    //Initalize the rest
+    objectManager->init();
+    physicsManager->init();
+    waypointManager->init();
+    aiManager->init();
+    sensorManager->init();
+    itemManager->init();
+    scoreManager->init();
+
+    //Add initial objects
+    loadMapServer();
 }
 
 void ServerManager::run()
 {
+	//Initialize timer
+    auto lastTime = std::chrono::high_resolution_clock::now();
+    float accumulatedTime = 0;
+
 	//We run the server until we decide to close it, we should change the condition later
 	while(true)
 	{
-		update();
+		//Measure elapsed time
+        auto currTime = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = currTime - lastTime;
+        lastTime = currTime;
+        accumulatedTime += (float)elapsed.count();
 
+		//General update
+		update(accumulatedTime);
+
+		//___>TO IMPLEMENT
 		//After the update, we should use a clock to make the system sleep until the next update
-	}
-}
-
-//Function to start the game when we are at the lobby
-void ServerManager::startGame()
-{
-	if(!started && nPlayers > 1)
-	{
-		float x, y, z;
-		RakNet::BitStream stream;
-		started=true;
-		std::cout << "Starting game" << std::endl;
-		stream.Write((unsigned char)ID_GAME_START);
-		peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-		for(int i=0; i<nPlayers; i++)
-		{
-			//This switch marks the predefined positions for the players. Later this will be on map's info
-			switch(i)
-			{
-				case 0:
-					x=-35.f;
-					y=5.f;
-					z=-20.f;
-					break;
-				case 1:
-					z=-10.f;
-					break;
-				default:
-					break;
-			}
-			//Reset and set the message to create player
-			stream.Reset();
-			stream.Write((unsigned char)ID_CREATE_PLAYER);
-			//Its Network ID;
-			stream.Write(i);
-			//Its position, later will be removed
-			stream.Write(x);
-			stream.Write(y);
-			stream.Write(z);
-			peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, players[i], false);
-			//Repeat for broadcast
-			stream.Reset();
-			stream.Write((unsigned char)ID_CREATE_REMOTE_PLAYER);
-			stream.Write(i);
-			stream.Write(x);
-			stream.Write(y);
-			stream.Write(z);
-			peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, players[i], true);
-		}
 	}
 }
 
@@ -101,14 +108,8 @@ void ServerManager::broadcastObject(RakNet::Packet* packet)
 	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
 
-void ServerManager::endGame(RakNet::Packet* packet)
-{
-	broadcastData(packet);
 
-	started=false;
-}
-
-void ServerManager::update()
+void ServerManager::update(float dTime)
 {
 	//identifier of the packet
 	unsigned char identifier;
@@ -118,6 +119,7 @@ void ServerManager::update()
 		identifier=GetPacketIdentifier(packet);
 		switch(identifier)
 		{
+			//Lost signal
 			case ID_REMOTE_CONNECTION_LOST:
 				nPlayers--;
 				std::cout << "Client disconnected from the server" << std::endl;
@@ -144,15 +146,24 @@ void ServerManager::update()
 				std::cout << "Number of players: " << nPlayers << std::endl;
 				players.push_back(packet->systemAddress);
 				break;
+
+			//Game related
 			case ID_GAME_START:
 				startGame();
 				break;
 			case ID_GAME_ENDED:
 				endGame(packet);
 				break;
+
+			//Player related
+			case ID_INPUT:
+				actPlayer(packet);
+				break;
 			case ID_REMOTE_PLAYER_MOVEMENT:
 				broadcastData(packet);
 				break;
+
+			//Objects related
 			case ID_CREATE_BANANA:
 				broadcastObject(packet);
 				nObjects++;
@@ -191,5 +202,369 @@ void ServerManager::update()
                 break;
 		}
 	}
+
+	//////
+	//Update managers
+	//////
+
+	//Do calculations if the game is online
+	if(globalVariables->getOnline()){
+		//Input manager has to be the first to be updated
+		physicsManager->update(dTime);
+
+		aiManager->update(dTime);
+
+		waypointManager->update(dTime);
+
+		sensorManager->update();
+
+		itemManager->update(dTime);
+		
+		scoreManager->update();
+		
+		//Event manager has to be the last to be updated
+		eventManager->update();	
+	}
+}
+
+//==============================================================
+// Player related
+//==============================================================
+void ServerManager::actPlayer(RakNet::Packet* packet)
+{
+	//Additional variables
+	int server_id; 			//Server ID of the sender
+	EventType e; 			//Event type of the input
+
+	//Parse packet
+	RakNet::BitStream parser(packet->data, packet->length, false);
+    //Ignore message
+	parser.IgnoreBytes(1);
+	//Read values
+    parser.Read(server_id);
+	parser.Read(e);
+
+	//Execute action for the given player
+	switch(e)
+	{
+
+	case:
+		break;
+	case:
+		break;
+	case:
+		break;
+	case:
+		break;
+	case:
+		break;
+	case:
+		break;
+	case:
+		break;
+	case:
+		break;
+	case:
+		break;
+	}
+}
+
+//==============================================================
+// Game related
+//==============================================================
+//Function to start the game when we are at the lobby
+void ServerManager::startGame()
+{
+	if(!started && nPlayers > 1)
+	{
+		float x, y, z;
+		RakNet::BitStream stream;
+		started=true;
+		std::cout << "Starting game" << std::endl;
+		stream.Write((unsigned char)ID_GAME_START);
+		peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+		for(int i=0; i<nPlayers; i++)
+		{
+			//___>TO IMPLEMENT
+			//This switch marks the predefined positions for the players. Later this will be on map's info
+			switch(i)
+			{
+				case 0:
+					x=-35.f;
+					y=5.f;
+					z=-20.f;
+					break;
+				case 1:
+					z=-10.f;
+					break;
+				default:
+					break;
+			}
+			//Reset and set the message to create player
+			stream.Reset();
+			stream.Write((unsigned char)ID_CREATE_PLAYER);
+			//Its Network ID;
+			stream.Write(i);
+			//Its position, later will be removed
+			stream.Write(x);
+			stream.Write(y);
+			stream.Write(z);
+			peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, players[i], false);
+			//Repeat for broadcast
+			stream.Reset();
+			stream.Write((unsigned char)ID_CREATE_REMOTE_PLAYER);
+			stream.Write(i);
+			stream.Write(x);
+			stream.Write(y);
+			stream.Write(z);
+			peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, players[i], true);
+		}
+	}
+}
+
+void ServerManager::endGame(RakNet::Packet* packet)
+{
+	broadcastData(packet);
+
+	started=false;
+}
+//==============================================================
+// Additional functions
+//==============================================================
+std::vector<std::string> splitServer(const std::string& s, const char& c) {
+	std::string buff{""};
+	std::vector<std::string> v;
+	
+	for(auto n:s)
+	{
+		if(n != c) buff+=n; else
+		if(n == c && buff != "") { v.push_back(buff); buff = ""; }
+	}
+	if(buff != "") v.push_back(buff);
+	
+	return v;
+}
+
+void loadMapServer() {
+
+    using namespace rapidxml;
+
+    xml_document<> doc;
+    xml_node<> * root_node;
+
+    //Read the file and put it into a char array
+    std::ifstream theFile("media/xml/circuit.xml");
+	std::string buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
+	buffer.push_back('\0');
+
+	// Parse the buffer using the xml file parsing library into doc 
+	doc.parse<0>(&buffer[0]);
+
+    // Find our root node
+	root_node = doc.first_node("object");
+
+    // Iterate over the gameObjects, reading them
+    for (xml_node<> * object = root_node; object; object = object->next_sibling()) {
+
+        uint16_t id;
+        GameObject::TransformationData transform;
+
+        //Read ID from XML
+        id = (uint16_t) std::stoi(object->first_attribute("id")->value());
+        //Read POSITION from XML
+        auto strVector = splitServer(object->first_attribute("pos")->value(), ',');
+        transform.position = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+        //Read ROTATION from XML
+        strVector = splitServer(object->first_attribute("rot")->value(), ',');
+        transform.rotation = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+        //Read SCALE from XML
+        strVector = splitServer(object->first_attribute("sca")->value(), ',');
+        transform.scale = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+
+        //Create new OBJECT
+        auto obj = ObjectManager::getInstance().createObject(id, transform);
+
+        //Parse components
+        xml_node<> * root_component = object->first_node("component");
+
+        for (xml_node<> * component = root_component; component; component = component->next_sibling()){
+
+            //Parse TERRAIN component
+            if(strcmp(component->first_attribute("name")->value(),"terrain") == 0){
+
+                xml_node<>* bbox = component->first_node("bbox");
+
+                LAPAL::plane3f terrain;
+                //Read P1 from XML
+                auto strVector = splitServer(bbox->first_attribute("p1")->value(), ',');
+                terrain.p1 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read P2 from XML
+                strVector = splitServer(bbox->first_attribute("p2")->value(), ',');
+                terrain.p2 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read P3 from XML
+                strVector = splitServer(bbox->first_attribute("p3")->value(), ',');
+                terrain.p3 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read P4 from XML
+                strVector = splitServer(bbox->first_attribute("p4")->value(), ',');
+                terrain.p4 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                //Read FRICTION from XML
+                terrain.fric = std::stof(bbox->first_attribute("friction")->value());
+                //Calculate terrain angles in X and Z
+                LAPAL::calculateRotationsXZ(terrain);
+
+                //Create TERRAIN component
+                PhysicsManager::getInstance().createTerrainComponent(*obj.get(), terrain);
+
+            }
+
+            //Parse WAYPOINT component
+            if(strcmp(component->first_attribute("name")->value(),"waypoint") == 0){
+                
+                float radius = std::stof(component->first_attribute("radius")->value());
+                
+                int level = std::stoi(component->first_attribute("level")->value());
+
+                //Create TERRAIN component
+                WaypointManager::getInstance().createWaypointComponent(obj, radius, level);
+
+            }
+
+            //Parse ITEMBOX component
+            if(strcmp(component->first_attribute("name")->value(),"itemBox") == 0){
+                
+                //Create TERRAIN component
+                ItemManager::getInstance().createItemBox(*obj.get());
+            }
+
+            //Parse COLLISION component
+            if(strcmp(component->first_attribute("name")->value(),"collision") == 0){
+
+                xml_node<>* bbox = component->first_node("bbox");
+                LAPAL::plane3f terrain;
+                float radius, height;
+                bool kinetic;
+                CollisionComponent::Type type = CollisionComponent::Type::Default;
+
+                //Parse Terrain if given
+                if(bbox != nullptr) {
+                    //Read P1 from XML
+                    auto strVector = splitServer(bbox->first_attribute("p1")->value(), ',');
+                    terrain.p1 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                    //Read P2 from XML
+                    strVector = splitServer(bbox->first_attribute("p2")->value(), ',');
+                    terrain.p2 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                    //Read P3 from XML
+                    strVector = splitServer(bbox->first_attribute("p3")->value(), ',');
+                    terrain.p3 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                    //Read P4 from XML
+                    strVector = splitServer(bbox->first_attribute("p4")->value(), ',');
+                    terrain.p4 = glm::vec3(std::stof(strVector[0]),std::stof(strVector[1]),std::stof(strVector[2]));
+                    //Read FRICTION from XML
+                    terrain.fric = std::stof(bbox->first_attribute("friction")->value());
+                    //Calculate terrain angles in X and Z
+                    LAPAL::calculateRotationsXZ(terrain);
+                }
+
+                //Parse Radius if given
+                if(component->first_attribute("radius") != nullptr)
+                    radius = std::stof(component->first_attribute("radius")->value());
+
+                //Parse Height if given
+                if(component->first_attribute("height") != nullptr)
+                    height = std::stof(component->first_attribute("height")->value());
+
+                //Parse Kinetic
+                if(strcmp(component->first_attribute("kinetic")->value(),"true") == 0)
+                    kinetic = true;
+                else 
+                    kinetic = false;
+
+                //Parse Type
+                if(strcmp(component->first_attribute("type")->value(),"ramp") == 0)
+                    type = CollisionComponent::Type::Ramp;
+                if(strcmp(component->first_attribute("type")->value(),"start") == 0)
+                    type = CollisionComponent::Type::StartLine;
+
+
+                //Create COLLISION component
+                if(bbox != nullptr)
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), terrain, kinetic, 10, type);
+                else
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), radius, 10, kinetic, type);
+
+            }
+
+            //Parse RAMP component
+            if(strcmp(component->first_attribute("name")->value(),"ramp") == 0){
+                
+                float vel = std::stof(component->first_attribute("vel")->value());
+                float cTime = std::stof(component->first_attribute("cTime")->value());
+                float dTime = std::stof(component->first_attribute("dTime")->value());
+
+                //Create RAMP component
+                PhysicsManager::getInstance().createRampComponent(*obj.get(), vel, cTime, dTime);
+
+            }
+        }
+	}
+
+    //Update every thing that has been created
+    EventManager::getInstance().update();
+
+    //Loop over terrain components, linking them
+    for (xml_node<> * object = root_node; object; object = object->next_sibling()) {
+
+        //Get current object ID
+        uint16_t id = (uint16_t) std::stoi(object->first_attribute("id")->value());
+
+        //Parse components
+        xml_node<> * root_component = object->first_node("component");
+
+        for (xml_node<> * component = root_component; component; component = component->next_sibling()){
+
+            //Parse TERRAIN components
+            if(strcmp(component->first_attribute("name")->value(),"terrain") == 0){
+
+                //Get our component
+                std::shared_ptr<TerrainComponent> cmp = ObjectManager::getInstance().getObject(id).get()->getComponent<TerrainComponent>();
+
+                //If not null, connect our component with next object
+                uint16_t connectID = (uint16_t) std::stoi(splitServer(component->first_attribute("l0")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setNext(nullptr);
+                else 
+                    cmp.get()->setNext(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+                //If not null, connect our component with right object
+                connectID = (uint16_t) std::stoi(splitServer(component->first_attribute("l1")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setRight(nullptr);
+                else 
+                    cmp.get()->setRight(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+                //If not null, connect our component with prev object
+                connectID = (uint16_t) std::stoi(splitServer(component->first_attribute("l2")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setPrev(nullptr);
+                else 
+                    cmp.get()->setPrev(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+                //If not null, connect our component with left object
+                connectID = (uint16_t) std::stoi(splitServer(component->first_attribute("l3")->value(), ':')[0]);
+
+                if( connectID > 65000 )
+                    cmp.get()->setLeft(nullptr);
+                else 
+                    cmp.get()->setLeft(ObjectManager::getInstance().getObject(connectID).get()->getComponent<TerrainComponent>());
+
+            }
+        }
+    }
+
+    //Update every thing that has been created
+    EventManager::getInstance().update();
 
 }

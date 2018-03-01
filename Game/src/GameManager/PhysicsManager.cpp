@@ -431,8 +431,7 @@ IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameOb
     EventData data;
     data.Component = component;
 
-    //______>No need for now
-    //EventManager::getInstance().addEvent(Event {EventType::TerrainComponent_Create, data});
+    EventManager::getInstance().addEvent(Event {EventType::TerrainComponent_Create, data});
 
     return component;
 }

@@ -93,23 +93,14 @@ private:
     //Initialization
     void init();
 
-    //Initialization
-    void initServer();
-
     //Update client
     void update(float dTime);
-
-    //Update server
-    void updateServer(float dTime);
 
     //Render draw
     void draw();
 
     //Shutdown
     void close();
-
-    //Shutdown
-    void closeServer();
 
     //==============================================================
     // Private data

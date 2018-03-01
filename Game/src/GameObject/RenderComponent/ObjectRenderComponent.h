@@ -32,7 +32,7 @@ public:
 				i++;
 			}
 
-			mesh = "/home/luis/WastedHorchata/Wasted-Racing/Game/media/mesh/" + folder + "/" + std::string(newStr);
+			mesh = "media/mesh/" + folder + "/" + std::string(newStr);
 		}
 		else{
 			img = "media/img/" + std::string(newStr);
