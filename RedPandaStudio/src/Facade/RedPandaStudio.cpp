@@ -20,9 +20,7 @@ void RedPandaStudio::updateDevice() {
 
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-    glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
-    glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
-
+	renderCamera();
 	renderLights();
 
 	scene->draw();
@@ -213,11 +211,11 @@ void RedPandaStudio::initScene() {
 
     //Initialize Projection Matrix
     glm::mat4& Projection = scene->getEntity()->projectionMatrix();
-    Projection = glm::perspective(glm::radians(45.0f), (float) 16 / (float)9, 1.0f, 100.0f);
+    Projection = glm::mat4(1.0f);
 
     //Initilize View Matrix
     glm::mat4& View = scene->getEntity()->viewMatrix();
-    View = glm::lookAt( glm::vec3(-10,5,0), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+    View = glm::mat4(1.0f);
 
     //Initilize Model Matrix
     glm::mat4& Model = scene->getEntity()->modelMatrix();
@@ -252,7 +250,26 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 
 TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 
-	return parent;
+	//Check parent node is valid
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+
+		//Create new transformation tree
+		TNode* transformT = addRotScaPos(parent, position);
+
+		//Create new camera entity
+		TCamera* c = new TCamera(45.0f);
+		TNode* cam = new TNode(transformT, c);
+		transformT->addChild(cam);
+
+		//Register camera
+		camera = cam;
+
+		//Return camera
+		return cam;
+	}
+	else{
+		return nullptr;
+	}
 
 }
 
@@ -264,7 +281,7 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, position);
 
-		//Create new mesh entity
+		//Create new light entity
 		TLight* l = new TLight(intensity);
 		TNode* light = new TNode(transformT, l);
 		transformT->addChild(light);
@@ -272,7 +289,7 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 
 		//Register light
 		lights.push_back(light);
 
-		//Return mesh
+		//Return light
 		return light;
 	}
 	else{
@@ -317,7 +334,6 @@ void RedPandaStudio::renderLights() {
 	for(unsigned int i = 0; i < lights.size(); i++){
 
 		glm::mat4 mat = glm::mat4(1.0);
-
 		calculateNodeTransform(lights[i], mat);
 
 		glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
@@ -338,6 +354,33 @@ void RedPandaStudio::renderLights() {
 }
 void RedPandaStudio::renderCamera() {
 
+	if(camera != nullptr){
+		glm::mat4 mat = glm::mat4(1.0);
+		calculateNodeTransform(camera, mat);
+
+    	//Initilize View Matrix
+    	glm::mat4& View = scene->getEntity()->viewMatrix();
+    	View = glm::lookAt( glm::vec3(-10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0) );
+		std::cout << View[0][0] << " " << View[0][1] << " " << View[0][2] << " " << View[0][3] << " " << std::endl;
+    	std::cout << View[1][0] << " " << View[1][1] << " " << View[1][2] << " " << View[1][3] << " " << std::endl;
+    	std::cout << View[2][0] << " " << View[2][1] << " " << View[2][2] << " " << View[2][3] << " " << std::endl;
+    	std::cout << View[3][0] << " " << View[3][1] << " " << View[3][2] << " " << View[3][3] << " " << std::endl;
+    	std::cout << std::endl;
+
+
+		glm::mat4& view = scene->getEntity()->viewMatrix();
+    	view = glm::inverse(mat);
+
+		std::cout << view[0][0] << " " << view[0][1] << " " << view[0][2] << " " << view[0][3] << " " << std::endl;
+    	std::cout << view[1][0] << " " << view[1][1] << " " << view[1][2] << " " << view[1][3] << " " << std::endl;
+    	std::cout << view[2][0] << " " << view[2][1] << " " << view[2][2] << " " << view[2][3] << " " << std::endl;
+    	std::cout << view[3][0] << " " << view[3][1] << " " << view[3][2] << " " << view[3][3] << " " << std::endl;
+		std::cout << "_________________" << std::endl;
+    	std::cout << std::endl;
+
+		glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
+    	glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
+	}
 }
 
 //Recursive function. Should receive an identity as input. Returns the accumulated transformation

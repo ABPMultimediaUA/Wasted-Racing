@@ -1,10 +1,10 @@
 #include "RampCollisionEvent.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
-//REGISTER_FACTORY(RampCollisionEvent);
+REGISTER_FACTORY(RampCollisionEvent);
 
 
-    class RampCollisionEventFactory : public SoundFactory { 
+    /*class RampCollisionEventFactory : public SoundFactory { 
     public: 
         RampCollisionEventFactory() { 
             ISoundEvent::registerFactory(ISoundEvent::getFactoryMap(), "RampCollisionEvent", this); 
@@ -13,7 +13,7 @@
             return new RampCollisionEvent(); 
         } 
     }; 
-    static RampCollisionEventFactory RampCollisionEventFactoryInstance;
+    static RampCollisionEventFactory RampCollisionEventFactoryInstance;*/
 
 void RampCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event) {
 
