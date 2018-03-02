@@ -358,16 +358,6 @@ void RedPandaStudio::renderCamera() {
 		glm::mat4 mat = glm::mat4(1.0);
 		calculateNodeTransform(camera, mat);
 
-    	//Initilize View Matrix
-    	glm::mat4& View = scene->getEntity()->viewMatrix();
-    	View = glm::lookAt( glm::vec3(-10,0,0), glm::vec3(0,0,0), glm::vec3(0,1,0) );
-		std::cout << View[0][0] << " " << View[0][1] << " " << View[0][2] << " " << View[0][3] << " " << std::endl;
-    	std::cout << View[1][0] << " " << View[1][1] << " " << View[1][2] << " " << View[1][3] << " " << std::endl;
-    	std::cout << View[2][0] << " " << View[2][1] << " " << View[2][2] << " " << View[2][3] << " " << std::endl;
-    	std::cout << View[3][0] << " " << View[3][1] << " " << View[3][2] << " " << View[3][3] << " " << std::endl;
-    	std::cout << std::endl;
-
-
 		glm::mat4& view = scene->getEntity()->viewMatrix();
     	view = glm::inverse(mat);
 
