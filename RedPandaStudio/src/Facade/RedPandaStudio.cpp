@@ -303,6 +303,54 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 
 
 void RedPandaStudio::deleteObject(TNode* leaf) {
 
+	TEntity* t;
+
+	//Unregister camera
+	if(leaf != nullptr && (t = dynamic_cast<TCamera*>(leaf->getEntity())) != nullptr){
+
+		camera = nullptr;
+
+	} //Unregister lights
+	if(leaf != nullptr && (t = dynamic_cast<TLight*>(leaf->getEntity())) != nullptr){
+
+		for(int i = 0; i < lights.size(); i++){
+
+			if(lights[i] == leaf)
+				lights.erase(lights.begin() + i);
+		}
+	}
+
+	if(leaf != nullptr && ((t = dynamic_cast<TMesh*>(leaf->getEntity())) != nullptr ||
+		(t = dynamic_cast<TCamera*>(leaf->getEntity())) != nullptr ||
+		(t = dynamic_cast<TLight*>(leaf->getEntity())) != nullptr)) {
+
+			TNode* first = leaf->getFather()->getFather()->getFather();
+			TNode* parent = leaf->getFather()->getFather()->getFather()->getFather();
+
+			deleteNode(first);
+
+			//Once deleted the object, erase the object from his parent child list
+			parent->removeChild(first);
+	}
+
+}
+
+void RedPandaStudio::deleteNode(TNode* node) {
+
+	if(node != nullptr){
+
+		std::vector<TNode*> children = node->getChild();
+
+		if(children.size() == 0){
+			delete node;
+		}
+		else{
+			for(unsigned int i = 0; i < children.size(); i++){
+				deleteNode(children[i]);
+			}
+			delete node;
+		}
+	}
 }
 
 TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {

@@ -6,19 +6,23 @@ int main() {
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
 
-    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,-5), "Link/Link.obj", "Link/YoungLink_grp.png");
+    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,-2), "Link/Link.obj", "Link/YoungLink_grp.png");
     TNode* t1 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,2), "Link/Link.obj", "Link/YoungLink_grp.png");
+    TNode* t2 = rps->createObjectNode(t1->getFather(), glm::vec3(0,0,0), "Link/Link.obj", "Link/YoungLink_grp.png");
 
     TNode* camera = rps->createCamera(t->getFather(), glm::vec3(0,0,10));
 
     rps::scaleNode(t, glm::vec3(0.25,0.25,0.25));
     rps::scaleNode(t1, glm::vec3(0.5,0.5,0.5));
+    rps::scaleNode(t2, glm::vec3(0.25,0.25,0.25));
 
     TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
     TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
 
     bool quit = true;
     SDL_Event event;
+
+    int i = 0;
 
     while( quit ){
 
@@ -33,18 +37,33 @@ int main() {
             }
         }
 
-        rps::rotateNode(t, 0.05, 1);
-        //rps::rotateNode(t1, -0.01, 1);
-        //rps::scaleNode(t,glm::vec3(0.999,0.999,0.999));
-        //rps::scaleNode(t1,glm::vec3(1.001,1.001,1.001));
-        //rps::translateNode(t,glm::vec3(0,0,0.01));
-        //rps::translateNode(t1,glm::vec3(0,-0.005,0));
-        //rps::scaleNode(t, glm::vec3(0.995,0.995,0.995));
-        //rps::translateNode(t,glm::vec3(0.01,0,0.01));
-        //rps::translateNode(t1,glm::vec3(-0.01,0,-0.01));
-        //rps::translateNode(light0,glm::vec3(0,0,-0.02));
-        //rps::translateNode(light1,glm::vec3(0,0,0.02));
+
+
         rps->updateDevice();
+        i++;
+
+        if(i % 100 == 0){
+            rps->deleteObject(light0);
+            light0 = nullptr;
+        }
+        if(i % 200 == 0){
+            light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
+        }
+        if(t1 != nullptr){
+            rps::rotateNode(t1, -0.1, 1);
+            rps::rotateNode(t2, -0.1, 1);
+        }
+        if(i % 50 == 0){
+            rps->deleteObject(t1);
+            t1 = nullptr;
+        }
+        if(i % 100 == 0){
+            t1 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,2), "Link/Link.obj", "Link/YoungLink_grp.png");
+            t2 = rps->createObjectNode(t1->getFather(), glm::vec3(0,0,0), "Link/Link.obj", "Link/YoungLink_grp.png");
+            rps::scaleNode(t1, glm::vec3(0.5,0.5,0.5));
+            rps::scaleNode(t2, glm::vec3(0.25,0.25,0.25));
+        }
+
 
     }
 

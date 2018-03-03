@@ -69,6 +69,7 @@ private:
     void renderCamera();
     void calculateNodeTransform(TNode* node, glm::mat4& mat);  //Given a node, returns its accumulated transform. Should receive an identity as input
     TNode* addRotScaPos(TNode* parent, glm::vec3 position); //Returns the Position Node
+    void deleteNode(TNode* node); //Deletes a node and all his children
 
     //////////////////////////////
     //  VARIABLES
