@@ -13,8 +13,9 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
-#include "RedPanda.h"
+#include <RedPanda.h>
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -43,7 +44,9 @@ public:
     //Creates a camera and returns a TCamera
     TNode* createCamera(TNode* parent, glm::vec3 position);
     //Creates a light and returns a TLight
-    TNode* createLight(TNode* parent, glm::vec3 position);
+    TNode* createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity);
+    //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
+    void deleteObject(TNode* leaf);
 
     //////////////////////////////
     //  GETTERS
@@ -62,6 +65,11 @@ private:
     void initSDLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen);
     void initOpenGL();
     void initScene();
+    void renderLights();
+    void renderCamera();
+    void calculateNodeTransform(TNode* node, glm::mat4& mat);  //Given a node, returns its accumulated transform. Should receive an identity as input
+    TNode* addRotScaPos(TNode* parent, glm::vec3 position); //Returns the Position Node
+    void deleteNode(TNode* node); //Deletes a node and all his children
 
     //////////////////////////////
     //  VARIABLES
@@ -69,11 +77,14 @@ private:
     SDL_GLContext context;
     TNode *scene;
     ResourceManager *resourceManager;
+    //Lights and camera
+    TNode *camera;
+    std::vector<TNode*> lights;
 
 };
 
 //Transformation facade
-    //Input node has to be of type Mesh/Light/Camera
+//Input node has to be of type Mesh/Light/Camera
 void translateNode(TNode* node, glm::vec3 position);
 void rotateNode(TNode* node, float rotation, int axis);
 void scaleNode(TNode* node, glm::vec3 scale);

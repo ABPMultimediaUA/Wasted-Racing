@@ -118,6 +118,7 @@ makedirP:
 copyfilesP:
 	cp -r ./inc/*.h ../Game/include/redpanda
 	cp ./src/Facade/RedPandaStudio.h ../Game/include/redpanda
+	cp ./test.*	../Game/
 
 compileP: all 
 	cp ./bin/libRedPanda.so ../Game/lib/linux
