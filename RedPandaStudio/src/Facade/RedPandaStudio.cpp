@@ -251,7 +251,7 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 
 	//Check parent node is valid
-	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+	if(parent != nullptr && dynamic_cast<TTransform*>(parent->getEntity()) != nullptr){
 
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, position);
@@ -263,6 +263,9 @@ TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 
 		//Register camera
 		camera = cam;
+
+		//Rotate camera to be behind our character
+		rps::rotateNode(camera,glm::half_pi<float>(),1);
 
 		//Return camera
 		return cam;
@@ -358,15 +361,15 @@ void RedPandaStudio::renderCamera() {
 		glm::mat4 mat = glm::mat4(1.0);
 		calculateNodeTransform(camera, mat);
 
-		glm::mat4& view = scene->getEntity()->viewMatrix();
-    	view = glm::inverse(mat);
 
-		std::cout << view[0][0] << " " << view[0][1] << " " << view[0][2] << " " << view[0][3] << " " << std::endl;
-    	std::cout << view[1][0] << " " << view[1][1] << " " << view[1][2] << " " << view[1][3] << " " << std::endl;
-    	std::cout << view[2][0] << " " << view[2][1] << " " << view[2][2] << " " << view[2][3] << " " << std::endl;
-    	std::cout << view[3][0] << " " << view[3][1] << " " << view[3][2] << " " << view[3][3] << " " << std::endl;
-		std::cout << "_________________" << std::endl;
-    	std::cout << std::endl;
+		//Get camera specific transformations
+		TTransform* t1 = (TTransform*) camera->getFather()->getFather()->getFather()->getFather()->getEntity();	//distance from center
+		TTransform* r = (TTransform*) camera->getFather()->getFather()->getFather()->getFather()->getFather()->getFather()->getEntity();	//parent rotation
+		TTransform* r1 = (TTransform*) camera->getFather()->getFather()->getFather()->getEntity();	//camera rotation
+		TTransform* t0 = (TTransform*) camera->getFather()->getEntity();	//distance from player
+
+		glm::mat4& view = scene->getEntity()->viewMatrix();
+    	view = glm::inverse(t1->getMatrix() * r->getMatrix() * r1->getMatrix() * t0->getMatrix());
 
 		glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
     	glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
