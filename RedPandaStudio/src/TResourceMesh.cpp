@@ -5,6 +5,8 @@ bool TResourceMesh::loadResource()
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
+    nTriangles = 0;
+
     if(scene)
     {
         for(unsigned int i = 0; i<scene->mNumMeshes; i++)
