@@ -9,8 +9,8 @@ int main() {
     TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,-2), "Link/Link.obj", "Link/YoungLink_grp.png");
     TNode* t1 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,2), "Link/Link.obj", "Link/YoungLink_grp.png");
     TNode* t2 = rps->createObjectNode(t1->getFather(), glm::vec3(0,0,0), "Link/Link.obj", "Link/YoungLink_grp.png");
-
-    TNode* camera = rps->createCamera(t->getFather(), glm::vec3(0,0,10));
+    TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "", "");
+    TNode* camera = rps->createCamera(t3->getFather(), glm::vec3(0,0,10));
 
     rps::scaleNode(t, glm::vec3(0.25,0.25,0.25));
     rps::scaleNode(t1, glm::vec3(0.5,0.5,0.5));

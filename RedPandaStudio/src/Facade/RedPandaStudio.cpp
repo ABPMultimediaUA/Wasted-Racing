@@ -313,7 +313,7 @@ void RedPandaStudio::deleteObject(TNode* leaf) {
 	} //Unregister lights
 	if(leaf != nullptr && (t = dynamic_cast<TLight*>(leaf->getEntity())) != nullptr){
 
-		for(int i = 0; i < lights.size(); i++){
+		for(unsigned int i = 0; i < lights.size(); i++){
 
 			if(lights[i] == leaf)
 				lights.erase(lights.begin() + i);

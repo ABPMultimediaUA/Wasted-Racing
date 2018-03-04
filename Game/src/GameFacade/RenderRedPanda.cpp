@@ -56,10 +56,9 @@ void RenderRedPanda::addObject(IComponent* ptr) {
 
     TNode * node;
     //Initialize the node
-    if(obj.getId()!=20000)
     switch(shape){
         case ObjectRenderComponent::Shape::Mesh: {
-            node = device->createObjectNode(device->getSceneRoot(), pos, cmp->getMesh().c_str(), "/home/luis/WastedHorchata/Wasted-Racing/Game/media/mesh/Link/YoungLink_grp.png");
+            node = device->createObjectNode(device->getSceneRoot(), pos, cmp->getMesh().c_str(), "media/img/white_rectangle.png");
             std::cout << cmp->getMesh() << std::endl;
         }
         break;
@@ -69,16 +68,56 @@ void RenderRedPanda::addObject(IComponent* ptr) {
 
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
 
+    if(obj.getId() == 25000) {
+        device->createCamera(node->getFather(), glm::vec3(0,10,20));
+    }
+
 }
 
 //Add an object to the game (Cylinder or Cone)
 void RenderRedPanda::addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) { }
 
 //Add a light to the game
-void RenderRedPanda::addLight(IComponent* ptr) { }
+void RenderRedPanda::addLight(IComponent* ptr) {
+    
+    LightRenderComponent* cmp = dynamic_cast<LightRenderComponent*>(ptr);
+
+    if(cmp != nullptr){
+
+        auto obj = cmp->getGameObject();
+        auto type = cmp->getLightType();
+        auto pos = obj.getTransformData().position;
+
+        TNode * node;
+
+        //Initialize the node
+        switch(type){
+
+            case LightRenderComponent::Type::Point: {
+                node = device->createLight(device->getSceneRoot(), pos, glm::vec3(0.5,0.5,0.5));
+            }
+            break;
+            default:
+            break;
+        }
+
+        nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
+    }
+ }
 
 //Delete an object of the game
-void RenderRedPanda::deleteObject(IComponent* ptr) { }
+void RenderRedPanda::deleteObject(IComponent* ptr) { 
+
+    auto id = ptr->getGameObject().getId();
+    auto itr = nodeMap.find(id);
+
+    if(itr != nodeMap.end()){
+        auto node = itr->second;
+        device->deleteObject(node);
+        nodeMap.erase(id);
+    }
+
+}
 
 //Change the position of an object in-game
 void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::TransformationData transform) { 
@@ -92,13 +131,25 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 
         auto node = iterator->second;
 
-        rps::rotateNode(node, rot.y, 1);
-        rps::rotateNode(node, rot.x, 0);
-        rps::rotateNode(node, rot.z, 2);
+        
+        if(id==25000){
+            std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
+            std::cout << rot.y << std::endl;
 
-        rps::scaleNode(node, sca);
+            rps::rotateNode(node, -(rot.y-rott.y), 1);
+            rps::rotateNode(node, 0, 0);
+            rps::rotateNode(node, 0, 2);
 
-        rps::translateNode(node, pos);
+            rps::scaleNode(node, sca);
+
+            rps::translateNode(node, glm::vec3(poss.x-pos.x, pos.y-poss.y, pos.z-poss.z));
+
+            rott = rot;
+            poss = pos;
+
+        }
+        
+        
     }
 }
 
