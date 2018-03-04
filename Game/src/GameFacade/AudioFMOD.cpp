@@ -2,7 +2,6 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
-#include "../GameAudio/RampCollisionEvent.h"
 //==============================================================================================================================
 // MACROS
 //==============================================================================================================================
@@ -34,7 +33,10 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 //==============================================================================================================================
 // DELEGATES DECLARATIONS
 //==============================================================================================================================
+void shootDefaultCollisionEvent(EventData e);
 void shootRampCollisionEvent(EventData e);
+void shootItemBoxCollisionEvent(EventData e);
+void shootBananaCollisionEvent(EventData e);
 
 
 
@@ -65,7 +67,10 @@ void AudioFMOD::openAudioEngine(int lang) {
     }
 
     //Listeners
+    EventManager::getInstance().addListener(EventListener {EventType::Default_Collision, shootDefaultCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, shootRampCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, shootItemBoxCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, shootBananaCollisionEvent});
 
     //Game veriables
     worldUnits = 0.05;
@@ -141,6 +146,13 @@ void AudioFMOD::setListenerPosition() {
 //==============================================================================================================================
 // DELEGATE FUNCTIONS
 //==============================================================================================================================
+void shootDefaultCollisionEvent(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "DefaultCollisionEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
 void shootRampCollisionEvent(EventData e) {
     
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "RampCollisionEvent");
@@ -148,3 +160,18 @@ void shootRampCollisionEvent(EventData e) {
     sound->initalizeSound(audioFMOD, e);
   
 }
+void shootItemBoxCollisionEvent(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "ItemBoxCollisionEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootBananaCollisionEvent(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "BananaCollisionEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+
