@@ -20,8 +20,6 @@ void MultiMatchState::init() {
     debugManager    = &DebugManager::getInstance();     //Initialize Debug manager
     
     Game::getInstance().setAccumulatedTime(0);
-
-    createPlayer();
 }
 
 void MultiMatchState::update(float &accumulatedTime) {

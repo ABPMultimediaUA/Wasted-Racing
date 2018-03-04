@@ -28,7 +28,6 @@
 #include "GameManager/NetworkManager.h"
 #include "GameManager/DebugManager.h"
 #include "GameEvent/EventManager.h"
-#include "GameServer/ServerManager.h"
 
 //State includes
 #include "GameState/IntroState.h"

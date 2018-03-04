@@ -26,6 +26,7 @@
 #include "../GameManager/ScoreManager.h"
 #include "../GameManager/ItemManager.h"
 #include "../GameEvent/EventManager.h"
+#include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 
 //Maximum number of clients simultaneously
 #define MAXCLIENTS 8
@@ -73,11 +74,28 @@ class ServerManager{
         void update(float dTime);
 
         //==============================================================
+        // Component creator
+        //==============================================================
+        //Create remote player component
+        IComponent::Pointer createRemotePlayerComponent(GameObject& newGameObject, int server_id);
+
+        //==============================================================
         // Getters and setters
         //==============================================================
-        int getNPlayers()                            {  return nPlayers;       };
-        int getNObjects()                            {  return nObjects;       };
+        int getNPlayers()                            {  return nPlayers;      };
+        int getNObjects()                            {  return nObjects;      };
         RakNet::SystemAddress getPlayerAddress(int i){  return players.at(i); };
+        GameObject* getPlayer(int server_id)         {
+                for(unsigned int i = 0; i<remotePlayerComponentList.size(); i++)
+                {
+                    auto rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
+                    if(rPlayer.get()->getServerId() == server_id)
+                    {
+                        return &rPlayer.get()->getGameObject();
+                    }
+                }
+                return nullptr;
+        }
 
     private:
         ///////////////////////////////////////////////////
@@ -95,8 +113,14 @@ class ServerManager{
         //Number of objects in the server (actually)
         int nObjects;
 
+        //Time that has to pass till updating the managers
+        float loopTime;
+
         //Vector of players addresses
         std::vector<RakNet::SystemAddress> players;
+
+        //Vector of player instances (as Remote Player component)
+        std::vector<IComponent::Pointer> remotePlayerComponentList;
 
         ///////////////////////////////////////////////////
         // MANAGERS 

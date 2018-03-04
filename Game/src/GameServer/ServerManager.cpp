@@ -35,6 +35,7 @@ void ServerManager::init()
 	nPlayers = 0;
 	nObjects = 0;
 	started  = false;
+	loopTime = 1.f/60.f;
 
 	/////
 	//Set game variables
@@ -88,35 +89,29 @@ void ServerManager::run()
 		//General update
 		update(accumulatedTime);
 
+		if(accumulatedTime > loopTime){
+			//Update managers
+			updateManagers(accumulatedTime);
+
+			Game::getInstance().setStay(objectManager->getGameRunning());
+			accumulatedTime = 0;
+		}
+
 		//___>TO IMPLEMENT
 		//After the update, we should use a clock to make the system sleep until the next update
 	}
 }
-
-void ServerManager::broadcastData(RakNet::Packet* packet)
-{
-	RakNet::BitStream stream(packet->data, packet->length, false);
-
-	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
-}
-
-void ServerManager::broadcastObject(RakNet::Packet* packet)
-{
-	RakNet::BitStream stream(packet->data, packet->length, false);
-	stream.Write((int)nObjects);
-
-	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-}
-
 
 void ServerManager::update(float dTime)
 {
 	//identifier of the packet
 	unsigned char identifier;
 
+	//Loop all packets
 	for (packet = peer->Receive(); packet; peer->DeallocatePacket(packet), packet = peer->Receive())
 	{
 		identifier=GetPacketIdentifier(packet);
+		//List elements
 		switch(identifier)
 		{
 			//Lost signal
@@ -164,10 +159,6 @@ void ServerManager::update(float dTime)
 			//Player related
 			case ID_INPUT:
 				actPlayer(packet);
-				break;
-			case ID_REMOTE_PLAYER_MOVEMENT:
-				broadcastData(packet);
-				break;
 
 			//Objects related
 			case ID_CREATE_BANANA:
@@ -210,9 +201,14 @@ void ServerManager::update(float dTime)
 	}
 
 	//////
-	//Update managers
+	//Broadcast all positions
 	//////
 
+
+}
+
+void ServerManager::updateManagers()
+{
 	//Do calculations if the game is online
 	if(globalVariables->getOnline()){
 		//Input manager has to be the first to be updated
@@ -234,20 +230,60 @@ void ServerManager::update(float dTime)
 }
 
 //==============================================================
+// Sending data
+//==============================================================
+
+void ServerManager::broadcastData(RakNet::Packet* packet)
+{
+	RakNet::BitStream stream(packet->data, packet->length, false);
+
+	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, packet->systemAddress, true);
+}
+
+void ServerManager::broadcastObject(RakNet::Packet* packet)
+{
+	RakNet::BitStream stream(packet->data, packet->length, false);
+	stream.Write((int)nObjects);
+
+	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+}
+
+//==============================================================
 // Player related
 //==============================================================
-void addPlayer()
+void ServerManager::addPlayer()
 {
-    ObjectManager::getInstance().createPlayer(trans, 0, 2, 25000+nPlayers, 
+	//Set position in map
+    GameObject::TransformationData trans;
+    trans.position.x = -35.f;
+    trans.position.y = 5.f;
+    trans.position.z = -20.f + 10.f * nPlayers;
+
+    trans.rotation.x = 0;
+    trans.rotation.y = 90;
+    trans.rotation.z = 0;
+
+    trans.scale.x    = 1;
+    trans.scale.y    = 1;
+    trans.scale.z    = 1;
+
+	//Create player
+    objectManager->createPlayer(trans, 0, 2, 25000+nPlayers, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(trans.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(trans.position));
+
+	//Create its server id component
+	auto ob = objectManager->getObject(25000+nPlayers);
+	createRemotePlayerComponent(*ob.get(), nPlayers);
 }
 
 void ServerManager::actPlayer(RakNet::Packet* packet)
 {
 	//Additional variables
-	int server_id; 			//Server ID of the sender
-	EventType e; 			//Event type of the input
+	int server_id; 						//Server ID of the sender
+	EventType e; 						//Event type of the input
+	GameObject* ob; 					//Player Game Object
+	std::shared_ptr<MoveComponent> move; 	//Move Component of the player (if used)
 
 	//Parse packet
 	RakNet::BitStream parser(packet->data, packet->length, false);
@@ -261,6 +297,10 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
 	switch(e)
 	{
 		case Key_Advance_Down:
+		    ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+			move->changeAccInc(move->getMovemententData().max_acc);
+			move->isMoving(true);
 			break;
 		default:
 			break;
@@ -326,6 +366,33 @@ void ServerManager::endGame(RakNet::Packet* packet)
 
 	started=false;
 }
+
+//==============================================================
+// Component creator
+//==============================================================
+IComponent::Pointer ServerManager::createRemotePlayerComponent(GameObject& newGameObject, int server_id) {
+
+	//Create component
+    IComponent::Pointer component = std::make_shared<RemotePlayerComponent>(newGameObject);
+
+	//Add it to player
+    newGameObject.addComponent(component);
+
+	//Add it to list of players
+    remotePlayerComponentList.push_back(component);
+
+	//set server_id variable
+	std::dynamic_pointer_cast<RemotePlayerComponent>(component).get()->setServerId(server_id);
+
+	//Send event of its creation
+    EventData data;
+    data.Component = component;
+
+    eventManager->addEvent(Event {EventType::RemotePlayerComponent_Create, data});
+
+    return component;
+}
+
 //==============================================================
 // Additional functions
 //==============================================================
