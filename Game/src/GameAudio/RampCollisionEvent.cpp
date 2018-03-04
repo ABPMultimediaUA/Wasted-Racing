@@ -1,39 +1,38 @@
 #include "RampCollisionEvent.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
-//REGISTER_FACTORY(RampCollisionEvent);
-
-
-    class RampCollisionEventFactory : public SoundFactory { 
-    public: 
-        RampCollisionEventFactory() { 
-            ISoundEvent::registerFactory(ISoundEvent::getFactoryMap(), "RampCollisionEvent", this); 
-        } 
-        virtual ISoundEvent* createSound() { 
-            return new RampCollisionEvent(); 
-        } 
-    }; 
-    static RampCollisionEventFactory RampCollisionEventFactoryInstance;
+REGISTER_FACTORY(RampCollisionEvent);
 
 void RampCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event) {
 
-    FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
-
     int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
-    glm::vec3 pos = event.CollComponent.get()->getGameObject().getTransformData().position;
 
-    FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
-    FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "track", (float)9);
+    if(player >= 0 && player <= 4){
 
-    FMOD_3D_ATTRIBUTES attributes;
-    attributes.position.x = pos.x * audioFMOD->getWorldUnits();
-    attributes.position.y = pos.y * audioFMOD->getWorldUnits();
-    attributes.position.z = pos.z * audioFMOD->getWorldUnits();
+        //Load sound event
+        FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
 
-    FMOD_Studio_EventInstance_Set3DAttributes(soundInstance, &attributes);
+        //Set sound parameters
+        FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
+        FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "track", (float)9);
 
-    FMOD_Studio_EventInstance_Start(soundInstance);
+        //Set sound position
+        glm::vec3 pos = event.Component.get()->getGameObject().getTransformData().position;
 
-    FMOD_Studio_EventInstance_Release(soundInstance);
+        FMOD_3D_ATTRIBUTES attributes;
+        attributes.position.x = pos.x * audioFMOD->getWorldUnits();
+        attributes.position.y = pos.y * audioFMOD->getWorldUnits();
+        attributes.position.z = pos.z * audioFMOD->getWorldUnits();
+
+        FMOD_Studio_EventInstance_Set3DAttributes(soundInstance, &attributes);
+
+        //Start sound
+        FMOD_Studio_EventInstance_Start(soundInstance);
+
+        //Save references to the sound and the sound emitter
+        emitter = std::weak_ptr<IComponent>(event.Component);
+        audioFMOD->insertSoundEvent((ISoundEvent*)this);
+
+    }
 
 }

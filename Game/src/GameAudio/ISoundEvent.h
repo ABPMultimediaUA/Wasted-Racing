@@ -7,6 +7,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <memory>
 #include "../GameEvent/EventManager.h"
 
 class AudioFMOD;
@@ -90,10 +91,14 @@ public:
 
     //Create a new instance out of an event
     virtual void initalizeSound(AudioFMOD*, const EventData&) = 0;
+
+    //Emitter getter
+    std::weak_ptr<IComponent> getEmitter() { return emitter; }
     
     
 protected:
 
     FMOD_STUDIO_EVENTINSTANCE* soundInstance = NULL;
+    std::weak_ptr<IComponent> emitter;
 
 };

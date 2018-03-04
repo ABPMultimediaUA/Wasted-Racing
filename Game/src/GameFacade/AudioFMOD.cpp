@@ -2,7 +2,7 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
-
+#include "../GameAudio/RampCollisionEvent.h"
 //==============================================================================================================================
 // MACROS
 //==============================================================================================================================
@@ -79,9 +79,22 @@ void AudioFMOD::update() {
     //Update listener position and orientation
     setListenerPosition();
 
-    //##############################################################################
-    // UPDATEAR AQUI EVENTOS Y TAL
-    //##############################################################################
+    //Update position of events
+    for(unsigned int i = 0; i < soundEvents.size(); i++) {
+        
+        if(!soundEvents[i]->isPlaying() || soundEvents[i]->getEmitter().expired()) {
+            //If the event has stopped playing or the object it comes from has been destroyed
+            delete soundEvents[i];
+            soundEvents.erase(soundEvents.begin() + i);
+
+        }
+        else {
+            //Set sound position
+            auto pos = soundEvents[i]->getEmitter().lock().get()->getGameObject().getTransformData().position;
+            soundEvents[i]->setPosition(pos * worldUnits);
+        }
+
+    }
 
     //Update FMOD system
     ERRCHECK( FMOD_Studio_System_Update(system) );
@@ -133,7 +146,5 @@ void shootRampCollisionEvent(EventData e) {
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "RampCollisionEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
-    delete sound;
-
   
 }
