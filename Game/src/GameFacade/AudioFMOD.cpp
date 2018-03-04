@@ -2,7 +2,6 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
-
 //==============================================================================================================================
 // MACROS
 //==============================================================================================================================
@@ -34,7 +33,10 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 //==============================================================================================================================
 // DELEGATES DECLARATIONS
 //==============================================================================================================================
+void shootDefaultCollisionEvent(EventData e);
 void shootRampCollisionEvent(EventData e);
+void shootItemBoxCollisionEvent(EventData e);
+void shootBananaCollisionEvent(EventData e);
 
 
 
@@ -65,7 +67,10 @@ void AudioFMOD::openAudioEngine(int lang) {
     }
 
     //Listeners
+    EventManager::getInstance().addListener(EventListener {EventType::Default_Collision, shootDefaultCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, shootRampCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, shootItemBoxCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, shootBananaCollisionEvent});
 
     //Game veriables
     worldUnits = 0.05;
@@ -79,9 +84,22 @@ void AudioFMOD::update() {
     //Update listener position and orientation
     setListenerPosition();
 
-    //##############################################################################
-    // UPDATEAR AQUI EVENTOS Y TAL
-    //##############################################################################
+    //Update position of events
+    for(unsigned int i = 0; i < soundEvents.size(); i++) {
+        
+        if(!soundEvents[i]->isPlaying() || soundEvents[i]->getEmitter().expired()) {
+            //If the event has stopped playing or the object it comes from has been destroyed
+            delete soundEvents[i];
+            soundEvents.erase(soundEvents.begin() + i);
+
+        }
+        else {
+            //Set sound position
+            auto pos = soundEvents[i]->getEmitter().lock().get()->getGameObject().getTransformData().position;
+            soundEvents[i]->setPosition(pos * worldUnits);
+        }
+
+    }
 
     //Update FMOD system
     ERRCHECK( FMOD_Studio_System_Update(system) );
@@ -128,12 +146,32 @@ void AudioFMOD::setListenerPosition() {
 //==============================================================================================================================
 // DELEGATE FUNCTIONS
 //==============================================================================================================================
+void shootDefaultCollisionEvent(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "DefaultCollisionEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
 void shootRampCollisionEvent(EventData e) {
     
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "RampCollisionEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
-    delete sound;
-
   
 }
+void shootItemBoxCollisionEvent(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "ItemBoxCollisionEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootBananaCollisionEvent(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "BananaCollisionEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+
