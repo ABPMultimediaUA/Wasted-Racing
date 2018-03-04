@@ -141,10 +141,16 @@ void ServerManager::update(float dTime)
 				std::cout << "Number of players: " << nPlayers << std::endl;
 				break;
 			case ID_NEW_INCOMING_CONNECTION:
-				nPlayers++;
 				std::cout << "New client in the server" << std::endl;
 				std::cout << "Number of players: " << nPlayers << std::endl;
+				//Add player
 				players.push_back(packet->systemAddress);
+
+				//Create in-game player
+				addPlayer();
+
+				//Add number of players
+				nPlayers++;
 				break;
 
 			//Game related
@@ -230,6 +236,13 @@ void ServerManager::update(float dTime)
 //==============================================================
 // Player related
 //==============================================================
+void addPlayer()
+{
+    ObjectManager::getInstance().createPlayer(trans, 0, 2, 25000+nPlayers, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(trans.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(trans.position));
+}
+
 void ServerManager::actPlayer(RakNet::Packet* packet)
 {
 	//Additional variables
@@ -247,25 +260,10 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
 	//Execute action for the given player
 	switch(e)
 	{
-
-	case:
-		break;
-	case:
-		break;
-	case:
-		break;
-	case:
-		break;
-	case:
-		break;
-	case:
-		break;
-	case:
-		break;
-	case:
-		break;
-	case:
-		break;
+		case Key_Advance_Down:
+			break;
+		default:
+			break;
 	}
 }
 

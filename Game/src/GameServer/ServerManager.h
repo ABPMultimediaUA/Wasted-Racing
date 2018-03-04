@@ -127,6 +127,10 @@ class ServerManager{
         ///////
         //PLayer related
         ///////
+        //Create player in physical world
+        void addPlayer();
+
+        //Make the player do what the player commanded
         void actPlayer(RakNet::Packet* packet);
 
         ///////

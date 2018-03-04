@@ -89,7 +89,3 @@ void MultiMatchState::interpolate(float &accumulatedTime) {
 void MultiMatchState::close() {
 
 }
-
-void createPlayer(){
-
-}

@@ -166,6 +166,8 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.brake_acc = 30.f;
     mData.player = 0;
 
+    createComponents(ob, );
+
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "cyborg.obj");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
 
@@ -321,6 +323,38 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 
     return ob;
 
+}
+
+//==============================================
+// Create player auxiliars
+//============================================== 
+
+void ObjectManager::createComponents(GameOBject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent,  const char* model)
+{
+    //If it is the client, create a representation of the object
+    if(!GlobalVariables::getInstance().getServer() && model!=nullptr)
+    {
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, model);
+   
+    }
+
+    //Create collision component
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
+
+    //Create movement component and locate it on the map
+    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+    PhysicsManager::getInstance().createMovingCharacter(move, terrainComponent, collision);
+
+    //Character can have items and throw them
+    ItemManager::getInstance().createItemHolderComponent(*ob.get());
+
+    //Character has a score stating its position on the map
+    ScoreManager::getInstance().createScoreComponent(*ob.get());
+    ScoreManager::getInstance().createStartLineComponent(*ob.get());
+
+    //Create path planning component
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 }
 
 void ObjectManager::createMove(GameObject::Pointer obj, int move)
