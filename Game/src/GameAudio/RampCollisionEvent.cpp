@@ -22,18 +22,22 @@ void RampCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& e
     int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
     glm::vec3 pos = event.CollComponent.get()->getGameObject().getTransformData().position;
 
-    FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
-    FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "track", (float)9);
+    if(player != -1){
 
-    FMOD_3D_ATTRIBUTES attributes;
-    attributes.position.x = pos.x * audioFMOD->getWorldUnits();
-    attributes.position.y = pos.y * audioFMOD->getWorldUnits();
-    attributes.position.z = pos.z * audioFMOD->getWorldUnits();
+        FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
+        FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "track", (float)9);
 
-    FMOD_Studio_EventInstance_Set3DAttributes(soundInstance, &attributes);
+        FMOD_3D_ATTRIBUTES attributes;
+        attributes.position.x = pos.x * audioFMOD->getWorldUnits();
+        attributes.position.y = pos.y * audioFMOD->getWorldUnits();
+        attributes.position.z = pos.z * audioFMOD->getWorldUnits();
 
-    FMOD_Studio_EventInstance_Start(soundInstance);
+        FMOD_Studio_EventInstance_Set3DAttributes(soundInstance, &attributes);
 
-    FMOD_Studio_EventInstance_Release(soundInstance);
+        FMOD_Studio_EventInstance_Start(soundInstance);
+
+        FMOD_Studio_EventInstance_Release(soundInstance);
+
+    }
 
 }
