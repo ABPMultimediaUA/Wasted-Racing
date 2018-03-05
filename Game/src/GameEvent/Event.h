@@ -82,6 +82,12 @@ enum EventType {
     Key_DebugCamera_Up,
     Key_DebugBehaviour_Down,
     Key_DebugBehaviour_Up,
+    Key_SlowControl_Down,
+    Key_SlowControl_Up,
+    Key_FastControl_Down,
+    Key_FastControl_Up,
+    Key_NormalControl_Down,
+    Key_NormalControl_Up,
     //GAME: Game related events
     Game_Start,
     Game_Close,
