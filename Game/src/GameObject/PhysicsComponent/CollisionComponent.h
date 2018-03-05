@@ -49,6 +49,9 @@ public:
 	const Type 				getType()		{ return type;		}
 	const bool 				getKinetic()	{ return kinetic; 	}
 
+	//Setters
+	void 				setKinetic(bool k)		{ 	kinetic = k; 	}
+
 
 
 private:

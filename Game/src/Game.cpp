@@ -115,8 +115,19 @@ void Game::Run() {
         lastTime = currTime;
         accumulatedTime += (float)elapsed.count();
 
-        //Update the game once every maxTime
-        state->update(accumulatedTime);
+
+        if(dynamic_cast<MatchState*>(state) != nullptr) 
+        {
+            //If the state is Match, divide with ratio so we can accelerate or slow down the game
+            //Update the game once every maxTime
+            accumulatedTime /= ratio;
+            state->update(accumulatedTime); 
+        }
+        else
+        {
+            //Update the game once every maxTime
+            state->update(accumulatedTime); 
+        }
 
         //Always draw the game
         state->draw();

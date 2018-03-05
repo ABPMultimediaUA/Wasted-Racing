@@ -39,6 +39,7 @@ public:
 	//Joystick functions
 	void changeSpin(float n);
 	void changeAcc(float n);
+	void changeVel(float v);
 
 	//Checker functions
 	void isMoving(bool m);

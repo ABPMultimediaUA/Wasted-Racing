@@ -450,6 +450,8 @@ void RenderManager::createLinesObjects()
         glm::vec3 point;
         GameObject::TransformationData transform;
         auto seenObjects = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getSeenObjects();
+        auto seenObjects2 = AIDebugPoint[AIDebug].getComponent<MSensorComponent>()->getMapCollisions();
+        seenObjects.insert(seenObjects.end(), seenObjects2.begin(), seenObjects2.end());
         //float pi = 3.14159265358979323846;
 
         //Create Lines Objects

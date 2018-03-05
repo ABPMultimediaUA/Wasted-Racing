@@ -17,7 +17,7 @@ void SensorManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteVSensor});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteMSensor});
 
-    distanceLoD = 100;
+    distanceLoD = 0;
 
 }
 
@@ -45,7 +45,7 @@ void SensorManager::update() {
                             (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
 
         //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, NOT UPDATE
-        if(distPlayerAI <= distanceLoD*distanceLoD)
+        if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
         {
             auto sensor = std::dynamic_pointer_cast<VSensorComponent>(sensorComponentList[i]).get();
             updateVisionSensor(sensor);
@@ -63,7 +63,7 @@ void SensorManager::update() {
                             (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
                             
         //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, NOT UPDATE
-        if(distPlayerAI <= distanceLoD*distanceLoD)
+        if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
         {
             auto sensor = std::dynamic_pointer_cast<MSensorComponent>(sensorMComponentList[i]).get();
             updateMapSensor(sensor);

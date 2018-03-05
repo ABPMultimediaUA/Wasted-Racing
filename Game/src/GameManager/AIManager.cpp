@@ -22,7 +22,7 @@ AIManager& AIManager::getInstance() {
 
 void AIManager::init() {
     changeAI = false;
-    distanceLoD = 100;
+    distanceLoD = 0;
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
     //No delete by the moment
@@ -65,8 +65,12 @@ GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
 
                             
             //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
-            if(distPlayerAI <= distanceLoD*distanceLoD)
+            if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
             {
+                if(AIObject.getComponent<CollisionComponent>()->getKinetic() == false)
+                {
+                    AIObject.getComponent<CollisionComponent>()->setKinetic(true);
+                }
                 updateDriving(aiDrivingComponent);
             }
             else
@@ -203,10 +207,13 @@ void AIManager::updateDriving(AIDrivingComponent* aiDrivingComponent)
 
 void AIManager::calculateLoD(GameObject AI, float dTime)
 {
-    GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(AI.getId());
+    GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
     auto trans = AIObject->getTransformData();
+    AIObject->getComponent<CollisionComponent>()->setKinetic(false);
+    //std::cout<<AIObject->getComponent<CollisionComponent>()->getKinetic()<<"\n";
 
     auto maxSpeed = AIObject->getComponent<MoveComponent>()->getMovemententData().max_vel;
+    //AIObject->getComponent<MoveComponent>()->changeVel(30.0);
 
     auto distCover = (maxSpeed * maxSpeed) * dTime;
 
@@ -217,48 +224,79 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     float distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
 						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
 						     (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
-	
+
+    glm::vec3 nextPos;
 
     float radius = waypoints[posVector].get()->getComponent<WaypointComponent>()->getRadius();
-    
-
-    if(distaneActualWay <= (radius*radius))
+    if(distaneActualWay <= maxSpeed*10)
     {
         if(posVector < waypoints.size()-1)
         {
             posVector++;
             AIObject->getComponent<PathPlanningComponent>()->setLastPosVector(posVector);
-            posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
-
-            distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
-						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
-						     (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
-	
         }
         else if(posVector == waypoints.size()-1)
         {
             AIObject->getComponent<StartLineComponent>()->setActive(true);
             AIObject->getComponent<PathPlanningComponent>()->setLastPosVector(0);
-            posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
 
-            distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
-						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
-						     (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
-	
         }
+        posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
+        distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
+                            (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
+                            (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
     }
-
-    auto nextPos = ((distCover/distaneActualWay) * (waypoints[posVector].get()->getTransformData().position - trans.position)) + trans.position;
-    //auto nextPos = waypoints[posVector].get()->getTransformData().position;
+    /*if(posVector == 0)
+    {
+        distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - waypoints[waypoints.size()-1].get()->getTransformData().position.x) * (waypoints[posVector].get()->getTransformData().position.x - waypoints[waypoints.size()-1].get()->getTransformData().position.x) +
+                           (waypoints[posVector].get()->getTransformData().position.y - waypoints[waypoints.size()-1].get()->getTransformData().position.y) * (waypoints[posVector].get()->getTransformData().position.y - waypoints[waypoints.size()-1].get()->getTransformData().position.y) +
+                           (waypoints[posVector].get()->getTransformData().position.z - waypoints[waypoints.size()-1].get()->getTransformData().position.z) * (waypoints[posVector].get()->getTransformData().position.z - waypoints[waypoints.size()-1].get()->getTransformData().position.z);
+        //nextPos = ((distCover/distaneActualWay) * (waypoints[posVector].get()->getTransformData().position - waypoints[waypoints.size()-1].get()->getTransformData().position)) + trans.position;
+            
+    }
+    else if(posVector > 0 && posVector < waypoints.size()-1)
+    {
+        distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - waypoints[posVector-1].get()->getTransformData().position.x) * (waypoints[posVector].get()->getTransformData().position.x - waypoints[posVector-1].get()->getTransformData().position.x) +
+                           (waypoints[posVector].get()->getTransformData().position.y - waypoints[posVector-1].get()->getTransformData().position.y) * (waypoints[posVector].get()->getTransformData().position.y - waypoints[posVector-1].get()->getTransformData().position.y) +
+                           (waypoints[posVector].get()->getTransformData().position.z - waypoints[posVector-1].get()->getTransformData().position.z) * (waypoints[posVector].get()->getTransformData().position.z - waypoints[posVector-1].get()->getTransformData().position.z);
+        //nextPos = ((distCover/distaneActualWay) * (waypoints[posVector].get()->getTransformData().position - waypoints[posVector-1].get()->getTransformData().position)) + trans.position;
+    }
+    else if(posVector == waypoints.size()-1)
+    {
+        distaneActualWay = (waypoints[0].get()->getTransformData().position.x - waypoints[posVector].get()->getTransformData().position.x) * (waypoints[0].get()->getTransformData().position.x - waypoints[posVector].get()->getTransformData().position.x) +
+                           (waypoints[0].get()->getTransformData().position.y - waypoints[posVector].get()->getTransformData().position.y) * (waypoints[0].get()->getTransformData().position.y - waypoints[posVector].get()->getTransformData().position.y) +
+                           (waypoints[0].get()->getTransformData().position.z - waypoints[posVector].get()->getTransformData().position.z) * (waypoints[0].get()->getTransformData().position.z - waypoints[posVector].get()->getTransformData().position.z);
+        //nextPos = ((distCover/distaneActualWay) * (waypoints[0].get()->getTransformData().position - waypoints[posVector].get()->getTransformData().position)) + trans.position;
+    }*/
+    nextPos = ((distCover/distaneActualWay) * (waypoints[posVector].get()->getTransformData().position - trans.position)) + trans.position;
+    /*auto aux = (distCover/distaneActualWay) * (waypoints[posVector].get()->getTransformData().position - trans.position);
+    auto mod2 =  (aux.x * aux.x) +
+                (aux.y * aux.y) +
+                (aux.z * aux.z);
+    auto mod =  (nextPos.x * nextPos.x) +
+                (nextPos.y * nextPos.y) +
+                (nextPos.z * nextPos.z);
+    std::cout<<"/////////////////////"<<"\n";
+    std::cout<<mod2<<"\n";
+    std::cout<<aux.x<<"\n";
+    std::cout<<aux.y<<"\n";
+    std::cout<<aux.z<<"\n";
+    std::cout<<mod<<"\n";
+    std::cout<<nextPos.x<<"\n";
+    std::cout<<nextPos.y<<"\n";
+    std::cout<<nextPos.z<<"\n";*/
+    //nextPos = waypoints[posVector].get()->getTransformData().position;
     trans.position = nextPos;
     
     AIObject->setNewTransformData(trans);
+    //AIObject->setOldTransformData(trans);
+    //AIObject->setTransformData(trans);
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(AI.getId(), trans);
 
     ////////////////////////////////////
     /////    ASSIGN RANDOM ITEM    /////
-    ////////////////////////////////////
-    if(posVector%2 == 0)
+    //////////////////////////////////// 
+    if(posVector%2 == 1)
     {
         auto itemHolder = AIObject->getComponent<ItemHolderComponent>();
 
