@@ -213,7 +213,7 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     //std::cout<<AIObject->getComponent<CollisionComponent>()->getKinetic()<<"\n";
 
     auto maxSpeed = AIObject->getComponent<MoveComponent>()->getMovemententData().max_vel;
-    //AIObject->getComponent<MoveComponent>()->changeVel(30.0);
+    AIObject->getComponent<MoveComponent>()->changeVel(maxSpeed);
 
     auto distCover = (maxSpeed * maxSpeed) * dTime;
 

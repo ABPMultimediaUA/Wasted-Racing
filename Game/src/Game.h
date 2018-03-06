@@ -62,12 +62,10 @@ public:
     void setStay(bool s)       {     stay = s;              }//Stay setter
     void setRenderEngine(int n){     renderEngine = n;      }//Engine setter
     void setInputEngine(int n) {     inputEngine = n;       }//Input setter
-    void setRatio(float r)     {     ratio = r;             }//Set game ratio
     IGameState* getState()     {     return state;          }//State getter
     int getRenderEngine()      {     return renderEngine;   }//Engine getter
     int getInputEngine()       {     return inputEngine;    }//Input getter
     float getAccumulatedTime() {     return accumulatedTime;}//Get accumulated time
-    float getRatio()           {     return ratio;          }//Get game ratio
 
     //Static class getter
     static Game& getInstance() {
@@ -136,8 +134,5 @@ private:
 
     //Accumulate time in game
     float accumulatedTime;
-
-    //Game velocity
-    float ratio = 1.0f;
 
 };
