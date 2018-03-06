@@ -517,7 +517,7 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
     parser.Read(rx);
     parser.Read(ry);
     parser.Read(rz);
-   
+    
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
     for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
@@ -535,7 +535,7 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             trans.rotation.x = rx;
             trans.rotation.y = ry;
             trans.rotation.z = rz;
-
+            
             rPlayer.get()->getGameObject().setNewTransformData(trans);
 
             //If there is debug, update position of the cylinders
@@ -896,9 +896,9 @@ void NetworkManager::update()
     }
 
     //Always broadcast position of items in each iteration
-    broadcastPosition();
+    /*broadcastPosition();
     broadcastPositionRedShell();
-    broadcastPositionBlueShell();
+    broadcastPositionBlueShell();*/
 }
 
 void NetworkManager::close() {

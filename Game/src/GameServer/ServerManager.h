@@ -73,6 +73,9 @@ class ServerManager{
         //Receives the packets and updates the info of the game
         void update(float dTime);
 
+        //Updates the managers with the time given
+        void updateManagers(float dTime);
+
         //==============================================================
         // Component creator
         //==============================================================
@@ -170,7 +173,12 @@ class ServerManager{
         //Function provided by RakNet
         unsigned char GetPacketIdentifier(RakNet::Packet *p);
 
+        ///////
+        //Sending data
+        ///////
 
+        //Broadcast position of all players
+        void broadcastPositionPlayers();
 
         //Broadcast one packet to the rest of the players
         void broadcastData(RakNet::Packet* packet);

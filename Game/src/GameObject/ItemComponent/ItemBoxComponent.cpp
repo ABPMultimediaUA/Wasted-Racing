@@ -1,7 +1,4 @@
 #include "ItemBoxComponent.h"
-#include "../GameObject.h"
-#include "ItemHolderComponent.h"
-#include "../../GameManager/RenderManager.h"
 
 
 //Constructor
@@ -18,10 +15,14 @@ void ItemBoxComponent::init(){
 
 void ItemBoxComponent::update(float dTime){
 
+    //Rotate the object (rotating motion)
     auto trans = getGameObject().getTransformData();
     trans.rotation.y += 1*M_PI/180;
     getGameObject().setTransformData(trans);
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
+
+    //Update in render if this is not the server
+    //____>AÑADIR EVENTO MÁGICO QUE UPDATEE ESTO PA QUE NO HAYAN ERRORES MACHO Q MIRA EH
+    //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
     if(getGameObject().getTransformData().scale.x == 0){
             actTime -= dTime;
@@ -39,7 +40,7 @@ void ItemBoxComponent::update(float dTime){
         trans.scale.z = 0.5;
 
         getGameObject().setTransformData(trans);
-        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
+        //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
     }
 

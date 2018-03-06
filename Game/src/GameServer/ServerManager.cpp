@@ -93,7 +93,6 @@ void ServerManager::run()
 			//Update managers
 			updateManagers(accumulatedTime);
 
-			Game::getInstance().setStay(objectManager->getGameRunning());
 			accumulatedTime = 0;
 		}
 
@@ -159,9 +158,9 @@ void ServerManager::update(float dTime)
 			//Player related
 			case ID_INPUT:
 				actPlayer(packet);
-
+				break;
 			//Objects related
-			case ID_CREATE_BANANA:
+			/*case ID_CREATE_BANANA:
 				broadcastObject(packet);
 				nObjects++;
 				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
@@ -193,24 +192,20 @@ void ServerManager::update(float dTime)
 				break;
 			case ID_BOX_COLLISION:
 				broadcastData(packet);
-				break;
+				break;*/
             default:
                 std::cout << "Receiving new packet" << std::endl;
                 break;
 		}
 	}
 
-	//////
-	//Broadcast all positions
-	//////
-
 
 }
 
-void ServerManager::updateManagers()
+void ServerManager::updateManagers(float dTime)
 {
-	//Do calculations if the game is online
-	if(globalVariables->getOnline()){
+	//Do calculations if the game has started
+	if(started){
 		//Input manager has to be the first to be updated
 		physicsManager->update(dTime);
 
@@ -225,13 +220,61 @@ void ServerManager::updateManagers()
 		scoreManager->update();
 		
 		//Event manager has to be the last to be updated
-		eventManager->update();	
+		eventManager->update();
+
+		//////
+		//Broadcast all positions
+		//////
+		if(nPlayers>=1){
+			broadcastPositionPlayers();
+		}
+
 	}
 }
 
 //==============================================================
 // Sending data
 //==============================================================
+void ServerManager::broadcastPositionPlayers()
+{
+	//Create stream
+	RakNet::BitStream stream;
+
+	int server_id; 						//Server ID of the sender
+	GameObject* ob; 					//Player Game Object
+
+	//Send info of all the players
+	for(unsigned int i = 0; i < nPlayers; i++)
+	{	
+
+		//get player by its server id
+		server_id = i;
+		ob = getPlayer(server_id);
+
+		//get transformation data
+		auto trans = ob->getTransformData();
+
+		//send it
+		stream.Reset();
+		stream.Write((unsigned char)ID_REMOTE_PLAYER_MOVEMENT);
+		stream.Write((int)server_id);
+		stream.Write((float)trans.position.x);
+		stream.Write((float)trans.position.y);
+		stream.Write((float)trans.position.z);
+		stream.Write((float)trans.rotation.x);
+		stream.Write((float)trans.rotation.y);
+		stream.Write((float)trans.rotation.z);
+
+		std::cout<<"-----------------------------------------------"<<std::endl;
+		std::cout<<"-----------------------------------------------"<<std::endl;
+		std::cout<<"MANDA::"<<trans.position.x<<" - "<<trans.position.y<<" - "<<trans.position.z<<std::endl;
+		std::cout<<"-----------------------------------------------"<<std::endl;
+		std::cout<<"-----------------------------------------------"<<std::endl;
+
+		peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+	}
+
+}
 
 void ServerManager::broadcastData(RakNet::Packet* packet)
 {
@@ -271,6 +314,9 @@ void ServerManager::addPlayer()
     objectManager->createPlayer(trans, 0, 2, 25000+nPlayers, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(trans.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(trans.position));
+
+	//Update the manager to instantiate creation
+	eventManager->update();
 
 	//Create its server id component
 	auto ob = objectManager->getObject(25000+nPlayers);
@@ -313,8 +359,10 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
 //Function to start the game when we are at the lobby
 void ServerManager::startGame()
 {
+	//If game is started
 	if(!started && nPlayers > 1)
 	{
+		//Initial variables
 		float x, y, z;
 		RakNet::BitStream stream;
 		started=true;

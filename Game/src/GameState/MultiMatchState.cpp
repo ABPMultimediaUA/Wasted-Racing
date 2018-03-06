@@ -10,10 +10,9 @@ void MultiMatchState::init() {
     renderManager   = &RenderManager::getInstance();    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
     inputManager    = &InputManager::getInstance();     //Once we've initialized the renderManager, we can do the same with our inputManager
     objectManager   = &ObjectManager::getInstance();    //Initialize object manager
-    physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
-    waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager 
-    aiManager       = &AIManager::getInstance();        //Initialize AI manager
+    waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
+    physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
@@ -46,16 +45,6 @@ void MultiMatchState::update(float &accumulatedTime) {
 }
 
 void MultiMatchState::updateManagers(float dTime){
-
-    physicsManager->update(dTime);
-
-    aiManager->update(dTime);
-
-    waypointManager->update(dTime);
-
-    sensorManager->update();
-
-    itemManager->update(dTime);
     
     scoreManager->update();
 
@@ -67,9 +56,6 @@ void MultiMatchState::draw() {
 }
 
 void MultiMatchState::interpolate(float &accumulatedTime) {
-    //Interpolate positions
-    physicsManager->interpolate(accumulatedTime, loopTime);
-
     //Update each position in Render Manager
     for(unsigned int i=0; i<physicsManager->getMovingCharacterList().size(); ++i){
         //Interpolate every moving object
