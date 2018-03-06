@@ -537,11 +537,12 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             trans.rotation.z = rz;
             
             rPlayer.get()->getGameObject().setNewTransformData(trans);
+            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
 
             //If there is debug, update position of the cylinders
-            if(debugNetworkState){
+            //if(debugNetworkState){
                 
-            }
+            //}
         }
     }
 }
@@ -601,6 +602,7 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
             trans.rotation.z = rz;
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
+            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
         }
     }
 }
@@ -660,6 +662,7 @@ void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
             trans.rotation.z = rz;
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
+            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
         }
     }
 }
@@ -915,7 +918,7 @@ void NetworkManager::initLobby(){
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("192.168.1.136", 39017, 0, 0);
+    result = peer->Connect("172.27.176.133", 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {

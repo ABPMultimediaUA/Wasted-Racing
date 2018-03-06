@@ -56,15 +56,6 @@ void MultiMatchState::draw() {
 }
 
 void MultiMatchState::interpolate(float &accumulatedTime) {
-    //Update each position in Render Manager
-    for(unsigned int i=0; i<physicsManager->getMovingCharacterList().size(); ++i){
-        //Interpolate every moving object
-        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(
-                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getId(), 
-                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getTransformData()
-        );
-    }
-
     //Update camera position
     renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
 }

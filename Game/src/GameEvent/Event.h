@@ -4,6 +4,7 @@
 #include <list>
 #include <cstdint>
 #include <memory>
+#include <glm/glm.hpp>
 
 class GameObject;
 class IComponent;
@@ -96,7 +97,11 @@ enum EventType {
     Key_Multiplayer_Down,
     Key_Singleplayer_Down,
     Key_Multiplayer_Up,
-    Key_Singleplayer_Up
+    Key_Singleplayer_Up,
+    //Object: object related events
+    Update_Transform_Position,
+    Update_Transform_Rotation,
+    Update_Transform_Scale
 };
 
 //Struct containg diferent types of data
@@ -107,6 +112,7 @@ struct EventData {
     std::shared_ptr<IComponent> Component;
     std::shared_ptr<IComponent> CollComponent;
     float                       grade;
+    glm::vec3                   Vector;
 };
 
 //A event contains a type and the data related to the object

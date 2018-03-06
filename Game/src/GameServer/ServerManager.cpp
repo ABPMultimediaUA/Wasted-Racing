@@ -158,6 +158,7 @@ void ServerManager::update(float dTime)
 			//Player related
 			case ID_INPUT:
 				actPlayer(packet);
+				std::cout<<"Input received"<<std::endl;
 				break;
 			//Objects related
 			/*case ID_CREATE_BANANA:
@@ -265,12 +266,6 @@ void ServerManager::broadcastPositionPlayers()
 		stream.Write((float)trans.rotation.y);
 		stream.Write((float)trans.rotation.z);
 
-		std::cout<<"-----------------------------------------------"<<std::endl;
-		std::cout<<"-----------------------------------------------"<<std::endl;
-		std::cout<<"MANDA::"<<trans.position.x<<" - "<<trans.position.y<<" - "<<trans.position.z<<std::endl;
-		std::cout<<"-----------------------------------------------"<<std::endl;
-		std::cout<<"-----------------------------------------------"<<std::endl;
-
 		peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 	}
 
@@ -348,6 +343,79 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
 			move->changeAccInc(move->getMovemententData().max_acc);
 			move->isMoving(true);
 			break;
+
+		case Key_Advance_Up:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+			move->changeAccInc(0.0);
+    		move->isMoving(false);
+			break;
+
+		case Key_Brake_Down:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+			move->isBraking(true);
+			break;
+
+		case Key_Brake_Up:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+			move->isBraking(false);
+			break;
+
+		case Key_TurnLeft_Down:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+			move->changeSpinIncrement(0.1);
+    		move->isSpinning(true);
+			break;
+
+		case Key_TurnLeft_Up:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+			move->changeSpinIncrement(0.0);
+    		move->isSpinning(false);
+			break;
+
+		case Key_TurnRight_Down:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+   			move->changeSpinIncrement(-0.1);
+    		move->isSpinning(true);
+			break;
+
+		case Key_TurnRight_Up:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+    		move->changeSpinIncrement(0.0);
+    		move->isSpinning(false);
+			break;
+
+		case Key_Jump_Down:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+			move->isJumping(true);
+			break;
+		case Key_Jump_Up:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+			move->isJumping(false);
+			break;
+		case Key_Drift_Down:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+    		move->isDrifting(true);
+			break;
+		case Key_Drift_Up:
+			ob = getPlayer(server_id);
+			move = ob->getComponent<MoveComponent>();
+    		move->isDrifting(false);
+			break;
+		case Key_UseItem_Down:
+    		//____> USE SERVER_ID OF THE OBJECT
+			//EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
+			break;
+
 		default:
 			break;
 	}
