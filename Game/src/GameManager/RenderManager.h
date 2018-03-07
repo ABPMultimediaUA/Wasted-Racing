@@ -53,6 +53,8 @@ public:
     IComponent::Pointer createCameraRenderComponent(GameObject& newGameObject);
     //Create cylinder or cone
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency);
+    //Create skybox
+    IComponent::Pointer createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr);
     //Camera component getter and setter
     IComponent::Pointer getCameraComponent() { return cameraComponent; }
     void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
@@ -101,6 +103,8 @@ private:
 
     //We store just one camera component, so we can't have more than 1
     IComponent::Pointer cameraComponent;
+
+    bool create = false;
 
     //Debug IA
     unsigned int AIDebug = 0;

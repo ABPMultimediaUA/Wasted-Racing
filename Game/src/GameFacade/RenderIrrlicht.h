@@ -63,6 +63,8 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
+    //Add SkyBox
+    virtual void addSkybox(IComponent* ptr);
 
     ///////////////////////////////
     ///////      DEBUG      ///////    

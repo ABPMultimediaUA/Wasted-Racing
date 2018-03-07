@@ -363,7 +363,38 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
     }
 }
 
+void RenderIrrlicht::addSkybox(IComponent* ptr)
+{
+    ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr);
 
+    if(cmp != nullptr){
+
+        auto shape = cmp->getObjectShape();
+        auto obj = cmp->getGameObject();
+        //Transform the data to irrlicht type
+        auto pos = obj.getTransformData().position;
+        auto rot = obj.getTransformData().rotation;
+        auto sca = obj.getTransformData().scale;
+        irr::core::vector3df irrPos = irr::core::vector3df((float)pos.x,(float)pos.y, (float)pos.z);
+        irr::core::vector3df irrRot = irr::core::vector3df((float)rot.x,(float)rot.y, (float)rot.z);
+        irr::core::vector3df irrSca = irr::core::vector3df((float)sca.x,(float)sca.y, (float)sca.z);
+
+        irr::scene::ISceneNode * node;
+
+        //Initialize the node
+        std::cout<<"Hola"<<"\n";
+        auto var = videoDriver->getTexture(cmp->getImg().c_str());
+        node = sceneManager->addSkyBoxSceneNode(var,var,var,var,var,var);
+
+        //Set node transformation
+        node->setPosition(irrPos);
+        node->setRotation(irrRot);
+        node->setScale(irrSca);
+
+    
+        nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
+    }
+}
 
     ///////////////////////////////
     ///////      DEBUG      ///////    

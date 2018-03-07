@@ -57,6 +57,21 @@ void RenderManager::update(float dTime) {
 
 void RenderManager::draw() {
     renderFacade->renderDraw();
+    if(create == false)
+    {
+        uint16_t id;
+        GameObject::TransformationData transform;
+        id = 40000;
+
+        transform.position = glm::vec3(0,0,0);
+        transform.rotation = glm::vec3(0,0,0);
+        transform.scale    = glm::vec3(1, 1, 1);
+        GameObject::Pointer sky = ObjectManager::getInstance().createObject(id, transform);
+
+
+        RenderManager::getInstance().createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Plane, "redWithTransparency.png");
+        create = true;
+    }
 }
 
 void RenderManager::close(){
@@ -122,6 +137,22 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
     auto comp = newGameObject.getComponent<ObjectRenderComponent>();
 
     renderFacade->addObject(component.get(), radius, length, tesselation, transparency);
+
+    return component;
+}
+
+IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr) {
+
+    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    auto comp = newGameObject.getComponent<ObjectRenderComponent>();
+
+    renderFacade->addSkybox(component.get());
 
     return component;
 }
