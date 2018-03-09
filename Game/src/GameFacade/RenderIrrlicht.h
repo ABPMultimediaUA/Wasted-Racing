@@ -64,7 +64,7 @@ public:
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
     //Add SkyBox
-    virtual void addSkybox(IComponent* ptr);
+    virtual void addSkybox(IComponent* ptr, std::string t, std::string bo, std::string l, std::string r, std::string f, std::string ba);
 
     ///////////////////////////////
     ///////      DEBUG      ///////    

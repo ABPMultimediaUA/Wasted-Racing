@@ -363,7 +363,7 @@ void RenderIrrlicht::updateObjectTransform(uint16_t id, GameObject::Transformati
     }
 }
 
-void RenderIrrlicht::addSkybox(IComponent* ptr)
+void RenderIrrlicht::addSkybox(IComponent* ptr, std::string t, std::string bo, std::string l, std::string r, std::string f, std::string ba)
 {
     ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr);
 
@@ -382,15 +382,24 @@ void RenderIrrlicht::addSkybox(IComponent* ptr)
         irr::scene::ISceneNode * node;
 
         //Initialize the node
-        std::cout<<"Hola"<<"\n";
-        auto var = videoDriver->getTexture(cmp->getImg().c_str());
-        node = sceneManager->addSkyBoxSceneNode(var,var,var,var,var,var);
+        t = "media/img/" + t;
+        bo = "media/img/" + bo;
+        l = "media/img/" + l;
+        r = "media/img/" + r;
+        f = "media/img/" + f;
+        ba = "media/img/" + ba;
+        auto top = videoDriver->getTexture(t.c_str());
+        auto bot = videoDriver->getTexture(bo.c_str());
+        auto left = videoDriver->getTexture(l.c_str());
+        auto right = videoDriver->getTexture(r.c_str());
+        auto front = videoDriver->getTexture(f.c_str());
+        auto back = videoDriver->getTexture(ba.c_str());
+        node = sceneManager->addSkyBoxSceneNode(top,bot,left,right,front,back);
 
         //Set node transformation
         node->setPosition(irrPos);
         node->setRotation(irrRot);
         node->setScale(irrSca);
-
     
         nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
     }
