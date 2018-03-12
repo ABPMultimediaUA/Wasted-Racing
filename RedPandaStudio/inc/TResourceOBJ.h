@@ -2,6 +2,8 @@
 
 #include "TResource.h"
 #include "TResourceMesh.h"
+#include "TResourceMaterial.h"
+#include "TResourceTexture.h"
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <assimp/Importer.hpp>
@@ -23,5 +25,6 @@ class TResourceOBJ : public TResource {
 
     private:
         std::vector<TResourceMesh*> meshes;
+        std::vector<TResourceTexture*> textures;
 
 };

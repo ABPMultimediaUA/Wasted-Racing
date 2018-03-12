@@ -236,8 +236,8 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 		//Create new mesh entity
 		TMesh* m = new TMesh();
 		m->setMesh(resourceManager->getResourceOBJ(mesh));
-		m->setTexture(resourceManager->getResourceTexture(text));
-		m->setTextActive(true);
+		//m->setTexture(resourceManager->getResourceTexture(text));
+		//m->setTextActive(true);
 		TNode* mesh = new TNode(transformT, m);
 		transformT->addChild(mesh);
 
