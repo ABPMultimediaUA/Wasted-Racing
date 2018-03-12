@@ -1,5 +1,38 @@
 #include "TResourceMesh.h"
 
+bool TResourceMesh::loadMesh(aiMesh* m)
+{
+    
+    int nFaces = m->mNumFaces;
+    nTriangles = nFaces;
+    nVertex = m->mNumVertices;
+    
+    vertex = (float *)malloc(sizeof(float) * nVertex * 3);
+    memcpy(&vertex[0], m->mVertices, 3 * sizeof(float) * nVertex);
+
+    normals = (float *)malloc(sizeof(float) * nVertex * 3);
+    memcpy(&normals[0], m->mNormals, 3 * sizeof(float) * nVertex);
+
+    //We assume we are always working with triangles
+    vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 3);
+    unsigned int faceIndex = 0;
+
+    for(int j = 0; j<nFaces; j++)
+    {
+        memcpy(&vertexIndices[faceIndex], m->mFaces[j].mIndices, 3 * sizeof(unsigned int));
+        faceIndex += 3;
+    }
+    if(m->HasTextureCoords(0))
+    {
+        textures=(float *)malloc(sizeof(float)*2*nVertex);
+        for(unsigned int k = 0; k<nVertex;k++)
+        {
+            textures[k*2] = m->mTextureCoords[0][k].x;
+            textures[k*2+1] = m->mTextureCoords[0][k].y;
+        }
+    }
+}
+
 bool TResourceMesh::loadResource()
 {
     Assimp::Importer importer;
@@ -51,6 +84,18 @@ bool TResourceMesh::loadResource()
 
 void TResourceMesh::draw()
 {
+    
+    glEnable(GL_COLOR_MATERIAL);
+    GLfloat mat_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+    GLfloat mat_diffuse[] = { 0.8, 0.5, 0.1, 1.0 };
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_specular);
+    
     //Generate an array of 4 buffer identifiers
     GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
     glGenBuffers(4, vboHandles);

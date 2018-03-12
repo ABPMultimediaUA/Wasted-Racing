@@ -13,11 +13,25 @@ class TResourceMesh : public TResource {
         TResourceMesh() {};
         ~TResourceMesh() {};
 
+        //Copies the data needed from an already loaded in memory mesh (loaded with assimp)
+        bool loadMesh(aiMesh* m);
+
         //Load the resource specified in the route provided
         bool loadResource();
 
         //Draws the mesh
         void draw();
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        //////////  GETTERS && SETTERS
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+        void setVertex(GLfloat* v)          { vertex=v;         }
+        void setNormals(GLfloat* n)         { normals=n;        }
+        void setTextures(GLfloat* t)        { textures=t;       }
+        void setIndices(GLuint* i)          { vertexIndices=i;  }
+        void setNTriangles(long n)          { nTriangles=n;     }
+        void setNVertex(long n)             { nVertex=n;        }
 
     private:
         //Vertex info
@@ -25,7 +39,7 @@ class TResourceMesh : public TResource {
         //Vertex indices
         GLuint* vertexIndices;
         //Number of faces (assuming faces are triangles, what we currently are forcing)
-        long nTriangles;
+        long nTriangles = 0;
         //Number of vertex
         long nVertex;
 };

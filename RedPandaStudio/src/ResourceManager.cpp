@@ -120,3 +120,33 @@ TResourceShader* ResourceManager::getResourceShader(const char* n)
     
     return res;
 }
+
+TResourceOBJ* ResourceManager::getResourceOBJ(const char* n)
+{
+    unsigned int i;
+    TResourceOBJ* res=NULL;
+    bool found = false;
+
+    //First we look in memory loaded resources
+    for(i=0; i<objs.size() && found == false; i++)
+    {
+        if(strcmp(n, objs[i]->getName()) == 0)
+        {
+            found = true;
+            res=objs[i];
+        }
+    }
+    //If it's not loaded, we create a new resource and try to load it
+    if(found == false)
+    {
+        res = new TResourceOBJ();
+
+        res->setName(n);
+        if(res->loadResource())
+        {
+            objs.push_back(res);
+        }
+    }
+    
+    return res;
+}
