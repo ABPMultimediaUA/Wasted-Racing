@@ -24,7 +24,7 @@ uniform Light light[maxLights];
 void main()
 {
 
-    float ambient = 0.15;                               // (15% de int. ambiente)
+    float ambient = 0.10;                               // (15% de int. ambiente)
 
     v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 
