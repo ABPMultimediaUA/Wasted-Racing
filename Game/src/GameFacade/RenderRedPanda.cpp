@@ -43,21 +43,7 @@ void RenderRedPanda::renderDraw() {
 void RenderRedPanda::addCamera() { }
 
 //Update the current camera
-void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
-    //Get target position
-    auto pos = cameraTarget->getTransformData().position;
-
-    //Get target y angle
-    float radianAngle = cameraTarget->getTransformData().rotation.y;
-
-    //Get interpolated distance to the player
-    float oldD = cameraTarget->getComponent<CameraRenderComponent>().get()->getOldDistance();
-    float newD = cameraTarget->getComponent<CameraRenderComponent>().get()->getDistance();
-
-    float distance = oldD + (accTime * (newD - oldD))/maxTime;
-
-    device->setCameraTarget(pos, glm::vec3(pos.x - distance * cos(radianAngle), pos.y + distance * 0.4, pos.z + distance * sin(radianAngle)));
- }
+void RenderRedPanda::interpolateCamera(float accTime, float maxTime) { }
 
 //Add an object to the game
 void RenderRedPanda::addObject(IComponent* ptr) { 
@@ -67,6 +53,8 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     auto shape = cmp->getObjectShape();
     auto obj = cmp->getGameObject();
     auto pos = obj.getTransformData().position;
+    auto sca = obj.getTransformData().rotation;
+    auto rot = obj.getTransformData().rotation;
     
     TNode * node;
     //Initialize the node
@@ -97,6 +85,8 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
 
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
+    poss.insert(std::pair<uint16_t, glm::vec3>(obj.getId(), glm::vec3(0,0,0)));
+    rott.insert(std::pair<uint16_t, glm::vec3>(obj.getId(), glm::vec3(0,0,0)));
 
     if(obj.getId() == 25000) {
         device->createCamera(node->getFather(), glm::vec3(0,10,30));
@@ -161,14 +151,22 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 
         auto node = iterator->second;
 
-        rps::rotateNode(node, -rot.y, 1);
-        rps::rotateNode(node, 0, 0);
-        rps::rotateNode(node, 0, 2);
+        
+            glm::vec3 position = poss[id];
+            glm::vec3 rotation = rott[id];
 
-        rps::scaleNode(node, sca);
+            rps::rotateNode(node, -(rot.y-rotation.y), 1);
+            rps::rotateNode(node, 0, 0);
+            rps::rotateNode(node, 0, 2);
 
-        rps::translateNode(node, glm::vec3(pos.x, pos.y, pos.z));
-         
+            //rps::scaleNode(node, sca);
+
+            rps::translateNode(node, glm::vec3(position.x-pos.x, pos.y-position.y, pos.z-position.z));
+
+            rott[id] = rot;
+            poss[id] = pos;
+        
+        
     }
 }
 

@@ -49,10 +49,6 @@ public:
     void deleteObject(TNode* leaf);
 
     //////////////////////////////
-    //  UTILITIES
-    void setCameraTarget(glm::vec3 pos, glm::vec3 target);
-
-    //////////////////////////////
     //  GETTERS
     SDL_Window* getWindow()   {   return window;      }
     TNode* getSceneRoot()           {   return scene;       }
