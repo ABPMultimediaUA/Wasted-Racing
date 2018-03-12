@@ -9,6 +9,7 @@
 #include "InputRedPanda.h"
 
 #include "../GameManager/InputManager.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 
 class RenderRedPanda : public IRenderFacade {
 
@@ -121,8 +122,6 @@ private:
 
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
-    std::map<uint16_t, glm::vec3> poss;
-    std::map<uint16_t, glm::vec3> rott;
 
     //Irrlicht camera
     //rps::TNode* camera;

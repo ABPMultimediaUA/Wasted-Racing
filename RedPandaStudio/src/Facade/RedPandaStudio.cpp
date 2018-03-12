@@ -37,6 +37,7 @@ void RedPandaStudio::dropDevice() {
 	SDL_Quit();
 
     //delete scene;
+	deleteNode(scene);
     delete resourceManager;
 
 }
