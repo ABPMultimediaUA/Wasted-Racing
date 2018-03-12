@@ -76,6 +76,9 @@ class ServerManager{
         //Updates the managers with the time given
         void updateManagers(float dTime);
 
+        //Interpolate positions of all variables needed to
+        void interpolate(float dTime);
+
         //==============================================================
         // Component creator
         //==============================================================

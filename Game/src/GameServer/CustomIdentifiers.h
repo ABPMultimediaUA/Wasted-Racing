@@ -2,9 +2,11 @@
 #include <raknet/MessageIdentifiers.h>
 
 enum customMessages {
-    ID_GAME_START = ID_USER_PACKET_ENUM,
-    ID_GAME_ENDED,
+    ID_ACCUMULATED_TIME,
+    ID_PLAYERS_POSITION,
     ID_INPUT,
+    ID_GAME_START = ID_USER_PACKET_ENUM,
+    ID_GAME_ENDED,    
     ID_CREATE_PLAYER,
     ID_CREATE_REMOTE_PLAYER,
     ID_REMOTE_PLAYER_MOVEMENT,

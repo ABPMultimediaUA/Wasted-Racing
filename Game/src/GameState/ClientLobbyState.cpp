@@ -30,6 +30,7 @@ void ClientLobbyState::update(float &accumulatedTime) {
     {
         renderManager->getRenderFacade()->deleteRectangle2D();
         renderManager->getRenderFacade()->drawGUI();
+        GlobalVariables::getInstance().setOnline(true);
         Game::getInstance().setState(IGameState::stateType::MULTIMATCH);
     }
 

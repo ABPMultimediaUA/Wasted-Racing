@@ -6,6 +6,11 @@
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 /*
++>Add time stamp from server
++>Add score callers
++>Add item callers
++>ADd camera distance calculations
++>Add ristra de mensajes para las posiciones macho
 >Add Debug callers
 */
 //////////////////////////////////////////////
@@ -72,6 +77,22 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     player.get()->setNewTransformData(trans);
     player.get()->setOldTransformData(trans);
     player.get()->setTransformData(trans);
+    ////////////
+    //Add remote player component and set its server_id
+    ////////////
+    NetworkManager::getInstance().createRemotePlayerComponent(*player.get());
+
+    bool found = false;
+    std::shared_ptr<RemotePlayerComponent> rPlayer;
+    for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
+    {
+        rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
+        if(rPlayer.get()->getServerId() == -1)
+        {
+            found = true;
+            rPlayer.get()->setServerId(server_id);
+        }
+    }
 
     ////////////
     //DEBUG AREA
@@ -134,6 +155,50 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
     }
 }
 
+void NetworkManager::updatePlayersPosition(RakNet::Packet* packet)
+{
+    RakNet::BitStream parser(packet->data, packet->length, false);
+    float x, y, z, rx, ry, rz;
+    int id;
+
+    parser.IgnoreBytes(1);
+
+    for(unsigned int i = 0; i<remotePlayerComponentList.size(); i++)
+    {
+        //Read data
+        parser.Read(id);
+        parser.Read(x);
+        parser.Read(y);
+        parser.Read(z);
+        parser.Read(rx);
+        parser.Read(ry);
+        parser.Read(rz);
+
+        //Get player data
+        auto rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
+
+        //Read transform data
+        auto trans = rPlayer.get()->getGameObject().getTransformData();
+
+        //Assign data
+        trans.position.x = x;
+        trans.position.y = y;
+        trans.position.z = z;
+
+        trans.rotation.x = rx;
+        trans.rotation.y = ry;
+        trans.rotation.z = rz;
+        
+        //Assign new position
+        rPlayer.get()->getGameObject().setNewTransformData(trans);
+        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
+
+        //If there is debug, update position of the cylinders
+        //if(debugNetworkState){
+            
+        //}
+    }
+}
 
 //=============================================
 // CREATE ITEMS
@@ -485,7 +550,7 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
 // MOVING STUFF
 //=============================================
 
-void NetworkManager::broadcastPosition()
+/*void NetworkManager::broadcastPosition()
 {
     RakNet::BitStream stream;
     auto trans = player.get()->getTransformData();
@@ -501,7 +566,7 @@ void NetworkManager::broadcastPosition()
     stream.Write((int) server_id);
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-}
+}*/
 
 void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
 {
@@ -547,7 +612,7 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
     }
 }
 
-void NetworkManager::broadcastPositionRedShell()
+/*void NetworkManager::broadcastPositionRedShell()
 {
     RakNet::BitStream stream;
     
@@ -569,7 +634,7 @@ void NetworkManager::broadcastPositionRedShell()
             peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
         }
     }
-}
+}*/
 
 void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
 {
@@ -607,7 +672,7 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
     }
 }
 
-void NetworkManager::broadcastPositionBlueShell()
+/*void NetworkManager::broadcastPositionBlueShell()
 {
     RakNet::BitStream stream;
     for(unsigned int i = 0; i<remoteBlueShellComponentList.size(); i++){
@@ -627,7 +692,7 @@ void NetworkManager::broadcastPositionBlueShell()
             peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
         }
     }
-}
+}*/
 
 void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
 {
@@ -827,6 +892,11 @@ void NetworkManager::update()
                 //lastPackets.push_back(ID_REMOTE_PLAYER_MOVEMENT);
                 break;
 
+            case ID_PLAYERS_POSITION:
+                updatePlayersPosition(packet);
+                //lastPackets.push_back(ID_REMOTE_PLAYER_MOVEMENT);
+                break;
+
             case ID_BOX_COLLISION:
                 remoteItemBoxCollision(packet);
                 lastPackets.push_back(ID_BOX_COLLISION);
@@ -918,7 +988,7 @@ void NetworkManager::initLobby(){
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("172.27.176.133", 39017, 0, 0);
+    result = peer->Connect("172.27.164.94", 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {

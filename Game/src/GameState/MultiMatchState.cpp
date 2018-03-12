@@ -13,7 +13,7 @@ void MultiMatchState::init() {
     waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
-    itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
+    //itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
     debugManager    = &DebugManager::getInstance();     //Initialize Debug manager
@@ -28,7 +28,10 @@ void MultiMatchState::update(float &accumulatedTime) {
     networkManager->update();
     debugManager->update();
     renderManager->update(accumulatedTime);
-    
+
+    //Always interpolate
+    interpolate(accumulatedTime);
+
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
         //Update managers
@@ -37,15 +40,13 @@ void MultiMatchState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
 
-    //Always interpolate
-    interpolate(accumulatedTime);
-
     //Event manager has to be the last to be updated
     eventManager->update();
 }
 
 void MultiMatchState::updateManagers(float dTime){
-    
+    physicsManager->update(dTime);
+
     scoreManager->update();
 
     audioManager->update();
@@ -56,6 +57,9 @@ void MultiMatchState::draw() {
 }
 
 void MultiMatchState::interpolate(float &accumulatedTime) {
+    //Interpolate position of objects
+    physicsManager->interpolate(accumulatedTime,loopTime);
+
     //Update camera position
     renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
 }

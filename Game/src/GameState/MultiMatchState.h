@@ -80,4 +80,7 @@ private:
     //Update's loop time
     const float loopTime = 1.0f/30.0f;
 
+    //Update's server time
+    float serverTime;
+
 };

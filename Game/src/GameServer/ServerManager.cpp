@@ -35,7 +35,7 @@ void ServerManager::init()
 	nPlayers = 0;
 	nObjects = 0;
 	started  = false;
-	loopTime = 1.f/60.f;
+	loopTime = 1.f/30.f;
 
 	/////
 	//Set game variables
@@ -85,6 +85,9 @@ void ServerManager::run()
         std::chrono::duration<double> elapsed = currTime - lastTime;
         lastTime = currTime;
         accumulatedTime += (float)elapsed.count();
+
+		//Interpolate positions
+		//interpolate(accumulatedTime);
 
 		//General update
 		update(accumulatedTime);
@@ -233,6 +236,11 @@ void ServerManager::updateManagers(float dTime)
 	}
 }
 
+void ServerManager::interpolate(float dTime)
+{
+	physicsManager->interpolate(dTime, loopTime);
+}
+
 //==============================================================
 // Sending data
 //==============================================================
@@ -244,10 +252,12 @@ void ServerManager::broadcastPositionPlayers()
 	int server_id; 						//Server ID of the sender
 	GameObject* ob; 					//Player Game Object
 
+	//Write type
+	stream.Write((unsigned char)ID_PLAYERS_POSITION);
+
 	//Send info of all the players
 	for(unsigned int i = 0; i < nPlayers; i++)
 	{	
-
 		//get player by its server id
 		server_id = i;
 		ob = getPlayer(server_id);
@@ -255,9 +265,7 @@ void ServerManager::broadcastPositionPlayers()
 		//get transformation data
 		auto trans = ob->getTransformData();
 
-		//send it
-		stream.Reset();
-		stream.Write((unsigned char)ID_REMOTE_PLAYER_MOVEMENT);
+		//Write data
 		stream.Write((int)server_id);
 		stream.Write((float)trans.position.x);
 		stream.Write((float)trans.position.y);
@@ -265,10 +273,10 @@ void ServerManager::broadcastPositionPlayers()
 		stream.Write((float)trans.rotation.x);
 		stream.Write((float)trans.rotation.y);
 		stream.Write((float)trans.rotation.z);
-
-		peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 	}
 
+	//send it
+	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
 
 void ServerManager::broadcastData(RakNet::Packet* packet)

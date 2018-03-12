@@ -1,4 +1,5 @@
 #include "PhysicsManager.h"
+#include "../GlobalVariables.h"
 
 //==============================================
 // DELEGATES DECLARATIONS
@@ -60,13 +61,18 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Move character
         //==============================================================================
+        if(!GlobalVariables::getInstance().getOnline())
+        {
+        
         ourMove->update(dTime);
         
         //==============================================================================
         // Check collisions with other objects
         //==============================================================================
+            
         calculateObjectsCollision(ourMove, ourColl, dTime);
 
+        }
         //==============================================================================
         // Check collisions with terrain limits and terrain change
         //==============================================================================

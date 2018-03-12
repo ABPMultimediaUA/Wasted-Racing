@@ -66,6 +66,9 @@ public:
     //Creates a remote player in our game
     void createRemotePlayer(RakNet::Packet* packet);
 
+    //Update players position
+    void updatePlayersPosition(RakNet::Packet* packet);
+
     //==============================================================
     //  MOVE STUFF
     //==============================================================
