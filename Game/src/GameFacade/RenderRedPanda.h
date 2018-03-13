@@ -121,10 +121,8 @@ private:
 
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
-    std::map<uint16_t, glm::vec3> poss;
-    std::map<uint16_t, glm::vec3> rott;
 
-    //Irrlicht camera
+    //RedPanda camera
     //rps::TNode* camera;
 
 };

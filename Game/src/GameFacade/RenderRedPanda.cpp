@@ -56,24 +56,24 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     auto sca = obj.getTransformData().rotation;
     auto rot = obj.getTransformData().rotation;
     
-    TNode * node;
+    TNode * node = nullptr;
     //Initialize the node
     switch(shape){
         case ObjectRenderComponent::Shape::Mesh: {
             if(obj.getId() >= 25000)
-                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), "media/mesh/Link/Link.obj", "media/mesh/Link/YoungLink_grp.png");
+                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), "media/mesh/Link/Link.obj");
             else if(obj.getId() == 20000)
-                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str(), "media/img/road.jpg");
+                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str());
             else
-                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str(), "media/img/ramp.jpg");
+                node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str());
         }
         case ObjectRenderComponent::Shape::Cube: {
             if(obj.getId() >= 16000 && obj.getId() <= 16002)
-            node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), "media/mesh/box/box.obj", "media/img/box.jpg");
+            node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), "media/mesh/box/box.obj");
         }
         break;
         case ObjectRenderComponent::Shape::Plane: {
-            node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), "media/mesh/box/box.obj", "media/img/ramp.jpg");
+            node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), "media/mesh/box/box.obj");
             rps::scaleNode(node, glm::vec3(1,0.25,10));
             rps::translateNode(node, glm::vec3(0,-2,0));
         }
@@ -85,12 +85,11 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
 
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
-    poss.insert(std::pair<uint16_t, glm::vec3>(obj.getId(), glm::vec3(0,0,0)));
-    rott.insert(std::pair<uint16_t, glm::vec3>(obj.getId(), glm::vec3(0,0,0)));
 
     if(obj.getId() == 25000) {
         device->createCamera(node->getFather(), glm::vec3(0,10,30));
     }
+    std::cout << obj.getId() << std::endl;
 
 }
 
@@ -151,22 +150,11 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 
         auto node = iterator->second;
 
-        
-            glm::vec3 position = poss[id];
-            glm::vec3 rotation = rott[id];
+            rps::rotateNode(node, glm::vec3(rot.x, -rot.y, rot.z));
 
-            rps::rotateNode(node, -(rot.y-rotation.y), 1);
-            rps::rotateNode(node, 0, 0);
-            rps::rotateNode(node, 0, 2);
+            rps::scaleNode(node, sca);
 
-            //rps::scaleNode(node, sca);
-
-            rps::translateNode(node, glm::vec3(position.x-pos.x, pos.y-position.y, pos.z-position.z));
-
-            rott[id] = rot;
-            poss[id] = pos;
-        
-        
+            rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
     }
 }
 

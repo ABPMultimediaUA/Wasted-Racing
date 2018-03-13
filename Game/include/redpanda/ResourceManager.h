@@ -6,6 +6,7 @@
 #include "TResourceMaterial.h"
 #include "TResourceTexture.h"
 #include "TResourceShader.h"
+#include "TResourceOBJ.h"
 
 class ResourceManager {
     public:
@@ -22,11 +23,13 @@ class ResourceManager {
         TResourceMaterial* getResourceMaterial(const char* n);
         TResourceTexture* getResourceTexture(const char* n);
         TResourceShader* getResourceShader(const char* n);
+        TResourceOBJ* getResourceOBJ(const char* n);
 
     private:
         std::vector<TResourceMesh*> meshes;
         std::vector<TResourceMaterial*> materials;
         std::vector<TResourceTexture*> textures;
         std::vector<TResourceShader*> shaders;
+        std::vector<TResourceOBJ*> objs;
 
 };
