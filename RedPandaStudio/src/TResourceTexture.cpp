@@ -41,4 +41,8 @@ void TResourceTexture::draw()
         //Set the texture to be drawn
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)sizeX, (GLsizei)sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getPixelsPtr());
     }
+    else
+    {
+        glDisable(GL_TEXTURE_2D)
+    }
 }
