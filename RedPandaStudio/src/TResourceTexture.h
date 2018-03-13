@@ -26,5 +26,6 @@ class TResourceTexture : public TResource {
         int sizeX, sizeY;
         //OpenGL ID of the texture
         GLuint textureID;
-
+        //Defines if we have a loaded texture ready to be drawn
+        bool active = false;
 };
