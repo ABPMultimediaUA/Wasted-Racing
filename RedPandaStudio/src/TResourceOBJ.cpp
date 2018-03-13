@@ -39,9 +39,8 @@ bool TResourceOBJ::loadResource()
         std::string route;
         for(int i = 0; i < v.size()-1; i++)
         {
-            route+=v[i];
+            route+=v[i] + "/";
         }
-        route+='/';
 
         //We proceed to get all the materials and textures
         for(int i = 0; i<scene->mNumMaterials; i++)
@@ -70,7 +69,7 @@ void TResourceOBJ::draw()
     //The textures, materials and meshes are loaded, suposedly, in a way that they should just correspond, so we draw one of each
     for(unsigned int i = 0; i < meshes.size(); i++)
     {
-        textures[i]->draw();
+        //textures[i]->draw();
         meshes[i]->draw();
     }
 

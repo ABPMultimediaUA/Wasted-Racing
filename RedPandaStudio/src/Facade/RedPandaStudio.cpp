@@ -225,7 +225,7 @@ void RedPandaStudio::initScene() {
 
 //////////////////////////////
 //  NODE CONSTRUCTORS
-TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char* mesh, const char* text) {
+TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char* mesh) {
 
 	//Check parent node is valid
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
@@ -236,8 +236,6 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 		//Create new mesh entity
 		TMesh* m = new TMesh();
 		m->setMesh(resourceManager->getResourceOBJ(mesh));
-		//m->setTexture(resourceManager->getResourceTexture(text));
-		//m->setTextActive(true);
 		TNode* mesh = new TNode(transformT, m);
 		transformT->addChild(mesh);
 
@@ -266,7 +264,7 @@ TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 		camera = cam;
 
 		//Rotate camera to be behind our character
-		rps::rotateNode(camera,glm::half_pi<float>(),1);
+		rps::rotateNode(camera,glm::vec3(0,glm::half_pi<float>(),0));
 
 		//Return camera
 		return cam;
@@ -451,6 +449,7 @@ void translateNode(TNode* node, glm::vec3 position) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getEntity();
 
+		tr->identity();
 		tr->translate(position.x, position.y, position.z);
 
 	}
@@ -468,13 +467,14 @@ void scaleNode(TNode* node, glm::vec3 scale) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getFather()->getEntity();
 
-		tr->scale(scale.x, scale.y, scale.z);
 
+		tr->identity();
+		tr->scale(scale.x, scale.y, scale.z);
 	}
 
 }
 
-void rotateNode(TNode* node, float rotation, int axis) {
+void rotateNode(TNode* node, glm::vec3 rotation) {
 
 	TEntity* t;
 
@@ -485,12 +485,10 @@ void rotateNode(TNode* node, float rotation, int axis) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getFather()->getFather()->getEntity();
 
-		if(axis == 0)
-			tr->rotate(1, 0, 0, rotation);
-		if(axis == 1)
-			tr->rotate(0, 1, 0, rotation);
-		if(axis == 2)
-			tr->rotate(0, 0, 1, rotation);
+		tr->identity();
+		tr->rotate(0, 1, 0, rotation.y);
+		tr->rotate(1, 0, 0, rotation.x);
+		tr->rotate(0, 0, 1, rotation.z);
 	}
 
 }

@@ -6,10 +6,10 @@ int main() {
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
 
-    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,-2), "Link/Linkea.obj", "Link/YoungLink_grp.png");
-    TNode* t1 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,2), "Link/Linkea.obj", "Link/YoungLink_grp.png");
-    TNode* t2 = rps->createObjectNode(t1->getFather(), glm::vec3(0,0,0), "Link/Linkea.obj", "Link/YoungLink_grp.png");
-    TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "", "");
+    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,-2), "Link/Linkea.obj");
+    TNode* t1 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,2), "Link/Linkea.obj");
+    TNode* t2 = rps->createObjectNode(t1->getFather(), glm::vec3(0,0,0), "Link/Linkea.obj");
+    TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
     TNode* camera = rps->createCamera(t3->getFather(), glm::vec3(0,0,10));
 
     rps::scaleNode(t, glm::vec3(0.25,0.25,0.25));
@@ -50,16 +50,16 @@ int main() {
             light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
         }
         if(t1 != nullptr){
-            rps::rotateNode(t1, -0.1, 1);
-            rps::rotateNode(t2, -0.1, 1);
+            rps::rotateNode(t1, glm::vec3(0,-0.01,0));
+            rps::rotateNode(t2, glm::vec3(0,-0.01,0));
         }
         if(i % 50 == 0){
             rps->deleteObject(t1);
             t1 = nullptr;
         }
         if(i % 100 == 0){
-            t1 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,2), "Link/Linkea.obj", "Link/YoungLink_grp.png");
-            t2 = rps->createObjectNode(t1->getFather(), glm::vec3(0,0,0), "Link/Linkea.obj", "Link/YoungLink_grp.png");
+            t1 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,2), "Link/Linkea.obj");
+            t2 = rps->createObjectNode(t1->getFather(), glm::vec3(0,0,0), "Link/Linkea.obj");
             rps::scaleNode(t1, glm::vec3(0.5,0.5,0.5));
             rps::scaleNode(t2, glm::vec3(0.25,0.25,0.25));
         }
