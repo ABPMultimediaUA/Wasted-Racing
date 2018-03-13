@@ -46,16 +46,16 @@ bool TResourceOBJ::loadResource()
         for(int i = 0; i<scene->mNumMaterials; i++)
         {
             aiString path;
-            TResourceTexture* texture = new TResourceTexture();
             //If the material has a diffuse texture, we get his path
             if(scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
                 //First we combine the path we just got with the directory path of the obj, and then we just load the texture
+                TResourceTexture* texture = new TResourceTexture();
                 std::string completePath = route + path.data;
                 texture->setName(completePath.c_str());
                 texture->loadResource();
+                textures.push_back(texture);
             }
-            textures.push_back(texture);
         }
 
 
