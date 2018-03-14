@@ -369,7 +369,6 @@ void RenderIrrlicht::addSkybox(IComponent* ptr, std::string t, std::string bo, s
 
     if(cmp != nullptr){
 
-        auto shape = cmp->getObjectShape();
         auto obj = cmp->getGameObject();
         //Transform the data to irrlicht type
         auto pos = obj.getTransformData().position;

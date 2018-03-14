@@ -53,8 +53,6 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     auto shape = cmp->getObjectShape();
     auto obj = cmp->getGameObject();
     auto pos = obj.getTransformData().position;
-    auto sca = obj.getTransformData().rotation;
-    auto rot = obj.getTransformData().rotation;
     
     TNode * node = nullptr;
     //Initialize the node

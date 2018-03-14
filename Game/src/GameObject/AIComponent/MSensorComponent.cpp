@@ -31,7 +31,6 @@ void MSensorComponent::updateMapCollisions()
     //initial variables                                                      //Counter
     glm::vec3 position = this->getGameObject().getTransformData().position;  //Our position
     VObject::Pointer pvo;                                                    //VPointer included in the end result
-    float a_back = 0.f, b_back = 0.f;              //initial A and B of the back points, and A and B of front points
 
     //update sensors
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));

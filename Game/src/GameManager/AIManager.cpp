@@ -227,7 +227,6 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
 
     glm::vec3 nextPos;
 
-    float radius = waypoints[posVector].get()->getComponent<WaypointComponent>()->getRadius();
     if(distaneActualWay <= maxSpeed*10)
     {
         if(posVector < waypoints.size()-1)

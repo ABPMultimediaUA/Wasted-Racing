@@ -27,7 +27,7 @@ bool TResourceOBJ::loadResource()
     if(scene)
     {
         //For each mesh in the obj, we create a new resourceMesh and storage the mesh data on it
-        for(int i = 0; i<scene->mNumMeshes; i++)
+        for(unsigned int i = 0; i<scene->mNumMeshes; i++)
         {
             TResourceMesh* mesh = new TResourceMesh();
             aiMesh* m = scene->mMeshes[i];
@@ -43,13 +43,13 @@ bool TResourceOBJ::loadResource()
         if(v[0].compare("home") == 0)
             route = "/";
 
-        for(int i = 0; i < v.size()-1; i++)
+        for(unsigned int i = 0; i < v.size()-1; i++)
         {
             route+=v[i] + "/";
         }
 
         //We proceed to get all the materials and textures
-        for(int i = 0; i<scene->mNumMaterials; i++)
+        for(unsigned int i = 0; i<scene->mNumMaterials; i++)
         {
             aiString path;
             //If the material has a diffuse texture, we get his path
