@@ -53,8 +53,6 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     auto shape = cmp->getObjectShape();
     auto obj = cmp->getGameObject();
     auto pos = obj.getTransformData().position;
-    auto sca = obj.getTransformData().rotation;
-    auto rot = obj.getTransformData().rotation;
     
     TNode * node = nullptr;
     //Initialize the node
@@ -89,7 +87,6 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     if(obj.getId() == 25000) {
         device->createCamera(node->getFather(), glm::vec3(0,10,30));
     }
-    std::cout << obj.getId() << std::endl;
 
 }
 
@@ -123,6 +120,12 @@ void RenderRedPanda::addLight(IComponent* ptr) {
         nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
     }
  }
+
+//Add an skybox to the game
+void RenderRedPanda::addSkybox(IComponent* ptr, std::string t, std::string bo, std::string l, std::string r, std::string f, std::string ba) {
+    
+}
+
 
 //Delete an object of the game
 void RenderRedPanda::deleteObject(IComponent* ptr) { 

@@ -47,6 +47,19 @@ void RenderManager::init(int engine) {
     EventManager::getInstance().addListener(EventListener {EventType::CameraRenderComponent_Create, addCameraRenderComponent});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedRender});
     EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Delete, objectDeletedRender});
+
+    //Create Skybox
+    uint16_t id;
+    GameObject::TransformationData transform;
+    id = 40000;
+
+    transform.position = glm::vec3(0,0,0);
+    transform.rotation = glm::vec3(0,0,0);
+    transform.scale    = glm::vec3(1,1,1);
+    GameObject::Pointer sky = ObjectManager::getInstance().createObject(id, transform);
+
+
+    RenderManager::getInstance().createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "skybox_top.png", "skybox_bottom.png", "skybox_left.png", "skybox_right.png", "skybox_front.png", "skybox_back.png");
 }
 
 void RenderManager::update(float dTime) {
@@ -123,6 +136,22 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
     auto comp = newGameObject.getComponent<ObjectRenderComponent>();
 
     renderFacade->addObject(component.get(), radius, length, tesselation, transparency);
+
+    return component;
+}
+
+IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back) {
+
+    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    auto comp = newGameObject.getComponent<ObjectRenderComponent>();
+
+    renderFacade->addSkybox(component.get(), top, bot, left, right, front, back);
 
     return component;
 }
@@ -451,6 +480,8 @@ void RenderManager::createLinesObjects()
         glm::vec3 point;
         GameObject::TransformationData transform;
         auto seenObjects = AIDebugPoint[AIDebug].getComponent<VSensorComponent>()->getSeenObjects();
+        auto seenObjects2 = AIDebugPoint[AIDebug].getComponent<MSensorComponent>()->getMapCollisions();
+        seenObjects.insert(seenObjects.end(), seenObjects2.begin(), seenObjects2.end());
         //float pi = 3.14159265358979323846;
 
         //Create Lines Objects

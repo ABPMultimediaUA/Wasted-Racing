@@ -36,6 +36,8 @@ bool TResourceMesh::loadMesh(aiMesh* m)
         }
     }
 
+    return true;
+
 }
 
 bool TResourceMesh::loadResource()

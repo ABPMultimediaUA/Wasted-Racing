@@ -59,7 +59,7 @@ void Game::init() {
     addObjects();
 
     //Initial state
-    setState(IGameState::stateType::MATCH);
+    setState(IGameState::stateType::INTRO);
 
     
 }
@@ -117,8 +117,19 @@ void Game::Run() {
         lastTime = currTime;
         accumulatedTime += (float)elapsed.count();
 
-        //Update the game once every maxTime
-        state->update(accumulatedTime);
+
+        if(dynamic_cast<MatchState*>(state) != nullptr) 
+        {
+            //If the state is Match, divide with ratio so we can accelerate or slow down the game
+            //Update the game once every maxTime
+            accumulatedTime /= ratio;
+            state->update(accumulatedTime); 
+        }
+        else
+        {
+            //Update the game once every maxTime
+            state->update(accumulatedTime); 
+        }
 
         //Always draw the game
         state->draw();
@@ -166,7 +177,7 @@ void addObjects(){
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     
-    ObjectManager::getInstance().createPlayer(transform, 3, 0, id, 
+    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
     //===============================================================
@@ -351,9 +362,9 @@ void loadMap() {
 
                 //Create COLLISION component
                 if(bbox != nullptr)
-                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), terrain, kinetic, 10, type);
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), terrain, kinetic, height, type);
                 else
-                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), radius, 10, kinetic, type);
+                    PhysicsManager::getInstance().createCollisionComponent(*obj.get(), radius, height, kinetic, type);
 
             }
 

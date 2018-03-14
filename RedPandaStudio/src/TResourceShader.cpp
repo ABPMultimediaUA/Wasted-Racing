@@ -2,7 +2,7 @@
 
 bool TResourceShader::loadResource()
 {
-
+    return true;
 }
 
 

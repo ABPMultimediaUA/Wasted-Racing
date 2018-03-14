@@ -2,7 +2,7 @@
 
 bool TResourceMaterial::loadResource()
 {
-
+    return false;
 }
 
 void TResourceMaterial::draw()
