@@ -1,5 +1,6 @@
 #include "TResourceOBJ.h"
 #include <string>
+#include <iostream>
 
 std::vector<std::string> split(const std::string& s, const char& c) {
 	std::string buff{""};
@@ -20,6 +21,7 @@ bool TResourceOBJ::loadResource()
     Assimp::Importer importer;
     //First we attempt to load the obj
     const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices);
+
 
     //If loaded succesfully, we proceed to get all his data
     if(scene)
@@ -47,15 +49,16 @@ bool TResourceOBJ::loadResource()
         {
             aiString path;
             //If the material has a diffuse texture, we get his path
-            TResourceTexture* texture = new TResourceTexture();
             if(scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
+                TResourceTexture* texture = new TResourceTexture();
+                
                 //First we combine the path we just got with the directory path of the obj, and then we just load the texture
                 std::string completePath = route + path.data;
                 texture->setName(completePath.c_str());
                 texture->loadResource();
+                meshes[i-1]->setTexture(texture);
             }
-            textures.push_back(texture);
         }
 
 
@@ -69,7 +72,6 @@ void TResourceOBJ::draw()
     //The textures, materials and meshes are loaded, suposedly, in a way that they should just correspond, so we draw one of each
     for(unsigned int i = 0; i < meshes.size(); i++)
     {
-        //textures[i]->draw();
         meshes[i]->draw();
     }
 

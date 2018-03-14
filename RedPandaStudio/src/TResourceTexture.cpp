@@ -43,6 +43,11 @@ void TResourceTexture::draw()
     }
     else
     {
-        glDisable(GL_TEXTURE_2D)
+        glDisable(GL_TEXTURE_2D);
     }
+}
+
+void TResourceTexture::endDraw()
+{
+    glDisable(GL_TEXTURE_2D);
 }

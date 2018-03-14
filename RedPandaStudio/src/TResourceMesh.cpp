@@ -1,8 +1,8 @@
 #include "TResourceMesh.h"
+#include <iostream>
 
 bool TResourceMesh::loadMesh(aiMesh* m)
 {
-    
     int nFaces = m->mNumFaces;
     nTriangles = nFaces;
     nVertex = m->mNumVertices;
@@ -10,8 +10,11 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     vertex = (float *)malloc(sizeof(float) * nVertex * 3);
     memcpy(&vertex[0], m->mVertices, 3 * sizeof(float) * nVertex);
 
-    normals = (float *)malloc(sizeof(float) * nVertex * 3);
-    memcpy(&normals[0], m->mNormals, 3 * sizeof(float) * nVertex);
+    if(m->HasNormals())
+    {
+        normals = (float *)malloc(sizeof(float) * nVertex * 3);
+        memcpy(&normals[0], m->mNormals, 3 * sizeof(float) * nVertex);
+    }
 
     //We assume we are always working with triangles
     vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 3);
@@ -22,6 +25,7 @@ bool TResourceMesh::loadMesh(aiMesh* m)
         memcpy(&vertexIndices[faceIndex], m->mFaces[j].mIndices, 3 * sizeof(unsigned int));
         faceIndex += 3;
     }
+
     if(m->HasTextureCoords(0))
     {
         textures=(float *)malloc(sizeof(float)*2*nVertex);
@@ -31,6 +35,7 @@ bool TResourceMesh::loadMesh(aiMesh* m)
             textures[k*2+1] = m->mTextureCoords[0][k].y;
         }
     }
+
 }
 
 bool TResourceMesh::loadResource()
@@ -54,8 +59,11 @@ bool TResourceMesh::loadResource()
             vertex = (float *)malloc(sizeof(float) * nVertex * 3);
             memcpy(&vertex[0], mesh->mVertices, 3 * sizeof(float) * nVertex);
 
-            normals = (float *)malloc(sizeof(float) * nVertex * 3);
-            memcpy(&normals[0], mesh->mNormals, 3 * sizeof(float) * nVertex);
+            if(mesh->HasNormals())
+            {
+                normals = (float *)malloc(sizeof(float) * nVertex * 3);
+                memcpy(&normals[0], mesh->mNormals, 3 * sizeof(float) * nVertex);
+            }
 
             //We assume we are always working with triangles
             vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 3);
@@ -95,6 +103,12 @@ void TResourceMesh::draw()
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_specular);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_specular);
+
+    //First we draw the texture of our mesh
+    if(texture!=NULL)
+    {
+        texture->draw();
+    }
     
     //Generate an array of 4 buffer identifiers
     GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
@@ -124,6 +138,11 @@ void TResourceMesh::draw()
 
     //We order to draw here
     glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);
-
+/*
+    if(texture!=NULL)
+    {
+        texture->endDraw();
+    }
+*/
 
 }
