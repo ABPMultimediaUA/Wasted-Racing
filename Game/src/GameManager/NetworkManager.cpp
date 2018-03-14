@@ -157,13 +157,19 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
 
 void NetworkManager::updatePlayersPosition(RakNet::Packet* packet)
 {
-    RakNet::BitStream parser(packet->data, packet->length, false);
+    //Auxiliar variables
     float x, y, z, rx, ry, rz;
     int id;
+    int size = remotePlayerComponentList.size();
 
+    //Read data
+    RakNet::BitStream parser(packet->data, packet->length, false);
+
+    //Ignore packet type
     parser.IgnoreBytes(1);
 
-    for(unsigned int i = 0; i<remotePlayerComponentList.size(); i++)
+    //Through all the players
+    for(int i = 0; i<size; i++)
     {
         //Read data
         parser.Read(id);
@@ -174,29 +180,40 @@ void NetworkManager::updatePlayersPosition(RakNet::Packet* packet)
         parser.Read(ry);
         parser.Read(rz);
 
-        //Get player data
-        auto rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
+        bool found = false;
+        for(int j = 0; j < size && found == false; j++)
+        {
+            //Get player data
+            auto rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[j]);
 
-        //Read transform data
-        auto trans = rPlayer.get()->getGameObject().getTransformData();
+            //If it is the searched player
+            if(rPlayer->getServerId() == id)
+            {
+                //Cut loop
+                found = true;
 
-        //Assign data
-        trans.position.x = x;
-        trans.position.y = y;
-        trans.position.z = z;
+                //Read transform data
+                auto trans = rPlayer.get()->getGameObject().getTransformData();
 
-        trans.rotation.x = rx;
-        trans.rotation.y = ry;
-        trans.rotation.z = rz;
-        
-        //Assign new position
-        rPlayer.get()->getGameObject().setNewTransformData(trans);
-        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
+                //Assign data
+                trans.position.x = x;
+                trans.position.y = y;
+                trans.position.z = z;
 
-        //If there is debug, update position of the cylinders
-        //if(debugNetworkState){
-            
-        //}
+                trans.rotation.x = rx;
+                trans.rotation.y = ry;
+                trans.rotation.z = rz;
+                
+                //Assign new position
+                rPlayer.get()->getGameObject().setNewTransformData(trans);
+                RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
+
+                //If there is debug, update position of the cylinders
+                //if(debugNetworkState){
+                    
+                //}
+            }
+        }
     }
 }
 
@@ -988,7 +1005,7 @@ void NetworkManager::initLobby(){
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("172.27.164.94", 39017, 0, 0);
+    result = peer->Connect("192.168.1.5", 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {

@@ -163,6 +163,7 @@ void ServerManager::update(float dTime)
 				actPlayer(packet);
 				std::cout<<"Input received"<<std::endl;
 				break;
+
 			//Objects related
 			/*case ID_CREATE_BANANA:
 				broadcastObject(packet);
@@ -197,6 +198,7 @@ void ServerManager::update(float dTime)
 			case ID_BOX_COLLISION:
 				broadcastData(packet);
 				break;*/
+
             default:
                 std::cout << "Receiving new packet" << std::endl;
                 break;
@@ -329,9 +331,9 @@ void ServerManager::addPlayer()
 void ServerManager::actPlayer(RakNet::Packet* packet)
 {
 	//Additional variables
-	int server_id; 						//Server ID of the sender
-	EventType e; 						//Event type of the input
-	GameObject* ob; 					//Player Game Object
+	int server_id; 							//Server ID of the sender
+	EventType e; 							//Event type of the input
+	GameObject* ob; 						//Player Game Object
 	std::shared_ptr<MoveComponent> move; 	//Move Component of the player (if used)
 
 	//Parse packet
@@ -420,7 +422,14 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
     		move->isDrifting(false);
 			break;
 		case Key_UseItem_Down:
-    		//____> USE SERVER_ID OF THE OBJECT
+			//Get player
+			ob = getPlayer(server_id);
+			//Create object
+			itemManager->createItem(*ob);
+			//Add number of objects
+			nObjects++;
+
+    		//____> ADD ITEM CREATOR EVENT
 			//EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
 			break;
 
