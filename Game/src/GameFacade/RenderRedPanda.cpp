@@ -89,7 +89,6 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     if(obj.getId() == 25000) {
         device->createCamera(node->getFather(), glm::vec3(0,10,30));
     }
-    std::cout << obj.getId() << std::endl;
 
 }
 

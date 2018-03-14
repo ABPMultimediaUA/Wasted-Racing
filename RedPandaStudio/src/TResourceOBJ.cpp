@@ -39,6 +39,10 @@ bool TResourceOBJ::loadResource()
         std::string s(name);
         std::vector<std::string> v = split(s, '/');
         std::string route;
+
+        if(v[0].compare("home") == 0)
+            route = "/";
+
         for(int i = 0; i < v.size()-1; i++)
         {
             route+=v[i] + "/";
