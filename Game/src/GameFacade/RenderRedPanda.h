@@ -59,6 +59,9 @@ public:
     //Add a light to the game
     virtual void addLight(IComponent* ptr);
 
+    //Add an skybox to the game
+    virtual void addSkybox(IComponent* ptr, std::string t, std::string bo, std::string l, std::string r, std::string f, std::string ba);
+
     //Delete an object of the game
     virtual void deleteObject(IComponent* ptr);
 

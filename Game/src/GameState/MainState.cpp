@@ -41,7 +41,7 @@ void MainState::updateManagers(float dTime){
 
     physicsManager->update(dTime);
 
-    aiManager->update();
+    aiManager->update(dTime);
 
     renderManager->update(dTime);
 

@@ -123,6 +123,12 @@ void RenderRedPanda::addLight(IComponent* ptr) {
     }
  }
 
+//Add an skybox to the game
+void RenderRedPanda::addSkybox(IComponent* ptr, std::string t, std::string bo, std::string l, std::string r, std::string f, std::string ba) {
+    
+}
+
+
 //Delete an object of the game
 void RenderRedPanda::deleteObject(IComponent* ptr) { 
 

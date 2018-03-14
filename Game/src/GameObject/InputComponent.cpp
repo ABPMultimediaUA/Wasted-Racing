@@ -139,35 +139,43 @@ void useBehaviourDebug(EventData eData){
     RenderManager::getInstance().renderBattleDebug();
 }
 void slowControl(EventData eData){
-    auto ratio = Game::getInstance().getRatio();
+    auto ratio = MatchState::getInstance().getRatio();
     if(ratio <= 1.0f)
     {
-        Game::getInstance().setRatio(1.2);
+        MatchState::getInstance().setRatio(1.2);
     }
     else if(ratio == 1.2f)
     {
-        Game::getInstance().setRatio(1.35);
+        MatchState::getInstance().setRatio(1.35);
     }
     else if(ratio == 1.35f)
     {
-        Game::getInstance().setRatio(1.5);
+        MatchState::getInstance().setRatio(1.5);
     }
 }
 void fastControl(EventData eData){
-    auto ratio = Game::getInstance().getRatio();
+    auto ratio = MatchState::getInstance().getRatio();
     if(ratio >= 1.0f)
     {
-        Game::getInstance().setRatio(0.8);
+        MatchState::getInstance().setRatio(0.8);
     }
     else if(ratio == 0.8f)
     {
-        Game::getInstance().setRatio(0.65);
+        MatchState::getInstance().setRatio(0.65);
     }
     else if(ratio == 0.65f)
     {
-        Game::getInstance().setRatio(0.5);
+        MatchState::getInstance().setRatio(0.5);
     }
 }
 void normalControl(EventData eData){
-        Game::getInstance().setRatio(1.0);
+    auto ratio = MatchState::getInstance().getRatio();
+    if(ratio == 1.0f)
+    {
+        MatchState::getInstance().setRatio(0.0);
+    }
+    else if(ratio != 1.0f)
+    {
+        MatchState::getInstance().setRatio(1.0);
+    }
 }
