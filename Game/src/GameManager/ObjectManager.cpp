@@ -126,7 +126,7 @@ void ObjectManager::createPlayer(GameObject::TransformationData tansform, int ty
     {
         createMove(createCyborg(tansform, id, terrain, terrainComponent), move);
     }
-    else if(type == PlayerType::punk)
+    else if(type == PlayerType::crocodile)
     {
         createMove(createCrocodile(tansform, id, terrain, terrainComponent), move);
     }

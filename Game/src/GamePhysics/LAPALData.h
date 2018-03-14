@@ -73,7 +73,7 @@ namespace LAPAL{
         vec3f colVel            = glm::vec3(0,0,0);         //Velocity of the object after a collision  
 
         //Character type
-        int player = 0;         //Type of the character we are playing with
+        int player = -1;         //Type of the character we are playing with
 
     };
 

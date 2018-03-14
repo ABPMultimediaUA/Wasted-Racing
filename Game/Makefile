@@ -12,7 +12,7 @@ OBJ_PATH := obj/
 # general compiler settings (might need to be set when compiling the lib, too)
 CPPFLAGS += -I$(IrrlichtHome)/include -I/usr/X11R6/include -I.
 ifndef NDEBUG
-CXXFLAGS += -g -Wall
+CXXFLAGS += -g -Wall -std=c++14
 else
 CXXFLAGS += -O3
 endif
@@ -31,6 +31,10 @@ server: create_dir make_server make_src make_gameF make_gameM make_gameS make_ga
 win: create_dir make_client make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameO_N make_gameE make_gameP make_gameB make_gameA all_windows
 	$(warning Linking done!)
 
+#we can also have Mac
+mac: create_dir make_client make_src make_gameF make_gameM make_gameS make_gameO make_gameO_R make_gameO_A make_gameO_I make_gameO_F make_gameO_AU make_gameO_N make_gameE make_gameP make_gameB make_gameA all_mac
+	$(warning Linking done!)
+
 create_dir: make_bin_dir make_obj_dir
 
 make_bin_dir:
@@ -46,11 +50,11 @@ make_src:
 	$(MAKE) -C src
 
 make_client:
-	g++ -I./../ -I/usr/X11R6/include -I./include -g -Wall -c -o bin/obj/main.o src/GameClient/main.cpp
+	g++ -I./../ -I/usr/X11R6/include -I./include -g -Wall -std=c++14 -c -o bin/obj/main.o src/GameClient/main.cpp
 	$(MAKE) -C src/GameClient
 
 make_server:
-	g++ -I./../ -I/usr/X11R6/include -I./include -g -Wall -c -o bin/obj/main.o src/GameServer/main.cpp
+	g++ -I./../ -I/usr/X11R6/include -I./include -g -Wall -std=c++14 -c -o bin/obj/main.o src/GameServer/main.cpp
 	$(MAKE) -C src/GameServer
 	
 make_gameF:
@@ -96,13 +100,15 @@ make_gameA:
 	$(MAKE) -C src/GameAudio
 
 # target specific settings
-all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
+all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor 
 all_linux: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht
 all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
 all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
-all_linux: LDFLAGS += -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod -Wl,-rpath=lib/linux/raknet -Wl,-rpath=lib/linux/sfml -Wl,-rpath=lib/linux
+all_linux: LDFLAGS += -L./lib/linux/sdl -lSDL2
+all_linux: LDFLAGS += -L./lib/linux -lRedPanda 
+all_linux: LDFLAGS += -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod -Wl,-rpath=lib/linux/raknet -Wl,-rpath=lib/linux/sdl -Wl,-rpath=lib/linux
 
-sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/ && bin/XKating"
+sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/:lib/linux/sdl:lib/linux && bin/XKating"
 
 all_linux:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
@@ -114,6 +120,8 @@ all_linux_server: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext 
 all_linux_server: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht
 all_linux_server: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
 all_linux_server: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
+all_linux_server: LDFLAGS += -L./lib/linux/sdl -lSDL2
+all_linux_server: LDFLAGS += -L./lib/linux -lRedPanda
 
 all_linux_server:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET_SERVER) $(LDFLAGS)
@@ -137,6 +145,23 @@ all_windows: LDFLAGS += -L./lib/win -lIrrlicht -lopengl32 -lm -lfmod -lfmodstudi
 all_windows:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
 
+################################################################################
+# MAC
+################################################################################
+all_mac: LDFLAGS += -L./lib/mac -lfmod -lfmodstudio -lRakNetDLL -lIrrlicht
+all_mac: LDFLAGS += -dylib_file \
+/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:\
+/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib \
+-framework Cocoa -framework OpenGL -framework Carbon -framework IOKit
+
+
+sh_valueMAC := "export LD_LIBRARY_PATH=lib/mac/ && bin/XKating"
+
+all_mac:
+	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
+	rm -rf $(BIN_PATH)$(TARGET).sh
+	@echo $(sh_valueMAC) >> $(BIN_PATH)$(TARGET).sh
+	chmod +x $(BIN_PATH)$(TARGET).sh	
 
 
 .PHONY: all clean clean_linux info install win

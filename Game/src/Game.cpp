@@ -20,8 +20,8 @@ void Game::init() {
     setStay(true);
 
     //Set engine to default
-    setRenderEngine(0);
-    setInputEngine(0);
+    setRenderEngine(1);
+    setInputEngine(1);
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
     eventManager    = &EventManager::getInstance();     //Initilize event manager
@@ -42,10 +42,10 @@ void Game::init() {
     //Initialize true audio manager
     audioManager->init();
     //First we initialize renderManager, who creates a device and passes this reference to the inputManager
-    renderManager->init(0);
+    renderManager->init(getRenderEngine());
 
     //Once we've initialized the renderManager, we can do the same with our inputManager
-    inputManager->init(0);
+    inputManager->init(getInputEngine());
 
     objectManager->init();
     physicsManager->init();
@@ -56,10 +56,12 @@ void Game::init() {
     scoreManager->init();
     networkManager->init();
 
+    addObjects();
+
     //Initial state
     setState(IGameState::stateType::INTRO);
 
-    addObjects();
+    
 }
 
 //====================================================
@@ -115,8 +117,19 @@ void Game::Run() {
         lastTime = currTime;
         accumulatedTime += (float)elapsed.count();
 
-        //Update the game once every maxTime
-        state->update(accumulatedTime);
+
+        if(dynamic_cast<MatchState*>(state) != nullptr) 
+        {
+            //If the state is Match, divide with ratio so we can accelerate or slow down the game
+            //Update the game once every maxTime
+            accumulatedTime /= ratio;
+            state->update(accumulatedTime); 
+        }
+        else
+        {
+            //Update the game once every maxTime
+            state->update(accumulatedTime); 
+        }
 
         //Always draw the game
         state->draw();
@@ -160,7 +173,7 @@ void addObjects(){
     uint16_t id = 25000;
     GameObject::TransformationData transform;
     
-    transform.position = glm::vec3(-35,0, -20);
+    transform.position = glm::vec3(0,0, 0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     

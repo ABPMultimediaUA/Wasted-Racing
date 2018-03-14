@@ -45,10 +45,17 @@ public:
     virtual void setVolume(float vol);
 
     //Sets the 3D position of the listener
-    virtual void setListenerPosition(glm::vec3 pos);
+    virtual void setListenerPosition();
 
-    //Creates an audio event instance
-    virtual void createAudioInstance(AudioManager::AudioType type, glm::vec3 pos, std::string parameters);
+    //Getters
+    virtual float getVolume() { return gameVolume; }
+    std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*>& getEventDescriptions() {  return eventDescriptions;   }
+    float getWorldUnits()   {   return worldUnits; }
+
+    //Setters
+    void insertSoundEvent(std::string name, ISoundEvent* sound);
+    bool existsSoundEvent(std::string name);
+
 
 private: 
 
@@ -59,17 +66,12 @@ private:
     //BANKS
     FMOD_STUDIO_BANK* masterBank;
     FMOD_STUDIO_BANK* stringsBank;
-    
-    FMOD_STUDIO_BANK* characterBank;
-    FMOD_STUDIO_EVENTDESCRIPTION* characterDescription;
-    FMOD_STUDIO_EVENTINSTANCE* characterInstance;
 
-    float WorldUnits;
-
-    int player;
-    int track;
-    bool change;
-    //std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*> eventDescriptions;
+    std::map<std::string, FMOD_STUDIO_BANK*> banks;
+    std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*> eventDescriptions;
     std::map<std::string, ISoundEvent*> soundEvents;
+
+    float worldUnits;
+    float gameVolume;
 
 };

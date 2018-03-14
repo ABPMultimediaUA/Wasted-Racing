@@ -1,5 +1,6 @@
 #include "RenderManager.h"
 #include "../GameFacade/RenderIrrlicht.h"
+#include "../GameFacade/RenderRedPanda.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
 #include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include "WaypointManager.h"
@@ -29,7 +30,7 @@ void RenderManager::init(int engine) {
         renderFacade = new RenderIrrlicht();
     }
     else {
-
+        renderFacade = new RenderRedPanda();
     }
 
     renderFacade->init(1280, 720, false, false);

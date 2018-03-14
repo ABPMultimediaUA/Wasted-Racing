@@ -47,9 +47,9 @@ void MoveComponent::update(float dTime) {
     //auto id = getGameObject().getId();
     //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
     
-    ///*===========================================================================================
+    //===========================================================================================
     // DEBUG
-    //if(id == 50){
+    //if(getGameObject().getId() == 25000){
     //    system("clear");
     //    //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
     //    std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
@@ -71,7 +71,7 @@ void MoveComponent::update(float dTime) {
     //        std::cout << " Sí estoy saltando " << std::endl;
     //    }*/
     //}
-    //
+    
     //=========================================================================================*/
 }
 
