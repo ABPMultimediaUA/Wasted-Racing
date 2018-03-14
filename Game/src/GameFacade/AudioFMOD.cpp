@@ -85,18 +85,16 @@ void AudioFMOD::update() {
     setListenerPosition();
 
     //Update position of events
-    for(unsigned int i = 0; i < soundEvents.size(); i++) {
-        
-        if(!soundEvents[i]->isPlaying() || soundEvents[i]->getEmitter().expired()) {
+    for(auto event : soundEvents) {        
+        if(!event.second->isPlaying() || event.second->getEmitter().expired()) {
             //If the event has stopped playing or the object it comes from has been destroyed
-            delete soundEvents[i];
-            soundEvents.erase(soundEvents.begin() + i);
-
+            delete event.second;
+            soundEvents.erase(event.first);
         }
         else {
             //Set sound position
-            auto pos = soundEvents[i]->getEmitter().lock().get()->getGameObject().getTransformData().position;
-            soundEvents[i]->setPosition(pos * worldUnits);
+            auto pos = event.second->getEmitter().lock().get()->getGameObject().getTransformData().position;
+            event.second->setPosition(pos * worldUnits);
         }
 
     }
@@ -141,6 +139,18 @@ void AudioFMOD::setListenerPosition() {
 
     ERRCHECK( FMOD_Studio_System_SetListenerAttributes(system, 0, &attributes) );
 
+}
+
+//Inserts a new event if it doesn't exist
+void AudioFMOD::insertSoundEvent(std::string name, ISoundEvent* sound) { 
+    soundEvents[name] = sound;
+}
+
+//Returns true if we have a soundEvent with that name
+bool AudioFMOD::existsSoundEvent(std::string name) {
+    if(soundEvents.find(name) == soundEvents.end())
+        return false;
+    return true;
 }
 
 //==============================================================================================================================

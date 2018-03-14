@@ -6,7 +6,6 @@
 #include <fmod_errors.h>
 #include <iostream>
 #include <string>
-#include <vector>
 #include <map>
 
 #include "../GameAudio/ISoundEvent.h"
@@ -54,7 +53,8 @@ public:
     float getWorldUnits()   {   return worldUnits; }
 
     //Setters
-    void insertSoundEvent(ISoundEvent* sound) { soundEvents.push_back(sound); }
+    void insertSoundEvent(std::string name, ISoundEvent* sound);
+    bool existsSoundEvent(std::string name);
 
 
 private: 
@@ -69,7 +69,7 @@ private:
 
     std::map<std::string, FMOD_STUDIO_BANK*> banks;
     std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*> eventDescriptions;
-    std::vector<ISoundEvent*> soundEvents;
+    std::map<std::string, ISoundEvent*> soundEvents;
 
     float worldUnits;
     float gameVolume;

@@ -101,9 +101,9 @@ make_gameA:
 
 # target specific settings
 all_linux: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm -lXext -lX11 -lXcursor
-all_linux: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht
-all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
-all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
+all_linux: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht -Wl,-rpath=lib/linux/irrlicht
+all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio -Wl,-rpath=lib/linux/fmod
+all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL -Wl,-rpath=lib/linux/raknet
 
 sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/ && bin/XKating"
 
