@@ -59,7 +59,7 @@ void Game::init() {
     addObjects();
 
     //Initial state
-    setState(IGameState::stateType::MATCH);
+    setState(IGameState::stateType::INTRO);
 
     
 }
