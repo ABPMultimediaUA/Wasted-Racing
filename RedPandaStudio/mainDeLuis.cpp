@@ -41,7 +41,7 @@ int main() {
 
         rps->updateDevice();
         i++;
-
+/*
         if(i % 100 == 0){
             rps->deleteObject(light0);
             light0 = nullptr;
@@ -63,7 +63,7 @@ int main() {
             rps::scaleNode(t1, glm::vec3(0.5,0.5,0.5));
             rps::scaleNode(t2, glm::vec3(0.25,0.25,0.25));
         }
-
+*/
 
     }
 
