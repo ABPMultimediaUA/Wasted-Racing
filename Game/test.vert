@@ -20,11 +20,18 @@ struct Light {
 };
 uniform Light light[maxLights];
 
+struct Material {
+    vec4 kd;
+    vec4 ka;
+    vec4 ks;
+};
+uniform Material material;
+
 
 void main()
 {
 
-    float ambient = 0.6;                               // (15% de int. ambiente)
+    float ambient = 0.6;                               
 
     v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -45,11 +52,11 @@ void main()
         float attenuation = 80.0/(0.25+(0.1*d)+(0.03*d*d));
         diffuse = diffuse * attenuation;
 
-        v_Color += light[i].intensity * diffuse;
+        v_Color += vec4(light[i].intensity * diffuse) * material.kd;
 
     }
 
-    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient);
+    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * material.ka;
 
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 
