@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <glm/glm.hpp>
-#include "../GameObject/IComponent.h"
 #include "../GameObject/GameObject.h"
 
 class QuadTree {

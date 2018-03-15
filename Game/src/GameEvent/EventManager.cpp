@@ -1,6 +1,18 @@
 #include "EventManager.h"
 #include <iostream>
 
+
+//////////////////////////////////////////////
+//            THINGS TO DO HERE
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+/*
+>Add event priority queue to events
+>Add fast sorting of events by multiple byte reading
+*/
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+
 EventManager& EventManager::getInstance() {
     static EventManager instance;
     return instance;
@@ -11,7 +23,7 @@ void EventManager::init() {
 }
 
 void EventManager::update() {
-    while(!EventManager::eventQueue.empty()){
+    while(EventManager::eventQueue.size() != 0){
         EventManager::processEvent(EventManager::eventQueue.front());
         EventManager::eventQueue.pop();
     }
@@ -38,6 +50,7 @@ void EventManager::processEvent(Event event){
         auto eventListenerList = auxEventListenerList->second;
 
         for(auto eventListener : eventListenerList) {
+                //std::cout<<"jeje:"<<event.data.Id<<std::endl;
                 eventListener.listener(event.data);
         }
     }

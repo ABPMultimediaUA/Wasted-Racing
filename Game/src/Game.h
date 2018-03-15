@@ -1,19 +1,20 @@
 #pragma once
 
+//External includes
+#include <memory>
+#include <vector>
+#include <chrono>
+#include <stdio.h>
 #include <iostream>
-#include "GameState/IGameState.h"
-#include "GameState/IntroState.h"
-#include "GameState/MainState.h"
-#include "GameState/MatchState.h"
-#include "GameState/ClientLobbyState.h"
-#include "GameState/MultiMatchState.h"
-#include "GameObject/GameObject.h"
-#include "GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "GameObject/InputComponent.h"
-#include "GameObject/PhysicsComponent/MoveComponent.h"
-#include "GameObject/PhysicsComponent/RampComponent.h"
-#include "GameObject/ItemComponent/ItemBoxComponent.h"
-#include "GameObject/AIComponent/WaypointComponent.h"
+#include <rapidxml/rapidxml.hpp>
+#include <string>
+#include <fstream>
+#include <stdio.h>
+
+//Basic include
+#include "GlobalVariables.h"
+
+//Managers
 #include "GameManager/InputManager.h"
 #include "GameManager/RenderManager.h"
 #include "GameManager/ObjectManager.h"
@@ -25,20 +26,25 @@
 #include "GameManager/ScoreManager.h"
 #include "GameManager/ItemManager.h"
 #include "GameManager/NetworkManager.h"
+#include "GameManager/DebugManager.h"
 #include "GameEvent/EventManager.h"
-#include "GameFacade/AudioFMOD.h"
 
-#include <memory>
-#include <iostream>
-#include <rapidxml/rapidxml.hpp>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <stdio.h>
+//State includes
+#include "GameState/IntroState.h"
+#include "GameState/MainState.h"
+#include "GameState/MatchState.h"
+#include "GameState/ClientLobbyState.h"
+#include "GameState/MultiMatchState.h"
+
+class IntroState;
+class MultiMatchState;
+class MatchState;
+class ClientLobbyState;
+class MultiMatchState;
 
 class AIManager;
 class ObjectManager;
-class ItemManager;
+class DebugManager;
 
 class Game {
 
@@ -50,8 +56,11 @@ public:
     //Destructor
     ~Game() {}
 
-    //Infinite game loop
+    //Infinite game client loop
     void Run();
+
+    //Infinite Server side loop
+    void RunServer();
 
     //State setter
     void setState(IGameState::stateType type);
@@ -86,7 +95,7 @@ private:
     //Initialization
     void init();
 
-    //Update
+    //Update client
     void update(float dTime);
 
     //Render draw
@@ -98,6 +107,8 @@ private:
     //==============================================================
     // Private data
     //==============================================================
+    //Global Variables
+    GlobalVariables* globalVariables;
     //Object manager
     ObjectManager* objectManager;
     //Input manager
@@ -122,7 +133,8 @@ private:
     ScoreManager* scoreManager;
     //Network manager
     NetworkManager* networkManager;
-
+    //Debug manager
+    DebugManager* debugManager;
     //Selected renderEngine
     int renderEngine;
     //Selected inputEngine

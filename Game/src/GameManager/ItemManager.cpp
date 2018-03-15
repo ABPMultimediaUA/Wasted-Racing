@@ -1,8 +1,15 @@
 #include "ItemManager.h"
 
+//==============================================
+// DELEGATES DECLARATIONS
+//==============================================
+void createItemEvent(EventData eData);
 void objectDeleteItem(EventData eData);
 void objectDeleteHolder(EventData);
 
+//==============================================
+// MAIN FUNCTIONS
+//==============================================
 ItemManager::ItemManager()
 {
     ids = 6000;
@@ -15,7 +22,11 @@ ItemManager& ItemManager::getInstance(){
 }
 
 void ItemManager::init(){
+    //Global Variables holder
+    globalVariables = &GlobalVariables::getInstance();
 
+    //Initalize listeners
+    EventManager::getInstance().addListener(EventListener {EventType::Item_Create, createItemEvent});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteItem});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteHolder});
 
@@ -39,11 +50,9 @@ void ItemManager::close(){
 }
 
 
-//////////////////////////////////////////////////////
-/////
-/////       ItemHolderComponent DELETE
-/////
-//////////////////////////////////////////////////////
+//==============================================
+// COMPONENT CREATOR
+//==============================================
 
 IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameObject){
 
@@ -58,11 +67,9 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
     return component;
 }
 
-//////////////////////////////////////////////////////
-/////
-/////       ITEM BOX CREATOR
-/////
-//////////////////////////////////////////////////////
+//==============================================
+// BOX CREATOR
+//==============================================
 
 IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 
@@ -74,7 +81,9 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
     data.Component = component;
 
     ItemBoxes.push_back(std::dynamic_pointer_cast<ItemBoxComponent>(component));
-    EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Create, data});
+    
+    //____>Not needed now
+    //EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Create, data});
 
     RenderManager::getInstance().createObjectRenderComponent(obj, ObjectRenderComponent::Shape::Cube, "itemBox.jpg");
     PhysicsManager::getInstance().createCollisionComponent(obj, 5, 5, false, CollisionComponent::Type::ItemBox);
@@ -84,12 +93,9 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 }
 
 
-//////////////////////////////////////////////////////
-/////
-/////       ITEM CREATOR
-/////
-//////////////////////////////////////////////////////
-
+//==============================================
+// ITEM CREATOR
+//==============================================
 
 IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
@@ -99,7 +105,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     if(random == IItemComponent::ItemType::redShell)
     {
         itemHolder->setItemType(-1);
-        if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
+        if(globalVariables->getGameState() == IGameState::stateType::MULTIMATCH){
 
             //Launch creation event
             EventData data;
@@ -116,7 +122,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     else if(random == IItemComponent::ItemType::blueShell)
     {
         itemHolder->setItemType(-1);
-        if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
+        if(globalVariables->getGameState() == IGameState::stateType::MULTIMATCH){
             
             //Launch creation event
             EventData data;
@@ -134,7 +140,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     else if(random == IItemComponent::ItemType::banana)
     {
         itemHolder->setItemType(-1);
-        if(Game::getInstance().getState()->type == IGameState::stateType::MULTIMATCH){
+        if(globalVariables->getGameState() == IGameState::stateType::MULTIMATCH){
             //Launch creation event
             EventData data;
             data.Id = obj.getId();
@@ -165,12 +171,9 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 }
 
 
-//////////////////////////////////////////////////////
-/////
-/////       ITEM CREATE
-/////
-//////////////////////////////////////////////////////
-
+//==============================================
+// ITEM CREATOR DERIVATED FUNCTIONS
+//==============================================
 
 IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 {
@@ -235,7 +238,10 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
-    WaypointManager::getInstance().createPathPlanningComponent(ob);
+
+    //Create path planning component
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
@@ -310,7 +316,11 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
     PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
-    WaypointManager::getInstance().createPathPlanningComponent(ob);
+
+
+    //Create path planning component
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0, 0);
@@ -398,11 +408,9 @@ IComponent::Pointer ItemManager::createStar(GameObject& obj)
     return component;
 }
 
-//////////////////////////////////////////////////////
-/////
-/////       ITEM DELETE
-/////
-//////////////////////////////////////////////////////
+//==============================================
+// ITEM DELETE
+//==============================================
 
 void ItemManager::deleteItem(IComponent::Pointer component)
 {
@@ -414,11 +422,17 @@ void ItemManager::deleteItem(IComponent::Pointer component)
 
 }
 
-//////////////////////////////////////////////////////
-/////
-/////       DELEGATES
-/////
-//////////////////////////////////////////////////////
+//==============================================
+// DELEGATES
+//==============================================
+
+void createItemEvent(EventData eData) {
+    //get the player with the input
+    GameObject* player = GlobalVariables::getInstance().getPlayer();
+
+    //Create the item
+    ItemManager::getInstance().createItem(*player);
+}
 
 void objectDeleteItem(EventData eData) {
 

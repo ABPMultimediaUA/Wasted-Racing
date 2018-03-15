@@ -1,7 +1,6 @@
 #include "ItemRedShellComponent.h"
 
 
-
 ItemRedShellComponent::ItemRedShellComponent(GameObject& newGameObject, GameObject& obj) : IItemComponent(newGameObject), player(obj)
 {
     speed = 1.f;

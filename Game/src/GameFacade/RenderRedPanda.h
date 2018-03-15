@@ -68,6 +68,64 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
+    ////////////
+    //  Image
+    ////////////
+    //Adds an image on the specific point given with the image specified
+    virtual int32_t addImage( std::string img, glm::vec2 pos);
+
+    //Substitutes an image with another at the same position
+    virtual void changeImage(int32_t id, std::string img);
+
+    //Deletes specified rectangle by its index in the rectangle array
+    virtual void deleteImage(int32_t id);
+
+    //Clean images off of the screen
+    virtual void cleanImages();
+
+    ////////////
+    //  Rectangle
+    ////////////
+
+    //Add rectangle of the given color and alpha channel, at the specified position with the given size
+    virtual int32_t addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a);
+
+    //Change color of the rectangle known by the id given
+    virtual void changeRectangleColor(int32_t id, int r, int g, int b, int a);
+
+    //Deletes the rectangle with the passed id
+    virtual void deleteRectangleColor(int32_t id);
+
+    //Clean all rectangles off of the screen
+    virtual void cleanRectangles();
+
+    ////////////
+    //  Text
+    ////////////
+
+    //Adds specified text at the specified point with specified size, with the specified color and font
+    virtual int32_t addText( std::string text, glm::vec2 pos = glm::vec2(0,0) , int r = 255, int g = 255, int b = 255, int a = 255, glm::vec2 size = glm::vec2(20,50), std::string font = "");
+
+    //Changes the specified text with the given message
+    virtual void changeText(int32_t id, std::string text);
+
+    //Changes the font of the game
+    virtual void changeFontText(int32_t id, std::string font);
+
+    //Changes the color of the text specified by the id
+    virtual void changeColorText(int32_t id, int r, int g, int b, int a);
+
+    //Changes the color of the background of the text specified by the id
+    virtual void changeBackgroundColorText(int32_t id, int r, int g, int b, int a);
+
+    //deletes text in the specified position of the text array
+    virtual void deleteText(int32_t id);
+
+    //Erase all text from the screen
+    virtual void cleanTexts();
+
+    //Erase all visual interface elements from the screen
+    virtual void cleanInterface();
 
     ///////////////////////////////
     ///////      DEBUG      ///////    

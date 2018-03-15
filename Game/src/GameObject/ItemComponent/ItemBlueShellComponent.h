@@ -2,10 +2,8 @@
 
 #include "IItemComponent.h"
 #include "../../GameManager/ScoreManager.h"
-#include "../AIComponent/PathPlanningComponent.h"
+#include "../../GameManager/WaypointManager.h"
 #include "../AIComponent/VSensorComponent.h"
-#include "../PhysicsComponent/MoveComponent.h"
-#include "../AIComponent/AIDrivingComponent.h"
 
 class ItemBlueShellComponent : public IItemComponent
 {

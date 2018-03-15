@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Composite.h"
 #include <string>
- #include <iostream>
+#include <iostream>
+#include "Composite.h"
 
 
 class Selector : public Composite

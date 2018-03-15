@@ -1,5 +1,4 @@
 #include "ScoreManager.h"
-#include <iostream>
 
 
 void objectDeleteScore(EventData);

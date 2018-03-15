@@ -1,18 +1,23 @@
 #include "WaypointManager.h"
 
-
-
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
 
 void objectDeletePathPlanning(EventData eData);
 
+//==============================================
+// MAIN FUNCTIONS
+//==============================================
 
+WaypointManager::WaypointManager()
+{
 
-WaypointManager& WaypointManager::getInstance() {
-    static WaypointManager instance;
-    return instance;
+}
+
+WaypointManager::~WaypointManager()
+{
+    delete listSubNodes;
 }
 
 void WaypointManager::init() {
@@ -57,15 +62,20 @@ void WaypointManager::close() {
 
 IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer newGameObject, float r, int lvl)
 {
+    //Create shared pointer
     IComponent::Pointer component = std::make_shared<WaypointComponent>(*newGameObject.get(), r, lvl);
 
+    //Add component to the object
     newGameObject.get()->addComponent(component);
 
+    //Add to list of waypoints
     listSubNodes->push_back(newGameObject);
 
+    //Search for its place on the list of waypoints
     for(unsigned int i=0;i<listSubNodes->size();i++){
         auto rad1 = listSubNodes->at(i).get()->getComponent<WaypointComponent>()->getLevel();
         for(unsigned int x=i+1;x<listSubNodes->size()-1;x++){
+            //bubble sort
             auto rad2 = listSubNodes->at(x).get()->getComponent<WaypointComponent>()->getLevel();
             if(rad1>rad2){
                 auto aux=listSubNodes->at(i);
@@ -74,18 +84,19 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
             }
         }
     }
-        
-    //RenderManager::getInstance().createObjectRenderComponent(*newGameObject.get(), ObjectRenderComponent::Shape::Sphere);
 
     return component;
 }
 
-IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Pointer newGameObject)
+IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Pointer newGameObject, std::vector<GameObject::Pointer>& list)
 {
-    IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get());
+    //Creade pointer
+    IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get(), list);
 
+    //Add component to the object
     newGameObject.get()->addComponent(component);
 
+    //add to the list of components
     pathPlanningComponentList.push_back(component);
 
     return component;
@@ -110,40 +121,15 @@ void WaypointManager::updatePathPlanning(IComponent::Pointer pathPlanning, float
 //Constructor and Destructor
 //==============================================
 
-WaypointManager::WaypointManager()
-{
-
-}
-
-WaypointManager::~WaypointManager()
-{
-//check how remove vector
-    delete listSubNodes;
-}
-
-//==============================================
-//Getters
-//==============================================
-
-std::vector<GameObject::Pointer> WaypointManager::getWaypoints()
-{
-    return *listSubNodes;
-}
-
-
-////////////////////////////////////////////
-//
-//      DELEGATES
-//
-////////////////////////////////////////////
 
 
 void objectDeletePathPlanning(EventData eData) {
 
     auto& PathPlanningComponentList = WaypointManager::getInstance().getPathPlanningList();
-
+    //Seach for component if given ID
     for(unsigned int i = 0; i<PathPlanningComponentList.size(); ++i) {
         if(eData.Id == PathPlanningComponentList[i].get()->getGameObject().getId()) {
+            //and erase it
             PathPlanningComponentList.erase(PathPlanningComponentList.begin() + i);
             return;
         }
