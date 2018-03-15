@@ -56,7 +56,7 @@ void main()
 
     }
 
-    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient);
+    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * material.ka;
 
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 
