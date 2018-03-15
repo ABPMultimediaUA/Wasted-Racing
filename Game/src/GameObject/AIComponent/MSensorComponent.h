@@ -1,14 +1,8 @@
 #pragma once
 
-#include "ISensorComponent.h"
+#include <iostream>
 #include "VSensorComponent.h"
-#include "VObject.h"
-#include <glm/ext.hpp>
-#include <vector>
-#include "../GameObject.h"
 #include "../../GameManager/PhysicsManager.h"
-#include "../../GamePhysics/LAPALPhysics.h"
-#include <memory>
 
 class MSensorComponent : public ISensorComponent{
     public:

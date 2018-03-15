@@ -1,12 +1,12 @@
 #include "PathPlanningComponent.h"
-#include <iostream>
  
 
-PathPlanningComponent::PathPlanningComponent(GameObject& newGameObject) : IComponent(newGameObject) 
+PathPlanningComponent::PathPlanningComponent(GameObject& newGameObject, std::vector<GameObject::Pointer>& list) : IComponent(newGameObject) 
 {
 	seconds = 1;
     distLastWay = -1;
     lastVector = 0;
+	listNodes = list;
 }
 
 void PathPlanningComponent::update(float dTime)
@@ -15,10 +15,6 @@ void PathPlanningComponent::update(float dTime)
 	auto pos = this->getGameObject().getTransformData().position;
 
 	auto modSpeed = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
-
-	auto wpManager = &WaypointManager::getInstance();
-
-    std::vector<GameObject::Pointer> listNodes = wpManager->getWaypoints(); 
 
 	float distaneActualWay = (listNodes[lastVector].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector].get()->getTransformData().position.x - pos.x) +
 						(listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
@@ -166,58 +162,4 @@ void PathPlanningComponent::update(float dTime)
 		
         
     return;
-}
-
-glm::vec3 PathPlanningComponent::getNextPoint()
-{
-	return nextPos;
-}
-
-
-//==============================================
-//Getters
-//==============================================
-
-float PathPlanningComponent::getDistLastWay()
-{
-    return distLastWay;
-}
-
-int PathPlanningComponent::getLastPosVector()
-{
-    return lastVector;
-}
-
-int PathPlanningComponent::getActualLevel()
-{
-	auto listNodes = WaypointManager::getInstance().getWaypoints();
-	return listNodes[lastVector].get()->getComponent<WaypointComponent>()->getLevel();
-}
-
-float PathPlanningComponent::getActualDistance()
-{
-	glm::vec3 pos = getGameObject().getTransformData().position;
-	auto listNodes = WaypointManager::getInstance().getWaypoints();
-
-	float distanceActualWay = (listNodes[lastVector].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector].get()->getTransformData().position.x - pos.x) +
-						(listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
-						(listNodes[lastVector].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector].get()->getTransformData().position.z - pos.z);
-
-	return distanceActualWay;
-
-}
-//==============================================
-//Setters
-//==============================================
-
-void PathPlanningComponent::setDistLastWay(GameObject::Pointer n, glm::vec3 pos)
-{
-    distLastWay = (n.get()->getTransformData().position.x - pos.x) * (n.get()->getTransformData().position.x - pos.x) +
-                (n.get()->getTransformData().position.y - pos.y) * (n.get()->getTransformData().position.y - pos.y) +
-                (n.get()->getTransformData().position.z - pos.z) * (n.get()->getTransformData().position.z - pos.z);
-}
-
-void PathPlanningComponent::setLastPosVector(int lvl)
-{
-    lastVector = lvl;
 }

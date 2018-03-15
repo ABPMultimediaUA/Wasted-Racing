@@ -1,5 +1,4 @@
 #include "IntroState.h"
-#include "../Game.h"
 
 //Delegate functions
 void multiplayerActivated(EventData eData);

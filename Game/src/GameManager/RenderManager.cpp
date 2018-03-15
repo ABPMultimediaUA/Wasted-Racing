@@ -1,10 +1,14 @@
 #include "RenderManager.h"
-#include "../GameFacade/RenderIrrlicht.h"
-#include "../GameFacade/RenderRedPanda.h"
-#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "../GameObject/RenderComponent/CameraRenderComponent.h"
-#include "WaypointManager.h"
-#include "AIManager.h"
+
+//////////////////////////////////////////////
+//            THINGS TO DO HERE
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+/*
+>Transmute everything to debug manager (of the debug part)
+*/
+//////////////////////////////////////////////
+//////////////////////////////////////////////
 
 //==============================================
 // DELEGATES DECLARATIONS
@@ -13,9 +17,15 @@ void addObjectRenderComponent(EventData data);
 void addLightRenderComponent(EventData data);
 void addCameraRenderComponent(EventData data); 
 void objectDeletedRender(EventData eData);
+void updateTransformPosition(EventData eData);
+void updateTransformRotation(EventData eData);
+void updateTransformScale(EventData eData);
+
+
+
 
 //==============================================
-// RENDER MANAGER FUNCTIONS
+// MAIN FUNCTIONS
 //============================================== 
 
 RenderManager& RenderManager::getInstance() {
@@ -33,8 +43,13 @@ void RenderManager::init(int engine) {
         renderFacade = new RenderRedPanda();
     }
 
+    //Render init
     renderFacade->init(1280, 720, false, false);
     renderFacade->openWindow();
+    initHUD();
+
+    //Data init
+    debugState = false;
 
     //QuadTree data init
     //maxObjPerNode = 2;
@@ -47,6 +62,9 @@ void RenderManager::init(int engine) {
     EventManager::getInstance().addListener(EventListener {EventType::CameraRenderComponent_Create, addCameraRenderComponent});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedRender});
     EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Delete, objectDeletedRender});
+    EventManager::getInstance().addListener(EventListener {EventType::Update_Transform_Position, updateTransformPosition});
+    EventManager::getInstance().addListener(EventListener {EventType::Update_Transform_Rotation, updateTransformRotation});
+    EventManager::getInstance().addListener(EventListener {EventType::Update_Transform_Scale, updateTransformScale});
 
     //Create Skybox
     uint16_t id;
@@ -63,10 +81,21 @@ void RenderManager::init(int engine) {
 }
 
 void RenderManager::update(float dTime) {
-    RenderManager::renderFacade->updateWindow();
-    updateAIDebug();
-    updateCameraDebug();
-    updateBattleDebug(dTime);
+    //Update HUD
+    updateHUD();
+
+    //Update camera collision
+    renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
+
+    //Update debug if debug mode activated
+    if(debugState){
+        updateAIDebug();
+        updateCameraDebug();
+        updateBattleDebug(dTime);
+    }else{
+        renderFacade->updateItemIcon();
+    }
+
 }
 
 void RenderManager::draw() {
@@ -74,6 +103,10 @@ void RenderManager::draw() {
 }
 
 void RenderManager::close(){
+    //Clear all interface elements
+    renderFacade->cleanInterface();
+
+    //Clear render component list
     renderComponentList.clear();
 }
 
@@ -81,6 +114,10 @@ void RenderManager::splitQuadTree(){
     //renderComponentTree.init(maxObjPerNode, updateRange, renderComponentList, x0, x1, y0, y1);
     //renderComponentTree.divide();
 }
+
+//==============================================
+// CREATOR FUNCTIONS
+//============================================== 
 
 IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr) {
 
@@ -121,20 +158,28 @@ IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGa
 
     EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
 
+    //Set camera target to this camera, since it was created
+    renderFacade->setCameraTarget(newGameObject);
+
     return component;
 }
 
 IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency) {
 
+    //Instantiate the component as shared pointer
     IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
 
+    //Add component to object
     newGameObject.addComponent(component);
 
+    //Create event data
     EventData data;
     data.Component = component;
 
-    auto comp = newGameObject.getComponent<ObjectRenderComponent>();
+    //Create event
+    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
 
+    //add object to the render
     renderFacade->addObject(component.get(), radius, length, tesselation, transparency);
 
     return component;
@@ -187,7 +232,23 @@ void objectDeletedRender(EventData eData) {
     }
 }
 
+void updateTransformPosition(EventData eData) {
+    GameObject::TransformationData t = ObjectManager::getInstance().getObject(eData.Id).get()->getTransformData();
+    t.position = eData.Vector;
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(eData.Id, t);
+}
 
+void updateTransformRotation(EventData eData) {
+    GameObject::TransformationData t = ObjectManager::getInstance().getObject(eData.Id).get()->getTransformData();
+    t.rotation = eData.Vector;
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(eData.Id, t);
+}
+
+void updateTransformScale(EventData eData) {
+    GameObject::TransformationData t = ObjectManager::getInstance().getObject(eData.Id).get()->getTransformData();
+    t.scale = eData.Vector;
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(eData.Id, t);
+}
 //==============================================
 // AI DEBUG
 //============================================== 
@@ -790,4 +851,177 @@ void RenderManager::updateBattleDebug(float dTime)
         }
     }
 } 
- 
+
+//==============================================
+// VISUAL INTERFACE
+//==============================================
+/////////////
+//  HUD
+/////////////
+
+void RenderManager::initHUD()
+{
+    //Create all values
+    lapHUD_ID = createText("LAP: ", glm::vec2(0, 300),255,255,255,255, glm::vec2(500,25));
+    positionHUD_ID = createText("ITEM: ", glm::vec2(0, 325),255,255,255,255, glm::vec2(500,25));
+    itemHUD_ID = createText("POSITION: ", glm::vec2(0, 350),255,255,255,255, glm::vec2(500,25));
+}
+
+void RenderManager::updateHUD()
+{
+    //If there is score
+    auto score = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>();
+    if(score)
+    {
+        //Get data
+        int pos = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
+        int lap = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>().get()->getLap();
+        int maxLaps = ScoreManager::getInstance().getMaxLaps();
+        int item = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+
+        //Change position text
+        std::string number = std::to_string(pos);
+        std::string s("POSITION: "+number);
+        changeText(positionHUD_ID, s);
+
+        //Change lap text
+        std::string number2 = std::to_string(lap);
+        std::string number3 = std::to_string(maxLaps);
+        s = std::string("LAP: "+number2+"/"+number3);
+        changeText(lapHUD_ID, s);
+
+        //Change item text
+        s = std::string("ITEM: ");
+        switch(item)
+        {
+            case -1: s+="EMPTY";
+                    break;
+            case 0: s+="RED SHELL";
+                    break;
+            case 1: s+="BLUE SHELL";
+                    break;
+            case 2: s+="BANANA";
+                    break;
+            case 3: s+="MUSHROOM";
+                    break;
+            case 4: s+="STAR";
+                    break;
+        }
+        changeText(itemHUD_ID, s);
+    }
+    else
+    {
+        changeText(lapHUD_ID, "LAP:  ");
+        changeText(positionHUD_ID, "POSITION:  ");
+        changeText(itemHUD_ID, "ITEM:  ");
+    }
+}
+
+/////////////
+//  IMAGE
+/////////////
+
+int32_t RenderManager::createImage(std::string img, glm::vec2 pos)
+{
+    //Invoke creating function and return id
+    return renderFacade->addImage(img, pos);
+}
+
+void RenderManager::deleteImage(int32_t id)
+{
+    //Invoke façade function
+    renderFacade->deleteImage(id);
+}
+
+void RenderManager::deleteImages(std::vector<int32_t>* ids)
+{
+    //Invoke façade function for all the elements
+    for(unsigned int i = 0; i < ids->size(); i++){
+        renderFacade->deleteImage(ids->at(i));
+    }
+}
+
+void RenderManager::cleanImages()
+{
+    //Invoke façade function
+    renderFacade->cleanImages();
+}
+
+/////////////
+//  RECTANGLE
+/////////////
+
+int32_t RenderManager::createRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a)
+{
+    return renderFacade->addRectangleColor(pos,size,r,g,b,a);
+}
+
+void RenderManager::changeRectangleColor(int32_t id, int r, int g, int b, int a)
+{
+    return renderFacade->changeRectangleColor(id, r, g, b, a);
+}
+    
+void RenderManager::deleteRectangleColor(int32_t id)
+{
+    renderFacade->deleteRectangleColor(id);
+}
+
+void RenderManager::cleanRectangles()
+{
+    renderFacade->cleanRectangles();
+}
+
+/////////////
+//  TEXT
+/////////////
+int32_t RenderManager::createText( std::string text, glm::vec2 pos, int r, int g, int b, int a, glm::vec2 size , std::string fontFile)
+{
+    //Invoke façade function
+    return renderFacade->addText(text, pos,  r, g, b , a, size, fontFile);
+}
+
+void RenderManager::changeText(int32_t id, std::string text)
+{
+    //Invoke façade function
+    renderFacade->changeText(id, text);
+}
+
+void RenderManager::changeFontText(int32_t id, std::string fontFile)
+{
+    renderFacade->changeFontText(id, fontFile);
+}
+
+void RenderManager::changeColorText(int32_t id, int r, int g, int b, int a)
+{
+    renderFacade->changeColorText(id, r, g, b, a);
+}
+
+void RenderManager::changeBackgroundColorText(int32_t id, int r, int g, int b, int a)
+{
+    renderFacade->changeBackgroundColorText(id, r, g, b, a);
+}
+
+void RenderManager::deleteText(int32_t id)
+{
+    renderFacade->deleteText(id);
+}
+
+void RenderManager::deleteTexts(std::vector<int32_t>* ids)
+{
+    //Invoke façade function for every member
+    for(unsigned int i = 0; i < ids->size(); i++){
+        renderFacade->deleteText(ids->at(i));
+    }
+}
+
+void RenderManager::cleanTexts()
+{
+    //Invoke façade function
+    renderFacade->cleanTexts();
+}
+
+void RenderManager::cleanVI()
+{
+    //Invoke façade function
+    renderFacade->cleanInterface();
+}

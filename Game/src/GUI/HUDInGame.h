@@ -3,7 +3,6 @@
 #include "IGUI.h"
 #include "../GameManager/ObjectManager.h"
 
-
 class HUDInGame : public IGUI{
 
     public:
@@ -52,7 +51,4 @@ class HUDInGame : public IGUI{
         GUISprite* posnum2;
         GUISprite* posnum3;
         GUISprite* posnum4;
-
-
-
 }

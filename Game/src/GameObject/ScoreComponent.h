@@ -1,7 +1,5 @@
 #pragma once
 
-#include "IComponent.h"
-#include "GameObject.h"
 #include "AIComponent/PathPlanningComponent.h"
 
 class ScoreComponent : public IComponent{

@@ -1,10 +1,10 @@
 #pragma once
 
+#include <irrlicht.h>
+#include <iostream>
 #include "IInputFacade.h"
 #include "../GameEvent/EventManager.h"
-#include "../GameManager/RenderManager.h"
 
-#include <irrlicht.h>
 
 //Define macros
 #define DetectKeyInput(TheKey,Event_Down,Event_Up) \

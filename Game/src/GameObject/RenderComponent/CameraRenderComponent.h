@@ -1,23 +1,16 @@
 #pragma once
 
+#include <iostream>
 #include "IRenderComponent.h"
-
 #include "../PhysicsComponent/TerrainComponent.h"
-#include "../../GameManager/PhysicsManager.h"
+
 
 class CameraRenderComponent : public IRenderComponent {
 
 public:
 
     //Constructor
-	CameraRenderComponent(GameObject& newGameObject) : IRenderComponent(newGameObject) {
-		distance = 30;
-		maxDistance = 30;
-		oldDistance = distance;
-		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
-		count = 0;
-		spinDir = 1;
-	}
+	CameraRenderComponent(GameObject& newGameObject);
 
 	//Destructor
 	virtual ~CameraRenderComponent() {};
@@ -35,15 +28,15 @@ public:
 	virtual void draw();
 
 	//Getters
-	std::shared_ptr<TerrainComponent> 	getTerrain() 	{	return terrain;		}
-	float 								getDistance()	{	return distance;	}
+	std::shared_ptr<TerrainComponent> 	getTerrain() 		{	return terrain;		}
+	float 								getDistance()		{	return distance;	}
 	float 								getMaxDistance()	{	return maxDistance;	}
-	float 								getOldDistance(){	return oldDistance; }
+	float 								getOldDistance()	{	return oldDistance; }
 
 	//Setters
 	void setTerrain(std::shared_ptr<TerrainComponent> t) 	{	terrain = t; 		}
 	void setDistance(float d) 								{ 	distance = d; 		}
-	void setMaxDistance(float d) 								{ 	maxDistance = d; 		}
+	void setMaxDistance(float d) 							{ 	maxDistance = d;	}
 	void setOldDistance(float d) 							{ 	oldDistance = d; 	}
 
 private:

@@ -1,12 +1,11 @@
 #include "MSensorComponent.h"
-#include <iostream>
 
 //Constructors
 MSensorComponent::MSensorComponent(GameObject& newGameObject) : 
 ISensorComponent(newGameObject)
 {
     angleInitial=newGameObject.getTransformData().rotation.y * 3.141592653589f / 180.f;
-    angleVision=5.0 * 3.141592653589f / 180.f;
+    angleVision=30.0 * 3.141592653589f / 180.f;
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
     sensorRight = glm::vec3(cos(-angleVision+angleInitial), 0.f, sin(-angleVision+angleInitial));
 }       
@@ -176,7 +175,7 @@ void MSensorComponent::updateMapCollisions()
             if(a > 0.f && b >= 0.f && b <= 1.f){
                 contactR    = true;
                 pointS2     = terrain.p4 - b * vAB;
-            }
+            }   
         }
     }
 

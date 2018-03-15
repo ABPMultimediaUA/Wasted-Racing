@@ -1,19 +1,9 @@
 #pragma once
 
-#include "IGameState.h"
-#include "MainState.h"
-#include "../GameFacade/RenderIrrlicht.h"
-#include "../GameManager/RenderManager.h"
-#include "../GameManager/ObjectManager.h"
-#include "../GameManager/InputManager.h"
-#include "../GameEvent/EventManager.h"
-#include "../Game.h"
-#include "../GameManager/NetworkManager.h"
 #include <iostream>
+#include "../Game.h"
 
 class Game;
-class NetworkManager;
-class SensorManager;
 
 class ClientLobbyState : public IGameState {
 

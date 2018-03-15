@@ -1,28 +1,4 @@
 #pragma once
-
-#include "IGameState.h"
-#include "../Game.h"
-#include "../GameObject/GameObject.h"
-#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "../GameObject/InputComponent.h"
-#include "../GameObject/PhysicsComponent/MoveComponent.h"
-#include "../GameObject/PhysicsComponent/RampComponent.h"
-#include "../GameObject/ItemComponent/ItemBoxComponent.h"
-#include "../GameObject/AIComponent/WaypointComponent.h"
-#include "../GameManager/InputManager.h"
-#include "../GameManager/RenderManager.h"
-#include "../GameManager/ObjectManager.h"
-#include "../GameManager/PhysicsManager.h"
-#include "../GameManager/WaypointManager.h"
-#include "../GameManager/AIManager.h"
-#include "../GameManager/SensorManager.h"
-#include "../GameManager/AudioManager.h"
-#include "../GameManager/ScoreManager.h"
-#include "../GameManager/ItemManager.h"
-#include "../GameManager/NetworkManager.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameFacade/AudioFMOD.h"
-
 #include <memory>
 #include <iostream>
 #include <rapidxml/rapidxml.hpp>
@@ -31,12 +7,9 @@
 #include <fstream>
 #include <stdio.h>
 
+#include "../Game.h"
+
 class Game;
-class NetworkManager;
-class ObjectManager;
-class ItemManager;
-class SensorManager;
-class AIManager;
 
 class MultiMatchState : public IGameState {
 
@@ -69,6 +42,9 @@ public:
         return instance;
     };
 
+    //Interpolate
+    void interpolate(float &accumulatedTime);
+
 private:
     
     //==============================================================
@@ -98,8 +74,13 @@ private:
     ScoreManager* scoreManager;
     //Network manager
     NetworkManager* networkManager;
+    //Debug manager
+    DebugManager* debugManager;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;
+
+    //Update's server time
+    float serverTime;
 
 };

@@ -4,6 +4,7 @@
 #include <list>
 #include <cstdint>
 #include <memory>
+#include <glm/glm.hpp>
 
 class GameObject;
 class IComponent;
@@ -41,7 +42,10 @@ enum EventType {
     ListenerComponent_Delete,
     RemotePlayerComponent_Create,
     RemotePlayerComponent_Delete,
+    TrackerDNComponent_Create,
+    TrackerDNComponent_Delete,
     //OBJECTS: Creation events
+    Item_Create,
     Banana_Create,
     RedShell_Create,
     BlueShell_Create,
@@ -71,17 +75,20 @@ enum EventType {
     Key_Kneel_Up,
     Key_Drift_Up,
     Key_Drift_Down,
-    //PLAYER: Menu control keys
+    //MENUs: Menu control
     Key_Select_Down,
     Key_Select_Up,
     Key_Back_Down,
     Key_Back_Up,
+    //DEBUG: Select debug
     Key_DebugAI_Down,
     Key_DebugAI_Up,
     Key_DebugCamera_Down,
     Key_DebugCamera_Up,
     Key_DebugBehaviour_Down,
     Key_DebugBehaviour_Up,
+    Key_DebugNetwork_Down,
+    Key_DebugNetwork_Up,
     Key_SlowControl_Down,
     Key_SlowControl_Up,
     Key_FastControl_Down,
@@ -91,11 +98,16 @@ enum EventType {
     //GAME: Game related events
     Game_Start,
     Game_Close,
-    //TEST: test related events
+    State_Change,
+    //CHOOSE: Choose game type
     Key_Multiplayer_Down,
     Key_Singleplayer_Down,
     Key_Multiplayer_Up,
-    Key_Singleplayer_Up
+    Key_Singleplayer_Up,
+    //Object: object related events
+    Update_Transform_Position,
+    Update_Transform_Rotation,
+    Update_Transform_Scale
 };
 
 //Struct containg diferent types of data
@@ -106,6 +118,7 @@ struct EventData {
     std::shared_ptr<IComponent> Component;
     std::shared_ptr<IComponent> CollComponent;
     float                       grade;
+    glm::vec3                   Vector;
 };
 
 //A event contains a type and the data related to the object

@@ -1,11 +1,16 @@
 #include "RenderIrrlicht.h"
-#include "InputIrrlicht.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameManager/ObjectManager.h"
-#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "../GameObject/RenderComponent/CameraRenderComponent.h"
-#include <cmath>
-#include <string>
+
+//==============================================================
+// THINGS TO DO
+/*
+    >REMOVE THE COMPONENTS BY GENERALIZING FUNCTIONS AND USING PARAMETERS,
+        IT'S NOT THAT HARD FFS
+*/
+//==============================================================
+
+//==============================================================
+// Engine Related functions
+//==============================================================
 
 void RenderIrrlicht::openWindow(){
 
@@ -39,52 +44,6 @@ void RenderIrrlicht::openWindow(){
 
 void RenderIrrlicht::updateWindow() {
 
-    //updateCamera();
-    auto score = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>();
-    if(score != nullptr)
-    {
-        int oM = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
-        int oL = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ScoreComponent>().get()->getLap();
-        int ML = ScoreManager::getInstance().getMaxLaps();
-        int iT = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
-        irr::core::stringw stringLap = L"  LAP:";
-        irr::core::stringw stringItm = L"  ITEM:";
-        irr::core::stringw stringPos = L"  POSITION:";
-        stringLap += oL;
-        stringLap += " / ";
-        stringLap += ML;
-        switch(iT)
-        {
-            case -1: stringItm+="EMPTY";
-                    break;
-            case 0: stringItm+="RED SHELL";
-                    break;
-            case 1: stringItm+="BLUE SHELL";
-                    break;
-            case 2: stringItm+="BANANA";
-                    break;
-            case 3: stringItm+="MUSHROOM";
-                    break;
-            case 4: stringItm+="STAR";
-                    break;
-        }
-        stringPos += oM;
-        pos->setText(stringPos.c_str());
-        lap->setText(stringLap.c_str());
-        item->setText(stringItm.c_str());
-        updateItemIcon();
-    }
-    else
-    {
-        irr::core::stringw stringLap = L"  LAP:";
-        irr::core::stringw stringItm = L"  ITEM:";
-        irr::core::stringw stringPos = L"  POSITION:";
-        
-        pos->setText(stringPos.c_str());
-        lap->setText(stringLap.c_str());
-        item->setText(stringItm.c_str());
-        updateItemIcon();
-    }
 }
 
 void RenderIrrlicht::closeWindow() {
@@ -92,6 +51,10 @@ void RenderIrrlicht::closeWindow() {
     device->drop();
 
 }
+
+//==============================================================
+// Render Related functions
+//==============================================================
 
 void RenderIrrlicht::renderDraw() {
 
@@ -584,7 +547,7 @@ void RenderIrrlicht::deleteItemIcon()
 
 void RenderIrrlicht::updateItemIcon(){
 
-    int itemID = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+    /*int itemID = ObjectManager::getInstance().getObject(cameraTarget->getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
 
 
     switch(itemID){
@@ -618,5 +581,302 @@ void RenderIrrlicht::updateItemIcon(){
                 deleteItemIcon();
                 createItemIcon(glm::vec2(50,50), "media/img/iconoBotellamini.png");
                  break;
+    }*/
+}
+
+//==============================================================
+// VISUAL INTERFACE
+//==============================================================
+////////////
+//  Image
+////////////
+
+int32_t RenderIrrlicht::addImage(std::string img, glm::vec2 pos)
+{
+    //Create position in 2D inside the screen
+    irr::core::position2d<irr::s32> position(pos.x, pos.y);
+
+    //Get the texture/img of the rectangle
+    auto image = videoDriver->getTexture(img.c_str());
+
+    //Insert the image on the scene
+    irr::gui::IGUIImage* element = sceneManager->getGUIEnvironment()->addImage(image, position);
+    //Add it to the array
+    GUIImageArray.push_back(element);
+
+    //Set ID
+    element->setID(GUIId);
+    GUIId++;
+
+    //Return the id
+    int32_t id = (int32_t) element->getID();
+    return id;
+}
+
+void RenderIrrlicht::changeImage(int32_t id, std::string img)
+{
+    for(unsigned int i = 0; i < GUIImageArray.size(); i++){
+        if(id == GUIImageArray.at(i)->getID()){
+            //Load image as ITexture*
+            auto image = videoDriver->getTexture(img.c_str());
+
+            //Set the image to the object
+            GUIImageArray.at(i)->setImage(image);
+        }
     }
+}
+
+void RenderIrrlicht::deleteImage(int32_t id)
+{
+    //Search for the GUI element
+    for(unsigned int i = 0; i < GUIImageArray.size(); i++){
+        if(id == GUIImageArray.at(i)->getID()){
+            
+            //Delete the element
+            GUIImageArray.at(i)->remove();
+
+            //Delete from array
+            GUIImageArray.erase(GUIImageArray.begin()+i);
+        }
+    }   
+}
+
+void RenderIrrlicht::cleanImages()
+{
+    //Clear array of members
+    for(unsigned int i = 0; i < GUIImageArray.size(); i++){
+        //Erase each image
+        GUIImageArray.at(i)->remove();
+    }
+
+    //Clean array
+    GUIImageArray.clear();
+}
+
+////////////
+//  Rectangle
+////////////
+
+int32_t RenderIrrlicht::addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a)
+{
+    //Create position and size in 2D inside the screen
+    irr::core::rect<irr::s32> rectangle(pos.x, pos.y, pos.x + size.x, pos.y + size.y);
+
+    //Insert element inside the scene
+    irr::gui::IGUIImage* element = sceneManager->getGUIEnvironment()->addImage(rectangle);
+
+    //Apply color
+    irr::video::SColor color((int32_t) a, (int32_t) r, (int32_t) g, (int32_t) b);
+    element->setUseAlphaChannel(true);                                  //Alpha channel
+    element->setScaleImage(true);                                       //Alpha channel
+    element->setColor(color);                                           //Color applied
+    std::string white_texture("media/img/white_rectangle.png");         //White texture loading
+    element->setImage(videoDriver->getTexture(white_texture.c_str()));  //White texture
+    
+    //Add it to the array
+    GUIRectangleColorArray.push_back(element);
+
+    //Set ID
+    element->setID(GUIId);
+    GUIId++;
+
+    //Return the id*/
+    int32_t id = (int32_t) element->getID();
+    return id;
+}
+
+void RenderIrrlicht::changeRectangleColor(int32_t id, int r, int g, int b, int a)
+{
+    for(unsigned int i = 0; i < GUIRectangleColorArray.size(); i++){
+        if(id == GUIRectangleColorArray.at(i)->getID()){
+            //Create color
+            irr::video::SColor color((int32_t) a, (int32_t) r, (int32_t) g, (int32_t) b);
+
+            //Set the image to the object
+            GUIRectangleColorArray.at(i)->setColor(color);
+        }
+    }
+}
+    
+void RenderIrrlicht::deleteRectangleColor(int32_t id)
+{
+    //Search for the GUI element
+    for(unsigned int i = 0; i < GUIRectangleColorArray.size(); i++){
+        if(id == GUIRectangleColorArray.at(i)->getID()){
+            
+            //Delete the element
+            GUIRectangleColorArray.at(i)->remove();
+
+            //Delete from array
+            GUIRectangleColorArray.erase(GUIRectangleColorArray.begin()+i);
+        }
+    }
+}
+
+void RenderIrrlicht::cleanRectangles()
+{
+    //Clear array of members
+    for(unsigned int i = 0; i < GUIRectangleColorArray.size(); i++){
+        //Erase each rectangle
+        GUIRectangleColorArray.at(i)->remove();
+    }
+
+    //Clean array
+    GUIRectangleColorArray.clear();
+}
+
+////////////
+//  Text
+////////////
+
+int32_t RenderIrrlicht::addText( std::string text, glm::vec2 pos, int r, int g, int b, int a, glm::vec2 size, std::string fontFile)
+{
+    //Auxiliar variables
+    std::wstring text_aux;
+    irr::gui::IGUIFont* font;
+    irr::video::SColor color((int32_t) a, (int32_t) r, (int32_t) g, (int32_t) b);
+
+    //Converting to wstring type
+    for(unsigned int i = 0; i < text.length(); ++i)
+    text_aux += wchar_t( text[i] );
+
+    //Converting to irrlicht inner text type
+    const wchar_t* txt = text_aux.c_str();
+
+    //Adding to scene rectangle text
+    irr::gui::IGUIStaticText* element = sceneManager->getGUIEnvironment()->addStaticText(txt, irr::core::recti(pos.x, pos.y, pos.x+size.x,pos.y+size.y));
+
+    //Set font
+    if(fontFile.compare("")!=0)
+    {
+        //Get font from bitmap file
+        font = sceneManager->getGUIEnvironment()->getFont(fontFile.c_str());
+
+    }else{
+        //Get font from actual scene
+        font = element->getActiveFont();
+    }
+
+    //override actual font
+    element->setOverrideFont(font);
+
+    //override actual color
+    element->setOverrideColor(color);
+
+    //Set ID
+    element->setID(GUIId);
+    GUIId++;
+
+    //Add to array of GUI elements
+    GUITextArray.push_back(element);
+
+    //Return the id
+    int32_t id = (int32_t) element->getID();
+    return id;
+};
+
+
+void RenderIrrlicht::changeText(int32_t id, std::string text)
+{
+    //Search for the text element
+    for(unsigned int i = 0; i < GUITextArray.size(); i++){
+        if(id == GUITextArray.at(i)->getID()){
+            
+            //Auxiliar text for transposition
+            std::wstring text_aux;
+
+            //Converting to wstring type
+            for(unsigned int i = 0; i < text.length(); ++i)
+            text_aux += wchar_t( text[i] );
+
+            //Converting to irrlicht inner text type
+            const wchar_t* txt = text_aux.c_str();
+
+            //Change text
+            GUITextArray.at(i)->setText(txt);
+        }
+    }  
+}
+
+void RenderIrrlicht::changeFontText(int32_t id, std::string fontFile)
+{
+    //Search for the text element
+    for(unsigned int i = 0; i < GUITextArray.size(); i++){
+        if(id == GUITextArray.at(i)->getID()){
+            //Get font
+            irr::gui::IGUIFont* font = sceneManager->getGUIEnvironment()->getFont(fontFile.c_str());
+
+            //Override it
+            GUITextArray.at(i)->setOverrideFont(font);
+        }
+    }  
+}
+
+
+void RenderIrrlicht::changeColorText(int32_t id, int r, int g, int b, int a)
+{
+    //Search for the text element
+    for(unsigned int i = 0; i < GUITextArray.size(); i++){
+        if(id == GUITextArray.at(i)->getID()){
+            
+            //Set color
+            irr::video::SColor color((int32_t) a, (int32_t) r, (int32_t) g, (int32_t) b);
+             
+            //Change color
+            GUITextArray.at(i)->setOverrideColor(color);
+        }
+    }  
+}
+
+void RenderIrrlicht::changeBackgroundColorText(int32_t id, int r, int g, int b, int a)
+{
+    //Search for the text element
+    for(unsigned int i = 0; i < GUITextArray.size(); i++){
+        if(id == GUITextArray.at(i)->getID()){
+            
+            //Set color
+            irr::video::SColor color((int32_t) a, (int32_t) r, (int32_t) g, (int32_t) b);
+             
+            //Change color
+            GUITextArray.at(i)->setBackgroundColor(color);
+        }
+    }  
+}
+
+void RenderIrrlicht::deleteText(int32_t id)
+{
+    //Search for the GUI element
+    for(unsigned int i = 0; i < GUITextArray.size(); i++){
+        if(id == GUITextArray.at(i)->getID()){
+            
+            //Delete the element
+            GUITextArray.at(i)->remove();
+
+            //Delete from array
+            GUITextArray.erase(GUITextArray.begin()+i);
+        }
+    }  
+}
+ 
+void RenderIrrlicht::cleanTexts()
+{
+    //Clear array of texts
+    for(unsigned int i = 0; i < GUITextArray.size(); i++){
+        //Erase each text
+        GUITextArray.at(i)->remove();
+    }
+
+    //Clean array
+    GUITextArray.clear();
+}
+
+void RenderIrrlicht::cleanInterface()
+{
+    //Invoke the erasing images for every type of GUI resource
+    cleanImages();
+    cleanRectangles();
+    cleanTexts();
+
+    //All objects start from 0
+    GUIId = 0;
 }

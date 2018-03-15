@@ -1,31 +1,21 @@
 #pragma once
 
-#include "../IComponent.h"
-#include "../../GameManager/WaypointManager.h"
+#include <iostream>
 #include "../PhysicsComponent/MoveComponent.h"
-#include "../ScoreComponent.h"
 #include "../StartLineComponent.h"
 #include "AIDrivingComponent.h"
+#include "WaypointComponent.h"
 
 class PathPlanningComponent : public IComponent{
-private:
-
-    float seconds;
-    float distLastWay;
-    unsigned int lastVector;
-    glm::vec3 nextPos;
-        
 public:
 
-        //Constructor
-    PathPlanningComponent(GameObject& newGameObject);
+    //Constructor
+    PathPlanningComponent(GameObject& newGameObject, std::vector<GameObject::Pointer>& list);
 
-        //Destructor
+    //Destructor
     ~PathPlanningComponent() {};
 
-        
-
-        //Initilizer
+    //Initilizer
 	virtual void init() {}
 
 	//Update
@@ -34,20 +24,43 @@ public:
 	//Closer
 	virtual void close() {}
 
+    //==============================================
+    // Setters & Getters
+    //==============================================
+    void setSeconds(float sec)    { seconds = sec;   }; //Set seconds
+    void setLastPosVector(int lvl){ lastVector = lvl; } //Set last level of the last vector
+    void setDistLastWay(GameObject::Pointer n, glm::vec3 pos)
+    {
+        distLastWay = (n.get()->getTransformData().position.x - pos.x) * (n.get()->getTransformData().position.x - pos.x) +
+                    (n.get()->getTransformData().position.y - pos.y) * (n.get()->getTransformData().position.y - pos.y) +
+                    (n.get()->getTransformData().position.z - pos.z) * (n.get()->getTransformData().position.z - pos.z);
+    }
 
+    glm::vec3 getNextPoint(){ return nextPos;     }
+    float getDistLastWay()  { return distLastWay; }
+    int getLastPosVector()  { return lastVector;  }
+    int getActualLevel()
+    {
+        return listNodes[lastVector].get()->getComponent<WaypointComponent>()->getLevel();
+    }
+    float getActualDistance()
+    {
+        glm::vec3 pos = getGameObject().getTransformData().position;
 
-    //Getters and setters
-    void setSeconds(float sec)      {  seconds = sec;   };
-    void setDistLastWay(GameObject::Pointer n, glm::vec3 pos);
-    void setLastPosVector(int lvl);
+        float distanceActualWay = (listNodes[lastVector].get()->getTransformData().position.x - pos.x) * (listNodes[lastVector].get()->getTransformData().position.x - pos.x) +
+                            (listNodes[lastVector].get()->getTransformData().position.y - pos.y) * (listNodes[lastVector].get()->getTransformData().position.y - pos.y) +
+                            (listNodes[lastVector].get()->getTransformData().position.z - pos.z) * (listNodes[lastVector].get()->getTransformData().position.z - pos.z);
 
+        return distanceActualWay;
+    }
 
-    float getDistLastWay();
-    int getLastPosVector();
-    int getActualLevel();
-    float getActualDistance();
-
-    //Functions
-    glm::vec3 getNextPoint();    
-
+private:
+    //==============================================
+    // PRIVATE DATA
+    //==============================================
+    std::vector<GameObject::Pointer> listNodes;
+    float seconds;
+    float distLastWay;
+    unsigned int lastVector;
+    glm::vec3 nextPos;
 }; 

@@ -15,7 +15,7 @@ void ClientLobbyState::init() {
     renderManager->getRenderFacade()->createRectangle2D(glm::vec2(renderManager->getRenderFacade()->getWindow().size.x/2-600, renderManager->getRenderFacade()->getWindow().size.y/2-331), "media/img/lobbyProv.png");
     renderManager->getRenderFacade()->drawGUI();
 
-    if(!networkManager->getConected())
+    if(!networkManager->getConnected())
     {
         networkManager->initLobby();
     }
@@ -30,6 +30,7 @@ void ClientLobbyState::update(float &accumulatedTime) {
     {
         renderManager->getRenderFacade()->deleteRectangle2D();
         renderManager->getRenderFacade()->drawGUI();
+        GlobalVariables::getInstance().setOnline(true);
         Game::getInstance().setState(IGameState::stateType::MULTIMATCH);
     }
 

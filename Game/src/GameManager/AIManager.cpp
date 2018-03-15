@@ -42,7 +42,7 @@ GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
         for(unsigned int i=0; i<battleAI.size(); i++)
         {
             auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
-            aiBattleComponent->update(0.02f);
+            aiBattleComponent->update(dTime);
         }
         changeAI = false;
     }

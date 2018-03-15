@@ -1,12 +1,13 @@
 #include "Game.h"
 
-#include <memory>
-#include <iostream>
-#include <vector>
-#include <chrono>
-#include <stdio.h>
+//====================================================
+//  DELEGATE DECLARATIONS
+//====================================================
+void setStateEvent(EventData eData);
 
-//Additional functions
+//====================================================
+//  ADDITIONAL FUNCTIONS
+//====================================================
 void addObjects();
 void loadMap();
 std::vector<std::string> split(const std::string& s, const char& c);
@@ -15,6 +16,9 @@ std::vector<std::string> split(const std::string& s, const char& c);
 //  GAME INITIALIZATION
 //====================================================
 void Game::init() {
+    //Initial data set
+    globalVariables = &GlobalVariables::getInstance(); //Initialize global variables bush
+    globalVariables->setServer(false);                 //Not the server
 
     //Say game loop is active
     setStay(true);
@@ -34,19 +38,22 @@ void Game::init() {
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
-    networkManager  = &NetworkManager::getInstance();     //Initialize Score Manager
+    networkManager  = &NetworkManager::getInstance();   //Initialize Score Manager
+    debugManager    = &DebugManager::getInstance();     //Initialize Score Manager
 
     //================================================================
     //INITIALIZE ALL MANAGERS
     //================================================================
     //Initialize true audio manager
     audioManager->init();
+
     //First we initialize renderManager, who creates a device and passes this reference to the inputManager
     renderManager->init(getRenderEngine());
 
     //Once we've initialized the renderManager, we can do the same with our inputManager
     inputManager->init(getInputEngine());
 
+    //Initalize the rest
     objectManager->init();
     physicsManager->init();
     waypointManager->init();
@@ -55,13 +62,16 @@ void Game::init() {
     itemManager->init();
     scoreManager->init();
     networkManager->init();
+    debugManager->init();
 
+    //Add initial objects
     addObjects();
 
     //Initial state
     setState(IGameState::stateType::INTRO);
 
-    
+    //Change state listener
+    EventManager::getInstance().addListener(EventListener {EventType::State_Change, setStateEvent});
 }
 
 //====================================================
@@ -95,11 +105,12 @@ void Game::close() {
     itemManager->close();
     scoreManager->close();
     networkManager->close();
+    debugManager->close();
 }
-
 //====================================================
 //  GAME LOOP
 //====================================================
+//Client side
 void Game::Run() {
     //Initialize game
     init();
@@ -138,35 +149,47 @@ void Game::Run() {
     close();
 }
 
+//===============================================================
+// ADDITIONAL FUNCTIONS
+//===============================================================
+
 //State setter
 void Game::setState(IGameState::stateType type){
         //State changer
         switch(type){
+            //////
+            // set in global variables the type of game and keep the pointer here
+            //////
             case IGameState::stateType::INTRO:
+                globalVariables->setGameState(IntroState::getInstance().type);
                 state = &IntroState::getInstance();
                 break;
             case IGameState::stateType::CLIENTLOBBY:
+                globalVariables->setGameState(ClientLobbyState::getInstance().type);
                 state = &ClientLobbyState::getInstance();
                 break;
             case IGameState::stateType::MATCH:
+                globalVariables->setGameState(MatchState::getInstance().type);
                 state = &MatchState::getInstance();
                 break;
             case IGameState::stateType::MULTIMATCH:
+                globalVariables->setGameState(MultiMatchState::getInstance().type);
                 state = &MultiMatchState::getInstance();
                 break;
             default:
+                globalVariables->setGameState(IntroState::getInstance().type);
                 state = &IntroState::getInstance();
                 break;
         }
 
-        //everytime we change state, we must initialize its operating data
+        //Initialize state here
         state->init();
     }
 
-//Additional functions
+//adding minimum objects needed to play the game
 void addObjects(){
     //===============================================================
-    // ADD PLAYER 
+    // add player 
     //===============================================================
     loadMap();
 
@@ -180,6 +203,7 @@ void addObjects(){
     ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+
     //===============================================================
     // Update to distribute all creation events
     //===============================================================
@@ -307,7 +331,6 @@ void loadMap() {
                 
                 //Create TERRAIN component
                 ItemManager::getInstance().createItemBox(*obj.get());
-
             }
 
             //Parse COLLISION component
@@ -464,4 +487,13 @@ void loadMap() {
     //Update every thing that has been created
     EventManager::getInstance().update();
 
+}
+
+//====================================================
+//  DELEGATE FUNCTIONS
+//====================================================
+//Functions that create or destroy objects
+void setStateEvent(EventData eData)
+{
+    Game::getInstance().setState((IGameState::stateType) eData.Id);
 }

@@ -1,11 +1,8 @@
 #pragma once
 
-#include "../GameObject/ScoreComponent.h"
-#include "../GameObject/StartLineComponent.h"
-#include "ScoreManager.h"
 #include <vector>
-#include <memory>
 #include <cstdint>
+#include "../GameObject/ScoreComponent.h"
 
 class ScoreManager {
     public:

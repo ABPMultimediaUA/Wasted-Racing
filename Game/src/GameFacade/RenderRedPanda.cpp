@@ -161,6 +161,50 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
     }
 }
 
+
+////////////
+//  Image
+////////////
+//Adds an image on the specific point given with the image specified
+int32_t RenderRedPanda::addImage( std::string img, glm::vec2 pos) {return 0;}
+//Substitutes an image with another at the same position
+void RenderRedPanda::changeImage(int32_t id, std::string img) {}
+//Deletes specified rectangle by its index in the rectangle array
+void RenderRedPanda::deleteImage(int32_t id) {}
+//Clean images off of the screen
+void RenderRedPanda::cleanImages() {}
+////////////
+//  Rectangle
+////////////
+//Add rectangle of the given color and alpha channel, at the specified position with the given size
+int32_t RenderRedPanda::addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a) {return 0;}
+//Change color of the rectangle known by the id given
+void RenderRedPanda::changeRectangleColor(int32_t id, int r, int g, int b, int a) {}
+//Deletes the rectangle with the passed id
+void RenderRedPanda::deleteRectangleColor(int32_t id) {}
+//Clean all rectangles off of the screen
+void RenderRedPanda::cleanRectangles() {}
+////////////
+//  Text
+////////////
+//Adds specified text at the specified point with specified size, with the specified color and font
+int32_t RenderRedPanda::addText(std::string text, glm::vec2 pos, int r, int g, int b, int a, glm::vec2 size, std::string) {
+    return 0;
+}
+//Changes the specified text with the given message
+void RenderRedPanda::changeText(int32_t id, std::string text) {}
+//Changes the font of the game
+void RenderRedPanda::changeFontText(int32_t id, std::string font) {}
+//Changes the color of the text specified by the id
+void RenderRedPanda::changeColorText(int32_t id, int r, int g, int b, int a) {}
+//Changes the color of the background of the text specified by the id
+void RenderRedPanda::changeBackgroundColorText(int32_t id, int r, int g, int b, int a) {}
+//deletes text in the specified position of the text array
+void RenderRedPanda::deleteText(int32_t id) {}
+//Erase all text from the screen
+void RenderRedPanda::cleanTexts() {}
+//Erase all visual interface elements from the screen
+void RenderRedPanda::cleanInterface() {}
 ///////////////////////////////
 ///////      DEBUG      ///////    
 ///////////////////////////////
