@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TEntity.h"
 #include "TResource.h"
 #include "TResourceTexture.h"
 #include <GL/glew.h>
@@ -34,6 +35,7 @@ class TResourceMesh : public TResource {
         void setNTriangles(long n)              { nTriangles=n;     }
         void setNVertex(long n)                 { nVertex=n;        }
         void setTexture(TResourceTexture* t)    { texture=t;        }
+        void setTextActive(bool b)              { textActive=b;     }
 
     private:
         //Vertex info
@@ -44,6 +46,8 @@ class TResourceMesh : public TResource {
         long nTriangles = 0;
         //Number of vertex
         long nVertex;
-
+        //Texture asociated to this mesh
         TResourceTexture* texture = NULL;
+        //Control variable to see if the texture is active
+        bool textActive=0;
 };

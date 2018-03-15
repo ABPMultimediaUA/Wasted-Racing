@@ -62,6 +62,7 @@ bool TResourceOBJ::loadResource()
                 texture->setName(completePath.c_str());
                 texture->loadResource();
                 meshes[i-1]->setTexture(texture);
+                meshes[i-1]->setTextActive(true);
             }
         }
 

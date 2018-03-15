@@ -106,8 +106,11 @@ void TResourceMesh::draw()
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_specular);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_specular);
 
+    GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
+    glUniform1i(id, textActive);
+
     //First we draw the texture of our mesh
-    if(texture!=NULL)
+    if(texture!=NULL && textActive)
     {
         texture->draw();
     }
@@ -141,7 +144,7 @@ void TResourceMesh::draw()
     //We order to draw here
     glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);
 /*
-    if(texture!=NULL)
+    if(texture!=NULL && textActive)
     {
         texture->endDraw();
     }
