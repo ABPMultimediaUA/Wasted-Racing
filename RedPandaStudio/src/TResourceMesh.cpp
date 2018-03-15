@@ -97,14 +97,16 @@ void TResourceMesh::draw()
     
     glEnable(GL_COLOR_MATERIAL);
     GLfloat mat_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-    GLfloat mat_diffuse[] = { 0.8, 0.5, 0.1, 1.0 };
+    GLfloat mat_diffuse[] = { 1.0, 0.5, 0.0, 1.0 };
     GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_diffuse);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_specular);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_specular);
+    GLuint diffuseID = glGetUniformLocation(TEntity::getProgramID(), "material.kd");
+    GLuint ambientID = glGetUniformLocation(TEntity::getProgramID(), "material.ka");
+    GLuint specularID = glGetUniformLocation(TEntity::getProgramID(), "material.ks");
+
+    glUniform4fv(diffuseID, 1, mat_diffuse);
+    glUniform4fv(ambientID, 1, mat_ambient);
+    glUniform4fv(specularID, 1, mat_specular);
 
     GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
     glUniform1i(id, textActive);
