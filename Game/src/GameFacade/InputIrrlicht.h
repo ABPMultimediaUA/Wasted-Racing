@@ -5,22 +5,6 @@
 #include "IInputFacade.h"
 #include "../GameEvent/EventManager.h"
 
-
-//Define macros
-#define DetectKeyInput(TheKey,Event_Down,Event_Up) \
-    if(event.KeyInput.PressedDown && event.KeyInput.Key == irr::EKEY_CODE::TheKey) { \
-        if(!KeyIsDown[irr::EKEY_CODE::TheKey]){ \
-            EventManager::getInstance().addEvent(Event {EventType::Event_Down}); \
-            KeyIsDown[irr::EKEY_CODE::TheKey] = true; \
-        } \
-    } \
-    else { \
-        if(KeyIsDown[irr::EKEY_CODE::TheKey] && event.KeyInput.Key == irr::EKEY_CODE::TheKey){ \
-            EventManager::getInstance().addEvent(Event {EventType::Event_Up}); \
-            KeyIsDown[irr::EKEY_CODE::TheKey] = false; \
-        } \
-    };
-
 struct SMouseState
 {
         irr::core::position2di Position;
