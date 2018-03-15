@@ -45,8 +45,9 @@ make_fac:
 	$(MAKE) -C src/Facade
 
 # target specific settings
-all_linux: LDFLAGS += -lGLEW -lGLU -lGL -lSDL2
+all_linux: LDFLAGS += -lGLEW -lGLU -lGL
 all_linux: LDFLAGS += -L./lib/assimp -lassimp -Wl,-rpath=lib/assimp
+all_linux: LDFLAGS += -L./lib/sdl -lSDL2 -Wl,-rpath=lib/sdl
 all_linux: LDFLAGS += -L./lib/sfml -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath=lib/sfml
 
 all_linux:
@@ -72,16 +73,18 @@ info:
 hashtag := "\#"
 newline := \"\\n
 includeCommand := $(hashtag)include \"
-sh_value := "export LD_LIBRARY_PATH=./bin/:lib/sfml:lib/assimp && ./bin/test"
+sh_value := "export LD_LIBRARY_PATH=./bin/:lib/sfml:lib/assimp:lib/sdl && ./bin/test"
 
-compile: LDFLAGS += -lGLEW -lGLU -lGL -lSDL2
+compile: LDFLAGS += -lGLEW -lGLU -lGL
 compile: LDFLAGS += -L./lib/sfml -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath=lib/sfml
 compile: LDFLAGS += -L./lib/assimp -lassimp -Wl,-rpath=lib/assimp
+compile: LDFLAGS += -L./lib/sdl -lSDL2 -Wl,-rpath=lib/sdl
 compile: LDFLAGS += -L./bin -lRedPanda -Wl,-rpath=./bin
 
-compilel: LDFLAGS += -lGLEW -lGLU -lGL -lSDL2
+compilel: LDFLAGS += -lGLEW -lGLU -lGL
 compilel: LDFLAGS += -L./lib/sfml -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath=lib/sfml
 compilel: LDFLAGS += -L./lib/assimp -lassimp -Wl,-rpath=lib/assimp
+compilel: LDFLAGS += -L./lib/sdl -lSDL2 -Wl,-rpath=lib/sdl
 compilel: LDFLAGS += -L./bin -lRedPanda -Wl,-rpath=./bin
 
 test: remdir makedir copyfiles includefiles compile makesh
