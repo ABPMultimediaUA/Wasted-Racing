@@ -1,4 +1,5 @@
 #include "RenderRedPanda.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
 
 //==============================================================
 // Engine Related functions

@@ -2,6 +2,10 @@
 
 #include <vector>
 #include "QuadTree.h"
+#include "../GameObject/IComponent.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include "../GameFacade/RenderIrrlicht.h"
 #include "WaypointManager.h"
 #include "AIManager.h"

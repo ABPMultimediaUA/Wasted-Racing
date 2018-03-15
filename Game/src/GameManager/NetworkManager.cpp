@@ -10,7 +10,7 @@
 +>Add score callers
 +>Add item callers
 +>ADd camera distance calculations
-+>Add ristra de mensajes para las posiciones macho
+DONE>Add ristra de mensajes para las posiciones macho
 >Add Debug callers
 */
 //////////////////////////////////////////////
@@ -19,14 +19,6 @@
 //////////////////////////////////////////////////////
 //////////// DELEGATE FUNCTIONS
 //////////////////////////////////////////////////////
-/*void itemBoxCollisionEvent(EventData eData);
-void startLineCollisionEvent(EventData eData);
-void createBananaEvent(EventData eData);
-void destroyBananaEvent(EventData eData);
-void createRedShellEvent(EventData eData);
-void destroyRedShellEvent(EventData eData);
-void createBlueShellEvent(EventData eData);
-void destroyBlueShellEvent(EventData eData);   */ 
 void sendAdvanceDown(EventData eData);
 void sendAdvanceUp(EventData eData);
 void sendBrakeDown(EventData eData);
@@ -77,6 +69,7 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     player.get()->setNewTransformData(trans);
     player.get()->setOldTransformData(trans);
     player.get()->setTransformData(trans);
+
     ////////////
     //Add remote player component and set its server_id
     ////////////
@@ -224,33 +217,8 @@ void NetworkManager::updatePlayersPosition(RakNet::Packet* packet)
 ////////////
 //CREATE TRAP
 ////////////
-//Send message to the server to create banana
-void NetworkManager::createBanana(EventData eData)
-{
-    //Stream of raknet bits
-    RakNet::BitStream stream;
 
-    stream.Write((unsigned char)ID_CREATE_BANANA);  //Send message create banana to server
-    stream.Write((int)server_id);                   //Send Id of the player that created it
-
-    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
-}
-
-void NetworkManager::destroyBanana(EventData eData)
-{
-    //Stream of raknet bits
-    RakNet::BitStream stream;
-
-    int s_id = ObjectManager::getInstance().getObject(eData.Id).get()->getComponent<RemoteItemComponent>()->getServerId();//get server id of the object
-
-    stream.Write((unsigned char)ID_DESTROY_BANANA); //Send type of event (destroy banana)
-    stream.Write((int) s_id);                       //Send server id of the banana
-    stream.Write((int) server_id);                   //Send Id of the player that collided with it
-
-    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true); //Send the message
-}
-
-void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
+void NetworkManager::remoteCreateTrap(RakNet::Packet* packet){
     int s_id; //server player creator id
     int o_id; //object server id
 
@@ -260,26 +228,20 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
     parser.Read(s_id);
     parser.Read(o_id);
 
-    //Search for the player that created the banana to create it in its position
+    //Search for the player that created the trap to create it in its position
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
     for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
     {
         rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
-        if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the banana
+        if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the trap
         {
             found = true;
-            auto object = ItemManager::getInstance().createBanana(rPlayer.get()->getGameObject());
+            auto object = ItemManager::getInstance().createTrap(rPlayer.get()->getGameObject());
 
-            //set the server id of the banana
+            //set the server id of the trap
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
         }
-    }
-    //If not found by other players, it was our player who did it
-    if(found == false)
-    {
-        auto object = ItemManager::getInstance().createBanana(*player.get());
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
     }
 
     ////////////
@@ -287,14 +249,14 @@ void NetworkManager::remoteCreateBanana(RakNet::Packet* packet){
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who created the banana
+        //Player who created the trap
         lastSenders.push_back(s_id);
     }
 }
 
-void NetworkManager::remoteDestroyBanana(RakNet::Packet* packet){
+void NetworkManager::remoteDestroyTrap(RakNet::Packet* packet){
     int s_id;      //server object id
-    int sender_id; //Server id of the player that collided with the banana
+    int sender_id; //Server id of the player that collided with the trap
 
     //Read data
     RakNet::BitStream parser(packet->data, packet->length, false);
@@ -302,17 +264,17 @@ void NetworkManager::remoteDestroyBanana(RakNet::Packet* packet){
     parser.Read(s_id);
     parser.Read(sender_id);
 
-    //Search banana inside the remote component list (external bananas)
+    //Search trap inside the remote component list (external traps)
     bool found = false;
     std::shared_ptr<RemoteItemComponent> rItem;
-    for(unsigned int i = 0; i<remoteBananaComponentList.size() && found == false; i++)
+    for(unsigned int i = 0; i<remoteTrapComponentList.size() && found == false; i++)
     {
-        rItem = std::dynamic_pointer_cast<RemoteItemComponent>(remoteBananaComponentList[i]);
+        rItem = std::dynamic_pointer_cast<RemoteItemComponent>(remoteTrapComponentList[i]);
         if(rItem.get()->getServerId() == s_id)    //find the Id of the item
         {
             found = true;
             //Remove from list
-            remoteBananaComponentList.erase(remoteBananaComponentList.begin()+i);
+            remoteTrapComponentList.erase(remoteTrapComponentList.begin()+i);
 
             //Send erase object event
             EventData data;
@@ -327,7 +289,7 @@ void NetworkManager::remoteDestroyBanana(RakNet::Packet* packet){
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who destroyed the banana
+        //Player who destroyed the trap
         lastSenders.push_back(sender_id);
     }
 
@@ -337,31 +299,6 @@ void NetworkManager::remoteDestroyBanana(RakNet::Packet* packet){
 ////////////
 //CREATE TIRE
 ////////////
-
-//Send message to the server to create red shell
-void NetworkManager::createRedShell(EventData eData)
-{
-    //Stream of raknet bits
-    RakNet::BitStream stream;
-
-    stream.Write((unsigned char)ID_CREATE_RED_SHELL);  //Send message create red shell to server
-    stream.Write((int)server_id);                      //Send Id of the player that created it
-
-    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
-}
-
-void NetworkManager::destroyRedShell(EventData eData)
-{
-    RakNet::BitStream stream;
-
-    int s_id = ObjectManager::getInstance().getObject(eData.Id).get()->getComponent<RemoteItemComponent>()->getServerId();//get server id of the object
-
-    stream.Write((unsigned char)ID_DESTROY_RED_SHELL);
-    stream.Write((int) s_id);                          //Send server id of the red shell
-    stream.Write((int) server_id);                     //Send Id of the player that collided with it or managed its destruction
-
-    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-}
 
 void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
     int s_id; //server player creator id
@@ -389,21 +326,12 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
         }
     }
 
-    //If not found by other players, it was our player who did it
-    if(found == false)
-    {
-        auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
-        std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
-    }
-
     ////////////
     //DEBUG AREA
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who created the banana
+        //Player who created the trap
         lastSenders.push_back(s_id);
     }
 
@@ -411,7 +339,7 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
 
 void NetworkManager::remoteDestroyRedShell(RakNet::Packet* packet){
     int s_id;   //server object id
-    int sender_id; //Server id of the player that collided with the banana
+    int sender_id; //Server id of the player that collided with the trap
 
     //Read data from packet
     RakNet::BitStream parser(packet->data, packet->length, false);
@@ -444,7 +372,7 @@ void NetworkManager::remoteDestroyRedShell(RakNet::Packet* packet){
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who destroyed the banana
+        //Player who destroyed the tire
         lastSenders.push_back(sender_id);
     }
 }
@@ -453,31 +381,6 @@ void NetworkManager::remoteDestroyRedShell(RakNet::Packet* packet){
 ////////////
 //CREATE BOMB
 ////////////
-
-//Send message to the server to create blue shell
-void NetworkManager::createBlueShell(EventData eData)
-{
-    //Stream of raknet bits
-    RakNet::BitStream stream;
-
-    stream.Write((unsigned char)ID_CREATE_BLUE_SHELL);  //Send message create blue shell to server
-    stream.Write((int)server_id);                   //Send Id of the player that created it
-
-    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
-}
-
-void NetworkManager::destroyBlueShell(EventData eData)
-{
-    RakNet::BitStream stream;
-
-    int s_id = ObjectManager::getInstance().getObject(eData.Id).get()->getComponent<RemoteItemComponent>()->getServerId();//get server id of the object
-
-    stream.Write((unsigned char)ID_DESTROY_BLUE_SHELL);
-    stream.Write((int) s_id);   //Send server id of the blue shell
-    stream.Write((int) server_id);                     //Send Id of the player that collided with it or managed its destruction
-
-    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-}
 
 void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
     int s_id; //server player creator id
@@ -504,21 +407,12 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
         }
     }
 
-    //If not found by other players, it was our player who did it
-    if(found == false)
-    {
-        auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
-        std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
-    }
-
     ////////////
     //DEBUG AREA
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who created the banana
+        //Player who created the missile
         lastSenders.push_back(s_id);
     }
 }
@@ -558,7 +452,7 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who destroyed the banana
+        //Player who destroyed the missile
         lastSenders.push_back(sender_id);
     }
 }
@@ -585,7 +479,7 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }*/
 
-void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
+/*void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
 {
     RakNet::BitStream parser(packet->data, packet->length, false);
     float x, y, z, rx, ry, rz;
@@ -627,7 +521,7 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             //}
         }
     }
-}
+}*/
 
 /*void NetworkManager::broadcastPositionRedShell()
 {
@@ -754,7 +648,7 @@ void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
 // ITEM BOX
 //=============================================
 
-void NetworkManager::itemBoxCollision(EventData eData)
+/*void NetworkManager::itemBoxCollision(EventData eData)
 {
     RakNet::BitStream stream;
 
@@ -766,7 +660,7 @@ void NetworkManager::itemBoxCollision(EventData eData)
     stream.Write(server_id);
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-}
+}*/
 
 void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
 {
@@ -798,7 +692,7 @@ void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
 // END GAME
 //=============================================
 
-void NetworkManager::endGame()
+/*void NetworkManager::endGame()
 {
     //Set online game as finished
     setStarted(false);
@@ -814,7 +708,7 @@ void NetworkManager::endGame()
     EventManager::getInstance().addEvent(Event {EventType::State_Change, data});
 
     //Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
-}
+}*/
 
 void NetworkManager::remoteEndGame(RakNet::Packet* packet)
 {
@@ -850,15 +744,6 @@ void NetworkManager::init() {
     connected = false;
 
     //Listeners
-    /*EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::StartLineComponent_Collision, startLineCollisionEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::Banana_Create,createBananaEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision,destroyBananaEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::RedShell_Create,createRedShellEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision,destroyRedShellEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::BlueShell_Create,createBlueShellEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision,destroyBlueShellEvent});*/
-
     //Bind keyboard functions (only needed)
     EventManager::getInstance().addListener(EventListener {EventType::Key_Advance_Down, sendAdvanceDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Advance_Up, sendAdvanceUp});
@@ -904,14 +789,9 @@ void NetworkManager::update()
                 createRemotePlayer(packet);
                 break;
 
-            case ID_REMOTE_PLAYER_MOVEMENT:
-                moveRemotePlayer(packet);
-                //lastPackets.push_back(ID_REMOTE_PLAYER_MOVEMENT);
-                break;
-
             case ID_PLAYERS_POSITION:
                 updatePlayersPosition(packet);
-                //lastPackets.push_back(ID_REMOTE_PLAYER_MOVEMENT);
+                //lastPackets.push_back(ID_PLAYERS_POSITION);
                 break;
 
             case ID_BOX_COLLISION:
@@ -921,16 +801,16 @@ void NetworkManager::update()
                 lastData.push_back(packet->data);
                 break;
 
-            case ID_CREATE_BANANA:
-                remoteCreateBanana(packet);
-                lastPackets.push_back(ID_CREATE_BANANA);
+            case ID_CREATE_TRAP:
+                remoteCreateTrap(packet);
+                lastPackets.push_back(ID_CREATE_TRAP);
                 //PROVISIONAL DATA
                 lastData.push_back(packet->data);
                 break;
 
-            case ID_DESTROY_BANANA:
-                remoteDestroyBanana(packet);
-                lastPackets.push_back(ID_DESTROY_BANANA);
+            case ID_DESTROY_TRAP:
+                remoteDestroyTrap(packet);
+                lastPackets.push_back(ID_DESTROY_TRAP);
                 //PROVISIONAL DATA
                 lastData.push_back(packet->data);
                 break;
@@ -949,6 +829,11 @@ void NetworkManager::update()
                 lastData.push_back(packet->data);
                 break;
 
+            case ID_RED_SHELLS_POSITION:
+                moveRemoteRedShell(packet);
+                //lastPackets.push_back(ID_REMOTE_RED_SHELL_MOVEMENT);
+                break;
+
             case ID_CREATE_BLUE_SHELL:
                 remoteCreateBlueShell(packet);
                 lastPackets.push_back(ID_CREATE_BLUE_SHELL);
@@ -963,12 +848,7 @@ void NetworkManager::update()
                 lastData.push_back(packet->data);
                 break;
 
-            case ID_REMOTE_RED_SHELL_MOVEMENT:
-                moveRemoteRedShell(packet);
-                //lastPackets.push_back(ID_REMOTE_RED_SHELL_MOVEMENT);
-                break;
-
-            case ID_REMOTE_BLUE_SHELL_MOVEMENT:
+            case ID_BLUE_SHELLS_POSITION:
                 moveRemoteBlueShell(packet);
                 //lastPackets.push_back(ID_REMOTE_BLUE_SHELL_MOVEMENT);
                 break;
@@ -1070,7 +950,7 @@ IComponent::Pointer NetworkManager::createRemoteItemComponent(GameObject& newGam
     //Push inside the correspondent list
     if(type == 0){
         std::dynamic_pointer_cast<RemoteItemComponent>(component).get()->setType(0);
-        remoteBananaComponentList.push_back(component);
+        remoteTrapComponentList.push_back(component);
     }
     if(type == 1){
         std::dynamic_pointer_cast<RemoteItemComponent>(component).get()->setType(1);
@@ -1115,33 +995,6 @@ void startLineCollisionEvent(EventData eData) //Collision of the player with the
     }
 }*/
 //============================================== 
-//Functions that create or destroy objects
-/*void createBananaEvent(EventData eData)
-{
-    NetworkManager::getInstance().createBanana(eData);
-}
-
-void destroyBananaEvent(EventData eData){
-    NetworkManager::getInstance().destroyBanana(eData);
-}
-
-void createRedShellEvent(EventData eData)
-{
-    NetworkManager::getInstance().createRedShell(eData);
-}
-
-void destroyRedShellEvent(EventData eData){
-    NetworkManager::getInstance().destroyRedShell(eData);
-}
-
-void createBlueShellEvent(EventData eData)
-{
-    NetworkManager::getInstance().createBlueShell(eData);
-}
-
-void destroyBlueShellEvent(EventData eData){
-    NetworkManager::getInstance().destroyBlueShell(eData);
-}*/
 
 //============================================== 
 //Bing keyboard functions to be sent

@@ -28,7 +28,7 @@ void HUDInGame::init(){
 
     //CHANGE THE POSITION RELATED TO THE WINDOW SIZE
     empty = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), true, false, "media/img/emptyBox.png", 500);
-    banana = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/banana.png", 500);
+    trap = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/banana.png", 500);
     star = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/star.png", 500);
     blueshell = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/blueshell.png", 500);
     redshell = addSprite(glm::vec2(50, 50), glm::vec2(25, 25), false, false, "media/img/redshell.png", 500);
@@ -78,7 +78,7 @@ void HUDInGame::updateItem(){
                 empty->setVisible(true);
                 redshell->setVisible(false);
                 blueshell->setVisible(false);
-                banana->setVisible(false);
+                trap->setVisible(false);
                 mushroom->setVisible(false);
                 star->setVisible(false);
                  break;
@@ -87,7 +87,7 @@ void HUDInGame::updateItem(){
                 empty->setVisible(false);
                 redshell->setVisible(true);
                 blueshell->setVisible(false);
-                banana->setVisible(false);
+                trap->setVisible(false);
                 mushroom->setVisible(false);
                 star->setVisible(false);
                  break;
@@ -96,16 +96,16 @@ void HUDInGame::updateItem(){
                 empty->setVisible(false);
                 redshell->setVisible(false);
                 blueshell->setVisible(true);
-                banana->setVisible(false);
+                trap->setVisible(false);
                 mushroom->setVisible(false);
                 star->setVisible(false);
                  break;
 
-        case 2: //BANANA
+        case 2: //TRAP
                 empty->setVisible(false);
                 redshell->setVisible(false);
                 blueshell->setVisible(false);
-                banana->setVisible(true);
+                trap->setVisible(true);
                 mushroom->setVisible(false);
                 star->setVisible(false);
                  break;
@@ -114,7 +114,7 @@ void HUDInGame::updateItem(){
                 empty->setVisible(false);
                 redshell->setVisible(false);
                 blueshell->setVisible(false);
-                banana->setVisible(false);
+                trap->setVisible(false);
                 mushroom->setVisible(true);
                 star->setVisible(false);
                  break;
@@ -123,7 +123,7 @@ void HUDInGame::updateItem(){
                 empty->setVisible(false);
                 redshell->setVisible(false);
                 blueshell->setVisible(false);
-                banana->setVisible(false);
+                trap->setVisible(false);
                 mushroom->setVisible(false);
                 star->setVisible(true);
                  break;

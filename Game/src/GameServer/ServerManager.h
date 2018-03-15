@@ -102,7 +102,18 @@ class ServerManager{
                 }
                 return nullptr;
         }
-
+        IComponent::Pointer getRemotePlayerComponent(int server_id)
+                                                     {
+                for(unsigned int i = 0; i<remotePlayerComponentList.size(); i++)
+                {
+                    auto rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
+                    if(rPlayer.get()->getServerId() == server_id)
+                    {
+                        return rPlayer;
+                    }
+                }
+                return nullptr;
+        }
     private:
         ///////////////////////////////////////////////////
         // PRIVATE DATA 
@@ -182,6 +193,9 @@ class ServerManager{
 
         //Broadcast position of all players
         void broadcastPositionPlayers();
+
+        //Send information about an object event (creation, destruction, collision with box) expressing who did it by server id, which object by server id, and what type of event
+        void objectEvent(int who, int which, customMessages what);
 
         //Broadcast one packet to the rest of the players
         void broadcastData(RakNet::Packet* packet);

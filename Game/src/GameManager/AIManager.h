@@ -3,9 +3,8 @@
 #include <memory>
 #include <iostream>
 #include <vector>
-#include "../GameObject/ItemComponent/IItemComponent.h"
-#include "../GameObject/AIComponent/MSensorComponent.h"
-#include "../GameObject/AIComponent/AIBattleComponent.h"
+#include "../GameObject/IComponent.h"
+#include "../GameObject/GameObject.h"
 
 class AIManager{
 

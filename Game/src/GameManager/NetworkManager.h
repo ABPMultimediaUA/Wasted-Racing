@@ -96,17 +96,11 @@ public:
     //==============================================================
 
     //--------------------------------------------------------
-    //send signal to create a banana
-    void createBanana(EventData eData);
+    //creates a trap item where it should be on the map
+    void remoteCreateTrap(RakNet::Packet* packet);
 
-    //send signal to destroy a banana
-    void destroyBanana(EventData eData);
-
-    //creates a banana item where it should be on the map
-    void remoteCreateBanana(RakNet::Packet* packet);
-
-    //destroy a banana item where it should be on the map
-    void remoteDestroyBanana(RakNet::Packet* packet);
+    //destroy a trap item where it should be on the map
+    void remoteDestroyTrap(RakNet::Packet* packet);
     //--------------------------------------------------------
 
 
@@ -156,7 +150,7 @@ public:
     // Getters and setters
     //==============================================================
     std::vector<IComponent::Pointer>& getRemotePlayerComponentList()   {  return remotePlayerComponentList;   } //Remote player component list getter
-    std::vector<IComponent::Pointer>& getRemoteBananaComponentList()   {  return remoteBananaComponentList;   } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteTrapComponentList()     {  return remoteTrapComponentList;     } //Remote player component list getter
     std::vector<IComponent::Pointer>& getRemoteRedShellComponentList() {  return remoteRedShellComponentList; } //Remote player component list getter
     std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){  return remoteBlueShellComponentList;} //Remote player component list getter
     void setPlayer(GameObject::Pointer p)                              {  player = p;                         };
@@ -197,7 +191,7 @@ private:
     std::vector<IComponent::Pointer> remotePlayerComponentList;
 
     //List of remotePlayerComponent
-    std::vector<IComponent::Pointer> remoteBananaComponentList;
+    std::vector<IComponent::Pointer> remoteTrapComponentList;
 
     //List of remotePlayerComponent
     std::vector<IComponent::Pointer> remoteRedShellComponentList;

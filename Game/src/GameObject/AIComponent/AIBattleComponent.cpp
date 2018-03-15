@@ -376,7 +376,7 @@ void AIBattleComponent::init()
     sequence2->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem2Action(target)));
     sequence2->AddChild(DS2);
 
-    //Sequence for item 3: Banana. If we have it, we enter in it's correspondant Dynamic Selector
+    //Sequence for item 3: trap. If we have it, we enter in it's correspondant Dynamic Selector
     sequence3->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem3Action(target)));
     sequence3->AddChild(DS3);
 

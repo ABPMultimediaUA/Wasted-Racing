@@ -1,5 +1,6 @@
 #include "AudioFMOD.h"
 #include "../GameEvent/EventManager.h"
+#include "../GameManager/AudioManager.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
 

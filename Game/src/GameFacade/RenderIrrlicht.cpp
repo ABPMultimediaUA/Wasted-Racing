@@ -1,4 +1,9 @@
 #include "RenderIrrlicht.h"
+#include "InputIrrlicht.h"
+#include "../GameManager/InputManager.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 
 //==============================================================
 // THINGS TO DO
@@ -528,7 +533,7 @@ void RenderIrrlicht::updateItemIcon(){
                 createItemIcon(glm::vec2(50,50), "media/img/iconoBombamini.png");
                  break;
 
-        case 2: //BANANA
+        case 2: //TRAP
                 deleteItemIcon();
                 createItemIcon(glm::vec2(50,50), "media/img/iconoTrampamini.png");
                  break;

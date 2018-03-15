@@ -13,7 +13,7 @@ class IItemComponent : public IComponent {
             none        = -1,
             redShell    = 0,      
             blueShell   = 1,      
-            banana      = 2,      
+            trap      = 2,      
             mushroom    = 3,      
             star        = 4
         

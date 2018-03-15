@@ -1,6 +1,9 @@
 #include "AIManager.h"
-#include <rapidxml/rapidxml.hpp>
-
+#include "../GameEvent/EventManager.h"
+#include "../GameObject/ItemComponent/IItemComponent.h"
+#include "../GameObject/AIComponent/MSensorComponent.h"
+#include "../GameObject/AIComponent/VSensorComponent.h"
+#include "../GameObject/AIComponent/AIBattleComponent.h"
 
 //==============================================
 // DELEGATES DECLARATIONS

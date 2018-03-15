@@ -15,7 +15,7 @@ public:
 		Default,
 		Ramp,
 		ItemBox,
-		Banana,
+		Trap,
 		BlueShell,
 		RedShell,
 		StartLine

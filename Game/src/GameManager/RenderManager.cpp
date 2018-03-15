@@ -872,7 +872,7 @@ void RenderManager::updateHUD()
                     break;
             case 1: s+="BLUE SHELL";
                     break;
-            case 2: s+="BANANA";
+            case 2: s+="TRAP";
                     break;
             case 3: s+="MUSHROOM";
                     break;

@@ -69,6 +69,10 @@ void ServerManager::init()
 
     //Add initial objects
     loadMapServer();
+
+    //================================================================
+    //SET LISTENERS
+    //================================================================
 }
 
 void ServerManager::run()
@@ -164,41 +168,6 @@ void ServerManager::update(float dTime)
 				std::cout<<"Input received"<<std::endl;
 				break;
 
-			//Objects related
-			/*case ID_CREATE_BANANA:
-				broadcastObject(packet);
-				nObjects++;
-				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
-				break;
-			case ID_DESTROY_BANANA:
-				broadcastData(packet);
-				break;
-			case ID_CREATE_RED_SHELL:
-				broadcastObject(packet);
-				nObjects++;
-				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
-				break;
-			case ID_DESTROY_RED_SHELL:
-				broadcastData(packet);
-				break;
-			case ID_CREATE_BLUE_SHELL:
-				broadcastObject(packet);
-				nObjects++;
-				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
-				break;
-			case ID_DESTROY_BLUE_SHELL:
-				broadcastData(packet);
-				break;
-			case ID_REMOTE_RED_SHELL_MOVEMENT:
-				broadcastData(packet);
-				break;
-			case ID_REMOTE_BLUE_SHELL_MOVEMENT:
-				broadcastData(packet);
-				break;
-			case ID_BOX_COLLISION:
-				broadcastData(packet);
-				break;*/
-
             default:
                 std::cout << "Receiving new packet" << std::endl;
                 break;
@@ -281,6 +250,20 @@ void ServerManager::broadcastPositionPlayers()
 	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
 
+void ServerManager::objectEvent(int who, int which, customMessages what)
+{
+	//Create stream
+	RakNet::BitStream stream;
+
+	//Write type
+	stream.Write((unsigned char) what);
+	stream.Write((int)who);
+	stream.Write((int)which);
+
+	//send it
+	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+}
+
 void ServerManager::broadcastData(RakNet::Packet* packet)
 {
 	RakNet::BitStream stream(packet->data, packet->length, false);
@@ -331,10 +314,13 @@ void ServerManager::addPlayer()
 void ServerManager::actPlayer(RakNet::Packet* packet)
 {
 	//Additional variables
-	int server_id; 							//Server ID of the sender
-	EventType e; 							//Event type of the input
-	GameObject* ob; 						//Player Game Object
-	std::shared_ptr<MoveComponent> move; 	//Move Component of the player (if used)
+	int server_id; 								//Server ID of the sender
+	EventType e; 								//Event type of the input
+	EventData eData; 							//Event to send if needed
+	GameObject* ob; 							//Player Game Object
+	std::shared_ptr<MoveComponent> move; 		//Move Component of the player (if used)
+	int type; 									//Type of object created
+	IComponent::Pointer RPcomponent; 			//Shared pointer of the created item
 
 	//Parse packet
 	RakNet::BitStream parser(packet->data, packet->length, false);
@@ -424,13 +410,46 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
 		case Key_UseItem_Down:
 			//Get player
 			ob = getPlayer(server_id);
+			RPcomponent = getRemotePlayerComponent(server_id);
+
+			//Get item type
+			type = ob->getComponent<ItemHolderComponent>()->getItemType();
+
+			//send event to create the object to other players
+			if(type == IItemComponent::ItemType::trap)
+			{
+				objectEvent(server_id, nObjects, ID_CREATE_TRAP);
+			}
+			
+			if(type == IItemComponent::ItemType::redShell)
+			{
+				objectEvent(server_id, nObjects, ID_CREATE_RED_SHELL);
+			}
+
+			if(type == IItemComponent::ItemType::blueShell)
+			{
+				objectEvent(server_id, nObjects, ID_CREATE_BLUE_SHELL);
+			}
+
+			//Send event of creation to the server
+			eData.Id = nObjects;
+			eData.Component = RPcomponent;
+			EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
+
 			//Create object
-			itemManager->createItem(*ob);
+			/*item = itemManager->createItem(*ob);
+
+            //set the server id of the object if an object was created
+			if(item != nullptr)
+			{
+				//set server id
+				item.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(nObjects);
+
+				
+			}*/
+
 			//Add number of objects
 			nObjects++;
-
-    		//____> ADD ITEM CREATOR EVENT
-			//EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
 			break;
 
 		default:

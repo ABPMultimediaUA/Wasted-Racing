@@ -7,10 +7,11 @@
 #include "../GameObject/ItemComponent/ItemHolderComponent.h"
 #include "../GameObject/ItemComponent/ItemRedShellComponent.h"
 #include "../GameObject/ItemComponent/ItemBlueShellComponent.h"
-#include "../GameObject/ItemComponent/ItemBananaComponent.h"
+#include "../GameObject/ItemComponent/ItemTrapComponent.h"
 #include "../GameObject/ItemComponent/ItemMushroomComponent.h"
 #include "../GameObject/ItemComponent/ItemStarComponent.h"
 #include "../GameObject/ItemComponent/ItemBoxComponent.h"
+#include "../GameObject/NetworkComponent/RemoteItemComponent.h"
 #include "PhysicsManager.h"
 #include "RenderManager.h"
 #include "ObjectManager.h"
@@ -45,7 +46,7 @@ class ItemManager {
         //Item Create
         IComponent::Pointer createRedShell(GameObject& obj);
         IComponent::Pointer createBlueShell(GameObject& obj);
-        IComponent::Pointer createBanana(GameObject& obj);
+        IComponent::Pointer createTrap(GameObject& obj);
         IComponent::Pointer createMushroom(GameObject& obj);
         IComponent::Pointer createStar(GameObject& obj);
         

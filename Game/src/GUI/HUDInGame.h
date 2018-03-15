@@ -33,7 +33,7 @@ class HUDInGame : public IGUI{
 
         //ITEMS
         GUISprite* empty;
-        GUISprite* banana;
+        GUISprite* trap;
         GUISprite* star;
         GUISprite* blueshell;
         GUISprite* redshell;
