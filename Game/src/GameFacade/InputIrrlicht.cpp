@@ -1,5 +1,19 @@
 #include "InputIrrlicht.h"
 
+//Define macros
+#define DetectKeyInput(TheKey,Event_Down,Event_Up) \
+    if(event.KeyInput.PressedDown && event.KeyInput.Key == irr::EKEY_CODE::TheKey) { \
+        if(!KeyIsDown[irr::EKEY_CODE::TheKey]){ \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Down}); \
+            KeyIsDown[irr::EKEY_CODE::TheKey] = true; \
+        } \
+    } \
+    else { \
+        if(KeyIsDown[irr::EKEY_CODE::TheKey] && event.KeyInput.Key == irr::EKEY_CODE::TheKey){ \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Up}); \
+            KeyIsDown[irr::EKEY_CODE::TheKey] = false; \
+        } \
+    };
 
 void InputIrrlicht::openInput(uintptr_t dev) {
 
