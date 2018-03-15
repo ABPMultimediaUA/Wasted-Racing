@@ -2,7 +2,6 @@
 
 #include "../GlobalVariables.h"
 #include "../GameEvent/EventManager.h"
-//#include "../GameManager/ItemManager.h"
 #include "PhysicsComponent/MoveComponent.h"
 
 class InputComponent : public IComponent {

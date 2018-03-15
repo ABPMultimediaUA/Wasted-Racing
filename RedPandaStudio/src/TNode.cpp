@@ -9,14 +9,8 @@ TNode::TNode()
 
 TNode::~TNode()
 {
-    delete father;
-    delete entity;
-
-    for(unsigned int i = 0; i < child.size(); i++)
-    {
-        delete child[i];
-    }
-    child.clear();
+    if(entity != nullptr)
+        delete entity;
 }
 
 

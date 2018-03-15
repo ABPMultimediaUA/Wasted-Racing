@@ -1,4 +1,14 @@
 #include "CameraRenderComponent.h"
+#include "../../GameManager/PhysicsManager.h"
+
+CameraRenderComponent::CameraRenderComponent(GameObject& newGameObject) : IRenderComponent(newGameObject) {
+		distance = 30;
+		maxDistance = 30;
+		oldDistance = distance;
+		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
+		count = 0;
+		spinDir = 1;
+}
 
 //Initilizer
 void CameraRenderComponent::init() {

@@ -173,6 +173,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
                 EventManager::getInstance().addEvent(Event {EventType::Default_Collision, data});
 
+
             }
             //If collision isn't kinetic, react with events depending on the collision type
             else if(collision && !hisColl->getKinetic()){
@@ -369,6 +370,11 @@ void PhysicsManager::calculateLineCollision(std::shared_ptr<MoveComponent> move,
     mData.boost = false;
 
     ourMove->setMovementData(mData);
+
+    EventData data;
+    data.Component      = std::static_pointer_cast<IComponent>(move);
+
+    EventManager::getInstance().addEvent(Event {EventType::Default_Collision, data});
 
 }
 

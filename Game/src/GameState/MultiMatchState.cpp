@@ -47,6 +47,14 @@ void MultiMatchState::update(float &accumulatedTime) {
 void MultiMatchState::updateManagers(float dTime){
     physicsManager->update(dTime);
 
+    aiManager->update(dTime);
+
+    waypointManager->update(dTime);
+
+    sensorManager->update();
+
+    itemManager->update(dTime);
+    
     scoreManager->update();
 
     audioManager->update();

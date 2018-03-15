@@ -118,6 +118,10 @@ void MoveComponent::isBraking(bool b) {
     mData.braking  = b;
 }
 
+void MoveComponent::changeVel(float v){
+    mData.vel      = v;
+}
+
 //=================================================
 //Functions related with temporal data changes
 //=================================================

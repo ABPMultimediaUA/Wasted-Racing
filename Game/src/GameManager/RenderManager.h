@@ -3,6 +3,7 @@
 #include <vector>
 #include "QuadTree.h"
 #include "../GameFacade/RenderIrrlicht.h"
+#include "../GameFacade/RenderRedPanda.h"
 #include "WaypointManager.h"
 #include "AIManager.h"
 #include "ObjectManager.h"
@@ -59,6 +60,8 @@ public:
     IComponent::Pointer createCameraRenderComponent(GameObject& newGameObject);
     //Create cylinder or cone
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency);
+    //Create skybox
+    IComponent::Pointer createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back);
     //Camera component getter and setter
     IComponent::Pointer getCameraComponent() { return cameraComponent; }
     void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }

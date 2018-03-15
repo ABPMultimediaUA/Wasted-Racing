@@ -6,6 +6,10 @@
  #include "TMesh.h"
  #include "TNode.h"
  #include "TResource.h"
+ #include "TResourceMaterial.h"
  #include "TResourceMesh.h"
+ #include "TResourceOBJ.h"
+ #include "TResourceShader.h"
+ #include "TResourceTexture.h"
  #include "TTransform.h"
 

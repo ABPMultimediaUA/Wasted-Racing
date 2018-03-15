@@ -16,7 +16,8 @@ public:
 		Arrow,
 		Cylinder,
 		Portion,
-		Pyramid
+		Pyramid,
+		Skybox
 	};
 
     //Constructor
@@ -39,6 +40,8 @@ public:
 		}
 
 	}
+
+	ObjectRenderComponent(GameObject& newGameObject, Shape newShape) : IRenderComponent(newGameObject), objectShape(newShape) {};
 
 	//Destructor
 	virtual ~ObjectRenderComponent() {};

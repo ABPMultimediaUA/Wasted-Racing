@@ -24,23 +24,35 @@ void WaypointManager::init() {
     listSubNodes = new std::vector<GameObject::Pointer>;
 
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletePathPlanning});
+
+    distanceLoD = 0;
 }
 
 void WaypointManager::update(float dTime) {
     //I doubt this method should exist in this manager
     //I doubt it too
     //I hope Fran reads this
+    auto player = InputManager::getInstance().getComponent().get()->getGameObject();
+    auto posPlayer = player.getTransformData().position;
 
-    //Update all pathplanning component if they are not inside items
+    //CALCULATE LOD PATHPLANNING
     for(unsigned int i=0; i < pathPlanningComponentList.size(); i++)
     {
-        auto iItemComponent = pathPlanningComponentList[i]->getGameObject().getComponent<IItemComponent>().get();
-        if(iItemComponent == nullptr)
+        auto AIObject = pathPlanningComponentList[i]->getGameObject();
+        auto posAI = AIObject.getTransformData().position; 
+
+
+        auto distPlayerAI = (posPlayer.x - posAI.x) * (posPlayer.x - posAI.x) +
+                            (posPlayer.y - posAI.y) * (posPlayer.y - posAI.y) +
+                            (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
+
+        //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, NOT UPDATE
+        if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
         {
-            pathPlanningComponentList[i]->update(dTime); 
+            //auto pathPlanning = std::dynamic_pointer_cast<PathPlanningComponent>(pathPlanningComponentList[i]).get();
+            updatePathPlanning(pathPlanningComponentList[i], dTime);
         }
     }
-    
 }
 
 void WaypointManager::close() {
@@ -90,11 +102,20 @@ IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Poi
     return component;
 }
 
+////////////////////////////////////////////
+//
+//      UPDATE PATHPLANNING
+//
+////////////////////////////////////////////
 
-//==============================================
-// DELEGATES
-//============================================== 
-
+void WaypointManager::updatePathPlanning(IComponent::Pointer pathPlanning, float dTime)
+{
+    auto iItemComponent = pathPlanning->getGameObject().getComponent<IItemComponent>().get();
+    if(iItemComponent == nullptr)
+    {
+        pathPlanning->update(dTime); 
+    }
+}
 
 //==============================================
 //Constructor and Destructor

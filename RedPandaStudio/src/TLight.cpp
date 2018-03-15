@@ -4,3 +4,8 @@ void TLight::beginDraw()
 {
     
 }
+
+void TLight::endDraw()
+{
+    
+}

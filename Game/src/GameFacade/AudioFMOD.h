@@ -52,6 +52,10 @@ public:
     std::map<std::string, FMOD_STUDIO_EVENTDESCRIPTION*>& getEventDescriptions() {  return eventDescriptions;   }
     float getWorldUnits()   {   return worldUnits; }
 
+    //Setters
+    void insertSoundEvent(std::string name, ISoundEvent* sound);
+    bool existsSoundEvent(std::string name);
+
 
 private: 
 

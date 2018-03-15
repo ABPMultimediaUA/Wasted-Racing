@@ -8,10 +8,10 @@
 
 //Define macros
 #define DetectKeyInput(TheKey,Event_Down,Event_Up) \
-    if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::TheKey) { \
+    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_##TheKey) { \
             EventManager::getInstance().addEvent(Event {EventType::Event_Down}); \
     } \
-    else if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::TheKey){ \
+    else if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_##TheKey){ \
             EventManager::getInstance().addEvent(Event {EventType::Event_Up}); \
     };
 
@@ -49,6 +49,6 @@ public:
 
 private: 
     
-    sf::RenderWindow *device;
+    SDL_Window *device;
 
 };

@@ -25,6 +25,9 @@ void debugAIDown(EventData eData);
 void debugCameraDown(EventData eData);
 void debugBehaviourDown(EventData eData);
 void addInputComponent(EventData data);
+void slowControlDown(EventData eData);
+void fastControlDown(EventData eData);
+void normalControlDown(EventData data);
 
 //==============================================
 // INPUT MANAGER FUNCTIONS
@@ -63,6 +66,9 @@ void InputManager::init(int engine){
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugAI_Down, debugAIDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugCamera_Down, debugCameraDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugCamera_Down, debugBehaviourDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_SlowControl_Down, slowControlDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_FastControl_Down, fastControlDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_NormalControl_Down, normalControlDown});
   
 }
 
@@ -156,6 +162,15 @@ void debugCameraDown(EventData eData){
 }
 void debugBehaviourDown(EventData eData){
     //std::cout << "Use debug button pressed!" << std::endl;
+}
+void slowControlDown(EventData eData){
+    //std::cout << "Use slow control button pressed!" << std::endl;
+}
+void fastControlDown(EventData eData){
+    //std::cout << "Use fast control button pressed!" << std::endl;
+}
+void normalControlDown(EventData eData){
+    //std::cout << "Use normal control button pressed!" << std::endl;
 }
 void addInputComponent(EventData data) {
     InputManager::getInstance().setComponent(data.Component);

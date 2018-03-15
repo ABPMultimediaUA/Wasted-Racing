@@ -118,7 +118,7 @@ int main() {
     char* n = "Link/Link.obj";
 
     ResourceManager rM;
-    TResource* ob = rM.getResource(n);
+    TResource* ob = rM.getResourceMesh(n);
 
     //---- Crear la estructura del árbol ----
     TNode *Escena = new TNode();

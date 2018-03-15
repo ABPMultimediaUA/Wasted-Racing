@@ -1,5 +1,17 @@
 #pragma once
 
+
+#include "InputManager.h"
+#include "../GameObject/AIComponent/AIDrivingComponent.h"
+#include "../GameObject/AIComponent/AIBattleComponent.h"
+#include "../GameObject/AIComponent/VSensorComponent.h"
+#include "../GameObject/AIComponent/MSensorComponent.h"
+#include "../GameObject/AIComponent/PathPlanningComponent.h"
+#include "../GameObject/AIComponent/VObject.h"
+#include "../GameObject/ItemComponent/IItemComponent.h"
+#include "../GameObject/PhysicsComponent/MoveComponent.h"
+#include "../GameObject/GameObject.h"
+#include "../GameEvent/EventManager.h"
 #include <memory>
 #include <iostream>
 #include <vector>
@@ -43,9 +55,16 @@ public:
     IComponent::Pointer createAIDrivingComponent(GameObject& newGameObject);
     IComponent::Pointer createAIBattleComponent(GameObject& newGameObject);
 
+    //Update AI driving
+    void updateDriving(AIDrivingComponent* aiDrivingComponent);
+
+    //Level of Detail
+    void calculateLoD(GameObject AI, float dTime);
 
 private:
     std::vector<IComponent::Pointer> objectsAI;
     std::vector<IComponent::Pointer> battleAI;
     bool changeAI;
+
+    float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 };
