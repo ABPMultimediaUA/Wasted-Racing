@@ -963,6 +963,7 @@ IComponent::Pointer NetworkManager::createRemoteItemComponent(GameObject& newGam
 
     return component;
 }
+
 //==============================================
 // DELEGATES
 //============================================== 

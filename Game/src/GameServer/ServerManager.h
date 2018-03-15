@@ -27,6 +27,9 @@
 #include "../GameManager/ItemManager.h"
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
+#include "../GameObject/NetworkComponent/RemoteItemComponent.h"
+
+class ItemManager;
 
 //Maximum number of clients simultaneously
 #define MAXCLIENTS 8
@@ -85,6 +88,8 @@ class ServerManager{
         //Create remote player component
         IComponent::Pointer createRemotePlayerComponent(GameObject& newGameObject, int server_id);
 
+        //Create remote player component
+        IComponent::Pointer createRemoteItemComponent(GameObject& newGameObject, int server_id, int type);
         //==============================================================
         // Getters and setters
         //==============================================================
@@ -138,6 +143,15 @@ class ServerManager{
 
         //Vector of player instances (as Remote Player component)
         std::vector<IComponent::Pointer> remotePlayerComponentList;
+
+        //List of remotePlayerComponent
+        std::vector<IComponent::Pointer> remoteTrapComponentList;
+
+        //List of remotePlayerComponent
+        std::vector<IComponent::Pointer> remoteRedShellComponentList;
+
+        //List of remotePlayerComponent
+        std::vector<IComponent::Pointer> remoteBlueShellComponentList;
 
         ///////////////////////////////////////////////////
         // MANAGERS 

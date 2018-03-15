@@ -530,6 +530,7 @@ void collideRamp(EventData eData) {
 }
 
 void collideTrap(EventData eData) {
+    //Get collision components from data
     auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
     auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
 

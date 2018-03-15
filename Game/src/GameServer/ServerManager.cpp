@@ -73,6 +73,9 @@ void ServerManager::init()
     //================================================================
     //SET LISTENERS
     //================================================================
+    EventManager::getInstance().addListener(EventListener {EventType::TrapComponent_Collision, collideTrap});
+    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision, collideBlueShell});
+    EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision, collideRedShell});
 }
 
 void ServerManager::run()
@@ -320,7 +323,7 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
 	GameObject* ob; 							//Player Game Object
 	std::shared_ptr<MoveComponent> move; 		//Move Component of the player (if used)
 	int type; 									//Type of object created
-	IComponent::Pointer RPcomponent; 			//Shared pointer of the created item
+	IComponent::Pointer Component; 			//Shared pointer of the created item
 
 	//Parse packet
 	RakNet::BitStream parser(packet->data, packet->length, false);
@@ -410,7 +413,7 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
 		case Key_UseItem_Down:
 			//Get player
 			ob = getPlayer(server_id);
-			RPcomponent = getRemotePlayerComponent(server_id);
+			Component = getRemotePlayerComponent(server_id);
 
 			//Get item type
 			type = ob->getComponent<ItemHolderComponent>()->getItemType();
@@ -431,25 +434,21 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
 				objectEvent(server_id, nObjects, ID_CREATE_BLUE_SHELL);
 			}
 
-			//Send event of creation to the server
-			eData.Id = nObjects;
-			eData.Component = RPcomponent;
-			EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
-
 			//Create object
-			/*item = itemManager->createItem(*ob);
+			Component = itemManager->createItem(*ob);
 
-            //set the server id of the object if an object was created
-			if(item != nullptr)
+            //create the remote component of the object if it is trap, missile or tire
+			if(Component != nullptr)
 			{
+				//Create component on the object
+				Component = createRemoteItemComponent(*ob, nObjects, type);
 				//set server id
-				item.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(nObjects);
-
-				
-			}*/
+				std::dynamic_pointer_cast<RemoteItemComponent>(Component).get()->setServerId(nObjects);	
+			}
 
 			//Add number of objects
 			nObjects++;
+
 			break;
 
 		default:
@@ -541,6 +540,31 @@ IComponent::Pointer ServerManager::createRemotePlayerComponent(GameObject& newGa
     data.Component = component;
 
     eventManager->addEvent(Event {EventType::RemotePlayerComponent_Create, data});
+
+    return component;
+}
+
+IComponent::Pointer ServerManager::createRemoteItemComponent(GameObject& newGameObject, int server_id, int type) {
+
+	//Create component
+    IComponent::Pointer component = std::make_shared<RemoteItemComponent>(newGameObject);
+
+	//Add to object
+    newGameObject.addComponent(component);
+
+    //Push inside the correspondent list
+    if(type == 0){
+        std::dynamic_pointer_cast<RemoteItemComponent>(component).get()->setType(0);
+        remoteTrapComponentList.push_back(component);
+    }
+    if(type == 1){
+        std::dynamic_pointer_cast<RemoteItemComponent>(component).get()->setType(1);
+        remoteRedShellComponentList.push_back(component);
+    }
+    if(type == 2){
+        std::dynamic_pointer_cast<RemoteItemComponent>(component).get()->setType(2);
+        remoteBlueShellComponentList.push_back(component);
+    }
 
     return component;
 }
