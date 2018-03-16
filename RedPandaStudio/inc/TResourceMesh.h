@@ -54,4 +54,6 @@ class TResourceMesh : public TResource {
         bool textActive=0;
         //Material asociated to this mesh
         TResourceMaterial* material = NULL;
+        //Buffer handles
+        GLuint* vboHandles;
 };

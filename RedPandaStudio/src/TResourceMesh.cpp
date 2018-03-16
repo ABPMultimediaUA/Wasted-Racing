@@ -36,6 +36,10 @@ bool TResourceMesh::loadMesh(aiMesh* m)
         }
     }
 
+    //Generate an array of 4 buffer identifiers
+    vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
+    glGenBuffers(4, vboHandles);
+
     return true;
 
 }
@@ -110,17 +114,13 @@ void TResourceMesh::draw()
     {
         material->draw();
     }
-    
-    //Generate an array of 4 buffer identifiers
-    GLuint* vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
-    glGenBuffers(4, vboHandles);
 
     //Bind and pass to OpenGL the first array (vertex coordinates)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(0);
-
+    
     //Bind and pass to OpenGL the second array (vertex normals)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
