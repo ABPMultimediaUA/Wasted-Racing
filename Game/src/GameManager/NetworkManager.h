@@ -1,22 +1,20 @@
 #pragma once
 
-#include "ObjectManager.h"
-#include "PhysicsManager.h"
-#include "RenderManager.h"
-#include "NetworkManager.h"
-#include "ItemManager.h"
-#include "../Game.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameObject/GameObject.h"
-#include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
-#include "../GameObject/NetworkComponent/RemoteItemComponent.h"
+#include <iostream>
+#include <memory>
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/BitStream.h>
+#include "../GlobalVariables.h"
 #include "../GameServer/CustomIdentifiers.h"
-#include "../GameState/IGameState.h"
-#include <iostream>
-#include <memory>
+#include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
+#include "../GameObject/NetworkComponent/RemoteItemComponent.h"
+#include "PhysicsManager.h"
+#include "ItemManager.h"
+#include "ObjectManager.h"
+
+class ItemManager;
+class ObjectManager;
 
 class NetworkManager{
 
@@ -56,14 +54,20 @@ public:
     IComponent::Pointer createRemoteItemComponent(GameObject& newGameObject, int type);
 
     //==============================================================
-    // Create players
+    // Player functions
     //==============================================================
+
+    //Sends input from the player to the server so it executes actions
+    void sendInput(EventType event);
 
     //Collocates the player in the map
     void createPlayer(RakNet::Packet* packet);
 
     //Creates a remote player in our game
     void createRemotePlayer(RakNet::Packet* packet);
+
+    //Update players position
+    void updatePlayersPosition(RakNet::Packet* packet);
 
     //==============================================================
     //  MOVE STUFF
@@ -151,17 +155,21 @@ public:
     //==============================================================
     // Getters and setters
     //==============================================================
-    std::vector<IComponent::Pointer>& getRemotePlayerComponentList()   {    return remotePlayerComponentList;   } //Remote player component list getter
-    std::vector<IComponent::Pointer>& getRemoteBananaComponentList()   {    return remoteBananaComponentList;   } //Remote player component list getter
-    std::vector<IComponent::Pointer>& getRemoteRedShellComponentList() {    return remoteRedShellComponentList; } //Remote player component list getter
-    std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){    return remoteBlueShellComponentList;} //Remote player component list getter
-    void setPlayer(GameObject::Pointer p)                              {    player = p;                         };
-    void setStarted(bool s)                                            {    started = s;                        };
-    void setConected(bool s)                                           {    conected = s;                       };
-    GameObject::Pointer getPlayer()                                    {    return player;                      };
-    bool getStarted()                                                  {    return started;                     };
-    bool getConected()                                                 {    return conected;                    };
-
+    std::vector<IComponent::Pointer>& getRemotePlayerComponentList()   {  return remotePlayerComponentList;   } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteBananaComponentList()   {  return remoteBananaComponentList;   } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteRedShellComponentList() {  return remoteRedShellComponentList; } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){  return remoteBlueShellComponentList;} //Remote player component list getter
+    void setPlayer(GameObject::Pointer p)                              {  player = p;                         };
+    void setStarted(bool s)                                            {  started = s;                        };
+    void setConnected(bool s)                                          {  connected = s;                      };
+    void setDebugNetworkState(bool s)                                  {  debugNetworkState = s;              };
+    GameObject::Pointer getPlayer()                                    {  return player;                      };
+    bool getStarted()                                                  {  return started;                     };
+    bool getConnected()                                                {  return connected;                   };
+    std::list<customMessages>* getLastPackets()                        {  return &lastPackets;                }; //Returns last packets received
+    std::list<int>*            getLastSenders()                        {  return &lastSenders;                }; //Returns last packets' Senders
+    std::list<unsigned char*>* getLastData()                           {  return &lastData;                   }; //Returns last packets' data
+    
 private:
     //==============================================================
     // Private data
@@ -171,14 +179,19 @@ private:
 
     //MatchState started
     bool started;
-    bool conected;
+    bool connected;
 
     //Own player
     GameObject::Pointer player;
 
     //Own id
-    //############################CAMBIAR A INT DE TIPO ESPECIFICO
     int server_id;
+
+    //Debug info
+    bool debugNetworkState = false;
+    std::list<customMessages> lastPackets;
+    std::list<unsigned char*> lastData;
+    std::list<int>            lastSenders;
 
     //List of remotePlayerComponent
     std::vector<IComponent::Pointer> remotePlayerComponentList;

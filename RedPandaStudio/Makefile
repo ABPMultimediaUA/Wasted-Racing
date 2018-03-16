@@ -45,7 +45,10 @@ make_fac:
 	$(MAKE) -C src/Facade
 
 # target specific settings
-all_linux: LDFLAGS += -lassimp -lGLEW -lGLU -lGL -L./lib -lsfml-graphics -lsfml-window -lsfml-system -lSDL2
+all_linux: LDFLAGS += -lGLEW -lGLU -lGL
+all_linux: LDFLAGS += -L./lib/assimp -lassimp -Wl,-rpath=lib/assimp
+all_linux: LDFLAGS += -L./lib/sdl -lSDL2 -Wl,-rpath=lib/sdl
+all_linux: LDFLAGS += -L./lib/sfml -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath=lib/sfml
 
 all_linux:
 	$(CXX) $(CXXFLAGS) -shared -o $(BIN_PATH)$(TARGET).so $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) $(LDFLAGS)
@@ -70,7 +73,19 @@ info:
 hashtag := "\#"
 newline := \"\\n
 includeCommand := $(hashtag)include \"
-sh_value := "export LD_LIBRARY_PATH=./bin/ && ./bin/test"
+sh_value := "export LD_LIBRARY_PATH=./bin/:lib/sfml:lib/assimp:lib/sdl && ./bin/test"
+
+compile: LDFLAGS += -lGLEW -lGLU -lGL
+compile: LDFLAGS += -L./lib/sfml -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath=lib/sfml
+compile: LDFLAGS += -L./lib/assimp -lassimp -Wl,-rpath=lib/assimp
+compile: LDFLAGS += -L./lib/sdl -lSDL2 -Wl,-rpath=lib/sdl
+compile: LDFLAGS += -L./bin -lRedPanda -Wl,-rpath=./bin
+
+compilel: LDFLAGS += -lGLEW -lGLU -lGL
+compilel: LDFLAGS += -L./lib/sfml -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath=lib/sfml
+compilel: LDFLAGS += -L./lib/assimp -lassimp -Wl,-rpath=lib/assimp
+compilel: LDFLAGS += -L./lib/sdl -lSDL2 -Wl,-rpath=lib/sdl
+compilel: LDFLAGS += -L./bin -lRedPanda -Wl,-rpath=./bin
 
 test: remdir makedir copyfiles includefiles compile makesh
 	$(warning Done!)
@@ -92,11 +107,11 @@ includefiles:
 	
 compile:
 	g++ -I./inc -c -o bin/main.o main.cpp
-	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW -lassimp -lSDL2
+	g++ -o bin/test bin/main.o $(LDFLAGS)
 
 compilel:
 	g++ -I./inc -c -o bin/main.o mainDeLuis.cpp
-	g++ -o bin/test bin/main.o -L./bin -lRedPanda -Wl,-rpath=./bin -lsfml-graphics -lsfml-window -lsfml-system -lGL -lGLEW -lassimp -lSDL2
+	g++ -o bin/test bin/main.o $(LDFLAGS)
 
 makesh:
 	rm -rf ./bin/test.sh

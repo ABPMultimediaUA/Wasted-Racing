@@ -1,6 +1,8 @@
 #pragma once
 
-#include "IComponent.h"
+#include "../GlobalVariables.h"
+#include "../GameEvent/EventManager.h"
+#include "PhysicsComponent/MoveComponent.h"
 
 class InputComponent : public IComponent {
 

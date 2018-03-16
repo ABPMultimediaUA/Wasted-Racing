@@ -1,15 +1,9 @@
 #pragma once
 
 #include <iostream>
-#include <cstdint>
 #include <string>
 
 #include "../GameManager/InputManager.h"
-#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "../GameObject/RenderComponent/LightRenderComponent.h"
-#include "../GameObject/GameObject.h"
-
-class GameObject;
 
 //Window data structures
 struct vec2d {
@@ -91,6 +85,73 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
 
+    //==============================================================
+    //  VISUAL INTERFACE
+    //==============================================================
+    ////////////
+    //  HUD RELATED
+    ////////////
+    //Updates item icon in the HUD
+    virtual void updateItemIcon() = 0;
+    
+    ////////////
+    //  Image
+    ////////////
+    //Adds an image on the specific point given with the image specified
+    virtual int32_t addImage( std::string img, glm::vec2 pos) = 0;
+
+    //Substitutes an image with another at the same position
+    virtual void changeImage(int32_t id, std::string img) = 0;
+
+    //Deletes specified rectangle by its index in the rectangle array
+    virtual void deleteImage(int32_t id) = 0;
+
+    //Clean images off of the screen
+    virtual void cleanImages() = 0;
+
+    ////////////
+    //  Rectangle
+    ////////////
+
+    //Add rectangle of the given color and alpha channel, at the specified position with the given size
+    virtual int32_t addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a) = 0;
+
+    //Change color of the rectangle known by the id given
+    virtual void changeRectangleColor(int32_t id, int r, int g, int b, int a) = 0;
+
+    //Deletes the rectangle with the passed id
+    virtual void deleteRectangleColor(int32_t id) = 0;
+
+    //Clean all rectangles off of the screen
+    virtual void cleanRectangles() = 0;
+
+    ////////////
+    //  Text
+    ////////////
+
+    //Adds specified text at the specified point with specified size, with the specified color and font
+    virtual int32_t addText( std::string text, glm::vec2 pos = glm::vec2(0,0) , int r = 255, int g = 255, int b = 255, int a = 255, glm::vec2 size = glm::vec2(20,50), std::string font = "") = 0;
+
+    //Changes the specified text with the given message
+    virtual void changeText(int32_t id, std::string text) = 0;
+
+    //Changes the font of the game
+    virtual void changeFontText(int32_t id, std::string font) = 0;
+
+    //Changes the color of the text specified by the id
+    virtual void changeColorText(int32_t id, int r, int g, int b, int a) = 0;
+
+    //Changes the color of the background of the text specified by the id
+    virtual void changeBackgroundColorText(int32_t id, int r, int g, int b, int a) = 0;
+
+    //deletes text in the specified position of the text array
+    virtual void deleteText(int32_t id) = 0;
+
+    //Erase all text from the screen
+    virtual void cleanTexts() = 0;
+
+    //Erase all visual interface elements from the screen
+    virtual void cleanInterface() = 0;
     //Add SkyBox
     virtual void addSkybox(IComponent* ptr, std::string t, std::string bo, std::string l, std::string r, std::string f, std::string ba) = 0;
 

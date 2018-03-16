@@ -1,10 +1,8 @@
 #pragma once
 
-#include "../IComponent.h"
-#include "VObject.h"
 #include <glm/ext.hpp>
 #include <vector>
-#include "../GameObject.h"
+#include "VObject.h"
 #include "../ItemComponent/ItemHolderComponent.h"
 
 class AIDrivingComponent : public IComponent{

@@ -1,16 +1,24 @@
 #pragma once
 
-#include "../GameObject/GameObject.h"
+#include <iostream>
 #include <map>
+#include "../GlobalVariables.h"
+
+//Managers include
+#include "../GameEvent/EventManager.h"
 #include "PhysicsManager.h"
-#include "RenderManager.h"
 #include "ItemManager.h"
 #include "WaypointManager.h"
 #include "AIManager.h"
+#include "RenderManager.h"
 #include "SensorManager.h"
 #include "ScoreManager.h"
 #include "AudioManager.h"
 #include "NetworkManager.h"
+
+class ItemManager;
+class RenderManager;
+class NetworkManager;
 
 class ObjectManager{
 
@@ -42,6 +50,7 @@ public:
     //Create an object and fire creation event
     GameObject::Pointer createObject(uint16_t id, GameObject::TransformationData transform);
 
+
     //Add an object
     void addObject(GameObject::Pointer ptr);
 
@@ -68,6 +77,14 @@ public:
     GameObject::Pointer createCyborg(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent);
     GameObject::Pointer createCrocodile(GameObject::TransformationData tansform, int id, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent);
 
+    //==============================================
+    // Create player auxiliars
+    //============================================== 
+
+    //Adds the components needed to the character created
+    void createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model);
+
+    //Creates character depending on option selected specified by the int
     void createMove(GameObject::Pointer obj, int move);
 
     //Game running getter and setter

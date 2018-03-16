@@ -1,8 +1,14 @@
 #pragma once
 
-#include "../GameFacade/IRenderFacade.h"
-#include "QuadTree.h"
 #include <vector>
+#include "QuadTree.h"
+#include "../GameFacade/RenderIrrlicht.h"
+#include "../GameFacade/RenderRedPanda.h"
+#include "WaypointManager.h"
+#include "AIManager.h"
+#include "ObjectManager.h"
+
+class ObjectManager;
 
 class RenderManager{
 
@@ -44,6 +50,7 @@ public:
         return renderComponentTree;
     }
 
+    //Get render facade functions
     IRenderFacade* getRenderFacade() {
         return renderFacade;
     }
@@ -59,6 +66,86 @@ public:
     IComponent::Pointer getCameraComponent() { return cameraComponent; }
     void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
 
+    //==============================================
+    // VISUAL INTERFACE
+    //==============================================
+    /////////////
+    //  HUD
+    /////////////
+    //Initializes HUD
+    void initHUD();
+
+    //Updates HUD
+    void updateHUD();
+
+    /////////////
+    //  IMAGES
+    /////////////
+
+    //Adds a rectangle on the specific point given with the specified image
+    int32_t createImage(std::string img, glm::vec2 pos);
+
+    //Delete image specified by its id
+    void deleteImage(int32_t id);
+
+    //Delete images specified inside the vector of ids
+    void deleteImages(std::vector<int32_t>* ids);
+
+    //Clean images off of the visual interface
+    void cleanImages();
+
+    /////////////
+    //  COLOR RECTANGLES
+    /////////////
+
+    //Add rectangle of the given color and alpha channel, at the specified position with the given size
+    int32_t createRectangleColor(glm::vec2 pos, glm::vec2 size, int r = 255, int g = 255, int b = 255, int a = 255);
+
+    //Change color of the rectangle known by the id given
+    void changeRectangleColor(int32_t id, int r, int g, int b, int a);
+    
+    //Deletes the rectangle with the passed id
+    void deleteRectangleColor(int32_t id);
+
+    //Clean all rectangles off of the screen
+    void cleanRectangles();
+
+    /////////////
+    //  TEXT
+    /////////////
+
+    //Add specified text in the specified point
+    int32_t createText( std::string text, glm::vec2 pos = glm::vec2(0,0), int r = 255, int g = 255, int b = 255, int a = 255, glm::vec2 size = glm::vec2(20,50), std::string fontFile = "");
+
+    //Change the specified text with the given message
+    void changeText(int32_t id, std::string text);
+
+   //Changes the font of the game
+    void changeFontText(int32_t id, std::string fontFile);
+
+    //Changes the color of the text specified by the id
+    void changeColorText(int32_t id, int r, int g, int b, int a);
+
+    //Changes the color of the background of the text specified by the id
+    void changeBackgroundColorText(int32_t id, int r, int g, int b, int a);
+
+    //Delete text with the specified id
+    void deleteText(int32_t id);
+
+    //Delete texts within the array of idss
+    void deleteTexts(std::vector<int32_t>* ids);
+
+    //Erase all text from the screen
+    void cleanTexts();
+
+    //Erase all interface elements off of the screen
+    void cleanVI();
+
+    //==============================================
+    // GETTERS AND SETTERS
+    //==============================================
+    void setDebugState(bool d){ debugState = d; };
+    
     //AI Debug
     void renderAIDebug();
     void updateAIDebug();
@@ -88,13 +175,26 @@ public:
     std::vector<GameObject> getAIsBattle()             {          return AIDebugPointB;     }
     
 private:
-
+    //==============================================================
+    // PRIVATE DATA
+    //==============================================================
+    //Render facade
     IRenderFacade* renderFacade;
+
+    //Debug state checker
+    bool debugState;
 
     //When we start adding components, we add them in a list,
     //Once we've added them all, we split them in a QuadTree structure
     std::vector<IComponent::Pointer>      renderComponentList;
     QuadTree                              renderComponentTree;
+
+    //==============================================================
+    // HUD DATA
+    //==============================================================
+    int32_t lapHUD_ID;      //Lap text ID
+    int32_t positionHUD_ID; //Position text ID
+    int32_t itemHUD_ID;     //Item text ID
 
     //Data for the quadTree
     //unsigned int maxObjPerNode;

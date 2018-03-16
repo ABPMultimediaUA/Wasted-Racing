@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../IComponent.h" 
-#include "../GameObject.h"
+#include "../IComponent.h"
+#include "../../GameEvent/EventManager.h"
+#include "ItemHolderComponent.h"
 #include "../ScoreComponent.h"
 
 class ItemBoxComponent : public IComponent{

@@ -1,9 +1,19 @@
 #include "InputIrrlicht.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameManager/RenderManager.h"
-#include "../Game.h"
 
-#include <iostream>
+//Define macros
+#define DetectKeyInput(TheKey,Event_Down,Event_Up) \
+    if(event.KeyInput.PressedDown && event.KeyInput.Key == irr::EKEY_CODE::TheKey) { \
+        if(!KeyIsDown[irr::EKEY_CODE::TheKey]){ \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Down}); \
+            KeyIsDown[irr::EKEY_CODE::TheKey] = true; \
+        } \
+    } \
+    else { \
+        if(KeyIsDown[irr::EKEY_CODE::TheKey] && event.KeyInput.Key == irr::EKEY_CODE::TheKey){ \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Up}); \
+            KeyIsDown[irr::EKEY_CODE::TheKey] = false; \
+        } \
+    };
 
 void InputIrrlicht::openInput(uintptr_t dev) {
 
@@ -37,6 +47,7 @@ bool InputIrrlicht::OnEvent(const irr::SEvent& event) {
         DetectKeyInput(KEY_KEY_Q,Key_UseItem_Down,Key_UseItem_Up)
         DetectKeyInput(KEY_KEY_5,Key_Multiplayer_Down,Key_Multiplayer_Up)
         DetectKeyInput(KEY_KEY_6,Key_Singleplayer_Down,Key_Singleplayer_Up)
+        //DetectKeyInput(KEY_F8,Key_DebugNetwork_Down,Key_DebugNetwork_Up)
         DetectKeyInput(KEY_F6,Key_SlowControl_Down,Key_SlowControl_Up)
         DetectKeyInput(KEY_F7,Key_NormalControl_Down,Key_NormalControl_Up)
         DetectKeyInput(KEY_F8,Key_FastControl_Down,Key_FastControl_Up)

@@ -1,13 +1,18 @@
 #include "CameraRenderComponent.h"
-#include "../../GameManager/RenderManager.h"
-#include <iostream>
+#include "../../GameManager/PhysicsManager.h"
 
-class MoveComponent;
-class TerrainComponent;
+CameraRenderComponent::CameraRenderComponent(GameObject& newGameObject) : IRenderComponent(newGameObject) {
+		distance = 30;
+		maxDistance = 30;
+		oldDistance = distance;
+		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
+		count = 0;
+		spinDir = 1;
+}
 
 //Initilizer
 void CameraRenderComponent::init() {
-    RenderManager::getInstance().getRenderFacade()->setCameraTarget(gameObject);
+
 }
 
 //Update   

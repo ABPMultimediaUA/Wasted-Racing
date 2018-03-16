@@ -2,10 +2,8 @@
 
 #include <vector>
 #include <iostream>
-#include "../Game.h"
-#include "../GameState/IGameState.h"
+#include "../GlobalVariables.h"
 #include "../GameEvent/EventManager.h"
-#include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/ItemComponent/ItemHolderComponent.h"
 #include "../GameObject/ItemComponent/ItemRedShellComponent.h"
 #include "../GameObject/ItemComponent/ItemBlueShellComponent.h"
@@ -13,23 +11,15 @@
 #include "../GameObject/ItemComponent/ItemMushroomComponent.h"
 #include "../GameObject/ItemComponent/ItemStarComponent.h"
 #include "../GameObject/ItemComponent/ItemBoxComponent.h"
-#include "RenderManager.h"
 #include "PhysicsManager.h"
+#include "RenderManager.h"
 #include "ObjectManager.h"
 #include "NetworkManager.h"
 
+class NetworkManager;
+class ObjectManager;
+
 class ItemManager {
-
-    private:
-
-        std::vector<IComponent::Pointer> ItemHolders;
-        std::vector<std::shared_ptr<IItemComponent>> ItemComponents;
-        std::vector<std::shared_ptr<ItemBoxComponent>> ItemBoxes;
-        //std::vector<> players;
-
-        //Item ids index
-        int ids;
-
     public:
 
         ItemManager();
@@ -67,6 +57,20 @@ class ItemManager {
         //Item delete
         void deleteItem(IComponent::Pointer component);
 
+    private:
+        //====================================================
+        //      PRIVATE DATA
+        //====================================================
+        //Global variables bush
+        GlobalVariables* globalVariables;
 
+
+        std::vector<IComponent::Pointer> ItemHolders;
+        std::vector<std::shared_ptr<IItemComponent>> ItemComponents;
+        std::vector<std::shared_ptr<ItemBoxComponent>> ItemBoxes;
+        //std::vector<> players;
+
+        //Item ids index
+        int ids;
 
  };

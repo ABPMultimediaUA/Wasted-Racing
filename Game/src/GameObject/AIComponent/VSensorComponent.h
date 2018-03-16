@@ -1,15 +1,13 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+#include <glm/ext.hpp>
+#include "VObject.h"
 #include "ISensorComponent.h"
 #include "../PhysicsComponent/CollisionComponent.h"
 #include "../ItemComponent/ItemBoxComponent.h"
 #include "../PhysicsComponent/RampComponent.h"
-#include "../../GamePhysics/LAPALPhysics.h"
-#include "VObject.h"
-#include <glm/ext.hpp>
-#include <vector>
-#include "../GameObject.h"
-#include <memory>
 
 class VSensorComponent : public ISensorComponent{
     public:

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../IComponent.h"
-#include "../GameObject.h"
 #include <glm/ext.hpp>
+#include "../GameObject.h"
 
 class WaypointComponent : public IComponent{
 private:
@@ -16,8 +15,6 @@ public:
         //Destructor
         ~WaypointComponent();
 
-        
-
         //Initilizer
 	virtual void init() {}
 
@@ -27,13 +24,9 @@ public:
 	//Closer
 	virtual void close() {}
 
-
-
         //Getters and setters
         int getLevel()                  {   return level;   };
-        float getRadius()               {   return radius;  };
-
-     
+        float getRadius()               {   return radius;  };     
         void setRadius(float rad)       {   radius = rad;   };
         void setLevel(int lvl)          {   level  = lvl;   };
 

@@ -105,10 +105,14 @@ all_linux: LDFLAGS += -L./lib/linux/irrlicht -lIrrlicht
 all_linux: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
 all_linux: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
 all_linux: LDFLAGS += -L./lib/linux/sdl -lSDL2
+all_linux: LDFLAGS += -L./lib/linux/assimp -lassimp
+all_linux: LDFLAGS += -L./lib/linux/sfml -lsfml-graphics -lsfml-window -lsfml-system 
 all_linux: LDFLAGS += -L./lib/linux -lRedPanda 
 all_linux: LDFLAGS += -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod -Wl,-rpath=lib/linux/raknet -Wl,-rpath=lib/linux/sdl -Wl,-rpath=lib/linux
+all_linux: LDFLAGS += -Wl,-rpath=lib/linux/assimp -Wl,-rpath=lib/linux/sfml
 
-sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/:lib/linux/sdl:lib/linux && bin/XKating"
+sh_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/:lib/linux/sdl:lib/linux:lib/linux/assimp:lib/linux/sfml && bin/XKating"
+sh_server_value := "export LD_LIBRARY_PATH=lib/linux/fmod/:lib/linux/irrlicht/:lib/linux/raknet/:lib/linux && bin/Server_XKating"
 
 all_linux:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
@@ -122,11 +126,12 @@ all_linux_server: LDFLAGS += -L./lib/linux/fmod -lfmod -lfmodstudio
 all_linux_server: LDFLAGS += -L./lib/linux/raknet -lRakNetDLL
 all_linux_server: LDFLAGS += -L./lib/linux/sdl -lSDL2
 all_linux_server: LDFLAGS += -L./lib/linux -lRedPanda
+all_linux_server: LDFLAGS += -Wl,-rpath=lib/linux/irrlicht -Wl,-rpath=lib/linux/fmod -Wl,-rpath=lib/linux/raknet -Wl,-rpath=lib/linux/sfml -Wl,-rpath=lib/linux
 
 all_linux_server:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET_SERVER) $(LDFLAGS)
 	rm -rf $(BIN_PATH)$(TARGET_SERVER).sh
-	@echo -e $(sh_value) >> $(BIN_PATH)$(TARGET_SERVER).sh
+	@echo -e $(sh_server_value) >> $(BIN_PATH)$(TARGET_SERVER).sh
 	chmod +x $(BIN_PATH)$(TARGET_SERVER).sh	
 
 clean: clean_linux

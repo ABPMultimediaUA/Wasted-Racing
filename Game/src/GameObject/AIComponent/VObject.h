@@ -4,7 +4,6 @@
 #include <memory>
 #include <iostream>
 #include "../GameObject.h"
-#include "../IComponent.h"
 
 class VObject{
 

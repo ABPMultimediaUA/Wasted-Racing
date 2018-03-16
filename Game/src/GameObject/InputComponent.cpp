@@ -1,12 +1,6 @@
 #include "InputComponent.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameManager/InputManager.h"
-#include "../GameManager/RenderManager.h"
 #include "../GameManager/ItemManager.h"
-#include "ItemComponent/ItemHolderComponent.h"
-#include "GameObject.h"
-#include "PhysicsComponent/MoveComponent.h"
-#include <iostream>
+#include "../GameState/MatchState.h"
 
 //==============================================
 // DELEGATES DECLARATIONS
@@ -72,60 +66,62 @@ void InputComponent::close(){
 // DELEGATES
 //==============================================
 void advanceDownI(EventData eData) {
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
     comp->changeAccInc(comp->getMovemententData().max_acc);
     comp->isMoving(true);
 }
 void advanceUpI(EventData eData) {
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
     comp->changeAccInc(0.0);
     comp->isMoving(false);
 }
 void brakeDownI(EventData eData) {
-   auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   comp->isBraking(true);
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
+    comp->isBraking(true);
 }
 void brakeUpI(EventData eData) {
-   auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-   comp->isBraking(false);
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
+        comp->isBraking(false);
 }
 void turnLeftDownI(EventData eData) {
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
     comp->changeSpinIncrement(0.1);
     comp->isSpinning(true);
 }
 void turnLeftUpI(EventData eData) {
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
     comp->changeSpinIncrement(0.0);
     comp->isSpinning(false);
 }
 void turnRightDownI(EventData eData) {
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
-    comp->changeSpinIncrement(-0.1);
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
+   comp->changeSpinIncrement(-0.1);
     comp->isSpinning(true);
 }
 void turnRightUpI(EventData eData) {
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
     comp->changeSpinIncrement(0.0);
     comp->isSpinning(false);
 }
 void jumpDownI(EventData eData){
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
     comp->isJumping(true);
 }
 void jumpUpI(EventData eData){
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
     comp->isJumping(false);
 }
 void driftDownI(EventData eData){
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
     comp->isDrifting(true);
 }
 void driftUpI(EventData eData){
-    auto comp = InputManager::getInstance().getComponent().get()->getGameObject().getComponent<MoveComponent>();
+    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
     comp->isDrifting(false);
 }
+
 void useItemDownI(EventData eData){
+    EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
     auto obj = InputManager::getInstance().getComponent().get()->getGameObject();
     ItemManager::getInstance().createItem(obj);
 }

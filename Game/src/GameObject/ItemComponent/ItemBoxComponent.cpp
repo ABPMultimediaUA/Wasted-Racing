@@ -1,7 +1,4 @@
 #include "ItemBoxComponent.h"
-#include "../GameObject.h"
-#include "ItemHolderComponent.h"
-#include "../../GameManager/RenderManager.h"
 
 
 //Constructor
@@ -18,10 +15,19 @@ void ItemBoxComponent::init(){
 
 void ItemBoxComponent::update(float dTime){
 
+    //Rotate the object (rotating motion)
     auto trans = getGameObject().getTransformData();
     trans.rotation.y += 1*M_PI/180;
     getGameObject().setTransformData(trans);
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
+
+    //____>AÑADIR EVENTO MÁGICO QUE UPDATEE ESTO PA QUE NO HAYAN ERRORES MACHO Q MIRA EH
+    //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
+    //Update the render
+    EventData data;
+    data.Id = getGameObject().getId();
+    data.Vector = trans.rotation;
+    EventManager::getInstance().addEvent(Event {EventType::Update_Transform_Rotation, data});
+
 
     if(getGameObject().getTransformData().scale.x == 0){
             actTime -= dTime;
@@ -39,8 +45,13 @@ void ItemBoxComponent::update(float dTime){
         trans.scale.z = 0.5;
 
         getGameObject().setTransformData(trans);
-        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
+        //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
+        //Update render
+        EventData data;
+        data.Id = getGameObject().getId();
+        data.Vector = trans.scale;
+        EventManager::getInstance().addEvent(Event {EventType::Update_Transform_Scale, data});
     }
 
 }
@@ -60,7 +71,14 @@ void ItemBoxComponent::deactivateBox(){
     trans.scale.z = 0;
 
     getGameObject().setTransformData(trans);
-    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
+
+    //Update render
+    EventData data;
+    data.Id = getGameObject().getId();
+    data.Vector = trans.scale;
+    EventManager::getInstance().addEvent(Event {EventType::Update_Transform_Scale, data});
+
+    //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
 }
 

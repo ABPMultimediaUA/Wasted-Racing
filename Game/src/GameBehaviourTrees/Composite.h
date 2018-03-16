@@ -1,10 +1,10 @@
  #pragma once
 
- #include "Behaviour.h"
  #include <vector>
  #include <memory>
  #include <string>
  #include <iostream>
+ #include "Behaviour.h"
 
  class Composite : public Behaviour 
  {

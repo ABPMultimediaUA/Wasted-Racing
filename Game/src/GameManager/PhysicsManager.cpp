@@ -1,10 +1,5 @@
 #include "PhysicsManager.h"
-#include "../GameObject/GameObject.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameManager/RenderManager.h"
-#include "../GameObject/RenderComponent/CameraRenderComponent.h"
-#include <memory>
-#include <iostream>
+#include "../GlobalVariables.h"
 
 //==============================================
 // DELEGATES DECLARATIONS
@@ -66,13 +61,18 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Move character
         //==============================================================================
+        if(!GlobalVariables::getInstance().getOnline())
+        {
+        
         ourMove->update(dTime);
         
         //==============================================================================
         // Check collisions with other objects
         //==============================================================================
+            
         calculateObjectsCollision(ourMove, ourColl, dTime);
 
+        }
         //==============================================================================
         // Check collisions with terrain limits and terrain change
         //==============================================================================
@@ -82,7 +82,7 @@ void PhysicsManager::update(const float dTime) {
     }
 
     //Update camera collision
-    RenderManager::getInstance().getRenderFacade()->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
+    //RenderManager::getInstance().getRenderFacade()->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
 
 }
 
@@ -116,8 +116,8 @@ void PhysicsManager::interpolate(float accumulatedTime, const float maxTime) {
 
         gameObject.setTransformData(currTrans);
 
-        auto id = gameObject.getId();
-        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, currTrans);
+        //auto id = gameObject.getId();
+        //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, currTrans);
 
     }
 
@@ -499,7 +499,8 @@ IComponent::Pointer PhysicsManager::createRampComponent(GameObject& newGameObjec
     EventData data;
     data.Component = component;
 
-    EventManager::getInstance().addEvent(Event {EventType::RampComponent_Create, data});
+    //________>Not needed now
+    //EventManager::getInstance().addEvent(Event {EventType::RampComponent_Create, data});
 
     return component;
 }
