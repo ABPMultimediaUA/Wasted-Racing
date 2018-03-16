@@ -25,14 +25,6 @@ void RenderIrrlicht::openWindow(){
     sceneManager = device->getSceneManager();
     geometryCreator = sceneManager->getGeometryCreator();
 
-    font = sceneManager->getGUIEnvironment()->getFont("../media/img/fontcourier.bmp");
-    pos = sceneManager->getGUIEnvironment()->addStaticText(L"Position: ", irr::core::recti(0,0, 200,50));
-    lap = sceneManager->getGUIEnvironment()->addStaticText(L"Lap: ", irr::core::recti(0, 20, 200, 50));
-    item = sceneManager->getGUIEnvironment()->addStaticText(L"Item: ", irr::core::recti(0, 40, 200, 50));
-    pos->setOverrideFont(font);
-
-    createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");
-
     addCamera();
     //sceneManager->setAmbientLight(irr::video::SColorf(0.8,0.8,0.8,1));
 

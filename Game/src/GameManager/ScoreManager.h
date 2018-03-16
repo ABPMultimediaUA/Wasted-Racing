@@ -42,4 +42,5 @@ class ScoreManager {
         std::vector<ScoreComponent::Pointer> players;
         std::vector<StartLineComponent::Pointer> startLines;
         int maxLaps;
+        int playerLap = 1, playerPosition = 1;
 };
