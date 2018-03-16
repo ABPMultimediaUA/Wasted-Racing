@@ -11,8 +11,6 @@
 #include <assimp/postprocess.h>
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <vector>
 
 #include "RedPanda.h"
