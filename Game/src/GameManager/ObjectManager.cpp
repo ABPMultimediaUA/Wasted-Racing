@@ -321,6 +321,8 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
     //The player
     if(move == 0)
     {
+        mData.isPlayer = true;
+        obj->getComponent<MoveComponent>()->setMovementData(mData);
         //Create input
         InputManager::getInstance().createInputComponent(*obj.get());
 
