@@ -4,6 +4,8 @@ namespace rps{
 
 //////////////////////////////
 //  DEVICE CONSTRUCTORS
+//////////////////////////////
+
 RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, int framerate, bool vsync, bool fullscreen){
 
     static RedPandaStudio rps;
@@ -11,7 +13,7 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
     rps.initSDLWindow(width, height, depth, framerate, vsync, fullscreen);
     rps.initOpenGL();
     rps.initScene();
-
+	
     return rps;
 
 }
@@ -24,6 +26,8 @@ void RedPandaStudio::updateDevice() {
 	renderLights();
 
 	scene->draw();
+
+	skybox->draw();
 
 	SDL_GL_SwapWindow(window);
 
@@ -221,6 +225,13 @@ void RedPandaStudio::initScene() {
     //Initilize Model Matrix
     glm::mat4& Model = scene->getEntity()->modelMatrix();
     Model = glm::mat4(1.0f);
+
+	skybox = new TResourceSkybox();
+	char* r = "Link/skybox_front.png";
+	for(int i = 0; i < 6; i++)
+	{
+		skybox->loadResource(r, i);
+	}
 }
 
 //////////////////////////////

@@ -81,6 +81,9 @@ private:
     TNode *camera;
     std::vector<TNode*> lights;
 
+    //Temporary variable
+    TResourceSkybox*  skybox;
+
 };
 
 //Transformation facade

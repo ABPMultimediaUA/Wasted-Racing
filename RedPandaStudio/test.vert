@@ -16,6 +16,11 @@ varying vec2 UV_Coordinates;
 const int maxLights = 5;
 uniform int numLights;
 
+out VS_OUT
+{
+    vec3 tc;
+} vs_out;
+
 struct Light {
    vec4 position;
    vec4 intensity;
@@ -33,6 +38,13 @@ uniform Material material;
 
 void main()
 {
+    vec3[4] vertices = vec3[4] (vec3(-1.0, -1.0, 1.0),
+                                vec3(1.0, -1.0, 1.0),
+                                vec3(-1.0,  1.0, 1.0),
+                                vec3(1.0,  1.0, 1.0));
+
+    vs_out.tc = mat3(ViewMatrix) * vertices[gl_VertexID];
+
     float ambient = 0.6;                               
 
     v_Color = vec4(0.0, 0.0, 0.0, 1.0);
