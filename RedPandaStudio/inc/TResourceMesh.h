@@ -2,6 +2,7 @@
 
 #include "TEntity.h"
 #include "TResource.h"
+#include "TResourceMaterial.h"
 #include "TResourceTexture.h"
 #include <GL/glew.h>
 #include <GL/glut.h>
@@ -36,6 +37,7 @@ class TResourceMesh : public TResource {
         void setNVertex(long n)                 { nVertex=n;        }
         void setTexture(TResourceTexture* t)    { texture=t;        }
         void setTextActive(bool b)              { textActive=b;     }
+        void setMaterial(TResourceMaterial* m)  { material=m;       }
 
     private:
         //Vertex info
@@ -50,4 +52,8 @@ class TResourceMesh : public TResource {
         TResourceTexture* texture = NULL;
         //Control variable to see if the texture is active
         bool textActive=0;
+        //Material asociated to this mesh
+        TResourceMaterial* material = NULL;
+        //Buffer handles
+        GLuint* vboHandles;
 };

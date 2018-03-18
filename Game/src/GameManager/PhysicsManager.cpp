@@ -250,6 +250,7 @@ void PhysicsManager::calculateStaticCollision(std::shared_ptr<MoveComponent> mov
     mData.vel = 0;
     mData.velocity = glm::vec3(0,0,0);
     mData.boost = false;
+    mData.coll = true;
 
     ourMove->setMovementData(mData);
 }
@@ -270,6 +271,7 @@ void PhysicsManager::calculateMovingCollision(std::shared_ptr<MoveComponent> mov
     mData.vel = 0;
     mData.velocity = glm::vec3(0,0,0);
     mData.boost = false;
+    mData.coll = true;
 
     ourMove->setMovementData(mData);
 }
@@ -368,6 +370,7 @@ void PhysicsManager::calculateLineCollision(std::shared_ptr<MoveComponent> move,
     mData.vel = 0;
     mData.velocity = glm::vec3(0,0,0);
     mData.boost = false;
+    mData.coll = true;
 
     ourMove->setMovementData(mData);
 

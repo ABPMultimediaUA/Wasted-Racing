@@ -30,6 +30,9 @@ void MoveComponent::update(float dTime) {
     updateJump(mData, position, terrain);
     LAPAL::correctYPosition(mData, dTime, terrain, position);
 
+    //Set collision value to false (if it was true it has already been processed)
+    mData.coll = false;
+
     //Get transform data
     auto trans = getGameObject().getTransformData(); 
     
@@ -143,7 +146,7 @@ void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, floa
 //Update and interpolate temporal speed change
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    if(mData.boost) {
+    if(mData.boost && !mData.coll) {
         if(constantAlteredTime > 0) {
             //While time is constant, velocity is constant and maximum
             mData.vel = mData.max_vel;
