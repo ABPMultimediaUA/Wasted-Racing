@@ -91,7 +91,7 @@ TResourceTexture* ResourceManager::getResourceTexture(const char* n)
     return res;
 }
 
-TResourceShader* ResourceManager::getResourceShader(const char* n)
+TResourceShader* ResourceManager::getResourceShader(const char* n, GLenum e)
 {
     unsigned int i;
     TResourceShader* res=NULL;
@@ -112,6 +112,7 @@ TResourceShader* ResourceManager::getResourceShader(const char* n)
         res = new TResourceShader();
 
         res->setName(n);
+        res->setShaderType(e);
         if(res->loadResource())
         {
             shaders.push_back(res);

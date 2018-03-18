@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TEntity.h"
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
 #include <vector>
@@ -26,11 +27,19 @@ class TResourceSkybox {
         //Draws the skybox
         void draw();
 
+        /////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////// GETTERS && SETTERS ////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////
+        void setView(GLuint v)              { view=v;   }
+
     private:
         //Vector of the 6 textures that compose the skybox, in the order showed in position correspondency
         std::vector<sf::Image*> textures;
 
         //Identifier of the texture of the skybox
         GLuint texture;
+
+        //Identifier of the viewMatrix of the shader
+        GLuint view;
 
 };

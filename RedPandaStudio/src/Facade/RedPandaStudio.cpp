@@ -25,9 +25,15 @@ void RedPandaStudio::updateDevice() {
 	renderCamera();
 	renderLights();
 
+	//Change shader program for drawing skybox
+	glUseProgram(skyboxID);
+	glBindVertexArray(skyVertexArray);
+	skybox->draw();
+	glUseProgram(scene->getEntity()->getProgramID());
+	glEnable(GL_DEPTH_TEST);
+
 	scene->draw();
 
-	skybox->draw();
 
 	SDL_GL_SwapWindow(window);
 
@@ -98,83 +104,51 @@ void RedPandaStudio::initOpenGL() {
 
     const char * vertex_file_path = "test.vert";
     const char * fragment_file_path = "test.frag";
+	const char * skybox_vertex_path = "skybox.vert";
+	const char * skybox_fragment_path = "skybox.frag";
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
 
 	glewExperimental = GL_TRUE;
-
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
 
     //Init VBO
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);  
+    glBindVertexArray(VertexArrayID);
 
-    //Create shaders
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-
-	//Read vertex shader from file
-	std::string VertexShaderCode;
-	std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-	if(VertexShaderStream.is_open()){
-		std::stringstream sstr;
-		sstr << VertexShaderStream.rdbuf();
-		VertexShaderCode = sstr.str();
-		VertexShaderStream.close();
-	}else{
-		printf("Couldn't open %s\n", vertex_file_path);
+	glGenVertexArrays(1, &skyVertexArray);
+	glDepthFunc(GL_LEQUAL);
+	
+	//Init skybox
+	skybox = new TResourceSkybox();
+	char* r = "Link/skybox_front.png";
+	for(int i = 0; i < 6; i++)
+	{
+		skybox->loadResource(r, i);
 	}
 
-	//Read fragment shader from file
-	std::string FragmentShaderCode;
-	std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-	if(FragmentShaderStream.is_open()){
-		std::stringstream sstr;
-		sstr << FragmentShaderStream.rdbuf();
-		FragmentShaderCode = sstr.str();
-		FragmentShaderStream.close();
-	}else{
-		printf("Couldn't open %s\n", vertex_file_path);
-	}
+	//Get main shaders
+	TResourceShader* vertexShader = resourceManager->getResourceShader(vertex_file_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* fragmentShader = resourceManager->getResourceShader(fragment_file_path, (GLenum)GL_FRAGMENT_SHADER);
 
-    //Init some variables
-	GLint Result = GL_FALSE;
-	int InfoLogLength;
+	//Get main shaders ID
+	GLuint vertexID = vertexShader->getShaderID();
+	GLuint fragmentID = fragmentShader->getShaderID();
 
-	//Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path);
-	char const * VertexSourcePointer = VertexShaderCode.c_str();
-	glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
-	glCompileShader(VertexShaderID);
+	//Get skybox shaders
+	TResourceShader* skyboxVertex = resourceManager->getResourceShader(skybox_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* skyboxFragment = resourceManager->getResourceShader(skybox_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
 
-	//Check vertex shader is ok
-	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		printf("%s\n", &VertexShaderErrorMessage[0]);
-	}
-
-	//Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragment_file_path);
-	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
-	glCompileShader(FragmentShaderID);
-
-	//Check fragment shader is ok
-	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		printf("%s\n", &FragmentShaderErrorMessage[0]);
-	}
+	//Get skybox shaders ID
+	GLuint skyVertexID = skyboxVertex->getShaderID();
+	GLuint skyFragmentID = skyboxFragment->getShaderID();
 
 	//Link OpenGL program using the id
 	printf("Linking program\n");
 	GLuint ProgramID = glCreateProgram();
-	glAttachShader(ProgramID, VertexShaderID);
-	glAttachShader(ProgramID, FragmentShaderID);
+	glAttachShader(ProgramID, vertexID);
+	glAttachShader(ProgramID, fragmentID);
 	glLinkProgram(ProgramID);
 
 	//Check the program is ok
@@ -187,11 +161,33 @@ void RedPandaStudio::initOpenGL() {
 	}
 
     //We no longer need the shaders (we have them in the program)
-	glDetachShader(ProgramID, VertexShaderID);
-	glDetachShader(ProgramID, FragmentShaderID);
+	glDetachShader(ProgramID, vertexID);
+	glDetachShader(ProgramID, fragmentID);
 	
-	glDeleteShader(VertexShaderID);
-	glDeleteShader(FragmentShaderID);
+	glDeleteShader(vertexID);
+	glDeleteShader(fragmentID);
+
+	//Create Skybox program
+	skyboxID = glCreateProgram();
+	glAttachShader(skyboxID, skyVertexID);
+	glAttachShader(skyboxID, skyFragmentID);
+	glLinkProgram(skyboxID);
+
+	//Check the program is ok
+	glGetProgramiv(skyboxID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(skyboxID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(skyboxID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+	//We no longer need the shaders (we have them in the program)
+	glDetachShader(skyboxID, skyVertexID);
+	glDetachShader(skyboxID, skyFragmentID);
+	
+	glDeleteShader(skyVertexID);
+	glDeleteShader(skyFragmentID);
 
     //Use the program we have just created
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -210,6 +206,9 @@ void RedPandaStudio::initOpenGL() {
 	scene->getEntity()->setViewID(view);
 	scene->getEntity()->setProjectionID(projection);
 
+	GLuint viewSky = glGetUniformLocation(skyboxID, "ViewMatrix");
+	skybox->setView(viewSky);
+
 }
 
 void RedPandaStudio::initScene() {
@@ -225,13 +224,6 @@ void RedPandaStudio::initScene() {
     //Initilize Model Matrix
     glm::mat4& Model = scene->getEntity()->modelMatrix();
     Model = glm::mat4(1.0f);
-
-	skybox = new TResourceSkybox();
-	char* r = "Link/skybox_front.png";
-	for(int i = 0; i < 6; i++)
-	{
-		skybox->loadResource(r, i);
-	}
 }
 
 //////////////////////////////
