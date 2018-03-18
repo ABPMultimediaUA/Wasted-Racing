@@ -1,5 +1,12 @@
 #version 450 core
 
+layout (binding = 0) uniform samplerCube tex_cubemap;
+
+in VS_OUT
+{
+  vec3 tc;
+} fs_in;
+
 precision mediump float;	// Precisión media
 
 varying vec4 v_Color;		// in: color del vertex shader
@@ -21,4 +28,5 @@ void main()
   {
     FragColor = v_Color;
   }
+    //FragColor = texture(tex_cubemap, fs_in.tc);
 }
