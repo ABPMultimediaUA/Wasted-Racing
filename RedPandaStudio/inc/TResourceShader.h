@@ -8,9 +8,7 @@
 
 class TResourceShader : public TResource {
     public:
-        TResourceShader(bool type){
-            vertexShader = type;
-        };
+        TResourceShader(){};
         ~TResourceShader(){};
 
         //Load the resource specified in the route provided
