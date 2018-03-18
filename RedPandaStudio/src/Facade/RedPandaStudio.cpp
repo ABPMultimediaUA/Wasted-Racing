@@ -145,20 +145,11 @@ void RedPandaStudio::initOpenGL() {
 	GLuint skyFragmentID = skyboxFragment->getShaderID();
 
 	//Link OpenGL program using the id
-	printf("Linking program\n");
+	printf("Linking OpenGL program\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexID);
 	glAttachShader(ProgramID, fragmentID);
 	glLinkProgram(ProgramID);
-
-	//Check the program is ok
-	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
-		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		printf("%s\n", &ProgramErrorMessage[0]);
-	}
 
     //We no longer need the shaders (we have them in the program)
 	glDetachShader(ProgramID, vertexID);

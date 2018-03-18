@@ -1,5 +1,10 @@
 #include "TResourceShader.h"
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
 bool TResourceShader::loadResource()
 {
     std::string shaderCode;

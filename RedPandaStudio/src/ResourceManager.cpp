@@ -109,7 +109,7 @@ TResourceShader* ResourceManager::getResourceShader(const char* n, GLenum e)
     //If it's not loaded, we create a new resource and try to load it
     if(found == false)
     {
-        res = new TResourceShader();
+        res = new TResourceShader(type);
 
         res->setName(n);
         res->setShaderType(e);
