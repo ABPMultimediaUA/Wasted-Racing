@@ -96,9 +96,6 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "test.vert";
-    const char * fragment_file_path = "test.frag";
-
 	glewExperimental = GL_TRUE;
 
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
@@ -108,90 +105,23 @@ void RedPandaStudio::initOpenGL() {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);  
 
-    //Create shaders
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-
-	//Read vertex shader from file
-	std::string VertexShaderCode;
-	std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-	if(VertexShaderStream.is_open()){
-		std::stringstream sstr;
-		sstr << VertexShaderStream.rdbuf();
-		VertexShaderCode = sstr.str();
-		VertexShaderStream.close();
-	}else{
-		printf("Couldn't open %s\n", vertex_file_path);
-	}
-
-	//Read fragment shader from file
-	std::string FragmentShaderCode;
-	std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-	if(FragmentShaderStream.is_open()){
-		std::stringstream sstr;
-		sstr << FragmentShaderStream.rdbuf();
-		FragmentShaderCode = sstr.str();
-		FragmentShaderStream.close();
-	}else{
-		printf("Couldn't open %s\n", vertex_file_path);
-	}
-
-    //Init some variables
-	GLint Result = GL_FALSE;
-	int InfoLogLength;
-
-	//Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path);
-	char const * VertexSourcePointer = VertexShaderCode.c_str();
-	glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
-	glCompileShader(VertexShaderID);
-
-	//Check vertex shader is ok
-	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		printf("%s\n", &VertexShaderErrorMessage[0]);
-	}
-
-	//Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragment_file_path);
-	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
-	glCompileShader(FragmentShaderID);
-
-	//Check fragment shader is ok
-	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		printf("%s\n", &FragmentShaderErrorMessage[0]);
-	}
+	//Load shaders
+	TResourceShader* vertexShader = dynamic_cast<TResourceShader*>(resourceManager->getResourceShader("test.vert", true));
+	TResourceShader* fragmentShader = dynamic_cast<TResourceShader*>(resourceManager->getResourceShader("test.frag", false));
 
 	//Link OpenGL program using the id
-	printf("Linking program\n");
+	printf("Linking OpenGL program\n");
 	GLuint ProgramID = glCreateProgram();
-	glAttachShader(ProgramID, VertexShaderID);
-	glAttachShader(ProgramID, FragmentShaderID);
+	glAttachShader(ProgramID, vertexShader->getShaderID());
+	glAttachShader(ProgramID, fragmentShader->getShaderID());
 	glLinkProgram(ProgramID);
 
-	//Check the program is ok
-	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
-		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		printf("%s\n", &ProgramErrorMessage[0]);
-	}
-
     //We no longer need the shaders (we have them in the program)
-	glDetachShader(ProgramID, VertexShaderID);
-	glDetachShader(ProgramID, FragmentShaderID);
+	glDetachShader(ProgramID, vertexShader->getShaderID());
+	glDetachShader(ProgramID, fragmentShader->getShaderID());
 	
-	glDeleteShader(VertexShaderID);
-	glDeleteShader(FragmentShaderID);
+	glDeleteShader(vertexShader->getShaderID());
+	glDeleteShader(fragmentShader->getShaderID());
 
     //Use the program we have just created
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -91,7 +91,7 @@ TResourceTexture* ResourceManager::getResourceTexture(const char* n)
     return res;
 }
 
-TResourceShader* ResourceManager::getResourceShader(const char* n)
+TResourceShader* ResourceManager::getResourceShader(const char* n, bool type)
 {
     unsigned int i;
     TResourceShader* res=NULL;
@@ -109,7 +109,7 @@ TResourceShader* ResourceManager::getResourceShader(const char* n)
     //If it's not loaded, we create a new resource and try to load it
     if(found == false)
     {
-        res = new TResourceShader();
+        res = new TResourceShader(type);
 
         res->setName(n);
         if(res->loadResource())

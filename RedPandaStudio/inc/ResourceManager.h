@@ -22,7 +22,7 @@ class ResourceManager {
         TResourceMesh* getResourceMesh(const char* n);
         TResourceMaterial* getResourceMaterial(const char* n);
         TResourceTexture* getResourceTexture(const char* n);
-        TResourceShader* getResourceShader(const char* n);
+        TResourceShader* getResourceShader(const char* n, bool type);
         TResourceOBJ* getResourceOBJ(const char* n);
 
     private:

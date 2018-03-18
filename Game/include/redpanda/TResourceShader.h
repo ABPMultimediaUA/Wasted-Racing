@@ -5,7 +5,9 @@
 
 class TResourceShader : public TResource {
     public:
-        TResourceShader(){};
+        TResourceShader(bool type){
+            vertexShader = type;
+        };
         ~TResourceShader(){};
 
         //Load the resource specified in the route provided
@@ -14,8 +16,12 @@ class TResourceShader : public TResource {
         //Draws the shader (in this case, activates it)
         void draw();
 
+        //Getter
+        GLuint getShaderID() { return shaderID; }
+
 
     private:
         GLuint shaderID;
+        bool   vertexShader;
 
 };
