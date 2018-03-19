@@ -122,11 +122,12 @@ void RedPandaStudio::initOpenGL() {
 	
 	//Init skybox
 	skybox = new TResourceSkybox();
-	char* r = "Link/skybox_front.png";
+	char* r = "Link/asd.jpg";
 	for(int i = 0; i < 6; i++)
 	{
 		skybox->loadResource(r, i);
 	}
+	skybox->initSkybox();
 
 	//Get main shaders
 	TResourceShader* vertexShader = resourceManager->getResourceShader(vertex_file_path, (GLenum)GL_VERTEX_SHADER);

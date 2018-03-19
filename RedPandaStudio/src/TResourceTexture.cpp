@@ -1,5 +1,5 @@
 #include "TResourceTexture.h"
-
+#include <iostream>
 
 TResourceTexture::~TResourceTexture()
 {

@@ -18,7 +18,8 @@ bool TResourceSkybox::loadResource(char* route, int i)
     {
         if(textures[i]->loadFromFile(route))
         {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, textures[i]->getSize().x, textures[i]->getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i]->getPixelsPtr());
+            //std::cout << "Width: " << textures[i]->getSize().x << " Height: " << textures[i]->getSize().y << std::endl;
+            //glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, textures[i]->getSize().x, textures[i]->getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i]->getPixelsPtr());
             return true;
         }
     }
@@ -33,4 +34,26 @@ void TResourceSkybox::draw()
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+}
+
+bool TResourceSkybox::initSkybox()
+{
+    glTexStorage2D(GL_TEXTURE_CUBE_MAP, 0, GL_RGBA8, textures[0]->getSize().x, textures[0]->getSize().y);
+
+    for(int i = 0; i < 6; i++)
+    {
+        std::cout << "Width: " << textures[i]->getSize().x << " Height: " << textures[i]->getSize().y << std::endl;
+        glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, textures[i]->getSize().x, textures[i]->getSize().y, GL_RGBA, GL_UNSIGNED_BYTE, textures[i]->getPixelsPtr());
+    }
+
+    GLint answer;
+    glGetTexParameteriv(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_RESIDENT, &answer);
+    if(answer == 0)
+    {
+        std::cout << "YOYA" << std::endl;
+    }
+    else
+    {
+        std::cout << "WTFACK?? " << std::endl;
+    }
 }
