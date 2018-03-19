@@ -122,11 +122,20 @@ void RedPandaStudio::initOpenGL() {
 	
 	//Init skybox
 	skybox = new TResourceSkybox();
-	char* r = "Link/asd.jpg";
-	for(int i = 0; i < 6; i++)
-	{
-		skybox->loadResource(r, i);
-	}
+	char* r0 = "Link/darkskies_ft.tga";
+	char* r1 = "Link/darkskies_bk.tga";
+	char* r2 = "Link/darkskies_up.tga";
+	char* r3 = "Link/darkskies_dn.tga";
+	char* r4 = "Link/darkskies_rt.tga";
+	char* r5 = "Link/darkskies_lf.tga";
+	
+	skybox->loadResource(r0, 0);
+	skybox->loadResource(r1, 1);
+	skybox->loadResource(r2, 2);
+	skybox->loadResource(r3, 3);
+	skybox->loadResource(r4, 4);
+	skybox->loadResource(r5, 5);
+
 	skybox->initSkybox();
 
 	//Get main shaders
