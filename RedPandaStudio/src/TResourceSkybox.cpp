@@ -18,8 +18,9 @@ bool TResourceSkybox::loadResource(char* route, int i)
     {
         if(textures[i]->loadFromFile(route))
         {
-            //std::cout << "Width: " << textures[i]->getSize().x << " Height: " << textures[i]->getSize().y << std::endl;
+            std::cout << "Width: " << textures[i]->getSize().x << " Height: " << textures[i]->getSize().y << std::endl;
             //glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, textures[i]->getSize().x, textures[i]->getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i]->getPixelsPtr());
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)512, (GLsizei)512, 0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i]->getPixelsPtr());
             return true;
         }
     }
