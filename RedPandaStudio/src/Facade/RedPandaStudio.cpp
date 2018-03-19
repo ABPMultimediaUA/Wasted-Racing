@@ -1,5 +1,17 @@
 #include "RedPandaStudio.h"
 
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_STANDARD_IO
+#define NK_INCLUDE_STANDARD_VARARGS
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
+#define NK_INCLUDE_FONT_BAKING
+#define NK_INCLUDE_DEFAULT_FONT
+#define NK_IMPLEMENTATION
+#define NK_SDL_GL3_IMPLEMENTATION
+#include "nuklear.h"
+#include "nuklear_sdl_gl3.h"
+
 namespace rps{
 
 //////////////////////////////
@@ -34,7 +46,29 @@ void RedPandaStudio::updateDevice() {
 
 	scene->draw();
 
+	if (nk_begin(ctx, "Demo", nk_rect(50, 50, 230, 250),
+            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
+            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+        {
+            enum {EASY, HARD};
+            static int op = EASY;
+            static int property = 20;
 
+            nk_layout_row_static(ctx, 30, 80, 1);
+            if (nk_button_label(ctx, "button"))
+                printf("button pressed!\n");
+            nk_layout_row_dynamic(ctx, 30, 2);
+            if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
+            if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
+            nk_layout_row_dynamic(ctx, 22, 1);
+            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
+
+            nk_layout_row_dynamic(ctx, 20, 1);
+            nk_label(ctx, "background:", NK_TEXT_LEFT);
+            nk_layout_row_dynamic(ctx, 25, 1);
+		}
+	nk_end(ctx);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
 	SDL_GL_SwapWindow(window);
 
 }
@@ -87,6 +121,7 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 	}
 
 	context = SDL_GL_CreateContext(window);
+	glViewport(0, 0, width, height);
 
     //Give window to RedPandaStudio
     setWindow(window);
@@ -111,6 +146,11 @@ void RedPandaStudio::initOpenGL() {
 
 	glewExperimental = GL_TRUE;
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
+
+	ctx = nk_sdl_init(window);
+	struct nk_font_atlas *atlas;
+    nk_sdl_font_stash_begin(&atlas);
+	nk_sdl_font_stash_end();
 
     //Init VBO
     GLuint VertexArrayID;

@@ -86,6 +86,8 @@ private:
     //SKybox vertex array
     GLuint skyVertexArray;
 
+    
+
 };
 
 //Transformation facade
@@ -96,3 +98,4 @@ void scaleNode(TNode* node, glm::vec3 scale);
 
 
 }
+struct nk_context *ctx;
