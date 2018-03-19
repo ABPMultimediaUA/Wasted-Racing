@@ -92,7 +92,7 @@ void RenderIrrlicht::interpolateCamera(float accTime, float maxTime) {
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
 
     camera->setTarget(irr::core::vector3df(pos.x, pos.y, pos.z));
-    camera->setPosition(irr::core::vector3df(pos.x - distance * cos(radianAngle), pos.y + distance * 0.4, pos.z + distance * sin(radianAngle)));
+    camera->setPosition(irr::core::vector3df(pos.x - distance * cos(radianAngle), pos.y + distance * 0.6, pos.z + distance * sin(radianAngle)));
 }
 
 void RenderIrrlicht::addObject(IComponent* ptr) {

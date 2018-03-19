@@ -40,9 +40,9 @@ void ItemBoxComponent::update(float dTime){
         actTime = boxTime;
         auto trans = getGameObject().getTransformData();
 
-        trans.scale.x = 0.5;
-        trans.scale.y = 0.5;
-        trans.scale.z = 0.5;
+        trans.scale.x = 0.65;
+        trans.scale.y = 0.65;
+        trans.scale.z = 0.65;
 
         getGameObject().setTransformData(trans);
         //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);

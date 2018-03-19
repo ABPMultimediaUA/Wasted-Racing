@@ -42,7 +42,7 @@ void PathPlanningComponent::update(float dTime)
 
 	if(this->getGameObject().getComponent<AIDrivingComponent>() != nullptr)
 	{
-		if((distaneActualWay <= (radius*radius)/2) || distaneNextWay < distaneNextWay)
+		if((distaneActualWay <= (radius*radius)) || distaneNextWay < distaneNextWay)
 		{
 			if(lastVector < listNodes.size()-1)
 			{
