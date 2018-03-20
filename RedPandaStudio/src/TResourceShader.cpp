@@ -7,42 +7,43 @@
 
 bool TResourceShader::loadResource()
 {
-    //We need to specify the type of shader we want to create
-    if(vertexShader)
-        shaderID = glCreateShader(GL_VERTEX_SHADER);
-    else
-        shaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    std::string shaderCode;
+    GLint Result = GL_FALSE;
+	int InfoLogLength;
 
-
-    //Read the shader from a file
-	std::string shader;
-	std::ifstream shaderStream(name, std::ios::in);
-	if(shaderStream.is_open()){
-		std::stringstream sstr;
+    //In first instance we create the shader of the type defined
+    shaderID = glCreateShader(shaderType);
+    
+    //We read completely the shader
+    std::ifstream shaderStream(name, std::ios::in);
+    if(shaderStream.is_open())
+    {
+        std::stringstream sstr;
 		sstr << shaderStream.rdbuf();
-		shader = sstr.str();
-		shaderStream.close();
-	}else{
+        shaderCode = sstr.str();
+        shaderStream.close();
+    }
+    else
+    {
 		printf("Couldn't open %s\n", name);
+        return false;
 	}
 
-    //Compile shader
-	printf("Compiling shader : %s\n", name);
-	char const * shaderString = shader.c_str();
-	glShaderSource(shaderID, 1, &shaderString , NULL);
-	glCompileShader(shaderID);
+    //Compile the shader in OpenGL
+    printf("Compiling shader : %s\n", name);
+    char const * sourcePointer = shaderCode.c_str();
+    glShaderSource(shaderID, 1, &sourcePointer, NULL);
+    glCompileShader(shaderID);
 
-    GLint result = GL_FALSE;
-	int status;
-
-	//Check there aren't compilation errors
-	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
-	glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &status);
-	if ( status > 0 ){
-		std::vector<char> errorMessage(status+1);
-		glGetShaderInfoLog(shaderID, status, NULL, &errorMessage[0]);
-		printf("%s\n", &errorMessage[0]);
-	}
+    //Check for errors in the compile process
+    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &Result);
+	glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+    if(InfoLogLength > 0)
+    {
+        std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1);
+		glGetShaderInfoLog(shaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
+		printf("%s\n", &FragmentShaderErrorMessage[0]);
+    }
 
     return true;
 }

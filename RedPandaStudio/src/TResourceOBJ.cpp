@@ -49,8 +49,11 @@ bool TResourceOBJ::loadResource()
         }
 
         //We proceed to get all the materials and textures
-        for(unsigned int i = 0; i<scene->mNumMaterials; i++)
+        for(unsigned int i = 1; i<scene->mNumMaterials; i++)
         {
+            TResourceMaterial* mat = new TResourceMaterial();
+            mat->loadResource(scene->mMaterials[i]);
+            meshes[i-1]->setMaterial(mat);
             aiString path;
             //If the material has a diffuse texture, we get his path
             if(scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)

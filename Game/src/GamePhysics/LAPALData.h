@@ -5,7 +5,7 @@
 namespace LAPAL{
 
     //Universal constant
-    const float gravity = 30.f;
+    const float gravity = 50.f;
 
     //3d float point
     typedef glm::vec3 vec3f;
@@ -32,6 +32,7 @@ namespace LAPAL{
         bool drift = false;     //To know if object is drifting or not
         bool braking = false;   //To know if brake key is pressed
         bool boost = false;     //To know if velocity/acceletarion has been abnormally increased
+        bool coll = false;      //To know if there's been a collision
 
         //spin
         float angle             = 0.0f;         //Angle faced by object

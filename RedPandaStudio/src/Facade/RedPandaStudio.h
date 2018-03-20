@@ -79,6 +79,15 @@ private:
     TNode *camera;
     std::vector<TNode*> lights;
 
+    //Skybox
+    TResourceSkybox*  skybox;
+    //Skybox shader
+    GLuint skyboxID;
+    //SKybox vertex array
+    GLuint skyVertexArray;
+
+    
+
 };
 
 //Transformation facade
@@ -89,3 +98,4 @@ void scaleNode(TNode* node, glm::vec3 scale);
 
 
 }
+struct nk_context *ctx;

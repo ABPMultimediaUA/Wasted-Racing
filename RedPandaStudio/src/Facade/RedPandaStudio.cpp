@@ -1,9 +1,23 @@
 #include "RedPandaStudio.h"
 
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_STANDARD_IO
+#define NK_INCLUDE_STANDARD_VARARGS
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
+#define NK_INCLUDE_FONT_BAKING
+#define NK_INCLUDE_DEFAULT_FONT
+#define NK_IMPLEMENTATION
+#define NK_SDL_GL3_IMPLEMENTATION
+#include "nuklear.h"
+#include "nuklear_sdl_gl3.h"
+
 namespace rps{
 
 //////////////////////////////
 //  DEVICE CONSTRUCTORS
+//////////////////////////////
+
 RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, int framerate, bool vsync, bool fullscreen){
 
     static RedPandaStudio rps;
@@ -11,7 +25,7 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
     rps.initSDLWindow(width, height, depth, framerate, vsync, fullscreen);
     rps.initOpenGL();
     rps.initScene();
-
+	
     return rps;
 
 }
@@ -23,8 +37,38 @@ void RedPandaStudio::updateDevice() {
 	renderCamera();
 	renderLights();
 
+	//Change shader program for drawing skybox
+	glUseProgram(skyboxID);
+	glBindVertexArray(skyVertexArray);
+	skybox->draw();
+	glUseProgram(scene->getEntity()->getProgramID());
+	glEnable(GL_DEPTH_TEST);
+
 	scene->draw();
 
+	if (nk_begin(ctx, "Demo", nk_rect(50, 50, 230, 250),
+            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
+            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+        {
+            enum {EASY, HARD};
+            static int op = EASY;
+            static int property = 20;
+
+            nk_layout_row_static(ctx, 30, 80, 1);
+            if (nk_button_label(ctx, "button"))
+                printf("button pressed!\n");
+            nk_layout_row_dynamic(ctx, 30, 2);
+            if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
+            if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
+            nk_layout_row_dynamic(ctx, 22, 1);
+            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
+
+            nk_layout_row_dynamic(ctx, 20, 1);
+            nk_label(ctx, "background:", NK_TEXT_LEFT);
+            nk_layout_row_dynamic(ctx, 25, 1);
+		}
+	nk_end(ctx);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
 	SDL_GL_SwapWindow(window);
 
 }
@@ -77,6 +121,7 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 	}
 
 	context = SDL_GL_CreateContext(window);
+	glViewport(0, 0, width, height);
 
     //Give window to RedPandaStudio
     setWindow(window);
@@ -92,32 +137,98 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-	glewExperimental = GL_TRUE;
+    const char * vertex_file_path = "test.vert";
+    const char * fragment_file_path = "test.frag";
+	const char * skybox_vertex_path = "skybox.vert";
+	const char * skybox_fragment_path = "skybox.frag";
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
 
+	glewExperimental = GL_TRUE;
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
+
+	ctx = nk_sdl_init(window);
+	struct nk_font_atlas *atlas;
+    nk_sdl_font_stash_begin(&atlas);
+	nk_sdl_font_stash_end();
 
     //Init VBO
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);  
+    glBindVertexArray(VertexArrayID);
 
-	//Load shaders
-	TResourceShader* vertexShader = dynamic_cast<TResourceShader*>(resourceManager->getResourceShader("test.vert", true));
-	TResourceShader* fragmentShader = dynamic_cast<TResourceShader*>(resourceManager->getResourceShader("test.frag", false));
+	glGenVertexArrays(1, &skyVertexArray);
+	glDepthFunc(GL_LEQUAL);
+	
+	//Init skybox
+	skybox = new TResourceSkybox();
+	char* r0 = "Link/darkskies_ft.tga";
+	char* r1 = "Link/darkskies_bk.tga";
+	char* r2 = "Link/darkskies_up.tga";
+	char* r3 = "Link/darkskies_dn.tga";
+	char* r4 = "Link/darkskies_rt.tga";
+	char* r5 = "Link/darkskies_lf.tga";
+	
+	skybox->loadResource(r0, 0);
+	skybox->loadResource(r1, 1);
+	skybox->loadResource(r2, 2);
+	skybox->loadResource(r3, 3);
+	skybox->loadResource(r4, 4);
+	skybox->loadResource(r5, 5);
+
+	skybox->initSkybox();
+
+	//Get main shaders
+	TResourceShader* vertexShader = resourceManager->getResourceShader(vertex_file_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* fragmentShader = resourceManager->getResourceShader(fragment_file_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	//Get main shaders ID
+	GLuint vertexID = vertexShader->getShaderID();
+	GLuint fragmentID = fragmentShader->getShaderID();
+
+	//Get skybox shaders
+	TResourceShader* skyboxVertex = resourceManager->getResourceShader(skybox_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* skyboxFragment = resourceManager->getResourceShader(skybox_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	//Get skybox shaders ID
+	GLuint skyVertexID = skyboxVertex->getShaderID();
+	GLuint skyFragmentID = skyboxFragment->getShaderID();
 
 	//Link OpenGL program using the id
 	printf("Linking OpenGL program\n");
 	GLuint ProgramID = glCreateProgram();
-	glAttachShader(ProgramID, vertexShader->getShaderID());
-	glAttachShader(ProgramID, fragmentShader->getShaderID());
+	glAttachShader(ProgramID, vertexID);
+	glAttachShader(ProgramID, fragmentID);
 	glLinkProgram(ProgramID);
 
     //We no longer need the shaders (we have them in the program)
-	glDetachShader(ProgramID, vertexShader->getShaderID());
-	glDetachShader(ProgramID, fragmentShader->getShaderID());
+	glDetachShader(ProgramID, vertexID);
+	glDetachShader(ProgramID, fragmentID);
 	
-	glDeleteShader(vertexShader->getShaderID());
-	glDeleteShader(fragmentShader->getShaderID());
+	glDeleteShader(vertexID);
+	glDeleteShader(fragmentID);
+
+	//Create Skybox program
+	skyboxID = glCreateProgram();
+	glAttachShader(skyboxID, skyVertexID);
+	glAttachShader(skyboxID, skyFragmentID);
+	glLinkProgram(skyboxID);
+
+	//Check the program is ok
+	glGetProgramiv(skyboxID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(skyboxID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(skyboxID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+	//We no longer need the shaders (we have them in the program)
+	glDetachShader(skyboxID, skyVertexID);
+	glDetachShader(skyboxID, skyFragmentID);
+	
+	glDeleteShader(skyVertexID);
+	glDeleteShader(skyFragmentID);
 
     //Use the program we have just created
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -135,6 +246,9 @@ void RedPandaStudio::initOpenGL() {
 	scene->getEntity()->setModelID(model);
 	scene->getEntity()->setViewID(view);
 	scene->getEntity()->setProjectionID(projection);
+
+	GLuint viewSky = glGetUniformLocation(skyboxID, "ViewMatrix");
+	skybox->setView(viewSky);
 
 }
 
