@@ -2463,12 +2463,24 @@
 <object id="16003" pos="413.302155,-24.164179,242.604263" rot="0.1,0,0" sca="0.65,0.65,0.65">
     <component name="itemBox" />
 </object>
-<object id="18000" pos="-165.616989,17.036007,28.936253" rot="0,0,0" sca="10,1,26">
+<object id="16004" pos="-440.455414,-188.331329,581.700684" rot="-0.1,0,0.4" sca="0.65,0.65,0.65">
+    <component name="itemBox" />
+</object>
+<object id="16005" pos="-432.235931,-185.730469,569.477539" rot="-0.1,0,0.4" sca="0.65,0.65,0.65">
+    <component name="itemBox" />
+</object>
+<object id="16006" pos="-422.723450,-182.779282,556.980530" rot="-0.1,0,0.4" sca="0.65,0.65,0.65">
+    <component name="itemBox" />
+</object>
+<object id="16007" pos="-413.191559,-179.632736,546.170227" rot="-0.1,0,0.4" sca="0.65,0.65,0.65">
+    <component name="itemBox" />
+</object>
+<object id="18000" pos="51.818748,-90.511818,586.498291" rot="0,0,0" sca="10,1,35">
     <component name="render" file="ramp.jpg" type="plane" />
     <component name="collision" kinetic="false" type="ramp">
-        <bbox p1="-170.616989,17.036007,41.936253" p2="-160.616989,17.036007,41.936253" p3="-160.616989,17.036007,15.936253" p4="-170.616989,17.036007,15.936253" friction="0.2" />
+        <bbox p1="46.818748,-90.511818,599.498291" p2="56.818748,-90.511818,599.498291" p3="56.818748,-90.511818,573.498291" p4="46.818748,-90.511818,573.498291" friction="0.2" />
     </component>
-    <component name="ramp" vel="300" cTime="1" dTime="1" />
+    <component name="ramp" vel="300" cTime="1.5" dTime="1" />
 </object>
 <object id="18001" pos="-129.825623,13.847786,6.152934999999999" rot="0,0,0" sca="10,1,50">
     <component name="render" file="ramp.jpg" type="plane" />
@@ -2477,7 +2489,7 @@
     </component>
     <component name="ramp" vel="300" cTime="1" dTime="1" />
 </object>
-<object id="20000" pos="0.000000,-2.611983,0.000000" rot="0,0,0" sca="1,1,1">
+<object id="20000" pos="0.000000,-1.659296,0.000000" rot="0,0,0" sca="1,1,1">
     <component name="render" file="circuit.obj" type="mesh" />
 </object>
 <object id="24000" pos="-60.365964000000005,0.15398500000000004,-4.319336" rot="3.6,-4,0" sca="30,1,120">
