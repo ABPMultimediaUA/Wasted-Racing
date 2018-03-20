@@ -75,6 +75,7 @@ namespace LAPAL{
 
         //Character type
         int player = -1;         //Type of the character we are playing with
+        bool isPlayer = false;   //To distinguish between player and AI
 
     };
 

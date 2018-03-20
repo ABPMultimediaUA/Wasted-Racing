@@ -33,10 +33,15 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 //==============================================================================================================================
 // DELEGATES DECLARATIONS
 //==============================================================================================================================
+//COLLISIONS
 void shootDefaultCollisionEvent(EventData e);
 void shootRampCollisionEvent(EventData e);
 void shootItemBoxCollisionEvent(EventData e);
 void shootBananaCollisionEvent(EventData e);
+//SCORE
+void shootOnNewLapEvent(EventData e);
+void shootOnOvertakeEvent(EventData e);
+void shootOnOvertakenEvent(EventData e);
 
 
 
@@ -67,10 +72,15 @@ void AudioFMOD::openAudioEngine(int lang) {
     }
 
     //Listeners
+    //COLLISION
     EventManager::getInstance().addListener(EventListener {EventType::Default_Collision, shootDefaultCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, shootRampCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, shootItemBoxCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, shootBananaCollisionEvent});
+    //SCORE
+    EventManager::getInstance().addListener(EventListener {EventType::Score_OnNewLap, shootOnNewLapEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::Score_OnOvertake, shootOnOvertakeEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::Score_OnOvertaken, shootOnOvertakenEvent});
 
     //Game veriables
     worldUnits = 0.05;
@@ -156,6 +166,7 @@ bool AudioFMOD::existsSoundEvent(std::string name) {
 //==============================================================================================================================
 // DELEGATE FUNCTIONS
 //==============================================================================================================================
+//COLLISION
 void shootDefaultCollisionEvent(EventData e) {
     
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "DefaultCollisionEvent");
@@ -184,4 +195,25 @@ void shootBananaCollisionEvent(EventData e) {
     sound->initalizeSound(audioFMOD, e);
   
 }
+//SCORE
+void shootOnNewLapEvent(EventData e) {
 
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnNewLapEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+
+}
+void shootOnOvertakeEvent(EventData e) {
+
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnOvertakeEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+
+}
+void shootOnOvertakenEvent(EventData e) {
+
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnOvertakenEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+
+}

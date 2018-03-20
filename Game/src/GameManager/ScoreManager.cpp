@@ -1,5 +1,6 @@
 #include "ScoreManager.h"
-
+#include "ObjectManager.h"
+#include "InputManager.h"
 
 void objectDeleteScore(EventData);
 
@@ -97,14 +98,54 @@ void ScoreManager::update()
             pos++;
         }
         players=ordered;
-
-        for(unsigned int i=0; i<players.size(); i++)
-        {
-            //int p = players[i].get()->getPosition();
-            //int id = players[i].get()->getGameObject().getId();
-            //std::cout << id << ": " << p << std::endl;
-        }
     }
+
+    //Update lap and position events for the player
+    uint16_t id = InputManager::getInstance().getComponent().get()->getGameObject().getId();
+    auto scoreC = ObjectManager::getInstance().getObject(id).get()->getComponent<ScoreComponent>().get();
+
+    int position = scoreC->getPosition();
+    int lap = scoreC->getLap();
+
+    if(position > playerPosition){
+
+        EventData data;
+        data.Component      = std::static_pointer_cast<IComponent>(ObjectManager::getInstance().getObject(id).get()->getComponent<MoveComponent>());
+
+        EventManager::getInstance().addEvent(Event {EventType::Score_OnOvertaken, data});
+
+        playerPosition = position;
+    }
+    if(position < playerPosition){
+
+        EventData data;
+        data.Component      = std::static_pointer_cast<IComponent>(ObjectManager::getInstance().getObject(id).get()->getComponent<MoveComponent>());
+
+        EventManager::getInstance().addEvent(Event {EventType::Score_OnOvertake, data});
+
+        playerPosition = position;
+    }
+    if(lap > playerLap){
+
+        uint16_t mID = 0;
+
+        if(lap == 2 || lap == 3)
+            mID = 0;
+        else if(lap > 3 && playerPosition < 4)
+            mID = 1;
+        else
+            mID = 2;
+
+        EventData data;
+        data.Component      = std::static_pointer_cast<IComponent>(ObjectManager::getInstance().getObject(id).get()->getComponent<MoveComponent>());
+        data.Id             = mID;
+
+        EventManager::getInstance().addEvent(Event {EventType::Score_OnNewLap, data});
+
+        playerLap = lap;
+    }
+
+
 }
 
 

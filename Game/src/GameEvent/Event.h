@@ -104,10 +104,19 @@ enum EventType {
     Key_Singleplayer_Down,
     Key_Multiplayer_Up,
     Key_Singleplayer_Up,
-    //Object: object related events
+    //OBJECT: object related events
     Update_Transform_Position,
     Update_Transform_Rotation,
-    Update_Transform_Scale
+    Update_Transform_Scale,
+    //MATCH: Match related events
+    Match_Start,
+    Match_Race_Start,
+    Match_Race_End,
+    Match_End,
+    //SCORE: Score related events
+    Score_OnNewLap,
+    Score_OnOvertake,
+    Score_OnOvertaken
 };
 
 //Struct containg diferent types of data
