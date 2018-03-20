@@ -25,7 +25,7 @@ void TCamera::setCameraParameters(float l, float r, float t, float b, float n, f
     near=n;
     far=f;
 
-    projectionMatrix() = glm::perspective(zoom, (float)1280 / (float)720, near, far);
+    projectionMatrix() = glm::perspective(zoom, (float)16 / (float)9, near, far);
 }
 
 void TCamera::beginDraw()

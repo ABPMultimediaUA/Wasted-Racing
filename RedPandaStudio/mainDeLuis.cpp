@@ -1,6 +1,16 @@
 #include "src/Facade/RedPandaStudio.h"
 #include <iostream>
-
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_STANDARD_IO
+#define NK_INCLUDE_STANDARD_VARARGS
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
+#define NK_INCLUDE_FONT_BAKING
+#define NK_INCLUDE_DEFAULT_FONT
+#define NK_IMPLEMENTATION
+#define NK_SDL_GL3_IMPLEMENTATION
+#include "src/Facade/nuklear.h"
+#include "src/Facade/nuklear_sdl_gl3.h"
 
 int main() {
 
@@ -24,17 +34,16 @@ int main() {
     while( quit ){
 
         /* Poll for events */
-        while( SDL_PollEvent( &event ) ){
-            switch( event.type ){
-                case SDL_QUIT:
-                    quit = false;
-                    break;
-                default:
-                    break;
+        nk_input_begin(ctx);
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                nk_sdl_shutdown();
+                SDL_Quit();
             }
-        }
+            nk_sdl_handle_event(&event);
+        } nk_input_end(ctx);
 
-        rps::rotateNode(t, glm::vec3(0,j,0));
+        rps::rotateNode(camera, glm::vec3(0,j,0));
         j+=0.01;
         rps->updateDevice();
         i++;
