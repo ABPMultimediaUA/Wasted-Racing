@@ -134,6 +134,7 @@ copyfilesP:
 	cp -r ./inc/*.h ../Game/include/redpanda
 	cp ./src/Facade/RedPandaStudio.h ../Game/include/redpanda
 	cp ./test.*	../Game/
+	cp ./skybox.*	../Game/
 
 compileP: all 
 	cp ./bin/libRedPanda.so ../Game/lib/linux

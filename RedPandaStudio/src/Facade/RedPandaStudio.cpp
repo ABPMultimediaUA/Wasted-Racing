@@ -122,12 +122,12 @@ void RedPandaStudio::initOpenGL() {
 	
 	//Init skybox
 	skybox = new TResourceSkybox();
-	char* r0 = "Link/darkskies_ft.tga";
-	char* r1 = "Link/darkskies_bk.tga";
-	char* r2 = "Link/darkskies_up.tga";
-	char* r3 = "Link/darkskies_dn.tga";
-	char* r4 = "Link/darkskies_rt.tga";
-	char* r5 = "Link/darkskies_lf.tga";
+	char* r0 = "media/img/darkskies_ft.tga";
+	char* r1 = "media/img/darkskies_bk.tga";
+	char* r2 = "media/img/darkskies_up.tga";
+	char* r3 = "media/img/darkskies_dn.tga";
+	char* r4 = "media/img/darkskies_rt.tga";
+	char* r5 = "media/img/darkskies_lf.tga";
 	
 	skybox->loadResource(r0, 0);
 	skybox->loadResource(r1, 1);
@@ -156,6 +156,8 @@ void RedPandaStudio::initOpenGL() {
 
 	//Link OpenGL program using the id
 	printf("Linking OpenGL program\n");
+	printf("\n");
+	printf("\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexID);
 	glAttachShader(ProgramID, fragmentID);
