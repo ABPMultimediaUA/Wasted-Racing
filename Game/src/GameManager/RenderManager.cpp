@@ -77,7 +77,7 @@ void RenderManager::init(int engine) {
     GameObject::Pointer sky = ObjectManager::getInstance().createObject(id, transform);
 
 
-    RenderManager::getInstance().createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "skybox_top.png", "skybox_bottom.png", "skybox_left.png", "skybox_right.png", "skybox_front.png", "skybox_back.png");
+    RenderManager::getInstance().createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
 }
 
 void RenderManager::update(float dTime) {
