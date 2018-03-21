@@ -156,6 +156,8 @@ void RedPandaStudio::initOpenGL() {
 
 	//Link OpenGL program using the id
 	printf("Linking OpenGL program\n");
+	printf("\n");
+	printf("\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexID);
 	glAttachShader(ProgramID, fragmentID);
