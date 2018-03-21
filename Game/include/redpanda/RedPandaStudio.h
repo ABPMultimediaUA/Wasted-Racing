@@ -79,8 +79,14 @@ private:
     TNode *camera;
     std::vector<TNode*> lights;
 
-    //Temporary variable
+    //Skybox
     TResourceSkybox*  skybox;
+    //Skybox shader
+    GLuint skyboxID;
+    //SKybox vertex array
+    GLuint skyVertexArray;
+
+    
 
 };
 
