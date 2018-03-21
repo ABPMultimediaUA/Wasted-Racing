@@ -98,4 +98,3 @@ void scaleNode(TNode* node, glm::vec3 scale);
 
 
 }
-struct nk_context *ctx;

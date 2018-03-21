@@ -24,8 +24,8 @@ void Game::init() {
     setStay(true);
 
     //Set engine to default
-    setRenderEngine(0);
-    setInputEngine(0);
+    setRenderEngine(1);
+    setInputEngine(1);
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
     eventManager    = &EventManager::getInstance();     //Initilize event manager
@@ -322,7 +322,7 @@ void loadMap() {
                     type = LightRenderComponent::Type::Directional;
 
                 //Create LIGHT component
-                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,radius);
+                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,1);
 
             }
 
