@@ -13,7 +13,7 @@ mat4 modelViewMatrix;
 varying vec4 v_Color;
 varying vec2 UV_Coordinates;
 
-const int maxLights = 5;
+const int maxLights = 15;
 uniform int numLights;
 
 struct Light {
