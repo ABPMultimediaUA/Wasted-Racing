@@ -57,10 +57,8 @@ bool TResourceSkybox::initSkybox()
 
     for(int i = 0; i < 6; i++)
     {
-        std::cout << "Width: " << textures[i]->getSize().x << " Height: " << textures[i]->getSize().y << std::endl;
         glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, textures[i]->getSize().x, textures[i]->getSize().y, GL_RGBA, GL_UNSIGNED_BYTE, textures[i]->getPixelsPtr());
     }
-
-    GLint answer;
+    return true;
 }
 

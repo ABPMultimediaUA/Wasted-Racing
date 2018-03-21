@@ -71,6 +71,17 @@ void RedPandaStudio::updateDevice() {
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
 	SDL_GL_SwapWindow(window);
 
+	//Chrono to update the fps value
+	std::chrono::time_point<std::chrono::high_resolution_clock> currTime = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> elapsed = currTime - lastTime;
+	lastTime = currTime;
+
+	double fps = 1/elapsed.count();
+	
+	if(showFPS)
+	{
+		std::cout << "FPS: " << fps << std::endl;
+	}
 }
 
 void RedPandaStudio::dropDevice() {
@@ -265,6 +276,8 @@ void RedPandaStudio::initScene() {
     //Initilize Model Matrix
     glm::mat4& Model = scene->getEntity()->modelMatrix();
     Model = glm::mat4(1.0f);
+
+	lastTime = std::chrono::high_resolution_clock::now();	
 }
 
 //////////////////////////////

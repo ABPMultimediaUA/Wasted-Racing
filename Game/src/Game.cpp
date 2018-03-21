@@ -31,15 +31,15 @@ void Game::init() {
     eventManager    = &EventManager::getInstance();     //Initilize event manager
     renderManager   = &RenderManager::getInstance();    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
     inputManager    = &InputManager::getInstance();     //Once we've initialized the renderManager, we can do the same with our inputManager
-    objectManager   = &ObjectManager::getInstance();    //Initialize object manager
+    objectManager   = &ObjectManager::getInstance();    //Initialize Object manager
     physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
     waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager 
     aiManager       = &AIManager::getInstance();        //Initialize AI manager
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
-    itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
+    itemManager     = &ItemManager::getInstance();      //Initialize Item manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
-    networkManager  = &NetworkManager::getInstance();   //Initialize Score Manager
-    debugManager    = &DebugManager::getInstance();     //Initialize Score Manager
+    networkManager  = &NetworkManager::getInstance();   //Initialize Network Manager
+    debugManager    = &DebugManager::getInstance();     //Initialize Debug Manager
 
     //================================================================
     //INITIALIZE ALL MANAGERS
@@ -144,6 +144,7 @@ void Game::Run() {
 
         //Always draw the game
         state->draw();
+        std::cout << "FPS: " << 1/elapsed.count() << std::endl;
     }
 
     close();
