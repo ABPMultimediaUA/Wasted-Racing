@@ -110,7 +110,7 @@ compile:
 	g++ -o bin/test bin/main.o $(LDFLAGS)
 
 compilel:
-	g++ -I./inc -c -o bin/main.o mainDeLuis.cpp
+	g++ -I./inc -c -o bin/main.o main.cpp
 	g++ -o bin/test bin/main.o $(LDFLAGS)
 
 makesh:
