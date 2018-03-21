@@ -5,7 +5,7 @@ int main() {
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
 
-    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "Link/circuit.obj");
+    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
     TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
     TNode* camera = rps->createCamera(t3->getFather(), glm::vec3(0,0,10));
 
@@ -39,22 +39,7 @@ int main() {
 
     rps->dropDevice();
 
-    /*
-    std::cout << std::endl;
-    std::cout << t->getFather()->getFather()->getFather()->getFather()->getFather()->getChild().size() << std::endl;
-    std::cout << t->getFather()->getFather()->getFather()->getFather()->getChild().size() << std::endl;
-    std::cout << t->getFather()->getFather()->getFather()->getChild().size() << std::endl;
-    std::cout << t->getFather()->getFather()->getChild().size() << std::endl;
-    std::cout << t->getFather()->getChild().size() << std::endl;
-    std::cout << t->getChild().size() << std::endl;
-    std::cout << std::endl;
 
-    std::cout << mat[0][0] << " " << mat[0][1] << " " << mat[0][2] << " " << mat[0][3] << " " << std::endl;
-    std::cout << mat[1][0] << " " << mat[1][1] << " " << mat[1][2] << " " << mat[1][3] << " " << std::endl;
-    std::cout << mat[2][0] << " " << mat[2][1] << " " << mat[2][2] << " " << mat[2][3] << " " << std::endl;
-    std::cout << mat[3][0] << " " << mat[3][1] << " " << mat[3][2] << " " << mat[3][3] << " " << std::endl;
-    std::cout << std::endl;
-    */
     return 0;
 
 }

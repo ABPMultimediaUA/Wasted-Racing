@@ -13,7 +13,7 @@ mat4 modelViewMatrix;
 varying vec4 v_Color;
 varying vec2 UV_Coordinates;
 
-const int maxLights = 5;
+const int maxLights = 15;
 uniform int numLights;
 
 struct Light {
@@ -33,7 +33,7 @@ uniform Material material;
 
 void main()
 {
-    float ambient = 0.6;                               
+    float ambient = 1;                               
 
     v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -57,10 +57,17 @@ void main()
 
         diffuse = max(dot(N, L), 0.0);		            // Cálculo de la int. difusa
         // Cálculo de la atenuación
-        float attenuation = 80.0/(0.25+(0.1*d)+(0.03*d*d));
+        float attenuation = 80.0/(0.25+(0.1*d)+(0.005*d*d));
         diffuse = diffuse * attenuation;
         
+        float specular = 2 * attenuation * pow(max(0.0, dot(reflect(-L, N), V)), material.ns);
+
         v_Color += vec4(light[i].intensity * diffuse) * vec4(material.kd, 1.0);
+
+        if(specular > 0)
+        {
+            //v_Color += vec4(specular) * vec4(material.ks, 1.0);
+        }
 
     }
 

@@ -102,10 +102,10 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "test.vert";
-    const char * fragment_file_path = "test.frag";
-	const char * skybox_vertex_path = "skybox.vert";
-	const char * skybox_fragment_path = "skybox.frag";
+    const char * vertex_file_path = "shaders/test.vert";
+    const char * fragment_file_path = "shaders/test.frag";
+	const char * skybox_vertex_path = "shaders/skybox.vert";
+	const char * skybox_fragment_path = "shaders/skybox.frag";
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
