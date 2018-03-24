@@ -3,21 +3,14 @@
 #include <iostream>
 #include "IRenderComponent.h"
 #include "../PhysicsComponent/TerrainComponent.h"
-#include "../../GameManager/PhysicsManager.h"
+
 
 class CameraRenderComponent : public IRenderComponent {
 
 public:
 
     //Constructor
-	CameraRenderComponent(GameObject& newGameObject) : IRenderComponent(newGameObject) {
-		distance = 30;
-		maxDistance = 30;
-		oldDistance = distance;
-		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
-		count = 0;
-		spinDir = 1;
-	}
+	CameraRenderComponent(GameObject& newGameObject);
 
 	//Destructor
 	virtual ~CameraRenderComponent() {};

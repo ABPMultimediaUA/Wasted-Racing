@@ -89,6 +89,12 @@ enum EventType {
     Key_DebugBehaviour_Up,
     Key_DebugNetwork_Down,
     Key_DebugNetwork_Up,
+    Key_SlowControl_Down,
+    Key_SlowControl_Up,
+    Key_FastControl_Down,
+    Key_FastControl_Up,
+    Key_NormalControl_Down,
+    Key_NormalControl_Up,
     //GAME: Game related events
     Game_Start,
     Game_Close,
@@ -103,6 +109,15 @@ enum EventType {
     Update_Transform_Position,
     Update_Transform_Rotation,
     Update_Transform_Scale*/
+    //MATCH: Match related events
+    Match_Start,
+    Match_Race_Start,
+    Match_Race_End,
+    Match_End,
+    //SCORE: Score related events
+    Score_OnNewLap,
+    Score_OnOvertake,
+    Score_OnOvertaken
 };
 
 //Struct containg diferent types of data

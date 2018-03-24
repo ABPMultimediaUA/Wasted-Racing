@@ -7,14 +7,22 @@
 REGISTER_FACTORY(DefaultCollisionEvent);
 REGISTER_FACTORY(RampCollisionEvent);
 REGISTER_FACTORY(ItemBoxCollisionEvent);
+<<<<<<< HEAD
 REGISTER_FACTORY(TrapCollisionEvent);
+=======
+REGISTER_FACTORY(BananaCollisionEvent);
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 //===========================================================
 //      DEFAULT COLLISION EVENT
 //===========================================================
 void DefaultCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event) {
 
+<<<<<<< HEAD
     /*int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
+=======
+    int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
     std::string name = "DefaultCollision"+std::to_string(event.Component->getGameObject().getId());
 
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
@@ -42,7 +50,11 @@ void DefaultCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData
         //Save references to the sound and the sound emitter
         emitter = std::weak_ptr<IComponent>(event.Component);
         audioFMOD->insertSoundEvent(name, (ISoundEvent*)this);
+<<<<<<< HEAD
     }*/
+=======
+    }
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 }
 
@@ -52,7 +64,11 @@ void DefaultCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData
 //===========================================================
 void RampCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event) {
 
+<<<<<<< HEAD
     /*int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
+=======
+    int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
     std::string name = "RampCollision"+std::to_string(event.Component->getGameObject().getId());
 
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
@@ -81,7 +97,11 @@ void RampCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& e
         emitter = std::weak_ptr<IComponent>(event.Component);
         audioFMOD->insertSoundEvent(name, (ISoundEvent*)this);
 
+<<<<<<< HEAD
     }*/
+=======
+    }
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 }
 
@@ -90,7 +110,11 @@ void RampCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& e
 //===========================================================
 void ItemBoxCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event) {
 
+<<<<<<< HEAD
     /*int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
+=======
+    int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
     std::string name = "ItemBoxCollision"+std::to_string(event.Component->getGameObject().getId());
 
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
@@ -118,17 +142,30 @@ void ItemBoxCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData
         emitter = std::weak_ptr<IComponent>(event.Component);
         audioFMOD->insertSoundEvent(name,(ISoundEvent*)this);
 
+<<<<<<< HEAD
     }*/
+=======
+    }
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 }
 
 //===========================================================
+<<<<<<< HEAD
 //      TRAP COLLISION EVENT
 //===========================================================
 void TrapCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event) {
 
     /*int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
     std::string name = "TrapCollision"+std::to_string(event.Component->getGameObject().getId());
+=======
+//      BANANA COLLISION EVENT
+//===========================================================
+void BananaCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event) {
+
+    int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
+    std::string name = "BananaCollision"+std::to_string(event.Component->getGameObject().getId());
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
 
@@ -156,6 +193,10 @@ void TrapCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& e
         emitter = std::weak_ptr<IComponent>(event.Component);
         audioFMOD->insertSoundEvent(name,(ISoundEvent*)this);
 
+<<<<<<< HEAD
     }*/
+=======
+    }
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 }

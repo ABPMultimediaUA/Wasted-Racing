@@ -25,6 +25,8 @@ void MatchState::init() {
 }
 
 void MatchState::update(float &accumulatedTime) {
+    //divide with ratio so we can accelerate or slow down the game
+    accumulatedTime /= ratio;
     //Out of loop
     renderManager->update(accumulatedTime);
     //If time surpassed the loopTime
@@ -43,19 +45,22 @@ void MatchState::updateManagers(float dTime){
     //Input manager has to be the first to be updated
     inputManager->update();
 
-    physicsManager->update(dTime);
+    if(ratio != 0)
+    {
+        physicsManager->update(dTime);
 
-    aiManager->update(dTime);
+        aiManager->update(dTime);
 
-    waypointManager->update(dTime);
+        waypointManager->update(dTime);
 
-    sensorManager->update();
+        sensorManager->update();
 
-    itemManager->update(dTime);
-    
-    scoreManager->update();
+        itemManager->update(dTime);
+        
+        scoreManager->update();
 
-    audioManager->update();
+        audioManager->update();
+    }
 
     //Event manager has to be the last to be updated
     eventManager->update();
@@ -112,7 +117,7 @@ void addAI(){
     transform.position = glm::vec3(-35,0,0);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
+    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
@@ -120,7 +125,7 @@ void addAI(){
     transform.position = glm::vec3(-35,0,10);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
+    ObjectManager::getInstance().createPlayer(transform, 2, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 

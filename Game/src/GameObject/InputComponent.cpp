@@ -1,4 +1,6 @@
 #include "InputComponent.h"
+#include "../GameManager/ItemManager.h"
+#include "../GameState/MatchState.h"
 
 //==============================================
 // DELEGATES DECLARATIONS
@@ -16,6 +18,12 @@ void jumpDownI(EventData eData);
 void driftUpI(EventData eData);
 void driftDownI(EventData eData);
 void useItemDownI(EventData eData);
+void useAIDebug(EventData eData);
+void useCameraDebug(EventData eData);
+void useBehaviourDebug(EventData eData);
+void slowControl(EventData eData);
+void fastControl(EventData eData);
+void normalControl(EventData eData);
 
 //==============================================
 // INPUT COMPONENT FUNCTIONS
@@ -37,6 +45,12 @@ void InputComponent::init(){
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Down, driftDownI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Up, driftUpI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, useItemDownI});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_DebugAI_Down, useAIDebug});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_DebugCamera_Down, useCameraDebug});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_DebugBehaviour_Down, useBehaviourDebug});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_SlowControl_Down, slowControl});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_FastControl_Down, fastControl});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_NormalControl_Down, normalControl});
 
 }
 
@@ -108,4 +122,56 @@ void driftUpI(EventData eData){
 
 void useItemDownI(EventData eData){
     EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
+    auto obj = InputManager::getInstance().getComponent().get()->getGameObject();
+    ItemManager::getInstance().createItem(obj);
+}
+void useAIDebug(EventData eData){
+    RenderManager::getInstance().renderAIDebug();
+}
+void useCameraDebug(EventData eData){
+    RenderManager::getInstance().renderCameraDebug();
+}
+void useBehaviourDebug(EventData eData){
+    RenderManager::getInstance().renderBattleDebug();
+}
+void slowControl(EventData eData){
+    auto ratio = MatchState::getInstance().getRatio();
+    if(ratio <= 1.0f)
+    {
+        MatchState::getInstance().setRatio(1.2);
+    }
+    else if(ratio == 1.2f)
+    {
+        MatchState::getInstance().setRatio(1.35);
+    }
+    else if(ratio == 1.35f)
+    {
+        MatchState::getInstance().setRatio(1.5);
+    }
+}
+void fastControl(EventData eData){
+    auto ratio = MatchState::getInstance().getRatio();
+    if(ratio >= 1.0f)
+    {
+        MatchState::getInstance().setRatio(0.8);
+    }
+    else if(ratio == 0.8f)
+    {
+        MatchState::getInstance().setRatio(0.65);
+    }
+    else if(ratio == 0.65f)
+    {
+        MatchState::getInstance().setRatio(0.5);
+    }
+}
+void normalControl(EventData eData){
+    auto ratio = MatchState::getInstance().getRatio();
+    if(ratio == 1.0f)
+    {
+        MatchState::getInstance().setRatio(0.0);
+    }
+    else if(ratio != 1.0f)
+    {
+        MatchState::getInstance().setRatio(1.0);
+    }
 }

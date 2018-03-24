@@ -66,7 +66,7 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
         mData.acc = mData.acc * 0.99f;
     }
 
-    if(mData.colVel.x > 0 || mData.colVel.y > 0 || mData.colVel.z > 0)
+    if(mData.colVel.x > 0 || mData.colVel.y > 0 || mData.colVel.z > 0 || mData.coll)
         mData.vel = 0;
 }
 
@@ -94,6 +94,8 @@ void LAPAL::updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain){
             mData.velocity.z *= (2-cos(terrain.rotZ));
         }
     }
+    if(mData.coll)
+        mData.velocity = glm::vec3(0,0,0);
 }
 
 //Updates all spin related variables
@@ -200,6 +202,8 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
         }else{
             mData.driftDir       = 0.f;
         }
+        if(mData.coll)
+            mData.velocity = glm::vec3(0,0,0);
     }
 }
 
@@ -207,12 +211,12 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
 void LAPAL::updateCollisionMovement ( LAPAL::movementData& mData, const float dTime) {
 
     const float cons = 5; //factor of vel reduction over time
-    const float min = 0.3; //minimum velocity of colVel
+    const float min = 0.03; //minimum velocity of colVel
 
     if(abs(mData.colVel.x) > min || abs(mData.colVel.z) > min) {
 
-        mData.velocity.x += mData.colVel.x;
-        mData.velocity.z += mData.colVel.z;
+        mData.velocity.x += mData.colVel.x*2;
+        mData.velocity.z += mData.colVel.z*2;
 
         mData.colVel.x -= mData.colVel.x*dTime*cons;
         mData.colVel.z -= mData.colVel.z*dTime*cons;

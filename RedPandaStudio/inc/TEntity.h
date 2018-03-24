@@ -1,5 +1,6 @@
 #pragma once
 
+#include <GL/glew.h>
 #include <glm/ext.hpp>
 #include <stack>
 #include <iostream>
@@ -40,4 +41,25 @@ public:
         static std::stack<glm::mat4> matrix;
         return matrix;
     };
+
+    //Setters for initilization
+    static void setProgramID(GLuint p)     {   programID = p;  }
+    static void setModelID(GLuint m)       {   modelID = m;      }
+    static void setViewID(GLuint v)        {   viewID = v;       }
+    static void setProjectionID(GLuint p)  {   projectionID = p; }
+
+    //Getters
+    static GLuint getProgramID()       {   return programID;   }
+    static GLuint getModelID()         {   return modelID;       }
+    static GLuint getViewID()          {   return viewID;        }
+    static GLuint getProjectionID()    {   return projectionID;  }
+
+protected:
+
+    //Global variables for OpenGL
+    static GLuint programID;
+    static GLuint modelID;
+    static GLuint viewID;
+    static GLuint projectionID;
+
 };

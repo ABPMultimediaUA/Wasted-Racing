@@ -8,6 +8,11 @@ uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
+<<<<<<< HEAD
+=======
+mat4 modelViewMatrix;
+
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 varying vec4 v_Color;
 varying vec2 UV_Coordinates;
 
@@ -21,22 +26,43 @@ struct Light {
 uniform Light light[maxLights];
 
 struct Material {
+<<<<<<< HEAD
     vec4 kd;
     vec4 ka;
     vec4 ks;
+=======
+    vec3 kd;
+    vec3 ka;
+    vec3 ks;
+    float ns;
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 };
 uniform Material material;
 
 
 void main()
 {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
     float ambient = 0.6;                               
 
     v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 
+<<<<<<< HEAD
     vec3 P = vec3(ViewMatrix * ModelMatrix * vertexPosition);	          // Posición del vértice
 	vec3 N = vec3(ViewMatrix * ModelMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
+=======
+    modelViewMatrix = ViewMatrix * ModelMatrix;
+
+    vec3 P = vec3(modelViewMatrix * vertexPosition);	          // Posición del vértice
+	vec3 N = vec3(modelViewMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
+
+    vec4 P2 = vec4(P.x, P.y, P.z, 1.0);
+    vec4 posactual = {modelViewMatrix[3][0], modelViewMatrix[3][1], modelViewMatrix[3][2], modelViewMatrix[3][0]};
+    vec3 V = normalize(vec3(modelViewMatrix * posactual * (vec4(0.0, 0.0, 0.0, 1.0) - P2)));
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
     for(int i = 0; i < numLights && i < maxLights; i++){
 
@@ -51,12 +77,29 @@ void main()
         // Cálculo de la atenuación
         float attenuation = 80.0/(0.25+(0.1*d)+(0.03*d*d));
         diffuse = diffuse * attenuation;
+<<<<<<< HEAD
 
         v_Color += vec4(light[i].intensity * diffuse) * material.kd;
 
     }
 
     v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * material.ka;
+=======
+        
+        float specular = 2 * attenuation * pow(max(0.0, dot(reflect(-L, N), V)), material.ns);
+
+        v_Color += vec4(light[i].intensity * diffuse) * vec4(material.kd, 1.0);
+
+        if(specular > 0)
+        {
+            v_Color += vec4(specular) * vec4(material.ks, 1.0);
+        }
+
+    }
+
+    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
+
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 

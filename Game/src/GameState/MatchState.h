@@ -46,6 +46,10 @@ public:
         return instance;
     };
 
+    //Game ratio
+    void setRatio(float r)          {       ratio = r;      }
+    float getRatio()                {       return ratio;   }
+
 private:
     
     //==============================================================
@@ -76,5 +80,8 @@ private:
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;
+
+    //Game velocity
+    float ratio = 1.0;
 
 };

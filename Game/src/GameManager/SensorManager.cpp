@@ -18,6 +18,8 @@ void SensorManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteVSensor});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteMSensor});
 
+    distanceLoD = 0;
+
 }
 
 void SensorManager::update() {
@@ -25,29 +27,50 @@ void SensorManager::update() {
     //Actually we dont have Environment, so we can't get the objects
     //from the map to be seen
 
+    auto player = InputManager::getInstance().getComponent().get()->getGameObject();
+    auto posPlayer = player.getTransformData().position;
+
     //Clean the list
     worldObjects.clear();
 
-    //Fill list of world objects
-    auto collisionList =  PhysicsManager::getInstance().getCollisionComponentList();
-    for(unsigned int i = 0; i < collisionList.size(); ++i){
-        if(collisionList[i] != nullptr)
+    fillWorldObjects();
+
+    //CALCULATE LOD VISION SENSOR
+    for(unsigned int i=0; i<sensorComponentList.size(); ++i)
+    {
+        auto AIObject = sensorComponentList[i]->getGameObject();
+        auto posAI = AIObject.getTransformData().position; 
+
+        auto distPlayerAI = (posPlayer.x - posAI.x) * (posPlayer.x - posAI.x) +
+                            (posPlayer.y - posAI.y) * (posPlayer.y - posAI.y) +
+                            (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
+
+        //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, NOT UPDATE
+        if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
         {
-            worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
-        }   
+            auto sensor = std::dynamic_pointer_cast<VSensorComponent>(sensorComponentList[i]).get();
+            updateVisionSensor(sensor);
+        }
     }
 
-    //Update visual sensors
-    for(unsigned int i=0; i<sensorComponentList.size(); ++i){
-        if(sensorComponentList[i] != nullptr)
-            std::dynamic_pointer_cast<VSensorComponent>(sensorComponentList[i]).get()->updateSeenObjects(worldObjects);
+    //CALCULATE LOD MAP SENSOR
+    for(unsigned int i=0; i<sensorMComponentList.size(); ++i)
+    {
+        auto AIObject = sensorMComponentList[i]->getGameObject();
+        auto posAI = AIObject.getTransformData().position; 
+
+        auto distPlayerAI = (posPlayer.x - posAI.x) * (posPlayer.x - posAI.x) +
+                            (posPlayer.y - posAI.y) * (posPlayer.y - posAI.y) +
+                            (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
+                            
+        //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, NOT UPDATE
+        if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
+        {
+            auto sensor = std::dynamic_pointer_cast<MSensorComponent>(sensorMComponentList[i]).get();
+            updateMapSensor(sensor);
+        }
     }
 
-    //Update map sensors
-    for(unsigned int i=0; i<sensorMComponentList.size(); ++i){
-        if(sensorMComponentList[i] != nullptr)
-            std::dynamic_pointer_cast<MSensorComponent>(sensorMComponentList[i]).get()->updateMapCollisions();
-    }
 }
 
 void SensorManager::close() {
@@ -118,5 +141,45 @@ void objectDeleteMSensor(EventData eData) {
             MSensorList.erase(MSensorList.begin() + i);
             return;
         }
+    }
+}
+
+
+//==============================================
+// FILL LIST OF WORLD OBJECTS
+//============================================== 
+
+void SensorManager::fillWorldObjects()
+{
+    auto collisionList =  PhysicsManager::getInstance().getCollisionComponentList();
+    for(unsigned int i = 0; i < collisionList.size(); ++i){
+        if(collisionList[i] != nullptr)
+        {
+            worldObjects.push_back(std::dynamic_pointer_cast<CollisionComponent>(collisionList[i]).get()->getGameObject());
+        }   
+    }
+}
+
+//==============================================
+// UPDATE VISION SENSOR
+//============================================== 
+
+void SensorManager::updateVisionSensor(VSensorComponent* sensor)
+{
+    if(sensor != nullptr)
+    {
+        sensor->updateSeenObjects(worldObjects);
+    }
+}
+
+//==============================================
+// UPDATE MAP SENSOR
+//============================================== 
+
+void SensorManager::updateMapSensor(MSensorComponent* sensor)
+{
+    if(sensor != nullptr)
+    {
+        sensor->updateMapCollisions();
     }
 }

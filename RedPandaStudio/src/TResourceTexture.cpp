@@ -1,5 +1,9 @@
 #include "TResourceTexture.h"
+<<<<<<< HEAD
 
+=======
+#include <iostream>
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 TResourceTexture::~TResourceTexture()
 {

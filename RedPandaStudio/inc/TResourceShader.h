@@ -2,6 +2,12 @@
 
 #include "TResource.h"
 #include <GL/glew.h>
+<<<<<<< HEAD
+=======
+#include <fstream>
+#include <sstream>
+#include <vector>
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 class TResourceShader : public TResource {
     public:
@@ -14,8 +20,25 @@ class TResourceShader : public TResource {
         //Draws the shader (in this case, activates it)
         void draw();
 
+<<<<<<< HEAD
 
     private:
         GLuint shaderID;
+=======
+        //////////////////////////////////////////////////////////////////////////////////////////
+        //////////  GETTERS && SETTERS
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+        void setShaderType(GLenum e)            {   shaderType=e;       };
+        GLuint getShaderID()                    {   return shaderID;    };
+        GLenum getShaderType()                  {   return shaderType;  };
+
+    private:
+        //ID of the shader
+        GLuint shaderID;
+        //Defines the type of shader
+        GLenum shaderType;
+
+>>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 };

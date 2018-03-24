@@ -1,14 +1,15 @@
 #pragma once
 
-#include <iostream>
 #include "TEntity.h"
 #include "TResource.h"
+#include <GL/glew.h>
 
 
 class TMesh : public TEntity{
 
 private:
     TResource* mesh;
+    TResource* material;
 
 public:
 
@@ -25,6 +26,9 @@ public:
     /////////////// GETTERS & SETTERS
     //////////////////////////////////////////////////////////////////////
 
-    TResource* getMesh()                                 {   return mesh;    };
-    void  setMesh(TResource* m)                          {   mesh=m;         };
+    TResource* getMesh()                                      {   return mesh;      };
+    TResource* getMaterial()                                  {   return material;  };
+
+    void  setMesh(TResource* m)                               {   mesh=m;           };
+    void  setMaterial(TResource* m)                           {   material=m;       };
 };

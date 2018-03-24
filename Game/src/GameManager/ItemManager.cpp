@@ -119,7 +119,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     //Get item
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = itemHolder->getItemType();
+    int random = 1;//itemHolder->getItemType();
 
     //-----------------------
     //Generate the right item
@@ -253,15 +253,6 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
             terrainComp = list[i].terrainComponent;
     }
     auto terrainComponent = obj.getComponent<TerrainComponent>();
-
-    //--------------------------
-    //Server dependant instances
-    //Create render component if it is not the server
-    if(!globalVariables->getServer())
-    {
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.3ds");
-    }
-
     //--------------------------
     //Online dependant instances
     //Create the network component with the type of the object assigned
@@ -272,6 +263,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     //--------------------------
     //Create collision component
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::RedShell);
 
     //Create move component with the movement data
@@ -354,14 +346,6 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
     //--------------------------
-    //Server dependant instances
-    //Create render component if it is not the server
-    if(!globalVariables->getServer())
-    {
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.3ds");
-    }
-
-    //--------------------------
     //Online dependant instances
     //Create the network component with the type of the object assigned
     if(globalVariables->getOnline())
@@ -371,6 +355,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     //--------------------------
 
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::BlueShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -414,19 +399,6 @@ IComponent::Pointer ItemManager::createTrap(GameObject& obj)
     //Add to object
     ob.get()->addComponent(component);
 
-    //Create render, collision and remote item component
-    if(!globalVariables->getServer())
-    {
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "banana.3ds");
-    }
-        //--------------------------
-    //Server dependant instances
-    //Create render component if it is not the server
-    if(!globalVariables->getServer())
-    {
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "banana.3ds");
-    }
-
     //--------------------------
     //Online dependant instances
     //Create the network component with the type of the object assigned
@@ -436,6 +408,8 @@ IComponent::Pointer ItemManager::createTrap(GameObject& obj)
     }
 
     //--------------------------
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "banana.obj");
+    PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, 1, false, CollisionComponent::Type::Banana);
 
     PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, 1, false, CollisionComponent::Type::Trap);
 

@@ -30,7 +30,6 @@ void MSensorComponent::updateMapCollisions()
     //initial variables                                                      //Counter
     glm::vec3 position = this->getGameObject().getTransformData().position;  //Our position
     VObject::Pointer pvo;                                                    //VPointer included in the end result
-    float a_back = 0.f, b_back = 0.f;              //initial A and B of the back points, and A and B of front points
 
     //update sensors
     sensorLeft = glm::vec3(cos(angleVision+angleInitial), 0.f, sin(angleVision+angleInitial));
@@ -49,7 +48,7 @@ void MSensorComponent::updateMapCollisions()
     //-------------------
     //TERRAIN BACK POINTS
     //-------------------
-   /* glm::vec3 point1, point2;
+    /*glm::vec3 point1, point2;
     switch(terrain.direction){
         case 0:
             point1 = terrain.p1;
@@ -219,7 +218,7 @@ void MSensorComponent::updateMapCollisions()
 
         //Calculate left point
         pvo = std::make_shared<VObject>(pointS1, a_final, b_final, 1.f, 0, 1.f);    //generate VObject with the data
-        seenObjects.push_back(pvo);                                                 //Add to seen objects
+        seenObjects.push_back(pvo);                                      //Add to seen objects
     }
 
 
@@ -231,7 +230,7 @@ void MSensorComponent::updateMapCollisions()
 
         //Calculate right point
         pvo = std::make_shared<VObject>(pointS2, a_final2, b_final2, 1.f, 0, 1.f);    //generate VObject with the data
-        seenObjects.push_back(pvo);                                                   //Add to seen objects
+        seenObjects.push_back(pvo);                                      //Add to seen objects
     }
 
 
