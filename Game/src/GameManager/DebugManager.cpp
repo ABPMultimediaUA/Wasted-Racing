@@ -35,7 +35,7 @@ void DebugManager::init(){
     renderManager  = &RenderManager::getInstance();
     objectManager  = &ObjectManager::getInstance();
 
-    //Add listeners
+    //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugAI_Down,swapDebugAI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugBehaviour_Down, swapDebugBehaviour});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugCamera_Down,swapDebugCamera});

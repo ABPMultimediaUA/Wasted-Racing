@@ -25,9 +25,12 @@ AIManager& AIManager::getInstance() {
 
 void AIManager::init() {
     changeAI = false;
+
+    ////////////////
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
-    //No delete by the moment
+    
+    //No delete for the moment
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIDriving});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIBattle});
 

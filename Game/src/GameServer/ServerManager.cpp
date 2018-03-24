@@ -42,7 +42,7 @@ void ServerManager::init()
 	/////
 	
 	//Initial data set
-    globalVariables = &GlobalVariables::getInstance(); //Initialize global variables bush
+    /*globalVariables = &GlobalVariables::getInstance(); //Initialize global variables bush
     globalVariables->setServer(true);                  //The server
 
     eventManager    = &EventManager::getInstance();     //Initilize event manager
@@ -68,14 +68,14 @@ void ServerManager::init()
     scoreManager->init();
 
     //Add initial objects
-    loadMapServer();
+    loadMapServer();*/
 
     //================================================================
     //SET LISTENERS
     //================================================================
-    EventManager::getInstance().addListener(EventListener {EventType::TrapComponent_Collision, collideTrap});
-    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision, collideBlueShell});
-    EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision, collideRedShell});
+    //EventManager::getInstance().addListener(EventListener {EventType::TrapComponent_Collision, collideTrap});
+    //EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision, collideBlueShell});
+    //EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision, collideRedShell});
 }
 
 void ServerManager::run()
@@ -99,12 +99,12 @@ void ServerManager::run()
 		//General update
 		update(accumulatedTime);
 
-		if(accumulatedTime > loopTime){
+		/*if(accumulatedTime > loopTime){
 			//Update managers
 			updateManagers(accumulatedTime);
 
 			accumulatedTime = 0;
-		}
+		}*/
 
 		//___>TO IMPLEMENT
 		//After the update, we should use a clock to make the system sleep until the next update
@@ -166,11 +166,53 @@ void ServerManager::update(float dTime)
 				break;
 
 			//Player related
-			case ID_INPUT:
+			/*case ID_INPUT:
 				actPlayer(packet);
 				std::cout<<"Input received"<<std::endl;
-				break;
+				break;*/
 
+			case ID_CREATE_TRAP:
+ 				broadcastObject(packet);
+ 				nObjects++;
+ 				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
+ 				break;
+
+ 			case ID_DESTROY_TRAP:
+ 				broadcastData(packet);
+ 				break;
+
+ 			case ID_CREATE_RED_SHELL:
+ 				broadcastObject(packet);
+ 				nObjects++;
+ 				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
+ 				break;
+
+ 			case ID_DESTROY_RED_SHELL:
+ 				broadcastData(packet);
+ 				break;
+				 
+ 			case ID_CREATE_BLUE_SHELL:
+ 				broadcastObject(packet);
+ 				nObjects++;
+ 				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
+ 				break;
+
+ 			case ID_DESTROY_BLUE_SHELL:
+ 				broadcastData(packet);
+ 				break;
+
+ 			case ID_REMOTE_RED_SHELL_MOVEMENT:
+ 				broadcastData(packet);
+ 				break;
+
+ 			case ID_REMOTE_BLUE_SHELL_MOVEMENT:
+ 				broadcastData(packet);
+ 				break;
+
+ 			case ID_BOX_COLLISION:
+ 				broadcastData(packet);
+				break;
+				
             default:
                 std::cout << "Receiving new packet" << std::endl;
                 break;
@@ -180,6 +222,7 @@ void ServerManager::update(float dTime)
 
 }
 
+/*
 void ServerManager::updateManagers(float dTime)
 {
 	//Do calculations if the game has started
@@ -266,7 +309,7 @@ void ServerManager::objectEvent(int who, int which, customMessages what)
 	//send it
 	peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
 }
-
+*/
 void ServerManager::broadcastData(RakNet::Packet* packet)
 {
 	RakNet::BitStream stream(packet->data, packet->length, false);
@@ -285,7 +328,7 @@ void ServerManager::broadcastObject(RakNet::Packet* packet)
 //==============================================================
 // Player related
 //==============================================================
-void ServerManager::addPlayer()
+/*void ServerManager::addPlayer()
 {
 	//Set position in map
     GameObject::TransformationData trans;
@@ -454,7 +497,7 @@ void ServerManager::actPlayer(RakNet::Packet* packet)
 		default:
 			break;
 	}
-}
+}*/
 
 //==============================================================
 // Game related
@@ -521,7 +564,7 @@ void ServerManager::endGame(RakNet::Packet* packet)
 //==============================================================
 // Component creator
 //==============================================================
-IComponent::Pointer ServerManager::createRemotePlayerComponent(GameObject& newGameObject, int server_id) {
+/*IComponent::Pointer ServerManager::createRemotePlayerComponent(GameObject& newGameObject, int server_id) {
 
 	//Create component
     IComponent::Pointer component = std::make_shared<RemotePlayerComponent>(newGameObject);
@@ -808,4 +851,4 @@ void loadMapServer() {
     //Update every thing that has been created
     EventManager::getInstance().update();
 
-}
+}*/

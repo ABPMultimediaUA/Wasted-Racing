@@ -22,6 +22,7 @@ void objectDeleteHolder(EventData);
 //==============================================
 ItemManager::ItemManager()
 {
+    //Initial ID of every item
     ids = 6000;
 }
 
@@ -65,14 +66,15 @@ void ItemManager::close(){
 //==============================================
 
 IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameObject){
-
+    //Make the shared pointer of the item holder
     IComponent::Pointer component = std::make_shared<ItemHolderComponent>(newGameObject);
     
+    //Attach to game object
     newGameObject.addComponent(component);
 
+    //Add to list of item holders
+    //:::>It should be an event in the future with scheduling
     ItemHolders.push_back(std::dynamic_pointer_cast<ItemHolderComponent>(component));
-
-    //players.push_back(newGameObject); 
 
     return component;
 }
@@ -92,16 +94,14 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
     //Add to list of item boxes
     ItemBoxes.push_back(std::dynamic_pointer_cast<ItemBoxComponent>(component));
     
-    //____>Not needed now
+    //____>Not needed now until scheduling
+    //:::>Not needed
     //EventData data;
     //data.Component = component;
     //EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Create, data});
 
     //Create render component
-    if(!globalVariables->getServer())
-    {
-        RenderManager::getInstance().createObjectRenderComponent(obj, ObjectRenderComponent::Shape::Cube, "itemBox.jpg");
-    }
+    RenderManager::getInstance().createObjectRenderComponent(obj, ObjectRenderComponent::Shape::Cube, "itemBox.jpg");
 
     //Create collision component
     PhysicsManager::getInstance().createCollisionComponent(obj, 5, 5, false, CollisionComponent::Type::ItemBox);

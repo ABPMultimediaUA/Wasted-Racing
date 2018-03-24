@@ -46,12 +46,13 @@ void ObjectManager::close() {
 }
 
 GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::TransformationData transform) {
-
+    //make shared pointer
     GameObject::Pointer object = std::make_shared<GameObject>(id, transform);
 
+    //Launch creation event
+    //:::>No need for it without scheduling
     EventData data;
     data.Object = object;
-
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
 
     return object;
@@ -59,7 +60,7 @@ GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::Transfo
 
 
 void ObjectManager::addObject(GameObject::Pointer ptr) {
-
+    //If object is not inserted, insert it
     if(objectsMap.find(ptr.get()->getId()) != objectsMap.end())
         std::cerr << "Couldn't insert object. ID: " << ptr.get()->getId() << " already exists." << std::endl;
     else 
@@ -145,6 +146,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
+    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -181,6 +183,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
+    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -217,6 +220,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
+    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -253,6 +257,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
+    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -289,11 +294,10 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 
 void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model)
 {
-    //If it is the client, create a representation of the object
-    if(!GlobalVariables::getInstance().getServer() && model!=nullptr)
+    //Create representation of the model if there is a model
+    if(model!=nullptr)
     {
         RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, model);
-   
     }
 
     //Create collision component

@@ -23,6 +23,7 @@ WaypointManager::~WaypointManager()
 void WaypointManager::init() {
     listSubNodes = new std::vector<GameObject::Pointer>;
 
+    //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletePathPlanning});
 }
 
@@ -78,13 +79,14 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
 IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Pointer newGameObject, std::vector<GameObject::Pointer>& list)
 {
-    //Creade pointer
+    //Make shared pointer of path plannign component
     IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get(), list);
 
     //Add component to the object
     newGameObject.get()->addComponent(component);
 
     //add to the list of components
+    //:::>Can be substituted with an event, if schedulingi is added
     pathPlanningComponentList.push_back(component);
 
     return component;
@@ -99,9 +101,6 @@ IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Poi
 //==============================================
 //Constructor and Destructor
 //==============================================
-
-
-
 void objectDeletePathPlanning(EventData eData) {
 
     auto& PathPlanningComponentList = WaypointManager::getInstance().getPathPlanningList();

@@ -14,6 +14,7 @@ SensorManager& SensorManager::getInstance() {
 
 void SensorManager::init() {
 
+    //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteVSensor});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteMSensor});
 

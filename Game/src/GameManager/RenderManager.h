@@ -79,6 +79,9 @@ public:
     //Updates HUD
     void updateHUD();
 
+    //Draw HUD
+    void drawHUD();
+    
     /////////////
     //  IMAGES
     /////////////
@@ -193,6 +196,7 @@ private:
     //==============================================================
     // HUD DATA
     //==============================================================
+    bool HUD_ON;             //Checks if hud was initialized
     int32_t lapHUD_ID;      //Lap text ID
     int32_t positionHUD_ID; //Position text ID
     int32_t itemHUD_ID;     //Item text ID

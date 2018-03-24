@@ -448,9 +448,13 @@ bool LAPAL::position2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, 
 //Calculates if a circle is inside a rectangle
 bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& nextPosition, const float length, const float length2) {
 
+    //Check if
+    //:::> ???? wtf, why.  abs ( expected height - position of the object) = difference in height - (20 - 0)/2 = 10
+    //:::> ???? difference in height - 10 > 1, why
     if( abs(LAPAL::calculateExpectedY(terrain, nextPosition)-nextPosition.y)-((length + length2)/2) > 1)
         return false;
 
+    //Check if the object is to the right side (clockwise) to the rectangle for every border, failing in one case means being outside the area
     if ( !LAPAL::position2DLinePoint(terrain.p1, terrain.p2, nextPosition) ) 
         return false;
     if ( !LAPAL::position2DLinePoint(terrain.p2, terrain.p3, nextPosition) ) 

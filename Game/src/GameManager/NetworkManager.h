@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <string>
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/BitStream.h>
@@ -95,7 +96,13 @@ public:
     //  Create Objects
     //==============================================================
 
-    //--------------------------------------------------------
+    //--------------------------------------------------------     
+    //send signal to create a trap
+    void createTrap(EventData eData);
+ 
+    //send signal to destroy a trap
+    void destroyTrap(EventData eData);
+
     //creates a trap item where it should be on the map
     void remoteCreateTrap(RakNet::Packet* packet);
 
@@ -163,6 +170,10 @@ public:
     std::list<customMessages>* getLastPackets()                        {  return &lastPackets;                }; //Returns last packets received
     std::list<int>*            getLastSenders()                        {  return &lastSenders;                }; //Returns last packets' Senders
     std::list<unsigned char*>* getLastData()                           {  return &lastData;                   }; //Returns last packets' data
+
+    //IP identifier
+    void setServerIP(std::string s)                                    { serverIP = s;                        }; //Set server IP
+    std::string getServerIP()                                          { return serverIP;                     }; //Return server IP
     
 private:
     //==============================================================
@@ -178,8 +189,9 @@ private:
     //Own player
     GameObject::Pointer player;
 
-    //Own id
+    //Server Info
     int server_id;
+    std::string serverIP;
 
     //Debug info
     bool debugNetworkState = false;

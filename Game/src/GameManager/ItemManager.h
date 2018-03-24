@@ -65,11 +65,9 @@ class ItemManager {
         //Global variables bush
         GlobalVariables* globalVariables;
 
-
         std::vector<IComponent::Pointer> ItemHolders;
         std::vector<std::shared_ptr<IItemComponent>> ItemComponents;
         std::vector<std::shared_ptr<ItemBoxComponent>> ItemBoxes;
-        //std::vector<> players;
 
         //Item ids index
         int ids;

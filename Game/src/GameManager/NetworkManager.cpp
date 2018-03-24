@@ -19,7 +19,7 @@ DONE>Add ristra de mensajes para las posiciones macho
 //////////////////////////////////////////////////////
 //////////// DELEGATE FUNCTIONS
 //////////////////////////////////////////////////////
-void sendAdvanceDown(EventData eData);
+/*void sendAdvanceDown(EventData eData);
 void sendAdvanceUp(EventData eData);
 void sendBrakeDown(EventData eData);
 void sendBrakeUp(EventData eData);
@@ -31,14 +31,22 @@ void sendJumpDown(EventData eData);
 void sendJumpUp(EventData eData);
 void sendDriftDown(EventData eData);
 void sendDriftUp(EventData eData);
-void sendUseItemDown(EventData eData);
+void sendUseItemDown(EventData eData);*/
+void itemBoxCollisionEvent(EventData eData);
+void startLineCollisionEvent(EventData eData);
+void createTrapEvent(EventData eData);
+void destroyTrapEvent(EventData eData);
+void createRedShellEvent(EventData eData);
+void destroyRedShellEvent(EventData eData);
+void createBlueShellEvent(EventData eData);
+void destroyBlueShellEvent(EventData eData); 
 //=============================================
 
 //==============================================
 // PLAYER FUNCTIONS
 //============================================== 
 
-void NetworkManager::sendInput(EventType event)
+/*void NetworkManager::sendInput(EventType event)
 {
     //Stream of raknet bits
     RakNet::BitStream stream;
@@ -49,6 +57,7 @@ void NetworkManager::sendInput(EventType event)
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
 }
+*/
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
 {
@@ -73,7 +82,7 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     ////////////
     //Add remote player component and set its server_id
     ////////////
-    NetworkManager::getInstance().createRemotePlayerComponent(*player.get());
+   /* NetworkManager::getInstance().createRemotePlayerComponent(*player.get());
 
     bool found = false;
     std::shared_ptr<RemotePlayerComponent> rPlayer;
@@ -85,7 +94,7 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
             found = true;
             rPlayer.get()->setServerId(server_id);
         }
-    }
+    }*/
 
     ////////////
     //DEBUG AREA
@@ -148,7 +157,7 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
     }
 }
 
-void NetworkManager::updatePlayersPosition(RakNet::Packet* packet)
+/*void NetworkManager::updatePlayersPosition(RakNet::Packet* packet)
 {
     //Auxiliar variables
     float x, y, z, rx, ry, rz;
@@ -208,7 +217,7 @@ void NetworkManager::updatePlayersPosition(RakNet::Packet* packet)
             }
         }
     }
-}
+}*/
 
 //=============================================
 // CREATE ITEMS
@@ -217,6 +226,32 @@ void NetworkManager::updatePlayersPosition(RakNet::Packet* packet)
 ////////////
 //CREATE TRAP
 ////////////
+
+//Send message to the server to create trap
+void NetworkManager::createTrap(EventData eData)
+{
+    //Stream of raknet bits
+    RakNet::BitStream stream;
+
+    stream.Write((unsigned char)ID_CREATE_TRAP);  //Send message create trap to server
+    stream.Write((int)server_id);                   //Send Id of the player that created it
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
+}
+
+void NetworkManager::destroyTrap(EventData eData)
+{
+    //Stream of raknet bits
+    RakNet::BitStream stream;
+
+    int s_id = ObjectManager::getInstance().getObject(eData.Id).get()->getComponent<RemoteItemComponent>()->getServerId();//get server id of the object
+
+    stream.Write((unsigned char)ID_DESTROY_TRAP); //Send type of event (destroy trap)
+    stream.Write((int) s_id);                       //Send server id of the trap
+    stream.Write((int) server_id);                   //Send Id of the player that collided with it
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true); //Send the message
+}
 
 void NetworkManager::remoteCreateTrap(RakNet::Packet* packet){
     int s_id; //server player creator id
@@ -242,6 +277,12 @@ void NetworkManager::remoteCreateTrap(RakNet::Packet* packet){
             //set the server id of the trap
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
         }
+    }
+     //If not found by other players, it was our player who did it
+    if(found == false)
+    {
+        auto object = ItemManager::getInstance().createTrap(*player.get());
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
     }
 
     ////////////
@@ -300,6 +341,31 @@ void NetworkManager::remoteDestroyTrap(RakNet::Packet* packet){
 //CREATE TIRE
 ////////////
 
+ //Send message to the server to create red shell
+ void NetworkManager::createRedShell(EventData eData)
+ {
+     //Stream of raknet bits
+     RakNet::BitStream stream;
+ 
+     stream.Write((unsigned char)ID_CREATE_RED_SHELL);  //Send message create red shell to server
+     stream.Write((int)server_id);                      //Send Id of the player that created it
+ 
+     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
+ }
+ 
+ void NetworkManager::destroyRedShell(EventData eData)
+ {
+     RakNet::BitStream stream;
+ 
+     int s_id = ObjectManager::getInstance().getObject(eData.Id).get()->getComponent<RemoteItemComponent>()->getServerId();//get server id of the object
+ 
+     stream.Write((unsigned char)ID_DESTROY_RED_SHELL);
+     stream.Write((int) s_id);                          //Send server id of the red shell
+     stream.Write((int) server_id);                     //Send Id of the player that collided with it or managed its destruction
+ 
+     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+}
+
 void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
     int s_id; //server player creator id
     int o_id; //object server id
@@ -324,6 +390,15 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
         }
+    }
+
+     //If not found by other players, it was our player who did it
+    if(found == false)
+    {
+        auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
+        std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
     }
 
     ////////////
@@ -381,6 +456,30 @@ void NetworkManager::remoteDestroyRedShell(RakNet::Packet* packet){
 ////////////
 //CREATE BOMB
 ////////////
+//Send message to the server to create blue shell
+void NetworkManager::createBlueShell(EventData eData)
+{
+    //Stream of raknet bits
+    RakNet::BitStream stream;
+
+    stream.Write((unsigned char)ID_CREATE_BLUE_SHELL);  //Send message create blue shell to server
+    stream.Write((int)server_id);                   //Send Id of the player that created it
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
+}
+
+void NetworkManager::destroyBlueShell(EventData eData)
+{
+    RakNet::BitStream stream;
+
+    int s_id = ObjectManager::getInstance().getObject(eData.Id).get()->getComponent<RemoteItemComponent>()->getServerId();//get server id of the object
+
+    stream.Write((unsigned char)ID_DESTROY_BLUE_SHELL);
+    stream.Write((int) s_id);   //Send server id of the blue shell
+    stream.Write((int) server_id);                     //Send Id of the player that collided with it or managed its destruction
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+}
 
 void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
     int s_id; //server player creator id
@@ -407,12 +506,21 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
         }
     }
 
+    //If not found by other players, it was our player who did it
+    if(found == false)
+    {
+        auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
+        std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
+        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
+    }
+
     ////////////
     //DEBUG AREA
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who created the missile
+        //Player who created the trap
         lastSenders.push_back(s_id);
     }
 }
@@ -461,7 +569,7 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
 // MOVING STUFF
 //=============================================
 
-/*void NetworkManager::broadcastPosition()
+void NetworkManager::broadcastPosition()
 {
     RakNet::BitStream stream;
     auto trans = player.get()->getTransformData();
@@ -477,9 +585,9 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
     stream.Write((int) server_id);
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-}*/
+}
 
-/*void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
+void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
 {
     RakNet::BitStream parser(packet->data, packet->length, false);
     float x, y, z, rx, ry, rz;
@@ -521,9 +629,9 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
             //}
         }
     }
-}*/
+}
 
-/*void NetworkManager::broadcastPositionRedShell()
+void NetworkManager::broadcastPositionRedShell()
 {
     RakNet::BitStream stream;
     
@@ -545,7 +653,7 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
             peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
         }
     }
-}*/
+}
 
 void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
 {
@@ -583,7 +691,7 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
     }
 }
 
-/*void NetworkManager::broadcastPositionBlueShell()
+void NetworkManager::broadcastPositionBlueShell()
 {
     RakNet::BitStream stream;
     for(unsigned int i = 0; i<remoteBlueShellComponentList.size(); i++){
@@ -603,7 +711,7 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
             peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
         }
     }
-}*/
+}
 
 void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
 {
@@ -648,7 +756,7 @@ void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
 // ITEM BOX
 //=============================================
 
-/*void NetworkManager::itemBoxCollision(EventData eData)
+void NetworkManager::itemBoxCollision(EventData eData)
 {
     RakNet::BitStream stream;
 
@@ -660,7 +768,7 @@ void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
     stream.Write(server_id);
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-}*/
+}
 
 void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
 {
@@ -692,7 +800,7 @@ void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
 // END GAME
 //=============================================
 
-/*void NetworkManager::endGame()
+void NetworkManager::endGame()
 {
     //Set online game as finished
     setStarted(false);
@@ -708,7 +816,7 @@ void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
     EventManager::getInstance().addEvent(Event {EventType::State_Change, data});
 
     //Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
-}*/
+}
 
 void NetworkManager::remoteEndGame(RakNet::Packet* packet)
 {
@@ -743,9 +851,21 @@ void NetworkManager::init() {
     //Conexion has not started
     connected = false;
 
-    //Listeners
+    //Inital value for server IP
+    serverIP = std::string("192.168.0.1");
+
+    //Bind listeners
+    EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision,itemBoxCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::StartLineComponent_Collision, startLineCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::Trap_Create,createTrapEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::TrapComponent_Collision,destroyTrapEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::RedShell_Create,createRedShellEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision,destroyRedShellEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BlueShell_Create,createBlueShellEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision,destroyBlueShellEvent});
+
     //Bind keyboard functions (only needed)
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Advance_Down, sendAdvanceDown});
+    /*EventManager::getInstance().addListener(EventListener {EventType::Key_Advance_Down, sendAdvanceDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Advance_Up, sendAdvanceUp});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Brake_Down, sendBrakeDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Brake_Up, sendBrakeUp});
@@ -757,7 +877,7 @@ void NetworkManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Up, sendJumpUp});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Down, sendDriftDown});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Up, sendDriftUp});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, sendUseItemDown});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, sendUseItemDown});*/
 }
 
 void NetworkManager::update() 
@@ -789,12 +909,16 @@ void NetworkManager::update()
                 createRemotePlayer(packet);
                 break;
 
-            case ID_PLAYERS_POSITION:
+            /*case ID_PLAYERS_POSITION:
                 updatePlayersPosition(packet);
                 //lastPackets.push_back(ID_PLAYERS_POSITION);
+                break;*/
+            case ID_REMOTE_PLAYER_MOVEMENT:
+                moveRemotePlayer(packet);
+                //lastPackets.push_back(ID_REMOTE_PLAYER_MOVEMENT);
                 break;
 
-            case ID_BOX_COLLISION:
+            /*case ID_BOX_COLLISION:
                 remoteItemBoxCollision(packet);
                 lastPackets.push_back(ID_BOX_COLLISION);
                 //PROVISIONAL DATA
@@ -851,7 +975,7 @@ void NetworkManager::update()
             case ID_BLUE_SHELLS_POSITION:
                 moveRemoteBlueShell(packet);
                 //lastPackets.push_back(ID_REMOTE_BLUE_SHELL_MOVEMENT);
-                break;
+                break;*/
 
             default:
                 std::cout << "Mensaje recibido" << std::endl;
@@ -866,9 +990,9 @@ void NetworkManager::update()
     }
 
     //Always broadcast position of items in each iteration
-    /*broadcastPosition();
-    broadcastPositionRedShell();
-    broadcastPositionBlueShell();*/
+    broadcastPosition();
+    //broadcastPositionRedShell();
+    //broadcastPositionBlueShell();
 }
 
 void NetworkManager::close() {
@@ -885,7 +1009,7 @@ void NetworkManager::initLobby(){
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("192.168.1.5", 39017, 0, 0);
+    result = peer->Connect(serverIP.c_str(), 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {
@@ -970,7 +1094,7 @@ IComponent::Pointer NetworkManager::createRemoteItemComponent(GameObject& newGam
 
 //============================================== 
 //Collision events
-/*void itemBoxCollisionEvent(EventData eData) //Collision with an item
+void itemBoxCollisionEvent(EventData eData) //Collision with an item
 {
     NetworkManager::getInstance().itemBoxCollision(eData);
 }
@@ -994,12 +1118,39 @@ void startLineCollisionEvent(EventData eData) //Collision of the player with the
             }
         }
     }
-}*/
+}
 //============================================== 
 
 //============================================== 
+void createTrapEvent(EventData eData)
+ {
+     NetworkManager::getInstance().createTrap(eData);
+ }
+ 
+ void destroyTrapEvent(EventData eData){
+     NetworkManager::getInstance().destroyTrap(eData);
+ }
+ 
+ void createRedShellEvent(EventData eData)
+ {
+     NetworkManager::getInstance().createRedShell(eData);
+ }
+ 
+ void destroyRedShellEvent(EventData eData){
+     NetworkManager::getInstance().destroyRedShell(eData);
+ }
+ 
+ void createBlueShellEvent(EventData eData)
+ {
+     NetworkManager::getInstance().createBlueShell(eData);
+ }
+ 
+ void destroyBlueShellEvent(EventData eData){
+     NetworkManager::getInstance().destroyBlueShell(eData);
+}
+
 //Bing keyboard functions to be sent
-void sendAdvanceDown(EventData eData)
+/*void sendAdvanceDown(EventData eData)
 {
     NetworkManager::getInstance().sendInput(EventType::Key_Advance_Down);
 }
@@ -1050,5 +1201,5 @@ void sendDriftUp(EventData eData)
 void sendUseItemDown(EventData eData)
 {
     NetworkManager::getInstance().sendInput(EventType::Key_UseItem_Down);
-}
+}*/
 

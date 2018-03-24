@@ -42,14 +42,16 @@ void AudioManager::close() {
 }
 
 IComponent::Pointer AudioManager::createListenerComponent(GameObject& newGameObject) {
-
+    //Make shared pointer of the listener component
     IComponent::Pointer component = std::make_shared<ListenerComponent>(newGameObject);
 
+    //Attach to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>No sense since there isn't scheduling yet
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::ListenerComponent_Create, data});
 
     return component;
@@ -59,6 +61,7 @@ IComponent::Pointer AudioManager::createListenerComponent(GameObject& newGameObj
 // DELEGATES
 //============================================== 
 void addListenerComponent(EventData data) {
+    //:::>The init should be done by the audio manager (the inner function, to avoid dependencies)
     AudioManager::getInstance().setListenerComponent(data.Component);
     data.Component.get()->init();
 }

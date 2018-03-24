@@ -185,10 +185,12 @@ void addObjects(){
     uint16_t id = 25000;
     GameObject::TransformationData transform;
     
+    //:::>Needs to be set by the map
     transform.position = glm::vec3(-35,0, -20);
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     
+    //:::>Needs to be set by the player creation
     ObjectManager::getInstance().createPlayer(transform, 3, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
@@ -196,6 +198,9 @@ void addObjects(){
     //===============================================================
     // Update to distribute all creation events
     //===============================================================
+    //:::>Can be avoided if objects are treated by their managers at the moment.
+    //:::>By now: CreateObject, createObjectRenderComponent, createCollisionComponent, createMoveComponent, createInputComponent, createCameraComponent, createListenerComponent
+    //:::>Makes sense if scheduling is will be implemented, hence the need to update the manager
     EventManager::getInstance().update();
     
 }
@@ -290,7 +295,6 @@ void loadMap() {
             if(strcmp(component->first_attribute("name")->value(),"waypoint") == 0){
                 
                 float radius = std::stof(component->first_attribute("radius")->value());
-                
                 int level = std::stoi(component->first_attribute("level")->value());
 
                 //Create TERRAIN component
@@ -418,6 +422,9 @@ void loadMap() {
 	}
 
     //Update every thing that has been created
+    //:::>Can be avoided if objects are treated by their managers at the moment.
+    //:::>By now: CreateObject, createTerrainComponent, createLightRenderComponent, createObjectRenderComponent, createRampComponent, createCollisionComponent
+    //:::>Makes sense when the scheduling is adapted
     EventManager::getInstance().update();
 
     //Loop over terrain components, linking them
@@ -474,6 +481,7 @@ void loadMap() {
     }
 
     //Update every thing that has been created
+    //:::>No need for this one either because it doesn't create any event since the last one
     EventManager::getInstance().update();
 
 }

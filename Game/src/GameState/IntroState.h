@@ -49,4 +49,23 @@ private:
 
     //Mode choosing
     bool stay = false;
+
+    //Background image
+    int32_t background;
+
+    //==============================================================
+    // Private functions
+    //==============================================================
+    //Do anything that is necessary to change to client match state
+    void swapToClientLobby();
+
+    //Do anything that is necessary to change to match state
+    void swapToMatch();
+
+    //Reads server IP value from local pc network
+    void execLocalServer();
+
+    //Reads server IP value from file
+    void execFileServer();
+
 };

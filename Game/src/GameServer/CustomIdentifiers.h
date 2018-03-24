@@ -9,7 +9,7 @@ enum customMessages {
     ID_ACCUMULATED_TIME,
     //Player management
     ID_PLAYERS_POSITION,
-    ID_INPUT,
+    ID_REMOTE_PLAYER_MOVEMENT,
     ID_CREATE_PLAYER,
     ID_CREATE_REMOTE_PLAYER,
     //Item management

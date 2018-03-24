@@ -77,14 +77,16 @@ void InputManager::update(){
 }
 
 IComponent::Pointer InputManager::createInputComponent(GameObject& newGameObject) {
-
+    //Make shared pointer of input component
     IComponent::Pointer component = std::make_shared<InputComponent>(newGameObject);
 
+    //Attach component to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::> Useless without the scheduling
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::InputComponent_Create, data});
 
     return component;

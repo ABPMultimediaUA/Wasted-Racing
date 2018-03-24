@@ -397,11 +397,13 @@ PhysicsManager::MovingCharacter PhysicsManager::getMovingCharacter(uint16_t id) 
 }
 
 std::shared_ptr<TerrainComponent> PhysicsManager::getTerrainFromPos(LAPAL::vec3f pos) {
-
+    
     for( unsigned int i=0; i < terrainComponentList.size(); ++i){
         
         auto terrain = std::dynamic_pointer_cast<TerrainComponent>(terrainComponentList[i]);
 
+        //Checks if terrain collides with the object
+        //:::>size 20 to 0 must be a variable somewhere, can't be hardcoded
         if(LAPAL::checkCircleRectangleCollision(terrain.get()->getTerrain(), pos, 20, 0))
             return terrain;
     }
@@ -415,28 +417,32 @@ std::shared_ptr<TerrainComponent> PhysicsManager::getTerrainFromPos(LAPAL::vec3f
 //==============================================================================
 
 IComponent::Pointer PhysicsManager::createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass) {
-
+    //Make shared pointer of the move component
     IComponent::Pointer component = std::make_shared<MoveComponent>(newGameObject, newMData, newPlane, newMass);
 
+    //Attach to object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::MoveComponent_Create, data});
 
     return component;
 }
 
 IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameObject, LAPAL::plane3f newPlane) {
-
+    //Make shared pointer of the terrain component
     IComponent::Pointer component = std::make_shared<TerrainComponent>(newGameObject, newPlane);
 
+    //Add terrain component to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::TerrainComponent_Create, data});
 
     return component;
@@ -444,28 +450,32 @@ IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameOb
 
 
 IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const float radius, const float length, const bool kinetic, const CollisionComponent::Type type) {
-
+    //Make shared pointer of collision component
     IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, radius, length, kinetic, type);
 
+    //Add collision component to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::CollisionComponent_Create, data});
 
     return component;
 }
 
 IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f plane, const bool kinetic, const float length, const CollisionComponent::Type type) {
-
+    //Make shared pointer of collision component
     IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, length, kinetic, type);
 
+    //Add collision component to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::CollisionComponent_Create, data});
 
     return component;
@@ -485,15 +495,16 @@ void PhysicsManager::createMovingCharacter(IComponent::Pointer moveComponent, IC
 }
 
 IComponent::Pointer PhysicsManager::createRampComponent(GameObject& newGameObject, const float speed, const float cTime, const float dTime) {
-
+    //Make shared pointer of ramp component
     IComponent::Pointer component = std::make_shared<RampComponent>(newGameObject, speed, cTime, dTime);
 
+    //Attach to object
     newGameObject.addComponent(component);
 
-    EventData data;
-    data.Component = component;
-
     //________>Not needed now
+    //:::> Useless without scheduling, and by now has no purpose
+    //EventData data;
+    //data.Component = component;
     //EventManager::getInstance().addEvent(Event {EventType::RampComponent_Create, data});
 
     return component;
@@ -501,7 +512,8 @@ IComponent::Pointer PhysicsManager::createRampComponent(GameObject& newGameObjec
 
 //==============================================
 // DELEGATES
-//============================================== 
+//==============================================
+//:::>this 3 functions could be changed by a generic component creation one
 void addMoveComponent(EventData data) {
     PhysicsManager::getInstance().getMoveComponentList().push_back(data.Component);
     data.Component.get()->init();
@@ -509,11 +521,13 @@ void addMoveComponent(EventData data) {
 
 void addCollisionComponent(EventData data) {
     PhysicsManager::getInstance().getCollisionComponentList().push_back(data.Component);
+    //:::>No inits here
     data.Component.get()->init();
 }
 
 void addTerrainComponent(EventData data) {
     PhysicsManager::getInstance().getTerrainComponentList().push_back(data.Component);
+    //:::>No inits here
     data.Component.get()->init();
 }
 

@@ -8,12 +8,10 @@ void InputIrrlicht::openInput(uintptr_t dev) {
 }
 
 void InputIrrlicht::updateInput() { 
-
+    //Close game if not working
     if(!device->run()){
         EventManager::getInstance().addEvent(Event {EventType::Game_Close});
     }
-        
-
 }
 
 void InputIrrlicht::closeInput() {
