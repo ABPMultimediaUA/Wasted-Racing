@@ -990,7 +990,7 @@ void NetworkManager::update()
     }
 
     //Always broadcast position of items in each iteration
-    broadcastPosition();
+    //broadcastPosition();
     //broadcastPositionRedShell();
     //broadcastPositionBlueShell();
 }

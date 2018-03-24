@@ -19,18 +19,21 @@ void MultiMatchState::init() {
     debugManager    = &DebugManager::getInstance();     //Initialize Debug manager
     
     Game::getInstance().setAccumulatedTime(0);
+
+    //Initalize visual part
+    renderManager->initHUD();
 }
 
 void MultiMatchState::update(float &accumulatedTime) {
 
     //No gelding
     inputManager->update();
-    networkManager->update();
-    debugManager->update();
+    //___>
+    //networkManager->update();
+    //debugManager->update();
+    //<___
+    
     renderManager->update(accumulatedTime);
-
-    //Always interpolate
-    interpolate(accumulatedTime);
 
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
@@ -40,8 +43,8 @@ void MultiMatchState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
 
-    //Event manager has to be the last to be updated
-    eventManager->update();
+    //Always interpolate
+    interpolate(accumulatedTime);
 }
 
 void MultiMatchState::updateManagers(float dTime){
@@ -57,7 +60,10 @@ void MultiMatchState::updateManagers(float dTime){
     
     scoreManager->update();
 
-    audioManager->update();
+    audioManager->update();    
+    
+    //Event manager has to be the last to be updated
+    eventManager->update();
 }
 
 void MultiMatchState::draw() {
@@ -67,6 +73,15 @@ void MultiMatchState::draw() {
 void MultiMatchState::interpolate(float &accumulatedTime) {
     //Interpolate position of objects
     physicsManager->interpolate(accumulatedTime,loopTime);
+
+    //Update each position in Render Manager
+    for(unsigned int i=0; i<physicsManager->getMovingCharacterList().size(); ++i){
+        //Interpolate every moving object
+        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getId(), 
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getTransformData()
+        );
+    }
 
     //Update camera position
     renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);

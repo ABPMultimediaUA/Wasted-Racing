@@ -128,11 +128,13 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
 
     //Increasing rotation axis in mData until it matches the terrain. Incremental turn.
     //X axis.
+    //:::>Maximum difference should be a set variable, no hardcoded
     if(glm::abs(mData.angX - terrain.rotX)<0.05f){
         mData.angX = terrain.rotX;
         mData.rotateX = 0.f;
     }else{
         //increment rotate speed
+        //:::>Last value should be set variable in a document or mData
         mData.rotateX += mData.rotate_inc*dTime*50;
 
         if(abs(mData.rotateX)>abs(mData.max_rotate)){
@@ -202,6 +204,8 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
         }else{
             mData.driftDir       = 0.f;
         }
+
+        //if collided, stop it
         if(mData.coll)
             mData.velocity = glm::vec3(0,0,0);
     }

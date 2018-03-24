@@ -61,18 +61,16 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Move character
         //==============================================================================
-        if(!GlobalVariables::getInstance().getOnline())
-        {
-        
+        //:::> Should collisions be calculated first since they do "imaginary" positionament? 
+        //:::> How it should be: Stationary -> update collision ? no collision (fine) : collision (no moving)
+        //:::> Right now: Move it, calculate collision: if collision happened or you trespassed the wall, then its done.
         ourMove->update(dTime);
         
         //==============================================================================
         // Check collisions with other objects
         //==============================================================================
-            
         calculateObjectsCollision(ourMove, ourColl, dTime);
 
-        }
         //==============================================================================
         // Check collisions with terrain limits and terrain change
         //==============================================================================

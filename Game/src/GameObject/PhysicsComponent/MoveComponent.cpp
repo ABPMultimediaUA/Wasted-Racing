@@ -16,7 +16,7 @@ void MoveComponent::update(float dTime) {
     auto position = getGameObject().getTransformData().position;
 
     //Update all movement conditions and visuals
-    updateMaxSpeedOverTime(dTime); //Update speed difference over time (for powerups)
+    updateMaxSpeedOverTime(dTime);                      //Update speed difference over time (for powerups)
     LAPAL::updateRotation(mData, terrain, dTime);       //Updates rotation of object (axis and visual)
 
     //Update horizontal movement
