@@ -14,6 +14,7 @@ class UseItemAction : public Behaviour{
             auto itemHolder = target.getComponent<ItemHolderComponent>().get();
             if(itemHolder)
             {
+                //:::> Should be substituted with event
                 ItemManager* itemManager = &ItemManager::getInstance();
                 itemManager->createItem(target);
                 
@@ -26,7 +27,7 @@ class UseItemAction : public Behaviour{
                 auto player = RenderManager::getInstance().getAIsBattle();
                 if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
                 {
-                    // DELETE ALL OF THIS
+                    //:::> DELETE ALL OF THIS
                     RenderManager::getInstance().setRootBattle(name);
                     RenderManager::getInstance().setEndRootBattle(true);
                     RenderManager::getInstance().setWaitBattle(false);

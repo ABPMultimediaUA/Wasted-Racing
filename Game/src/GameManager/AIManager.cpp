@@ -24,13 +24,12 @@ AIManager& AIManager::getInstance() {
 }
 
 void AIManager::init() {
-    changeAI = false;
-<<<<<<< HEAD
-
-    ////////////////
-=======
+    //___>
+    //changeAI = false;
+    updateBattleBehaviour = false;
+    //<___
     distanceLoD = 0;
->>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
+
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
     
@@ -42,25 +41,28 @@ void AIManager::init() {
 
 
 void AIManager::update(float dTime) {
-    //Update of all behaviour trees
+    //Update only the second AI
+    //:::> Wtf? Why only the second one? makes no sense
+    GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
 
-GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
-
-    if(changeAI == true)
+    //Interchange updating direction or battle behaviour each frame
+    if(updateBattleBehaviour == true)
     {
         for(unsigned int i=0; i<battleAI.size(); i++)
         {
             auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
             aiBattleComponent->update(dTime);
         }
-        changeAI = false;
+        //set flag to false
+        updateBattleBehaviour = false;
     }
-    else if (changeAI == false)
+    else
     {
-        auto player = InputManager::getInstance().getComponent().get()->getGameObject();
-        auto posPlayer = player.getTransformData().position;
+        //get position of player to determine the distance to him (LOD)
+        auto player = GlobalVariables::getInstance().getPlayer();
+        auto posPlayer = player->getTransformData().position;
 
-
+        //Update every AI
         for(unsigned int i=0; i<objectsAI.size(); ++i){
 
             auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI[i]).get();
@@ -87,7 +89,8 @@ GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
                 calculateLoD(AIObject, dTime);
             }
         }
-        changeAI = true;
+        //Set flag to true
+        updateBattleBehaviour = true;
     }
 }
 

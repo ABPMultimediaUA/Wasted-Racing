@@ -33,8 +33,8 @@ void WaypointManager::update(float dTime) {
     //I doubt this method should exist in this manager
     //I doubt it too
     //I hope Fran reads this
-    auto player = InputManager::getInstance().getComponent().get()->getGameObject();
-    auto posPlayer = player.getTransformData().position;
+    auto player = GlobalVariables::getInstance().getPlayer();
+    auto posPlayer = player->getTransformData().position;
 
     //CALCULATE LOD PATHPLANNING
     for(unsigned int i=0; i < pathPlanningComponentList.size(); i++)

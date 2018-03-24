@@ -11,7 +11,7 @@ void MoveComponent::init() {
 
 //Update
 void MoveComponent::update(float dTime) {
-        
+    //:::X> Analyze all of this and check if it is right
     //get transform data
     auto position = getGameObject().getTransformData().position;
 

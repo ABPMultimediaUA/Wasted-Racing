@@ -162,7 +162,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
                 }
                 else {  //The object is not static
-                        calculateMovingCollision(move, hisMove, dTime);
+                    calculateMovingCollision(move, hisMove, dTime);
                 }
 
                 EventData data;

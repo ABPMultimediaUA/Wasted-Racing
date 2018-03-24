@@ -27,12 +27,13 @@ void SensorManager::update() {
     //Actually we dont have Environment, so we can't get the objects
     //from the map to be seen
 
-    auto player = InputManager::getInstance().getComponent().get()->getGameObject();
-    auto posPlayer = player.getTransformData().position;
+    auto player = GlobalVariables::getInstance().getPlayer();
+    auto posPlayer = player->getTransformData().position;
 
     //Clean the list
     worldObjects.clear();
 
+    //Get the objects
     fillWorldObjects();
 
     //CALCULATE LOD VISION SENSOR
