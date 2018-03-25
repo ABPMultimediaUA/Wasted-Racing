@@ -30,6 +30,11 @@ AudioManager& AudioManager::getInstance()
 
 void AudioManager::update() {
     audioFacade->update();
+
+    EventData data;
+    data.Component      = listenerComponent;
+
+    EventManager::getInstance().addEvent(Event {EventType::Music_MainTheme, data});
 }
 
 void AudioManager::play() {
