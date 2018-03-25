@@ -1,5 +1,8 @@
 #include "InputRedPanda.h"
 
+#include <nuklear/nuklear.h>
+#include <nuklear/nuklear_sdl_gl3.h>
+
 //Define macros
 #define DetectKeyInput(TheKey,Event_Down,Event_Up) \
     if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_##TheKey) { \
@@ -13,13 +16,19 @@ void InputRedPanda::openInput(uintptr_t dev) {
     device = reinterpret_cast<SDL_Window*>(dev);
 }
 
+struct nk_context *inputGUI; //:::> global variable
+
 void InputRedPanda::updateInput() { 
 
 
     // Process events
     SDL_Event event;
+    nk_input_begin(inputGUI);
     while( SDL_PollEvent( &event ) )
     {
+        //Update GUI input
+        nk_sdl_handle_event(&event);
+
         //Update input 
         DetectKeyInput(SPACE, Key_Jump_Down, Key_Jump_Up)
         DetectKeyInput(ESCAPE,Key_Back_Down,Key_Back_Up)
@@ -42,8 +51,13 @@ void InputRedPanda::updateInput() {
         if (event.type == SDL_QUIT)
             EventManager::getInstance().addEvent(Event {EventType::Game_Close});
     }
+    nk_input_end(inputGUI);
 }
 
 void InputRedPanda::closeInput() {
        
 } 
+
+void InputRedPanda::setGUIContext(void* ctx) {
+    inputGUI = (nk_context*)ctx;
+}

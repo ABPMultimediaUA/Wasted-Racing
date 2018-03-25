@@ -1,5 +1,8 @@
 #include "RedPandaStudio.h"
 
+//GUI drawing function adress
+void (*rpsGUI_draw)() = nullptr;
+
 namespace rps{
 
 //////////////////////////////
@@ -32,10 +35,20 @@ void RedPandaStudio::updateDevice() {
 	glUseProgram(scene->getEntity()->getProgramID());
 	glEnable(GL_DEPTH_TEST);
 
+	renderCamera();
+	renderLights();
+
 	scene->draw();
+
+	if(rpsGUI_draw != nullptr)
+		rpsGUI_draw();
 
 	SDL_GL_SwapWindow(window);
 
+}
+
+void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
+	rpsGUI_draw = f;
 }
 
 void RedPandaStudio::dropDevice() {

@@ -1,5 +1,20 @@
 #include "RenderRedPanda.h"
 
+#define NK_INCLUDE_FIXED_TYPES
+#define NK_INCLUDE_STANDARD_IO
+#define NK_INCLUDE_STANDARD_VARARGS
+#define NK_INCLUDE_DEFAULT_ALLOCATOR
+#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
+#define NK_INCLUDE_FONT_BAKING
+#define NK_INCLUDE_DEFAULT_FONT
+#define NK_IMPLEMENTATION
+#define NK_SDL_GL3_IMPLEMENTATION
+#include <nuklear/nuklear.h>
+#include <nuklear/nuklear_sdl_gl3.h>
+
+struct nk_context *GUI; //:::> global variable
+void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
+
 //==============================================================
 // Engine Related functions
 //==============================================================
@@ -14,6 +29,17 @@ void RenderRedPanda::openWindow() {
     InputManager::getInstance().setDevice(aux);
     InputManager::getInstance().setInputFacade(receiver);
 
+    //Init GUI
+    GUI = nk_sdl_init(device->getWindow());
+    struct nk_font_atlas *atlas;
+    nk_sdl_font_stash_begin(&atlas);
+	nk_sdl_font_stash_end();
+
+    InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
+    irps->setGUIContext(GUI);
+
+    device->setGUIDrawFunction(drawRPS_GUI);
+
 }
 
 //Updates window info in the engine
@@ -24,6 +50,7 @@ void RenderRedPanda::updateWindow() {
 //Closes engine window
 void RenderRedPanda::closeWindow() { 
 
+    nk_sdl_shutdown();
     device->dropDevice();
 
 }
@@ -156,6 +183,34 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
     }
 }
 
+////////////
+//  GUI
+////////////
+void drawRPS_GUI(){
+    if (nk_begin(GUI, "Demo", nk_rect(50, 50, 230, 250),
+            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
+            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+        {
+            enum {EASY, HARD};
+            static int op = EASY;
+            static int property = 20;
+
+            nk_layout_row_static(GUI, 30, 80, 1);
+            if (nk_button_label(GUI, "button"))
+                printf("button pressed!\n");
+            nk_layout_row_dynamic(GUI, 30, 2);
+            if (nk_option_label(GUI, "easy", op == EASY)) op = EASY;
+            if (nk_option_label(GUI, "hard", op == HARD)) op = HARD;
+            nk_layout_row_dynamic(GUI, 22, 1);
+            nk_property_int(GUI, "Compression:", 0, &property, 100, 10, 1);
+
+            nk_layout_row_dynamic(GUI, 20, 1);
+            nk_label(GUI, "background:", NK_TEXT_LEFT);
+            nk_layout_row_dynamic(GUI, 25, 1);
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
 
 ////////////
 //  Image
