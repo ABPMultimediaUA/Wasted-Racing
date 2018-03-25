@@ -1,9 +1,5 @@
 #include "TResourceShader.h"
 
-<<<<<<< HEAD
-bool TResourceShader::loadResource()
-{
-=======
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -49,7 +45,6 @@ bool TResourceShader::loadResource()
 		printf("%s\n", &FragmentShaderErrorMessage[0]);
     }
 
->>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
     return true;
 }
 

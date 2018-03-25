@@ -196,7 +196,6 @@ void addObjects(){
     uint16_t id = 25000;
     GameObject::TransformationData transform;
     
-<<<<<<< HEAD
     //:::>Needs to be set by the map
     transform.position = glm::vec3(-35,0, -20);
     transform.rotation = glm::vec3(0,90,0);
@@ -204,13 +203,6 @@ void addObjects(){
     
     //:::>Needs to be set by the player creation
     ObjectManager::getInstance().createPlayer(transform, 3, 0, id, 
-=======
-    transform.position = glm::vec3(0,0, 0);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    
-    ObjectManager::getInstance().createPlayer(transform, 1, 0, id, 
->>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 

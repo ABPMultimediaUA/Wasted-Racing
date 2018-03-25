@@ -2,12 +2,6 @@
 #include <iostream>
 
 //====================================================
-//  ADDITIONAL FUNCTIONS
-//====================================================
-void loadMapServer();
-std::vector<std::string> splitServer(const std::string& s, const char& c);
-
-//====================================================
 //  MAIN FUNCTIONS
 //====================================================
 //Function provided by RakNet

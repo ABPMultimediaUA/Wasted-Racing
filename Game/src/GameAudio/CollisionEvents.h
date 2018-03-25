@@ -37,15 +37,9 @@ public:
 };
 
 //===========================================================
-<<<<<<< HEAD
-//      TRAP COLLISION EVENT
+//      Trap COLLISION EVENT
 //===========================================================
 class TrapCollisionEvent : public ISoundEvent {
-=======
-//      BANANA COLLISION EVENT
-//===========================================================
-class BananaCollisionEvent : public ISoundEvent {
->>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 public: 
 

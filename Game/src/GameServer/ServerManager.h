@@ -1,35 +1,17 @@
 #pragma once
 //External includes
 #include <memory>
-#include <chrono>
-#include <stdio.h>
 #include <iostream>
-#include <rapidxml/rapidxml.hpp>
-#include <string>
-#include <fstream>
 #include <stdio.h>
+#include <vector>
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/RakNetTypes.h>
-#include <vector>
+#include <raknet/BitStream.h>
 
 //Basic include
 #include "../GlobalVariables.h"
 #include "CustomIdentifiers.h"
-
-//Managers
-#include "../GameManager/ObjectManager.h"
-#include "../GameManager/PhysicsManager.h"
-#include "../GameManager/WaypointManager.h"
-#include "../GameManager/AIManager.h"
-#include "../GameManager/SensorManager.h"
-#include "../GameManager/ScoreManager.h"
-#include "../GameManager/ItemManager.h"
-#include "../GameEvent/EventManager.h"
-#include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
-#include "../GameObject/NetworkComponent/RemoteItemComponent.h"
-
-class ItemManager;
 
 //Maximum number of clients simultaneously
 #define MAXCLIENTS 8

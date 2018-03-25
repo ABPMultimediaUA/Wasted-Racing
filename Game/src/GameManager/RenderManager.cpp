@@ -17,13 +17,9 @@ void addObjectRenderComponent(EventData data);
 void addLightRenderComponent(EventData data);
 void addCameraRenderComponent(EventData data); 
 void objectDeletedRender(EventData eData);
-
-//___>
-/*
 void updateTransformPosition(EventData eData);
 void updateTransformRotation(EventData eData);
 void updateTransformScale(EventData eData);
-*/
 
 //==============================================
 // MAIN FUNCTIONS
@@ -68,11 +64,9 @@ void RenderManager::init(int engine) {
     EventManager::getInstance().addListener(EventListener {EventType::CameraRenderComponent_Create, addCameraRenderComponent});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedRender});
     EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Delete, objectDeletedRender});
-    
-    //___>
-    /*EventManager::getInstance().addListener(EventListener {EventType::Update_Transform_Position, updateTransformPosition});
+    EventManager::getInstance().addListener(EventListener {EventType::Update_Transform_Position, updateTransformPosition});
     EventManager::getInstance().addListener(EventListener {EventType::Update_Transform_Rotation, updateTransformRotation});
-    EventManager::getInstance().addListener(EventListener {EventType::Update_Transform_Scale, updateTransformScale});*/
+    EventManager::getInstance().addListener(EventListener {EventType::Update_Transform_Scale, updateTransformScale});
 
     //Create Skybox
     uint16_t id;
@@ -261,8 +255,6 @@ void objectDeletedRender(EventData eData) {
     }
 }
 
-//___>
-/*
 void updateTransformPosition(EventData eData) {
     GameObject::TransformationData t = ObjectManager::getInstance().getObject(eData.Id).get()->getTransformData();
     t.position = eData.Vector;
@@ -280,7 +272,6 @@ void updateTransformScale(EventData eData) {
     t.scale = eData.Vector;
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(eData.Id, t);
 }
-*/
 
 //==============================================
 // AI DEBUG

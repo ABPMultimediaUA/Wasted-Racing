@@ -26,12 +26,15 @@ void IntroState::init() {
     renderManager = &RenderManager::getInstance();
     objectManager = &ObjectManager::getInstance();
 
+    //Variables
+    ip = std::string("192.168.0.1");
+
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
     EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, singleplayerActivated});   //hear for multiplayer selecting
 
     //Set an image on the main menu
-    background = renderManager->addImage( "media/img/menuProv.png", glm::vec2(renderManager->getRenderFacade()->getWindow().size.x/2-600, renderManager->getRenderFacade()->getWindow().size.y/2-331));
+    background = renderManager->createImage( "media/img/menuProv.png", glm::vec2(renderManager->getRenderFacade()->getWindow().size.x/2-600, renderManager->getRenderFacade()->getWindow().size.y/2-331));
 
     Game::getInstance().setAccumulatedTime(0);
 }
@@ -50,11 +53,11 @@ void IntroState::update(float &accumulatedTime) {
 
 void IntroState::draw() {
     //Only draw GUI
-    renderManager->drawGUI();
+    renderManager->drawHUD();
 }
 
 void IntroState::close() {
-    renderManager->clearVI();
+    renderManager->cleanVI();
 }
 
 //==============================================

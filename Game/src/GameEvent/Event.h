@@ -103,12 +103,11 @@ enum EventType {
     Key_Multiplayer_Down,
     Key_Singleplayer_Down,
     Key_Multiplayer_Up,
-    Key_Singleplayer_Up
+    Key_Singleplayer_Up,
     //Object: object related events
-    /* __>
     Update_Transform_Position,
     Update_Transform_Rotation,
-    Update_Transform_Scale*/
+    Update_Transform_Scale,
     //MATCH: Match related events
     Match_Start,
     Match_Race_Start,

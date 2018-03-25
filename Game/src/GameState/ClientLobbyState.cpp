@@ -48,10 +48,10 @@ void ClientLobbyState::update(float &accumulatedTime) {
 
 void ClientLobbyState::draw() {
     //Update GUI only
-    renderManager->drawGUI();
+    renderManager->drawHUD();
 }
 
 void ClientLobbyState::close() {
     //Delete connecting text
-    renderManager->clearVI();
+    renderManager->cleanVI();
 }

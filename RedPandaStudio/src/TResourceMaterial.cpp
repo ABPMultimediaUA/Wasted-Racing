@@ -1,19 +1,11 @@
 #include "TResourceMaterial.h"
-<<<<<<< HEAD
-=======
 #include <iostream>
->>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 
 bool TResourceMaterial::loadResource()
 {
     return false;
 }
 
-<<<<<<< HEAD
-void TResourceMaterial::draw()
-{
-    
-=======
 bool TResourceMaterial::loadResource(aiMaterial* m)
 {
     aiColor3D v;
@@ -56,5 +48,4 @@ void TResourceMaterial::draw()
     glUniform3fv(ambientID, 1, ka);
     glUniform3fv(specularID, 1, ks);
     glUniform1f(shininessID, ns);
->>>>>>> 9417c0d1639e6067b4e72d4c551e3d94986b82ce
 }

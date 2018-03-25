@@ -1,6 +1,5 @@
 #include "ScoreManager.h"
 #include "ObjectManager.h"
-#include "InputManager.h"
 
 void objectDeleteScore(EventData);
 
@@ -111,10 +110,10 @@ void ScoreManager::update()
     }
 
     //Update lap and position events for the player
-    //:::X>Q cojones, arreglar esto
-    uint16_t id = InputManager::getInstance().getComponent().get()->getGameObject().getId();
+    //<___
+    uint16_t id = GlobalVariables::getInstance().getPlayer()->getId();
     auto scoreC = ObjectManager::getInstance().getObject(id).get()->getComponent<ScoreComponent>().get();
-
+    //___>
     int position = scoreC->getPosition();
     int lap = scoreC->getLap();
 
