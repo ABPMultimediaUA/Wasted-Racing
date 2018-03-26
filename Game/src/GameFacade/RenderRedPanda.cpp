@@ -13,7 +13,7 @@
 #include <nuklear/nuklear_sdl_gl3.h>
 
 struct nk_context *GUI; //:::> global variable
-void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
+//void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
 
 //==============================================================
 // Engine Related functions
@@ -38,7 +38,7 @@ void RenderRedPanda::openWindow() {
     InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
     irps->setGUIContext(GUI);
 
-    device->setGUIDrawFunction(drawRPS_GUI);
+    //device->setGUIDrawFunction(drawRPS_GUI);
 
 }
 
@@ -186,7 +186,7 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 ////////////
 //  GUI
 ////////////
-void drawRPS_GUI(){
+/*void drawRPS_GUI(){
     if (nk_begin(GUI, "Demo", nk_rect(50, 50, 230, 250),
             NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
             NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
@@ -210,7 +210,7 @@ void drawRPS_GUI(){
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
-}
+}*/
 
 ////////////
 //  Image
