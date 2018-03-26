@@ -44,9 +44,9 @@ class ItemManager {
         static ItemManager& getInstance();
 
         //Item Create
-        IComponent::Pointer createRedShell(GameObject& obj);
-        IComponent::Pointer createBlueShell(GameObject& obj);
-        IComponent::Pointer createTrap(GameObject& obj);
+        IComponent::Pointer createRedShell(GameObject& obj, int mode);
+        IComponent::Pointer createBlueShell(GameObject& obj, int mode);
+        IComponent::Pointer createTrap(GameObject& obj, int mode);
         IComponent::Pointer createMushroom(GameObject& obj);
         IComponent::Pointer createStar(GameObject& obj);
         

@@ -27,7 +27,7 @@ void IntroState::init() {
     objectManager = &ObjectManager::getInstance();
 
     //Variables
-    ip = std::string("192.168.0.1");
+    ip =  "192.168.0.1";
 
     //Bind functions
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, multiplayerActivated});   //hear for multiplayer selecting
@@ -82,6 +82,9 @@ void IntroState::swapToClientLobby()
 
     //Close this state
     close();
+
+    //Initalize networkManager here
+   NetworkManager::getInstance().init();
 
     //Initialize Server IP
     NetworkManager::getInstance().setServerIP(ip);

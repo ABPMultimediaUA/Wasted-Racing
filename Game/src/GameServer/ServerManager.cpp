@@ -93,9 +93,13 @@ void ServerManager::update()
 				endGame(packet);
 				break;
 
+ 			case ID_REMOTE_PLAYER_MOVEMENT:
+ 				broadcastData(packet);
+ 				break;
+
 			//Player related
-			/*case ID_CREATE_TRAP:
- 				broadcastObject(packet);
+			case ID_CREATE_TRAP:
+ 				broadcastData(packet);
  				nObjects++;
  				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
  				break;
@@ -105,7 +109,7 @@ void ServerManager::update()
  				break;
 
  			case ID_CREATE_RED_SHELL:
- 				broadcastObject(packet);
+ 				broadcastData(packet);
  				nObjects++;
  				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
  				break;
@@ -115,7 +119,7 @@ void ServerManager::update()
  				break;
 				 
  			case ID_CREATE_BLUE_SHELL:
- 				broadcastObject(packet);
+ 				broadcastData(packet);
  				nObjects++;
  				std::cout << "Objeto numero "<<nObjects<< " creado." << std::endl;
  				break;
@@ -134,8 +138,8 @@ void ServerManager::update()
 
  			case ID_BOX_COLLISION:
  				broadcastData(packet);
-				break;*/
-				
+				break;
+			
             default:
                 std::cout << "Receiving new packet" << std::endl;
                 break;

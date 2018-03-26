@@ -119,7 +119,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     //Get item
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = 1;//itemHolder->getItemType();
+    int random = itemHolder->getItemType();
 
     //-----------------------
     //Generate the right item
@@ -130,8 +130,12 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         //Set item to no item
         itemHolder->setItemType(-1);
 
+        //Send event of creation
+        EventData eData;
+        EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, eData});
+        
         //Create item and initialize it
-        auto component = createRedShell(obj);
+        auto component = createRedShell(obj, 0);
         std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();     
         return component;
     }
@@ -142,8 +146,12 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         //Set item to no item
         itemHolder->setItemType(-1);
 
+        //Send event of creation
+        EventData eData;
+        EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, eData});
+
         //Create item and initialize it
-        auto component = createBlueShell(obj);
+        auto component = createBlueShell(obj, 0);
         std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init();
         return component;
     }
@@ -154,8 +162,12 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         //Set item to no item
         itemHolder->setItemType(-1);
 
+        //Send event of creation
+        EventData eData;
+        EventManager::getInstance().addEvent(Event {EventType::Trap_Create, eData});
+
         //Return initialization of item
-        return createTrap(obj);
+        return createTrap(obj, 0);
     }
 
     //Mushroom item
@@ -193,11 +205,12 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 // ITEM CREATOR DERIVATED FUNCTIONS
 //==============================================
 
-IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
+IComponent::Pointer ItemManager::createRedShell(GameObject& obj, int mode)
 {
     //Initial Data
     uint16_t id = ItemManager::ids;
     GameObject::TransformationData transform;
+
     //Add total ids
     ItemManager::ids++;
 
@@ -205,6 +218,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     auto pos = obj.getTransformData().position;
 
     //Set object offset position
+    //:::> Hardcoded data makes jesus cry
     transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
@@ -218,6 +232,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     ob.get()->addComponent(component);
 
     //Movement data
+    //:::> TOO MUCH HARDCODE
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -252,33 +267,56 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
         if(list[i].moveComponent.get()->getGameObject().getId() == idd) 
             terrainComp = list[i].terrainComponent;
     }
-    auto terrainComponent = obj.getComponent<TerrainComponent>();
+    //:::> wtf is this doing here
+    //<___
+    //auto terrainComponent = obj.getComponent<TerrainComponent>();
+    //___>
     //--------------------------
     //Online dependant instances
     //Create the network component with the type of the object assigned
-    if(globalVariables->getOnline())
+
+    //<___
+    /*if(globalVariables->getOnline())
     {
         NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 1);
+    }*/
+
+    //Create remote object type
+    if(mode == 1)
+    {
+        NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 1);
+
+        //--------------------------
+        //Create collision component
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
+        
+        //Create move component with the movement data
+        std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+        PhysicsManager::getInstance().createMovingCharacter(move, nullptr, nullptr);
     }
+    else{
 
-    //--------------------------
-    //Create collision component
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::RedShell);
+        //--------------------------
+        //Create collision component
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
 
-    //Create move component with the movement data
-    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
-    PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
+        //:::>Better use enumerators rather than hardcoded if's and types
+        std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::RedShell);
 
-    //Create path planning component
-    auto listNodes = WaypointManager::getInstance().getWaypoints();
-    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
+        //Create move component with the movement data
+        std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+        PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
 
-    //Create AI components
-    AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
-    
+        //Create path planning component
+        auto listNodes = WaypointManager::getInstance().getWaypoints();
+        WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
+        //Create AI components
+        //:::>No hardcoded variables
+        AIManager::getInstance().createAIDrivingComponent(*ob.get());
+        SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
+    }
+    //___>
 
     //Push into the list
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
@@ -286,7 +324,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
     return component;
 }
 
-IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
+IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, int mode)
 {
     //Initial Data
     uint16_t id = ItemManager::ids;
@@ -297,6 +335,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     auto pos = obj.getTransformData().position;
 
     //Set object offset position
+    //:::>No hardcode pls
     transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
@@ -369,12 +408,13 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
     AIManager::getInstance().createAIDrivingComponent(*ob.get());
     SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0, 0);
 
+    //Add to list of items
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
     return component;
 }
 
-IComponent::Pointer ItemManager::createTrap(GameObject& obj)
+IComponent::Pointer ItemManager::createTrap(GameObject& obj, int mode)
 {
     //Initial Data
     uint16_t id = ItemManager::ids;
@@ -484,7 +524,6 @@ void ItemManager::deleteItem(IComponent::Pointer component)
     //Send the event of deletion so the object manager erases them, with the id of the object that holds this component
     EventData data;
     data.Id = component->getGameObject().getId();
-
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
 
 }
@@ -508,10 +547,10 @@ void createItemEvent(EventData eData) {
     else
     {*/
         //get the player with the input
-        GameObject* player = GlobalVariables::getInstance().getPlayer();
+        /*GameObject* player = GlobalVariables::getInstance().getPlayer();
 
         //Create the item
-        ItemManager::getInstance().createItem(*player);
+        ItemManager::getInstance().createItem(*player);*/
    // }
 }
 

@@ -61,7 +61,6 @@ void Game::init() {
     sensorManager->init();
     itemManager->init();
     scoreManager->init();
-    networkManager->init();
     debugManager->init();
 
     //Add initial objects

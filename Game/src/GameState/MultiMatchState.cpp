@@ -6,14 +6,15 @@ void createPlayer();
 void MultiMatchState::init() {
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
-    eventManager    = &EventManager::getInstance();     //Initilize event manager
+    aiManager       = &AIManager::getInstance();        //Initialize AI manager
+    eventManager    = &EventManager::getInstance();     //Initialize event manager
     renderManager   = &RenderManager::getInstance();    //First we initialize renderManager, who creates a device and passes this reference to the inputManager
     inputManager    = &InputManager::getInstance();     //Once we've initialized the renderManager, we can do the same with our inputManager
     objectManager   = &ObjectManager::getInstance();    //Initialize object manager
     waypointManager = &WaypointManager::getInstance();  //Initialize Waypoint Manager
     sensorManager   = &SensorManager::getInstance();    //Initialize Sensor manager
     physicsManager  = &PhysicsManager::getInstance();   //Initialize physics manager
-    //itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
+    itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
     debugManager    = &DebugManager::getInstance();     //Initialize Debug manager
@@ -29,8 +30,7 @@ void MultiMatchState::update(float &accumulatedTime) {
     //No gelding
     inputManager->update();
     //___>
-    //networkManager->update();
-    //debugManager->update();
+    debugManager->update();
     //<___
     
     renderManager->update(accumulatedTime);
@@ -42,6 +42,9 @@ void MultiMatchState::update(float &accumulatedTime) {
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
     }
+
+    //Do before interpolation, since it receives new positions that break the spot
+    networkManager->update();
 
     //Always interpolate
     interpolate(accumulatedTime);

@@ -7,9 +7,6 @@
 //////////////////////////////////////////////
 /*
 +>Add time stamp from server
-+>Add score callers
-+>Add item callers
-+>ADd camera distance calculations
 DONE>Add ristra de mensajes para las posiciones macho
 >Add Debug callers
 */
@@ -19,19 +16,6 @@ DONE>Add ristra de mensajes para las posiciones macho
 //////////////////////////////////////////////////////
 //////////// DELEGATE FUNCTIONS
 //////////////////////////////////////////////////////
-/*void sendAdvanceDown(EventData eData);
-void sendAdvanceUp(EventData eData);
-void sendBrakeDown(EventData eData);
-void sendBrakeUp(EventData eData);
-void sendTurnLeftDown(EventData eData);
-void sendTurnLeftUp(EventData eData);
-void sendTurnRightDown(EventData eData);
-void sendTurnRightUp(EventData eData);
-void sendJumpDown(EventData eData);
-void sendJumpUp(EventData eData);
-void sendDriftDown(EventData eData);
-void sendDriftUp(EventData eData);
-void sendUseItemDown(EventData eData);*/
 void itemBoxCollisionEvent(EventData eData);
 void startLineCollisionEvent(EventData eData);
 void createTrapEvent(EventData eData);
@@ -78,23 +62,6 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     player.get()->setNewTransformData(trans);
     player.get()->setOldTransformData(trans);
     player.get()->setTransformData(trans);
-
-    ////////////
-    //Add remote player component and set its server_id
-    ////////////
-   /* NetworkManager::getInstance().createRemotePlayerComponent(*player.get());
-
-    bool found = false;
-    std::shared_ptr<RemotePlayerComponent> rPlayer;
-    for(unsigned int i = 0; i<remotePlayerComponentList.size() && found == false; i++)
-    {
-        rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[i]);
-        if(rPlayer.get()->getServerId() == -1)
-        {
-            found = true;
-            rPlayer.get()->setServerId(server_id);
-        }
-    }*/
 
     ////////////
     //DEBUG AREA
@@ -155,69 +122,8 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
             }
         }
     }
+
 }
-
-/*void NetworkManager::updatePlayersPosition(RakNet::Packet* packet)
-{
-    //Auxiliar variables
-    float x, y, z, rx, ry, rz;
-    int id;
-    int size = remotePlayerComponentList.size();
-
-    //Read data
-    RakNet::BitStream parser(packet->data, packet->length, false);
-
-    //Ignore packet type
-    parser.IgnoreBytes(1);
-
-    //Through all the players
-    for(int i = 0; i<size; i++)
-    {
-        //Read data
-        parser.Read(id);
-        parser.Read(x);
-        parser.Read(y);
-        parser.Read(z);
-        parser.Read(rx);
-        parser.Read(ry);
-        parser.Read(rz);
-
-        bool found = false;
-        for(int j = 0; j < size && found == false; j++)
-        {
-            //Get player data
-            auto rPlayer = std::dynamic_pointer_cast<RemotePlayerComponent>(remotePlayerComponentList[j]);
-
-            //If it is the searched player
-            if(rPlayer->getServerId() == id)
-            {
-                //Cut loop
-                found = true;
-
-                //Read transform data
-                auto trans = rPlayer.get()->getGameObject().getTransformData();
-
-                //Assign data
-                trans.position.x = x;
-                trans.position.y = y;
-                trans.position.z = z;
-
-                trans.rotation.x = rx;
-                trans.rotation.y = ry;
-                trans.rotation.z = rz;
-                
-                //Assign new position
-                rPlayer.get()->getGameObject().setNewTransformData(trans);
-                RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
-
-                //If there is debug, update position of the cylinders
-                //if(debugNetworkState){
-                    
-                //}
-            }
-        }
-    }
-}*/
 
 //=============================================
 // CREATE ITEMS
@@ -272,7 +178,7 @@ void NetworkManager::remoteCreateTrap(RakNet::Packet* packet){
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the trap
         {
             found = true;
-            auto object = ItemManager::getInstance().createTrap(rPlayer.get()->getGameObject());
+            auto object = ItemManager::getInstance().createTrap(rPlayer.get()->getGameObject(),1);
 
             //set the server id of the trap
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
@@ -281,7 +187,7 @@ void NetworkManager::remoteCreateTrap(RakNet::Packet* packet){
      //If not found by other players, it was our player who did it
     if(found == false)
     {
-        auto object = ItemManager::getInstance().createTrap(*player.get());
+        auto object = ItemManager::getInstance().createTrap(*player.get(),0);
         object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
     }
 
@@ -385,20 +291,22 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the red shell
         {
             found = true;
-            auto object = ItemManager::getInstance().createRedShell(rPlayer.get()->getGameObject());//Create object
-            std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
-            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
+            auto object = ItemManager::getInstance().createRedShell(rPlayer.get()->getGameObject(), 1); //Create object
+            std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                           //Initialize object
+            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);       //Set server id
+            object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);       //Set parent id
         }
     }
 
      //If not found by other players, it was our player who did it
     if(found == false)
     {
-        auto object = ItemManager::getInstance().createRedShell(*player.get());                 //Create object
+        auto object = ItemManager::getInstance().createRedShell(*player.get(),0);               //Create object
         std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
+        //<___
+        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
+        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
+        //___>
     }
 
     ////////////
@@ -499,7 +407,7 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the blue shell
         {
             found = true;
-            auto object = ItemManager::getInstance().createBlueShell(rPlayer.get()->getGameObject());                //Create object
+            auto object = ItemManager::getInstance().createBlueShell(rPlayer.get()->getGameObject(),1);                //Create object
             std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
@@ -509,10 +417,12 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
     //If not found by other players, it was our player who did it
     if(found == false)
     {
-        auto object = ItemManager::getInstance().createBlueShell(*player.get());                //Create object
-        std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-        object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
+        auto object = ItemManager::getInstance().createBlueShell(*player.get(),0);                //Create object
+        std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                        //Initialize object
+        //<___
+        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
+        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
+        //___>
     }
 
     ////////////
@@ -621,7 +531,9 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             trans.rotation.z = rz;
             
             rPlayer.get()->getGameObject().setNewTransformData(trans);
+            //<___
             RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
+            //___>
 
             //If there is debug, update position of the cylinders
             //if(debugNetworkState){
@@ -686,7 +598,8 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
             trans.rotation.z = rz;
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
-            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
+            
+            //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
         }
     }
 }
@@ -746,7 +659,7 @@ void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
             trans.rotation.z = rz;
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
-            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
+            //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
         }
     }
 }
@@ -863,21 +776,6 @@ void NetworkManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision,destroyRedShellEvent});
     EventManager::getInstance().addListener(EventListener {EventType::BlueShell_Create,createBlueShellEvent});
     EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision,destroyBlueShellEvent});
-
-    //Bind keyboard functions (only needed)
-    /*EventManager::getInstance().addListener(EventListener {EventType::Key_Advance_Down, sendAdvanceDown});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Advance_Up, sendAdvanceUp});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Brake_Down, sendBrakeDown});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Brake_Up, sendBrakeUp});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_TurnLeft_Down, sendTurnLeftDown});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_TurnLeft_Up, sendTurnLeftUp});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Down, sendTurnRightDown});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_TurnRight_Up, sendTurnRightUp});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Down, sendJumpDown});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Jump_Up, sendJumpUp});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Down, sendDriftDown});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Drift_Up, sendDriftUp});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_UseItem_Down, sendUseItemDown});*/
 }
 
 void NetworkManager::update() 
@@ -908,17 +806,13 @@ void NetworkManager::update()
             case ID_CREATE_REMOTE_PLAYER:
                 createRemotePlayer(packet);
                 break;
-
-            /*case ID_PLAYERS_POSITION:
-                updatePlayersPosition(packet);
-                //lastPackets.push_back(ID_PLAYERS_POSITION);
-                break;*/
+                
             case ID_REMOTE_PLAYER_MOVEMENT:
                 moveRemotePlayer(packet);
                 //lastPackets.push_back(ID_REMOTE_PLAYER_MOVEMENT);
                 break;
 
-            /*case ID_BOX_COLLISION:
+            case ID_BOX_COLLISION:
                 remoteItemBoxCollision(packet);
                 lastPackets.push_back(ID_BOX_COLLISION);
                 //PROVISIONAL DATA
@@ -975,7 +869,7 @@ void NetworkManager::update()
             case ID_BLUE_SHELLS_POSITION:
                 moveRemoteBlueShell(packet);
                 //lastPackets.push_back(ID_REMOTE_BLUE_SHELL_MOVEMENT);
-                break;*/
+                break;
 
             default:
                 std::cout << "Mensaje recibido" << std::endl;
@@ -990,9 +884,9 @@ void NetworkManager::update()
     }
 
     //Always broadcast position of items in each iteration
-    //broadcastPosition();
-    //broadcastPositionRedShell();
-    //broadcastPositionBlueShell();
+    broadcastPosition();
+    broadcastPositionRedShell();
+    broadcastPositionBlueShell();
 }
 
 void NetworkManager::close() {
@@ -1148,58 +1042,3 @@ void createTrapEvent(EventData eData)
  void destroyBlueShellEvent(EventData eData){
      NetworkManager::getInstance().destroyBlueShell(eData);
 }
-
-//Bing keyboard functions to be sent
-/*void sendAdvanceDown(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_Advance_Down);
-}
-void sendAdvanceUp(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_Advance_Up);
-}
-void sendBrakeDown(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_Brake_Down);
-}
-void sendBrakeUp(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_Brake_Up);
-}
-void sendTurnLeftDown(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_TurnLeft_Down);
-}
-void sendTurnLeftUp(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_TurnLeft_Up);
-}
-void sendTurnRightDown(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_TurnRight_Down);
-}
-void sendTurnRightUp(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_TurnRight_Up);
-}
-void sendJumpDown(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_Jump_Down);
-}
-void sendJumpUp(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_Jump_Up);
-}
-void sendDriftDown(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_Drift_Down);
-}
-void sendDriftUp(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_Drift_Up);
-}
-void sendUseItemDown(EventData eData)
-{
-    NetworkManager::getInstance().sendInput(EventType::Key_UseItem_Down);
-}*/
-

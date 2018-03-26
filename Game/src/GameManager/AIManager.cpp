@@ -43,7 +43,9 @@ void AIManager::init() {
 void AIManager::update(float dTime) {
     //Update only the second AI
     //:::> Wtf? Why only the second one? makes no sense
-    GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
+    //<___
+    //GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
+    //___>
 
     //Interchange updating direction or battle behaviour each frame
     if(updateBattleBehaviour == true)
@@ -78,11 +80,17 @@ void AIManager::update(float dTime) {
             //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
             if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
             {
+                //:::>Explain what
                 if(AIObject.getComponent<CollisionComponent>()->getKinetic() == false)
                 {
                     AIObject.getComponent<CollisionComponent>()->setKinetic(true);
                 }
-                updateDriving(aiDrivingComponent);
+
+                //Update if the object is not an red shell or blue shell
+                if(AIObject.getComponent<IItemComponent>() == nullptr)
+                {
+                    updateDriving(aiDrivingComponent);
+                }
             }
             else
             {
@@ -102,14 +110,17 @@ void AIManager::close() {
 
 //COMPONENT CREATORS
 IComponent::Pointer AIManager::createAIDrivingComponent(GameObject& newGameObject){
-
+    //Make shared pointer of the AI Driving component
     IComponent::Pointer component = std::make_shared<AIDrivingComponent>(newGameObject);
 
+    //Attach to object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::> maybe it can be done without the event since it is only used in this manager
+    //:::> needs scheduling to be useful
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::AIDrivingComponent_Create, data});
 
     return component;
@@ -117,13 +128,19 @@ IComponent::Pointer AIManager::createAIDrivingComponent(GameObject& newGameObjec
 
 IComponent::Pointer AIManager::createAIBattleComponent(GameObject& newGameObject)
 {
+    //Make shared pointer of the AI Driving component
     IComponent::Pointer component = std::make_shared<AIBattleComponent>(newGameObject);
 
+    //Attach to object
     newGameObject.addComponent(component);
 
+    //:::> needs scheduling to be in event form
+
+    //Push to battle AI list
     battleAI.push_back(component);
 
-   std::dynamic_pointer_cast<AIBattleComponent>(component).get()->init();
+    //Initalize component
+    std::dynamic_pointer_cast<AIBattleComponent>(component).get()->init();
 
 
     return component;
@@ -204,7 +221,7 @@ void AIManager::updateDriving(AIDrivingComponent* aiDrivingComponent)
         //Send signal of movement
         //Turn
 
-        moveComponent->changeSpin(turnValue );
+        moveComponent->changeSpin(turnValue);
 
         moveComponent->isMoving(true);
         moveComponent->changeAcc(speedValue);
@@ -219,19 +236,19 @@ void AIManager::updateDriving(AIDrivingComponent* aiDrivingComponent)
 
 void AIManager::calculateLoD(GameObject AI, float dTime)
 {
-    GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
-    auto trans = AIObject->getTransformData();
-    AIObject->getComponent<CollisionComponent>()->setKinetic(false);
+
+    auto trans = AI.getTransformData();
+    AI.getComponent<CollisionComponent>()->setKinetic(false);
     //std::cout<<AIObject->getComponent<CollisionComponent>()->getKinetic()<<"\n";
 
-    auto maxSpeed = AIObject->getComponent<MoveComponent>()->getMovemententData().max_vel;
-    AIObject->getComponent<MoveComponent>()->changeVel(maxSpeed);
+    auto maxSpeed = AI.getComponent<MoveComponent>()->getMovemententData().max_vel;
+    AI.getComponent<MoveComponent>()->changeVel(maxSpeed);
 
     auto distCover = (maxSpeed * maxSpeed) * dTime;
 
     auto waypoints = WaypointManager::getInstance().getWaypoints();
 
-    unsigned int posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
+    unsigned int posVector = AI.getComponent<PathPlanningComponent>()->getLastPosVector();
 
     float distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
 						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
@@ -244,15 +261,15 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
         if(posVector < waypoints.size()-1)
         {
             posVector++;
-            AIObject->getComponent<PathPlanningComponent>()->setLastPosVector(posVector);
+            AI.getComponent<PathPlanningComponent>()->setLastPosVector(posVector);
         }
         else if(posVector == waypoints.size()-1)
         {
-            AIObject->getComponent<StartLineComponent>()->setActive(true);
-            AIObject->getComponent<PathPlanningComponent>()->setLastPosVector(0);
+            AI.getComponent<StartLineComponent>()->setActive(true);
+            AI.getComponent<PathPlanningComponent>()->setLastPosVector(0);
 
         }
-        posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
+        posVector = AI.getComponent<PathPlanningComponent>()->getLastPosVector();
         distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
                             (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
                             (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
@@ -299,9 +316,9 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     //nextPos = waypoints[posVector].get()->getTransformData().position;
     trans.position = nextPos;
     
-    AIObject->setNewTransformData(trans);
-    //AIObject->setOldTransformData(trans);
-    //AIObject->setTransformData(trans);
+    AI.setNewTransformData(trans);
+    //AI->setOldTransformData(trans);
+    //AI->setTransformData(trans);
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(AI.getId(), trans);
 
     ////////////////////////////////////
@@ -309,12 +326,12 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     //////////////////////////////////// 
     if(posVector%2 == 1)
     {
-        auto itemHolder = AIObject->getComponent<ItemHolderComponent>();
+        auto itemHolder = AI.getComponent<ItemHolderComponent>();
 
         if(itemHolder->getItemType() == -1){
             srand (time(NULL));
             int random;
-            if(AIObject->getComponent<ScoreComponent>()->getPosition() == 1)
+            if(AI.getComponent<ScoreComponent>()->getPosition() == 1)
             {
                 random = rand() % 3 + 2;
             }
@@ -326,6 +343,7 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
             itemHolder->setItemType(random);
         }
     }
+    //:::> Fix this
     /////////////////////////////////////////////////////////////////////////
     ///////     AJUSTAR EL BEHAVIOUR THREE A QUE SE USE SIEMPRE EL ITEM
     /////////////////////////////////////////////////////////////////////////
