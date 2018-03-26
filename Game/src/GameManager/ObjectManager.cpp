@@ -208,7 +208,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.player = 1;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "cyborg.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
 
     return ob;
 

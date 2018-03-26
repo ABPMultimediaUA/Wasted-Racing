@@ -1,16 +1,7 @@
 #include "RedPandaStudio.h"
 
-#define NK_INCLUDE_FIXED_TYPES
-#define NK_INCLUDE_STANDARD_IO
-#define NK_INCLUDE_STANDARD_VARARGS
-#define NK_INCLUDE_DEFAULT_ALLOCATOR
-#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
-#define NK_INCLUDE_FONT_BAKING
-#define NK_INCLUDE_DEFAULT_FONT
-#define NK_IMPLEMENTATION
-#define NK_SDL_GL3_IMPLEMENTATION
-#include "nuklear.h"
-#include "nuklear_sdl_gl3.h"
+//GUI drawing function adress
+void (*rpsGUI_draw)() = nullptr;
 
 namespace rps{
 
@@ -44,33 +35,20 @@ void RedPandaStudio::updateDevice() {
 	glUseProgram(scene->getEntity()->getProgramID());
 	glEnable(GL_DEPTH_TEST);
 
+	renderCamera();
+	renderLights();
+
 	scene->draw();
 
-	if (nk_begin(ctx, "Demo", nk_rect(50, 50, 230, 250),
-            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
-        {
-            enum {EASY, HARD};
-            static int op = EASY;
-            static int property = 20;
+	if(rpsGUI_draw != nullptr)
+		rpsGUI_draw();
 
-            nk_layout_row_static(ctx, 30, 80, 1);
-            if (nk_button_label(ctx, "button"))
-                printf("button pressed!\n");
-            nk_layout_row_dynamic(ctx, 30, 2);
-            if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
-            if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
-            nk_layout_row_dynamic(ctx, 22, 1);
-            nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
-
-            nk_layout_row_dynamic(ctx, 20, 1);
-            nk_label(ctx, "background:", NK_TEXT_LEFT);
-            nk_layout_row_dynamic(ctx, 25, 1);
-		}
-	nk_end(ctx);
-	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
 	SDL_GL_SwapWindow(window);
 
+}
+
+void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
+	rpsGUI_draw = f;
 }
 
 void RedPandaStudio::dropDevice() {
@@ -137,20 +115,15 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "test.vert";
-    const char * fragment_file_path = "test.frag";
-	const char * skybox_vertex_path = "skybox.vert";
-	const char * skybox_fragment_path = "skybox.frag";
+    const char * vertex_file_path = "shaders/test.vert";
+    const char * fragment_file_path = "shaders/test.frag";
+	const char * skybox_vertex_path = "shaders/skybox.vert";
+	const char * skybox_fragment_path = "shaders/skybox.frag";
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
 	glewExperimental = GL_TRUE;
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
-
-	ctx = nk_sdl_init(window);
-	struct nk_font_atlas *atlas;
-    nk_sdl_font_stash_begin(&atlas);
-	nk_sdl_font_stash_end();
 
     //Init VBO
     GLuint VertexArrayID;
@@ -162,12 +135,12 @@ void RedPandaStudio::initOpenGL() {
 	
 	//Init skybox
 	skybox = new TResourceSkybox();
-	char* r0 = "Link/darkskies_ft.tga";
-	char* r1 = "Link/darkskies_bk.tga";
-	char* r2 = "Link/darkskies_up.tga";
-	char* r3 = "Link/darkskies_dn.tga";
-	char* r4 = "Link/darkskies_rt.tga";
-	char* r5 = "Link/darkskies_lf.tga";
+	char* r0 = "media/img/darkskies_ft.tga";
+	char* r1 = "media/img/darkskies_bk.tga";
+	char* r2 = "media/img/darkskies_up.tga";
+	char* r3 = "media/img/darkskies_dn.tga";
+	char* r4 = "media/img/darkskies_rt.tga";
+	char* r5 = "media/img/darkskies_lf.tga";
 	
 	skybox->loadResource(r0, 0);
 	skybox->loadResource(r1, 1);
@@ -196,6 +169,8 @@ void RedPandaStudio::initOpenGL() {
 
 	//Link OpenGL program using the id
 	printf("Linking OpenGL program\n");
+	printf("\n");
+	printf("\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexID);
 	glAttachShader(ProgramID, fragmentID);

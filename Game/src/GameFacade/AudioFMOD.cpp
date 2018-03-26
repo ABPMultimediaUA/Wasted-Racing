@@ -43,6 +43,8 @@ void shootTrapCollisionEvent(EventData e);
 void shootOnNewLapEvent(EventData e);
 void shootOnOvertakeEvent(EventData e);
 void shootOnOvertakenEvent(EventData e);
+//MUSIC
+void shootOnMusicMainTheme(EventData e);
 
 
 
@@ -66,6 +68,7 @@ void AudioFMOD::openAudioEngine(int lang) {
     if(lang == 1){
 
         LOAD_EVENT(CharacterES, CharacterES);
+        LOAD_EVENT(Music, Music);
 
     }
     else{
@@ -82,6 +85,8 @@ void AudioFMOD::openAudioEngine(int lang) {
     EventManager::getInstance().addListener(EventListener {EventType::Score_OnNewLap, shootOnNewLapEvent});
     EventManager::getInstance().addListener(EventListener {EventType::Score_OnOvertake, shootOnOvertakeEvent});
     EventManager::getInstance().addListener(EventListener {EventType::Score_OnOvertaken, shootOnOvertakenEvent});
+    //MUSIC
+    EventManager::getInstance().addListener(EventListener {EventType::Music_MainTheme, shootOnMusicMainTheme});
 
     //Game veriables
     worldUnits = 0.05;
@@ -214,6 +219,14 @@ void shootOnOvertakeEvent(EventData e) {
 void shootOnOvertakenEvent(EventData e) {
 
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnOvertakenEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+
+}
+
+void shootOnMusicMainTheme(EventData e) {
+
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "MusicMainThemeEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
 

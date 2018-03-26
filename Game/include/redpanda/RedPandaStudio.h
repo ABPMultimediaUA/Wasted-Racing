@@ -46,6 +46,8 @@ public:
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
 
+    void setGUIDrawFunction(void (*)());
+
     //////////////////////////////
     //  GETTERS
     SDL_Window* getWindow()   {   return window;      }
@@ -68,6 +70,7 @@ private:
     void calculateNodeTransform(TNode* node, glm::mat4& mat);  //Given a node, returns its accumulated transform. Should receive an identity as input
     TNode* addRotScaPos(TNode* parent, glm::vec3 position); //Returns the Position Node
     void deleteNode(TNode* node); //Deletes a node and all his children
+    
 
     //////////////////////////////
     //  VARIABLES
@@ -79,8 +82,12 @@ private:
     TNode *camera;
     std::vector<TNode*> lights;
 
-    //Temporary variable
+    //Skybox
     TResourceSkybox*  skybox;
+    //Skybox shader
+    GLuint skyboxID;
+    //SKybox vertex array
+    GLuint skyVertexArray;
 
 };
 

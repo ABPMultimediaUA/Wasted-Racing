@@ -200,8 +200,7 @@ void addObjects(){
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = glm::vec3(1,1,1);
     
-    //:::>Needs to be set by the player creation
-    ObjectManager::getInstance().createPlayer(transform, 3, 0, id, 
+    ObjectManager::getInstance().createPlayer(transform, 0, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
@@ -325,7 +324,7 @@ void loadMap() {
                     type = LightRenderComponent::Type::Directional;
 
                 //Create LIGHT component
-                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,radius);
+                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,100);
 
             }
 
