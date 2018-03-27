@@ -932,7 +932,7 @@ void NetworkManager::updateLobby(){
                 std::cout << "Game started " << std::endl;
                 started = true;
                 break;
-            default:
+            default: 
                 break;
         }
         peer->DeallocatePacket(result);
