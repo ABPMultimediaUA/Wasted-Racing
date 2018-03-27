@@ -15,19 +15,24 @@
 void InputRedPanda::openInput(uintptr_t dev) {
     device = reinterpret_cast<SDL_Window*>(dev);
 }
-
+//<___
 struct nk_context *inputGUI; //:::> global variable
+//___>
 
 void InputRedPanda::updateInput() { 
 
 
     // Process events
-    SDL_Event event;
+    SDL_Event event;    
+    //<___
     nk_input_begin(inputGUI);
+    //___>
     while( SDL_PollEvent( &event ) )
     {
         //Update GUI input
+        //<___
         nk_sdl_handle_event(&event);
+        //___>
 
         //Update input 
         DetectKeyInput(SPACE, Key_Jump_Down, Key_Jump_Up)
@@ -51,7 +56,10 @@ void InputRedPanda::updateInput() {
         if (event.type == SDL_QUIT)
             EventManager::getInstance().addEvent(Event {EventType::Game_Close});
     }
+    //<___
     nk_input_end(inputGUI);
+    //___>
+    
 }
 
 void InputRedPanda::closeInput() {
@@ -59,5 +67,7 @@ void InputRedPanda::closeInput() {
 } 
 
 void InputRedPanda::setGUIContext(void* ctx) {
+    //<___
     inputGUI = (nk_context*)ctx;
+    //___>
 }

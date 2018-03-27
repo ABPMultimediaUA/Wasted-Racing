@@ -50,9 +50,10 @@ public:
 
     //////////////////////////////
     //  GETTERS
-    SDL_Window* getWindow()   {   return window;      }
-    TNode* getSceneRoot()           {   return scene;       }
+    SDL_Window* getWindow()               { return window;           }
+    TNode* getSceneRoot()                 { return scene;            }
     ResourceManager* getResourceManager() { return resourceManager;  }
+    SDL_GLContext* getContext()           { return context;          }  
 
     //////////////////////////////
     //  SETTERS
@@ -75,7 +76,7 @@ private:
     //////////////////////////////
     //  VARIABLES
     SDL_Window* window;
-    SDL_GLContext context;
+    SDL_GLContext* context;
     TNode *scene;
     ResourceManager *resourceManager;
     //Lights and camera

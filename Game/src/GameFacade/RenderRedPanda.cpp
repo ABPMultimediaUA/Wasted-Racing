@@ -23,25 +23,61 @@ void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
 //==============================================================
 //Creates a window depending on the engine
 void RenderRedPanda::openWindow() { 
-
+    //Create window with openGL
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
     
+    //Create input interface
     InputRedPanda* receiver = new InputRedPanda();
 
+    //Get pointer of the window
     uintptr_t aux = reinterpret_cast<uintptr_t>(device->getWindow());
+
+    //Set it as the default device and the input facade as the key handler
     InputManager::getInstance().setDevice(aux);
     InputManager::getInstance().setInputFacade(receiver);
 
+    //Create HUD renderer
+    /*HUDRenderer = SDL_CreateRenderer(device->getWindow(), -1, SDL_RENDERER_ACCELERATED);
+    if (HUDRenderer == nullptr){
+        std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
+    }
+
+    //Load an image of example
+    std::string imagePath = "/media/img/fontcourier.bmp";
+    SDL_Surface *bmp = SDL_LoadBMP(imagePath.c_str());
+    if (bmp == nullptr){
+        std::cout << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
+    }
+
+    //Create texture so we can paint it in the renderer
+    tex = SDL_CreateTextureFromSurface(HUDRenderer, bmp);
+    SDL_FreeSurface(bmp);
+    if (tex == nullptr){
+        std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+    }*/
+
+    
     //Init GUI
     GUI = nk_sdl_init(device->getWindow());
+
+    //Load fonts
     struct nk_font_atlas *atlas;
     nk_sdl_font_stash_begin(&atlas);
 	nk_sdl_font_stash_end();
 
-    InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
-    irps->setGUIContext(GUI);
-
-    device->setGUIDrawFunction(drawRPS_GUI);
+    //<___
+    //:::>??????????????????? but this variable is receiver, wtf
+    //InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
+    //irps->setGUIContext(GUI);
+    receiver->setGUIContext(GUI);
+    //___>
+    
+    //<___
+    //device->setGUIDrawFunction(drawRPS_GUI);
+    //___>
+    
+    //set drawGUI as drawing GUI function
+    //device->setGUIDrawFunction(drawRPS_GUI);
 
 }
 
@@ -51,9 +87,21 @@ void RenderRedPanda::updateWindow() {
 }
 
 //Closes engine window
-void RenderRedPanda::closeWindow() { 
+void RenderRedPanda::closeWindow() {
+    //Clear context
+    nk_clear(GUI);
+    nk_free(GUI);
 
+    //Close nuklear
     nk_sdl_shutdown();
+
+    //Destroy all textures used -- initially one for testing
+    /*SDL_DestroyTexture(tex);
+
+    //Destroy renderer
+    SDL_DestroyRenderer(HUDRenderer);*/
+
+    //Close device
     device->dropDevice();
 
 }
@@ -190,9 +238,8 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 //  GUI
 ////////////
 void drawRPS_GUI(){
-    if (nk_begin(GUI, "Demo", nk_rect(50, 50, 230, 250),
-            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+    //Open window as big as the screen
+    if (nk_begin(GUI, "XKating", nk_rect(0, 0, 1280, 720), NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
         {
             enum {EASY, HARD};
             static int op = EASY;
@@ -213,6 +260,41 @@ void drawRPS_GUI(){
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+
+    //Swap contexts
+    /*SDL_GL_MakeCurrent(device->getWindow(),
+                       &HUDRenderer);
+
+    //Clean renderer
+    SDL_RenderClear(HUDRenderer);
+    
+    //Draw all textures on renderer
+    SDL_RenderCopy(HUDRenderer, tex, NULL, NULL);
+    SDL_RenderPresent(HUDRenderer);
+
+    //Return contexts to initial state
+    SDL_GL_MakeCurrent(device->getWindow(),
+                       &device->getContext());*/
+
+}
+
+//Draws entire GUI
+void RenderRedPanda::drawGUI() {
+    //drawRPS_GUI();
+    /*SDL_GL_MakeCurrent(device->getWindow(),
+                       &HUDRenderer);
+
+    //Clean renderer
+    SDL_RenderClear(HUDRenderer);
+    
+    //Draw all textures on renderer
+    SDL_RenderCopy(HUDRenderer, tex, NULL, NULL);
+    SDL_RenderPresent(HUDRenderer);
+
+    SDL_GLContext* ctx = device->getContext();
+    //Return contexts to initial state
+    SDL_GL_MakeCurrent(device->getWindow(),
+                        &ctx);*/
 }
 
 ////////////
@@ -226,9 +308,11 @@ void RenderRedPanda::changeImage(int32_t id, std::string img) {}
 void RenderRedPanda::deleteImage(int32_t id) {}
 //Clean images off of the screen
 void RenderRedPanda::cleanImages() {}
+
 ////////////
 //  Rectangle
 ////////////
+
 //Add rectangle of the given color and alpha channel, at the specified position with the given size
 int32_t RenderRedPanda::addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a) {return 0;}
 //Change color of the rectangle known by the id given
@@ -237,6 +321,7 @@ void RenderRedPanda::changeRectangleColor(int32_t id, int r, int g, int b, int a
 void RenderRedPanda::deleteRectangleColor(int32_t id) {}
 //Clean all rectangles off of the screen
 void RenderRedPanda::cleanRectangles() {}
+
 ////////////
 //  Text
 ////////////
@@ -244,6 +329,7 @@ void RenderRedPanda::cleanRectangles() {}
 int32_t RenderRedPanda::addText(std::string text, glm::vec2 pos, int r, int g, int b, int a, glm::vec2 size, std::string) {
     return 0;
 }
+
 //Changes the specified text with the given message
 void RenderRedPanda::changeText(int32_t id, std::string text) {}
 //Changes the font of the game
@@ -258,6 +344,7 @@ void RenderRedPanda::deleteText(int32_t id) {}
 void RenderRedPanda::cleanTexts() {}
 //Erase all visual interface elements from the screen
 void RenderRedPanda::cleanInterface() {}
+
 ///////////////////////////////
 ///////      DEBUG      ///////    
 ///////////////////////////////
@@ -297,8 +384,6 @@ void RenderRedPanda::setSubDescriptionText(std::string text) { }
 
 //Update the logo video
 void RenderRedPanda::updateLogo() { }
-
-void RenderRedPanda::drawGUI() { }
 
 void RenderRedPanda::createItemIcon(glm::vec2 pos, std::string img) { }
 

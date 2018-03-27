@@ -71,6 +71,7 @@ void MultiMatchState::updateManagers(float dTime){
 
 void MultiMatchState::draw() {
     renderManager->draw();
+    //renderManager->drawHUD();
 }
 
 void MultiMatchState::interpolate(float &accumulatedTime) {

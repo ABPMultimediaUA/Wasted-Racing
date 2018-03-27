@@ -171,7 +171,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.player = 0;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "cyborg.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
 
     return ob;
 
@@ -208,7 +208,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.player = 1;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
 
     return ob;
 
@@ -245,7 +245,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.player = 2;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "cyborg.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
 
     return ob;
 
@@ -282,7 +282,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.player = 3;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "cyborg.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
 
     return ob;
 

@@ -46,6 +46,7 @@ void RenderManager::init(int engine) {
     
     //<___
     //initHUD();
+    
     //Hud initial state is false
     HUD_ON = false;
     //___>

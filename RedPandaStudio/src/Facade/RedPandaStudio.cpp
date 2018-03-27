@@ -54,7 +54,7 @@ void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
 void RedPandaStudio::dropDevice() {
 
 	// Delete our OpengL context
-	SDL_GL_DeleteContext(context);
+	SDL_GL_DeleteContext(&context);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 
@@ -98,7 +98,8 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 		SDL_GL_SetSwapInterval(1);
 	}
 
-	context = SDL_GL_CreateContext(window);
+	SDL_GLContext ctx = SDL_GL_CreateContext(window);
+	context = &ctx;
 	glViewport(0, 0, width, height);
 
     //Give window to RedPandaStudio
