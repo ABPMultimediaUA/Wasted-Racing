@@ -135,7 +135,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, eData});
         
         //Create item and initialize it
-        auto component = createRedShell(obj, 0);
+        auto component = createRedShell(obj, IItemComponent::InstanceType::LOCAL );
         std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();     
         return component;
     }
@@ -151,7 +151,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, eData});
 
         //Create item and initialize it
-        auto component = createBlueShell(obj, 0);
+        auto component = createBlueShell(obj, IItemComponent::InstanceType::LOCAL);
         std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init();
         return component;
     }
@@ -167,7 +167,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         EventManager::getInstance().addEvent(Event {EventType::Trap_Create, eData});
 
         //Return initialization of item
-        return createTrap(obj, 0);
+        return createTrap(obj, IItemComponent::InstanceType::LOCAL);
     }
 
     //Mushroom item
@@ -205,7 +205,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 // ITEM CREATOR DERIVATED FUNCTIONS
 //==============================================
 
-IComponent::Pointer ItemManager::createRedShell(GameObject& obj, int mode)
+IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent::InstanceType mode)
 {
     //Initial Data
     uint16_t id = ItemManager::ids;
@@ -228,7 +228,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, int mode)
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
     //Make red shell component and add it to the object
-    IComponent::Pointer component = std::make_shared<ItemRedShellComponent>(*ob.get(), obj);
+    IComponent::Pointer component = std::make_shared<ItemRedShellComponent>(*ob.get(), obj, mode);
     ob.get()->addComponent(component);
 
     //Movement data
@@ -282,7 +282,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, int mode)
     }*/
 
     //Create remote object type
-    if(mode == 1)
+    if(mode == IItemComponent::InstanceType::REMOTE)
     {
         NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 1);
 
@@ -294,7 +294,8 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, int mode)
         std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
         PhysicsManager::getInstance().createMovingCharacter(move, nullptr, nullptr);
     }
-    else{
+    else
+    {
 
         //--------------------------
         //Create collision component
@@ -324,7 +325,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, int mode)
     return component;
 }
 
-IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, int mode)
+IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent::InstanceType mode)
 {
     //Initial Data
     uint16_t id = ItemManager::ids;
@@ -341,12 +342,15 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, int mode)
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(2,2,2);
 
+    //Create object
     auto ob = ObjectManager::getInstance().createObject(id, transform);
 
-    IComponent::Pointer component = std::make_shared<ItemBlueShellComponent>(*ob.get(), obj);
-
+    //Make blue shell component and add it to the object
+    IComponent::Pointer component = std::make_shared<ItemBlueShellComponent>(*ob.get(), obj, mode);
     ob.get()->addComponent(component);
 
+    //Movement data
+    //:::> TOO MUCH HARDCODE
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -370,10 +374,12 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, int mode)
     mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
 
 
+    //Initial component data
     auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
     auto idd = obj.getId();
     IComponent::Pointer terrainComp;
 
+    //Get terrain component of the terrain in which the object is located
     auto list = PhysicsManager::getInstance().getMovingCharacterList();
     for(unsigned int i=0; i < list.size(); i++)
     {
@@ -381,40 +387,63 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, int mode)
             terrainComp = list[i].terrainComponent;
     }
 
-
-    auto terrainComponent = obj.getComponent<TerrainComponent>();
+    //<___
+    //auto terrainComponent = obj.getComponent<TerrainComponent>();
+    //___>
 
     //--------------------------
     //Online dependant instances
     //Create the network component with the type of the object assigned
-    if(globalVariables->getOnline())
+    //<___
+    /*if(globalVariables->getOnline())
     {
-        NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 2);
+        NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 1);
+    }*/
+
+    //Create remote object type
+    if(mode == IItemComponent::InstanceType::REMOTE)
+    {
+        NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 1);
+
+        //--------------------------
+        //Create collision component
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
+        
+        //Create move component with the movement data
+        std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+        PhysicsManager::getInstance().createMovingCharacter(move, nullptr, nullptr);
     }
+    else
+    {
 
-    //--------------------------
+        //--------------------------
+        //Create collision component
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::BlueShell);
+        //:::>Better use enumerators rather than hardcoded if's and types
+        std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::BlueShell);
 
-    std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
-    PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
+        //Create move component with the movement data
+        std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
+        PhysicsManager::getInstance().createMovingCharacter(move, terrainComp, collision);
 
+        //Create path planning component
+        auto listNodes = WaypointManager::getInstance().getWaypoints();
+        WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
 
-    //Create path planning component
-    auto listNodes = WaypointManager::getInstance().getWaypoints();
-    WaypointManager::getInstance().createPathPlanningComponent(ob, listNodes);
-
-    AIManager::getInstance().createAIDrivingComponent(*ob.get());
-    SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0, 0);
-
+        //Create AI components
+        //:::>No hardcoded variables
+        AIManager::getInstance().createAIDrivingComponent(*ob.get());
+        SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
+    }
+    //___>
     //Add to list of items
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));
 
     return component;
 }
 
-IComponent::Pointer ItemManager::createTrap(GameObject& obj, int mode)
+IComponent::Pointer ItemManager::createTrap(GameObject& obj, IItemComponent::InstanceType mode)
 {
     //Initial Data
     uint16_t id = ItemManager::ids;

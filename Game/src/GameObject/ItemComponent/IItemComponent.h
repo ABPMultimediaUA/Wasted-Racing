@@ -13,12 +13,18 @@ class IItemComponent : public IComponent {
             none        = -1,
             redShell    = 0,      
             blueShell   = 1,      
-            trap      = 2,      
+            trap        = 2,      
             mushroom    = 3,      
             star        = 4
         
         };
 
+        enum InstanceType{
+            
+            LOCAL       = 0,
+            REMOTE      = 1
+        
+        };
 
     IItemComponent(GameObject& newGameObject) : IComponent(newGameObject) {};
 

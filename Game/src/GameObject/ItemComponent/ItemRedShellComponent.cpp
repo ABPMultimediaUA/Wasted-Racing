@@ -1,7 +1,7 @@
 #include "ItemRedShellComponent.h"
 
 
-ItemRedShellComponent::ItemRedShellComponent(GameObject& newGameObject, GameObject& obj) : IItemComponent(newGameObject), player(obj)
+ItemRedShellComponent::ItemRedShellComponent(GameObject& newGameObject, GameObject& obj, IItemComponent::InstanceType m) : IItemComponent(newGameObject), player(obj), mode(m)
 {
     //:::>hardcoded variables
     speed = 1.f;
@@ -27,11 +27,15 @@ void ItemRedShellComponent::init()
 
 void ItemRedShellComponent::update(float dTime)
 {
+    //if the object was created as an online copy of another object
+    if(mode == IItemComponent::InstanceType::REMOTE)
+        return;
+
     //:::> PLEASE, COMMENT ALL OF THIS
-        auto listNodes = WaypointManager::getInstance().getWaypoints();
-        auto vSensorComponent = getGameObject().getComponent<VSensorComponent>().get();
-        auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
-        
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    auto vSensorComponent = getGameObject().getComponent<VSensorComponent>().get();
+    auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
+    
     if(myPos > 1)
     {
         auto aiDrivingComponent = getGameObject().getComponent<AIDrivingComponent>().get();

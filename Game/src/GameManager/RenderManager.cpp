@@ -79,8 +79,7 @@ void RenderManager::init(int engine) {
     transform.scale    = glm::vec3(1,1,1);
     GameObject::Pointer sky = ObjectManager::getInstance().createObject(id, transform);
 
-
-    RenderManager::getInstance().createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
+    createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
 }
 
 void RenderManager::update(float dTime) {

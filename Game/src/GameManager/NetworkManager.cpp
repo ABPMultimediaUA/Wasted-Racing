@@ -178,7 +178,7 @@ void NetworkManager::remoteCreateTrap(RakNet::Packet* packet){
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the trap
         {
             found = true;
-            auto object = ItemManager::getInstance().createTrap(rPlayer.get()->getGameObject(),1);
+            auto object = ItemManager::getInstance().createTrap(rPlayer.get()->getGameObject(), IItemComponent::InstanceType::REMOTE);
 
             //set the server id of the trap
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
@@ -187,7 +187,7 @@ void NetworkManager::remoteCreateTrap(RakNet::Packet* packet){
      //If not found by other players, it was our player who did it
     if(found == false)
     {
-        auto object = ItemManager::getInstance().createTrap(*player.get(),0);
+        auto object = ItemManager::getInstance().createTrap(*player.get(), IItemComponent::InstanceType::LOCAL);
         object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);
     }
 
@@ -291,7 +291,7 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the red shell
         {
             found = true;
-            auto object = ItemManager::getInstance().createRedShell(rPlayer.get()->getGameObject(), 1); //Create object
+            auto object = ItemManager::getInstance().createRedShell(rPlayer.get()->getGameObject(), IItemComponent::InstanceType::REMOTE); //Create object
             std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                           //Initialize object
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);       //Set server id
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);       //Set parent id
@@ -301,11 +301,11 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
      //If not found by other players, it was our player who did it
     if(found == false)
     {
-        auto object = ItemManager::getInstance().createRedShell(*player.get(),0);               //Create object
-        std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                       //Initialize object
+        auto object = ItemManager::getInstance().createRedShell(*player.get(), IItemComponent::InstanceType::LOCAL);  //Create object
+        std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                                             //Initialize object
         //<___
-        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
+        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);                       //Set server id
+        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);                       //Set parent id
         //___>
     }
 
@@ -407,7 +407,7 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
         if(rPlayer.get()->getServerId() == s_id)    //find the player creator of the blue shell
         {
             found = true;
-            auto object = ItemManager::getInstance().createBlueShell(rPlayer.get()->getGameObject(),1);                //Create object
+            auto object = ItemManager::getInstance().createBlueShell(rPlayer.get()->getGameObject(), IItemComponent::InstanceType::REMOTE); //Create object
             std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                      //Initialize object
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
             object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
@@ -417,7 +417,7 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
     //If not found by other players, it was our player who did it
     if(found == false)
     {
-        auto object = ItemManager::getInstance().createBlueShell(*player.get(),0);                //Create object
+        auto object = ItemManager::getInstance().createBlueShell(*player.get(), IItemComponent::InstanceType::LOCAL); //Create object
         std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                        //Initialize object
         //<___
         //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id

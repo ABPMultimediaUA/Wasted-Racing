@@ -1,15 +1,25 @@
 #pragma once
 
+//C++ includes
 #include <iostream>
 #include <memory>
 #include <string>
+
+//Raknet includes
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/BitStream.h>
+
+//Basic info includes
 #include "../GlobalVariables.h"
 #include "../GameServer/CustomIdentifiers.h"
+
+//Component && extra includes
+#include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include "../GameObject/NetworkComponent/RemoteItemComponent.h"
+
+//Manager includes
 #include "PhysicsManager.h"
 #include "ItemManager.h"
 #include "ObjectManager.h"

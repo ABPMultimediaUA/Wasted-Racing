@@ -29,6 +29,6 @@ class RemotePlayerComponent : public IComponent{
         void setServerId(int id){    server_id = id;                      };
 
     private:
-        int server_id=-1;
+        int server_id = -1;
     
 };

@@ -237,7 +237,7 @@ void DebugManager::initDebugNetwork()
         RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder2.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, height, 10.f, true);
         
         //Create tracker component
-        auto objective = std::dynamic_pointer_cast<RemoteItemComponent>(networkManager->getRemotePlayerComponentList()[i]);
+        auto objective = std::dynamic_pointer_cast<RemotePlayerComponent>(networkManager->getRemotePlayerComponentList()[i]);
         createTrackerDNComponent(*collisionCylinder.get(), objective.get()->getServerId(), 'a');
         createTrackerDNComponent(*collisionCylinder2.get(), objective.get()->getServerId(), 'b');
 
@@ -445,6 +445,7 @@ void DebugManager::updateCylinderDN(int id){
     //Update the position of the trackers
     for(unsigned int i = 0; i < trackerDNComponentList.size(); i++){
         std::shared_ptr<RemoteItemComponent> cyl = std::dynamic_pointer_cast<RemoteItemComponent>(networkManager->getRemotePlayerComponentList()[i]);
+        //:::>UNFINISHED
     }
 }
 
