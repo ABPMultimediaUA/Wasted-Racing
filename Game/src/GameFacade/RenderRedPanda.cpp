@@ -16,7 +16,7 @@
 #include <nuklear/nuklear_sdl_gl3.h>
 
 struct nk_context *GUI; //:::> global variable
-void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
+//void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
 
 //==============================================================
 // Engine Related functions
@@ -65,6 +65,7 @@ void RenderRedPanda::openWindow() {
     nk_sdl_font_stash_begin(&atlas);
 	nk_sdl_font_stash_end();
 
+<<<<<<< HEAD
     //<___
     //:::>??????????????????? but this variable is receiver, wtf
     //InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
@@ -77,6 +78,11 @@ void RenderRedPanda::openWindow() {
     //___>
     
     //set drawGUI as drawing GUI function
+=======
+    InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
+    irps->setGUIContext(GUI);
+
+>>>>>>> origin
     //device->setGUIDrawFunction(drawRPS_GUI);
 
 }
@@ -237,9 +243,16 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 ////////////
 //  GUI
 ////////////
+<<<<<<< HEAD
 void drawRPS_GUI(){
     //Open window as big as the screen
     if (nk_begin(GUI, "XKating", nk_rect(0, 0, 1280, 720), NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+=======
+/*void drawRPS_GUI(){
+    if (nk_begin(GUI, "Demo", nk_rect(50, 50, 230, 250),
+            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
+            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+>>>>>>> origin
         {
             enum {EASY, HARD};
             static int op = EASY;
@@ -260,6 +273,7 @@ void drawRPS_GUI(){
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+<<<<<<< HEAD
 
     //Swap contexts
     /*SDL_GL_MakeCurrent(device->getWindow(),
@@ -296,6 +310,9 @@ void RenderRedPanda::drawGUI() {
     SDL_GL_MakeCurrent(device->getWindow(),
                         &ctx);*/
 }
+=======
+}*/
+>>>>>>> origin
 
 ////////////
 //  Image
