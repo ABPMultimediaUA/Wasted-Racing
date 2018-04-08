@@ -158,7 +158,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
-    mData.rotate_inc = 0.15f;
+    mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
     mData.max_vel = 145.0f;
@@ -195,7 +195,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
-    mData.rotate_inc = 0.15f;
+    mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
     mData.max_vel = 135.0f;

@@ -61,6 +61,7 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
     }
     
     //Check if we are braking
+    //:::>No hardcoded data
     if(mData.braking){
         mData.vel = mData.vel * 0.99f;
         mData.acc = mData.acc * 0.99f;
@@ -136,7 +137,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
     }else{
         //increment rotate speed
         //:::>Last value should be set variable in a document or mData
-        mData.rotateX += mData.rotate_inc*dTime*50;
+        mData.rotateX += mData.rotate_inc*dTime;
 
         if(abs(mData.rotateX)>abs(mData.max_rotate)){
             mData.rotateX = copysign(mData.max_rotate, mData.rotateX);
@@ -156,7 +157,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
         mData.rotateZ = 0.f;
     }else{
         //increment rotate speed
-        mData.rotateZ += mData.rotate_inc*dTime*50;
+        mData.rotateZ += mData.rotate_inc*dTime;
 
         if(abs(mData.rotateZ)>abs(mData.max_rotate)){
             mData.rotateZ = copysign(mData.max_rotate, mData.rotateZ);
@@ -175,7 +176,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
 //Function that moves the vehicle elliptically given its internal radius ratio rotation
 void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTime){
     //Check if it is turning somewhere
-    if(mData.spin_inc != 0){
+    /*if(mData.spin_inc != 0){
         //Check if drifting is pressed
         if(mData.drift){ 
             //Initial variables
@@ -209,7 +210,7 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
         //if collided, stop it
         if(mData.coll)
             mData.velocity = glm::vec3(0,0,0);
-    }
+    }*/
 }
 
 //Updates the deviation in velocity caused by a collision

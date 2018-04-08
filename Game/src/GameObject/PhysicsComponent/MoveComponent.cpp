@@ -172,13 +172,21 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
     else {
         constantAlteredTime = 0;
         decrementalAlteredTime = 0;
-        mData.max_vel = auxData.max_vel; 
+        mData.max_vel = auxData.max_vel;
+
+        //<___ deactive if collided
+        if(mData.coll)
+        {
+            mData.boost = false;
+        }
+        //___>
     }
 }
 
 //Control and update jump
 void MoveComponent::updateJump(LAPAL::movementData& mData, glm::vec3& pos, LAPAL::plane3f t){
 
+    //:::>Brah, no hardcoded pls
     float maxJump = 15.0;
     float velJump = 50.0;
 
