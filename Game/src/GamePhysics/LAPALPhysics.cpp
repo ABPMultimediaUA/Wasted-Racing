@@ -119,6 +119,7 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     }
 
     if(!mData.drift){
+        //:::>No hardcoded variables
         mData.angle += mData.spin * dTime * 50;
     }
 }
@@ -187,8 +188,8 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
                 }
 
                 //Update velocity with 90º vector
-                mData.velocity.x += mData.vel*cos(mData.angle + mData.driftIncrement);
-                mData.velocity.z += mData.vel*sin(mData.angle + mData.driftIncrement);
+                mData.velocity.x += mData.vel*cos(mData.angle + mData.driftIncrement)/2;
+                mData.velocity.z += mData.vel*sin(mData.angle + mData.driftIncrement)/2;
             }
             //if true drift is going right and NPC was left
             if(mData.driftDir == -1.f){
@@ -198,8 +199,8 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
                 }
 
                 //Update velocity with 90º vector
-                mData.velocity.x += mData.vel*cos(mData.angle - mData.driftIncrement);
-                mData.velocity.z += mData.vel*sin(mData.angle - mData.driftIncrement);
+                mData.velocity.x += mData.vel*cos(mData.angle - mData.driftIncrement)/2;
+                mData.velocity.z += mData.vel*sin(mData.angle - mData.driftIncrement)/2;
             }
         }else{
             mData.driftDir       = 0.f;

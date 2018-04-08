@@ -116,6 +116,12 @@ void RenderManager::close(){
     //Clear all interface elements
     renderFacade->cleanInterface();
 
+    //Clear all objects from render engine
+    for(unsigned int i = 0; i < renderComponentList.size(); i++)
+    {
+        renderFacade->deleteObject(renderComponentList[i].get());
+    }
+
     //Clear render component list
     renderComponentList.clear();
 }
@@ -144,6 +150,32 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
 
     //:::> Initialize here from the render, eliminates dependencies
     //:::> renderFacade->addObject(this);
+
+    return component;
+}
+
+IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency) {
+
+    //Instantiate the component as shared pointer
+    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
+
+    //Add component to object
+    newGameObject.addComponent(component);
+
+    //Create event data
+    //:::>It is not needed since it only adds it to the list and initalizes the object, which *right now* invocates the init, which does the other render
+    //:::> facade-> addObject, and we don't need that
+    //<___
+    /*
+    EventData data;
+    data.Component = component;
+    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
+    */
+    //___>
+
+    //add object to the render and to the component list
+    renderComponentList.push_back(component);
+    renderFacade->addObject(component.get(), radius, length, tesselation, transparency);
 
     return component;
 }
@@ -186,37 +218,23 @@ IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGa
     return component;
 }
 
-IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency) {
-
-    //Instantiate the component as shared pointer
-    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
-
-    //Add component to object
-    newGameObject.addComponent(component);
-
-    //Create event data
-    EventData data;
-    data.Component = component;
-
-    //Create event
-    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
-
-    //add object to the render
-    renderFacade->addObject(component.get(), radius, length, tesselation, transparency);
-
-    return component;
-}
-
 IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back) {
-
+    //Creating object renderer component
     IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape);
 
+    //Adding component to object
     newGameObject.addComponent(component);
 
-    EventData data;
-    data.Component = component;
+    //:::>??? Not sended
+    //<___
+    //EventData data;
+    //data.Component = component;
+    //___>
 
-    auto comp = newGameObject.getComponent<ObjectRenderComponent>();
+    //:::>??? not used
+    //<___
+    //auto comp = newGameObject.getComponent<ObjectRenderComponent>();
+    //___>
 
     renderFacade->addSkybox(component.get(), top, bot, left, right, front, back);
 
@@ -228,13 +246,13 @@ IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, Objec
 //==============================================
 //:::>All 3 of them could be just 1 generic function
 void addObjectRenderComponent(EventData data) {
-    RenderManager::getInstance().getComponentList().push_back(data.Component);
-    data.Component.get()->init();
+    RenderManager::getInstance().getComponentList().push_back(data.Component);        //add to list of render components
+    RenderManager::getInstance().getRenderFacade()->addObject(data.Component.get());  //add object to render engine
 }
 
 void addLightRenderComponent(EventData data) {
-    RenderManager::getInstance().getComponentList().push_back(data.Component);
-    data.Component.get()->init();
+    RenderManager::getInstance().getComponentList().push_back(data.Component);        //add to list of render components
+    RenderManager::getInstance().getRenderFacade()->addLight(data.Component.get());   //add light to render engine     
 }
 
 void addCameraRenderComponent(EventData data) {

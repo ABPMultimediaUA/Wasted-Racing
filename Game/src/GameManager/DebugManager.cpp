@@ -282,11 +282,9 @@ void DebugManager::cleanDebugNetwork()
 
     //Delete trackers
     for(unsigned int i = 0; i < idCylynderDN.size(); i++){
-        EventData data;
-
         //Delete marker
+        EventData data;
         data.Id = idCylynderDN[i];
-
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
 
@@ -327,6 +325,7 @@ void DebugManager::updateDebugCamera(){
 void DebugManager::updateDebugNetwork(){
     //Checks if player is connected to a server
     if(networkManager->getConnected()){
+        //:::>Pending code
         //Lobby debug
 
         //Match debug
@@ -334,9 +333,8 @@ void DebugManager::updateDebugNetwork(){
             //Process all packets
             while(!networkManager->getLastPackets()->empty()){
                 //Get last data and load it at string, then remove it from the list
-                char* lastData = reinterpret_cast<char*>(networkManager->getLastData()->front());
+                std::string lastDataString = networkManager->getLastData()->front();
                 networkManager->getLastData()->pop_front();
-                std::string lastDataString(lastData);
 
                 //Get last sender and show it
                 int lastSender = networkManager->getLastSenders()->front();  //Get it from the list

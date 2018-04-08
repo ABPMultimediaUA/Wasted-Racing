@@ -179,7 +179,7 @@ public:
     bool getConnected()                                                {  return connected;                   };
     std::list<customMessages>* getLastPackets()                        {  return &lastPackets;                }; //Returns last packets received
     std::list<int>*            getLastSenders()                        {  return &lastSenders;                }; //Returns last packets' Senders
-    std::list<unsigned char*>* getLastData()                           {  return &lastData;                   }; //Returns last packets' data
+    std::list<std::string>* getLastData()                              {  return &lastData;                   }; //Returns last packets' data
 
     //IP identifier
     void setServerIP(std::string s)                                    { serverIP = s;                        }; //Set server IP
@@ -206,7 +206,7 @@ private:
     //Debug info
     bool debugNetworkState = false;
     std::list<customMessages> lastPackets;
-    std::list<unsigned char*> lastData;
+    std::list<std::string> lastData;
     std::list<int>            lastSenders;
 
     //List of remotePlayerComponent

@@ -69,7 +69,7 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     //If debug state is on
     if(debugNetworkState){
         //Server initiated this, so id must be -1 (or the player itself)
-        lastSenders.push_back(server_id);
+        //lastSenders.push_back(server_id);
     }
 
 }
@@ -118,7 +118,7 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
             //If debug state is on
             if(debugNetworkState){
                 //Server initiated this, so id must be -1 (or the id of the player)
-                lastSenders.push_back(id);
+                //lastSenders.push_back(id);
             }
         }
     }
@@ -198,6 +198,15 @@ void NetworkManager::remoteCreateTrap(RakNet::Packet* packet){
     if(debugNetworkState){
         //Player who created the trap
         lastSenders.push_back(s_id);
+
+        //Read from packet and transform info
+        std::string data = std::to_string(o_id);
+        data += " created";
+
+        //Push all information
+        lastSenders.push_back(s_id);            //last sender
+        lastPackets.push_back(ID_CREATE_TRAP);  //type of packet
+        lastData.push_back(data);               //data
     }
 }
 
@@ -236,8 +245,14 @@ void NetworkManager::remoteDestroyTrap(RakNet::Packet* packet){
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who destroyed the trap
-        lastSenders.push_back(sender_id);
+        //Read from packet and transform info
+        std::string data = std::to_string(s_id);
+        data += " destroyed";
+
+        //Push all information
+        lastSenders.push_back(sender_id);             //last sender
+        lastPackets.push_back(ID_DESTROY_TRAP);       //type of packet
+        lastData.push_back(data);                     //data
     }
 
 }
@@ -314,8 +329,14 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who created the trap
-        lastSenders.push_back(s_id);
+        //Read from packet and transform info
+        std::string data = std::to_string(o_id);
+        data += " created";
+
+        //Push all information
+        lastSenders.push_back(s_id);                  //last sender
+        lastPackets.push_back(ID_CREATE_RED_SHELL);   //type of packet
+        lastData.push_back(data);                     //data
     }
 
 }
@@ -355,8 +376,14 @@ void NetworkManager::remoteDestroyRedShell(RakNet::Packet* packet){
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who destroyed the tire
-        lastSenders.push_back(sender_id);
+        //Read from packet and transform info
+        std::string data = std::to_string(s_id);
+        data += " destroyed";
+
+        //Push all information
+        lastSenders.push_back(sender_id);             //last sender
+        lastPackets.push_back(ID_DESTROY_RED_SHELL);  //type of packet
+        lastData.push_back(data);                     //data
     }
 }
 
@@ -430,8 +457,14 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who created the trap
-        lastSenders.push_back(s_id);
+        //Read from packet and transform info
+        std::string data = std::to_string(o_id);
+        data += " created";
+
+        //Push all information
+        lastSenders.push_back(s_id);                  //last sender
+        lastPackets.push_back(ID_CREATE_BLUE_SHELL);  //type of packet
+        lastData.push_back(data);                     //data
     }
 }
 
@@ -470,9 +503,64 @@ void NetworkManager::remoteDestroyBlueShell(RakNet::Packet* packet){
     ////////////
     //If debug state is on
     if(debugNetworkState){
-        //Player who destroyed the missile
-        lastSenders.push_back(sender_id);
+        //Read from packet and transform info
+        std::string data = std::to_string(s_id);
+        data += " destroyed";
+
+        //Push all information
+        lastSenders.push_back(sender_id);             //last sender
+        lastPackets.push_back(ID_DESTROY_BLUE_SHELL); //type of packet
+        lastData.push_back(data);                     //data
     }
+}
+
+//=============================================
+// ITEM BOX
+//=============================================
+
+void NetworkManager::itemBoxCollision(EventData eData)
+{
+    RakNet::BitStream stream;
+
+    //Send packet id
+    stream.Write((unsigned char)ID_BOX_COLLISION);
+    //Send box object id
+    stream.Write(eData.CollComponent.get()->getGameObject().getId());
+    //Send who sent it
+    stream.Write(server_id);
+
+    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
+}
+
+void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
+{
+    //Parse data
+    RakNet::BitStream parser(packet->data, packet->length, false);
+    uint16_t id;
+    int sender_id;
+
+    //Ignore packet time
+    parser.IgnoreBytes(1);
+    //Read data and generate collision
+    parser.Read(id);
+    ObjectManager::getInstance().getObject(id).get()->getComponent<ItemBoxComponent>().get()->deactivateBox();
+
+    ////////////
+    //DEBUG AREA
+    ////////////
+    //If debug state is on
+    if(debugNetworkState){
+        //Read from packet and transform info
+        parser.Read(sender_id);
+        std::string data = std::to_string(id);
+        data += " collided";
+
+        //Push all information
+        lastSenders.push_back(sender_id);          //last sender
+        lastPackets.push_back(ID_BOX_COLLISION);   //type of packet
+        lastData.push_back(data);                  //data
+    }
+
 }
 
 //=============================================
@@ -664,51 +752,6 @@ void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
     }
 }
 
-
-//=============================================
-// ITEM BOX
-//=============================================
-
-void NetworkManager::itemBoxCollision(EventData eData)
-{
-    RakNet::BitStream stream;
-
-    //Send packet id
-    stream.Write((unsigned char)ID_BOX_COLLISION);
-    //Send box object id
-    stream.Write(eData.CollComponent.get()->getGameObject().getId());
-    //Send who sent it
-    stream.Write(server_id);
-
-    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);
-}
-
-void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
-{
-    //Parse data
-    RakNet::BitStream parser(packet->data, packet->length, false);
-    uint16_t id;
-    int sender_id;
-
-    //Ignore packet time
-    parser.IgnoreBytes(1);
-    //Read data and generate collision
-    parser.Read(id);
-    ObjectManager::getInstance().getObject(id).get()->getComponent<ItemBoxComponent>().get()->deactivateBox();
-
-    ////////////
-    //DEBUG AREA
-    ////////////
-    //If debug state is on
-    if(debugNetworkState){
-        //Read from packet and push it in the list
-        parser.Read(sender_id);
-        lastSenders.push_back(sender_id);
-    }
-
-}
-
-
 //=============================================
 // END GAME
 //=============================================
@@ -794,9 +837,6 @@ void NetworkManager::update()
         {
             case ID_GAME_ENDED:
                 remoteEndGame(packet);
-                lastPackets.push_back(ID_GAME_ENDED);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
 
             case ID_CREATE_PLAYER:
@@ -809,66 +849,42 @@ void NetworkManager::update()
                 
             case ID_REMOTE_PLAYER_MOVEMENT:
                 moveRemotePlayer(packet);
-                //lastPackets.push_back(ID_REMOTE_PLAYER_MOVEMENT);
                 break;
 
             case ID_BOX_COLLISION:
                 remoteItemBoxCollision(packet);
-                lastPackets.push_back(ID_BOX_COLLISION);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
 
             case ID_CREATE_TRAP:
                 remoteCreateTrap(packet);
-                lastPackets.push_back(ID_CREATE_TRAP);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
 
             case ID_DESTROY_TRAP:
                 remoteDestroyTrap(packet);
-                lastPackets.push_back(ID_DESTROY_TRAP);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
 
             case ID_CREATE_RED_SHELL:
                 remoteCreateRedShell(packet);
-                lastPackets.push_back(ID_CREATE_RED_SHELL);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
 
             case ID_DESTROY_RED_SHELL:
                 remoteDestroyRedShell(packet);
-                lastPackets.push_back(ID_DESTROY_RED_SHELL);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
 
             case ID_RED_SHELLS_POSITION:
                 moveRemoteRedShell(packet);
-                //lastPackets.push_back(ID_REMOTE_RED_SHELL_MOVEMENT);
                 break;
 
             case ID_CREATE_BLUE_SHELL:
                 remoteCreateBlueShell(packet);
-                lastPackets.push_back(ID_CREATE_BLUE_SHELL);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
 
             case ID_DESTROY_BLUE_SHELL:
                 remoteDestroyBlueShell(packet);
-                lastPackets.push_back(ID_DESTROY_BLUE_SHELL);
-                //PROVISIONAL DATA
-                lastData.push_back(packet->data);
                 break;
 
             case ID_BLUE_SHELLS_POSITION:
                 moveRemoteBlueShell(packet);
-                //lastPackets.push_back(ID_REMOTE_BLUE_SHELL_MOVEMENT);
                 break;
 
             default:

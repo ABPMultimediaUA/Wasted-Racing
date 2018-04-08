@@ -5,7 +5,9 @@
 //Initilizer
 void LightRenderComponent::init() {
     //:::> Shouldn't the render manager initialize it?
-    RenderManager::getInstance().getRenderFacade()->addLight(this);
+    //<___  Did it in the render manager
+    //RenderManager::getInstance().getRenderFacade()->addLight(this);
+    //___>
 }
 
 //Update
@@ -16,7 +18,9 @@ void LightRenderComponent::update(float dTime) {
 //Closer
 void LightRenderComponent::close() {
     //:::> Shouldn't the render manager erase it?
-    RenderManager::getInstance().getRenderFacade()->deleteObject(this);
+    //<___ I did it in the render manager
+    //RenderManager::getInstance().getRenderFacade()->deleteObject(this);
+    //___>
 }
 
 //Drawer

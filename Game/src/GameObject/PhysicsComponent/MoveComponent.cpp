@@ -114,7 +114,8 @@ void MoveComponent::changeAcc(float a){
 
 void MoveComponent::isDrifting(bool d){
     mData.drift    = d;
-    mData.driftDir = (d && mData.spin_inc < 0) ? 1.f : -1.f ; //if it is drifting activation, change direction of drift to the speed one. (negative spin = right turn)
+    mData.driftDir = (d && mData.spin_inc < 0) ? 1.f : -1.f ;      //if it is drifting activation, change direction of drift to the speed one. (negative spin = right turn)
+    mData.driftDir = mData.spin_inc == 0 ? 0.f : mData.driftDir;   //if spin is 0, then no drift is happening
 }
 
 void MoveComponent::isBraking(bool b) {
