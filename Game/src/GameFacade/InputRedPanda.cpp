@@ -43,6 +43,8 @@
             buttonMapping[Mapping] = false; \
     };
 
+
+
 void InputRedPanda::openInput(uintptr_t dev) {
     device = reinterpret_cast<SDL_Window*>(dev);
     
@@ -86,11 +88,19 @@ void InputRedPanda::updateInput() {
         DetectButtonInput(B, Key_Drift_Down, Key_Drift_Up, 1)
         DetectButtonInput(Y, Key_UseItem_Down, Key_UseItem_Up, 2)
 
+        DetectAxisInput();
+
         //Exit game
         if (event.type == SDL_QUIT)
             EventManager::getInstance().addEvent(Event {EventType::Game_Close});
     }
     nk_input_end(inputGUI);
+
+    if(gamepad == nullptr && SDL_NumJoysticks() > 0) {
+        gamepad = SDL_GameControllerOpen(0);
+    }
+    if(SDL_NumJoysticks() == 0)
+        gamepad = nullptr;
 }
 
 void InputRedPanda::closeInput() {
@@ -101,4 +111,92 @@ void InputRedPanda::closeInput() {
 
 void InputRedPanda::setGUIContext(void* ctx) {
     inputGUI = (nk_context*)ctx;
+}
+
+void InputRedPanda::DetectAxisInput() {
+
+    if(gamepad) {
+
+        int StickX = SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_LEFTX);
+        int TriggerL = SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_TRIGGERLEFT);
+        int TriggerR = SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
+
+        if(StickX > 9000){
+            EventData eventData;
+            eventData.grade = StickX/32000;
+            Event event;
+            event.type = EventType::Key_TurnRight_Down;
+            event.data = eventData; 
+            EventManager::getInstance().addEvent(event); 
+            buttonMapping[3] = true; 
+        }
+        else if(StickX > 0 && buttonMapping[3]){
+            EventData eventData;
+            eventData.grade = -2;
+            Event event;
+            event.type = EventType::Key_TurnRight_Up;
+            event.data = eventData; 
+            EventManager::getInstance().addEvent(event); 
+            buttonMapping[3] = false; 
+        }
+
+        if(StickX < -9000){
+            EventData eventData;
+            eventData.grade = -StickX/32000;
+            Event event;
+            event.type = EventType::Key_TurnLeft_Down;
+            event.data = eventData; 
+            EventManager::getInstance().addEvent(event); 
+            buttonMapping[4] = true; 
+        }
+        else if(StickX < 0 && buttonMapping[4]){
+            EventData eventData;
+            eventData.grade = -2;
+            Event event;
+            event.type = EventType::Key_TurnLeft_Up;
+            event.data = eventData; 
+            EventManager::getInstance().addEvent(event); 
+            buttonMapping[4] = false; 
+        }
+
+        if(TriggerL > 12000){
+            EventData eventData;
+            eventData.grade = -2;
+            Event event;
+            event.type = EventType::Key_Brake_Down;
+            event.data = eventData; 
+            EventManager::getInstance().addEvent(event); 
+            buttonMapping[5] = true; 
+        }
+        else if(buttonMapping[5]){
+            EventData eventData;
+            eventData.grade = -2;
+            Event event;
+            event.type = EventType::Key_Brake_Up;
+            event.data = eventData; 
+            EventManager::getInstance().addEvent(event); 
+            buttonMapping[5] = false; 
+        }
+
+        if(TriggerR > 3000){
+            EventData eventData;
+            eventData.grade = TriggerR/32000;
+            Event event;
+            event.type = EventType::Key_Advance_Down;
+            event.data = eventData; 
+            EventManager::getInstance().addEvent(event); 
+            buttonMapping[6] = true; 
+        }
+        else if(buttonMapping[6]){
+            EventData eventData;
+            eventData.grade = -2;
+            Event event;
+            event.type = EventType::Key_Advance_Up;
+            event.data = eventData; 
+            EventManager::getInstance().addEvent(event); 
+            buttonMapping[6] = false; 
+        }
+
+    }
+
 }
