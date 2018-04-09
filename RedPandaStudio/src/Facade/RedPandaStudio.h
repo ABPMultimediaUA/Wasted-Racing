@@ -90,7 +90,6 @@ private:
     //SKybox vertex array
     GLuint skyVertexArray;
 
-<<<<<<< HEAD
 
     //Chrono
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
@@ -99,8 +98,6 @@ private:
     bool showFPS = false;
     
 
-=======
->>>>>>> master
 };
 
 //Transformation facade

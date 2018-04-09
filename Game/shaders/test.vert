@@ -33,7 +33,7 @@ uniform Material material;
 
 void main()
 {
-    float ambient = 0.4;                               
+    float ambient = 1;                               
 
     v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -71,7 +71,7 @@ void main()
 
     }
 
-    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient); //* vec4(material.ka, 1.0);
+    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
 
 
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;

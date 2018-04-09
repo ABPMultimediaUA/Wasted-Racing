@@ -144,7 +144,6 @@ void Game::Run() {
 
         //Always draw the game
         state->draw();
-        std::cout << "FPS: " << 1/elapsed.count() << std::endl;
     }
 
     close();
