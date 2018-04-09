@@ -40,6 +40,9 @@ public:
 
 private: 
     
-    SDL_Window *device;
+    SDL_Window *device = nullptr;
+    SDL_GameController *gamepad = nullptr;
+
+    bool buttonMapping[3] = {false, false, false};
 
 };

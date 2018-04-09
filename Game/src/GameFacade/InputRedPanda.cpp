@@ -6,14 +6,49 @@
 //Define macros
 #define DetectKeyInput(TheKey,Event_Down,Event_Up) \
     if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_##TheKey) { \
-            EventManager::getInstance().addEvent(Event {EventType::Event_Down}); \
+            EventData eventData; \
+            eventData.grade = -2; \
+            Event event; \
+            event.type = EventType::Event_Down; \
+            event.data = eventData; \
+            EventManager::getInstance().addEvent(event); \
     } \
     else if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_##TheKey){ \
-            EventManager::getInstance().addEvent(Event {EventType::Event_Up}); \
+            EventData eventData; \
+            eventData.grade = -2; \
+            Event event; \
+            event.type = EventType::Event_Up; \
+            event.data = eventData; \
+            EventManager::getInstance().addEvent(event); \
+    };
+
+
+#define DetectButtonInput(TheKey,Event_Down,Event_Up,Mapping) \
+    if(SDL_GameControllerGetButton(gamepad, SDL_CONTROLLER_BUTTON_##TheKey)) { \
+            EventData eventData; \
+            eventData.grade = -2; \
+            Event event; \
+            event.type = EventType::Event_Down; \
+            event.data = eventData; \
+            EventManager::getInstance().addEvent(event); \
+            buttonMapping[Mapping] = true; \
+    } \
+    else if(buttonMapping[Mapping]){ \
+            EventData eventData; \
+            eventData.grade = -2; \
+            Event event; \
+            event.type = EventType::Event_Up; \
+            event.data = eventData; \
+            EventManager::getInstance().addEvent(event); \
+            buttonMapping[Mapping] = false; \
     };
 
 void InputRedPanda::openInput(uintptr_t dev) {
     device = reinterpret_cast<SDL_Window*>(dev);
+    
+    if(SDL_NumJoysticks() > 0)
+        gamepad = SDL_GameControllerOpen(0);
+
 }
 
 struct nk_context *inputGUI; //:::> global variable
@@ -47,6 +82,10 @@ void InputRedPanda::updateInput() {
         DetectKeyInput(F10,Key_DebugBehaviour_Down,Key_DebugBehaviour_Up)
         DetectKeyInput(F11,Key_DebugCamera_Down,Key_DebugCamera_Up)
 
+        DetectButtonInput(A, Key_Jump_Down, Key_Jump_Up, 0)
+        DetectButtonInput(B, Key_Drift_Down, Key_Drift_Up, 1)
+        DetectButtonInput(Y, Key_UseItem_Down, Key_UseItem_Up, 2)
+
         //Exit game
         if (event.type == SDL_QUIT)
             EventManager::getInstance().addEvent(Event {EventType::Game_Close});
@@ -55,6 +94,8 @@ void InputRedPanda::updateInput() {
 }
 
 void InputRedPanda::closeInput() {
+
+    SDL_GameControllerClose(gamepad);
        
 } 
 

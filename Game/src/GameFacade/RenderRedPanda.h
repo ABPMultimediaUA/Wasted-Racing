@@ -179,8 +179,6 @@ private:
 
     //RenderRedPanda own device
     rps::RedPandaStudio* device;
-    //RenderRedPanda own resource manager
-    ResourceManager* resourceManager;
 
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
