@@ -13,7 +13,13 @@
 #include <nuklear/nuklear_sdl_gl3.h>
 
 struct nk_context *GUI; //:::> global variable
-//void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
+
+namespace gui {
+
+    struct nk_image image;
+
+}
 
 //==============================================================
 // Engine Related functions
@@ -22,7 +28,28 @@ struct nk_context *GUI; //:::> global variable
 void RenderRedPanda::openWindow() { 
 
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
+    resourceManager = device->getResourceManager();
+
+
+    TResourceTexture* res = resourceManager->getResourceTexture("media/img/iconoSeta.png");
+    gui::image = nk_image_id((int)res->getTextureId());
+
+    GLuint tex;
+    sf::Image sftex;
+    sftex.loadFromFile("media/img/iconoSeta.png");
+    const Uint8* data = sftex.getPixelsPtr();
+
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 500, 500, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    //glGenerateMipmap(GL_TEXTURE_2D);
     
+    gui::image = nk_image_id((int)tex);
+
     InputRedPanda* receiver = new InputRedPanda();
 
     uintptr_t aux = reinterpret_cast<uintptr_t>(device->getWindow());
@@ -38,7 +65,7 @@ void RenderRedPanda::openWindow() {
     InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
     irps->setGUIContext(GUI);
 
-    //device->setGUIDrawFunction(drawRPS_GUI);
+    device->setGUIDrawFunction(drawRPS_GUI);
 
 }
 
@@ -186,7 +213,8 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 ////////////
 //  GUI
 ////////////
-/*void drawRPS_GUI(){
+void drawRPS_GUI(){
+    
     if (nk_begin(GUI, "Demo", nk_rect(50, 50, 230, 250),
             NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
             NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
@@ -207,10 +235,19 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
             nk_layout_row_dynamic(GUI, 20, 1);
             nk_label(GUI, "background:", NK_TEXT_LEFT);
             nk_layout_row_dynamic(GUI, 25, 1);
+
+            nk_layout_row_dynamic(GUI, 20, 1);
+            nk_label(GUI, "Selected", NK_TEXT_LEFT);
+            static const float ratio[] = {0.15f, 0.50f, 0.35f};
+            nk_layout_row(GUI, NK_DYNAMIC, 100, 3, ratio);
+            nk_spacing(GUI, 1);
+            nk_image(GUI, gui::image);
+
+            
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
-}*/
+}
 
 ////////////
 //  Image
