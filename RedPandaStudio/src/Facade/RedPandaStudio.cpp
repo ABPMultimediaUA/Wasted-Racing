@@ -67,7 +67,7 @@ void RedPandaStudio::dropDevice() {
 void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen) {
 
     // Initialize SDL 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 	  std::cerr << "Couldn't init SDL" << std::endl;
 	SDL_GL_LoadLibrary(NULL);
 
