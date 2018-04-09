@@ -33,6 +33,10 @@ public:
         inputFacade = facade;
     }
 
+    IInputFacade* getInputFacade(){
+        return inputFacade;
+    }
+
     void setDevice(uintptr_t dev){
         device = dev;
     }

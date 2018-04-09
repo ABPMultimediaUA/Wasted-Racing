@@ -100,7 +100,7 @@ IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = 1;//itemHolder->getItemType();
+    int random = itemHolder->getItemType();
 
     if(random == IItemComponent::ItemType::redShell)
     {
@@ -233,7 +233,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj)
 
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "tire.obj");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::RedShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -311,7 +311,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj)
 
     auto terrainComponent = obj.getComponent<TerrainComponent>();
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "bomb.obj");
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::BlueShell);
 
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -353,7 +353,7 @@ IComponent::Pointer ItemManager::createBanana(GameObject& obj)
 
     ob.get()->addComponent(component);
 
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "banana.obj");
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "tramp.obj");
     PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, 1, false, CollisionComponent::Type::Banana);
     NetworkManager::getInstance().createRemoteItemComponent(*ob.get(), 0);
 

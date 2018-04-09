@@ -110,7 +110,7 @@ compile:
 	g++ -o bin/test bin/main.o $(LDFLAGS)
 
 compilel:
-	g++ -I./inc -c -o bin/main.o mainDeLuis.cpp
+	g++ -I./inc -c -o bin/main.o main.cpp
 	g++ -o bin/test bin/main.o $(LDFLAGS)
 
 makesh:
@@ -133,7 +133,7 @@ makedirP:
 copyfilesP:
 	cp -r ./inc/*.h ../Game/include/redpanda
 	cp ./src/Facade/RedPandaStudio.h ../Game/include/redpanda
-	cp ./test.*	../Game/
+	cp ./shaders/*	../Game/shaders/
 
 compileP: all 
 	cp ./bin/libRedPanda.so ../Game/lib/linux

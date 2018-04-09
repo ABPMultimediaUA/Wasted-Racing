@@ -1005,7 +1005,7 @@ void NetworkManager::initLobby(){
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
     RakNet::ConnectionAttemptResult result;
-    result = peer->Connect("192.168.1.5", 39017, 0, 0);
+    result = peer->Connect("192.168.1.38", 39017, 0, 0);
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {

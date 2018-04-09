@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TEntity.h"
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
 #include <vector>
@@ -23,8 +24,16 @@ class TResourceSkybox {
         //Loads the texture given in the route and stores it in the position specified (check position correspondency for more info)
         bool loadResource(char* route, int i);
 
+        //Loads all the textures in OpenGL (doesn't check if they are already loaded, error prone)
+        bool initSkybox();
+
         //Draws the skybox
         void draw();
+
+        /////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////// GETTERS && SETTERS ////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////
+        void setView(GLuint v)              { view=v;   }
 
     private:
         //Vector of the 6 textures that compose the skybox, in the order showed in position correspondency
@@ -32,5 +41,8 @@ class TResourceSkybox {
 
         //Identifier of the texture of the skybox
         GLuint texture;
+
+        //Identifier of the viewMatrix of the shader
+        GLuint view;
 
 };

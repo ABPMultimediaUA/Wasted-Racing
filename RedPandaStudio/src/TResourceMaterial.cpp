@@ -19,6 +19,11 @@ bool TResourceMaterial::loadResource(aiMaterial* m)
     kd[1]=v.g;
     kd[2]=v.b;
     
+<<<<<<< HEAD
+=======
+    //std::cout << "KD: " << kd[0] << " - " << kd[1] << " - " << kd[2] << std::endl;
+
+>>>>>>> master
     m->Get(AI_MATKEY_COLOR_AMBIENT, v);
     ka[0]=v.r;
     ka[1]=v.g;
