@@ -169,9 +169,14 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
     mData.player = 0;
+    mData.driftAngleIncrMax = 1.f;
+    mData.driftBoostTime    = 1.f;
+    mData.driftSpeedBoost   = 250.f;
+    mData.driftConstTime    = 0.1f;
+    mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
 
     return ob;
 
@@ -206,9 +211,14 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
     mData.player = 1;
+    mData.driftAngleIncrMax = 0.5f;
+    mData.driftBoostTime    = 1.f;
+    mData.driftSpeedBoost   = 250.f;
+    mData.driftConstTime    = 0.1f;
+    mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
 
     return ob;
 
@@ -243,6 +253,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
     mData.player = 2;
+    mData.driftAngleIncrMax = 2.f;
 
     //Create components needed for its existence
     createComponents(ob, terrain, terrainComponent, mData, "punk.obj");

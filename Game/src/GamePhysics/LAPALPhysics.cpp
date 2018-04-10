@@ -119,8 +119,9 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
         mData.spin = copysign(mData.max_spin, mData.spin);
     }
 
-    if(!mData.drift){
-        //:::>No hardcoded variables
+    //:::>No hardcoded variables
+    if(!mData.drift)
+    {
         mData.angle += mData.spin * dTime * 50;
     }
 }
@@ -176,41 +177,79 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
 //Function that moves the vehicle elliptically given its internal radius ratio rotation
 void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTime){
     //Check if it is turning somewhere
-    /*if(mData.spin_inc != 0){
+    //if(mData.spin_inc != 0){
         //Check if drifting is pressed
         if(mData.drift){ 
             //Initial variables
-        
+            mData.driftAngleIncr   += dTime;                    //Augment drifting angle increment
+            if(mData.driftAngleIncr > mData.driftAngleIncrMax)
+                mData.driftAngleIncr = mData.driftAngleIncrMax;
+
+            mData.driftTimeCounter += dTime;                    //Time drifting
+
             //if true, drift going left and NPC was right
             if(mData.driftDir == 1.0f){
                 //if spin is going in the same direction as when it began (right)
                 if(mData.spin_inc < 0){
-                    mData.angle  -= dTime*2;
+                    mData.angle  -= dTime*mData.driftAngleIncr;
+                }
+
+                //Transitionate 1/8 when not turning
+                if(mData.spin_inc == 0)
+                {
+                    mData.angle += dTime*mData.driftAngleIncr*0.125;
+                    mData.driftWallAngle = mData.angle;
+                }
+
+                //When turning to initial angle position, turn at a 1/4 of the turning speed
+                if(mData.spin_inc > 0){
+                    mData.angle  += dTime*mData.driftAngleIncr*0.25;
+                    if(mData.angle > mData.driftWallAngle)
+                        mData.angle = mData.driftWallAngle;
                 }
 
                 //Update velocity with 90º vector
-                mData.velocity.x += mData.vel*cos(mData.angle + mData.driftIncrement)/2;
-                mData.velocity.z += mData.vel*sin(mData.angle + mData.driftIncrement)/2;
+                mData.velocity.x += mData.vel*cos(mData.angle + mData.driftDesplaceAngle)/2;
+                mData.velocity.z += mData.vel*sin(mData.angle + mData.driftDesplaceAngle);
             }
+
             //if true drift is going right and NPC was left
             if(mData.driftDir == -1.f){
                 //if spin is positive, it is going in the same direction as when it began ( left)
                 if(mData.spin_inc > 0){
-                    mData.angle          += dTime*2;
+                    mData.angle  += dTime*mData.driftAngleIncr;
+                }
+                
+                //Transitionate 1/8 when not turning
+                if(mData.spin_inc == 0)
+                {
+                    mData.angle -= dTime*mData.driftAngleIncr*0.125;
+                    mData.driftWallAngle = mData.angle;
+                }
+
+                //When turning to initial angle position, turn at a 1/4 of the turning speed
+                if(mData.spin_inc < 0){
+                    mData.angle  -= dTime*mData.driftAngleIncr*0.25;
+                    if(mData.angle < mData.driftWallAngle)
+                        mData.angle = mData.driftWallAngle;
                 }
 
                 //Update velocity with 90º vector
-                mData.velocity.x += mData.vel*cos(mData.angle - mData.driftIncrement)/2;
-                mData.velocity.z += mData.vel*sin(mData.angle - mData.driftIncrement)/2;
+                mData.velocity.x += mData.vel*cos(mData.angle - mData.driftDesplaceAngle)/2;
+                mData.velocity.z += mData.vel*sin(mData.angle - mData.driftDesplaceAngle);
             }
-        }else{
-            mData.driftDir       = 0.f;
         }
 
         //if collided, stop it
-        if(mData.coll)
-            mData.velocity = glm::vec3(0,0,0);
-    }*/
+        if(mData.coll || !mData.drift)
+        {
+            mData.driftTimeCounter = 0.f;
+            mData.driftDir         = 0.f;
+            mData.driftWallAngle   = 0.f;
+            mData.driftAngleIncr   = 0.f;
+            mData.drift            = false;
+        }
+    //}
 }
 
 //Updates the deviation in velocity caused by a collision
