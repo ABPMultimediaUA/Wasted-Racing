@@ -6,40 +6,28 @@
 //Define macros
 #define DetectKeyInput(TheKey,Event_Down,Event_Up) \
     if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_##TheKey) { \
-            EventData eventData; \
-            eventData.grade = -2; \
-            Event event; \
-            event.type = EventType::Event_Down; \
-            event.data = eventData; \
-            EventManager::getInstance().addEvent(event); \
+            EventData eventD; \
+            eventD.grade = -2; \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Down, eventD}); \
     } \
     else if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_##TheKey){ \
-            EventData eventData; \
-            eventData.grade = -2; \
-            Event event; \
-            event.type = EventType::Event_Up; \
-            event.data = eventData; \
-            EventManager::getInstance().addEvent(event); \
+            EventData eventD; \
+            eventD.grade = -2; \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Up, eventD}); \
     };
 
 
 #define DetectButtonInput(TheKey,Event_Down,Event_Up,Mapping) \
     if(SDL_GameControllerGetButton(gamepad, SDL_CONTROLLER_BUTTON_##TheKey)) { \
-            EventData eventData; \
-            eventData.grade = -2; \
-            Event event; \
-            event.type = EventType::Event_Down; \
-            event.data = eventData; \
-            EventManager::getInstance().addEvent(event); \
+            EventData eventD; \
+            eventD.grade = -2; \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Down, eventD}); \
             buttonMapping[Mapping] = true; \
     } \
     else if(buttonMapping[Mapping]){ \
-            EventData eventData; \
-            eventData.grade = -2; \
-            Event event; \
-            event.type = EventType::Event_Up; \
-            event.data = eventData; \
-            EventManager::getInstance().addEvent(event); \
+            EventData eventD; \
+            eventD.grade = -2; \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Up, eventD}); \
             buttonMapping[Mapping] = false; \
     };
 

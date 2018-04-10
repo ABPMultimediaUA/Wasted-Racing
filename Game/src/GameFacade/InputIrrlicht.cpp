@@ -4,13 +4,17 @@
 #define DetectKeyInput(TheKey,Event_Down,Event_Up) \
     if(event.KeyInput.PressedDown && event.KeyInput.Key == irr::EKEY_CODE::TheKey) { \
         if(!KeyIsDown[irr::EKEY_CODE::TheKey]){ \
-            EventManager::getInstance().addEvent(Event {EventType::Event_Down}); \
+            EventData eventD; \
+            eventD.grade = -2; \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Down, eventD}); \
             KeyIsDown[irr::EKEY_CODE::TheKey] = true; \
         } \
     } \
     else { \
         if(KeyIsDown[irr::EKEY_CODE::TheKey] && event.KeyInput.Key == irr::EKEY_CODE::TheKey){ \
-            EventManager::getInstance().addEvent(Event {EventType::Event_Up}); \
+            EventData eventD; \
+            eventD.grade = -2; \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Up, eventD}); \
             KeyIsDown[irr::EKEY_CODE::TheKey] = false; \
         } \
     };
