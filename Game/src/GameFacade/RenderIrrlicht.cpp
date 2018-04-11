@@ -1,4 +1,9 @@
 #include "RenderIrrlicht.h"
+#include "InputIrrlicht.h"
+#include "../GameManager/InputManager.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 
 //==============================================================
 // THINGS TO DO
@@ -24,6 +29,15 @@ void RenderIrrlicht::openWindow(){
     videoDriver = device->getVideoDriver();
     sceneManager = device->getSceneManager();
     geometryCreator = sceneManager->getGeometryCreator();
+
+    //___>
+    /*font = sceneManager->getGUIEnvironment()->getFont("../media/img/fontcourier.bmp");
+    pos = sceneManager->getGUIEnvironment()->addStaticText(L"Position: ", irr::core::recti(0,0, 200,50));
+    lap = sceneManager->getGUIEnvironment()->addStaticText(L"Lap: ", irr::core::recti(0, 20, 200, 50));
+    item = sceneManager->getGUIEnvironment()->addStaticText(L"Item: ", irr::core::recti(0, 40, 200, 50));
+    pos->setOverrideFont(font);
+
+    createItemIcon(glm::vec2(50,50), "media/img/emptymini.png");*/
 
     addCamera();
     //sceneManager->setAmbientLight(irr::video::SColorf(0.8,0.8,0.8,1));
@@ -559,7 +573,7 @@ void RenderIrrlicht::updateItemIcon(){
                 createItemIcon(glm::vec2(50,50), "media/img/iconoBombamini.png");
                  break;
 
-        case 2: //BANANA
+        case 2: //TRAP
                 deleteItemIcon();
                 createItemIcon(glm::vec2(50,50), "media/img/iconoTrampamini.png");
                  break;

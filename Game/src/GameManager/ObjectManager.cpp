@@ -46,12 +46,13 @@ void ObjectManager::close() {
 }
 
 GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::TransformationData transform) {
-
+    //make shared pointer
     GameObject::Pointer object = std::make_shared<GameObject>(id, transform);
 
+    //Launch creation event
+    //:::>No need for it without scheduling
     EventData data;
     data.Object = object;
-
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
 
     return object;
@@ -59,7 +60,7 @@ GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::Transfo
 
 
 void ObjectManager::addObject(GameObject::Pointer ptr) {
-
+    //If object is not inserted, insert it
     if(objectsMap.find(ptr.get()->getId()) != objectsMap.end())
         std::cerr << "Couldn't insert object. ID: " << ptr.get()->getId() << " already exists." << std::endl;
     else 
@@ -145,6 +146,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
+    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -156,7 +158,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
-    mData.rotate_inc = 0.15f;
+    mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
     mData.max_vel = 145.0f;
@@ -167,9 +169,14 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
     mData.player = 0;
+    mData.driftAngleIncrMax = 1.f;
+    mData.driftBoostTime    = 1.f;
+    mData.driftSpeedBoost   = 250.f;
+    mData.driftConstTime    = 0.1f;
+    mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
 
     return ob;
 
@@ -181,6 +188,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
+    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -192,7 +200,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
-    mData.rotate_inc = 0.15f;
+    mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
     mData.max_vel = 135.0f;
@@ -203,9 +211,14 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
     mData.player = 1;
+    mData.driftAngleIncrMax = 0.5f;
+    mData.driftBoostTime    = 1.f;
+    mData.driftSpeedBoost   = 250.f;
+    mData.driftConstTime    = 0.1f;
+    mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
 
     return ob;
 
@@ -217,6 +230,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
+    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -239,6 +253,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.dAcc = 0.f;
     mData.brake_acc = 30.f;
     mData.player = 2;
+    mData.driftAngleIncrMax = 2.f;
 
     //Create components needed for its existence
     createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
@@ -253,6 +268,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
+    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -289,11 +305,10 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 
 void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model)
 {
-    //If it is the client, create a representation of the object
-    if(!GlobalVariables::getInstance().getServer() && model!=nullptr)
+    //Create representation of the model if there is a model
+    if(model!=nullptr)
     {
         RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, model);
-   
     }
 
     //Create collision component

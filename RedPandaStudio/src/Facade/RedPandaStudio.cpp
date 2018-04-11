@@ -45,6 +45,17 @@ void RedPandaStudio::updateDevice() {
 
 	SDL_GL_SwapWindow(window);
 
+	//Chrono to update the fps value
+	std::chrono::time_point<std::chrono::high_resolution_clock> currTime = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> elapsed = currTime - lastTime;
+	lastTime = currTime;
+
+	double fps = 1/elapsed.count();
+	
+	if(showFPS)
+	{
+		std::cout << "FPS: " << fps << std::endl;
+	}
 }
 
 void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
@@ -54,7 +65,7 @@ void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
 void RedPandaStudio::dropDevice() {
 
 	// Delete our OpengL context
-	SDL_GL_DeleteContext(context);
+	SDL_GL_DeleteContext(&context);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 
@@ -98,7 +109,8 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 		SDL_GL_SetSwapInterval(1);
 	}
 
-	context = SDL_GL_CreateContext(window);
+	SDL_GLContext ctx = SDL_GL_CreateContext(window);
+	context = &ctx;
 	glViewport(0, 0, width, height);
 
     //Give window to RedPandaStudio
@@ -240,6 +252,8 @@ void RedPandaStudio::initScene() {
     //Initilize Model Matrix
     glm::mat4& Model = scene->getEntity()->modelMatrix();
     Model = glm::mat4(1.0f);
+
+	lastTime = std::chrono::high_resolution_clock::now();	
 }
 
 //////////////////////////////

@@ -46,7 +46,7 @@ enum EventType {
     TrackerDNComponent_Delete,
     //OBJECTS: Creation events
     Item_Create,
-    Banana_Create,
+    Trap_Create,
     RedShell_Create,
     BlueShell_Create,
     //COLLISION: Events triggered to certain collisions
@@ -54,7 +54,7 @@ enum EventType {
     RampComponent_Collision,
     StartLineComponent_Collision,
     ItemBoxComponent_Collision,
-    BananaComponent_Collision,
+    TrapComponent_Collision,
     BlueShellComponent_Collision,
     RedShellComponent_Collision,
     //PLAYER: Basic control keys
@@ -104,7 +104,7 @@ enum EventType {
     Key_Singleplayer_Down,
     Key_Multiplayer_Up,
     Key_Singleplayer_Up,
-    //OBJECT: object related events
+    //Object: object related events
     Update_Transform_Position,
     Update_Transform_Rotation,
     Update_Transform_Scale,

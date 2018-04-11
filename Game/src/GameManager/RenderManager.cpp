@@ -21,9 +21,6 @@ void updateTransformPosition(EventData eData);
 void updateTransformRotation(EventData eData);
 void updateTransformScale(EventData eData);
 
-
-
-
 //==============================================
 // MAIN FUNCTIONS
 //============================================== 
@@ -46,7 +43,13 @@ void RenderManager::init(int engine) {
     //Render init
     renderFacade->init(1280, 720, false, false);
     renderFacade->openWindow();
-    initHUD();
+    
+    //<___
+    //initHUD();
+    
+    //Hud initial state is false
+    HUD_ON = false;
+    //___>
 
     //Data init
     debugState = false;
@@ -76,8 +79,7 @@ void RenderManager::init(int engine) {
     transform.scale    = glm::vec3(1,1,1);
     GameObject::Pointer sky = ObjectManager::getInstance().createObject(id, transform);
 
-
-    RenderManager::getInstance().createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
+    createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
 }
 
 void RenderManager::update(float dTime) {
@@ -85,14 +87,18 @@ void RenderManager::update(float dTime) {
     updateHUD();
 
     //Update camera collision
+    //:::>Depends on the player being created, it shouldn't
     renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
 
     //Update debug if debug mode activated
     if(debugState){
+        //:::>This is hell, it should be in debug manager
         updateAIDebug();
         updateCameraDebug();
         updateBattleDebug(dTime);
     }else{
+        //:::X>my job
+        //:::>Function should be erased and replaced with another one generated here, doing the same thing
         renderFacade->updateItemIcon();
     }
 
@@ -102,9 +108,19 @@ void RenderManager::draw() {
     renderFacade->renderDraw();
 }
 
+void RenderManager::drawHUD() {
+    renderFacade->drawGUI();
+}
+
 void RenderManager::close(){
     //Clear all interface elements
     renderFacade->cleanInterface();
+
+    //Clear all objects from render engine
+    for(unsigned int i = 0; i < renderComponentList.size(); i++)
+    {
+        renderFacade->deleteObject(renderComponentList[i].get());
+    }
 
     //Clear render component list
     renderComponentList.clear();
@@ -120,46 +136,20 @@ void RenderManager::splitQuadTree(){
 //============================================== 
 
 IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr) {
-
+    //Make shared of object render component
     IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
 
+    //Attach to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Why not adding it directly to the list? That's the only use for this event
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
 
-    return component;
-}
-
-IComponent::Pointer RenderManager::createLightRenderComponent(GameObject& newGameObject, LightRenderComponent::Type newType, float newRadius) {
-
-    IComponent::Pointer component = std::make_shared<LightRenderComponent>(newGameObject, newType, newRadius);
-
-    newGameObject.addComponent(component);
-
-    EventData data;
-    data.Component = component;
-
-    EventManager::getInstance().addEvent(Event {EventType::LightRenderComponent_Create, data});
-
-    return component;
-}
-
-IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGameObject) {
-
-    IComponent::Pointer component = std::make_shared<CameraRenderComponent>(newGameObject);
-
-    newGameObject.addComponent(component);
-
-    EventData data;
-    data.Component = component;
-
-    EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
-
-    //Set camera target to this camera, since it was created
-    renderFacade->setCameraTarget(newGameObject);
+    //:::> Initialize here from the render, eliminates dependencies
+    //:::> renderFacade->addObject(this);
 
     return component;
 }
@@ -173,28 +163,78 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
     newGameObject.addComponent(component);
 
     //Create event data
+    //:::>It is not needed since it only adds it to the list and initalizes the object, which *right now* invocates the init, which does the other render
+    //:::> facade-> addObject, and we don't need that
+    //<___
+    /*
     EventData data;
     data.Component = component;
-
-    //Create event
     EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
+    */
+    //___>
 
-    //add object to the render
+    //add object to the render and to the component list
+    renderComponentList.push_back(component);
     renderFacade->addObject(component.get(), radius, length, tesselation, transparency);
 
     return component;
 }
 
-IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back) {
+IComponent::Pointer RenderManager::createLightRenderComponent(GameObject& newGameObject, LightRenderComponent::Type newType, float newRadius) {
+    //Make sahred pointer of light render component
+    IComponent::Pointer component = std::make_shared<LightRenderComponent>(newGameObject, newType, newRadius);
 
-    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape);
-
+    //Attach to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Same as object render component
     EventData data;
     data.Component = component;
+    EventManager::getInstance().addEvent(Event {EventType::LightRenderComponent_Create, data});
 
-    auto comp = newGameObject.getComponent<ObjectRenderComponent>();
+    //:::> Initialize here from the render, eliminates dependencies
+    //:::> renderFacade->addLight(this);
+
+    return component;
+}
+
+IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGameObject) {
+    //Make shared pointer of camera render component
+    IComponent::Pointer component = std::make_shared<CameraRenderComponent>(newGameObject);
+
+    //Add component to object
+    newGameObject.addComponent(component);
+
+    //Send event of creation
+    //:::>Idem
+    EventData data;
+    data.Component = component;
+    EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
+
+    //Set camera target to this object
+    renderFacade->setCameraTarget(newGameObject);
+
+    return component;
+}
+
+IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back) {
+    //Creating object renderer component
+    IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape);
+
+    //Adding component to object
+    newGameObject.addComponent(component);
+
+    //:::>??? Not sended
+    //<___
+    //EventData data;
+    //data.Component = component;
+    //___>
+
+    //:::>??? not used
+    //<___
+    //auto comp = newGameObject.getComponent<ObjectRenderComponent>();
+    //___>
 
     renderFacade->addSkybox(component.get(), top, bot, left, right, front, back);
 
@@ -203,15 +243,16 @@ IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, Objec
 
 //==============================================
 // DELEGATES
-//============================================== 
+//==============================================
+//:::>All 3 of them could be just 1 generic function
 void addObjectRenderComponent(EventData data) {
-    RenderManager::getInstance().getComponentList().push_back(data.Component);
-    data.Component.get()->init();
+    RenderManager::getInstance().getComponentList().push_back(data.Component);        //add to list of render components
+    RenderManager::getInstance().getRenderFacade()->addObject(data.Component.get());  //add object to render engine
 }
 
 void addLightRenderComponent(EventData data) {
-    RenderManager::getInstance().getComponentList().push_back(data.Component);
-    data.Component.get()->init();
+    RenderManager::getInstance().getComponentList().push_back(data.Component);        //add to list of render components
+    RenderManager::getInstance().getRenderFacade()->addLight(data.Component.get());   //add light to render engine     
 }
 
 void addCameraRenderComponent(EventData data) {
@@ -249,6 +290,7 @@ void updateTransformScale(EventData eData) {
     t.scale = eData.Vector;
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(eData.Id, t);
 }
+
 //==============================================
 // AI DEBUG
 //============================================== 
@@ -869,52 +911,57 @@ void RenderManager::initHUD()
 
 void RenderManager::updateHUD()
 {
-    //If there is score
-    auto score = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>();
-    if(score)
+    //If hud is initialized
+    if(HUD_ON)
     {
-        //Get data
-        int pos = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
-        int lap = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>().get()->getLap();
-        int maxLaps = ScoreManager::getInstance().getMaxLaps();
-        int item = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
-
-        //Change position text
-        std::string number = std::to_string(pos);
-        std::string s("POSITION: "+number);
-        changeText(positionHUD_ID, s);
-
-        //Change lap text
-        std::string number2 = std::to_string(lap);
-        std::string number3 = std::to_string(maxLaps);
-        s = std::string("LAP: "+number2+"/"+number3);
-        changeText(lapHUD_ID, s);
-
-        //Change item text
-        s = std::string("ITEM: ");
-        switch(item)
+        //If there is score
+        auto score = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>();
+        if(score)
         {
-            case -1: s+="EMPTY";
-                    break;
-            case 0: s+="RED SHELL";
-                    break;
-            case 1: s+="BLUE SHELL";
-                    break;
-            case 2: s+="BANANA";
-                    break;
-            case 3: s+="MUSHROOM";
-                    break;
-            case 4: s+="STAR";
-                    break;
+            //Get data
+            int pos = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>().get()->getPosition();
+            int lap = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ScoreComponent>().get()->getLap();
+            int maxLaps = ScoreManager::getInstance().getMaxLaps();
+            int item = ObjectManager::getInstance().getObject(renderFacade->getCameraTarget().getId()).get()->getComponent<ItemHolderComponent>().get()->getItemType();
+
+            //Change position text
+            std::string number = std::to_string(pos);
+            std::string s("POSITION: "+number);
+            changeText(positionHUD_ID, s);
+
+            //Change lap text
+            std::string number2 = std::to_string(lap);
+            std::string number3 = std::to_string(maxLaps);
+            s = std::string("LAP: "+number2+"/"+number3);
+            changeText(lapHUD_ID, s);
+
+            //Change item text
+            s = std::string("ITEM: ");
+            switch(item)
+            {
+                case -1: s+="EMPTY";
+                        break;
+                case 0: s+="RED SHELL";
+                        break;
+                case 1: s+="BLUE SHELL";
+                        break;
+                case 2: s+="TRAP";
+                        break;
+                case 3: s+="MUSHROOM";
+                        break;
+                case 4: s+="STAR";
+                        break;
+            }
+            changeText(itemHUD_ID, s);
         }
-        changeText(itemHUD_ID, s);
+        else
+        {
+            changeText(lapHUD_ID, "LAP:  ");
+            changeText(positionHUD_ID, "POSITION:  ");
+            changeText(itemHUD_ID, "ITEM:  ");
+        }
     }
-    else
-    {
-        changeText(lapHUD_ID, "LAP:  ");
-        changeText(positionHUD_ID, "POSITION:  ");
-        changeText(itemHUD_ID, "ITEM:  ");
-    }
+   
 }
 
 /////////////

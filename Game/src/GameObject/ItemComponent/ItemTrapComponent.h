@@ -2,7 +2,7 @@
 
 #include "IItemComponent.h"
 
-class ItemBananaComponent : public IItemComponent
+class ItemTrapComponent : public IItemComponent
 {
 
     private:
@@ -13,9 +13,9 @@ class ItemBananaComponent : public IItemComponent
 
     public:
 
-        ItemBananaComponent(GameObject& newGameObject);
+        ItemTrapComponent(GameObject& newGameObject);
 
-        virtual ~ItemBananaComponent();
+        virtual ~ItemTrapComponent();
 
         virtual void init();
 

@@ -183,6 +183,12 @@ private:
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
 
+    //Hud renderer/context
+    SDL_Renderer *HUDRenderer;
+
+    //Initial image texture
+    SDL_Texture* tex;
+
     //RedPanda camera
     //rps::TNode* camera;
 

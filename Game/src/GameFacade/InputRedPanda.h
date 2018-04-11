@@ -1,10 +1,9 @@
 #pragma once
 
+#include <redpanda/RedPandaStudio.h>
 #include "IInputFacade.h"
 #include "../GameEvent/EventManager.h"
-#include "../GameManager/RenderManager.h"
 
-#include <redpanda/RedPandaStudio.h>
 
 class InputRedPanda : public IInputFacade {
 

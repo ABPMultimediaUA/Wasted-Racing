@@ -23,6 +23,7 @@ WaypointManager::~WaypointManager()
 void WaypointManager::init() {
     listSubNodes = new std::vector<GameObject::Pointer>;
 
+    //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletePathPlanning});
 
     distanceLoD = 0;
@@ -32,8 +33,8 @@ void WaypointManager::update(float dTime) {
     //I doubt this method should exist in this manager
     //I doubt it too
     //I hope Fran reads this
-    auto player = InputManager::getInstance().getComponent().get()->getGameObject();
-    auto posPlayer = player.getTransformData().position;
+    auto player = GlobalVariables::getInstance().getPlayer();
+    auto posPlayer = player->getTransformData().position;
 
     //CALCULATE LOD PATHPLANNING
     for(unsigned int i=0; i < pathPlanningComponentList.size(); i++)
@@ -90,13 +91,14 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
 IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Pointer newGameObject, std::vector<GameObject::Pointer>& list)
 {
-    //Creade pointer
+    //Make shared pointer of path plannign component
     IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get(), list);
 
     //Add component to the object
     newGameObject.get()->addComponent(component);
 
     //add to the list of components
+    //:::>Can be substituted with an event, if schedulingi is added
     pathPlanningComponentList.push_back(component);
 
     return component;
@@ -120,9 +122,6 @@ void WaypointManager::updatePathPlanning(IComponent::Pointer pathPlanning, float
 //==============================================
 //Constructor and Destructor
 //==============================================
-
-
-
 void objectDeletePathPlanning(EventData eData) {
 
     auto& PathPlanningComponentList = WaypointManager::getInstance().getPathPlanningList();
