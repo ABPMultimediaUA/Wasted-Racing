@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 #include "RedPanda.h"
 
@@ -48,7 +49,7 @@ public:
 
     void setGUIDrawFunction(void (*)());
 
-    //////////////////////////////s
+    //////////////////////////////
     //  GETTERS
     SDL_Window* getWindow()               { return window;           }
     TNode* getSceneRoot()                 { return scene;            }
@@ -89,6 +90,14 @@ private:
     GLuint skyboxID;
     //SKybox vertex array
     GLuint skyVertexArray;
+
+
+    //Chrono
+    std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
+
+    //Chrono flag
+    bool showFPS = false;
+    
 
 };
 

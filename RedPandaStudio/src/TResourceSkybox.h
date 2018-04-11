@@ -7,12 +7,12 @@
 
 //////////////////////////////////////////POSITION CORRESPONDENCY/////////////////////////////////////////
 //This class loads a set of six pictures and draws the skybox. The order of the pictures is the following:
-// 0 -> Top
-// 1 -> Bottom
-// 2 -> Left
-// 3 -> Right
-// 4 -> Front
-// 5 -> Back
+// 0 -> Front
+// 1 -> Back
+// 2 -> Up
+// 3 -> Down
+// 4 -> Right
+// 5 -> Left
 
 //This could be improved with an enumerator
 
