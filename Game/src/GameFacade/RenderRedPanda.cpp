@@ -80,8 +80,13 @@ void RenderRedPanda::openWindow() {
     //set the GUI Context
     receiver->setGUIContext(GUI);
 
+<<<<<<< HEAD
     //set the function that'll draw the GUI
     //device->setGUIDrawFunction(drawRPS_GUI);
+=======
+    addCamera();
+
+>>>>>>> master
 
     //Initialize the GUI
     //gui::init();
@@ -122,10 +127,34 @@ void RenderRedPanda::renderDraw() {
 }
 
 //Add a camera to the game
-void RenderRedPanda::addCamera() { }
+void RenderRedPanda::addCamera() {
+
+    device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
+
+}
 
 //Update the current camera
-void RenderRedPanda::interpolateCamera(float accTime, float maxTime) { }
+void RenderRedPanda::interpolateCamera(float accTime, float maxTime) { 
+
+    //Get target position
+    auto pos = cameraTarget->getTransformData().position;
+
+    //Get target y angle
+    float radianAngle = cameraTarget->getTransformData().rotation.y;
+
+    //Get interpolated distance to the player
+    float oldD = cameraTarget->getComponent<CameraRenderComponent>().get()->getOldDistance();
+    float newD = cameraTarget->getComponent<CameraRenderComponent>().get()->getDistance();
+
+    float distance = oldD + (accTime * (newD - oldD))/maxTime;
+    distance *= 1.5;
+
+    glm::vec3 target(-pos.x, pos.y, pos.z);
+    glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y + distance * 0.4, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+
+    device->updateCamera(position, target);
+
+}
 
 //Add an object to the game
 void RenderRedPanda::addObject(IComponent* ptr) { 
@@ -160,10 +189,6 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
 
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
-
-    if(obj.getId() == 25000) {
-        device->createCamera(node->getFather(), glm::vec3(0,10,30));
-    }
 
 }
 

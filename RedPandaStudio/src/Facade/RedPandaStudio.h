@@ -41,11 +41,13 @@ public:
     //Creates an object and returns a TMesh
     TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh); 
     //Creates a camera and returns a TCamera
-    TNode* createCamera(TNode* parent, glm::vec3 position);
+    TNode* createCamera(TNode* parent, glm::vec3 position, glm::vec3 target);
     //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity);
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
+
+    void updateCamera(glm::vec3 position, glm::vec3 target);
 
     void setGUIDrawFunction(void (*)());
 

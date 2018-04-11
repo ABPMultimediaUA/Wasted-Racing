@@ -280,13 +280,13 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 	}
 }
 
-TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
+TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position, glm::vec3 target) {
 
 	//Check parent node is valid
-	if(parent != nullptr && dynamic_cast<TTransform*>(parent->getEntity()) != nullptr){
+	if(parent != nullptr && parent->getEntity() == nullptr){
 
 		//Create new transformation tree
-		TNode* transformT = addRotScaPos(parent, position);
+		TNode* transformT = addRotScaPos(parent, glm::vec3(0,0,0));
 
 		//Create new camera entity
 		TCamera* c = new TCamera(45.0f);
@@ -297,7 +297,7 @@ TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 		camera = cam;
 
 		//Rotate camera to be behind our character
-		rps::rotateNode(camera,glm::vec3(0,glm::half_pi<float>(),0));
+		updateCamera(position, target);
 
 		//Return camera
 		return cam;
@@ -306,6 +306,36 @@ TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 		return nullptr;
 	}
 
+}
+
+void RedPandaStudio::updateCamera(glm::vec3 position, glm::vec3 target) {
+	
+	TTransform* rotation = (TTransform*)camera->getFather()->getFather()->getFather()->getEntity();
+	TTransform* translation = (TTransform*)camera->getFather()->getEntity();
+
+	glm::mat4 rot = glm::mat4(1.0);
+	glm::mat4 trans = glm::mat4(1.0);
+
+	glm::vec3 f = glm::normalize(target - position);
+	glm::vec3 s = glm::normalize(glm::cross(f, glm::vec3(0,1,0)));
+	glm::vec3 u = glm::cross(s, f);
+
+	rot[0][0] =  s.x;
+	rot[1][0] =  s.y;
+	rot[2][0] =  s.z;
+	rot[0][1] =  u.x;
+	rot[1][1] =  u.y;
+	rot[2][1] =  u.z;
+	rot[0][2] = -f.x;
+	rot[1][2] = -f.y;
+	rot[2][2] = -f.z;
+
+	trans[3][0] = -dot(s, position);
+	trans[3][1] = -dot(u, position);
+	trans[3][2] =  dot(f, position);
+	
+	rotation->setMatrix(rot);
+	translation->setMatrix(trans);
 }
 
 TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity) {
@@ -441,15 +471,8 @@ void RedPandaStudio::renderCamera() {
 		glm::mat4 mat = glm::mat4(1.0);
 		calculateNodeTransform(camera, mat);
 
-
-		//Get camera specific transformations
-		TTransform* t1 = (TTransform*) camera->getFather()->getFather()->getFather()->getFather()->getEntity();	//distance from center
-		TTransform* r = (TTransform*) camera->getFather()->getFather()->getFather()->getFather()->getFather()->getFather()->getEntity();	//parent rotation
-		TTransform* r1 = (TTransform*) camera->getFather()->getFather()->getFather()->getEntity();	//camera rotation
-		TTransform* t0 = (TTransform*) camera->getFather()->getEntity();	//distance from player
-
 		glm::mat4& view = scene->getEntity()->viewMatrix();
-    	view = glm::inverse(t1->getMatrix() * r->getMatrix() * r1->getMatrix() * t0->getMatrix());
+		view = mat;
 
 		glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
     	glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
