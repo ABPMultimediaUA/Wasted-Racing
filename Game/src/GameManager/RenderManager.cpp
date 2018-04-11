@@ -78,6 +78,8 @@ void RenderManager::init(int engine) {
 
 
     RenderManager::getInstance().createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
+
+    RenderManager::getInstance().getRenderFacade()->setClipping(false);
 }
 
 void RenderManager::update(float dTime) {

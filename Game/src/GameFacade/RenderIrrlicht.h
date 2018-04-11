@@ -67,6 +67,9 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
+    //Dont do nothing, only for the facade
+    virtual void setClipping(bool b)    {};
+
     //==============================================================
     //  VISUAL INTERFACE
     //==============================================================
@@ -108,7 +111,7 @@ public:
     virtual void cleanRectangles();
 
     ////////////
-    //  Text
+    //  Text  //
     ////////////
 
     //Adds specified text at the specified point with specified size, with the specified color and font
