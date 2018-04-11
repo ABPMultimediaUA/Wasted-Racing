@@ -48,12 +48,12 @@ public:
 
     void setGUIDrawFunction(void (*)());
 
-    //////////////////////////////
+    //////////////////////////////s
     //  GETTERS
-    SDL_Window* getWindow()   {   return window;      }
-    TNode* getSceneRoot()           {   return scene;       }
+    SDL_Window* getWindow()               { return window;           }
+    TNode* getSceneRoot()                 { return scene;            }
     ResourceManager* getResourceManager() { return resourceManager;  }
-    SDL_GLContext* getContext() { return context; }
+    SDL_GLContext* getContext()           { return context;          }  
 
     //////////////////////////////
     //  SETTERS

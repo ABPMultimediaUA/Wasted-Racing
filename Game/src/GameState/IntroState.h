@@ -50,6 +50,8 @@ private:
     RenderManager* renderManager;
     //Object manager
     ObjectManager* objectManager;
+    //Audio Manager
+    AudioManager* audioManager;
 
     //Update's loop time
     const float loopTime = 1.0f/30.0f;

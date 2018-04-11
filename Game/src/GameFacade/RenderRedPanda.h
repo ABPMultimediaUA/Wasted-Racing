@@ -177,7 +177,7 @@ private:
 
 private:
 
-    //RenderRedPanda own window
+    //RenderRedPanda own device
     rps::RedPandaStudio* device;
 
     //RedPanda node map

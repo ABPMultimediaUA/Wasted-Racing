@@ -25,6 +25,7 @@ void IntroState::init() {
     inputManager  = &InputManager::getInstance();
     renderManager = &RenderManager::getInstance();
     objectManager = &ObjectManager::getInstance();
+    audioManager = &AudioManager::getInstance();
 
     //Variables
     ip =  "192.168.0.1";
@@ -67,7 +68,7 @@ void IntroState::swapToMatch()
 {
     //Close this state
     close();    
-
+ 
     //Initialize match state
     Game::getInstance().setState(IGameState::stateType::MATCH);
 }
