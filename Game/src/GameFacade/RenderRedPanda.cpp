@@ -1,7 +1,4 @@
 #include "RenderRedPanda.h"
-#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "../GameObject/RenderComponent/LightRenderComponent.h"
-#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -15,11 +12,15 @@
 #include <nuklear/nuklear.h>
 #include <nuklear/nuklear_sdl_gl3.h>
 
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+
 //==============================================================
 // Gui Related functions and variables declarations
 //==============================================================
 struct nk_context *GUI; //:::> global variable
-//void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
 
 namespace gui {
 
@@ -35,66 +36,31 @@ namespace gui {
 //==============================================================
 //Creates a window depending on the engine
 void RenderRedPanda::openWindow() { 
-    //Create window with openGL
+
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
-    
-    //Create input interface
+
     InputRedPanda* receiver = new InputRedPanda();
 
-    //Get pointer of the window
     uintptr_t aux = reinterpret_cast<uintptr_t>(device->getWindow());
-
-    //Set it as the default device and the input facade as the key handler
     InputManager::getInstance().setDevice(aux);
     InputManager::getInstance().setInputFacade(receiver);
 
-    //Create HUD renderer
-    /*HUDRenderer = SDL_CreateRenderer(device->getWindow(), -1, SDL_RENDERER_ACCELERATED);
-    if (HUDRenderer == nullptr){
-        std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
-    }
-
-    //Load an image of example
-    std::string imagePath = "/media/img/fontcourier.bmp";
-    SDL_Surface *bmp = SDL_LoadBMP(imagePath.c_str());
-    if (bmp == nullptr){
-        std::cout << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
-    }
-
-    //Create texture so we can paint it in the renderer
-    tex = SDL_CreateTextureFromSurface(HUDRenderer, bmp);
-    SDL_FreeSurface(bmp);
-    if (tex == nullptr){
-        std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-    }*/
-
-    
     //Init GUI
     GUI = nk_sdl_init(device->getWindow());
-
-    //Load fonts
     struct nk_font_atlas *atlas;
     nk_sdl_font_stash_begin(&atlas);
 	nk_sdl_font_stash_end();
 
-    //set the GUI Context
-    receiver->setGUIContext(GUI);
+    InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
+    irps->setGUIContext(GUI);
 
-<<<<<<< HEAD
-    //set the function that'll draw the GUI
-    //device->setGUIDrawFunction(drawRPS_GUI);
-=======
+    device->setGUIDrawFunction(drawRPS_GUI);
+
+    gui::init();
+
     addCamera();
 
-<<<<<<< HEAD
-    addCamera();
 
-=======
->>>>>>> master
->>>>>>> debugQue
-
-    //Initialize the GUI
-    //gui::init();
 }
 
 //Updates window info in the engine
@@ -103,21 +69,9 @@ void RenderRedPanda::updateWindow() {
 }
 
 //Closes engine window
-void RenderRedPanda::closeWindow() {
-    //Clear context
-    nk_clear(GUI);
-    nk_free(GUI);
+void RenderRedPanda::closeWindow() { 
 
-    //Close nuklear
     nk_sdl_shutdown();
-
-    //Destroy all textures used -- initially one for testing
-    /*SDL_DestroyTexture(tex);
-
-    //Destroy renderer
-    SDL_DestroyRenderer(HUDRenderer);*/
-
-    //Close device
     device->dropDevice();
 
 }
@@ -128,7 +82,9 @@ void RenderRedPanda::closeWindow() {
 //==============================================================
 //Renders all the scene
 void RenderRedPanda::renderDraw() {
+
     device->updateDevice();
+
 }
 
 //Add a camera to the game
@@ -273,7 +229,7 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 //==============================================================
 
 //GUI update function
-/*void drawRPS_GUI(){
+void drawRPS_GUI(){
     
     if (nk_begin(GUI, "Demo", nk_rect(50, 50, 230, 250),
             NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
@@ -307,7 +263,7 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
-}*/
+}
 
 void gui::init() {
     gui::image = gui::loadTexture("media/img/iconoSeta.png");
@@ -344,11 +300,9 @@ void RenderRedPanda::changeImage(int32_t id, std::string img) {}
 void RenderRedPanda::deleteImage(int32_t id) {}
 //Clean images off of the screen
 void RenderRedPanda::cleanImages() {}
-
 ////////////
 //  Rectangle
 ////////////
-
 //Add rectangle of the given color and alpha channel, at the specified position with the given size
 int32_t RenderRedPanda::addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a) {return 0;}
 //Change color of the rectangle known by the id given
@@ -356,8 +310,7 @@ void RenderRedPanda::changeRectangleColor(int32_t id, int r, int g, int b, int a
 //Deletes the rectangle with the passed id
 void RenderRedPanda::deleteRectangleColor(int32_t id) {}
 //Clean all rectangles off of the screen
-void RenderRedPanda::cleanRectangles() {} 
-
+void RenderRedPanda::cleanRectangles() {}
 ////////////
 //  Text
 ////////////
@@ -365,7 +318,6 @@ void RenderRedPanda::cleanRectangles() {}
 int32_t RenderRedPanda::addText(std::string text, glm::vec2 pos, int r, int g, int b, int a, glm::vec2 size, std::string) {
     return 0;
 }
-
 //Changes the specified text with the given message
 void RenderRedPanda::changeText(int32_t id, std::string text) {}
 //Changes the font of the game
@@ -380,7 +332,6 @@ void RenderRedPanda::deleteText(int32_t id) {}
 void RenderRedPanda::cleanTexts() {}
 //Erase all visual interface elements from the screen
 void RenderRedPanda::cleanInterface() {}
-
 ///////////////////////////////
 ///////      DEBUG      ///////    
 ///////////////////////////////
