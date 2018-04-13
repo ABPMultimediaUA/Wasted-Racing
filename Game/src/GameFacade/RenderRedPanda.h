@@ -37,6 +37,8 @@ public:
     //Closes engine window
     virtual void closeWindow();
 
+    rps::RedPandaStudio* getDevice() { return device; }
+
     //==============================================================
     // Render Related functions
     //==============================================================
@@ -175,21 +177,10 @@ private:
 
     virtual void updateItemIcon();
 
-private:
-
     //RenderRedPanda own device
     rps::RedPandaStudio* device;
 
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
-
-    //Hud renderer/context
-    SDL_Renderer *HUDRenderer;
-
-    //Initial image texture
-    SDL_Texture* tex;
-
-    //RedPanda camera
-    //rps::TNode* camera;
 
 };

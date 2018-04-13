@@ -15,6 +15,7 @@
 #include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include "../GameObject/RenderComponent/LightRenderComponent.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameManager/RenderManager.h"
 
 //==============================================================
 // Gui Related functions and variables declarations
@@ -24,12 +25,17 @@ void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
 
 namespace gui {
 
-    struct nk_image image;
+    struct nk_image background;
 
     void init();
     struct nk_image loadTexture(const char* path);
 
 }
+
+//==============================================
+// DELEGATES DECLARATIONS
+//==============================================
+void addHUD(EventData eData); 
 
 //==============================================================
 // Engine Related functions
@@ -54,11 +60,12 @@ void RenderRedPanda::openWindow() {
     InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
     irps->setGUIContext(GUI);
 
-    device->setGUIDrawFunction(drawRPS_GUI);
-
     gui::init();
 
     addCamera();
+
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, addHUD});
 
 
 }
@@ -229,35 +236,35 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 //==============================================================
 
 //GUI update function
-void drawRPS_GUI(){
+void drawRPS_GUI_Menu(){
+
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
     
-    if (nk_begin(GUI, "Demo", nk_rect(50, 50, 230, 250),
-            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
-            enum {EASY, HARD};
-            static int op = EASY;
-            static int property = 20;
 
-            nk_layout_row_static(GUI, 30, 80, 1);
-            if (nk_button_label(GUI, "button"))
-                printf("button pressed!\n");
-            nk_layout_row_dynamic(GUI, 30, 2);
-            if (nk_option_label(GUI, "easy", op == EASY)) op = EASY;
-            if (nk_option_label(GUI, "hard", op == HARD)) op = HARD;
-            nk_layout_row_dynamic(GUI, 22, 1);
-            nk_property_int(GUI, "Compression:", 0, &property, 100, 10, 1);
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                nk_image(GUI, gui::background);
+                nk_popup_end(GUI);
+            }
 
-            nk_layout_row_dynamic(GUI, 20, 1);
-            nk_label(GUI, "background:", NK_TEXT_LEFT);
-            nk_layout_row_dynamic(GUI, 25, 1);
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.25, w*0.3, h*0.5))) {
 
-            nk_layout_row_dynamic(GUI, 20, 1);
-            nk_label(GUI, "Selected", NK_TEXT_LEFT);
-            static const float ratio[] = {0.15f, 0.50f, 0.35f};
-            nk_layout_row(GUI, NK_DYNAMIC, 100, 3, ratio);
-            nk_spacing(GUI, 1);
-            nk_image(GUI, gui::image);
+                nk_layout_row_dynamic(GUI, 50, 1);
+                nk_spacing(GUI, 1);
+                if (nk_button_label(GUI, "Single Player"))
+                    EventManager::getInstance().addEvent(Event {EventType::Key_Singleplayer_Down});
+                if (nk_button_label(GUI, "Multiplayer"))
+                    EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
+                if (nk_button_label(GUI, "Options"))
+                    fprintf(stdout, "Options!\n");
+                if (nk_button_label(GUI, "Quit"))
+                    EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+                nk_popup_end(GUI);
+            }
 
             
 		}
@@ -265,8 +272,30 @@ void drawRPS_GUI(){
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
 }
 
+void drawRPS_GUI_HUD(){
+
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x/10, window.size.y/10),0))
+        {
+
+            nk_layout_row_static(GUI, window.size.y, window.size.x, 1);
+
+            
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+
+}
+
 void gui::init() {
-    gui::image = gui::loadTexture("media/img/iconoSeta.png");
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+
+    device->setGUIDrawFunction(drawRPS_GUI_Menu);
+
+    gui::background = gui::loadTexture("media/img/iconoSeta.png");
+
 }
 
 //Code to load a single texture
@@ -381,3 +410,9 @@ void RenderRedPanda::createItemIcon(glm::vec2 pos, std::string img) { }
 void RenderRedPanda::deleteItemIcon() { }
 
 void RenderRedPanda::updateItemIcon() { }
+
+//Delegates
+void addHUD(EventData eData) {
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_HUD);
+}
