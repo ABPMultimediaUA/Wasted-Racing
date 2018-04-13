@@ -127,10 +127,10 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "shaders/test.vert";
-    const char * fragment_file_path = "shaders/test.frag";
-	const char * skybox_vertex_path = "shaders/skybox.vert";
-	const char * skybox_fragment_path = "shaders/skybox.frag";
+    const char * vertex_file_path = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/shaders/test.vert";
+    const char * fragment_file_path = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/shaders/test.frag";
+	const char * skybox_vertex_path = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/shaders/skybox.vert";
+	const char * skybox_fragment_path = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/shaders/skybox.frag";
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
@@ -147,12 +147,12 @@ void RedPandaStudio::initOpenGL() {
 	
 	//Init skybox
 	skybox = new TResourceSkybox();
-	char* r0 = "media/img/darkskies_ft.tga";
-	char* r1 = "media/img/darkskies_bk.tga";
-	char* r2 = "media/img/darkskies_up.tga";
-	char* r3 = "media/img/darkskies_dn.tga";
-	char* r4 = "media/img/darkskies_rt.tga";
-	char* r5 = "media/img/darkskies_lf.tga";
+	char* r0 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_ft.tga";
+	char* r1 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_bk.tga";
+	char* r2 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_up.tga";
+	char* r3 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_dn.tga";
+	char* r4 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_rt.tga";
+	char* r5 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_lf.tga";
 	
 	skybox->loadResource(r0, 0);
 	skybox->loadResource(r1, 1);
