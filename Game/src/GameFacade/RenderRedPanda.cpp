@@ -245,6 +245,8 @@ void drawRPS_GUI_Menu(){
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
 
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
                 nk_layout_row_static(GUI, h, w, 1);
                 nk_image(GUI, gui::background);
@@ -265,7 +267,6 @@ void drawRPS_GUI_Menu(){
                     EventManager::getInstance().addEvent(Event {EventType::Game_Close});
                 nk_popup_end(GUI);
             }
-
             
 		}
 	nk_end(GUI);
@@ -294,7 +295,7 @@ void gui::init() {
 
     device->setGUIDrawFunction(drawRPS_GUI_Menu);
 
-    gui::background = gui::loadTexture("media/img/iconoSeta.png");
+    gui::background = gui::loadTexture("media/img/background.jpg");
 
 }
 
@@ -312,7 +313,7 @@ struct nk_image gui::loadTexture(const char* path) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 500, 500, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, sftex.getSize().x, sftex.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     
     return nk_image_id((int)tex);
 
