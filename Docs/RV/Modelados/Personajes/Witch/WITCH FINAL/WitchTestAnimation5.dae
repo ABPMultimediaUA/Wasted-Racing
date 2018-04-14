@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2017-09-12, commit time:08:47, hash:8ef39d5c882</authoring_tool>
     </contributor>
-    <created>2018-04-14T13:22:06</created>
-    <modified>2018-04-14T13:22:06</modified>
+    <created>2018-04-14T13:23:58</created>
+    <modified>2018-04-14T13:23:58</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -108,38 +108,6 @@
           <input semantic="VERTEX" source="#Plane_001-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Plane_001-mesh-normals" offset="1"/>
           <p>11 0 12 0 15 0 10 1 13 1 9 1 3 2 6 2 2 2 0 3 5 3 1 3 1 4 7 4 3 4 2 5 4 5 0 5 10 6 15 6 14 6 9 7 12 7 8 7 6 8 15 8 12 8 4 9 14 9 5 9 3 10 8 10 11 10 0 11 10 11 9 11 5 12 15 12 7 12 4 13 12 13 13 13 1 14 11 14 10 14 0 15 8 15 2 15 27 16 28 16 31 16 26 17 29 17 25 17 23 18 18 18 19 18 20 19 17 19 16 19 17 20 23 20 19 20 18 21 20 21 16 21 26 22 31 22 30 22 24 23 29 23 28 23 22 24 31 24 28 24 20 25 30 25 21 25 19 26 24 26 27 26 17 27 25 27 16 27 21 28 31 28 23 28 22 29 29 29 20 29 19 30 26 30 17 30 18 31 25 31 24 31 43 32 44 32 47 32 42 33 45 33 41 33 35 34 38 34 34 34 36 35 33 35 32 35 33 36 39 36 35 36 34 37 36 37 32 37 42 38 47 38 46 38 40 39 45 39 44 39 38 40 47 40 44 40 36 41 46 41 37 41 35 42 40 42 43 42 32 43 42 43 41 43 37 44 47 44 39 44 36 45 44 45 45 45 33 46 43 46 42 46 34 47 41 47 40 47 59 48 60 48 63 48 58 49 61 49 57 49 55 50 50 50 51 50 52 51 49 51 48 51 49 52 55 52 51 52 50 53 52 53 48 53 58 54 63 54 62 54 56 55 61 55 60 55 54 56 63 56 60 56 53 57 61 57 62 57 51 58 56 58 59 58 49 59 57 59 48 59 53 60 63 60 55 60 54 61 61 61 52 61 49 62 59 62 58 62 50 63 57 63 56 63 75 64 76 64 79 64 74 65 77 65 73 65 67 66 70 66 66 66 64 67 69 67 65 67 65 68 71 68 67 68 66 69 68 69 64 69 74 70 79 70 78 70 72 71 77 71 76 71 70 72 79 72 76 72 68 73 78 73 69 73 67 74 72 74 75 74 64 75 74 75 73 75 69 76 79 76 71 76 68 77 76 77 77 77 65 78 75 78 74 78 64 79 72 79 66 79 11 80 8 80 12 80 10 81 14 81 13 81 3 82 7 82 6 82 0 83 4 83 5 83 1 84 5 84 7 84 2 85 6 85 4 85 10 86 11 86 15 86 9 87 13 87 12 87 6 88 7 88 15 88 4 89 13 89 14 89 3 90 2 90 8 90 0 91 1 91 10 91 5 92 14 92 15 92 4 93 6 93 12 93 1 94 3 94 11 94 0 95 9 95 8 95 27 96 24 96 28 96 26 97 30 97 29 97 23 98 22 98 18 98 20 99 21 99 17 99 17 100 21 100 23 100 18 101 22 101 20 101 26 102 27 102 31 102 24 103 25 103 29 103 22 104 23 104 31 104 20 105 29 105 30 105 19 106 18 106 24 106 17 107 26 107 25 107 21 108 30 108 31 108 22 109 28 109 29 109 19 110 27 110 26 110 18 111 16 111 25 111 43 112 40 112 44 112 42 113 46 113 45 113 35 114 39 114 38 114 36 115 37 115 33 115 33 116 37 116 39 116 34 117 38 117 36 117 42 118 43 118 47 118 40 119 41 119 45 119 38 120 39 120 47 120 36 121 45 121 46 121 35 122 34 122 40 122 32 123 33 123 42 123 37 124 46 124 47 124 36 125 38 125 44 125 33 126 35 126 43 126 34 127 32 127 41 127 59 128 56 128 60 128 58 129 62 129 61 129 55 130 54 130 50 130 52 131 53 131 49 131 49 132 53 132 55 132 50 133 54 133 52 133 58 134 59 134 63 134 56 135 57 135 61 135 54 136 55 136 63 136 53 137 52 137 61 137 51 138 50 138 56 138 49 139 58 139 57 139 53 140 62 140 63 140 54 141 60 141 61 141 49 142 51 142 59 142 50 143 48 143 57 143 75 144 72 144 76 144 74 145 78 145 77 145 67 146 71 146 70 146 64 147 68 147 69 147 65 148 69 148 71 148 66 149 70 149 68 149 74 150 75 150 79 150 72 151 73 151 77 151 70 152 71 152 79 152 68 153 77 153 78 153 67 154 66 154 72 154 64 155 65 155 74 155 69 156 78 156 79 156 68 157 70 157 76 157 65 158 67 158 75 158 64 159 73 159 72 159</p>
-        </triangles>
-      </mesh>
-    </geometry>
-    <geometry id="Cylinder_001-mesh" name="Cylinder.001">
-      <mesh>
-        <source id="Cylinder_001-mesh-positions">
-          <float_array id="Cylinder_001-mesh-positions-array" count="156">0 0.983168 -0.2628265 0 0.9307876 0.1964182 0.5303266 0.8493508 -0.1657814 0.5 0.8021117 0.257071 0.7629152 0.5278772 -0.08086717 0.7083274 0.5089484 0.3237895 0.8726285 0.1146636 -0.02627938 0.9150857 0.1004219 0.3965732 0.7629152 -0.2867375 -0.08086717 0.7083274 -0.2908859 0.3237895 0.5303267 -0.5701723 -0.1657814 0.5000001 -0.5691546 0.257071 1.78814e-7 -0.6684944 -0.2628265 1.78814e-7 -0.6682131 0.1964182 0 1.656901 -0.7581602 0.8345011 1.294971 -0.6489317 1.361757 0.7597193 -0.5847669 1.302255 0.09560465 -0.1678032 1.099925 -0.3635743 -0.50459 0.5909798 -0.6443638 -0.6206796 1.3742e-7 -0.9097844 -0.7581602 0 1.985542 -1.566019 0.8133743 1.631934 -1.676205 1.51568 1.315812 -1.404277 1.940905 0.0738523 -1.153416 1.334065 -0.6509095 -1.621552 0.8133744 -0.9221844 -1.949993 2.06793e-7 -1.256843 -1.839807 0 2.00339 -2.322268 1.012511 1.577195 -2.494998 1.784742 1.013262 -2.212589 2.134447 0.07690256 -1.974589 1.784742 -0.5933719 -2.212589 1.012511 -1.09445 -2.494998 1.91342e-7 -1.315132 -2.280003 0 2.050835 -3.572756 1.012511 1.719338 -3.773662 1.784742 1.118846 -3.491253 3.044166 0.08681261 -3.56595 1.784742 -0.8116648 -3.32356 1.012511 -1.246825 -3.155292 1.91342e-7 -1.575957 -3.462405 0 2.269636 -4.956229 1.420277 1.817315 -5.157135 2.237515 1.186931 -5.23946 3.055691 0.3158406 -4.656053 0.2280585 3.17055 -7.421444 1.761689 1.735932 -6.943073 2.510561 0.8141582 -6.547471 3.008031 0.336676 -5.611907 0.07522583 2.577577 -6.105531 1.583021 1.890948 -6.008455</float_array>
-          <technique_common>
-            <accessor source="#Cylinder_001-mesh-positions-array" count="52" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="Cylinder_001-mesh-normals">
-          <float_array id="Cylinder_001-mesh-normals-array" count="228">0.2241173 0.9682843 0.1104401 0.7881172 0.6029306 0.1238794 0.952056 0.2714264 0.1411281 0.9524949 -0.2774286 0.1256465 0.7634738 -0.64338 0.05630391 0.1821862 -0.9832639 6.02315e-4 0.4737906 0.4374259 0.7643175 0.1477213 -0.9728142 0.1783571 0.2976867 -0.208072 0.9317128 0.4298439 0.5125318 0.7433341 0.3572453 -0.827001 0.4341028 0.1497406 0.5856671 0.7966002 0.4052626 -0.8612844 0.3065151 0.8358626 0.3683875 0.4069699 0.4131973 0.8435154 0.343147 0.3485271 -0.9040968 0.2472609 0.6574388 -0.6120499 0.4395101 0.2961796 0.9093425 0.2921881 0.4551101 -0.8503212 0.2642511 0.9200865 0.3503925 0.175117 0.4010632 0.9157955 0.02161329 0.2732114 -0.8840373 0.3792542 0.7021521 -0.6931384 0.162916 0.3986689 0.9164001 0.03569465 0.4926971 -0.853874 0.1677764 0.9339193 0.3562715 0.02941852 0.3927712 0.918975 0.03486728 0.2517431 -0.9430101 0.2176177 0.5893087 -0.7364054 0.3322987 0.5908952 0.8018093 0.08913296 0.6458411 0.7378829 0.1960055 0.5479088 0.8074513 0.2186746 0.3340247 0.9309932 0.1472392 0.5513449 -0.8176063 -0.1659482 0.731279 0.6808224 -0.04137498 0.6119197 0.7693338 0.1835209 0.4011722 0.9028313 0.154779 0.5595017 0.7293801 0.3936529 0.2331058 0.9644536 0.1244627 0.7929698 0.5941696 0.1347646 0.8950443 0.439615 -0.07506203 0.8872275 -0.4494059 -0.1042194 0.7849289 -0.6115253 0.09961682 0.1924274 -0.9811781 0.01616197 0.3143976 0.2058976 0.9266932 0.289004 -0.8606462 0.4192433 0.5412063 -0.6392056 0.5463626 0.430587 0.5084953 0.7456725 0.7259553 -0.6568155 0.2039172 0.05371427 0.7169379 0.6950647 0.3219223 -0.91452 0.2449883 0.8140928 0.254727 0.521888 0.3496371 0.8923228 0.2855063 0.3974732 -0.8737389 0.2803488 0.6177338 -0.7206012 0.3148634 0.57057 0.6257991 0.5318134 0.2349355 -0.898855 0.3699528 0.8964067 0.3888518 0.212719 0.3926653 0.9190506 0.03405737 0.3916607 -0.9121475 0.1207842 0.6967259 -0.5336987 0.4793106 0.6090012 0.7877978 -0.09215366 0.5132811 -0.8362427 0.1929788 0.6059018 0.7140103 0.3508167 0.3280941 0.9388619 0.1043685 0.2444477 -0.9468984 0.2088749 0.8681828 -0.4869338 0.09567689 0.5721912 0.8173385 0.06749045 0.630909 0.7579112 0.1659053 0.6116629 0.7683724 0.1883412 0.3200601 0.9337099 0.1604599 0.7360174 0.6766067 -0.02195006 0.7492676 0.6614885 -0.03210997 0.7669541 0.6404293 0.04039496 0.3264188 0.9074613 0.2645087 0.4171628 0.9060906 -0.07053607</float_array>
-          <technique_common>
-            <accessor source="#Cylinder_001-mesh-normals-array" count="76" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="Cylinder_001-mesh-vertices">
-          <input semantic="POSITION" source="#Cylinder_001-mesh-positions"/>
-        </vertices>
-        <triangles count="76">
-          <input semantic="VERTEX" source="#Cylinder_001-mesh-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#Cylinder_001-mesh-normals" offset="1"/>
-          <p>1 0 2 0 0 0 3 1 4 1 2 1 5 2 6 2 4 2 6 3 9 3 8 3 8 4 11 4 10 4 10 5 13 5 12 5 4 6 17 6 16 6 12 7 19 7 10 7 8 8 17 8 6 8 2 9 16 9 15 9 8 10 19 10 18 10 0 11 15 11 14 11 19 12 25 12 18 12 16 13 24 13 23 13 14 14 22 14 21 14 20 15 26 15 19 15 18 16 24 16 17 16 15 17 23 17 22 17 25 18 33 18 32 18 24 19 30 19 23 19 22 20 28 20 21 20 26 21 34 21 33 21 25 22 31 22 24 22 23 23 29 23 22 23 33 24 39 24 32 24 31 25 37 25 30 25 29 26 35 26 28 26 34 27 40 27 33 27 31 28 39 28 38 28 29 29 37 29 36 29 37 30 45 30 44 30 37 31 43 31 36 31 36 32 42 32 35 32 39 33 45 33 38 33 44 34 49 34 48 34 51 35 43 35 44 35 50 36 43 36 51 36 50 37 47 37 46 37 1 38 3 38 2 38 3 39 5 39 4 39 5 40 7 40 6 40 6 41 7 41 9 41 8 42 9 42 11 42 10 43 11 43 13 43 4 44 6 44 17 44 12 45 20 45 19 45 8 46 18 46 17 46 2 47 4 47 16 47 8 48 10 48 19 48 0 49 2 49 15 49 19 50 26 50 25 50 16 51 17 51 24 51 14 52 15 52 22 52 20 53 27 53 26 53 18 54 25 54 24 54 15 55 16 55 23 55 25 56 26 56 33 56 24 57 31 57 30 57 22 58 29 58 28 58 26 59 27 59 34 59 25 60 32 60 31 60 23 61 30 61 29 61 33 62 40 62 39 62 31 63 38 63 37 63 29 64 36 64 35 64 34 65 41 65 40 65 31 66 32 66 39 66 29 67 30 67 37 67 37 68 38 68 45 68 37 69 44 69 43 69 36 70 43 70 42 70 44 71 45 71 49 71 44 72 48 72 51 72 47 73 51 73 48 73 50 74 42 74 43 74 50 75 51 75 47 75</p>
         </triangles>
       </mesh>
     </geometry>
@@ -2055,14 +2023,6 @@
         <scale sid="scale">1.172876 1.172876 1.172876</scale>
         <instance_geometry url="#Plane_001-mesh" name="Chain"/>
       </node>
-      <node id="ZBody" name="ZBody" type="NODE">
-        <translate sid="location">0 1.019494 9.345233</translate>
-        <rotate sid="rotationZ">0 0 1 0</rotate>
-        <rotate sid="rotationY">0 1 0 0</rotate>
-        <rotate sid="rotationX">1 0 0 0</rotate>
-        <scale sid="scale">1 1 1</scale>
-        <instance_geometry url="#Cylinder_001-mesh" name="ZBody"/>
-      </node>
       <node id="Armature" name="Armature" type="NODE">
         <translate sid="location">0 0 9.84751</translate>
         <rotate sid="rotationZ">0 0 1 0</rotate>
@@ -2154,62 +2114,15 @@
             </technique>
           </extra>
         </node>
-        <node id="Armature_HandBend_L" name="HandBend.L" sid="HandBend_L" type="JOINT">
-          <matrix sid="transform">0.9995713 0.0292713 -5.16665e-4 6.56017 -0.02927586 0.9994157 -0.01763802 1.646643 7.55244e-8 0.01764559 0.9998443 1.881547 0 0 0 1</matrix>
+        <node id="Armature_Foot_L" name="Foot.L" sid="Foot_L" type="JOINT">
+          <matrix sid="transform">-0.9995661 0.02134584 -0.02028724 -1.19209e-7 -0.01399203 -0.9504337 -0.3106162 -2.38419e-7 -0.02591277 -0.3101953 0.950323 9.53674e-7 0 0 0 1</matrix>
           <extra>
             <technique profile="blender">
               <layer sid="layer" type="string">0</layer>
-              <roll sid="roll" type="float">-2.58446e-4</roll>
-              <tip_x sid="tip_x" type="float">0.04685068</tip_x>
-              <tip_y sid="tip_y" type="float">1.599632</tip_y>
-              <tip_z sid="tip_z" type="float">0.02824294</tip_z>
-            </technique>
-          </extra>
-        </node>
-        <node id="Armature_FootBend_L" name="FootBend.L" sid="FootBend_L" type="JOINT">
-          <matrix sid="transform">0.9995713 0.02927137 -5.16667e-4 1.439166 -0.02927593 0.9994157 -0.01763809 1.117403 7.37782e-8 0.01764566 0.9998443 -8.129697 0 0 0 1</matrix>
-          <node id="Armature_Foot_L" name="Foot.L" sid="Foot_L" type="JOINT">
-            <matrix sid="transform">-0.9995661 0.02134584 -0.02028724 -1.19209e-7 -0.01399203 -0.9504337 -0.3106162 -2.38419e-7 -0.02591277 -0.3101953 0.950323 9.53674e-7 0 0 0 1</matrix>
-            <extra>
-              <technique profile="blender">
-                <layer sid="layer" type="string">0</layer>
-                <roll sid="roll" type="float">-3.074108</roll>
-                <tip_x sid="tip_x" type="float">-0.01441919</tip_x>
-                <tip_y sid="tip_y" type="float">-2.154903</tip_y>
-                <tip_z sid="tip_z" type="float">-0.7454529</tip_z>
-              </technique>
-            </extra>
-          </node>
-          <extra>
-            <technique profile="blender">
-              <layer sid="layer" type="string">0</layer>
-              <roll sid="roll" type="float">-2.58446e-4</roll>
-              <tip_x sid="tip_x" type="float">0.0468508</tip_x>
-              <tip_y sid="tip_y" type="float">1.599632</tip_y>
-              <tip_z sid="tip_z" type="float">0.02824306</tip_z>
-            </technique>
-          </extra>
-        </node>
-        <node id="Armature_LegBend_L" name="LegBend.L" sid="LegBend_L" type="JOINT">
-          <matrix sid="transform">0.9921826 0.003123234 -0.1247553 1.285312 -0.1247154 -0.0107422 -0.9921344 -2.920481 -0.004438814 0.9999374 -0.01026866 -7.605664 0 0 0 1</matrix>
-          <extra>
-            <technique profile="blender">
-              <layer sid="layer" type="string">0</layer>
-              <roll sid="roll" type="float">-0.1219248</roll>
-              <tip_x sid="tip_x" type="float">0.004997611</tip_x>
-              <tip_y sid="tip_y" type="float">-0.01718902</tip_y>
-              <tip_z sid="tip_z" type="float">1.60004</tip_z>
-            </technique>
-          </extra>
-        </node>
-        <node id="Armature_ArmBend_L" name="ArmBend.L" sid="ArmBend_L" type="JOINT">
-          <matrix sid="transform">1 0 0 3.418412 0 0 -1 -2.827438 0 1 0 -0.4509373 0 0 0 1</matrix>
-          <extra>
-            <technique profile="blender">
-              <layer sid="layer" type="string">0</layer>
-              <tip_x sid="tip_x" type="float">0</tip_x>
-              <tip_y sid="tip_y" type="float">0</tip_y>
-              <tip_z sid="tip_z" type="float">1</tip_z>
+              <roll sid="roll" type="float">-3.074108</roll>
+              <tip_x sid="tip_x" type="float">-0.01441919</tip_x>
+              <tip_y sid="tip_y" type="float">-2.154903</tip_y>
+              <tip_z sid="tip_z" type="float">-0.7454529</tip_z>
             </technique>
           </extra>
         </node>
@@ -2267,62 +2180,15 @@
             </technique>
           </extra>
         </node>
-        <node id="Armature_HandBend_R_001" name="HandBend.R.001" sid="HandBend_R_001" type="JOINT">
-          <matrix sid="transform">0.9995714 -0.0292713 -5.16674e-4 -6.56017 0.02925761 0.9994157 -0.01766835 1.646643 0.001033548 0.01764566 0.9998438 1.881547 0 0 0 1</matrix>
+        <node id="Armature_Foot_R_001" name="Foot.R.001" sid="Foot_R_001" type="JOINT">
+          <matrix sid="transform">-0.9990261 -0.02166648 -0.03843895 2.38419e-7 0.03251083 -0.9504329 -0.3092219 -1.19209e-7 -0.02983445 -0.3101728 0.9502085 0 0 0 0 1</matrix>
           <extra>
             <technique profile="blender">
               <layer sid="layer" type="string">0</layer>
-              <roll sid="roll" type="float">-7.75337e-4</roll>
-              <tip_x sid="tip_x" type="float">-0.04685068</tip_x>
-              <tip_y sid="tip_y" type="float">1.599632</tip_y>
-              <tip_z sid="tip_z" type="float">0.02824306</tip_z>
-            </technique>
-          </extra>
-        </node>
-        <node id="Armature_FootBend_R_001" name="FootBend.R.001" sid="FootBend_R_001" type="JOINT">
-          <matrix sid="transform">0.9995714 -0.02927137 -5.16673e-4 -1.439166 0.02925768 0.9994157 -0.01766835 1.117403 0.001033548 0.01764566 0.9998438 -8.129697 0 0 0 1</matrix>
-          <node id="Armature_Foot_R_001" name="Foot.R.001" sid="Foot_R_001" type="JOINT">
-            <matrix sid="transform">-0.9990261 -0.02166648 -0.03843895 2.38419e-7 0.03251083 -0.9504329 -0.3092219 -1.19209e-7 -0.02983445 -0.3101728 0.9502085 0 0 0 0 1</matrix>
-            <extra>
-              <technique profile="blender">
-                <layer sid="layer" type="string">0</layer>
-                <roll sid="roll" type="float">-3.149343</roll>
-                <tip_x sid="tip_x" type="float">0.01441919</tip_x>
-                <tip_y sid="tip_y" type="float">-2.154903</tip_y>
-                <tip_z sid="tip_z" type="float">-0.7454529</tip_z>
-              </technique>
-            </extra>
-          </node>
-          <extra>
-            <technique profile="blender">
-              <layer sid="layer" type="string">0</layer>
-              <roll sid="roll" type="float">-7.75337e-4</roll>
-              <tip_x sid="tip_x" type="float">-0.0468508</tip_x>
-              <tip_y sid="tip_y" type="float">1.599632</tip_y>
-              <tip_z sid="tip_z" type="float">0.02824306</tip_z>
-            </technique>
-          </extra>
-        </node>
-        <node id="Armature_LegBend_R_001" name="LegBend.R.001" sid="LegBend_R_001" type="JOINT">
-          <matrix sid="transform">0.9921826 -0.003123233 -0.1247554 -1.285312 -0.1247822 -0.0107422 -0.992126 -2.920481 0.001758493 0.9999374 -0.0110479 -7.605664 0 0 0 1</matrix>
-          <extra>
-            <technique profile="blender">
-              <layer sid="layer" type="string">0</layer>
-              <roll sid="roll" type="float">-0.1282389</roll>
-              <tip_x sid="tip_x" type="float">-0.004997611</tip_x>
-              <tip_y sid="tip_y" type="float">-0.01718902</tip_y>
-              <tip_z sid="tip_z" type="float">1.60004</tip_z>
-            </technique>
-          </extra>
-        </node>
-        <node id="Armature_ArmBend_R_001" name="ArmBend.R.001" sid="ArmBend_R_001" type="JOINT">
-          <matrix sid="transform">1 0 0 -3.418412 0 0 -1 -2.827438 0 1 0 -0.4509373 0 0 0 1</matrix>
-          <extra>
-            <technique profile="blender">
-              <layer sid="layer" type="string">0</layer>
-              <tip_x sid="tip_x" type="float">0</tip_x>
-              <tip_y sid="tip_y" type="float">0</tip_y>
-              <tip_z sid="tip_z" type="float">1</tip_z>
+              <roll sid="roll" type="float">-3.149343</roll>
+              <tip_x sid="tip_x" type="float">0.01441919</tip_x>
+              <tip_y sid="tip_y" type="float">-2.154903</tip_y>
+              <tip_z sid="tip_z" type="float">-0.7454529</tip_z>
             </technique>
           </extra>
         </node>
@@ -2337,16 +2203,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="Hair" name="Hair" type="NODE">
@@ -2359,16 +2219,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="LegR" name="LegR" type="NODE">
@@ -2381,16 +2235,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="Head" name="Head" type="NODE">
@@ -2403,16 +2251,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="Torso_Boobies_" name="Torso_Boobies_" type="NODE">
@@ -2425,16 +2267,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="LegL" name="LegL" type="NODE">
@@ -2447,16 +2283,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="Tail" name="Tail" type="NODE">
@@ -2469,16 +2299,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="Tail_001" name="Tail_001" type="NODE">
@@ -2491,16 +2315,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="Tail_002" name="Tail_002" type="NODE">
@@ -2513,16 +2331,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="Cube" name="Cube" type="NODE">
@@ -2535,16 +2347,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="Cube_001" name="Cube_001" type="NODE">
@@ -2557,16 +2363,10 @@
           <skeleton>#Armature_Stomach</skeleton>
           <skeleton>#Armature_Arm1_L</skeleton>
           <skeleton>#Armature_Thigh_L</skeleton>
-          <skeleton>#Armature_HandBend_L</skeleton>
-          <skeleton>#Armature_FootBend_L</skeleton>
-          <skeleton>#Armature_LegBend_L</skeleton>
-          <skeleton>#Armature_ArmBend_L</skeleton>
+          <skeleton>#Armature_Foot_L</skeleton>
           <skeleton>#Armature_Arm1_R_001</skeleton>
           <skeleton>#Armature_Thigh_R_001</skeleton>
-          <skeleton>#Armature_HandBend_R_001</skeleton>
-          <skeleton>#Armature_FootBend_R_001</skeleton>
-          <skeleton>#Armature_LegBend_R_001</skeleton>
-          <skeleton>#Armature_ArmBend_R_001</skeleton>
+          <skeleton>#Armature_Foot_R_001</skeleton>
         </instance_controller>
       </node>
       <node id="Token" name="Token" type="NODE">
