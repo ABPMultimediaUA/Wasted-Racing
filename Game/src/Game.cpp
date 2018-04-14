@@ -121,6 +121,7 @@ void Game::Run() {
     //Start the run
     //execute game while staying
     while(stay){
+        
         //Measure elapsed time
         auto currTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed = currTime - lastTime;
@@ -143,6 +144,7 @@ void Game::Run() {
 
         //Always draw the game
         state->draw();
+        
     }
 
     close();

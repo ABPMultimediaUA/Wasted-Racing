@@ -22,29 +22,30 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 }
 
 void RedPandaStudio::updateDevice() {
-
+	std::cout << "1" << std::endl;
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
+	std::cout << "1.1" << std::endl;
 	renderCamera();
+	std::cout << "2" << std::endl;
 	renderLights();
-
+	std::cout << "3" << std::endl;
 	//Change shader program for drawing skybox
 	glUseProgram(skyboxID);
 	glBindVertexArray(skyVertexArray);
 	skybox->draw();
 	glUseProgram(scene->getEntity()->getProgramID());
 	glEnable(GL_DEPTH_TEST);
-
+	std::cout << "1" << std::endl;
 	renderCamera();
 	renderLights();
-
+	std::cout << "2" << std::endl;
 	scene->draw();
-
+	std::cout << "3" << std::endl;
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
-
+	std::cout << "4" << std::endl;
 	SDL_GL_SwapWindow(window);
-
+	std::cout << "5" << std::endl;
 	//Chrono to update the fps value
 	std::chrono::time_point<std::chrono::high_resolution_clock> currTime = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed = currTime - lastTime;
@@ -56,6 +57,7 @@ void RedPandaStudio::updateDevice() {
 	{
 		std::cout << "FPS: " << fps << std::endl;
 	}
+	std::cout << "6" << std::endl;
 }
 
 void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
@@ -127,10 +129,10 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/shaders/test.vert";
-    const char * fragment_file_path = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/shaders/test.frag";
-	const char * skybox_vertex_path = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/shaders/skybox.vert";
-	const char * skybox_fragment_path = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/shaders/skybox.frag";
+    const char * vertex_file_path = "shaders/test.vert";
+    const char * fragment_file_path = "shaders/test.frag";
+	const char * skybox_vertex_path = "shaders/skybox.vert";
+	const char * skybox_fragment_path = "shaders/skybox.frag";
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
@@ -147,12 +149,12 @@ void RedPandaStudio::initOpenGL() {
 	
 	//Init skybox
 	skybox = new TResourceSkybox();
-	char* r0 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_ft.tga";
-	char* r1 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_bk.tga";
-	char* r2 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_up.tga";
-	char* r3 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_dn.tga";
-	char* r4 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_rt.tga";
-	char* r5 = "C:/MinGW/msys/1.0/home/Luis/Wasted-Racing/RedPandaStudio/media/img/darkskies_lf.tga";
+	char* r0 = "media/img/darkskies_ft.tga";
+	char* r1 = "media/img/darkskies_bk.tga";
+	char* r2 = "media/img/darkskies_up.tga";
+	char* r3 = "media/img/darkskies_dn.tga";
+	char* r4 = "media/img/darkskies_rt.tga";
+	char* r5 = "media/img/darkskies_lf.tga";
 	
 	skybox->loadResource(r0, 0);
 	skybox->loadResource(r1, 1);

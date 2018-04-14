@@ -54,7 +54,6 @@ void addHUD(EventData eData);
 void RenderRedPanda::openWindow() { 
 
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
-
     InputRedPanda* receiver = new InputRedPanda();
 
     uintptr_t aux = reinterpret_cast<uintptr_t>(device->getWindow());
@@ -99,7 +98,7 @@ void RenderRedPanda::closeWindow() {
 //==============================================================
 //Renders all the scene
 void RenderRedPanda::renderDraw() {
-
+    
     device->updateDevice();
 
 }

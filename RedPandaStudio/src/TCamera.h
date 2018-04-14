@@ -24,7 +24,7 @@ class TCamera : public TEntity {
 
     private:
         // Definition of the camera
-        float left, right, top, bottom, near, far;
+        float left, right, top, bottom, nnear, ffar;
         //Parallel or perspective; False == persective, true == parallel
         bool parallel;
         GLfloat zoom;

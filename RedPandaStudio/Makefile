@@ -132,6 +132,8 @@ makesh:
 port: remdirP makedirP copyfilesP compileP
 	$(warning Done!)
 
+portwin: remdirP makedirP copyfilesP compilePwin
+
 remdirP:
 	rm -rf ../Game/include/redpanda
 
@@ -146,6 +148,8 @@ copyfilesP:
 compileP: all 
 	cp ./bin/libRedPanda.so ../Game/lib/linux
 
+compilePwin: win
+	cp ./bin/libRedPanda.dll ../Game/lib/win
 
 
 

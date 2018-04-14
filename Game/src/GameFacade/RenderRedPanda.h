@@ -178,7 +178,7 @@ private:
     virtual void updateItemIcon();
 
     //RenderRedPanda own device
-    rps::RedPandaStudio* device;
+    rps::RedPandaStudio* device = nullptr;
 
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
