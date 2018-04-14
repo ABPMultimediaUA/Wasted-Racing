@@ -74,11 +74,11 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
     //Search for its place on the list of waypoints
     for(unsigned int i=0;i<listSubNodes->size();i++){
-        auto rad1 = listSubNodes->at(i).get()->getComponent<WaypointComponent>()->getLevel();
+        auto radius1 = listSubNodes->at(i).get()->getComponent<WaypointComponent>()->getLevel();
         for(unsigned int x=i+1;x<listSubNodes->size()-1;x++){
             //bubble sort
-            auto rad2 = listSubNodes->at(x).get()->getComponent<WaypointComponent>()->getLevel();
-            if(rad1>rad2){
+            auto radius2 = listSubNodes->at(x).get()->getComponent<WaypointComponent>()->getLevel();
+            if(radius1>radius2){
                 auto aux=listSubNodes->at(i);
                 listSubNodes->at(i)=listSubNodes->at(x);
                 listSubNodes->at(x)=aux;

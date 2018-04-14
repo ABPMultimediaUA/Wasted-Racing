@@ -22,29 +22,30 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 }
 
 void RedPandaStudio::updateDevice() {
-
+	std::cout << "1" << std::endl;
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
+	std::cout << "1.1" << std::endl;
 	renderCamera();
+	std::cout << "2" << std::endl;
 	renderLights();
-
+	std::cout << "3" << std::endl;
 	//Change shader program for drawing skybox
 	glUseProgram(skyboxID);
 	glBindVertexArray(skyVertexArray);
 	skybox->draw();
 	glUseProgram(scene->getEntity()->getProgramID());
 	glEnable(GL_DEPTH_TEST);
-
+	std::cout << "1" << std::endl;
 	renderCamera();
 	renderLights();
-
+	std::cout << "2" << std::endl;
 	scene->draw();
-
+	std::cout << "3" << std::endl;
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
-
+	std::cout << "4" << std::endl;
 	SDL_GL_SwapWindow(window);
-
+	std::cout << "5" << std::endl;
 	//Chrono to update the fps value
 	std::chrono::time_point<std::chrono::high_resolution_clock> currTime = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed = currTime - lastTime;
@@ -56,6 +57,7 @@ void RedPandaStudio::updateDevice() {
 	{
 		std::cout << "FPS: " << fps << std::endl;
 	}
+	std::cout << "6" << std::endl;
 }
 
 void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
