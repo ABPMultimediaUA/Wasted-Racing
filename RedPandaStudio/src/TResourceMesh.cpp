@@ -1,6 +1,8 @@
 #include "TResourceMesh.h"
 #include <iostream>
 
+unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3);
+
 bool TResourceMesh::loadMesh(aiMesh* m)
 {
     int nFaces = m->mNumFaces;
@@ -17,13 +19,17 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     }
 
     //We assume we are always working with triangles
-    vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 3);
+    vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 6);
     unsigned int faceIndex = 0;
 
-    for(int j = 0; j<nFaces; j++)
+    for(int j = 0; j<nFaces; j++, faceIndex += 6)
     {
-        memcpy(&vertexIndices[faceIndex], m->mFaces[j].mIndices, 3 * sizeof(unsigned int));
-        faceIndex += 3;
+        vertexIndices[0+faceIndex] = m->mFaces[j].mIndices[0];
+        vertexIndices[2+faceIndex] = m->mFaces[j].mIndices[1];
+        vertexIndices[4+faceIndex] = m->mFaces[j].mIndices[2];
+        vertexIndices[1+faceIndex] = getAdjacentIndex(m, vertexIndices[0+faceIndex], vertexIndices[2+faceIndex], vertexIndices[4+faceIndex]);
+        vertexIndices[3+faceIndex] = getAdjacentIndex(m, vertexIndices[2+faceIndex], vertexIndices[4+faceIndex], vertexIndices[0+faceIndex]);
+        vertexIndices[5+faceIndex] = getAdjacentIndex(m, vertexIndices[4+faceIndex], vertexIndices[0+faceIndex], vertexIndices[2+faceIndex]);
     }
 
     if(m->HasTextureCoords(0))
@@ -135,10 +141,10 @@ void TResourceMesh::draw()
 
     //Bind and pass to OpenGL the fourth array (vertex indices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*6*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 
     //We order to draw here
-    glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES_ADJACENCY, nTriangles*6, GL_UNSIGNED_INT, 0);
 /*
     if(texture!=NULL && textActive)
     {
@@ -146,4 +152,24 @@ void TResourceMesh::draw()
     }
 */
 
+}
+
+//This functions looks for a specific adjacent vertex for the vertex indices. Due to the computational cost, this should be improved
+//using the half-edge structure, to avoid a massive number of searchs through the mesh
+unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3)
+{
+    for(unsigned int i=0; i < m->mNumFaces; i++)
+    {
+        for(int edge = 0; edge < 3; edge++)
+        {
+            unsigned int v1 = m->mFaces[i].mIndices[edge];
+            unsigned int v2 = m->mFaces[i].mIndices[(edge+1)%3];
+            unsigned int v3 = m->mFaces[i].mIndices[(edge+2)%3];
+
+            if(((v1 == index1 && v2 == index2) || (v1 == index2 && v2 == index1)) && (v3 != index3))
+            {
+                return v3;
+            }
+        }
+    }
 }
