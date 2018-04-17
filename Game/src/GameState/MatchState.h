@@ -50,6 +50,9 @@ public:
     void setRatio(float r)          {       ratio = r;      }
     float getRatio()                {       return ratio;   }
 
+    //Scheduling swapper
+    void swapScheduling()           {       schedulingOn = !schedulingOn;      }
+
 private:
     
     //==============================================================
@@ -83,5 +86,8 @@ private:
 
     //Game velocity
     float ratio = 1.0;
+
+    //boolean
+    bool schedulingOn;
 
 };

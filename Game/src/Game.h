@@ -13,6 +13,7 @@
 
 //Basic include
 #include "GlobalVariables.h"
+#include "GameFacade/Clock.h"
 
 //Managers
 #include "GameManager/InputManager.h"
@@ -54,7 +55,10 @@ public:
     Game() {}
 
     //Destructor
-    ~Game() {}
+    ~Game() {
+        //Delete all new thingies
+        delete clock;
+    }
 
     //Infinite game client loop
     void Run();
@@ -152,4 +156,6 @@ private:
     //Game velocity
     float ratio = 1.0f;
 
+    //Time clock
+    Clock* clock;
 };

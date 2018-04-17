@@ -106,6 +106,7 @@ void Game::close() {
     networkManager->close();
     debugManager->close();
 }
+
 //====================================================
 //  GAME LOOP
 //====================================================
@@ -115,18 +116,15 @@ void Game::Run() {
     init();
     
     //Initialize timer
-    auto lastTime = std::chrono::high_resolution_clock::now();
-    accumulatedTime = 0;
+    clock = new Clock();
+    clock->init();
 
     //Start the run
     //execute game while staying
     while(stay){
         //Measure elapsed time
-        auto currTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> elapsed = currTime - lastTime;
-        lastTime = currTime;
-        accumulatedTime += (float)elapsed.count();
-
+        accumulatedTime += (float)clock->getElapsedTime();
+        clock->restart();
 
         if(dynamic_cast<MatchState*>(state) != nullptr) 
         {

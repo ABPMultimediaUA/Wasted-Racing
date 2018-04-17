@@ -1,9 +1,19 @@
 #include "MatchState.h"
 #include "../Game.h"
 
-//additional functions
+//==============================================
+// Delegate functions
+//==============================================
+void swapScheduling();
+
+//==============================================
+// Additional functions
+//==============================================
 void addAI();
 
+//==============================================
+// MAN FUNCTIONS
+//==============================================
 void MatchState::init() {
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
@@ -18,10 +28,17 @@ void MatchState::init() {
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
 
+    //Initial arrangements
     Game::getInstance().setAccumulatedTime(0);
     
+    //Turn scheduling off initially
+    schedulingOn = false;
+
     //Add AI's to the game
     addAI();
+
+    //Key Bindings
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Scheduling_Down, swapScheduling});
 }
 
 void MatchState::update(float &accumulatedTime) {
@@ -29,12 +46,19 @@ void MatchState::update(float &accumulatedTime) {
     accumulatedTime /= ratio;
     //Out of loop
     renderManager->update(accumulatedTime);
+
     //If time surpassed the loopTime
     if(accumulatedTime >= loopTime){
         //Update managers
         updateManagers(accumulatedTime);
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
+    }
+
+    //AI Scheduling
+    if(schedulingOn)
+    {
+        aiManager->updateScheduling(dTime);
     }
 
     //Always interpolate
@@ -49,7 +73,9 @@ void MatchState::updateManagers(float dTime){
     {
         physicsManager->update(dTime);
 
-        aiManager->update(dTime);
+        //:::>PROVISIONAL
+        if(!schedulingOn)
+            aiManager->update(dTime);
 
         waypointManager->update(dTime);
 
@@ -152,4 +178,12 @@ void addAI(){
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));*/
+}
+
+
+//==============================================
+// DELEGATE FUNCTIONS
+//==============================================
+void swapScheduling(){
+    MatchState::getInstance().swapScheduling();
 }

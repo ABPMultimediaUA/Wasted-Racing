@@ -80,13 +80,8 @@ void RenderRedPanda::openWindow() {
     //set the GUI Context
     receiver->setGUIContext(GUI);
 
-<<<<<<< HEAD
-    //set the function that'll draw the GUI
-    //device->setGUIDrawFunction(drawRPS_GUI);
-=======
     addCamera();
 
->>>>>>> master
 
     //Initialize the GUI
     //gui::init();

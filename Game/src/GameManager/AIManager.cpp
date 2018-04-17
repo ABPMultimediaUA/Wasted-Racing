@@ -17,6 +17,12 @@ void objectDeleteAIBattle(EventData data);
 //==============================================
 // AI MANAGER FUNCTIONS
 //==============================================
+AIManager::AIManager()
+{
+    //Initialize time clock
+    clock = new Clock();
+    clock->init();
+}
 
 AIManager& AIManager::getInstance() {
     static AIManager instance;
@@ -100,6 +106,76 @@ void AIManager::update(float dTime) {
         //Set flag to true
         updateBattleBehaviour = true;
     }
+}
+
+void AIManager::updateScheduling(float dTime) {
+    
+    //Time checkers
+    double averageTimeBattle = 0.0;
+    double averageTimeDriving = 0.0;
+    double averageTimeLOD = 0.0;
+
+    //Battle AI
+    for(unsigned int i=0; i<battleAI.size(); i++)
+    {
+        clock->restart(); //TIME TEST
+
+        auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
+        aiBattleComponent->update(dTime);
+
+        averageTimeBattle += clock->getElapsedTime()/battleAI.size();//TIME TEST
+    }
+    
+    //get position of player to determine the distance to him (LOD)
+    auto player = GlobalVariables::getInstance().getPlayer();
+    auto posPlayer = player->getTransformData().position;
+
+    //Update every AI
+    for(unsigned int i=0; i<objectsAI.size(); ++i){
+
+        auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI[i]).get();
+        auto AIObject = aiDrivingComponent->getGameObject();
+        auto posAI = AIObject.getTransformData().position; 
+
+
+        auto distPlayerAI = (posPlayer.x - posAI.x) * (posPlayer.x - posAI.x) +
+                            (posPlayer.y - posAI.y) * (posPlayer.y - posAI.y) +
+                            (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
+
+                        
+        //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
+        if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
+        {
+            //:::>Explain what
+            if(AIObject.getComponent<CollisionComponent>()->getKinetic() == false)
+            {
+                AIObject.getComponent<CollisionComponent>()->setKinetic(true);
+            }
+
+            //Update if the object is not an red shell or blue shell
+            if(AIObject.getComponent<IItemComponent>() == nullptr)
+            {
+                //TIME TEST
+                updateDriving(aiDrivingComponent);
+                
+                averageTimeBattle += clock->getElapsedTime()/battleAI.size();//TIME TEST//TIME TEST
+            }
+        }
+        else
+        {
+            clock->restart()//TIME TEST
+            calculateLoD(AIObject, dTime);
+            
+            averageTimeLOD += clock->getElapsedTime()/battleAI.size();//TIME TEST//TIME TEST
+        }
+    }
+
+    //WE SHOW THE DIFFERENCES
+    System("clear");
+    std::cout<<"Average Time for battle: "<<averageTimeBattle<<std::endl;
+    std::cout<<"Average Time for DRIVING: "<<averageTimeDriving<<std::endl;
+    std::cout<<"Average Time for LOD: "<<averageTimeLOD<<std::endl;
+
 }
 
 void AIManager::close() {

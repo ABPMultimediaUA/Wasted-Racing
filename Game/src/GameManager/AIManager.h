@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "../GlobalVariables.h"
+#include "../GameFacade/Clock.h"
 #include "../GameObject/IComponent.h"
 #include "../GameObject/GameObject.h"
 #include "../GameEvent/EventManager.h"
@@ -26,16 +27,21 @@ class AIManager{
 public: 
 
     //Constructor
-    AIManager() {}
+    AIManager();
 
     //Destructor
-    ~AIManager() {}
+    ~AIManager() {
+        delete clock;
+    }
 
     //Initialization
     void init();
 
     //Update
     void update(const float dTime);
+
+    //Update
+    void updateScheduling(const float dTime);
 
     //Shutdown
     void close();
@@ -72,6 +78,9 @@ private:
     //bool changeAI;
     bool updateBattleBehaviour;
     //<___
+
+    //Clock
+    Clock* clock;
 
     float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 };
