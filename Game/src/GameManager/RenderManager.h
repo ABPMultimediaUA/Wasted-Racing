@@ -5,8 +5,10 @@
 #include "../GameFacade/RenderIrrlicht.h"
 #include "../GameFacade/RenderRedPanda.h"
 #include "WaypointManager.h"
+#include "../GameEvent/EventManager.h"
 #include "AIManager.h"
 #include "ObjectManager.h"
+#include "../GlobalVariables.h"
 
 class ObjectManager;
 
@@ -65,6 +67,13 @@ public:
     //Camera component getter and setter
     IComponent::Pointer getCameraComponent() { return cameraComponent; }
     void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
+
+
+    /////////////
+    //  LoD
+    /////////////
+    void LoDmesh();
+
 
     //==============================================
     // VISUAL INTERFACE
@@ -183,6 +192,9 @@ private:
 
     //Debug state checker
     bool debugState;
+
+    //LoD state
+    bool lodState;
 
     //When we start adding components, we add them in a list,
     //Once we've added them all, we split them in a QuadTree structure

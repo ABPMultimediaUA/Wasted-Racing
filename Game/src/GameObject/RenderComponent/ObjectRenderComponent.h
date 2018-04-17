@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include "IRenderComponent.h"
 
 class ObjectRenderComponent : public IRenderComponent {
@@ -11,6 +12,7 @@ public:
 		Cube,
 		Sphere,
 		Mesh,
+		Circuit,
 		Cone,
 		Plane,
 		Arrow,
@@ -25,7 +27,7 @@ public:
 
 		if(newShape == Shape::Mesh){
 
-			std::string folder = "";
+			folder = "";
 			int i = 0;
 
 			while(newStr[i]!='.'){
@@ -33,9 +35,11 @@ public:
 				i++;
 			}
 
+			name = std::string(newStr);
 			mesh = "media/mesh/" + folder + "/" + std::string(newStr);
 		}
 		else{
+			name = std::string(newStr);
 			img = "media/img/" + std::string(newStr);
 		}
 
@@ -70,10 +74,24 @@ public:
 		return img;
 	}
 
+	std::string getFolder() {
+		return folder;
+	}
+
+	std::string getName() {
+		return name;
+	}
+
+	void setMesh(const char* m)	{
+		mesh = std::string(m);
+	}
+
 private:
 
 	Shape objectShape;
 	std::string mesh;
 	std::string img;
+	std::string name;
+	std::string folder;
 
 };

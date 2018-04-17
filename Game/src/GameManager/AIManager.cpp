@@ -22,7 +22,6 @@ AIManager& AIManager::getInstance() {
 
 void AIManager::init() {
     changeAI = false;
-    distanceLoD = 0;
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
     //No delete by the moment
@@ -65,6 +64,7 @@ GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(25001);
 
                             
             //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
+            float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
             if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
             {
                 if(AIObject.getComponent<CollisionComponent>()->getKinetic() == false)

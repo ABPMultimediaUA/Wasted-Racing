@@ -18,6 +18,7 @@
 #include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/AIComponent/MSensorComponent.h"
 #include "../GameObject/AIComponent/AIBattleComponent.h"
+#include "../GlobalVariables.h"
 
 class AIManager{
 
@@ -65,6 +66,4 @@ private:
     std::vector<IComponent::Pointer> objectsAI;
     std::vector<IComponent::Pointer> battleAI;
     bool changeAI;
-
-    float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 };

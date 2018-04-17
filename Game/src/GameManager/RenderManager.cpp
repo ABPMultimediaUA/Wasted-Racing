@@ -51,6 +51,9 @@ void RenderManager::init(int engine) {
     //Data init
     debugState = false;
 
+    //LoD init
+    lodState = false;
+
     //QuadTree data init
     //maxObjPerNode = 2;
     //updateRange = 2;
@@ -80,11 +83,18 @@ void RenderManager::init(int engine) {
     RenderManager::getInstance().createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
 
     RenderManager::getInstance().getRenderFacade()->setClipping(false);
+
+    //Init distance Level of Detail 
+    GlobalVariables::getInstance().setDistanceLoD(100);
+
 }
 
 void RenderManager::update(float dTime) {
     //Update HUD
     updateHUD();
+
+    //Check LoD mesh
+    LoDmesh();
 
     //Update camera collision
     renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
@@ -97,7 +107,6 @@ void RenderManager::update(float dTime) {
     }else{
         renderFacade->updateItemIcon();
     }
-
 }
 
 void RenderManager::draw() {
@@ -1026,4 +1035,55 @@ void RenderManager::cleanVI()
 {
     //Invoke façade function
     renderFacade->cleanInterface();
+}
+
+
+/////////////
+//  LoD
+/////////////
+
+void RenderManager::LoDmesh()
+{
+    //EventManager::getInstance().update();
+    //if(lodState == false)
+    //{
+        for(unsigned int i = 0; i < renderComponentList.size(); i++)
+        {
+            auto component = RenderManager::getInstance().getComponentList()[i];
+            auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
+
+            if(renderObject != nullptr)
+            {
+                auto shape = renderObject->getObjectShape();
+                if(shape == ObjectRenderComponent::Shape::Mesh)
+                {
+                    //std::string mesh = renderObject->getMesh();
+                    auto name = renderObject->getName();
+                    auto folder = renderObject->getFolder();
+                    std::string mesh = "media/mesh LoD/" + folder + "/" + name;
+                    renderObject->setMesh(mesh.c_str());
+                }
+            }
+        }
+        lodState = true;
+    //}
+
+    for(unsigned int i = 0; i < renderComponentList.size(); i++)
+    {
+        auto component = RenderManager::getInstance().getComponentList()[i];
+        auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
+
+        if(renderObject != nullptr && lodState == true)
+        {
+            auto shape = renderObject->getObjectShape();
+            if(shape == ObjectRenderComponent::Shape::Mesh)
+            {
+                std::string mesh = renderObject->getMesh();
+                std::cout<<mesh<<"\n";
+            }
+        }
+    }
+
+    float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
+    if(distanceLoD){}
 }
