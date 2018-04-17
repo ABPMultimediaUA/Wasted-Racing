@@ -19,7 +19,7 @@ int main() {
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
 
-    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/anim/WitchFINAL_000");
+    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link");
     //TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/cuboprueba.obj");
     TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
     TNode* camera = rps->createCamera(t3->getFather(), glm::vec3(0,3,10));
