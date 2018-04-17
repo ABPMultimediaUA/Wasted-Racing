@@ -27,6 +27,7 @@ void ItemBoxComponent::update(float dTime){
     data.Id = getGameObject().getId();
     data.Vector = trans.rotation;
     EventManager::getInstance().addEvent(Event {EventType::Update_Transform_Rotation, data});
+    //<___
 
 
     if(getGameObject().getTransformData().scale.x == 0){
@@ -45,13 +46,16 @@ void ItemBoxComponent::update(float dTime){
         trans.scale.z = 0.65;
 
         getGameObject().setTransformData(trans);
-        //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
         //Update render
+        //___>
         EventData data;
         data.Id = getGameObject().getId();
         data.Vector = trans.scale;
         EventManager::getInstance().addEvent(Event {EventType::Update_Transform_Scale, data});
+
+        //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
+        //<___
     }
 
 }

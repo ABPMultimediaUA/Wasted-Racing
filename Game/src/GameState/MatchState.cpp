@@ -4,7 +4,7 @@
 //==============================================
 // Delegate functions
 //==============================================
-void swapScheduling();
+void swapSchedulingDelegate(EventData data);
 
 //==============================================
 // Additional functions
@@ -38,7 +38,7 @@ void MatchState::init() {
     addAI();
 
     //Key Bindings
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Scheduling_Down, swapScheduling});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Scheduling_Down, swapSchedulingDelegate});
 }
 
 void MatchState::update(float &accumulatedTime) {
@@ -57,9 +57,7 @@ void MatchState::update(float &accumulatedTime) {
 
     //AI Scheduling
     if(schedulingOn)
-    {
-        aiManager->updateScheduling(dTime);
-    }
+        aiManager->updateScheduling(accumulatedTime);
 
     //Always interpolate
     interpolate(accumulatedTime);
@@ -184,6 +182,6 @@ void addAI(){
 //==============================================
 // DELEGATE FUNCTIONS
 //==============================================
-void swapScheduling(){
+void swapSchedulingDelegate(EventData data){
     MatchState::getInstance().swapScheduling();
 }

@@ -280,6 +280,7 @@ void updateTransformPosition(EventData eData) {
 }
 
 void updateTransformRotation(EventData eData) {
+    std::cout<<"Pero que cojones:: "<<eData.Id<<std::endl;
     GameObject::TransformationData t = ObjectManager::getInstance().getObject(eData.Id).get()->getTransformData();
     t.rotation = eData.Vector;
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(eData.Id, t);

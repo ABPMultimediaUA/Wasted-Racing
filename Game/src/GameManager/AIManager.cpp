@@ -155,26 +155,26 @@ void AIManager::updateScheduling(float dTime) {
             //Update if the object is not an red shell or blue shell
             if(AIObject.getComponent<IItemComponent>() == nullptr)
             {
-                //TIME TEST
+                clock->restart();//TIME TEST
                 updateDriving(aiDrivingComponent);
                 
-                averageTimeBattle += clock->getElapsedTime()/battleAI.size();//TIME TEST//TIME TEST
+                averageTimeDriving += clock->getElapsedTime()/objectsAI.size();//TIME TEST//TIME TEST
             }
         }
         else
         {
-            clock->restart()//TIME TEST
+            clock->restart();//TIME TEST
             calculateLoD(AIObject, dTime);
             
-            averageTimeLOD += clock->getElapsedTime()/battleAI.size();//TIME TEST//TIME TEST
+            averageTimeLOD += clock->getElapsedTime()/objectsAI.size();//TIME TEST//TIME TEST
         }
     }
 
     //WE SHOW THE DIFFERENCES
-    System("clear");
-    std::cout<<"Average Time for battle: "<<averageTimeBattle<<std::endl;
-    std::cout<<"Average Time for DRIVING: "<<averageTimeDriving<<std::endl;
-    std::cout<<"Average Time for LOD: "<<averageTimeLOD<<std::endl;
+    system("clear");
+    std::cout<<"Average Time for battle: "<<averageTimeBattle<<" with "<<battleAI.size()<<std::endl;
+    std::cout<<"Average Time for DRIVING: "<<averageTimeDriving<<" with "<<objectsAI.size()<<std::endl;
+    std::cout<<"Average Time for LOD: "<<averageTimeLOD<<" with "<<objectsAI.size()<<std::endl;
 
 }
 
