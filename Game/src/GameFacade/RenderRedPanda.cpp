@@ -36,6 +36,7 @@ namespace gui {
     struct nk_image number_2;
     struct nk_image number_3;
     struct nk_image number_4;
+    struct nk_image minimap;
 
     void init();
     struct nk_image loadTexture(const char* path);
@@ -368,6 +369,34 @@ void drawRPS_GUI_HUD(){
             
             nk_popup_end(GUI);
 	    }
+
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.843, h*0.4, 180, 290))) {
+
+            nk_layout_row_static(GUI, 283, 171, 1);
+
+            nk_image(GUI, gui::minimap);
+            
+            nk_popup_end(GUI);
+	    }
+
+        for(int i = 3; i >= 0; i--) {
+
+            glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(1170 - pos1.z * 0.12, 360 - pos1.x * 0.12, 180, 290))) {
+
+                nk_layout_row_static(GUI, 25, 30, 1);
+
+                if(i == 0)
+                    nk_image(GUI, gui::number_1);
+                else 
+                    nk_image(GUI, gui::number_4);
+
+                nk_popup_end(GUI);
+	        }
+        }
+        
+
     }
 
 
@@ -394,6 +423,7 @@ void gui::init() {
     gui::number_2       = gui::loadTexture("media/img/2.png");
     gui::number_3       = gui::loadTexture("media/img/3.png");
     gui::number_4       = gui::loadTexture("media/img/4.png");
+    gui::minimap        = gui::loadTexture("media/img/map.png");
 
 }
 
