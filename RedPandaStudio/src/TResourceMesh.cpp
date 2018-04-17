@@ -53,7 +53,7 @@ bool TResourceMesh::loadMesh(aiMesh* m)
 bool TResourceMesh::loadResource()
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
 
     nTriangles = 0;
 
@@ -172,4 +172,5 @@ unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsign
             }
         }
     }
+    return -1;
 }

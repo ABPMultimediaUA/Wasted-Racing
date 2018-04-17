@@ -151,3 +151,33 @@ TResourceOBJ* ResourceManager::getResourceOBJ(const char* n)
     
     return res;
 }
+
+TResourceAnimation* ResourceManager::getResourceAnimation(const char* n)
+{
+    unsigned int i;
+    TResourceAnimation* res=NULL;
+    bool found = false;
+
+    //First we look in memory loaded resources
+    for(i=0; i<animations.size() && found == false; i++)
+    {
+        if(strcmp(n, animations[i]->getName()) == 0)
+        {
+            found = true;
+            res=animations[i];
+        }
+    }
+    //If it's not loaded, we create a new resource and try to load it
+    if(found == false)
+    {
+        res = new TResourceAnimation();
+
+        res->setName(n);
+        if(res->loadResource())
+        {
+            animations.push_back(res);
+        }
+    }
+    
+    return res;
+}

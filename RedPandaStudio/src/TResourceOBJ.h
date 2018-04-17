@@ -14,6 +14,12 @@ class TResourceOBJ : public TResource {
         TResourceOBJ() {};
         ~TResourceOBJ() {};
 
+        //Only loads the meshes in the OBJ provided
+        bool loadOnlyMeshes();
+
+        //Sets the provided texture in the mesh placed in position i, if possible
+        void setTexture(int i, TResourceTexture* t);
+
         //Load the resource specified in the route provided
         bool loadResource();
 
@@ -24,4 +30,6 @@ class TResourceOBJ : public TResource {
     private:
         std::vector<TResourceMesh*> meshes;
 
+        //Auxiliar function to split strings
+        std::vector<std::string> split(const std::string& s, const char& c);
 };

@@ -267,7 +267,7 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 
 		//Create new mesh entity
 		TMesh* m = new TMesh();
-		m->setMesh(resourceManager->getResourceOBJ(mesh));
+		m->setMesh(resourceManager->getResourceAnimation(mesh));
 		TNode* mesh = new TNode(transformT, m);
 		transformT->addChild(mesh);
 

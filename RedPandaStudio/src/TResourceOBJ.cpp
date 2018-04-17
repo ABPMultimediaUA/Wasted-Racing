@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 
-std::vector<std::string> split(const std::string& s, const char& c) {
+std::vector<std::string> TResourceOBJ::split(const std::string& s, const char& c) {
 	std::string buff{""};
 	std::vector<std::string> v;
 	
@@ -16,11 +16,40 @@ std::vector<std::string> split(const std::string& s, const char& c) {
 	return v;
 }
 
+bool TResourceOBJ::loadOnlyMeshes()
+{
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
+
+    if(scene)
+    {
+        for(unsigned int i = 0; i < scene->mNumMeshes; i++)
+        {
+            TResourceMesh* mesh = new TResourceMesh();
+            aiMesh* m = scene->mMeshes[i];
+            mesh->loadMesh(m);
+            meshes.push_back(mesh);
+        }
+        return true;
+    }
+    return false;
+}
+
+void TResourceOBJ::setTexture(int i, TResourceTexture* t)
+{
+    if(i>=0 && i<meshes.size())
+    {
+        meshes[i]->setTextActive(true);
+        meshes[i]->setTexture(t);
+    }
+}
+
+
 bool TResourceOBJ::loadResource()
 {
     Assimp::Importer importer;
     //First we attempt to load the obj
-    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
 
 
     //If loaded succesfully, we proceed to get all his data
