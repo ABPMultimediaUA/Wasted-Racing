@@ -26,6 +26,21 @@ class AIManager{
 
 public: 
 
+    enum AIEventType {
+        UPDATE_BATTLE,
+        UPDATE_DRIVING_TURN,
+        UPDATE_DRIVING_ACCELERATION,
+        UPDATE_LOD
+    }
+
+    //Event to be updated by the scheduling
+    struct AIEvent{
+       IComponent::Pointer object; //Object to be updated;
+       AIEventType event;          //Event type to be updated
+       double average;             //Average time of the function for processing
+    }
+
+
     //Constructor
     AIManager();
 

@@ -115,6 +115,15 @@ void AIManager::updateScheduling(float dTime) {
     double averageTimeDriving = 0.0;
     double averageTimeLOD = 0.0;
 
+    //DEberia de coger y poner una lista de todos los elementos q participan, que los tengo. Y poner una cola de procesamiento.
+    //Esta cola será una queue de este tipo de objetos.
+    //Objeto con identificador de la función, puntero al componente a actualizar, y tiempo de ejecución promedio de esa función
+    //Se ejecutan tantas funciones hasta q se vaya a sobrepasar el indicador temporal asignado
+    //La cola prohibe problemas
+    //Solo tenemos q calcular los tiempos para X primeras ejecuciones y luego ya tenemos el promedio, y podemos trabajar con eso.
+    //Se añaden todos los procesos en principio, y cada vez q se cree uno se añade a la cola también en primera instancia
+    
+
     //Battle AI
     for(unsigned int i=0; i<battleAI.size(); i++)
     {
@@ -123,7 +132,7 @@ void AIManager::updateScheduling(float dTime) {
         auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
         aiBattleComponent->update(dTime);
 
-        averageTimeBattle += clock->getElapsedTime()/battleAI.size();//TIME TEST
+        averageTimeBattle += clock->getElapsedTime();//TIME TEST
     }
     
     //get position of player to determine the distance to him (LOD)
@@ -158,15 +167,16 @@ void AIManager::updateScheduling(float dTime) {
                 clock->restart();//TIME TEST
                 updateDriving(aiDrivingComponent);
                 
-                averageTimeDriving += clock->getElapsedTime()/objectsAI.size();//TIME TEST//TIME TEST
+                averageTimeDriving += clock->getElapsedTime();//TIME TEST//TIME TEST
             }
         }
         else
         {
             clock->restart();//TIME TEST
+
             calculateLoD(AIObject, dTime);
             
-            averageTimeLOD += clock->getElapsedTime()/objectsAI.size();//TIME TEST//TIME TEST
+            averageTimeLOD += clock->getElapsedTime();//TIME TEST//TIME TEST
         }
     }
 
