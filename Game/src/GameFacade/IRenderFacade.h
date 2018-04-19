@@ -88,6 +88,9 @@ public:
     //Dont so nothing in irrlicht, only works on rps
     virtual void setClipping(bool b) = 0;
 
+    //Change mesh
+    virtual void changeMesh() = 0;
+
     //==============================================================
     //  VISUAL INTERFACE
     //==============================================================

@@ -85,7 +85,7 @@ void RenderManager::init(int engine) {
     RenderManager::getInstance().getRenderFacade()->setClipping(false);
 
     //Init distance Level of Detail 
-    GlobalVariables::getInstance().setDistanceLoD(100);
+    GlobalVariables::getInstance().setDistanceLoD(700);
 
 }
 
@@ -1044,46 +1044,41 @@ void RenderManager::cleanVI()
 
 void RenderManager::LoDmesh()
 {
-    //EventManager::getInstance().update();
-    //if(lodState == false)
-    //{
-        for(unsigned int i = 0; i < renderComponentList.size(); i++)
-        {
-            auto component = RenderManager::getInstance().getComponentList()[i];
-            auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
+    for(unsigned int i = 0; i < renderComponentList.size(); i++)
+    {
+        auto component = RenderManager::getInstance().getComponentList()[i];
+        auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
 
-            if(renderObject != nullptr)
+        if(renderObject != nullptr)
+        {
+            auto shape = renderObject->getObjectShape();
+            if(shape == ObjectRenderComponent::Shape::Mesh)
             {
-                auto shape = renderObject->getObjectShape();
-                if(shape == ObjectRenderComponent::Shape::Mesh)
+                float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
+                auto positionObject = renderObject->getGameObject().getTransformData().position;
+                auto positionPlayer = InputManager::getInstance().getComponent()->getGameObject().getTransformData().position;
+                auto distance = (positionObject.x - positionPlayer.x) * (positionObject.x - positionPlayer.x) +
+                                (positionObject.y - positionPlayer.y) * (positionObject.y - positionPlayer.y) +
+                                (positionObject.z - positionPlayer.z) * (positionObject.z - positionPlayer.z);
+                if(distance > distanceLoD*distanceLoD /*&& lodState == false*/)
                 {
                     //std::string mesh = renderObject->getMesh();
                     auto name = renderObject->getName();
                     auto folder = renderObject->getFolder();
                     std::string mesh = "media/mesh LoD/" + folder + "/" + name;
                     renderObject->setMesh(mesh.c_str());
+                    //lodState = true;
+                    //std::cout<<renderObject->getGameObject().getId()<<"\n";
+                }  
+                else if(distance <= distanceLoD*distanceLoD /*&& lodState == true*/)
+                {
+                    auto name = renderObject->getName();
+                    auto folder = renderObject->getFolder();
+                    std::string mesh = "media/mesh/" + folder + "/" + name;
+                    renderObject->setMesh(mesh.c_str());
+                    //lodState = false;
                 }
             }
         }
-        lodState = true;
-    //}
-
-    for(unsigned int i = 0; i < renderComponentList.size(); i++)
-    {
-        auto component = RenderManager::getInstance().getComponentList()[i];
-        auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
-
-        if(renderObject != nullptr && lodState == true)
-        {
-            auto shape = renderObject->getObjectShape();
-            if(shape == ObjectRenderComponent::Shape::Mesh)
-            {
-                std::string mesh = renderObject->getMesh();
-                std::cout<<mesh<<"\n";
-            }
-        }
     }
-
-    float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
-    if(distanceLoD){}
 }

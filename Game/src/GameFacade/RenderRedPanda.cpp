@@ -183,6 +183,12 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
     }
 }
 
+//Change mesh
+void RenderRedPanda::changeMesh()
+{
+    auto iterator = nodeMap.find(25000);
+}
+
 ////////////
 //  GUI
 ////////////

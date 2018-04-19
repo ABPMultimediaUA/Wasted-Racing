@@ -71,6 +71,9 @@ public:
     //Set active or inactive clipping
     virtual void setClipping(bool b)    {};
 
+    //Change mesh
+    virtual void changeMesh();
+
     ////////////
     //  Image
     ////////////

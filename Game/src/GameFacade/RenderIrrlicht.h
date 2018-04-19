@@ -70,6 +70,9 @@ public:
     //Dont do nothing, only for the facade
     virtual void setClipping(bool b)    {};
 
+    //Change mesh
+    virtual void changeMesh()   {};
+
     //==============================================================
     //  VISUAL INTERFACE
     //==============================================================
