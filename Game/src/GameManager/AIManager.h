@@ -3,6 +3,8 @@
 #include <memory>
 #include <iostream>
 #include <vector>
+#include <queue>
+
 #include "../GlobalVariables.h"
 #include "../GameFacade/Clock.h"
 #include "../GameObject/IComponent.h"
@@ -38,6 +40,7 @@ public:
        IComponent::Pointer object; //Object to be updated;
        AIEventType event;          //Event type to be updated
        double average;             //Average time of the function for processing
+       double timeStamp;           //When it was generated
     }
 
 
@@ -85,9 +88,12 @@ public:
     void calculateLoD(GameObject AI, float dTime);
 
 private:
-    //:::> Explain what are the variables for if the name is not self explaining
-    std::vector<IComponent::Pointer> objectsAI;
-    std::vector<IComponent::Pointer> battleAI;
+    std::vector<IComponent::Pointer> objectsAI; //AIDrivingComponents to be processed
+    std::vector<IComponent::Pointer> battleAI;  //BattleBehaviour componentes to be processed
+
+    //Processing queue
+    std::queue<AIEvent> AIQueue; 
+    double maxTimeSchedule;      //Maximum time for all processes   
 
     //___>
     //bool changeAI;
