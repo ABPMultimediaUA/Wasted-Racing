@@ -85,7 +85,7 @@ void RenderManager::init(int engine) {
     RenderManager::getInstance().getRenderFacade()->setClipping(false);
 
     //Init distance Level of Detail 
-    GlobalVariables::getInstance().setDistanceLoD(700);
+    GlobalVariables::getInstance().setDistanceLoD(50);
 
 }
 
@@ -1055,28 +1055,29 @@ void RenderManager::LoDmesh()
             if(shape == ObjectRenderComponent::Shape::Mesh)
             {
                 float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
-                auto positionObject = renderObject->getGameObject().getTransformData().position;
+                auto object = renderObject->getGameObject();
+                auto positionObject = object.getTransformData().position;
                 auto positionPlayer = InputManager::getInstance().getComponent()->getGameObject().getTransformData().position;
                 auto distance = (positionObject.x - positionPlayer.x) * (positionObject.x - positionPlayer.x) +
                                 (positionObject.y - positionPlayer.y) * (positionObject.y - positionPlayer.y) +
                                 (positionObject.z - positionPlayer.z) * (positionObject.z - positionPlayer.z);
                 if(distance > distanceLoD*distanceLoD /*&& lodState == false*/)
                 {
-                    //std::string mesh = renderObject->getMesh();
+                    std::string mesh = renderObject->getMesh();
                     auto name = renderObject->getName();
                     auto folder = renderObject->getFolder();
-                    std::string mesh = "media/mesh LoD/" + folder + "/" + name;
+                    std::string newMesh = "media/mesh LoD/" + folder + "/" + name;
+                    renderFacade->changeMesh(object.getId(), newMesh);
                     renderObject->setMesh(mesh.c_str());
-                    //lodState = true;
-                    //std::cout<<renderObject->getGameObject().getId()<<"\n";
                 }  
                 else if(distance <= distanceLoD*distanceLoD /*&& lodState == true*/)
                 {
+                    std::string mesh = renderObject->getMesh();
                     auto name = renderObject->getName();
                     auto folder = renderObject->getFolder();
-                    std::string mesh = "media/mesh/" + folder + "/" + name;
+                    std::string newMesh = "media/mesh/" + folder + "/" + name;
+                    renderFacade->changeMesh(object.getId(), newMesh);
                     renderObject->setMesh(mesh.c_str());
-                    //lodState = false;
                 }
             }
         }

@@ -72,7 +72,7 @@ public:
     virtual void setClipping(bool b)    {};
 
     //Change mesh
-    virtual void changeMesh();
+    virtual void changeMesh(int id, std::string newMesh);
 
     ////////////
     //  Image

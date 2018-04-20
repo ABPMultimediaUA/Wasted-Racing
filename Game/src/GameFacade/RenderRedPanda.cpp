@@ -184,9 +184,14 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 }
 
 //Change mesh
-void RenderRedPanda::changeMesh()
+void RenderRedPanda::changeMesh(int id, std::string newMesh)
 {
-    auto iterator = nodeMap.find(25000);
+    auto node = nodeMap.find(id)->second;
+    auto resourceManager = device->getResourceManager();
+    auto resourceObj = resourceManager->getResourceOBJ(newMesh.c_str());
+    auto tEntity = node->getEntity();
+    auto tMesh = dynamic_cast<TMesh*>(tEntity);
+    tMesh->setMesh(resourceObj);
 }
 
 ////////////
