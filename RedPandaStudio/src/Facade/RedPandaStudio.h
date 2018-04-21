@@ -40,6 +40,8 @@ public:
 
     //Creates an object and returns a TMesh
     TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh); 
+    //Creates an animated mesh object and returns a pointer to the TNode that cointains the TAnimation
+    TNode* createAnimatedNode(TNode* parent, glm::vec3 pos, const char* animation, bool loop, int frames, double framerate);
     //Creates a camera and returns a TCamera
     TNode* createCamera(TNode* parent, glm::vec3 position);
     //Creates a light and returns a TLight

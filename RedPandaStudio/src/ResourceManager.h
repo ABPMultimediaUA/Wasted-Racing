@@ -26,7 +26,7 @@ class ResourceManager {
         TResourceTexture* getResourceTexture(const char* n);
         TResourceShader* getResourceShader(const char* n, GLenum e);
         TResourceOBJ* getResourceOBJ(const char* n);
-        TResourceAnimation* getResourceAnimation(const char* n);
+        TResourceAnimation* getResourceAnimation(const char* n, int frames);
 
     private:
         std::vector<TResourceMesh*> meshes;

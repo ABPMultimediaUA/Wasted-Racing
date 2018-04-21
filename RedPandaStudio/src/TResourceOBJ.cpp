@@ -45,6 +45,14 @@ void TResourceOBJ::setTexture(int i, TResourceTexture* t)
 }
 
 
+void TResourceOBJ::setMaterial(int i, TResourceMaterial* m)
+{
+    if(i >= 0 && i < meshes.size())
+    {
+        meshes[i]->setMaterial(m);
+    }
+}
+
 bool TResourceOBJ::loadResource()
 {
     Assimp::Importer importer;

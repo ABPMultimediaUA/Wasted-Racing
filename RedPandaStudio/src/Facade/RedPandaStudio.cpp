@@ -260,14 +260,15 @@ void RedPandaStudio::initScene() {
 TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char* mesh) {
 
 	//Check parent node is valid
-	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
+	{
 
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, pos);
 
 		//Create new mesh entity
 		TMesh* m = new TMesh();
-		m->setMesh(resourceManager->getResourceAnimation(mesh));
+		m->setMesh(resourceManager->getResourceOBJ(mesh));
 		TNode* mesh = new TNode(transformT, m);
 		transformT->addChild(mesh);
 
@@ -277,6 +278,29 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 	else{
 		return nullptr;
 	}
+}
+
+TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const char* animation, bool loop, int frames, double framerate)
+{
+	
+	//Check parent node is valid
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
+	{
+		//Create new transformation tree
+		TNode* transformT = addRotScaPos(parent, pos);
+
+		//Create new mesh entity
+		TAnimation* a = new TAnimation();
+		a->setAnimation(resourceManager->getResourceAnimation(animation, frames));
+		a->getAnimation()->setLoop(loop);
+		a->getAnimation()->setFramerate(framerate);
+		TNode* animation = new TNode(transformT, a);
+		transformT->addChild(animation);
+
+		//Return mesh
+		return animation;
+	}
+	return nullptr;
 }
 
 TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
@@ -494,6 +518,7 @@ void scaleNode(TNode* node, glm::vec3 scale) {
 
 	//Check the input is a mesh, camera or light
 	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr || 
 		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
 

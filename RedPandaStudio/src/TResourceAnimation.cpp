@@ -15,6 +15,36 @@ std::vector<std::string> TResourceAnimation::split(const std::string& s, const c
 	return v;
 }
 
+void TResourceAnimation::playNoLoop()
+{
+    if(!playing)
+    {
+        pointer = 0;
+        playing = true;
+    }
+}
+
+void TResourceAnimation::update(double eTime)
+{
+    if(playing)
+    {
+        elapsedTime += eTime;
+        if(elapsedTime > framerate)
+        {
+            pointer++;
+            elapsedTime = 0;
+        }
+        if(pointer == frames - 2  && loop == false)
+        {
+            playing = false;
+        }
+        if(pointer>=frames-1)
+        {
+            pointer = 0;
+        }
+    }
+}
+
 bool TResourceAnimation::loadResource()
 {
 
@@ -68,12 +98,14 @@ void TResourceAnimation::populateTextures()
         }
         for(unsigned int i = 1; i<scene->mNumMaterials; i++)
         {
-            /*
+            
             TResourceMaterial* mat = new TResourceMaterial();
             mat->loadResource(scene->mMaterials[i]);
+            for(unsigned int j = 0; j < objs.size(); j++)
+            {
+                objs[j]->setMaterial(i-1, mat);
+            }
             
-            meshes[i-1]->setMaterial(mat);
-            */
             aiString path;
             //If the material has a diffuse texture, we get his path
             if(scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
@@ -84,7 +116,7 @@ void TResourceAnimation::populateTextures()
                 std::cout << completePath << std::endl;
                 texture->setName(completePath.c_str());
                 texture->loadResource();
-                for(int j = 0; j < objs.size(); j++)
+                for(unsigned int j = 0; j < objs.size(); j++)
                 {
                     objs[j]->setTexture(i-1, texture);
                 }
@@ -97,10 +129,4 @@ void TResourceAnimation::populateTextures()
 void TResourceAnimation::draw()
 {
     objs[pointer]->draw();
-
-    pointer++;
-    if(pointer>=frames-1)
-    {
-        pointer = 0;
-    }
 }

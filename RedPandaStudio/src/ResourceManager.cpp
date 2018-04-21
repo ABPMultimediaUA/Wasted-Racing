@@ -152,7 +152,7 @@ TResourceOBJ* ResourceManager::getResourceOBJ(const char* n)
     return res;
 }
 
-TResourceAnimation* ResourceManager::getResourceAnimation(const char* n)
+TResourceAnimation* ResourceManager::getResourceAnimation(const char* n, int frames)
 {
     unsigned int i;
     TResourceAnimation* res=NULL;
@@ -171,7 +171,8 @@ TResourceAnimation* ResourceManager::getResourceAnimation(const char* n)
     if(found == false)
     {
         res = new TResourceAnimation();
-
+        
+        res->setFrames(frames);
         res->setName(n);
         if(res->loadResource())
         {

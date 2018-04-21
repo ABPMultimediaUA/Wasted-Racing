@@ -20,6 +20,9 @@ class TResourceOBJ : public TResource {
         //Sets the provided texture in the mesh placed in position i, if possible
         void setTexture(int i, TResourceTexture* t);
 
+        //Sets the provided material in the mesh placed in position i, if possible
+        void setMaterial(int i, TResourceMaterial* m);
+
         //Load the resource specified in the route provided
         bool loadResource();
 
