@@ -20,19 +20,6 @@ void AIDrivingComponent::update(float dTime) {
 void AIDrivingComponent::close() {
 }
 
-
-void AIDrivingComponent::checkList()
-{
-	auto wpManager = &WaypointManager::getInstance();
-
-    std::vector<GameObject::Pointer> listNodes = wpManager->getWaypoints(); //Check if i can to use without this
-
-	for (size_t i = 0; i < listNodes.size(); i++)
-	{
-
-	}
-}
-
 //Decides where to turn and in which grade (with a percentage of 0 to 1)
 
 //---------------------------*/

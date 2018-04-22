@@ -9,11 +9,11 @@ TCamera::TCamera(float z)
     right=2.f;
     top=1.f;
     bottom=2.f;
-    near=0.1f;
-    far=10000.f;
+    nnear=0.1f;
+    ffar=10000.f;
     zoom = z;
 
-    projectionMatrix() = glm::perspective(glm::radians(zoom), (float)16 / (float)9, near, far);
+    projectionMatrix() = glm::perspective(glm::radians(zoom), (float)16 / (float)9, nnear, ffar);
 }
 
 void TCamera::setCameraParameters(float l, float r, float t, float b, float n, float f)
@@ -22,10 +22,10 @@ void TCamera::setCameraParameters(float l, float r, float t, float b, float n, f
     right=r;
     top=t;
     bottom=b;
-    near=n;
-    far=f;
+    nnear=n;
+    ffar=f;
 
-    projectionMatrix() = glm::perspective(zoom, (float)16 / (float)9, near, far);
+    projectionMatrix() = glm::perspective(zoom, (float)16 / (float)9, nnear, ffar);
 }
 
 void TCamera::beginDraw()

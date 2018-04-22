@@ -12,7 +12,6 @@ public:
     //Constructor
     ClientLobbyState (){ 
         type = IGameState::CLIENTLOBBY;
-        fileName = "media/img/lobbyProv.png";
      };
 
     //Destructor
@@ -54,16 +53,9 @@ private:
     //Update's loop time
     const float loopTime = 1.0f/30.0f;
 
-    //JUST FOR THE TEST
-    irr::gui::IGUIImage* img;
-    std::string fileName;
-
-    //Irrlicht own window
-    irr::IrrlichtDevice* device;
-
-    //Irrlicht scene manager
-    irr::scene::ISceneManager* sceneManager;
-
-    //Irrlicht video manager
-    irr::video::IVideoDriver* videoDriver;
+    //==============================================================
+    // VISUAL INTERFACE & MENU
+    //==============================================================
+    int32_t text1;
+    
 };

@@ -19472,7 +19472,7 @@ nk_panel_end(struct nk_context *ctx)
     } else window->scrollbar_hiding_timer = 0;
 
     /* window border */
-    if (layout->flags & NK_WINDOW_BORDER)
+    /*if (layout->flags & NK_WINDOW_BORDER)
     {
         struct nk_color border_color = nk_panel_get_border_color(style, layout->type);
         const float padding_y = (layout->flags & NK_WINDOW_MINIMIZED)
@@ -19483,7 +19483,7 @@ nk_panel_end(struct nk_context *ctx)
         struct nk_rect b = window->bounds;
         b.h = padding_y - window->bounds.y;
         nk_stroke_rect(out, b, 0, layout->border, border_color);
-    }
+    }*/
 
     /* scaler */
     if ((layout->flags & NK_WINDOW_SCALABLE) && in && !(layout->flags & NK_WINDOW_MINIMIZED))

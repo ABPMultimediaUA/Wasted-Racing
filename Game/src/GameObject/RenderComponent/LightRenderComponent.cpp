@@ -1,9 +1,13 @@
 #include "LightRenderComponent.h"
 #include "../../GameManager/RenderManager.h"
+//:::>With proper initialization could be just a type information class
 
 //Initilizer
 void LightRenderComponent::init() {
-    RenderManager::getInstance().getRenderFacade()->addLight(this);
+    //:::> Shouldn't the render manager initialize it?
+    //<___  Did it in the render manager
+    //RenderManager::getInstance().getRenderFacade()->addLight(this);
+    //___>
 }
 
 //Update
@@ -13,7 +17,10 @@ void LightRenderComponent::update(float dTime) {
 
 //Closer
 void LightRenderComponent::close() {
-    RenderManager::getInstance().getRenderFacade()->deleteObject(this);
+    //:::> Shouldn't the render manager erase it?
+    //<___ I did it in the render manager
+    //RenderManager::getInstance().getRenderFacade()->deleteObject(this);
+    //___>
 }
 
 //Drawer

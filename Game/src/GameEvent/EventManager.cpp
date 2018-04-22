@@ -7,8 +7,9 @@
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 /*
->Add event priority queue to events
->Add fast sorting of events by multiple byte reading
+:::>Add event priority queue to events
+:::>Add fast sorting of events by multiple byte reading
+:::>Add scheduling, by now event manager is useless since it only searches for calls already done in that update, so it just adds innecesary cost
 */
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -37,9 +38,7 @@ void EventManager::close() {
 }
 
 void EventManager::addEvent(Event event) {
-
     EventManager::eventQueue.push(event);
-
 }
 
 void EventManager::processEvent(Event event){
@@ -50,7 +49,6 @@ void EventManager::processEvent(Event event){
         auto eventListenerList = auxEventListenerList->second;
 
         for(auto eventListener : eventListenerList) {
-                //std::cout<<"jeje:"<<event.data.Id<<std::endl;
                 eventListener.listener(event.data);
         }
     }
@@ -66,6 +64,7 @@ void EventManager::addListener(EventListener eventListener){
         iterator = EventManager::eventListenerMap.insert(Pair(eventListener.listenerType, eventListenerList)).first;
     }
 
+    //Push the function that listens
     iterator->second.push_back(eventListener);
 
 }

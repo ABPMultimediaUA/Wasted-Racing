@@ -9,17 +9,12 @@ void TerrainComponent::init() {
 //Update
 void TerrainComponent::update(float dTime) {
 
-
-
 }
 
 //Closer
 void TerrainComponent::close() {
 
-} 
-
-
-
+}
 
 //Connectors
 void TerrainComponent::connectSiblingFront(uint16_t id) {

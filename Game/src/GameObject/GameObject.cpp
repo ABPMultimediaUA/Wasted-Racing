@@ -21,4 +21,4 @@ void GameObject::close(){
 //Add component
 void GameObject::addComponent(IComponent::Pointer component) {
     components.push_back(component);
-} 
+}

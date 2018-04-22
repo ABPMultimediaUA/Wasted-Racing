@@ -7,7 +7,7 @@
 REGISTER_FACTORY(DefaultCollisionEvent);
 REGISTER_FACTORY(RampCollisionEvent);
 REGISTER_FACTORY(ItemBoxCollisionEvent);
-REGISTER_FACTORY(BananaCollisionEvent);
+REGISTER_FACTORY(TrapCollisionEvent);
 
 //===========================================================
 //      DEFAULT COLLISION EVENT
@@ -123,12 +123,12 @@ void ItemBoxCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData
 }
 
 //===========================================================
-//      BANANA COLLISION EVENT
+//      TRAP COLLISION EVENT
 //===========================================================
-void BananaCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event) {
+void TrapCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event) {
 
     int player = std::dynamic_pointer_cast<MoveComponent>(event.Component).get()->getMovemententData().player;
-    std::string name = "BananaCollision"+std::to_string(event.Component->getGameObject().getId());
+    std::string name = "TrapCollision"+std::to_string(event.Component->getGameObject().getId());
 
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
 

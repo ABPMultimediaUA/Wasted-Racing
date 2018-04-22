@@ -11,12 +11,12 @@ void MoveComponent::init() {
 
 //Update
 void MoveComponent::update(float dTime) {
-        
+    //:::X> Analyze all of this and check if it is right
     //get transform data
     auto position = getGameObject().getTransformData().position;
 
     //Update all movement conditions and visuals
-    updateMaxSpeedOverTime(dTime); //Update speed difference over time (for powerups)
+    updateMaxSpeedOverTime(dTime);                      //Update speed difference over time (for powerups)
     LAPAL::updateRotation(mData, terrain, dTime);       //Updates rotation of object (axis and visual)
 
     //Update horizontal movement
@@ -113,8 +113,18 @@ void MoveComponent::changeAcc(float a){
 }
 
 void MoveComponent::isDrifting(bool d){
-    mData.drift    = d;
-    mData.driftDir = (d && mData.spin_inc < 0) ? 1.f : -1.f ; //if it is drifting activation, change direction of drift to the speed one. (negative spin = right turn)
+    mData.drift          = mData.spin_inc != 0 ? d : false;              //Drifting is true
+    mData.driftDir       = (d && mData.spin_inc < 0) ? 1.f : -1.f ;      //if it is drifting activation, change direction of drift to the speed one. (negative spin = right turn)
+    mData.driftDir       = mData.spin_inc == 0 ? 0.f : mData.driftDir;   //if spin is 0, then no drift is happening
+    mData.driftWallAngle = d ? mData.angle : 0.f;                        //Lock the maximum angle of turn back
+    mData.spin           = d ? mData.spin  : 0.f;                        //Set turning to 0 again to avoid fast rotation after stopping the drift
+
+    //Speed boost
+    if(!d && mData.driftTimeCounter > mData.driftBoostTime)
+    {
+        mData.driftTimeCounter = 0.f;
+        changeMaxSpeedOverTime(mData.driftSpeedBoost, mData.driftConstTime, mData.driftDecTime );   //Apply boost
+    }
 }
 
 void MoveComponent::isBraking(bool b) {
@@ -171,13 +181,21 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
     else {
         constantAlteredTime = 0;
         decrementalAlteredTime = 0;
-        mData.max_vel = auxData.max_vel; 
+        mData.max_vel = auxData.max_vel;
+
+        //<___ deactive if collided
+        if(mData.coll)
+        {
+            mData.boost = false;
+        }
+        //___>
     }
 }
 
 //Control and update jump
 void MoveComponent::updateJump(LAPAL::movementData& mData, glm::vec3& pos, LAPAL::plane3f t){
 
+    //:::>Brah, no hardcoded pls
     float maxJump = 15.0;
     float velJump = 50.0;
 

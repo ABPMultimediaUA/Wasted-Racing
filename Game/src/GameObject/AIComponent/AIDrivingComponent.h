@@ -21,8 +21,6 @@ class AIDrivingComponent : public IComponent{
         //Closer
         virtual void close();
 
-        void checkList();
-
         //Makes NPC turn a fixated angle based on data
         float girar(GameObject& myPos, std::vector<VObject::Pointer> array, std::vector<VObject::Pointer> walls, glm::vec3 waypoint, float a, float b);
         
