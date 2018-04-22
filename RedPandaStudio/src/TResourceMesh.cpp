@@ -46,6 +46,20 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
     glGenBuffers(4, vboHandles);
 
+/*
+    std::cout << "nVertex: " << nVertex << std::endl;
+    std::cout << "nTriangles: " << nTriangles << std::endl;
+
+    for(int i = 0; i < nTriangles * 6; i++)
+    {
+        std::cout << i << ": " << vertexIndices[i] << std::endl;
+    }
+
+    for(int i = 0; i < nVertex * 3; i++)
+    {
+        std::cout << i << ": " << vertex[i] << std::endl;
+    }
+*/
     return true;
 
 }
@@ -166,11 +180,18 @@ unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsign
             unsigned int v2 = m->mFaces[i].mIndices[(edge+1)%3];
             unsigned int v3 = m->mFaces[i].mIndices[(edge+2)%3];
 
+            if((v1 == index1 && v2 == index2) || (v1 == index2 && v2 == index1))
+            {
+                //std::cout << "Index1: " << index1 << " and index2: " << index2 << std::endl;
+                //std::cout << "Entro aqui: " << v3 << " and index3: " << index3 << std::endl;
+            }
+
             if(((v1 == index1 && v2 == index2) || (v1 == index2 && v2 == index1)) && (v3 != index3))
             {
+                //std::cout << "Aqui tambien" << std::endl;
                 return v3;
             }
         }
     }
-    return -1;
+    return 0;
 }
