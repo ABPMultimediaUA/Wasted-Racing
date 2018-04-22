@@ -1,5 +1,6 @@
 #include "src/Facade/RedPandaStudio.h"
 #include <iostream>
+#include <GL/glew.h>
 
 #ifdef _WIN32
 #define main WinMain 
@@ -30,6 +31,7 @@ int main() {
 
     rps::scaleNode(t, glm::vec3(0.25,0.25,0.25));
     rps::scaleNode(t2, glm::vec3(10,0.25,10));
+    rps->setCulling(true, (GLenum)GL_BACK);
 
     TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
     TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));

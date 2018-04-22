@@ -224,7 +224,6 @@ void RedPandaStudio::initOpenGL() {
     //Give the ProgramID to our engine
     scene->getEntity()->setProgramID(ProgramID);
 
-	glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
 	GLuint model = glGetUniformLocation(ProgramID, "ModelMatrix");   
@@ -514,6 +513,22 @@ void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat) {
 			mat *= t->getMatrix(); 
 
 		calculateNodeTransform(node->getFather(), mat);
+	}
+}
+
+//////////////////////////////////////////////
+// GRAPHICS OPTIONS AND PARAMETERS
+
+void RedPandaStudio::setCulling(bool b, GLenum e)
+{
+	if(b)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(e);
+	}
+	else
+	{
+		glDisable(GL_CULL_FACE);
 	}
 }
 
