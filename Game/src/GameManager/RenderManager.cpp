@@ -102,6 +102,8 @@ void RenderManager::update(float dTime) {
         renderFacade->updateItemIcon();
     }
 
+    renderFacade->updateAnimations(dTime);
+
 }
 
 void RenderManager::draw() {
@@ -115,12 +117,6 @@ void RenderManager::drawHUD() {
 void RenderManager::close(){
     //Clear all interface elements
     renderFacade->cleanInterface();
-
-    //Clear all objects from render engine
-    for(unsigned int i = 0; i < renderComponentList.size(); i++)
-    {
-        renderFacade->deleteObject(renderComponentList[i].get());
-    }
 
     //Clear render component list
     renderComponentList.clear();
@@ -136,20 +132,46 @@ void RenderManager::splitQuadTree(){
 //============================================== 
 
 IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr) {
-    //Make shared of object render component
+
     IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape, newStr);
 
-    //Attach to game object
     newGameObject.addComponent(component);
 
-    //Send event of creation
-    //:::>Why not adding it directly to the list? That's the only use for this event
     EventData data;
     data.Component = component;
+
     EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
 
-    //:::> Initialize here from the render, eliminates dependencies
-    //:::> renderFacade->addObject(this);
+    return component;
+}
+
+IComponent::Pointer RenderManager::createLightRenderComponent(GameObject& newGameObject, LightRenderComponent::Type newType, float newRadius) {
+
+    IComponent::Pointer component = std::make_shared<LightRenderComponent>(newGameObject, newType, newRadius);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::LightRenderComponent_Create, data});
+
+    return component;
+}
+
+IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGameObject) {
+
+    IComponent::Pointer component = std::make_shared<CameraRenderComponent>(newGameObject);
+
+    newGameObject.addComponent(component);
+
+    EventData data;
+    data.Component = component;
+
+    EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
+
+    //Set camera target to this camera, since it was created
+    renderFacade->setCameraTarget(newGameObject);
 
     return component;
 }
@@ -163,83 +185,34 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
     newGameObject.addComponent(component);
 
     //Create event data
-    //:::>It is not needed since it only adds it to the list and initalizes the object, which *right now* invocates the init, which does the other render
-    //:::> facade-> addObject, and we don't need that
-    //<___
-    /*
     EventData data;
     data.Component = component;
-    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
-    */
-    //___>
 
-    //add object to the render and to the component list
-    renderComponentList.push_back(component);
+    //Create event
+    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
+
+    //add object to the render
     renderFacade->addObject(component.get(), radius, length, tesselation, transparency);
 
     return component;
 }
 
-IComponent::Pointer RenderManager::createLightRenderComponent(GameObject& newGameObject, LightRenderComponent::Type newType, float newRadius) {
-    //Make sahred pointer of light render component
-    IComponent::Pointer component = std::make_shared<LightRenderComponent>(newGameObject, newType, newRadius);
-
-    //Attach to game object
-    newGameObject.addComponent(component);
-
-    //Send event of creation
-    //:::>Same as object render component
-    EventData data;
-    data.Component = component;
-    EventManager::getInstance().addEvent(Event {EventType::LightRenderComponent_Create, data});
-
-    //:::> Initialize here from the render, eliminates dependencies
-    //:::> renderFacade->addLight(this);
-
-    return component;
-}
-
-IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGameObject) {
-    //Make shared pointer of camera render component
-    IComponent::Pointer component = std::make_shared<CameraRenderComponent>(newGameObject);
-
-    //Add component to object
-    newGameObject.addComponent(component);
-
-    //Send event of creation
-    //:::>Idem
-    EventData data;
-    data.Component = component;
-    EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
-
-    //Set camera target to this object
-    renderFacade->setCameraTarget(newGameObject);
-
-    return component;
-}
-
 IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back) {
-    //Creating object renderer component
+
     IComponent::Pointer component = std::make_shared<ObjectRenderComponent>(newGameObject, newShape);
 
-    //Adding component to object
     newGameObject.addComponent(component);
 
-    //:::>??? Not sended
-    //<___
-    //EventData data;
-    //data.Component = component;
-    //___>
+    EventData data;
+    data.Component = component;
 
-    //:::>??? not used
-    //<___
-    //auto comp = newGameObject.getComponent<ObjectRenderComponent>();
-    //___>
+    auto comp = newGameObject.getComponent<ObjectRenderComponent>();
 
     renderFacade->addSkybox(component.get(), top, bot, left, right, front, back);
 
     return component;
 }
+
 
 //==============================================
 // DELEGATES

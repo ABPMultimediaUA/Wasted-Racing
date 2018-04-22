@@ -173,6 +173,11 @@ void RenderRedPanda::addObject(IComponent* ptr) {
 //Add an object to the game (Cylinder or Cone)
 void RenderRedPanda::addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) { }
 
+//Add an animation to the game
+void RenderRedPanda::addAnimation(IComponent* ptr) {
+
+}
+
 //Add a light to the game
 void RenderRedPanda::addLight(IComponent* ptr) {
     
@@ -217,8 +222,8 @@ void RenderRedPanda::deleteObject(IComponent* ptr) {
         auto node = itr->second;
         device->deleteObject(node);
         nodeMap.erase(id);
+        animationMap.erase(id);
     }
-
 }
 
 //Change the position of an object in-game
@@ -239,6 +244,18 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 
             rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
     }
+}
+
+//Update game animations
+void RenderRedPanda::updateAnimations(float dTime) {
+    for(auto anim : animationMap) {
+        anim.second->getAnimation()->update(dTime);
+    }
+}
+
+//Update single animation
+void RenderRedPanda::updateAnimation(IComponent* ptr) {
+
 }
 
 //==============================================================

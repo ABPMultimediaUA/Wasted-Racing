@@ -408,7 +408,8 @@ void RedPandaStudio::deleteObject(TNode* leaf) {
 
 	if(leaf != nullptr && ((t = dynamic_cast<TMesh*>(leaf->getEntity())) != nullptr ||
 		(t = dynamic_cast<TCamera*>(leaf->getEntity())) != nullptr ||
-		(t = dynamic_cast<TLight*>(leaf->getEntity())) != nullptr)) {
+		(t = dynamic_cast<TLight*>(leaf->getEntity())) != nullptr  ||
+		(t = dynamic_cast<TAnimation*>(leaf->getEntity())) != nullptr)) {
 
 			TNode* first = leaf->getFather()->getFather()->getFather();
 			TNode* parent = leaf->getFather()->getFather()->getFather()->getFather();

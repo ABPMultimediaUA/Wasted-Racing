@@ -1,12 +1,11 @@
 #include "ObjectRenderComponent.h"
-//:::>With proper initialization could be just a type information class
+#include "../../GameManager/RenderManager.h"
 
 //Initilizer
 void ObjectRenderComponent::init() {
-    //:::> Shouldn't the render manager initialize it?
-    //<___ I did it
-    //RenderManager::getInstance().getRenderFacade()->addObject(this);
-    //___>
+
+    RenderManager::getInstance().getRenderFacade()->addObject(this);
+
 }
 
 //Update
@@ -16,10 +15,9 @@ void ObjectRenderComponent::update(float dTime) {
 
 //Closer
 void ObjectRenderComponent::close() {
-    //:::> Shouldn't the render manager erase it?
-    //<___ I did it in the render manager
-    //RenderManager::getInstance().getRenderFacade()->deleteObject(this);
-    //___>
+
+    RenderManager::getInstance().getRenderFacade()->deleteObject(this);
+
 }
 
 //Drawer
