@@ -22,8 +22,14 @@ public:
 		Skybox
 	};
 
+	enum Poly {
+		High,
+		Medium,
+		Low
+	};
+
     //Constructor
-	ObjectRenderComponent(GameObject& newGameObject, Shape newShape, const char* newStr) : IRenderComponent(newGameObject), objectShape(newShape) {
+	ObjectRenderComponent(GameObject& newGameObject, Shape newShape, const char* newStr) : IRenderComponent(newGameObject), objectShape(newShape), polyMesh(Poly::High) {
 
 		if(newShape == Shape::Mesh){
 
@@ -45,7 +51,7 @@ public:
 
 	}
 
-	ObjectRenderComponent(GameObject& newGameObject, Shape newShape) : IRenderComponent(newGameObject), objectShape(newShape) {};
+	ObjectRenderComponent(GameObject& newGameObject, Shape newShape) : IRenderComponent(newGameObject), objectShape(newShape), polyMesh(Poly::High) {};
 
 	//Destructor
 	virtual ~ObjectRenderComponent() {};
@@ -64,6 +70,10 @@ public:
 
 	Shape getObjectShape() {
 		return objectShape;
+	}
+
+	Poly getPolyMesh() {
+		return polyMesh;
 	}
 
 	std::string getMesh() {
@@ -86,9 +96,14 @@ public:
 		mesh = std::string(m);
 	}
 
+	void setPolyMesh(Poly p){
+		polyMesh = p;
+	}
+
 private:
 
 	Shape objectShape;
+	Poly polyMesh;
 	std::string mesh;
 	std::string img;
 	std::string name;
