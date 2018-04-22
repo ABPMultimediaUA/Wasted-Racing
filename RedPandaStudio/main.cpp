@@ -36,6 +36,9 @@ int main() {
     int i = 0;
     float j = 0;
 
+    TAnimation* anim = dynamic_cast<TAnimation*>(t->getEntity());
+    anim->getAnimation()->setLoop(true);
+
     while( quit ){
 
         /* Poll for events */
@@ -45,8 +48,8 @@ int main() {
             }            
         }
 
-        TAnimation* anim = dynamic_cast<TAnimation*>(t->getEntity());
-        anim->getAnimation()->update(0.5);
+        
+        anim->getAnimation()->update(30);
         rps::rotateNode(camera, glm::vec3(0,j,0));
         j+=0.01;
         rps->updateDevice();

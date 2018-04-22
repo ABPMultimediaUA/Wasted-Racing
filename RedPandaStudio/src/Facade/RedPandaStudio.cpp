@@ -550,4 +550,65 @@ void rotateNode(TNode* node, glm::vec3 rotation) {
 
 }
 
+void loopAnimation(TNode* node) {
+
+	TAnimation* t;
+
+	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
+
+		TResourceAnimation* anim = t->getAnimation();
+
+		if(anim != nullptr) {
+
+			anim->setLoop(true);
+		}
+	}
+}
+
+void pauseAnimation(TNode* node) {
+
+	TAnimation* t;
+
+	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
+
+		TResourceAnimation* anim = t->getAnimation();
+
+		if(anim != nullptr) {
+
+			anim->setPause(true);
+		}
+	}
+}
+
+void playOnceAnimation(TNode* node) {
+
+	TAnimation* t;
+
+	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
+
+		TResourceAnimation* anim = t->getAnimation();
+
+		if(anim != nullptr) {
+
+			anim->playNoLoop();
+		}
+	}
+}
+
+void updateAnimation(TNode* node, double dTime) {
+
+	TAnimation* t;
+
+	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
+
+		TResourceAnimation* anim = t->getAnimation();
+
+		if(anim != nullptr) {
+
+			anim->update(dTime);
+		}
+	}
+
+}
+
 }
