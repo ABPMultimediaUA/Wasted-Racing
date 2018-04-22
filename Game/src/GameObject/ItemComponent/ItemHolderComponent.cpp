@@ -1,5 +1,6 @@
 #include "ItemHolderComponent.h"
 
+//:::>Class is only a type definer, can be substituted
 
 ItemHolderComponent::ItemHolderComponent(GameObject& newGameObject) : IComponent(newGameObject)
 {

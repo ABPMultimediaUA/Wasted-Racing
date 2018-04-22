@@ -26,6 +26,7 @@ void RedPandaStudio::updateDevice() {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	renderCamera();
+
 	renderLights();
 
 	//Change shader program for drawing skybox
@@ -44,7 +45,6 @@ void RedPandaStudio::updateDevice() {
 		rpsGUI_draw();
 
 	SDL_GL_SwapWindow(window);
-
 	//Chrono to update the fps value
 	std::chrono::time_point<std::chrono::high_resolution_clock> currTime = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed = currTime - lastTime;
@@ -63,12 +63,12 @@ void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
 }
 
 void RedPandaStudio::dropDevice() {
-
+	
 	// Delete our OpengL context
-	SDL_GL_DeleteContext(context);
+	//::>>SDL_GL_DeleteContext(&context); // probbly this shouldn't be commented, but it fails otherwise
 	SDL_DestroyWindow(window);
 	SDL_Quit();
-
+	
     //delete scene;
 	deleteNode(scene);
     delete resourceManager;
@@ -78,7 +78,7 @@ void RedPandaStudio::dropDevice() {
 void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen) {
 
     // Initialize SDL 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 	  std::cerr << "Couldn't init SDL" << std::endl;
 	SDL_GL_LoadLibrary(NULL);
 
@@ -109,7 +109,8 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 		SDL_GL_SetSwapInterval(1);
 	}
 
-	context = SDL_GL_CreateContext(window);
+	SDL_GLContext ctx = SDL_GL_CreateContext(window);
+	context = &ctx;
 	glViewport(0, 0, width, height);
 
     //Give window to RedPandaStudio
@@ -302,13 +303,13 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 	return nullptr;
 }
 
-TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
+TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position, glm::vec3 target) {
 
 	//Check parent node is valid
-	if(parent != nullptr && dynamic_cast<TTransform*>(parent->getEntity()) != nullptr){
+	if(parent != nullptr && parent->getEntity() == nullptr){
 
 		//Create new transformation tree
-		TNode* transformT = addRotScaPos(parent, position);
+		TNode* transformT = addRotScaPos(parent, glm::vec3(0,0,0));
 
 		//Create new camera entity
 		TCamera* c = new TCamera(45.0f);
@@ -319,7 +320,7 @@ TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 		camera = cam;
 
 		//Rotate camera to be behind our character
-		rps::rotateNode(camera,glm::vec3(0,glm::half_pi<float>(),0));
+		updateCamera(position, target);
 
 		//Return camera
 		return cam;
@@ -328,6 +329,36 @@ TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position) {
 		return nullptr;
 	}
 
+}
+
+void RedPandaStudio::updateCamera(glm::vec3 position, glm::vec3 target) {
+	
+	TTransform* rotation = (TTransform*)camera->getFather()->getFather()->getFather()->getEntity();
+	TTransform* translation = (TTransform*)camera->getFather()->getEntity();
+
+	glm::mat4 rot = glm::mat4(1.0);
+	glm::mat4 trans = glm::mat4(1.0);
+
+	glm::vec3 f = glm::normalize(target - position);
+	glm::vec3 s = glm::normalize(glm::cross(f, glm::vec3(0,1,0)));
+	glm::vec3 u = glm::cross(s, f);
+
+	rot[0][0] =  s.x;
+	rot[1][0] =  s.y;
+	rot[2][0] =  s.z;
+	rot[0][1] =  u.x;
+	rot[1][1] =  u.y;
+	rot[2][1] =  u.z;
+	rot[0][2] = -f.x;
+	rot[1][2] = -f.y;
+	rot[2][2] = -f.z;
+
+	trans[3][0] = -dot(s, position);
+	trans[3][1] = -dot(u, position);
+	trans[3][2] =  dot(f, position);
+	
+	rotation->setMatrix(rot);
+	translation->setMatrix(trans);
 }
 
 TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity) {
@@ -463,15 +494,8 @@ void RedPandaStudio::renderCamera() {
 		glm::mat4 mat = glm::mat4(1.0);
 		calculateNodeTransform(camera, mat);
 
-
-		//Get camera specific transformations
-		TTransform* t1 = (TTransform*) camera->getFather()->getFather()->getFather()->getFather()->getEntity();	//distance from center
-		TTransform* r = (TTransform*) camera->getFather()->getFather()->getFather()->getFather()->getFather()->getFather()->getEntity();	//parent rotation
-		TTransform* r1 = (TTransform*) camera->getFather()->getFather()->getFather()->getEntity();	//camera rotation
-		TTransform* t0 = (TTransform*) camera->getFather()->getEntity();	//distance from player
-
 		glm::mat4& view = scene->getEntity()->viewMatrix();
-    	view = glm::inverse(t1->getMatrix() * r->getMatrix() * r1->getMatrix() * t0->getMatrix());
+		view = mat;
 
 		glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
     	glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
@@ -561,6 +585,67 @@ void rotateNode(TNode* node, glm::vec3 rotation) {
 		tr->rotate(0, 1, 0, rotation.y);
 		tr->rotate(1, 0, 0, rotation.x);
 		tr->rotate(0, 0, 1, rotation.z);
+	}
+
+}
+
+void loopAnimation(TNode* node) {
+
+	TAnimation* t;
+
+	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
+
+		TResourceAnimation* anim = t->getAnimation();
+
+		if(anim != nullptr) {
+
+			anim->setLoop(true);
+		}
+	}
+}
+
+void pauseAnimation(TNode* node) {
+
+	TAnimation* t;
+
+	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
+
+		TResourceAnimation* anim = t->getAnimation();
+
+		if(anim != nullptr) {
+
+			anim->setPause(true);
+		}
+	}
+}
+
+void playOnceAnimation(TNode* node) {
+
+	TAnimation* t;
+
+	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
+
+		TResourceAnimation* anim = t->getAnimation();
+
+		if(anim != nullptr) {
+
+			anim->playNoLoop();
+		}
+	}
+}
+
+void updateAnimation(TNode* node, double dTime) {
+
+	TAnimation* t;
+
+	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
+
+		TResourceAnimation* anim = t->getAnimation();
+
+		if(anim != nullptr) {
+
+			anim->update(dTime);
+		}
 	}
 
 }

@@ -61,8 +61,16 @@ namespace LAPAL{
         float max_rotate        = 0.0f;         //maximum rotation speed
 
         //Drifting variables
-        float driftDir          = 0.f;                      //Direction of drifting
-        float driftIncrement    = 0.785398163397f;          //Initial increment of drifting angle
+        float driftTimeCounter  = 0.f;             //Time counter of amount of time drifting
+        float driftBoostTime    = 2.f;             //Time needed to release the boost
+        float driftDir          = 0.f;             //Direction of drifting
+        float driftAngleIncr    = 0.f;             //Angle turn increment
+        float driftAngleIncrMax = 2.f;             //Max angle turn increment while drifting
+        float driftDesplaceAngle= 0.785398163397f; //Angle of vector of displacement
+        float driftWallAngle    = 0.f;             //Angle set when applied the turn. Maximum angle that can be reached when turning back
+        float driftSpeedBoost   = 250.f;           //Speed boost value
+        float driftConstTime    = 0.1f;            //Constant time while boosting
+        float driftDecTime      = 4.f;             //Decay time of boosting
 
         //Movement vectors
         vec3f velocity          = glm::vec3(0,0,0);         //Base velocity in 3d

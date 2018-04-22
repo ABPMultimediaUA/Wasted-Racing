@@ -35,7 +35,7 @@ void DebugManager::init(){
     renderManager  = &RenderManager::getInstance();
     objectManager  = &ObjectManager::getInstance();
 
-    //Add listeners
+    //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugAI_Down,swapDebugAI});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugBehaviour_Down, swapDebugBehaviour});
     EventManager::getInstance().addListener(EventListener {EventType::Key_DebugCamera_Down,swapDebugCamera});
@@ -237,7 +237,7 @@ void DebugManager::initDebugNetwork()
         RenderManager::getInstance().createObjectRenderComponent(*collisionCylinder2.get(), ObjectRenderComponent::Shape::Cylinder, "whiteWithTransparency.png", rad, height, 10.f, true);
         
         //Create tracker component
-        auto objective = std::dynamic_pointer_cast<RemoteItemComponent>(networkManager->getRemotePlayerComponentList()[i]);
+        auto objective = std::dynamic_pointer_cast<RemotePlayerComponent>(networkManager->getRemotePlayerComponentList()[i]);
         createTrackerDNComponent(*collisionCylinder.get(), objective.get()->getServerId(), 'a');
         createTrackerDNComponent(*collisionCylinder2.get(), objective.get()->getServerId(), 'b');
 
@@ -282,11 +282,9 @@ void DebugManager::cleanDebugNetwork()
 
     //Delete trackers
     for(unsigned int i = 0; i < idCylynderDN.size(); i++){
-        EventData data;
-
         //Delete marker
+        EventData data;
         data.Id = idCylynderDN[i];
-
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
 
@@ -327,6 +325,7 @@ void DebugManager::updateDebugCamera(){
 void DebugManager::updateDebugNetwork(){
     //Checks if player is connected to a server
     if(networkManager->getConnected()){
+        //:::>Pending code
         //Lobby debug
 
         //Match debug
@@ -334,9 +333,8 @@ void DebugManager::updateDebugNetwork(){
             //Process all packets
             while(!networkManager->getLastPackets()->empty()){
                 //Get last data and load it at string, then remove it from the list
-                char* lastData = reinterpret_cast<char*>(networkManager->getLastData()->front());
+                std::string lastDataString = networkManager->getLastData()->front();
                 networkManager->getLastData()->pop_front();
-                std::string lastDataString(lastData);
 
                 //Get last sender and show it
                 int lastSender = networkManager->getLastSenders()->front();  //Get it from the list
@@ -349,10 +347,12 @@ void DebugManager::updateDebugNetwork(){
                 networkManager->getLastPackets()->pop_front();
 
                 switch(lastPacket){
+                    //Game related
                     case ID_GAME_ENDED:
                         std::cout<<"Game ended."<<std::endl;
                         break;
 
+                    //Player related
                     case ID_CREATE_PLAYER:
                         setActiveLastMessage(idLastMessageTexts.at(1));
                         updateNetworkText(idLastDataTexts.at(0), lastDataString);
@@ -363,21 +363,22 @@ void DebugManager::updateDebugNetwork(){
                         updateNetworkText(idLastDataTexts.at(0), lastDataString);
                         break;
 
-                    case ID_REMOTE_PLAYER_MOVEMENT:
+                    case ID_PLAYERS_POSITION:
                         updateCylinderDN(lastSender);
                         break;
 
+                    //Item related
                     case ID_BOX_COLLISION:
                         setActiveLastMessage(idLastMessageTexts.at(2));
                         updateNetworkText(idLastDataTexts.at(1), lastDataString);
                         break;
                     
-                    case ID_CREATE_BANANA:
+                    case ID_CREATE_TRAP:
                         setActiveLastMessage(idLastMessageTexts.at(3));
                         updateNetworkText(idLastDataTexts.at(2), lastDataString);
                         break;
 
-                    case ID_DESTROY_BANANA:
+                    case ID_DESTROY_TRAP:
                         setActiveLastMessage(idLastMessageTexts.at(4));
                         updateNetworkText(idLastDataTexts.at(3), lastDataString);
                         break;
@@ -392,6 +393,10 @@ void DebugManager::updateDebugNetwork(){
                         updateNetworkText(idLastDataTexts.at(5), lastDataString);
                         break;
 
+                    case ID_RED_SHELLS_POSITION:
+                        //std::cout<<"Caparazon rojo movido"<<std::endl;
+                        break;
+
                     case ID_CREATE_BLUE_SHELL:
                         setActiveLastMessage(idLastMessageTexts.at(7));
                         updateNetworkText(idLastDataTexts.at(6), lastDataString);
@@ -402,11 +407,7 @@ void DebugManager::updateDebugNetwork(){
                         updateNetworkText(idLastDataTexts.at(7), lastDataString);
                         break;
 
-                    case ID_REMOTE_RED_SHELL_MOVEMENT:
-                        //std::cout<<"Caparazon rojo movido"<<std::endl;
-                        break;
-
-                    case ID_REMOTE_BLUE_SHELL_MOVEMENT:
+                    case ID_BLUE_SHELLS_POSITION:
                         //std::cout<<"Caparazón azul movido"<<std::endl;
                         break;
 
@@ -442,6 +443,7 @@ void DebugManager::updateCylinderDN(int id){
     //Update the position of the trackers
     for(unsigned int i = 0; i < trackerDNComponentList.size(); i++){
         std::shared_ptr<RemoteItemComponent> cyl = std::dynamic_pointer_cast<RemoteItemComponent>(networkManager->getRemotePlayerComponentList()[i]);
+        //:::>UNFINISHED
     }
 }
 

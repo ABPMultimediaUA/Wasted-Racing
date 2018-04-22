@@ -1,11 +1,16 @@
 #include "ScoreManager.h"
 #include "ObjectManager.h"
-#include "InputManager.h"
 
 void objectDeleteScore(EventData);
 
+
+//==============================================
+// MAIN FUNCTIONS
+//==============================================
 ScoreManager::ScoreManager()
 {
+    //Maximum number of laps
+    //:::> Should be set in menu_state before the game runs
     maxLaps = 3;
 }
 
@@ -16,6 +21,7 @@ ScoreManager::~ScoreManager()
 
 void ScoreManager::init()
 {
+    //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteScore});
 }
 
@@ -32,29 +38,32 @@ ScoreManager& ScoreManager::getInstance() {
 
 //Component creator
 IComponent::Pointer ScoreManager::createScoreComponent(GameObject& newGameObject){
-
+    //Make shared pointer of the score component
     ScoreComponent::Pointer component = std::make_shared<ScoreComponent>(newGameObject);
 
+    //Attach to game object
     newGameObject.addComponent(component);
 
+    //Push it into the list of players
+    //:::>Can  be substituted with an event in the future with scheduling
     players.push_back(component);
 
     return component;
 }
 
 IComponent::Pointer ScoreManager::createStartLineComponent(GameObject& newGameObject){
-
+    //Make shared pointer of the start line component
     StartLineComponent::Pointer component = std::make_shared<StartLineComponent>(newGameObject);
 
+    //Attach to game object
     newGameObject.addComponent(component);
 
+    //Push it into the list of start lines
+    //:::>Can  be substituted with an event in the future with scheduling
     startLines.push_back(component);
 
     return component;
 }
-
-
-
 
 //Thirty programmers have died during the development of this method
 void ScoreManager::update()
@@ -101,9 +110,10 @@ void ScoreManager::update()
     }
 
     //Update lap and position events for the player
-    uint16_t id = InputManager::getInstance().getComponent().get()->getGameObject().getId();
+    //<___
+    uint16_t id = GlobalVariables::getInstance().getPlayer()->getId();
     auto scoreC = ObjectManager::getInstance().getObject(id).get()->getComponent<ScoreComponent>().get();
-
+    //___>
     int position = scoreC->getPosition();
     int lap = scoreC->getLap();
 
@@ -149,13 +159,9 @@ void ScoreManager::update()
 }
 
 
-////////////////////////////////////////////
-//
-//      DELEGATES
-//
-////////////////////////////////////////////
-
-
+//==============================================
+// DELEGATES
+//==============================================
 void objectDeleteScore(EventData eData) {
 
     auto& scoreComponentList = ScoreManager::getInstance().getPlayers();

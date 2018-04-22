@@ -61,6 +61,7 @@ void LAPAL::updateLinearVelocity(LAPAL::movementData& mData, const float dTime, 
     }
     
     //Check if we are braking
+    //:::>No hardcoded data
     if(mData.braking){
         mData.vel = mData.vel * 0.99f;
         mData.acc = mData.acc * 0.99f;
@@ -118,7 +119,9 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
         mData.spin = copysign(mData.max_spin, mData.spin);
     }
 
-    if(!mData.drift){
+    //:::>No hardcoded variables
+    if(!mData.drift)
+    {
         mData.angle += mData.spin * dTime * 50;
     }
 }
@@ -128,12 +131,14 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
 
     //Increasing rotation axis in mData until it matches the terrain. Incremental turn.
     //X axis.
+    //:::>Maximum difference should be a set variable, no hardcoded
     if(glm::abs(mData.angX - terrain.rotX)<0.05f){
         mData.angX = terrain.rotX;
         mData.rotateX = 0.f;
     }else{
         //increment rotate speed
-        mData.rotateX += mData.rotate_inc*dTime*50;
+        //:::>Last value should be set variable in a document or mData
+        mData.rotateX += mData.rotate_inc*dTime;
 
         if(abs(mData.rotateX)>abs(mData.max_rotate)){
             mData.rotateX = copysign(mData.max_rotate, mData.rotateX);
@@ -153,7 +158,7 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
         mData.rotateZ = 0.f;
     }else{
         //increment rotate speed
-        mData.rotateZ += mData.rotate_inc*dTime*50;
+        mData.rotateZ += mData.rotate_inc*dTime;
 
         if(abs(mData.rotateZ)>abs(mData.max_rotate)){
             mData.rotateZ = copysign(mData.max_rotate, mData.rotateZ);
@@ -172,39 +177,79 @@ void LAPAL::updateRotation(LAPAL::movementData& mData, LAPAL::plane3f& terrain, 
 //Function that moves the vehicle elliptically given its internal radius ratio rotation
 void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTime){
     //Check if it is turning somewhere
-    if(mData.spin_inc != 0){
+    //if(mData.spin_inc != 0){
         //Check if drifting is pressed
         if(mData.drift){ 
             //Initial variables
-        
+            mData.driftAngleIncr   += dTime;                    //Augment drifting angle increment
+            if(mData.driftAngleIncr > mData.driftAngleIncrMax)
+                mData.driftAngleIncr = mData.driftAngleIncrMax;
+
+            mData.driftTimeCounter += dTime;                    //Time drifting
+
             //if true, drift going left and NPC was right
             if(mData.driftDir == 1.0f){
                 //if spin is going in the same direction as when it began (right)
                 if(mData.spin_inc < 0){
-                    mData.angle  -= dTime*2;
+                    mData.angle  -= dTime*mData.driftAngleIncr;
+                }
+
+                //Transitionate 1/8 when not turning
+                if(mData.spin_inc == 0)
+                {
+                    mData.angle += dTime*mData.driftAngleIncr*0.125;
+                    mData.driftWallAngle = mData.angle;
+                }
+
+                //When turning to initial angle position, turn at a 1/4 of the turning speed
+                if(mData.spin_inc > 0){
+                    mData.angle  += dTime*mData.driftAngleIncr*0.25;
+                    if(mData.angle > mData.driftWallAngle)
+                        mData.angle = mData.driftWallAngle;
                 }
 
                 //Update velocity with 90º vector
-                mData.velocity.x += mData.vel*cos(mData.angle + mData.driftIncrement);
-                mData.velocity.z += mData.vel*sin(mData.angle + mData.driftIncrement);
+                mData.velocity.x += mData.vel*cos(mData.angle + mData.driftDesplaceAngle)/2;
+                mData.velocity.z += mData.vel*sin(mData.angle + mData.driftDesplaceAngle);
             }
+
             //if true drift is going right and NPC was left
             if(mData.driftDir == -1.f){
                 //if spin is positive, it is going in the same direction as when it began ( left)
                 if(mData.spin_inc > 0){
-                    mData.angle          += dTime*2;
+                    mData.angle  += dTime*mData.driftAngleIncr;
+                }
+                
+                //Transitionate 1/8 when not turning
+                if(mData.spin_inc == 0)
+                {
+                    mData.angle -= dTime*mData.driftAngleIncr*0.125;
+                    mData.driftWallAngle = mData.angle;
+                }
+
+                //When turning to initial angle position, turn at a 1/4 of the turning speed
+                if(mData.spin_inc < 0){
+                    mData.angle  -= dTime*mData.driftAngleIncr*0.25;
+                    if(mData.angle < mData.driftWallAngle)
+                        mData.angle = mData.driftWallAngle;
                 }
 
                 //Update velocity with 90º vector
-                mData.velocity.x += mData.vel*cos(mData.angle - mData.driftIncrement);
-                mData.velocity.z += mData.vel*sin(mData.angle - mData.driftIncrement);
+                mData.velocity.x += mData.vel*cos(mData.angle - mData.driftDesplaceAngle)/2;
+                mData.velocity.z += mData.vel*sin(mData.angle - mData.driftDesplaceAngle);
             }
-        }else{
-            mData.driftDir       = 0.f;
         }
-        if(mData.coll)
-            mData.velocity = glm::vec3(0,0,0);
-    }
+
+        //if collided, stop it
+        if(mData.coll || !mData.drift)
+        {
+            mData.driftTimeCounter = 0.f;
+            mData.driftDir         = 0.f;
+            mData.driftWallAngle   = 0.f;
+            mData.driftAngleIncr   = 0.f;
+            mData.drift            = false;
+        }
+    //}
 }
 
 //Updates the deviation in velocity caused by a collision
@@ -452,9 +497,13 @@ bool LAPAL::position2DLinePoint(const LAPAL::vec3f& l1, const LAPAL::vec3f& l2, 
 //Calculates if a circle is inside a rectangle
 bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& nextPosition, const float length, const float length2) {
 
+    //Check if
+    //:::> ???? wtf, why.  abs ( expected height - position of the object) = difference in height - (20 - 0)/2 = 10
+    //:::> ???? difference in height - 10 > 1, why
     if( abs(LAPAL::calculateExpectedY(terrain, nextPosition)-nextPosition.y)-((length + length2)/2) > 1)
         return false;
 
+    //Check if the object is to the right side (clockwise) to the rectangle for every border, failing in one case means being outside the area
     if ( !LAPAL::position2DLinePoint(terrain.p1, terrain.p2, nextPosition) ) 
         return false;
     if ( !LAPAL::position2DLinePoint(terrain.p2, terrain.p3, nextPosition) ) 

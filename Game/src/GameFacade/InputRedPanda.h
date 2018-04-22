@@ -1,10 +1,9 @@
 #pragma once
 
+#include <redpanda/RedPandaStudio.h>
 #include "IInputFacade.h"
 #include "../GameEvent/EventManager.h"
-#include "../GameManager/RenderManager.h"
 
-#include <redpanda/RedPandaStudio.h>
 
 class InputRedPanda : public IInputFacade {
 
@@ -37,9 +36,13 @@ public:
     // Input Related functions
     //==============================================================
     void setGUIContext(void* ctx);
+    void DetectAxisInput();
 
 private: 
     
-    SDL_Window *device;
+    SDL_Window *device = nullptr;
+    SDL_GameController *gamepad = nullptr;
+
+    bool buttonMapping[7] = {false, false, false, false, false, false, false};
 
 };

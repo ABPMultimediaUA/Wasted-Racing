@@ -65,9 +65,9 @@ info:
 ################################################################################
 # Windows 
 ################################################################################
-#all_windows: LDFLAGS += -L./lib/win -lIrrlicht -lopengl32 -lm -lfmod -lfmodstudio
-#all_windows:
-#	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
+all_windows: LDFLAGS += -L./lib/win -lopengl32 -lmingw32 -lSDL2 -lglew32 -lassimp -lsfml-graphics-2 -lsfml-system-2
+all_windows:
+	$(CXX) $(CXXFLAGS) -shared -o $(BIN_PATH)$(TARGET).dll $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) $(LDFLAGS)
 
 
 hashtag := "\#"
@@ -87,10 +87,14 @@ compilel: LDFLAGS += -L./lib/assimp -lassimp -Wl,-rpath=lib/assimp
 compilel: LDFLAGS += -L./lib/sdl -lSDL2 -Wl,-rpath=lib/sdl
 compilel: LDFLAGS += -L./bin -lRedPanda -Wl,-rpath=./bin
 
+compilelwin: LDFLAGS += -L./lib/win -lopengl32 -lmingw32 -lSDL2 -lglew32 -lassimp -lsfml-graphics-2 -lsfml-system-2 -L./bin -lRedPanda
+
 test: remdir makedir copyfiles includefiles compile makesh
 	$(warning Done!)
 	
 testl: remdir makedir copyfiles includefiles compilel makesh
+
+testlwin: remdir makedir copyfiles includefiles compilelwin makesh
 
 remdir:
 	rm -rf ./inc
@@ -113,6 +117,10 @@ compilel:
 	g++ -I./inc -c -o bin/main.o main.cpp
 	g++ -o bin/test bin/main.o $(LDFLAGS)
 
+compilelwin:
+	g++ -I./inc -I./include -c -o bin/main.o main.cpp
+	g++ -o bin/test bin/main.o $(LDFLAGS)
+
 makesh:
 	rm -rf ./bin/test.sh
 	@echo -e $(sh_value) >> ./bin/test.sh
@@ -123,6 +131,8 @@ makesh:
 ################################################################################
 port: remdirP makedirP copyfilesP compileP
 	$(warning Done!)
+
+portwin: remdirP makedirP copyfilesP compilePwin
 
 remdirP:
 	rm -rf ../Game/include/redpanda
@@ -138,6 +148,8 @@ copyfilesP:
 compileP: all 
 	cp ./bin/libRedPanda.so ../Game/lib/linux
 
+compilePwin: win
+	cp ./bin/libRedPanda.dll ../Game/lib/win
 
 
 

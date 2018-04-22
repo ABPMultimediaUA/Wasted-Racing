@@ -43,11 +43,13 @@ public:
     //Creates an animated mesh object and returns a pointer to the TNode that cointains the TAnimation
     TNode* createAnimatedNode(TNode* parent, glm::vec3 pos, const char* animation, bool loop, int frames, double framerate);
     //Creates a camera and returns a TCamera
-    TNode* createCamera(TNode* parent, glm::vec3 position);
+    TNode* createCamera(TNode* parent, glm::vec3 position, glm::vec3 target);
     //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity);
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
+
+    void updateCamera(glm::vec3 position, glm::vec3 target);
 
     void setGUIDrawFunction(void (*)());
 
@@ -60,9 +62,10 @@ public:
 
     //////////////////////////////
     //  GETTERS
-    SDL_Window* getWindow()   {   return window;      }
-    TNode* getSceneRoot()           {   return scene;       }
+    SDL_Window* getWindow()               { return window;           }
+    TNode* getSceneRoot()                 { return scene;            }
     ResourceManager* getResourceManager() { return resourceManager;  }
+    SDL_GLContext* getContext()           { return context;          }  
 
     //////////////////////////////
     //  SETTERS
@@ -85,7 +88,7 @@ private:
     //////////////////////////////
     //  VARIABLES
     SDL_Window* window;
-    SDL_GLContext context;
+    SDL_GLContext* context;
     TNode *scene;
     ResourceManager *resourceManager;
     //Lights and camera
@@ -114,6 +117,13 @@ private:
 void translateNode(TNode* node, glm::vec3 position);
 void rotateNode(TNode* node, glm::vec3 rotation);
 void scaleNode(TNode* node, glm::vec3 scale);
+
+//Animation facade
+//Input node has to be of type Animation
+void loopAnimation(TNode* node);
+void pauseAnimation(TNode* node);
+void playOnceAnimation(TNode* node);
+void updateAnimation(TNode* node, double dTime);
 
 
 }

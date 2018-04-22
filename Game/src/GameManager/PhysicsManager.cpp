@@ -8,7 +8,7 @@ void addMoveComponent(EventData eData);
 void addCollisionComponent(EventData eData); 
 void addTerrainComponent(EventData eData); 
 void collideRamp(EventData eData);
-void collideBanana(EventData eData);
+void collideTrap(EventData eData);
 void collideBlueShell(EventData eData);
 void collideRedShell(EventData eData);
 void collideItemBox(EventData eData);
@@ -33,7 +33,7 @@ void PhysicsManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::TerrainComponent_Create, addTerrainComponent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, collideRamp});
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, collideItemBox});
-    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, collideBanana});
+    EventManager::getInstance().addListener(EventListener {EventType::TrapComponent_Collision, collideTrap});
     EventManager::getInstance().addListener(EventListener {EventType::BlueShellComponent_Collision, collideBlueShell});
     EventManager::getInstance().addListener(EventListener {EventType::RedShellComponent_Collision, collideRedShell});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletedCollide});
@@ -61,22 +61,22 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Move character
         //==============================================================================
-        if(!GlobalVariables::getInstance().getOnline())
-        {
-        
+        //:::> Should collisions be calculated first since they do "imaginary" positionament? 
+        //:::> How it should be: Stationary -> update collision ? no collision (fine) : collision (no moving)
+        //:::> Right now: Move it, calculate collision: if collision happened or you trespassed the wall, then its done.
+        //<___
         ourMove->update(dTime);
         
         //==============================================================================
         // Check collisions with other objects
         //==============================================================================
-            
         calculateObjectsCollision(ourMove, ourColl, dTime);
 
-        }
         //==============================================================================
         // Check collisions with terrain limits and terrain change
         //==============================================================================
         calculateTerrainCollision(movingCharacterList[i], ourMove, ourTerr, ourColl, dTime);
+        //___>
 
         gameObject.setNewTransformData(gameObject.getTransformData());
     }
@@ -129,106 +129,109 @@ void PhysicsManager::interpolate(float accumulatedTime, const float maxTime) {
 
 void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
-    CollisionComponent* ourColl = coll.get();
+    if(move != nullptr && coll != nullptr)
+    {
+        CollisionComponent* ourColl = coll.get();
 
-    for(unsigned int j=0; j<collisionComponentList.size(); ++j) {
+        for(unsigned int j=0; j<collisionComponentList.size(); ++j) {
 
-        std::shared_ptr<CollisionComponent> hColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList[j]);
-        CollisionComponent* hisColl = hColl.get();
-        if( hisColl != ourColl ) { //If the collider is different to the one of ourselves
+            std::shared_ptr<CollisionComponent> hColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList[j]);
+            CollisionComponent* hisColl = hColl.get();
+            if( hisColl != ourColl ) { //If the collider is different to the one of ourselves
 
-            bool collision;
+                bool collision;
 
-            auto nexPosition = ourColl->getGameObject().getTransformData().position + (move.get()->getMovemententData().velocity * dTime);
-            
-            //Depending on the shape to collide with, check collision with it
-            if(hisColl->getShape() == CollisionComponent::Shape::Circle) {
-                collision = LAPAL::checkCircleCircleCollision(  nexPosition, ourColl->getRadius(), ourColl->getLength(),
-                                                                hisColl->getGameObject().getTransformData().position, hisColl->getRadius(), hisColl->getLength());
-            } 
-            else if(hisColl->getShape() == CollisionComponent::Shape::Rectangle) {
-                collision = LAPAL::checkCircleRectangleCollision(   hisColl->getRectangle(),  nexPosition,
-                                                                    hisColl->getLength(), ourColl->getLength());
-            }
-
-            //If collision is kinetic, apply collision physics
-            if(collision && hisColl->getKinetic() && 
-                coll->getType() != CollisionComponent::Type::RedShell && coll->getType() != CollisionComponent::Type::BlueShell){
-
-                //Get other object move component
-                auto hisMove = hisColl->getGameObject().getComponent<MoveComponent>();
-
-                if(hisMove == nullptr) {    //If the object doesn't have move component, it's static
-                        
-                    calculateStaticCollision(move, hisColl->getGameObject().getTransformData().position, dTime);
-
+                auto nexPosition = ourColl->getGameObject().getTransformData().position + (move.get()->getMovemententData().velocity * dTime);
+                
+                //Depending on the shape to collide with, check collision with it
+                if(hisColl->getShape() == CollisionComponent::Shape::Circle) {
+                    collision = LAPAL::checkCircleCircleCollision(  nexPosition, ourColl->getRadius(), ourColl->getLength(),
+                                                                    hisColl->getGameObject().getTransformData().position, hisColl->getRadius(), hisColl->getLength());
+                } 
+                else if(hisColl->getShape() == CollisionComponent::Shape::Rectangle) {
+                    collision = LAPAL::checkCircleRectangleCollision(   hisColl->getRectangle(),  nexPosition,
+                                                                        hisColl->getLength(), ourColl->getLength());
                 }
-                else {  //The object is not static
+
+                //If collision is kinetic, apply collision physics
+                if(collision && hisColl->getKinetic() && 
+                    coll->getType() != CollisionComponent::Type::RedShell && coll->getType() != CollisionComponent::Type::BlueShell){
+
+                    //Get other object move component
+                    auto hisMove = hisColl->getGameObject().getComponent<MoveComponent>();
+
+                    if(hisMove == nullptr) {    //If the object doesn't have move component, it's static
+                            
+                        calculateStaticCollision(move, hisColl->getGameObject().getTransformData().position, dTime);
+
+                    }
+                    else {  //The object is not static
                         calculateMovingCollision(move, hisMove, dTime);
-                }
-
-                EventData data;
-                data.Component      = std::static_pointer_cast<IComponent>(move);
-                data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
-
-                EventManager::getInstance().addEvent(Event {EventType::Default_Collision, data});
-
-
-            }
-            //If collision isn't kinetic, react with events depending on the collision type
-            else if(collision && !hisColl->getKinetic()){
-
-                if(hisColl->getType() == CollisionComponent::Type::Ramp)
-                {
-                    EventData data;
-                    data.Component      = std::static_pointer_cast<IComponent>(move);
-                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
-
-                    EventManager::getInstance().addEvent(Event {EventType::RampComponent_Collision, data});
-                }
-                else if(hisColl->getType() == CollisionComponent::Type::Banana)
-                {
-                    EventData data;
-                    data.Id             = hisColl->getGameObject().getId();
-                    data.Component      = std::static_pointer_cast<IComponent>(move);
-                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
-
-                    EventManager::getInstance().addEvent(Event {EventType::BananaComponent_Collision, data});
-                }
-                else if(hisColl->getType() == CollisionComponent::Type::ItemBox)
-                {
-                    EventData data;
-                    data.Component      = std::static_pointer_cast<IComponent>(move);
-                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
-
-                    EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Collision, data});
-                }
-                else if(hisColl->getType() == CollisionComponent::Type::BlueShell && coll == ScoreManager::getInstance().getPlayers()[0].get()->getGameObject().getComponent<CollisionComponent>())
-                {
-                    EventData data;
-                    data.Id             = hisColl->getGameObject().getId();
-                    data.Component      = std::static_pointer_cast<IComponent>(move);
-                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
-
-                    EventManager::getInstance().addEvent(Event {EventType::BlueShellComponent_Collision, data});
-                }
-                else if(hisColl->getType() == CollisionComponent::Type::RedShell)
-                {
-                    EventData data;
-                    data.Id             = hisColl->getGameObject().getId();
-                    data.Component      = std::static_pointer_cast<IComponent>(move);
-                    data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
-
-                    EventManager::getInstance().addEvent(Event {EventType::RedShellComponent_Collision, data});
-                }
-                else if(hisColl->getType() == CollisionComponent::Type::StartLine)
-                {
+                    }
 
                     EventData data;
                     data.Component      = std::static_pointer_cast<IComponent>(move);
                     data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
 
-                    EventManager::getInstance().addEvent(Event {EventType::StartLineComponent_Collision, data});
+                    EventManager::getInstance().addEvent(Event {EventType::Default_Collision, data});
+
+
+                }
+                //If collision isn't kinetic, react with events depending on the collision type
+                else if(collision && !hisColl->getKinetic()){
+
+                    if(hisColl->getType() == CollisionComponent::Type::Ramp)
+                    {
+                        EventData data;
+                        data.Component      = std::static_pointer_cast<IComponent>(move);
+                        data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                        EventManager::getInstance().addEvent(Event {EventType::RampComponent_Collision, data});
+                    }
+                    else if(hisColl->getType() == CollisionComponent::Type::Trap)
+                    {
+                        EventData data;
+                        data.Id             = hisColl->getGameObject().getId();
+                        data.Component      = std::static_pointer_cast<IComponent>(move);
+                        data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                        EventManager::getInstance().addEvent(Event {EventType::TrapComponent_Collision, data});
+                    }
+                    else if(hisColl->getType() == CollisionComponent::Type::ItemBox)
+                    {
+                        EventData data;
+                        data.Component      = std::static_pointer_cast<IComponent>(move);
+                        data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                        EventManager::getInstance().addEvent(Event {EventType::ItemBoxComponent_Collision, data});
+                    }
+                    else if(hisColl->getType() == CollisionComponent::Type::BlueShell && coll == ScoreManager::getInstance().getPlayers()[0].get()->getGameObject().getComponent<CollisionComponent>())
+                    {
+                        EventData data;
+                        data.Id             = hisColl->getGameObject().getId();
+                        data.Component      = std::static_pointer_cast<IComponent>(move);
+                        data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                        EventManager::getInstance().addEvent(Event {EventType::BlueShellComponent_Collision, data});
+                    }
+                    else if(hisColl->getType() == CollisionComponent::Type::RedShell)
+                    {
+                        EventData data;
+                        data.Id             = hisColl->getGameObject().getId();
+                        data.Component      = std::static_pointer_cast<IComponent>(move);
+                        data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                        EventManager::getInstance().addEvent(Event {EventType::RedShellComponent_Collision, data});
+                    }
+                    else if(hisColl->getType() == CollisionComponent::Type::StartLine)
+                    {
+
+                        EventData data;
+                        data.Component      = std::static_pointer_cast<IComponent>(move);
+                        data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                        EventManager::getInstance().addEvent(Event {EventType::StartLineComponent_Collision, data});
+                    }
                 }
             }
         }
@@ -278,7 +281,8 @@ void PhysicsManager::calculateMovingCollision(std::shared_ptr<MoveComponent> mov
 
 //Calculate if we are inside a terrain or if we are going to another one
 void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll, const float dTime) {
-
+    if(move != nullptr && terr != nullptr && coll != nullptr)
+    {
         MoveComponent* ourMove = move.get();
         TerrainComponent* ourTerr = terr.get();
         CollisionComponent* ourColl = coll.get();
@@ -357,10 +361,11 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
                     movingChar.terrainComponent = ourTerr->getLeft(); //Set new terrain component
             }
         }
+    }
 }
 
 void PhysicsManager::calculateLineCollision(std::shared_ptr<MoveComponent> move, LAPAL::vec3f p1, LAPAL::vec3f p2) {
-
+    //:::>Some comments wouldn't harm
     MoveComponent* ourMove = move.get();
     LAPAL::movementData mData = ourMove->getMovemententData();
 
@@ -387,7 +392,6 @@ void PhysicsManager::checkCollisionShellTerrain(GameObject& obj)
     {
         EventData data;
         data.Id = obj.getId();
-
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
 }
@@ -406,11 +410,13 @@ PhysicsManager::MovingCharacter PhysicsManager::getMovingCharacter(uint16_t id) 
 }
 
 std::shared_ptr<TerrainComponent> PhysicsManager::getTerrainFromPos(LAPAL::vec3f pos) {
-
+    
     for( unsigned int i=0; i < terrainComponentList.size(); ++i){
         
         auto terrain = std::dynamic_pointer_cast<TerrainComponent>(terrainComponentList[i]);
 
+        //Checks if terrain collides with the object
+        //:::>size 20 to 0 must be a variable somewhere, can't be hardcoded
         if(LAPAL::checkCircleRectangleCollision(terrain.get()->getTerrain(), pos, 20, 0))
             return terrain;
     }
@@ -424,28 +430,32 @@ std::shared_ptr<TerrainComponent> PhysicsManager::getTerrainFromPos(LAPAL::vec3f
 //==============================================================================
 
 IComponent::Pointer PhysicsManager::createMoveComponent(GameObject& newGameObject, LAPAL::movementData newMData, LAPAL::plane3f newPlane, float newMass) {
-
+    //Make shared pointer of the move component
     IComponent::Pointer component = std::make_shared<MoveComponent>(newGameObject, newMData, newPlane, newMass);
 
+    //Attach to object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::MoveComponent_Create, data});
 
     return component;
 }
 
 IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameObject, LAPAL::plane3f newPlane) {
-
+    //Make shared pointer of the terrain component
     IComponent::Pointer component = std::make_shared<TerrainComponent>(newGameObject, newPlane);
 
+    //Add terrain component to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::TerrainComponent_Create, data});
 
     return component;
@@ -453,28 +463,32 @@ IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameOb
 
 
 IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const float radius, const float length, const bool kinetic, const CollisionComponent::Type type) {
-
+    //Make shared pointer of collision component
     IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, radius, length, kinetic, type);
 
+    //Add collision component to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::CollisionComponent_Create, data});
 
     return component;
 }
 
 IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGameObject, const LAPAL::plane3f plane, const bool kinetic, const float length, const CollisionComponent::Type type) {
-
+    //Make shared pointer of collision component
     IComponent::Pointer component = std::make_shared<CollisionComponent>(newGameObject, plane, length, kinetic, type);
 
+    //Add collision component to game object
     newGameObject.addComponent(component);
 
+    //Send event of creation
+    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
-
     EventManager::getInstance().addEvent(Event {EventType::CollisionComponent_Create, data});
 
     return component;
@@ -494,15 +508,16 @@ void PhysicsManager::createMovingCharacter(IComponent::Pointer moveComponent, IC
 }
 
 IComponent::Pointer PhysicsManager::createRampComponent(GameObject& newGameObject, const float speed, const float cTime, const float dTime) {
-
+    //Make shared pointer of ramp component
     IComponent::Pointer component = std::make_shared<RampComponent>(newGameObject, speed, cTime, dTime);
 
+    //Attach to object
     newGameObject.addComponent(component);
 
-    EventData data;
-    data.Component = component;
-
     //________>Not needed now
+    //:::> Useless without scheduling, and by now has no purpose
+    //EventData data;
+    //data.Component = component;
     //EventManager::getInstance().addEvent(Event {EventType::RampComponent_Create, data});
 
     return component;
@@ -510,7 +525,8 @@ IComponent::Pointer PhysicsManager::createRampComponent(GameObject& newGameObjec
 
 //==============================================
 // DELEGATES
-//============================================== 
+//==============================================
+//:::>this 3 functions could be changed by a generic component creation one
 void addMoveComponent(EventData data) {
     PhysicsManager::getInstance().getMoveComponentList().push_back(data.Component);
     data.Component.get()->init();
@@ -518,11 +534,13 @@ void addMoveComponent(EventData data) {
 
 void addCollisionComponent(EventData data) {
     PhysicsManager::getInstance().getCollisionComponentList().push_back(data.Component);
+    //:::>No inits here
     data.Component.get()->init();
 }
 
 void addTerrainComponent(EventData data) {
     PhysicsManager::getInstance().getTerrainComponentList().push_back(data.Component);
+    //:::>No inits here
     data.Component.get()->init();
 }
 
@@ -538,17 +556,18 @@ void collideRamp(EventData eData) {
     }
 }
 
-void collideBanana(EventData eData) {
+void collideTrap(EventData eData) {
+    //Get collision components from data
     auto move = std::static_pointer_cast<MoveComponent>(eData.Component);
     auto coll = std::static_pointer_cast<CollisionComponent>(eData.CollComponent);
 
-    auto banana = coll->getGameObject().getComponent<ItemBananaComponent>();
+    auto trap = coll->getGameObject().getComponent<ItemTrapComponent>();
 
-    if(banana != nullptr) {
-        move->changeMaxSpeedOverTime(banana.get()->getSpeed(), banana.get()->getConsTime(), banana.get()->getDecTime());
+    if(trap != nullptr) {
+        move->changeMaxSpeedOverTime(trap.get()->getSpeed(), trap.get()->getConsTime(), trap.get()->getDecTime());
 
         EventData data;
-        data.Id = banana->getGameObject().getId();
+        data.Id = trap->getGameObject().getId();
 
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }

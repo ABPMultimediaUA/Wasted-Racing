@@ -1,20 +1,22 @@
 #include "ClientLobbyState.h"
 
-
-//Extra functions
-void introVideo();
+//==============================================================
+// MAIN FUNCTIONS
+//==============================================================
 
 void ClientLobbyState::init() {
 
+    //Initialize managers
     networkManager = &NetworkManager::getInstance();
-    objectManager = &ObjectManager::getInstance();
-    renderManager = &RenderManager::getInstance();
-    inputManager  = &InputManager::getInstance();
-    eventManager = &EventManager::getInstance();
+    objectManager  = &ObjectManager::getInstance();
+    renderManager  = &RenderManager::getInstance();
+    inputManager   = &InputManager::getInstance();
+    eventManager   = &EventManager::getInstance();
 
-    renderManager->getRenderFacade()->createRectangle2D(glm::vec2(renderManager->getRenderFacade()->getWindow().size.x/2-600, renderManager->getRenderFacade()->getWindow().size.y/2-331), "media/img/lobbyProv.png");
-    renderManager->getRenderFacade()->drawGUI();
+    //Initialize image
+    text1 = renderManager->createText(std::string("... Conectando ..."), glm::vec2(500,500), 255, 0, 0, 255, glm::vec2(300,300), std::string("media/font/Razor_m.png"));
 
+    //Initialize lobby
     if(!networkManager->getConnected())
     {
         networkManager->initLobby();
@@ -22,27 +24,34 @@ void ClientLobbyState::init() {
 }
 
 void ClientLobbyState::update(float &accumulatedTime) {
-
+    //Check input
     inputManager->update();
 
+    //Update network
     networkManager->updateLobby();
     if(networkManager->getStarted())
     {
-        renderManager->getRenderFacade()->deleteRectangle2D();
-        renderManager->getRenderFacade()->drawGUI();
+        //Close
+        close();
+
+        //Change game to online match
         GlobalVariables::getInstance().setOnline(true);
         Game::getInstance().setState(IGameState::stateType::MULTIMATCH);
     }
 
+    //Update event
     eventManager->update();
 
+    //See if game is still running
     Game::getInstance().setStay(objectManager->getGameRunning());
 }
 
 void ClientLobbyState::draw() {
-
+    //Update GUI only
+    renderManager->drawHUD();
 }
 
 void ClientLobbyState::close() {
-    
+    //Delete connecting text
+    renderManager->cleanVI();
 }

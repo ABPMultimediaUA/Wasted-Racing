@@ -5,6 +5,7 @@
  #include "TLight.h"
  #include "TMesh.h"
  #include "TNode.h"
+ #include "TResourceAnimation.h"
  #include "TResource.h"
  #include "TResourceMaterial.h"
  #include "TResourceMesh.h"
