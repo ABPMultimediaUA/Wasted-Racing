@@ -1064,7 +1064,7 @@ void RenderManager::LoDmesh()
 
                 auto polyMesh = renderObject->getPolyMesh();
 
-                if((distance > distanceLoD*distanceLoD && distance <= (distanceLoD*distanceLoD)*1.5) && 
+                if((distance > distanceLoD*distanceLoD && distance <= (distanceLoD*distanceLoD)*2) && 
                     polyMesh != ObjectRenderComponent::Poly::Medium)
                 {
                     std::string mesh = renderObject->getMesh();
@@ -1076,7 +1076,7 @@ void RenderManager::LoDmesh()
                     renderObject->setPolyMesh(ObjectRenderComponent::Poly::Medium);
                     polyMesh = renderObject->getPolyMesh();
                 }  
-                else if(distance > ((distanceLoD*distanceLoD)*2) && polyMesh != ObjectRenderComponent::Poly::Low)
+                else if((distance > ((distanceLoD*distanceLoD)*2)) && polyMesh != ObjectRenderComponent::Poly::Low)
                 {
                     std::string mesh = renderObject->getMesh();
                     auto name = renderObject->getName();
