@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "../GlobalVariables.h"
 #include "RenderManager.h"
 #include "../GameObject/AIComponent/PathPlanningComponent.h"
 #include "../GameObject/AIComponent/WaypointComponent.h"

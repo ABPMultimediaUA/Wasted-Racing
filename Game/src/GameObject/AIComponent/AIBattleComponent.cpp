@@ -14,6 +14,7 @@ class UseItemAction : public Behaviour{
             auto itemHolder = target.getComponent<ItemHolderComponent>().get();
             if(itemHolder)
             {
+                //:::> Should be substituted with event
                 ItemManager* itemManager = &ItemManager::getInstance();
                 itemManager->createItem(target);
                 
@@ -26,7 +27,7 @@ class UseItemAction : public Behaviour{
                 auto player = RenderManager::getInstance().getAIsBattle();
                 if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
                 {
-                    // DELETE ALL OF THIS
+                    //:::> DELETE ALL OF THIS
                     RenderManager::getInstance().setRootBattle(name);
                     RenderManager::getInstance().setEndRootBattle(true);
                     RenderManager::getInstance().setWaitBattle(false);
@@ -376,7 +377,7 @@ void AIBattleComponent::init()
     sequence2->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem2Action(target)));
     sequence2->AddChild(DS2);
 
-    //Sequence for item 3: Banana. If we have it, we enter in it's correspondant Dynamic Selector
+    //Sequence for item 3: trap. If we have it, we enter in it's correspondant Dynamic Selector
     sequence3->AddChild(std::shared_ptr<Behaviour>(new ConditionHasItem3Action(target)));
     sequence3->AddChild(DS3);
 

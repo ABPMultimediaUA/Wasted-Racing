@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 #include "RedPanda.h"
 
@@ -40,19 +41,22 @@ public:
     //Creates an object and returns a TMesh
     TNode* createObjectNode(TNode* parent, glm::vec3 position, const char* mesh); 
     //Creates a camera and returns a TCamera
-    TNode* createCamera(TNode* parent, glm::vec3 position);
+    TNode* createCamera(TNode* parent, glm::vec3 position, glm::vec3 target);
     //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity);
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
 
+    void updateCamera(glm::vec3 position, glm::vec3 target);
+
     void setGUIDrawFunction(void (*)());
 
     //////////////////////////////
     //  GETTERS
-    SDL_Window* getWindow()   {   return window;      }
-    TNode* getSceneRoot()           {   return scene;       }
+    SDL_Window* getWindow()               { return window;           }
+    TNode* getSceneRoot()                 { return scene;            }
     ResourceManager* getResourceManager() { return resourceManager;  }
+    SDL_GLContext* getContext()           { return context;          }  
 
     //////////////////////////////
     //  SETTERS
@@ -75,7 +79,7 @@ private:
     //////////////////////////////
     //  VARIABLES
     SDL_Window* window;
-    SDL_GLContext context;
+    SDL_GLContext* context;
     TNode *scene;
     ResourceManager *resourceManager;
     //Lights and camera
@@ -88,6 +92,14 @@ private:
     GLuint skyboxID;
     //SKybox vertex array
     GLuint skyVertexArray;
+
+
+    //Chrono
+    std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
+
+    //Chrono flag
+    bool showFPS = false;
+    
 
 };
 

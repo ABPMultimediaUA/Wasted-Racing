@@ -1,5 +1,6 @@
 #include "AudioFMOD.h"
 #include "../GameEvent/EventManager.h"
+#include "../GameManager/AudioManager.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
 //==============================================================================================================================
@@ -37,7 +38,7 @@ void ERRCHECK_fn(FMOD_RESULT result, const char *file, int line)
 void shootDefaultCollisionEvent(EventData e);
 void shootRampCollisionEvent(EventData e);
 void shootItemBoxCollisionEvent(EventData e);
-void shootBananaCollisionEvent(EventData e);
+void shootTrapCollisionEvent(EventData e);
 //SCORE
 void shootOnNewLapEvent(EventData e);
 void shootOnOvertakeEvent(EventData e);
@@ -79,7 +80,7 @@ void AudioFMOD::openAudioEngine(int lang) {
     EventManager::getInstance().addListener(EventListener {EventType::Default_Collision, shootDefaultCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::RampComponent_Collision, shootRampCollisionEvent});
     EventManager::getInstance().addListener(EventListener {EventType::ItemBoxComponent_Collision, shootItemBoxCollisionEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::BananaComponent_Collision, shootBananaCollisionEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::TrapComponent_Collision, shootTrapCollisionEvent});
     //SCORE
     EventManager::getInstance().addListener(EventListener {EventType::Score_OnNewLap, shootOnNewLapEvent});
     EventManager::getInstance().addListener(EventListener {EventType::Score_OnOvertake, shootOnOvertakeEvent});
@@ -193,9 +194,9 @@ void shootItemBoxCollisionEvent(EventData e) {
     sound->initalizeSound(audioFMOD, e);
   
 }
-void shootBananaCollisionEvent(EventData e) {
+void shootTrapCollisionEvent(EventData e) {
     
-    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "BananaCollisionEvent");
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "TrapCollisionEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
   

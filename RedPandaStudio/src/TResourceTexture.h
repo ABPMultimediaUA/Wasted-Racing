@@ -18,6 +18,8 @@ class TResourceTexture : public TResource {
         //Deactivates the current texture
         void endDraw();
 
+        GLuint getTextureId() { return textureID; }
+
 
     private:
         //SFML Class to store our texture

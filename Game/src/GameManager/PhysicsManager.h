@@ -7,7 +7,7 @@
 #include "../GameEvent/EventManager.h"
 #include "../GameObject/PhysicsComponent/TerrainComponent.h"
 #include "../GameObject/ItemComponent/ItemBoxComponent.h"
-#include "../GameObject/ItemComponent/ItemBananaComponent.h"
+#include "../GameObject/ItemComponent/ItemTrapComponent.h"
 #include "../GameObject/ItemComponent/ItemBlueShellComponent.h"
 #include "../GameObject/ItemComponent/ItemRedShellComponent.h"
 #include "../GameObject/ItemComponent/ItemStarComponent.h"

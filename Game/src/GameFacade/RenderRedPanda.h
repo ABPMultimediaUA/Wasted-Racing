@@ -37,6 +37,8 @@ public:
     //Closes engine window
     virtual void closeWindow();
 
+    rps::RedPandaStudio* getDevice() { return device; }
+
     //==============================================================
     // Render Related functions
     //==============================================================
@@ -181,15 +183,10 @@ private:
 
     virtual void updateItemIcon();
 
-private:
-
-    //RenderRedPanda own window
-    rps::RedPandaStudio* device;
+    //RenderRedPanda own device
+    rps::RedPandaStudio* device = nullptr;
 
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
-
-    //RedPanda camera
-    //rps::TNode* camera;
 
 };

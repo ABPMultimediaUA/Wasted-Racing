@@ -37,9 +37,9 @@ public:
 };
 
 //===========================================================
-//      BANANA COLLISION EVENT
+//      Trap COLLISION EVENT
 //===========================================================
-class BananaCollisionEvent : public ISoundEvent {
+class TrapCollisionEvent : public ISoundEvent {
 
 public: 
 

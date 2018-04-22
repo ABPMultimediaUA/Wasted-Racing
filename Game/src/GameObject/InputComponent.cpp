@@ -67,7 +67,11 @@ void InputComponent::close(){
 //==============================================
 void advanceDownI(EventData eData) {
     auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
-    comp->changeAccInc(comp->getMovemententData().max_acc);
+
+    float maxAcc = comp->getMovemententData().max_acc;
+    float accInc = (eData.grade == -2) ? (maxAcc) : (maxAcc * eData.grade);
+
+    comp->changeAccInc(accInc);
     comp->isMoving(true);
 }
 void advanceUpI(EventData eData) {
@@ -81,11 +85,14 @@ void brakeDownI(EventData eData) {
 }
 void brakeUpI(EventData eData) {
     auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
-        comp->isBraking(false);
+    comp->isBraking(false);
 }
 void turnLeftDownI(EventData eData) {
     auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
-    comp->changeSpinIncrement(0.1);
+
+    float spin = (eData.grade == -2) ? (0.1) : (0.1 * eData.grade);
+
+    comp->changeSpinIncrement(spin);
     comp->isSpinning(true);
 }
 void turnLeftUpI(EventData eData) {
@@ -95,7 +102,10 @@ void turnLeftUpI(EventData eData) {
 }
 void turnRightDownI(EventData eData) {
     auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
-   comp->changeSpinIncrement(-0.1);
+
+    float spin = (eData.grade == -2) ? (0.1) : (0.1 * eData.grade);
+
+    comp->changeSpinIncrement(-spin);
     comp->isSpinning(true);
 }
 void turnRightUpI(EventData eData) {
@@ -121,7 +131,10 @@ void driftUpI(EventData eData){
 }
 
 void useItemDownI(EventData eData){
-    EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
+    //:::>Should be an event
+    //<___
+    //EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
+    //___>
     auto obj = InputManager::getInstance().getComponent().get()->getGameObject();
     ItemManager::getInstance().createItem(obj);
 }

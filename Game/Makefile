@@ -146,7 +146,7 @@ info:
 ################################################################################
 # Windows 
 ################################################################################
-all_windows: LDFLAGS += -L./lib/win -lIrrlicht -lopengl32 -lm -lfmod -lfmodstudio -lRakNetDLL
+all_windows: LDFLAGS += -L./lib/win -lIrrlicht -lopengl32 -lm -lfmod -lfmodstudio -lRakNetDLL -lmingw32 -lSDL2 -lglew32 -lassimp -lsfml-graphics-2 -lsfml-system-2 -lRedPanda
 all_windows:
 	$(CXX) $(CXXFLAGS) $(addprefix $(BIN_PATH)$(OBJ_PATH),$(shell ls $(BIN_PATH)$(OBJ_PATH))) -o $(BIN_PATH)$(TARGET) $(LDFLAGS)
 

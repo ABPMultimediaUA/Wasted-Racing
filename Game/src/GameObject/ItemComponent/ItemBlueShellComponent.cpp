@@ -2,7 +2,7 @@
 
 
 
-ItemBlueShellComponent::ItemBlueShellComponent(GameObject& newGameObject, GameObject& obj) : IItemComponent(newGameObject), player(obj)
+ItemBlueShellComponent::ItemBlueShellComponent(GameObject& newGameObject, GameObject& obj, IItemComponent::InstanceType m) : IItemComponent(newGameObject), player(obj), mode(m)
 {
     speed = 1.f;
     consTime = 0.1f;
@@ -21,8 +21,14 @@ void ItemBlueShellComponent::init()
 
 }
 
+//:::> This ALL should be in AIManager since it does calculations using all components
 void ItemBlueShellComponent::update(float dTime)
 {
+    //Return if object was created as a copy of a remote online object
+    if(mode == IItemComponent::InstanceType::REMOTE)
+        return;
+
+    //:::>Explain all of this code pls
     auto listNodes = WaypointManager::getInstance().getWaypoints();
     auto vSensorComponent = getGameObject().getComponent<VSensorComponent>().get();
     auto moveComponent = getGameObject().getComponent<MoveComponent>().get();

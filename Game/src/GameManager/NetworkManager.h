@@ -1,14 +1,25 @@
 #pragma once
 
+//C++ includes
 #include <iostream>
 #include <memory>
+#include <string>
+
+//Raknet includes
 #include <raknet/RakPeerInterface.h> 
 #include <raknet/MessageIdentifiers.h>
 #include <raknet/BitStream.h>
+
+//Basic info includes
 #include "../GlobalVariables.h"
 #include "../GameServer/CustomIdentifiers.h"
+
+//Component && extra includes
+#include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/NetworkComponent/RemotePlayerComponent.h"
 #include "../GameObject/NetworkComponent/RemoteItemComponent.h"
+
+//Manager includes
 #include "PhysicsManager.h"
 #include "ItemManager.h"
 #include "ObjectManager.h"
@@ -95,18 +106,18 @@ public:
     //  Create Objects
     //==============================================================
 
-    //--------------------------------------------------------
-    //send signal to create a banana
-    void createBanana(EventData eData);
+    //--------------------------------------------------------     
+    //send signal to create a trap
+    void createTrap(EventData eData);
+ 
+    //send signal to destroy a trap
+    void destroyTrap(EventData eData);
 
-    //send signal to destroy a banana
-    void destroyBanana(EventData eData);
+    //creates a trap item where it should be on the map
+    void remoteCreateTrap(RakNet::Packet* packet);
 
-    //creates a banana item where it should be on the map
-    void remoteCreateBanana(RakNet::Packet* packet);
-
-    //destroy a banana item where it should be on the map
-    void remoteDestroyBanana(RakNet::Packet* packet);
+    //destroy a trap item where it should be on the map
+    void remoteDestroyTrap(RakNet::Packet* packet);
     //--------------------------------------------------------
 
 
@@ -156,7 +167,7 @@ public:
     // Getters and setters
     //==============================================================
     std::vector<IComponent::Pointer>& getRemotePlayerComponentList()   {  return remotePlayerComponentList;   } //Remote player component list getter
-    std::vector<IComponent::Pointer>& getRemoteBananaComponentList()   {  return remoteBananaComponentList;   } //Remote player component list getter
+    std::vector<IComponent::Pointer>& getRemoteTrapComponentList()     {  return remoteTrapComponentList;     } //Remote player component list getter
     std::vector<IComponent::Pointer>& getRemoteRedShellComponentList() {  return remoteRedShellComponentList; } //Remote player component list getter
     std::vector<IComponent::Pointer>& getRemoteBlueSHellComponentList(){  return remoteBlueShellComponentList;} //Remote player component list getter
     void setPlayer(GameObject::Pointer p)                              {  player = p;                         };
@@ -168,7 +179,11 @@ public:
     bool getConnected()                                                {  return connected;                   };
     std::list<customMessages>* getLastPackets()                        {  return &lastPackets;                }; //Returns last packets received
     std::list<int>*            getLastSenders()                        {  return &lastSenders;                }; //Returns last packets' Senders
-    std::list<unsigned char*>* getLastData()                           {  return &lastData;                   }; //Returns last packets' data
+    std::list<std::string>* getLastData()                              {  return &lastData;                   }; //Returns last packets' data
+
+    //IP identifier
+    void setServerIP(std::string s)                                    { serverIP = s;                        }; //Set server IP
+    std::string getServerIP()                                          { return serverIP;                     }; //Return server IP
     
 private:
     //==============================================================
@@ -184,20 +199,21 @@ private:
     //Own player
     GameObject::Pointer player;
 
-    //Own id
+    //Server Info
     int server_id;
+    std::string serverIP;
 
     //Debug info
     bool debugNetworkState = false;
     std::list<customMessages> lastPackets;
-    std::list<unsigned char*> lastData;
+    std::list<std::string> lastData;
     std::list<int>            lastSenders;
 
     //List of remotePlayerComponent
     std::vector<IComponent::Pointer> remotePlayerComponentList;
 
     //List of remotePlayerComponent
-    std::vector<IComponent::Pointer> remoteBananaComponentList;
+    std::vector<IComponent::Pointer> remoteTrapComponentList;
 
     //List of remotePlayerComponent
     std::vector<IComponent::Pointer> remoteRedShellComponentList;

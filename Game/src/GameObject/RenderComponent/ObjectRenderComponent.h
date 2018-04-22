@@ -24,7 +24,7 @@ public:
 
     //Constructor
 	ObjectRenderComponent(GameObject& newGameObject, Shape newShape, const char* newStr) : IRenderComponent(newGameObject), objectShape(newShape) {
-
+		//If type is mesh, search it in mesh folder
 		if(newShape == Shape::Mesh){
 
 			folder = "";
@@ -38,6 +38,7 @@ public:
 			name = std::string(newStr);
 			mesh = "media/mesh/" + folder + "/" + std::string(newStr);
 		}
+		//If not in img folder
 		else{
 			name = std::string(newStr);
 			img = "media/img/" + std::string(newStr);
