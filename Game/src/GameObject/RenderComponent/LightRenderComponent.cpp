@@ -17,10 +17,9 @@ void LightRenderComponent::update(float dTime) {
 
 //Closer
 void LightRenderComponent::close() {
-    //:::> Shouldn't the render manager erase it?
-    //<___ I did it in the render manager
-    //RenderManager::getInstance().getRenderFacade()->deleteObject(this);
-    //___>
+
+    RenderManager::getInstance().getRenderFacade()->deleteObject(this);
+
 }
 
 //Drawer

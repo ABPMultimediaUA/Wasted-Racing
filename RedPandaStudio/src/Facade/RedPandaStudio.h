@@ -118,12 +118,4 @@ void translateNode(TNode* node, glm::vec3 position);
 void rotateNode(TNode* node, glm::vec3 rotation);
 void scaleNode(TNode* node, glm::vec3 scale);
 
-//Animation facade
-//Input node has to be of type Animation
-void loopAnimation(TNode* node);
-void pauseAnimation(TNode* node);
-void playOnceAnimation(TNode* node);
-void updateAnimation(TNode* node, double dTime);
-
-
 }

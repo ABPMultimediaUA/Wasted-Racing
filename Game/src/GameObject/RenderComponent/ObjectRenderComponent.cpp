@@ -4,8 +4,6 @@
 //Initilizer
 void ObjectRenderComponent::init() {
 
-    RenderManager::getInstance().getRenderFacade()->addObject(this);
-
 }
 
 //Update

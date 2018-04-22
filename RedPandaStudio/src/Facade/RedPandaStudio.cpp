@@ -541,7 +541,8 @@ void translateNode(TNode* node, glm::vec3 position) {
 	//Check the input is a mesh, camera or light
 	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
-		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
+		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr  ||
+		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getEntity();
 
@@ -558,9 +559,9 @@ void scaleNode(TNode* node, glm::vec3 scale) {
 
 	//Check the input is a mesh, camera or light
 	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
-		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr || 
 		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
-		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
+		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr  ||
+		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getFather()->getEntity();
 
@@ -578,7 +579,8 @@ void rotateNode(TNode* node, glm::vec3 rotation) {
 	//Check the input is a mesh, camera or light
 	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
-		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
+		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr  ||
+		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getFather()->getFather()->getEntity();
 
@@ -586,67 +588,6 @@ void rotateNode(TNode* node, glm::vec3 rotation) {
 		tr->rotate(0, 1, 0, rotation.y);
 		tr->rotate(1, 0, 0, rotation.x);
 		tr->rotate(0, 0, 1, rotation.z);
-	}
-
-}
-
-void loopAnimation(TNode* node) {
-
-	TAnimation* t;
-
-	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
-
-		TResourceAnimation* anim = t->getAnimation();
-
-		if(anim != nullptr) {
-
-			anim->setLoop(true);
-		}
-	}
-}
-
-void pauseAnimation(TNode* node) {
-
-	TAnimation* t;
-
-	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
-
-		TResourceAnimation* anim = t->getAnimation();
-
-		if(anim != nullptr) {
-
-			anim->setPause(true);
-		}
-	}
-}
-
-void playOnceAnimation(TNode* node) {
-
-	TAnimation* t;
-
-	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
-
-		TResourceAnimation* anim = t->getAnimation();
-
-		if(anim != nullptr) {
-
-			anim->playNoLoop();
-		}
-	}
-}
-
-void updateAnimation(TNode* node, double dTime) {
-
-	TAnimation* t;
-
-	if(node != nullptr && ((t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr)){
-
-		TResourceAnimation* anim = t->getAnimation();
-
-		if(anim != nullptr) {
-
-			anim->update(dTime);
-		}
 	}
 
 }

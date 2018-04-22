@@ -2,19 +2,19 @@
 
 #include <string>
 #include "IRenderComponent.h"
-
+#include <iostream>
 class AnimationRenderComponent : public IRenderComponent {
 
 public:
 
     //Constructor
-	AnimationRenderComponent(GameObject& newGameObject, const char* newStr, int newFrames, bool newLoop) : 
-        IRenderComponent(newGameObject), frames(newFrames), looping(newLoop) {
+	AnimationRenderComponent(GameObject& newGameObject, const char* newStr, int newFrames) : 
+        IRenderComponent(newGameObject), frames(newFrames) {
 
 		std::string folder = "";
 		int i = 0;
 
-		while(newStr[i]!='.'){
+		while(newStr[i]!='_'){
 			folder += newStr[i];
 			i++;
 		}
@@ -41,24 +41,23 @@ public:
     //Pause animation
     void pause();
 
-    //Loop animation
-    void loop();
-
     //Play animation once
     void playOnce();
 
     //Start animation 
-    void play();
+    void playLoop();
 
 	std::string getPath() {
 		return path;
 	}
 
+	int getState() 		{ return state; }
+	int getFrames()		{ return frames; }
 
 private:
 
 	std::string path;
     int frames;
-    bool looping;
+    int state = 2; // 0 = paused, 1 = play once, 2 = play loop
 
 };

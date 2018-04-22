@@ -55,8 +55,9 @@ int main() {
 
         
         anim->getAnimation()->update(30);
-        rps->updateCamera(glm::vec3(10, i, 0), glm::vec3(0,0,0));
+        rps->updateCamera(glm::vec3(10, 0, 0), glm::vec3(0,0,0));
         rps->updateDevice();
+        rps::translateNode(t, glm::vec3(i,i,i));
         i += 0.01;
 
     }

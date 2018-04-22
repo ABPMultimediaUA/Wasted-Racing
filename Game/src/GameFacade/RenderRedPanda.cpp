@@ -15,6 +15,7 @@
 #include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include "../GameObject/RenderComponent/LightRenderComponent.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/AnimationRenderComponent.h"
 #include "../GameManager/RenderManager.h"
 #include "../GameManager/ObjectManager.h"
 
@@ -176,6 +177,19 @@ void RenderRedPanda::addObject(IComponent* ptr, float radius, float length, int 
 //Add an animation to the game
 void RenderRedPanda::addAnimation(IComponent* ptr) {
 
+    AnimationRenderComponent* cmp = dynamic_cast<AnimationRenderComponent*>(ptr);
+
+    auto obj = cmp->getGameObject();
+    auto pos = obj.getTransformData().position;
+    auto sca = obj.getTransformData().scale;
+    
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24);
+
+    rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
+
+    nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
+    animationMap.insert(std::pair<uint16_t, TAnimation*>(obj.getId(), (TAnimation*)node->getEntity()));
+
 }
 
 //Add a light to the game
@@ -256,6 +270,24 @@ void RenderRedPanda::updateAnimations(float dTime) {
 //Update single animation
 void RenderRedPanda::updateAnimation(IComponent* ptr) {
 
+    AnimationRenderComponent* anim = (AnimationRenderComponent*)ptr;
+
+    int state = anim->getState();
+    int16_t id = anim->getGameObject().getId();
+
+    TAnimation* node = animationMap.find(id)->second;
+
+    if(state == 0) {
+        node->getAnimation()->setPause(true);
+    }
+    else if(state == 1) {
+        node->getAnimation()->playNoLoop();
+        node->getAnimation()->setLoop(false);
+    }
+    else if(state == 2) {
+        node->getAnimation()->playNoLoop();
+        node->getAnimation()->setLoop(true);
+    }
 }
 
 //==============================================================
