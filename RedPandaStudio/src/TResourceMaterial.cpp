@@ -19,8 +19,6 @@ bool TResourceMaterial::loadResource(aiMaterial* m)
     kd[1]=v.g;
     kd[2]=v.b;
     
-    //std::cout << "KD: " << kd[0] << " - " << kd[1] << " - " << kd[2] << std::endl;
-
     m->Get(AI_MATKEY_COLOR_AMBIENT, v);
     ka[0]=v.r;
     ka[1]=v.g;
@@ -33,6 +31,8 @@ bool TResourceMaterial::loadResource(aiMaterial* m)
     ks[2]=v.b;
 
     m->Get(AI_MATKEY_SHININESS, ns);
+
+    return true;
     
 }
 

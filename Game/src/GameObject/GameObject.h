@@ -19,8 +19,6 @@ public:
 		glm::vec3 scale;
 	};
 
-	TransformationData t;
-
 	//===========================================
 	// BASIC FUNCTIONS
 	//===========================================
@@ -78,6 +76,7 @@ public:
 	void close();
 
 	//Add component
+	//:::>Needs a method for removing components, either by type or by the whole pointer itself
 	void addComponent(IComponent::Pointer component);
 
 	//Get component

@@ -2,6 +2,10 @@
 
 #include <vector>
 #include "QuadTree.h"
+#include "../GameObject/IComponent.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include "../GameFacade/RenderIrrlicht.h"
 #include "../GameFacade/RenderRedPanda.h"
 #include "WaypointManager.h"
@@ -42,21 +46,18 @@ public:
     //Static class getter
     static RenderManager& getInstance();
 
-    //Component list getter
-    std::vector<IComponent::Pointer>& getComponentList() {
-        return renderComponentList;
-    }
+    //==============================================
+    // GETTERS AND SETTERS
+    //==============================================
+    std::vector<IComponent::Pointer>& getComponentList() { return renderComponentList; } //Component list getter
+    QuadTree& getComponentTree()                         { return renderComponentTree; } //QuadTree getter
+    IRenderFacade* getRenderFacade()                     { return renderFacade;        } //Get render facade functions
+    IComponent::Pointer getCameraComponent()             { return cameraComponent;     } //Camera component getter 
+    void setCameraComponent( IComponent::Pointer cam )   { cameraComponent = cam;      } //and setter
 
-    //QuadTree getter
-    QuadTree& getComponentTree() {
-        return renderComponentTree;
-    }
-
-    //Get render facade functions
-    IRenderFacade* getRenderFacade() {
-        return renderFacade;
-    }
-
+    //==============================================
+    // COMPONENT CREATORS
+    //==============================================
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr);
     IComponent::Pointer createLightRenderComponent(GameObject& newGameObject, LightRenderComponent::Type newType, float newRadius);
     IComponent::Pointer createCameraRenderComponent(GameObject& newGameObject);
@@ -64,9 +65,6 @@ public:
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency);
     //Create skybox
     IComponent::Pointer createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back);
-    //Camera component getter and setter
-    IComponent::Pointer getCameraComponent() { return cameraComponent; }
-    void setCameraComponent( IComponent::Pointer cam ) { cameraComponent = cam; }
 
 
     /////////////
@@ -87,6 +85,9 @@ public:
     //Updates HUD
     void updateHUD();
 
+    //Draw HUD
+    void drawHUD();
+    
     /////////////
     //  IMAGES
     /////////////
@@ -204,6 +205,7 @@ private:
     //==============================================================
     // HUD DATA
     //==============================================================
+    bool HUD_ON;             //Checks if hud was initialized
     int32_t lapHUD_ID;      //Lap text ID
     int32_t positionHUD_ID; //Position text ID
     int32_t itemHUD_ID;     //Item text ID

@@ -12,8 +12,41 @@
 #include <nuklear/nuklear.h>
 #include <nuklear/nuklear_sdl_gl3.h>
 
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameManager/RenderManager.h"
+#include "../GameManager/ObjectManager.h"
+
+//==============================================================
+// Gui Related functions and variables declarations
+//==============================================================
 struct nk_context *GUI; //:::> global variable
-//void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
+
+namespace gui {
+
+    struct nk_image background;
+    struct nk_image item_banana;
+    struct nk_image item_blue;
+    struct nk_image item_red;
+    struct nk_image item_star;
+    struct nk_image item_mushroom;
+    struct nk_image number_1;
+    struct nk_image number_2;
+    struct nk_image number_3;
+    struct nk_image number_4;
+    struct nk_image minimap;
+
+    void init();
+    struct nk_image loadTexture(const char* path);
+
+}
+
+//==============================================
+// DELEGATES DECLARATIONS
+//==============================================
+void addHUD(EventData eData); 
 
 //==============================================================
 // Engine Related functions
@@ -22,7 +55,6 @@ struct nk_context *GUI; //:::> global variable
 void RenderRedPanda::openWindow() { 
 
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
-    
     InputRedPanda* receiver = new InputRedPanda();
 
     uintptr_t aux = reinterpret_cast<uintptr_t>(device->getWindow());
@@ -38,7 +70,13 @@ void RenderRedPanda::openWindow() {
     InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
     irps->setGUIContext(GUI);
 
-    //device->setGUIDrawFunction(drawRPS_GUI);
+    gui::init();
+
+    addCamera();
+
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, addHUD});
+
 
 }
 
@@ -61,16 +99,40 @@ void RenderRedPanda::closeWindow() {
 //==============================================================
 //Renders all the scene
 void RenderRedPanda::renderDraw() {
-
+    
     device->updateDevice();
 
 }
 
 //Add a camera to the game
-void RenderRedPanda::addCamera() { }
+void RenderRedPanda::addCamera() {
+
+    device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
+
+}
 
 //Update the current camera
-void RenderRedPanda::interpolateCamera(float accTime, float maxTime) { }
+void RenderRedPanda::interpolateCamera(float accTime, float maxTime) { 
+
+    //Get target position
+    auto pos = cameraTarget->getTransformData().position;
+
+    //Get target y angle
+    float radianAngle = cameraTarget->getTransformData().rotation.y;
+
+    //Get interpolated distance to the player
+    float oldD = cameraTarget->getComponent<CameraRenderComponent>().get()->getOldDistance();
+    float newD = cameraTarget->getComponent<CameraRenderComponent>().get()->getDistance();
+
+    float distance = oldD + (accTime * (newD - oldD))/maxTime;
+    distance *= 1.5;
+
+    glm::vec3 target(-pos.x, pos.y, pos.z);
+    glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y + distance * 0.4, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+
+    device->updateCamera(position, target);
+
+}
 
 //Add an object to the game
 void RenderRedPanda::addObject(IComponent* ptr) { 
@@ -105,10 +167,6 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
 
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
-
-    if(obj.getId() == 25000) {
-        device->createCamera(node->getFather(), glm::vec3(0,10,30));
-    }
 
 }
 
@@ -194,34 +252,211 @@ void RenderRedPanda::changeMesh(int id, std::string newMesh)
     tMesh->setMesh(resourceObj);
 }
 
-////////////
-//  GUI
-////////////
-/*void drawRPS_GUI(){
-    if (nk_begin(GUI, "Demo", nk_rect(50, 50, 230, 250),
-            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+//==============================================================
+// GUI Related Functions
+//==============================================================
+
+//GUI update function
+void drawRPS_GUI_Menu(){
+
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
-            enum {EASY, HARD};
-            static int op = EASY;
-            static int property = 20;
 
-            nk_layout_row_static(GUI, 30, 80, 1);
-            if (nk_button_label(GUI, "button"))
-                printf("button pressed!\n");
-            nk_layout_row_dynamic(GUI, 30, 2);
-            if (nk_option_label(GUI, "easy", op == EASY)) op = EASY;
-            if (nk_option_label(GUI, "hard", op == HARD)) op = HARD;
-            nk_layout_row_dynamic(GUI, 22, 1);
-            nk_property_int(GUI, "Compression:", 0, &property, 100, 10, 1);
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                nk_image(GUI, gui::background);
+                nk_popup_end(GUI);
+            }
 
-            nk_layout_row_dynamic(GUI, 20, 1);
-            nk_label(GUI, "background:", NK_TEXT_LEFT);
-            nk_layout_row_dynamic(GUI, 25, 1);
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.25, w*0.3, h*0.5))) {
+
+                nk_layout_row_dynamic(GUI, 50, 1);
+                nk_spacing(GUI, 1);
+                if (nk_button_label(GUI, "Single Player"))
+                    EventManager::getInstance().addEvent(Event {EventType::Key_Singleplayer_Down});
+                if (nk_button_label(GUI, "Multiplayer"))
+                    EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
+                if (nk_button_label(GUI, "Options"))
+                    fprintf(stdout, "Options!\n");
+                if (nk_button_label(GUI, "Quit"))
+                    EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+                nk_popup_end(GUI);
+            }
+            
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
-}*/
+}
+
+void drawRPS_GUI_HUD(){
+
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+
+    GameObject cameraTarget = RenderManager::getInstance().getRenderFacade()->getCameraTarget();
+
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0)) {
+
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.86, 5, 180, 180))) {
+
+            nk_layout_row_static(GUI, 150, 150, 1);
+
+            int itemID = cameraTarget.getComponent<ItemHolderComponent>().get()->getItemType();
+            switch(itemID){
+                case 0: //RED SHELL
+                        nk_image(GUI, gui::item_red);
+                        break;
+                case 1: //BLUE SHELL
+                        nk_image(GUI, gui::item_blue);
+                        break;
+                case 2: //TRAP
+                        nk_image(GUI, gui::item_banana);
+                        break;
+                case 3: //MUSHROOM
+                        nk_image(GUI, gui::item_mushroom);
+                        break;
+                case 4: //STAR
+                        nk_image(GUI, gui::item_star);
+                        break;
+                default:
+                        break;
+            }
+            nk_popup_end(GUI);
+	    }
+
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(10, h*0.7, 180, 180))) {
+
+            nk_layout_row_static(GUI, 150, 150, 1);
+
+            int position = cameraTarget.getComponent<ScoreComponent>().get()->getPosition();
+            switch(position){
+                case 1: //BLUE SHELL
+                        nk_image(GUI, gui::number_1);
+                        break;
+                case 2: //TRAP
+                        nk_image(GUI, gui::number_2);
+                        break;
+                case 3: //MUSHROOM
+                        nk_image(GUI, gui::number_3);
+                        break;
+                case 4: //STAR
+                        nk_image(GUI, gui::number_4);
+                        break;
+                default:
+                        break;
+            }
+            nk_popup_end(GUI);
+	    }
+
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.86, h*0.8, 180, 180))) {
+
+            nk_layout_row_static(GUI, 50, 125, 1);
+
+            int lap = cameraTarget.getComponent<ScoreComponent>().get()->getLap();
+            const char* lap1 = "Lap 1 / 3";
+            const char* lap2 = "Lap 2 / 3";
+            const char* lap3 = "Lap 3 / 3";
+
+            switch(lap){
+                case 1:
+                        nk_button_label(GUI, lap1);
+                        break;
+                case 2:
+                        nk_button_label(GUI, lap2);
+                        break;
+                case 3:
+                        nk_button_label(GUI, lap3);
+                        break;
+                default:
+                        break;
+            }
+            
+            nk_popup_end(GUI);
+	    }
+
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.843, h*0.4, 180, 290))) {
+
+            nk_layout_row_static(GUI, 283, 171, 1);
+
+            nk_image(GUI, gui::minimap);
+            
+            nk_popup_end(GUI);
+	    }
+
+        for(int i = 3; i >= 0; i--) {
+
+            glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(1170 - pos1.z * 0.12, 360 - pos1.x * 0.12, 180, 290))) {
+
+                nk_layout_row_static(GUI, 25, 30, 1);
+
+                if(i == 0)
+                    nk_image(GUI, gui::number_1);
+                else 
+                    nk_image(GUI, gui::number_4);
+
+                nk_popup_end(GUI);
+	        }
+        }
+        
+
+    }
+
+
+
+
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+
+}
+
+void gui::init() {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+
+    device->setGUIDrawFunction(drawRPS_GUI_Menu);
+
+    gui::background     = gui::loadTexture("media/img/background.jpg");
+    gui::item_banana    = gui::loadTexture("media/img/iconoTrampamini.png");
+    gui::item_blue      = gui::loadTexture("media/img/iconoBombamini.png");
+    gui::item_red       = gui::loadTexture("media/img/iconoRuedamini.png");
+    gui::item_star      = gui::loadTexture("media/img/iconoBotellamini.png");
+    gui::item_mushroom  = gui::loadTexture("media/img/iconoSetamini.png");
+    gui::number_1       = gui::loadTexture("media/img/1.png");
+    gui::number_2       = gui::loadTexture("media/img/2.png");
+    gui::number_3       = gui::loadTexture("media/img/3.png");
+    gui::number_4       = gui::loadTexture("media/img/4.png");
+    gui::minimap        = gui::loadTexture("media/img/map.png");
+
+}
+
+//Code to load a single texture
+struct nk_image gui::loadTexture(const char* path) {
+
+    GLuint tex;
+    sf::Image sftex;
+    sftex.loadFromFile(path);
+    const Uint8* data = sftex.getPixelsPtr();
+
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, sftex.getSize().x, sftex.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    
+    return nk_image_id((int)tex);
+
+}
 
 ////////////
 //  Image
@@ -306,10 +541,18 @@ void RenderRedPanda::setSubDescriptionText(std::string text) { }
 //Update the logo video
 void RenderRedPanda::updateLogo() { }
 
-void RenderRedPanda::drawGUI() { }
+void RenderRedPanda::drawGUI() { 
+    
+}
 
 void RenderRedPanda::createItemIcon(glm::vec2 pos, std::string img) { }
 
 void RenderRedPanda::deleteItemIcon() { }
 
 void RenderRedPanda::updateItemIcon() { }
+
+//Delegates
+void addHUD(EventData eData) {
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_HUD);
+}

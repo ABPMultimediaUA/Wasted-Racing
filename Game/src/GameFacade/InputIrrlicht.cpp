@@ -4,13 +4,17 @@
 #define DetectKeyInput(TheKey,Event_Down,Event_Up) \
     if(event.KeyInput.PressedDown && event.KeyInput.Key == irr::EKEY_CODE::TheKey) { \
         if(!KeyIsDown[irr::EKEY_CODE::TheKey]){ \
-            EventManager::getInstance().addEvent(Event {EventType::Event_Down}); \
+            EventData eventD; \
+            eventD.grade = -2; \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Down, eventD}); \
             KeyIsDown[irr::EKEY_CODE::TheKey] = true; \
         } \
     } \
     else { \
         if(KeyIsDown[irr::EKEY_CODE::TheKey] && event.KeyInput.Key == irr::EKEY_CODE::TheKey){ \
-            EventManager::getInstance().addEvent(Event {EventType::Event_Up}); \
+            EventData eventD; \
+            eventD.grade = -2; \
+            EventManager::getInstance().addEvent(Event {EventType::Event_Up, eventD}); \
             KeyIsDown[irr::EKEY_CODE::TheKey] = false; \
         } \
     };
@@ -22,12 +26,10 @@ void InputIrrlicht::openInput(uintptr_t dev) {
 }
 
 void InputIrrlicht::updateInput() { 
-
+    //Close game if not working
     if(!device->run()){
         EventManager::getInstance().addEvent(Event {EventType::Game_Close});
     }
-        
-
 }
 
 void InputIrrlicht::closeInput() {
@@ -47,10 +49,10 @@ bool InputIrrlicht::OnEvent(const irr::SEvent& event) {
         DetectKeyInput(KEY_KEY_Q,Key_UseItem_Down,Key_UseItem_Up)
         DetectKeyInput(KEY_KEY_5,Key_Multiplayer_Down,Key_Multiplayer_Up)
         DetectKeyInput(KEY_KEY_6,Key_Singleplayer_Down,Key_Singleplayer_Up)
-        //DetectKeyInput(KEY_F8,Key_DebugNetwork_Down,Key_DebugNetwork_Up)
-        DetectKeyInput(KEY_F6,Key_SlowControl_Down,Key_SlowControl_Up)
-        DetectKeyInput(KEY_F7,Key_NormalControl_Down,Key_NormalControl_Up)
-        DetectKeyInput(KEY_F8,Key_FastControl_Down,Key_FastControl_Up)
+        DetectKeyInput(KEY_F5,Key_SlowControl_Down,Key_SlowControl_Up)
+        DetectKeyInput(KEY_F6,Key_NormalControl_Down,Key_NormalControl_Up)
+        DetectKeyInput(KEY_F7,Key_FastControl_Down,Key_FastControl_Up)
+        DetectKeyInput(KEY_F8,Key_DebugNetwork_Down,Key_DebugNetwork_Up)
         DetectKeyInput(KEY_F9,Key_DebugAI_Down,Key_DebugAI_Up)
         DetectKeyInput(KEY_F10,Key_DebugBehaviour_Down,Key_DebugBehaviour_Up)
         DetectKeyInput(KEY_F11,Key_DebugCamera_Down,Key_DebugCamera_Up)

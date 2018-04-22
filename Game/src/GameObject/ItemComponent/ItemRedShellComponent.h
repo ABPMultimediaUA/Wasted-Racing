@@ -12,7 +12,7 @@ class ItemRedShellComponent : public IItemComponent
     public:
 
         //Constructor
-        ItemRedShellComponent(GameObject& newGameObject, GameObject& obj);
+        ItemRedShellComponent(GameObject& newGameObject, GameObject& obj, IItemComponent::InstanceType m);
 
         //Destructor
         ~ItemRedShellComponent();
@@ -37,14 +37,15 @@ class ItemRedShellComponent : public IItemComponent
         //==============================================================
         // PRIVATE DATA
         //==============================================================
-        GameObject& player;             //Victim player
-        float speed;                    //Speed of the red shell
-        float consTime;                 //----no idea
-        float decTime;                  //----no idea
-        unsigned int lastVector;        //----no idea
-        int myPos;                      //----no idea
-        glm::vec3 objective;            //vec3 indicating the position to which to go
-        ScoreComponent::Pointer enemy;  //Pointer to the score of the victim player
+        GameObject& player;                //Victim player
+        float speed;                       //Speed of the red shell
+        float consTime;                    //----no idea
+        float decTime;                     //----no idea
+        unsigned int lastVector;           //----no idea
+        int myPos;                         //----no idea
+        glm::vec3 objective;               //vec3 indicating the position to which to go
+        ScoreComponent::Pointer enemy;     //Pointer to the score of the victim player
+        IItemComponent::InstanceType mode; //How the item was instanciated
 
 };
  

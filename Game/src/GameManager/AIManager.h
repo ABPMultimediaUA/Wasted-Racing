@@ -1,24 +1,24 @@
 #pragma once
+//Basic includes
+#include <memory>
+#include <iostream>
+#include <vector>
+#include "../GlobalVariables.h"
+#include "../GameObject/IComponent.h"
+#include "../GameObject/GameObject.h"
+#include "../GameEvent/EventManager.h"
 
-
-#include "InputManager.h"
+//Inner components includes
 #include "../GameObject/AIComponent/AIDrivingComponent.h"
 #include "../GameObject/AIComponent/AIBattleComponent.h"
 #include "../GameObject/AIComponent/VSensorComponent.h"
 #include "../GameObject/AIComponent/MSensorComponent.h"
 #include "../GameObject/AIComponent/PathPlanningComponent.h"
 #include "../GameObject/AIComponent/VObject.h"
+
+//Extra includes
 #include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
-#include "../GameObject/GameObject.h"
-#include "../GameEvent/EventManager.h"
-#include <memory>
-#include <iostream>
-#include <vector>
-#include "../GameObject/ItemComponent/IItemComponent.h"
-#include "../GameObject/AIComponent/MSensorComponent.h"
-#include "../GameObject/AIComponent/AIBattleComponent.h"
-#include "../GlobalVariables.h"
 
 class AIManager{
 
@@ -63,7 +63,13 @@ public:
     void calculateLoD(GameObject AI, float dTime);
 
 private:
+    //:::> Explain what are the variables for if the name is not self explaining
     std::vector<IComponent::Pointer> objectsAI;
     std::vector<IComponent::Pointer> battleAI;
-    bool changeAI;
+
+    //___>
+    //bool changeAI;
+    bool itemLoD;           //variable to know if we took item in this waypoint or not (only for lod)
+    bool updateBattleBehaviour;
+    //<___
 };

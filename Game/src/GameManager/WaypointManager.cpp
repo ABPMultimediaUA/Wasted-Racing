@@ -23,6 +23,7 @@ WaypointManager::~WaypointManager()
 void WaypointManager::init() {
     listSubNodes = new std::vector<GameObject::Pointer>;
 
+    //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletePathPlanning});
 }
 
@@ -30,8 +31,8 @@ void WaypointManager::update(float dTime) {
     //I doubt this method should exist in this manager
     //I doubt it too
     //I hope Fran reads this
-    auto player = InputManager::getInstance().getComponent().get()->getGameObject();
-    auto posPlayer = player.getTransformData().position;
+    auto player = GlobalVariables::getInstance().getPlayer();
+    auto posPlayer = player->getTransformData().position;
 
     //CALCULATE LOD PATHPLANNING
     for(unsigned int i=0; i < pathPlanningComponentList.size(); i++)
@@ -72,11 +73,11 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
     //Search for its place on the list of waypoints
     for(unsigned int i=0;i<listSubNodes->size();i++){
-        auto rad1 = listSubNodes->at(i).get()->getComponent<WaypointComponent>()->getLevel();
+        auto radius1 = listSubNodes->at(i).get()->getComponent<WaypointComponent>()->getLevel();
         for(unsigned int x=i+1;x<listSubNodes->size()-1;x++){
             //bubble sort
-            auto rad2 = listSubNodes->at(x).get()->getComponent<WaypointComponent>()->getLevel();
-            if(rad1>rad2){
+            auto radius2 = listSubNodes->at(x).get()->getComponent<WaypointComponent>()->getLevel();
+            if(radius1>radius2){
                 auto aux=listSubNodes->at(i);
                 listSubNodes->at(i)=listSubNodes->at(x);
                 listSubNodes->at(x)=aux;
@@ -89,13 +90,14 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
 IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Pointer newGameObject, std::vector<GameObject::Pointer>& list)
 {
-    //Creade pointer
+    //Make shared pointer of path plannign component
     IComponent::Pointer component = std::make_shared<PathPlanningComponent>(*newGameObject.get(), list);
 
     //Add component to the object
     newGameObject.get()->addComponent(component);
 
     //add to the list of components
+    //:::>Can be substituted with an event, if schedulingi is added
     pathPlanningComponentList.push_back(component);
 
     return component;
@@ -119,9 +121,6 @@ void WaypointManager::updatePathPlanning(IComponent::Pointer pathPlanning, float
 //==============================================
 //Constructor and Destructor
 //==============================================
-
-
-
 void objectDeletePathPlanning(EventData eData) {
 
     auto& PathPlanningComponentList = WaypointManager::getInstance().getPathPlanningList();
