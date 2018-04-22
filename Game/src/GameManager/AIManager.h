@@ -24,25 +24,25 @@
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
 
+//AI Type event
+enum AIEventType {
+    UPDATE_BATTLE,
+    UPDATE_DRIVING_TURN,
+    UPDATE_DRIVING_ACCELERATION,
+    UPDATE_LOD
+};
+
+//Event to be updated by the scheduling
+struct AIEvent{
+    IComponent::Pointer object; //Object to be updated;
+    AIEventType event;          //Event type to be updated
+    double average;             //Average time of the function for processing
+    double timeStamp;           //When it was generated
+};
+
 class AIManager{
 
 public: 
-
-    enum AIEventType {
-        UPDATE_BATTLE,
-        UPDATE_DRIVING_TURN,
-        UPDATE_DRIVING_ACCELERATION,
-        UPDATE_LOD
-    }
-
-    //Event to be updated by the scheduling
-    struct AIEvent{
-       IComponent::Pointer object; //Object to be updated;
-       AIEventType event;          //Event type to be updated
-       double average;             //Average time of the function for processing
-       double timeStamp;           //When it was generated
-    }
-
 
     //Constructor
     AIManager();
@@ -100,8 +100,9 @@ private:
     bool updateBattleBehaviour;
     //<___
 
-    //Clock
+    //Clocks
     Clock* clock;
+    Clock* clock_scheduling;
 
     float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 };

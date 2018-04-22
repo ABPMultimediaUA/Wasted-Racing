@@ -19,9 +19,11 @@ void objectDeleteAIBattle(EventData data);
 //==============================================
 AIManager::AIManager()
 {
-    //Initialize time clock
+    //Initialize time clocks
     clock = new Clock();
+    clock_scheduling = new Clock();
     clock->init();
+
 }
 
 AIManager& AIManager::getInstance() {
@@ -60,7 +62,7 @@ void AIManager::update(float dTime) {
             AIEvent a;
             a.object    = battleAI[i];
             a.event     = AIEventType::UPDATE_BATTLE;
-            a.timeStamp = dTime;
+            a.timeStamp = Clock->restart();
             a.average   = 0.000005;
 
             //Add to list
@@ -110,7 +112,7 @@ void AIManager::update(float dTime) {
                     AIEvent a;
                     a.object    = objectsAI[i];
                     a.event     = AIEventType::UPDATE_UPDATE_DRIVING_TURN;
-                    a.timeStamp = dTime;
+                    a.timeStamp = Clock->restart();
                     a.average   = 0.0000075;
 
                     //Add to list
@@ -128,7 +130,7 @@ void AIManager::update(float dTime) {
                 AIEvent a;
                 a.object    = objectsAIi];
                 a.event     = AIEventType::UPDATE_LOD;
-                a.timeStamp = dTime;
+                a.timeStamp = Clock->restart();
                 a.average   = 0.00000005;
 
                 //Add to list
@@ -161,6 +163,9 @@ void AIManager::updateScheduling(float dTime) {
     double timeCounter = 0.0;
     for(unsigned int i = 0; i < AIQueue.size(); i++)
     {
+        //Initialize time passing
+        clock_scheduling->restart();
+
         //Take object
         AIEvent a = AIQueue.front();
 
@@ -168,25 +173,33 @@ void AIManager::updateScheduling(float dTime) {
         switch(a.event)
         {
             case UPDATE_BATTLE:
+                //Launch effect
                 auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(a.object).get();
                 aiBattleComponent->update(a);
                 break;
 
             case UPDATE_UPDATE_DRIVING_TURN:
+                //Launch effect
                 auto aiDrivingComponent = std::dynamic_pointer_cast<AIDrivingComponent>(a.object).get();
                 updateDriving(aiDrivingComponent);
                 break;
 
             case UPDATE_LOD:
+                //Get variables
                 auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(a.object).get();
                 auto AIObject = aiDrivingComponent->getGameObject();
+                double timePassed = a.timeStamp - clock->restart();
 
-                calculateLoD(AIObject, dTime);
+                //Launch effect
+                calculateLoD(AIObject, timePassed);
                 break;
         }
 
         //Release 
         AIQueue.pop();
+
+        //End time passing;
+        timeCounter += clock_scheduling.getElapsedTime();
     }
 
     //WE SHOW THE DIFFERENCES
