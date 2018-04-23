@@ -17,6 +17,7 @@
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
 #include "../GameManager/RenderManager.h"
 #include "../GameManager/ObjectManager.h"
+#include "../GlobalVariables.h"
 
 //==============================================================
 // Gui Related functions and variables declarations
@@ -27,6 +28,9 @@ void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
 namespace gui {
 
     struct nk_image background;
+
+    //GUI Images
+    struct nk_image item_void;
     struct nk_image item_banana;
     struct nk_image item_blue;
     struct nk_image item_red;
@@ -37,6 +41,12 @@ namespace gui {
     struct nk_image number_3;
     struct nk_image number_4;
     struct nk_image minimap;
+    struct nk_image dot_player;
+    struct nk_image dot_enemy;
+    struct nk_image lap_1;
+    struct nk_image lap_2;
+    struct nk_image lap_3;
+
 
     void init();
     struct nk_image loadTexture(const char* path);
@@ -293,7 +303,7 @@ void drawRPS_GUI_HUD(){
 
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0)) {
 
-        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.86, 5, 180, 180))) {
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(5, 5, 180, 180))) {
 
             nk_layout_row_static(GUI, 150, 150, 1);
 
@@ -315,12 +325,13 @@ void drawRPS_GUI_HUD(){
                         nk_image(GUI, gui::item_star);
                         break;
                 default:
+                        nk_image(GUI, gui::item_void);
                         break;
             }
             nk_popup_end(GUI);
 	    }
 
-        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(10, h*0.7, 180, 180))) {
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(5, h*0.77, 180, 180))) {
 
             nk_layout_row_static(GUI, 150, 150, 1);
 
@@ -344,24 +355,21 @@ void drawRPS_GUI_HUD(){
             nk_popup_end(GUI);
 	    }
 
-        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.86, h*0.8, 180, 180))) {
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.885, 5, 140, 160))) {
 
-            nk_layout_row_static(GUI, 50, 125, 1);
+            nk_layout_row_static(GUI, 126, 108, 1);
 
             int lap = cameraTarget.getComponent<ScoreComponent>().get()->getLap();
-            const char* lap1 = "Lap 1 / 3";
-            const char* lap2 = "Lap 2 / 3";
-            const char* lap3 = "Lap 3 / 3";
 
             switch(lap){
                 case 1:
-                        nk_button_label(GUI, lap1);
+                        nk_image(GUI, gui::lap_1);
                         break;
                 case 2:
-                        nk_button_label(GUI, lap2);
+                        nk_image(GUI, gui::lap_2);
                         break;
                 case 3:
-                        nk_button_label(GUI, lap3);
+                        nk_image(GUI, gui::lap_3);
                         break;
                 default:
                         break;
@@ -370,9 +378,9 @@ void drawRPS_GUI_HUD(){
             nk_popup_end(GUI);
 	    }
 
-        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.843, h*0.4, 180, 290))) {
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.8, h*0.48, 220, 340))) {
 
-            nk_layout_row_static(GUI, 283, 171, 1);
+            nk_layout_row_static(GUI, 326, 203, 1);
 
             nk_image(GUI, gui::minimap);
             
@@ -383,14 +391,14 @@ void drawRPS_GUI_HUD(){
 
             glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(1170 - pos1.z * 0.12, 360 - pos1.x * 0.12, 180, 290))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(1140 - pos1.z * 0.15, 440 - pos1.x * 0.15, 180, 290))) {
 
-                nk_layout_row_static(GUI, 25, 30, 1);
+                nk_layout_row_static(GUI, 15, 15, 1);
 
                 if(i == 0)
-                    nk_image(GUI, gui::number_1);
+                    nk_image(GUI, gui::dot_player);
                 else 
-                    nk_image(GUI, gui::number_4);
+                    nk_image(GUI, gui::dot_enemy);
 
                 nk_popup_end(GUI);
 	        }
@@ -414,16 +422,37 @@ void gui::init() {
     device->setGUIDrawFunction(drawRPS_GUI_Menu);
 
     gui::background     = gui::loadTexture("media/img/background.jpg");
-    gui::item_banana    = gui::loadTexture("media/img/iconoTrampamini.png");
-    gui::item_blue      = gui::loadTexture("media/img/iconoBombamini.png");
-    gui::item_red       = gui::loadTexture("media/img/iconoRuedamini.png");
-    gui::item_star      = gui::loadTexture("media/img/iconoBotellamini.png");
-    gui::item_mushroom  = gui::loadTexture("media/img/iconoSetamini.png");
-    gui::number_1       = gui::loadTexture("media/img/1.png");
-    gui::number_2       = gui::loadTexture("media/img/2.png");
-    gui::number_3       = gui::loadTexture("media/img/3.png");
-    gui::number_4       = gui::loadTexture("media/img/4.png");
-    gui::minimap        = gui::loadTexture("media/img/map.png");
+
+    //==========================================================================================
+    //  PLAYER  INTERFACE
+    //==========================================================================================
+    gui::minimap        = gui::loadTexture("media/img/GUI/PlayerInterface/minimap.png");
+    gui::dot_player     = gui::loadTexture("media/img/GUI/PlayerInterface/player.png");
+    gui::dot_enemy      = gui::loadTexture("media/img/GUI/PlayerInterface/enemy.png");
+
+    gui::lap_1  =   gui::loadTexture("media/img/GUI/PlayerInterface/LapNumbers/1.png");
+    gui::lap_2  =   gui::loadTexture("media/img/GUI/PlayerInterface/LapNumbers/2.png");
+    gui::lap_3  =   gui::loadTexture("media/img/GUI/PlayerInterface/LapNumbers/3.png");
+
+    gui::item_void      = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoVacio.png");
+    gui::item_banana    = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoTrampa.png");
+    gui::item_blue      = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoBomba.png");
+    gui::item_red       = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoRueda.png");
+    gui::item_star      = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoBotella.png");
+    gui::item_mushroom  = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoSetas.png");
+
+    if(GlobalVariables::getInstance().getLanguage() == 0) {
+        gui::number_1       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/ENG/1.png");
+        gui::number_2       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/ENG/2.png");
+        gui::number_3       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/ENG/3.png");
+        gui::number_4       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/ENG/4.png");
+    }
+    else{
+        gui::number_1       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/1.png");
+        gui::number_2       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/2.png");
+        gui::number_3       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/3.png");
+        gui::number_4       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/4.png");
+    }
 
 }
 
