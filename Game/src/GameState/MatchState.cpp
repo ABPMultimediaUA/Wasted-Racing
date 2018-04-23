@@ -44,6 +44,7 @@ void MatchState::init() {
 void MatchState::update(float &accumulatedTime) {
     //divide with ratio so we can accelerate or slow down the game
     accumulatedTime /= ratio;
+    
     //Out of loop
     renderManager->update(accumulatedTime);
 

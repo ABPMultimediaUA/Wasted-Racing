@@ -91,18 +91,30 @@ private:
     std::vector<IComponent::Pointer> objectsAI; //AIDrivingComponents to be processed
     std::vector<IComponent::Pointer> battleAI;  //BattleBehaviour componentes to be processed
 
-    //Processing queue
-    std::queue<AIEvent> AIQueue; 
-    double maxTimeSchedule;      //Maximum time for all processes   
-
     //___>
     //bool changeAI;
     bool updateBattleBehaviour;
     //<___
 
+    float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
+
+    //==============================================
+    // SCHEDULING
+    //==============================================
+    std::queue<AIEvent> AIQueue; //Processing queue
+    double maxTimeSchedule;      //Maximum time for all processes per turn
+    
+    //Samples to measure the mean value of each average time
+    int samplesBattle;
+    int samplesDriving;
+    int samplesLOD;
+
+    //Average time info of each function
+    double averageTimeBattle;
+    double averageTimeDriving;
+    double averageTimeLOD;
+
     //Clocks
     Clock* clock;
     Clock* clock_scheduling;
-
-    float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 };

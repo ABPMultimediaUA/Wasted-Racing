@@ -23,6 +23,7 @@ AIManager::AIManager()
     clock = new Clock();
     clock_scheduling = new Clock();
     clock->init();
+    clock_scheduling->init();
 
 }
 
@@ -37,6 +38,14 @@ void AIManager::init() {
     updateBattleBehaviour = false;
     //<___
     distanceLoD = 0;
+    
+    //Scheduling data
+    samplesBattle      = 0;
+    samplesDriing      = 0;
+    samplesLOD         = 0;
+    averageTimeBattle  = 0.000005;
+    averageTimeDriving = 0.0000075;
+    averageTimeLOD     = 0.00000005;
 
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
@@ -62,8 +71,8 @@ void AIManager::update(float dTime) {
             AIEvent a;
             a.object    = battleAI[i];
             a.event     = AIEventType::UPDATE_BATTLE;
-            a.timeStamp = Clock->restart();
-            a.average   = 0.000005;
+            a.timeStamp = Clock->getInitTime();
+            a.average   = averageTimeBattle;
 
             //Add to list
             AIQueue.push(a);
@@ -112,8 +121,8 @@ void AIManager::update(float dTime) {
                     AIEvent a;
                     a.object    = objectsAI[i];
                     a.event     = AIEventType::UPDATE_UPDATE_DRIVING_TURN;
-                    a.timeStamp = Clock->restart();
-                    a.average   = 0.0000075;
+                    a.timeStamp = Clock->getInitTime();
+                    a.average   = averageTimeDriving;
 
                     //Add to list
                     AIQueue.push(a);
@@ -130,8 +139,8 @@ void AIManager::update(float dTime) {
                 AIEvent a;
                 a.object    = objectsAIi];
                 a.event     = AIEventType::UPDATE_LOD;
-                a.timeStamp = Clock->restart();
-                a.average   = 0.00000005;
+                a.timeStamp = Clock->getInitTime();
+                a.average   = averageTimeLOD;
 
                 //Add to list
                 AIQueue.push(a);
@@ -146,23 +155,24 @@ void AIManager::update(float dTime) {
 void AIManager::updateScheduling(float dTime) {
     
     //Time checkers
-    double averageTimeBattle = 0.0;
-    double averageTimeDriving = 0.0;
-    double averageTimeLOD = 0.0;
 
     //v--DEberia de coger y poner una lista de todos los elementos q participan, que los tengo. Y poner una cola de procesamiento.
     //v--Esta cola será una queue de este tipo de objetos.
     //v---Objeto con identificador de la función, puntero al componente a actualizar, y tiempo de ejecución promedio de esa función
-    //Se ejecutan tantas funciones hasta q se vaya a sobrepasar el indicador temporal asignado
-    //La cola prohibe problemas
+    //La tardanza tiene que ser equivalente a repartir entre los ticks entre updates (velocidad juego / velocidad update manager). Se suma el total de eventos
+    //Y el tiempo aproximado de todos y se reparte equitativamente entre updates
+    //La cola prohibe problemas de recalculo, porque se ejecutará entera en el plazo de tiempo, o se acumularán eventos infinitos.
     //Solo tenemos q calcular los tiempos para X primeras ejecuciones y luego ya tenemos el promedio, y podemos trabajar con eso.
-    //Se añaden todos los procesos en principio, y cada vez q se cree uno se añade a la cola también en primera instancia
-    //Each update sends the processes it wants to be updated
     
+
     //Iterate through the processes
     double timeCounter = 0.0;
     for(unsigned int i = 0; i < AIQueue.size(); i++)
     {
+        //Time checker
+        if(timeCounter > dTime)
+            break;
+
         //Initialize time passing
         clock_scheduling->restart();
 
@@ -172,26 +182,58 @@ void AIManager::updateScheduling(float dTime) {
         //Different cases
         switch(a.event)
         {
-            case UPDATE_BATTLE:
+            case AIEvent::UPDATE_BATTLE:
+                //->Timing
+                clock->restart();
+                
                 //Launch effect
                 auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(a.object).get();
                 aiBattleComponent->update(a);
+
+                //<-Timing
+                averageTimeBattle = (samplesBattle > 500) ? averageTimeBattle 
+                                    : (averageTimeBattle * samplesBattle + clock->getElapsedTime()) / (samplesBattle+1); 
+                                    //( (n-1) * previous_media + new_value ) / n = new_media
+
+                samplesBattle++;
+                
                 break;
 
-            case UPDATE_UPDATE_DRIVING_TURN:
+            case AIEvent::UPDATE_UPDATE_DRIVING_TURN:
+                //->Timing
+                clock->restart();
+
                 //Launch effect
                 auto aiDrivingComponent = std::dynamic_pointer_cast<AIDrivingComponent>(a.object).get();
                 updateDriving(aiDrivingComponent);
+
+                //<-Timing
+                averageTimeDriving = (samplesDriving > 500) ? averageTimeDriving 
+                                     : (averageTimeDriving * samplesDriving + clock->getElapsedTime()) / (samplesDriving+1); 
+                                     //( (n-1) * previous_media + new_value ) / n = new_media
+
+                samplesDriving++;
+
                 break;
 
-            case UPDATE_LOD:
+            case AIEvent::UPDATE_LOD:
+                //->Timing
+                clock->restart();
+
                 //Get variables
                 auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(a.object).get();
                 auto AIObject = aiDrivingComponent->getGameObject();
-                double timePassed = a.timeStamp - clock->restart();
+                double timePassed = clock->getInitTime() - a.timeStamp + dTime; //Actual interval of time (dTime + time passed since creation of event)
 
                 //Launch effect
                 calculateLoD(AIObject, timePassed);
+
+                //<-Timing
+                averageTimeLOD = (samplesLOD > 500) ? averageTimeLOD 
+                                : (averageTimeLOD * samplesLOD + clock->getElapsedTime()) / (samplesLOD+1); 
+                                //( (n-1) * previous_media + new_value ) / n = new_media
+                samplesLOD++;
+                
                 break;
         }
 
