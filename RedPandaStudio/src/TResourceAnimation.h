@@ -19,50 +19,31 @@ class TResourceAnimation : public TResource {
         TResourceAnimation(){};
         ~TResourceAnimation(){};
 
-        void populateTextures();
-
         //Load the resource specified in the route provided
         bool loadResource();
 
-        //Draws the mesh
+        //Draws the first mesh of the animation
         void draw();
 
-        //Plays a no-loop animation that is currently paused
-        void playNoLoop();
-
-        //Updates the animation
-        void update(double eTime);
+        //Draws the frame given by parameter, if possible
+        void draw(int i);
 
         //////////////////////////////////////////////////////////////////////
         /////////////////////////// GETTERS && SETTERS ///////////////////////
         //////////////////////////////////////////////////////////////////////
         int getFrames()                 {   return frames;      };
-        bool getPauseState()            {   return playing;     };
-        bool getLoopState()             {   return loop;        };
-        double getFramerate()           {   return framerate;   };
         void setFrames(int i)           {   frames = i;         };
-        void setPause(bool b)           {   playing = b;        };
-        void setLoop(bool b)            {   loop = b;           };
-        void setFramerate(double s)     {   framerate = s;      };
 
     private:
         //Maximum number of frames (initially set to 60)
         int frames = 60;
-        //Pointer to current frame
-        int pointer = 0;
-        //Framerate of the animation
-        double framerate = 1/24;
-        //Elapsed time since the previous frame
-        double elapsedTime = 0;
 
         //Array of frames
         std::vector<TResourceOBJ*> objs;
 
-        //Pauses or plays the animation
-        bool playing = true;
-        //Controls if the animation is played in loop or not
-        bool loop = true;
-
         //Auxiliar function to split strings
         std::vector<std::string> split(const std::string& s, const char& c);
+
+        //Function to populate textures to all the frames, without needing to load them multiple times
+        void populateTextures();
 };

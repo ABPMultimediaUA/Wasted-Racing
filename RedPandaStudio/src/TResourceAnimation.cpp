@@ -15,36 +15,6 @@ std::vector<std::string> TResourceAnimation::split(const std::string& s, const c
 	return v;
 }
 
-void TResourceAnimation::playNoLoop()
-{
-    if(!playing)
-    {
-        pointer = 0;
-        playing = true;
-    }
-}
-
-void TResourceAnimation::update(double eTime)
-{
-    if(playing)
-    {
-        elapsedTime += eTime;
-        if(elapsedTime > framerate)
-        {
-            pointer++;
-            elapsedTime = 0;
-        }
-        if(pointer == frames - 2  && loop == false)
-        {
-            playing = false;
-        }
-        if(pointer>=frames-1)
-        {
-            pointer = 0;
-        }
-    }
-}
-
 bool TResourceAnimation::loadResource()
 {
 
@@ -128,5 +98,13 @@ void TResourceAnimation::populateTextures()
 
 void TResourceAnimation::draw()
 {
-    objs[pointer]->draw();
+    objs[0]->draw();
+}
+
+void TResourceAnimation::draw(int i)
+{
+    if(i >= 0 && i < objs.size())
+    {
+        objs[i]->draw();
+    }
 }

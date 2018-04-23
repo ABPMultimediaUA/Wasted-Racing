@@ -292,8 +292,9 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 		//Create new mesh entity
 		TAnimation* a = new TAnimation();
 		a->setAnimation(resourceManager->getResourceAnimation(animation, frames));
-		a->getAnimation()->setLoop(loop);
-		a->getAnimation()->setFramerate(framerate);
+		a->setFrames(frames);
+		a->setLoop(loop);
+		a->setFramerate(framerate);
 		TNode* animation = new TNode(transformT, a);
 		transformT->addChild(animation);
 
