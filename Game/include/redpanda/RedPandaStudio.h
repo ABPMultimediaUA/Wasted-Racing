@@ -53,6 +53,13 @@ public:
 
     void setGUIDrawFunction(void (*)());
 
+    ////////////////////////////////////////
+    //  GRAPHICS OPTIONS AND PARAMETERS
+
+    //Activates and deactivates the culling. The second parameter determinates which type of faces are culled (when deactivating the culling, that parameter doesnt matter)
+    void setCulling(bool b, GLenum e);
+
+
     //////////////////////////////
     //  GETTERS
     SDL_Window* getWindow()               { return window;           }
@@ -110,13 +117,5 @@ private:
 void translateNode(TNode* node, glm::vec3 position);
 void rotateNode(TNode* node, glm::vec3 rotation);
 void scaleNode(TNode* node, glm::vec3 scale);
-
-//Animation facade
-//Input node has to be of type Animation
-void loopAnimation(TNode* node);
-void pauseAnimation(TNode* node);
-void playOnceAnimation(TNode* node);
-void updateAnimation(TNode* node, double dTime);
-
 
 }

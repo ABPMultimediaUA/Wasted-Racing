@@ -24,13 +24,13 @@ int main() {
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
 
-    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
-    TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,-4,0), "media/cuboprueba.obj");
+    TNode* t = rps->createAnimatedNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/anim/WitchFINAL_000", false, 60, 0.1f);
+    TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/cuboprueba.obj");
     TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
     TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(10,15,0), glm::vec3(0,0,0));
 
-    rps::scaleNode(t, glm::vec3(0.25, 0.25, 0.25));
-    rps::scaleNode(t2, glm::vec3(1, 1, 1));
+    rps::scaleNode(t, glm::vec3(0.25,0.25,0.25));
+    rps::scaleNode(t2, glm::vec3(10,0.25,10));
     rps->setCulling(true, (GLenum)GL_BACK);
 
     TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
@@ -54,11 +54,11 @@ int main() {
             }            
         }
 
-        //TAnimation* anim = dynamic_cast<TAnimation*>(t->getEntity());
-        //anim->getAnimation()->update(0.5);
-        rps::rotateNode(camera, glm::vec3(0,j,0));
-        j+=0.01;
+        
+        anim->getAnimation()->update(30);
+        rps->updateCamera(glm::vec3(10, 0, 0), glm::vec3(0,0,0));
         rps->updateDevice();
+        rps::translateNode(t, glm::vec3(i,i,i));
         i += 0.01;
 
     }

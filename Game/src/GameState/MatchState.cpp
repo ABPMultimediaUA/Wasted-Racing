@@ -22,6 +22,7 @@ void MatchState::init() {
     
     //Add AI's to the game
     addAI();
+
 }
 
 void MatchState::update(float &accumulatedTime) {

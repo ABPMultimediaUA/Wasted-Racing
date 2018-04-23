@@ -6,6 +6,7 @@
 #include "../GameObject/RenderComponent/LightRenderComponent.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
 #include "../GameObject/RenderComponent/CameraRenderComponent.h"
+#include "../GameObject/RenderComponent/AnimationRenderComponent.h"
 #include "../GameFacade/RenderIrrlicht.h"
 #include "../GameFacade/RenderRedPanda.h"
 #include "WaypointManager.h"
@@ -63,6 +64,8 @@ public:
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency);
     //Create skybox
     IComponent::Pointer createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back);
+    //Create animation
+    IComponent::Pointer createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames);
 
     //==============================================
     // VISUAL INTERFACE

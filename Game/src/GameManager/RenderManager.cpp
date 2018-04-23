@@ -102,6 +102,8 @@ void RenderManager::update(float dTime) {
         renderFacade->updateItemIcon();
     }
 
+    renderFacade->updateAnimations(dTime);
+
 }
 
 void RenderManager::draw() {
@@ -115,12 +117,6 @@ void RenderManager::drawHUD() {
 void RenderManager::close(){
     //Clear all interface elements
     renderFacade->cleanInterface();
-
-    //Clear all objects from render engine
-    for(unsigned int i = 0; i < renderComponentList.size(); i++)
-    {
-        renderFacade->deleteObject(renderComponentList[i].get());
-    }
 
     //Clear render component list
     renderComponentList.clear();
@@ -240,6 +236,21 @@ IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, Objec
 
     return component;
 }
+
+//Create animation
+IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames) {
+
+    //Creating object renderer component
+    IComponent::Pointer component = std::make_shared<AnimationRenderComponent>(newGameObject, newStr, frames);
+
+    //Adding component to object
+    newGameObject.addComponent(component);
+
+    renderFacade->addAnimation(component.get());
+
+    return component;
+}
+
 
 //==============================================
 // DELEGATES
