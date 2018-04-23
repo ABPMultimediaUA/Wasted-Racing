@@ -253,6 +253,8 @@ void TResourceMesh::drawBoundingBox()
     glDisableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &TEntity::modelMatrix()[0][0]);
+
 }
 
 //This functions looks for a specific adjacent vertex for the vertex indices. Due to the computational cost, this should be improved
