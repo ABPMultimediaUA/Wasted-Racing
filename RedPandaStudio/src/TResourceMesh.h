@@ -8,6 +8,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <glm/ext.hpp>
 
 
 class TResourceMesh : public TResource {
@@ -55,4 +56,20 @@ class TResourceMesh : public TResource {
         TResourceMaterial* material = NULL;
         //Buffer handles
         GLuint* vboHandles;
-};
+
+        ///////////////////////////////////////
+        //// Bounding box asociated data //////
+        //Maximum X, Y and Z values of the mesh. They define the first of the two points needed
+        GLfloat maxX, maxY, maxZ;
+        //Minimum X, Y and Z values of the mesh. They define the second of the points needed
+        GLfloat minX, minY, minZ;
+        //VBO Buffer handler for the bounding box's vertex
+        GLuint boxVBOVertices;
+        //IBO Buffer handler for the bounding box's vertex
+        GLuint boxIBOIndices;
+        //Transform of the bounding box
+        glm::mat4 bbTransform;
+
+        void generateBoundingBox();
+        void drawBoundingBox();
+};  

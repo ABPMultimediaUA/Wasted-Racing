@@ -46,6 +46,9 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
     glGenBuffers(4, vboHandles);
 
+    //Generates the two points needed for a parallel-to-edges bounding box
+    generateBoundingBox();
+
 /*
     std::cout << "nVertex: " << nVertex << std::endl;
     std::cout << "nTriangles: " << nTriangles << std::endl;
@@ -159,12 +162,96 @@ void TResourceMesh::draw()
 
     //We order to draw here
     glDrawElements(GL_TRIANGLES_ADJACENCY, nTriangles*6, GL_UNSIGNED_INT, 0);
+
+    drawBoundingBox();
 /*
     if(texture!=NULL && textActive)
     {
         texture->endDraw();
     }
 */
+
+}
+
+void TResourceMesh::generateBoundingBox()
+{
+    //In first case, we initialize all the variables to the first vertex coordinates
+    minX = vertex[0];
+    minY = vertex[1];
+    minZ = vertex[2];
+    maxX = vertex[0];
+    maxY = vertex[1];
+    maxZ = vertex[2];
+
+    //After that, we look for the highest and lowest values in each axis
+    for(int i = 0; i < nVertex * 3; i+=3)
+    {
+        if(vertex[i] > maxX)
+            maxX=vertex[i];
+        if(vertex[i] < minX)
+            minX=vertex[i];
+        if(vertex[i+1] > maxY)
+            maxY = vertex[i+1];
+        if(vertex[i+1] < minY)
+            minY = vertex[i+1];
+        if(vertex[i+2] > maxZ)
+            maxZ = vertex[i+2];
+        if(vertex[i+2] < minZ)
+            minZ = vertex[i+2];
+    }
+
+    glm::vec3 size = glm::vec3(maxX-minX, maxY-minY, maxZ-minZ);
+    glm::vec3 center = glm::vec3((minX+maxX)/2, (minY+maxY)/2, (minZ+maxZ)/2);
+    bbTransform = glm::translate(glm::mat4(1), center) *  glm::scale(glm::mat4(1), size);
+    
+    //1x1x1 box centered on origin
+    GLfloat boxVertices[] = {
+    -0.5, -0.5, -0.5, 1.0,
+     0.5, -0.5, -0.5, 1.0,
+     0.5,  0.5, -0.5, 1.0,
+    -0.5,  0.5, -0.5, 1.0,
+    -0.5, -0.5,  0.5, 1.0,
+     0.5, -0.5,  0.5, 1.0,
+     0.5,  0.5,  0.5, 1.0,
+    -0.5,  0.5,  0.5, 1.0,
+  };
+
+  glGenBuffers(1, &boxVBOVertices);
+  glBindBuffer(GL_ARRAY_BUFFER, boxVBOVertices);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(boxVertices), boxVertices, GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  GLushort boxIndices[] = {
+    0, 1, 2, 3,
+    4, 5, 6, 7,
+    0, 4, 1, 5, 2, 6, 3, 7
+  };
+
+  glGenBuffers(1, &boxIBOIndices);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, boxIBOIndices);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(boxIndices), boxIndices, GL_STATIC_DRAW);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+}
+
+void TResourceMesh::drawBoundingBox()
+{
+    glm::mat4 m = TEntity::modelMatrix() * bbTransform;
+
+    glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &m[0][0]);
+
+    glBindBuffer(GL_ARRAY_BUFFER, boxVBOVertices);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, boxIBOIndices);
+    glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_SHORT, (GLvoid*)(4*sizeof(GLushort)));
+    glDrawElements(GL_LINES, 8, GL_UNSIGNED_SHORT, (GLvoid*)(8*sizeof(GLushort)));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    glDisableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 }
 
