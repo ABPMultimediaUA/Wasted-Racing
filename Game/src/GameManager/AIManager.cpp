@@ -156,21 +156,11 @@ void AIManager::update(float dTime) {
 }
 
 void AIManager::updateScheduling(float dTime, float loopTime) {
-    
-    //Time checkers
-
-    //v--DEberia de coger y poner una lista de todos los elementos q participan, que los tengo. Y poner una cola de procesamiento.
-    //v--Esta cola será una queue de este tipo de objetos.
-    //v---Objeto con identificador de la función, puntero al componente a actualizar, y tiempo de ejecución promedio de esa función
-    //La tardanza tiene que ser equivalente a repartir entre los ticks entre updates (velocidad juego / velocidad update manager). Se suma el total de eventos
-    //Y el tiempo aproximado de todos y se reparte equitativamente entre updates
-    //La cola prohibe problemas de recalculo, porque se ejecutará entera en el plazo de tiempo, o se acumularán eventos infinitos.
-    //Solo tenemos q calcular los tiempos para X primeras ejecuciones y luego ya tenemos el promedio, y podemos trabajar con eso.
-    
-
     //Iterate through the processes
     double timeCounter = 0.0;
-    for(unsigned int i = 0; i < AIQueue.size(); i++)
+    /*std::cout<<"---------------------"<<std::endl;
+    std::cout<<"Scheduling queue size before: "<<AIQueue.size()<<std::endl;*/
+    while(!AIQueue.empty())
     {
         //Time checker
         if(timeCounter > (accumulatedTimeSchedule)/ (loopTime/dTime) ) //loopTime / dTime = number of frames between updates. Acc / frame = time of processing assignated that frame.
@@ -251,11 +241,12 @@ void AIManager::updateScheduling(float dTime, float loopTime) {
         timeCounter += clock_scheduling->getElapsedTime();
     }
 
-    std::cout<<"---------------------"<<std::endl;
-    std::cout<<"Scheduling queue size: "<<AIQueue.size()<<std::endl;
+    /*std::cout<<"---------------------"<<std::endl;
+    std::cout<<"Scheduling queue size after: "<<AIQueue.size()<<std::endl;
     std::cout<<"Scheduling time accumulated: "<<accumulatedTimeSchedule<<std::endl;
     std::cout<<"Scheduling parameters:  "<<dTime <<std::endl;
-    std::cout<<"---------------------"<<std::endl;
+    std::cout<<"Scheduling time spent:  "<<timeCounter <<std::endl;
+    std::cout<<"---------------------"<<std::endl;*/
 
     //WE SHOW THE DIFFERENCES
     /*

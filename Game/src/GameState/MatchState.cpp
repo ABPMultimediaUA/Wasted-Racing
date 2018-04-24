@@ -57,7 +57,7 @@ void MatchState::update(float &accumulatedTime) {
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
     }
-
+    
     //Always interpolate
     interpolate(accumulatedTime);
 
@@ -76,9 +76,7 @@ void MatchState::updateManagers(float dTime){
     {
         physicsManager->update(dTime);
 
-        //:::>PROVISIONAL
-        if(!schedulingOn)
-            aiManager->update(dTime);
+        aiManager->update(dTime);
 
         waypointManager->update(dTime);
 
