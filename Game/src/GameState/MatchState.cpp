@@ -33,6 +33,8 @@ void MatchState::init() {
     
     //Turn scheduling off initially
     schedulingOn = false;
+    schedulingClock = new Clock();
+    schedulingClock->init();
 
     //Add AI's to the game
     addAI();
@@ -56,12 +58,14 @@ void MatchState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
 
-    //AI Scheduling
-    if(schedulingOn)
-        aiManager->updateScheduling(accumulatedTime);
-
     //Always interpolate
     interpolate(accumulatedTime);
+
+    //AI Scheduling and timing
+    double timePassed = schedulingClock->getElapsedTime();
+    schedulingClock->restart();
+    aiManager->updateScheduling(timePassed, loopTime);
+
 }
 
 void MatchState::updateManagers(float dTime){

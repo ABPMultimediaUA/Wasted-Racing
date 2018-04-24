@@ -41,11 +41,12 @@ void AIManager::init() {
     
     //Scheduling data
     samplesBattle      = 0;
-    samplesDriing      = 0;
+    samplesDriving     = 0;
     samplesLOD         = 0;
     averageTimeBattle  = 0.000005;
     averageTimeDriving = 0.0000075;
     averageTimeLOD     = 0.00000005;
+    accumulatedTimeSchedule = 0;
 
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
@@ -58,101 +59,103 @@ void AIManager::init() {
 
 
 void AIManager::update(float dTime) {
-    //Interchange updating direction or battle behaviour each frame
-    if(updateBattleBehaviour == true)
+    //Schedule
+    accumulatedTimeSchedule = 0.0;
+
+    //Updating battle AI
+    for(unsigned int i=0; i<battleAI.size(); i++)
     {
-        for(unsigned int i=0; i<battleAI.size(); i++)
+        //<___
+        //auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
+        //aiBattleComponent->update(dTime);
+
+        //Create battle package processing
+        AIEvent a;
+        a.object    = battleAI[i];
+        a.event     = AIEventType::UPDATE_BATTLE;
+        a.timeStamp = clock->getInitTime();
+        a.average   = averageTimeBattle;
+
+        //Add to list
+        AIQueue.push(a);
+
+        //Count accumulated Time
+        accumulatedTimeSchedule += averageTimeBattle;
+
+        //___>
+    }
+    //get position of player to determine the distance to him (LOD)
+    auto player = GlobalVariables::getInstance().getPlayer();
+    auto posPlayer = player->getTransformData().position;
+
+    //Update every AI
+    for(unsigned int i=0; i<objectsAI.size(); ++i){
+
+        auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI[i]).get();
+        auto AIObject = aiDrivingComponent->getGameObject();
+        auto posAI = AIObject.getTransformData().position; 
+
+
+        auto distPlayerAI = (posPlayer.x - posAI.x) * (posPlayer.x - posAI.x) +
+                            (posPlayer.y - posAI.y) * (posPlayer.y - posAI.y) +
+                            (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
+
+                        
+        //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
+        if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
+        {
+            //:::>Explain what
+            if(AIObject.getComponent<CollisionComponent>()->getKinetic() == false)
+            {
+                AIObject.getComponent<CollisionComponent>()->setKinetic(true);
+            }
+
+            //Update if the object is not an red shell or blue shell
+            if(AIObject.getComponent<IItemComponent>() == nullptr)
+            {
+                //<___
+                //updateDriving(aiDrivingComponent);
+
+                //Create battle package processing
+                AIEvent a;
+                a.object    = objectsAI[i];
+                a.event     = AIEventType::UPDATE_DRIVING_TURN;
+                a.timeStamp = clock->getInitTime();
+                a.average   = averageTimeDriving;
+
+                //Add to list
+                AIQueue.push(a);
+
+                //Count accumulated Time
+                accumulatedTimeSchedule += averageTimeDriving;
+                
+                //___>
+            }
+        }
+        else
         {
             //<___
-            //auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
-            //aiBattleComponent->update(dTime);
+            //calculateLoD(AIObject, dTime);
 
-            //Create battle package processing
+            //Create lod package processing
             AIEvent a;
-            a.object    = battleAI[i];
-            a.event     = AIEventType::UPDATE_BATTLE;
-            a.timeStamp = Clock->getInitTime();
-            a.average   = averageTimeBattle;
+            a.object    = objectsAI[i];
+            a.event     = AIEventType::UPDATE_LOD;
+            a.timeStamp = clock->getInitTime();
+            a.average   = averageTimeLOD;
 
             //Add to list
             AIQueue.push(a);
 
+            //Count accumulated Time
+            accumulatedTimeSchedule += averageTimeLOD;
+                
             //___>
         }
-
-        //set flag to false
-        updateBattleBehaviour = false;
-    }
-    else
-    {
-        //get position of player to determine the distance to him (LOD)
-        auto player = GlobalVariables::getInstance().getPlayer();
-        auto posPlayer = player->getTransformData().position;
-
-        //Update every AI
-        for(unsigned int i=0; i<objectsAI.size(); ++i){
-
-            auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI[i]).get();
-            auto AIObject = aiDrivingComponent->getGameObject();
-            auto posAI = AIObject.getTransformData().position; 
-
-
-            auto distPlayerAI = (posPlayer.x - posAI.x) * (posPlayer.x - posAI.x) +
-                                (posPlayer.y - posAI.y) * (posPlayer.y - posAI.y) +
-                                (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
-
-                            
-            //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
-            if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
-            {
-                //:::>Explain what
-                if(AIObject.getComponent<CollisionComponent>()->getKinetic() == false)
-                {
-                    AIObject.getComponent<CollisionComponent>()->setKinetic(true);
-                }
-
-                //Update if the object is not an red shell or blue shell
-                if(AIObject.getComponent<IItemComponent>() == nullptr)
-                {
-                    //<___
-                    //updateDriving(aiDrivingComponent);
-
-                    //Create battle package processing
-                    AIEvent a;
-                    a.object    = objectsAI[i];
-                    a.event     = AIEventType::UPDATE_UPDATE_DRIVING_TURN;
-                    a.timeStamp = Clock->getInitTime();
-                    a.average   = averageTimeDriving;
-
-                    //Add to list
-                    AIQueue.push(a);
-
-                    //___>
-                }
-            }
-            else
-            {
-                //<___
-                //calculateLoD(AIObject, dTime);
-
-                //Create lod package processing
-                AIEvent a;
-                a.object    = objectsAIi];
-                a.event     = AIEventType::UPDATE_LOD;
-                a.timeStamp = Clock->getInitTime();
-                a.average   = averageTimeLOD;
-
-                //Add to list
-                AIQueue.push(a);
-                //___>
-            }
-        }
-        //Set flag to true
-        updateBattleBehaviour = true;
     }
 }
 
-void AIManager::updateScheduling(float dTime) {
+void AIManager::updateScheduling(float dTime, float loopTime) {
     
     //Time checkers
 
@@ -170,7 +173,7 @@ void AIManager::updateScheduling(float dTime) {
     for(unsigned int i = 0; i < AIQueue.size(); i++)
     {
         //Time checker
-        if(timeCounter > dTime)
+        if(timeCounter > (accumulatedTimeSchedule)/ (loopTime/dTime) ) //loopTime / dTime = number of frames between updates. Acc / frame = time of processing assignated that frame.
             break;
 
         //Initialize time passing
@@ -182,13 +185,14 @@ void AIManager::updateScheduling(float dTime) {
         //Different cases
         switch(a.event)
         {
-            case AIEvent::UPDATE_BATTLE:
+            case AIEventType::UPDATE_BATTLE:
+            {
                 //->Timing
                 clock->restart();
                 
                 //Launch effect
                 auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(a.object).get();
-                aiBattleComponent->update(a);
+                aiBattleComponent->update(dTime);
 
                 //<-Timing
                 averageTimeBattle = (samplesBattle > 500) ? averageTimeBattle 
@@ -198,8 +202,9 @@ void AIManager::updateScheduling(float dTime) {
                 samplesBattle++;
                 
                 break;
-
-            case AIEvent::UPDATE_UPDATE_DRIVING_TURN:
+            }
+            case AIEventType::UPDATE_DRIVING_TURN:
+            {
                 //->Timing
                 clock->restart();
 
@@ -215,14 +220,15 @@ void AIManager::updateScheduling(float dTime) {
                 samplesDriving++;
 
                 break;
-
-            case AIEvent::UPDATE_LOD:
+            }
+            case AIEventType::UPDATE_LOD:
+            {
                 //->Timing
                 clock->restart();
 
                 //Get variables
-                auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(a.object).get();
-                auto AIObject = aiDrivingComponent->getGameObject();
+                auto aiDrivingComponent2 =  std::dynamic_pointer_cast<AIDrivingComponent>(a.object).get();
+                auto AIObject = aiDrivingComponent2->getGameObject();
                 double timePassed = clock->getInitTime() - a.timeStamp + dTime; //Actual interval of time (dTime + time passed since creation of event)
 
                 //Launch effect
@@ -235,14 +241,21 @@ void AIManager::updateScheduling(float dTime) {
                 samplesLOD++;
                 
                 break;
+            }
         }
 
         //Release 
         AIQueue.pop();
 
         //End time passing;
-        timeCounter += clock_scheduling.getElapsedTime();
+        timeCounter += clock_scheduling->getElapsedTime();
     }
+
+    std::cout<<"---------------------"<<std::endl;
+    std::cout<<"Scheduling queue size: "<<AIQueue.size()<<std::endl;
+    std::cout<<"Scheduling time accumulated: "<<accumulatedTimeSchedule<<std::endl;
+    std::cout<<"Scheduling parameters:  "<<dTime <<std::endl;
+    std::cout<<"---------------------"<<std::endl;
 
     //WE SHOW THE DIFFERENCES
     /*

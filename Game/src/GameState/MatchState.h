@@ -8,6 +8,9 @@
 #include <fstream>
 #include <stdio.h>
 
+
+#include "../GameFacade/Clock.h"
+
 #include "../Game.h"
 
 class Game;
@@ -87,7 +90,8 @@ private:
     //Game velocity
     float ratio = 1.0;
 
-    //boolean
+    //Scheduling checker and clock
+    Clock* schedulingClock;
     bool schedulingOn;
 
 };

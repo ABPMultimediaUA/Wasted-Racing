@@ -59,7 +59,7 @@ public:
     void update(const float dTime);
 
     //Update
-    void updateScheduling(const float dTime);
+    void updateScheduling(const float dTime, const float loopTime);
 
     //Shutdown
     void close();
@@ -101,8 +101,9 @@ private:
     //==============================================
     // SCHEDULING
     //==============================================
-    std::queue<AIEvent> AIQueue; //Processing queue
-    double maxTimeSchedule;      //Maximum time for all processes per turn
+    std::queue<AIEvent> AIQueue;    //Processing queue
+    double maxTimeSchedule;         //Maximum time for all processes per turn
+    double accumulatedTimeSchedule; //Time accumulated between all the events
     
     //Samples to measure the mean value of each average time
     int samplesBattle;
