@@ -93,65 +93,66 @@ void AIManager::update(float dTime) {
 
         auto aiDrivingComponent =  std::dynamic_pointer_cast<AIDrivingComponent>(objectsAI[i]).get();
         auto AIObject = aiDrivingComponent->getGameObject();
-        auto posAI = AIObject.getTransformData().position; 
-
-
-        auto distPlayerAI = (posPlayer.x - posAI.x) * (posPlayer.x - posAI.x) +
-                            (posPlayer.y - posAI.y) * (posPlayer.y - posAI.y) +
-                            (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
-
-        float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
-                        
-        //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
-        if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
+        //Update if the object is not an red shell or blue shell
+        if(AIObject.getComponent<IItemComponent>() == nullptr)
         {
-            //:::>Explain what
-            if(AIObject.getComponent<CollisionComponent>()->getKinetic() == false)
-            {
-                AIObject.getComponent<CollisionComponent>()->setKinetic(true);
-            }
+            auto posAI = AIObject.getTransformData().position; 
 
-            //Update if the object is not an red shell or blue shell
-            if(AIObject.getComponent<IItemComponent>() == nullptr)
+
+            auto distPlayerAI = (posPlayer.x - posAI.x) * (posPlayer.x - posAI.x) +
+                                (posPlayer.y - posAI.y) * (posPlayer.y - posAI.y) +
+                                (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
+
+            float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
+                            
+            //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
+            if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
+            {
+                //:::>Explain what
+                if(AIObject.getComponent<CollisionComponent>()->getKinetic() == false)
+                {
+                    AIObject.getComponent<CollisionComponent>()->setKinetic(true);
+                }
+
+                
+                    //<___
+                    //updateDriving(aiDrivingComponent);
+
+                    //Create battle package processing
+                    AIEvent a;
+                    a.object    = objectsAI[i];
+                    a.event     = AIEventType::UPDATE_DRIVING_TURN;
+                    a.timeStamp = clock->getInitTime();
+                    a.average   = averageTimeDriving;
+
+                    //Add to list
+                    AIQueue.push(a);
+
+                    //Count accumulated Time
+                    accumulatedTimeSchedule += averageTimeDriving;
+                    
+                    //___>
+            }
+            else
             {
                 //<___
-                //updateDriving(aiDrivingComponent);
+                //calculateLoD(AIObject, dTime);
 
-                //Create battle package processing
+                //Create lod package processing
                 AIEvent a;
                 a.object    = objectsAI[i];
-                a.event     = AIEventType::UPDATE_DRIVING_TURN;
+                a.event     = AIEventType::UPDATE_LOD;
                 a.timeStamp = clock->getInitTime();
-                a.average   = averageTimeDriving;
+                a.average   = averageTimeLOD;
 
                 //Add to list
                 AIQueue.push(a);
 
                 //Count accumulated Time
-                accumulatedTimeSchedule += averageTimeDriving;
-                
+                accumulatedTimeSchedule += averageTimeLOD;
+                    
                 //___>
             }
-        }
-        else
-        {
-            //<___
-            //calculateLoD(AIObject, dTime);
-            std::cout << "HEY" << std::endl;
-            //Create lod package processing
-            AIEvent a;
-            a.object    = objectsAI[i];
-            a.event     = AIEventType::UPDATE_LOD;
-            a.timeStamp = clock->getInitTime();
-            a.average   = averageTimeLOD;
-
-            //Add to list
-            AIQueue.push(a);
-
-            //Count accumulated Time
-            accumulatedTimeSchedule += averageTimeLOD;
-                
-            //___>
         }
     }
 }
