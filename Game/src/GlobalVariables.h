@@ -31,7 +31,9 @@ class GlobalVariables{
         bool getOnline()                            {     return online;      };
         void setDistanceLoD(float d)                {     distanceLoD = d;    };
         float getDistanceLoD()                      {     return distanceLoD; };
-
+        void setLanguage(int l)                     {     language = l;       };
+        int  getLanguage()                          {     return language;    };
+        
     private:
 
         //==========================================
@@ -41,6 +43,7 @@ class GlobalVariables{
         GameObject* player; 
         bool server;
         bool online;
+        int language;
 
         //==========================================
         // AI DATA

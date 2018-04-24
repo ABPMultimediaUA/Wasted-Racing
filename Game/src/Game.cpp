@@ -26,6 +26,7 @@ void Game::init() {
     //Set engine to default
     setRenderEngine(1);
     setInputEngine(1);
+    GlobalVariables::getInstance().setLanguage(1);
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
     eventManager    = &EventManager::getInstance();     //Initilize event manager
