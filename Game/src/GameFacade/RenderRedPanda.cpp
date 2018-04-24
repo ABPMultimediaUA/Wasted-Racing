@@ -29,6 +29,17 @@ namespace gui {
 
     struct nk_image background;
 
+    //MAIN  MENU Images
+    struct nk_image menuBase;
+    struct nk_image text_singleplayer;
+    struct nk_image text_singleplayerHover;
+    struct nk_image text_multiplayer;
+    struct nk_image text_multiplayerHover;
+    struct nk_image text_options;
+    struct nk_image text_optionsHover;
+    struct nk_image text_exit;
+    struct nk_image text_exitHover;
+
     //GUI Images
     struct nk_image item_void;
     struct nk_image item_banana;
@@ -273,17 +284,23 @@ void drawRPS_GUI_Menu(){
                 nk_popup_end(GUI);
             }
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.25, w*0.3, h*0.5))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.16, 0, w, h))) {
+                nk_layout_row_static(GUI, h, h*1.16, 1);
+                nk_image(GUI, gui::menuBase);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.35, w*0.3, h*0.5))) {
 
                 nk_layout_row_dynamic(GUI, 50, 1);
                 nk_spacing(GUI, 1);
-                if (nk_button_label(GUI, "Single Player"))
+                if (nk_button_image(GUI, gui::text_singleplayer, gui::text_singleplayerHover))
                     EventManager::getInstance().addEvent(Event {EventType::Key_Singleplayer_Down});
-                if (nk_button_label(GUI, "Multiplayer"))
+                if (nk_button_image(GUI, gui::text_multiplayer, gui::text_multiplayerHover))
                     EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
-                if (nk_button_label(GUI, "Options"))
+                if (nk_button_image(GUI, gui::text_options, gui::text_optionsHover))
                     fprintf(stdout, "Options!\n");
-                if (nk_button_label(GUI, "Quit"))
+                if (nk_button_image(GUI, gui::text_exit, gui::text_exitHover))
                     EventManager::getInstance().addEvent(Event {EventType::Game_Close});
                 nk_popup_end(GUI);
             }
@@ -422,6 +439,33 @@ void gui::init() {
     device->setGUIDrawFunction(drawRPS_GUI_Menu);
 
     gui::background     = gui::loadTexture("media/img/background.jpg");
+
+
+    //==========================================================================================
+    //  MAIN MENU
+    //==========================================================================================
+    if(GlobalVariables::getInstance().getLanguage() == 0) {
+        gui::menuBase                   =   gui::loadTexture("media/img/GUI/MainMenu/ENG/menuBase.png");
+        gui::text_singleplayer          =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bSingle.png");
+        gui::text_singleplayerHover     =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bSingleHover.png");
+        gui::text_multiplayer           =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bMultiplayer.png");
+        gui::text_multiplayerHover      =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bMultiplayerHover.png");
+        gui::text_options               =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bOptions.png");
+        gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bOptionsHover.png");
+        gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExit.png");
+        gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExitHover.png");
+    } 
+    else {
+        gui::menuBase                   =   gui::loadTexture("media/img/GUI/MainMenu/SPA/menuBase.png");
+        gui::text_singleplayer          =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSingle.png");
+        gui::text_singleplayerHover     =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSingleHover.png");
+        gui::text_multiplayer           =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bMultijugador.png");
+        gui::text_multiplayerHover      =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bMultijugadorHover.png");
+        gui::text_options               =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bOpciones.png");
+        gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bOpcionesHover.png");
+        gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalir.png");
+        gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalirHover.png");
+    }
 
     //==========================================================================================
     //  PLAYER  INTERFACE
