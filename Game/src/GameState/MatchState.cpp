@@ -57,14 +57,14 @@ void MatchState::update(float &accumulatedTime) {
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
     }
-    
-    //Always interpolate
-    interpolate(accumulatedTime);
 
     //AI Scheduling and timing
     double timePassed = schedulingClock->getElapsedTime();
     schedulingClock->restart();
     aiManager->updateScheduling(timePassed, loopTime);
+
+    //Always interpolate
+    interpolate(accumulatedTime);
 
 }
 

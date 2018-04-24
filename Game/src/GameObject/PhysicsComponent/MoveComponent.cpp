@@ -142,7 +142,9 @@ void MoveComponent::changeVel(float v){
 //Activate temporal speed change
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
 
-    if(mData.max_vel != maxSpeed){
+    auto objectRender = this->getGameObject().getComponent<ObjectRenderComponent>();
+    
+    if(mData.max_vel != maxSpeed && objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High){
         auxData.max_vel         = mData.max_vel;
         mData.max_vel           = maxSpeed;      
     }

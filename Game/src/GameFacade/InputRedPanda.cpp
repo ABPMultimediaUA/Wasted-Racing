@@ -68,8 +68,6 @@ void InputRedPanda::updateInput() {
         DetectKeyInput(d,Key_TurnRight_Down,Key_TurnRight_Up)
         DetectKeyInput(t,Key_Drift_Down,Key_Drift_Up)
         DetectKeyInput(q,Key_UseItem_Down,Key_UseItem_Up)
-        DetectKeyInput(5,Key_Multiplayer_Down,Key_Multiplayer_Up)
-        DetectKeyInput(6,Key_Singleplayer_Down,Key_Singleplayer_Up)
         DetectKeyInput(F6,Key_SlowControl_Down,Key_SlowControl_Up)
         DetectKeyInput(F7,Key_NormalControl_Down,Key_NormalControl_Up)
         DetectKeyInput(F8,Key_FastControl_Down,Key_FastControl_Up)

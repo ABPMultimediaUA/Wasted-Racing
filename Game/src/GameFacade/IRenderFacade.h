@@ -85,6 +85,12 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
 
+    //Dont so nothing in irrlicht, only works on rps
+    virtual void setClipping(bool b) = 0;
+
+    //Change mesh
+    virtual void changeMesh(int id, std::string newMesh) = 0;
+
     //==============================================================
     //  VISUAL INTERFACE
     //==============================================================

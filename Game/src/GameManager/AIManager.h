@@ -93,10 +93,11 @@ private:
 
     //___>
     //bool changeAI;
+    bool itemLoD;           //variable to know if we took item in this waypoint or not (only for lod)
     bool updateBattleBehaviour;
     //<___
 
-    float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
+    //float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 
     //==============================================
     // SCHEDULING

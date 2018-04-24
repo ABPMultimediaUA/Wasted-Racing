@@ -1,10 +1,11 @@
 #include "../Game.h"
-#include <raknet/MessageIdentifiers.h>
-#include <raknet/RakPeerInterface.h>
-#include <raknet/RakNetTypes.h>
 #include <iostream>
 
-int main(){
+#ifdef _WIN32
+#define main WinMain 
+#endif
+
+int main() {
 
 
     std::cout << std::endl;

@@ -9,8 +9,10 @@
 #include "../GameFacade/RenderIrrlicht.h"
 #include "../GameFacade/RenderRedPanda.h"
 #include "WaypointManager.h"
+#include "../GameEvent/EventManager.h"
 #include "AIManager.h"
 #include "ObjectManager.h"
+#include "../GlobalVariables.h"
 
 class ObjectManager;
 
@@ -63,6 +65,13 @@ public:
     IComponent::Pointer createObjectRenderComponent(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, const char* newStr, float radius, float length, int tesselation, bool transparency);
     //Create skybox
     IComponent::Pointer createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back);
+
+
+    /////////////
+    //  LoD
+    /////////////
+    void LoDmesh();
+
 
     //==============================================
     // VISUAL INTERFACE
@@ -184,6 +193,9 @@ private:
 
     //Debug state checker
     bool debugState;
+
+    //LoD state
+    bool lodState;
 
     //When we start adding components, we add them in a list,
     //Once we've added them all, we split them in a QuadTree structure

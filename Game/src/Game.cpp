@@ -26,6 +26,7 @@ void Game::init() {
     //Set engine to default
     setRenderEngine(1);
     setInputEngine(1);
+    GlobalVariables::getInstance().setLanguage(1);
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
     eventManager    = &EventManager::getInstance();     //Initilize event manager
@@ -122,6 +123,7 @@ void Game::Run() {
     //Start the run
     //execute game while staying
     while(stay){
+        
         //Measure elapsed time
         accumulatedTime += (float)clock->getElapsedTime();
         clock->restart();
@@ -141,6 +143,7 @@ void Game::Run() {
 
         //Always draw the game
         state->draw();
+        
     }
 
     close();

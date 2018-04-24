@@ -1,6 +1,10 @@
 #include "src/Facade/RedPandaStudio.h"
 #include <iostream>
 
+#ifdef _WIN32
+#define main WinMain 
+#endif
+
 int main() {
 
     std::cout << std::endl;
