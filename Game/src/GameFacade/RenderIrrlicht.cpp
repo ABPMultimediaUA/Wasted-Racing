@@ -177,7 +177,6 @@ void RenderIrrlicht::addObject(IComponent* ptr) {
         node->setPosition(irrPos);
         node->setRotation(irrRot);
         node->setScale(irrSca);
-
     
         nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
     }

@@ -1,7 +1,4 @@
 #include "RenderRedPanda.h"
-#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
-#include "../GameObject/RenderComponent/LightRenderComponent.h"
-#include "../GameObject/RenderComponent/CameraRenderComponent.h"
 
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
@@ -15,76 +12,93 @@
 #include <nuklear/nuklear.h>
 #include <nuklear/nuklear_sdl_gl3.h>
 
+#include "../GameObject/RenderComponent/CameraRenderComponent.h"
+#include "../GameObject/RenderComponent/LightRenderComponent.h"
+#include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameManager/RenderManager.h"
+#include "../GameManager/ObjectManager.h"
+#include "../GlobalVariables.h"
+
 //==============================================================
 // Gui Related functions and variables declarations
 //==============================================================
 struct nk_context *GUI; //:::> global variable
-//void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI(); //:::> function that is given as parameter to redpanda
 
 namespace gui {
 
-    struct nk_image image;
+    struct nk_image background;
+
+    //MAIN  MENU Images
+    struct nk_image menuBase;
+    struct nk_image text_singleplayer;
+    struct nk_image text_singleplayerHover;
+    struct nk_image text_multiplayer;
+    struct nk_image text_multiplayerHover;
+    struct nk_image text_options;
+    struct nk_image text_optionsHover;
+    struct nk_image text_exit;
+    struct nk_image text_exitHover;
+
+    //GUI Images
+    struct nk_image item_void;
+    struct nk_image item_banana;
+    struct nk_image item_blue;
+    struct nk_image item_red;
+    struct nk_image item_star;
+    struct nk_image item_mushroom;
+    struct nk_image number_1;
+    struct nk_image number_2;
+    struct nk_image number_3;
+    struct nk_image number_4;
+    struct nk_image minimap;
+    struct nk_image dot_player;
+    struct nk_image dot_enemy;
+    struct nk_image lap_1;
+    struct nk_image lap_2;
+    struct nk_image lap_3;
+
 
     void init();
     struct nk_image loadTexture(const char* path);
 
 }
 
+//==============================================
+// DELEGATES DECLARATIONS
+//==============================================
+void addHUD(EventData eData); 
+
 //==============================================================
 // Engine Related functions
 //==============================================================
 //Creates a window depending on the engine
 void RenderRedPanda::openWindow() { 
-    //Create window with openGL
+
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
-    
-    //Create input interface
     InputRedPanda* receiver = new InputRedPanda();
 
-    //Get pointer of the window
     uintptr_t aux = reinterpret_cast<uintptr_t>(device->getWindow());
-
-    //Set it as the default device and the input facade as the key handler
     InputManager::getInstance().setDevice(aux);
     InputManager::getInstance().setInputFacade(receiver);
 
-    //Create HUD renderer
-    /*HUDRenderer = SDL_CreateRenderer(device->getWindow(), -1, SDL_RENDERER_ACCELERATED);
-    if (HUDRenderer == nullptr){
-        std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
-    }
-
-    //Load an image of example
-    std::string imagePath = "/media/img/fontcourier.bmp";
-    SDL_Surface *bmp = SDL_LoadBMP(imagePath.c_str());
-    if (bmp == nullptr){
-        std::cout << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
-    }
-
-    //Create texture so we can paint it in the renderer
-    tex = SDL_CreateTextureFromSurface(HUDRenderer, bmp);
-    SDL_FreeSurface(bmp);
-    if (tex == nullptr){
-        std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-    }*/
-
-    
     //Init GUI
     GUI = nk_sdl_init(device->getWindow());
-
-    //Load fonts
     struct nk_font_atlas *atlas;
     nk_sdl_font_stash_begin(&atlas);
 	nk_sdl_font_stash_end();
 
-    //set the GUI Context
-    receiver->setGUIContext(GUI);
+    InputRedPanda* irps = dynamic_cast<InputRedPanda*>(InputManager::getInstance().getInputFacade());
+    irps->setGUIContext(GUI);
+
+    gui::init();
 
     addCamera();
 
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, addHUD});
 
-    //Initialize the GUI
-    //gui::init();
+
 }
 
 //Updates window info in the engine
@@ -93,21 +107,9 @@ void RenderRedPanda::updateWindow() {
 }
 
 //Closes engine window
-void RenderRedPanda::closeWindow() {
-    //Clear context
-    nk_clear(GUI);
-    nk_free(GUI);
+void RenderRedPanda::closeWindow() { 
 
-    //Close nuklear
     nk_sdl_shutdown();
-
-    //Destroy all textures used -- initially one for testing
-    /*SDL_DestroyTexture(tex);
-
-    //Destroy renderer
-    SDL_DestroyRenderer(HUDRenderer);*/
-
-    //Close device
     device->dropDevice();
 
 }
@@ -118,7 +120,9 @@ void RenderRedPanda::closeWindow() {
 //==============================================================
 //Renders all the scene
 void RenderRedPanda::renderDraw() {
+    
     device->updateDevice();
+
 }
 
 //Add a camera to the game
@@ -258,49 +262,253 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
     }
 }
 
+//Change mesh
+void RenderRedPanda::changeMesh(int id, std::string newMesh)
+{
+    auto node = nodeMap.find(id)->second;
+    auto resourceManager = device->getResourceManager();
+    auto resourceObj = resourceManager->getResourceOBJ(newMesh.c_str());
+    auto tEntity = node->getEntity();
+    auto tMesh = dynamic_cast<TMesh*>(tEntity);
+    tMesh->setMesh(resourceObj);
+}
+
 //==============================================================
 // GUI Related Functions
 //==============================================================
 
 //GUI update function
-/*void drawRPS_GUI(){
+void drawRPS_GUI_Menu(){
+
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
     
-    if (nk_begin(GUI, "Demo", nk_rect(50, 50, 230, 250),
-            NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
-            enum {EASY, HARD};
-            static int op = EASY;
-            static int property = 20;
 
-            nk_layout_row_static(GUI, 30, 80, 1);
-            if (nk_button_label(GUI, "button"))
-                printf("button pressed!\n");
-            nk_layout_row_dynamic(GUI, 30, 2);
-            if (nk_option_label(GUI, "easy", op == EASY)) op = EASY;
-            if (nk_option_label(GUI, "hard", op == HARD)) op = HARD;
-            nk_layout_row_dynamic(GUI, 22, 1);
-            nk_property_int(GUI, "Compression:", 0, &property, 100, 10, 1);
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                nk_image(GUI, gui::background);
+                nk_popup_end(GUI);
+            }
 
-            nk_layout_row_dynamic(GUI, 20, 1);
-            nk_label(GUI, "background:", NK_TEXT_LEFT);
-            nk_layout_row_dynamic(GUI, 25, 1);
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.16, 0, w, h))) {
+                nk_layout_row_static(GUI, h, h*1.16, 1);
+                nk_image(GUI, gui::menuBase);
+                nk_popup_end(GUI);
+            }
 
-            nk_layout_row_dynamic(GUI, 20, 1);
-            nk_label(GUI, "Selected", NK_TEXT_LEFT);
-            static const float ratio[] = {0.15f, 0.50f, 0.35f};
-            nk_layout_row(GUI, NK_DYNAMIC, 100, 3, ratio);
-            nk_spacing(GUI, 1);
-            nk_image(GUI, gui::image);
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.35, w*0.3, h*0.5))) {
 
+                nk_layout_row_dynamic(GUI, 50, 1);
+                nk_spacing(GUI, 1);
+                if (nk_button_image(GUI, gui::text_singleplayer, gui::text_singleplayerHover))
+                    EventManager::getInstance().addEvent(Event {EventType::Key_Singleplayer_Down});
+                if (nk_button_image(GUI, gui::text_multiplayer, gui::text_multiplayerHover))
+                    EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
+                if (nk_button_image(GUI, gui::text_options, gui::text_optionsHover))
+                    fprintf(stdout, "Options!\n");
+                if (nk_button_image(GUI, gui::text_exit, gui::text_exitHover))
+                    EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+                nk_popup_end(GUI);
+            }
             
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
-}*/
+}
+
+void drawRPS_GUI_HUD(){
+
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+
+    GameObject cameraTarget = RenderManager::getInstance().getRenderFacade()->getCameraTarget();
+
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0)) {
+
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(5, 5, 180, 180))) {
+
+            nk_layout_row_static(GUI, 150, 150, 1);
+
+            int itemID = cameraTarget.getComponent<ItemHolderComponent>().get()->getItemType();
+            switch(itemID){
+                case 0: //RED SHELL
+                        nk_image(GUI, gui::item_red);
+                        break;
+                case 1: //BLUE SHELL
+                        nk_image(GUI, gui::item_blue);
+                        break;
+                case 2: //TRAP
+                        nk_image(GUI, gui::item_banana);
+                        break;
+                case 3: //MUSHROOM
+                        nk_image(GUI, gui::item_mushroom);
+                        break;
+                case 4: //STAR
+                        nk_image(GUI, gui::item_star);
+                        break;
+                default:
+                        nk_image(GUI, gui::item_void);
+                        break;
+            }
+            nk_popup_end(GUI);
+	    }
+
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(5, h*0.77, 180, 180))) {
+
+            nk_layout_row_static(GUI, 150, 150, 1);
+
+            int position = cameraTarget.getComponent<ScoreComponent>().get()->getPosition();
+            switch(position){
+                case 1: //BLUE SHELL
+                        nk_image(GUI, gui::number_1);
+                        break;
+                case 2: //TRAP
+                        nk_image(GUI, gui::number_2);
+                        break;
+                case 3: //MUSHROOM
+                        nk_image(GUI, gui::number_3);
+                        break;
+                case 4: //STAR
+                        nk_image(GUI, gui::number_4);
+                        break;
+                default:
+                        break;
+            }
+            nk_popup_end(GUI);
+	    }
+
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.885, 5, 140, 160))) {
+
+            nk_layout_row_static(GUI, 126, 108, 1);
+
+            int lap = cameraTarget.getComponent<ScoreComponent>().get()->getLap();
+
+            switch(lap){
+                case 1:
+                        nk_image(GUI, gui::lap_1);
+                        break;
+                case 2:
+                        nk_image(GUI, gui::lap_2);
+                        break;
+                case 3:
+                        nk_image(GUI, gui::lap_3);
+                        break;
+                default:
+                        break;
+            }
+            
+            nk_popup_end(GUI);
+	    }
+
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.8, h*0.48, 220, 340))) {
+
+            nk_layout_row_static(GUI, 326, 203, 1);
+
+            nk_image(GUI, gui::minimap);
+            
+            nk_popup_end(GUI);
+	    }
+
+        for(int i = 3; i >= 0; i--) {
+
+            glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(1140 - pos1.z * 0.15, 440 - pos1.x * 0.15, 180, 290))) {
+
+                nk_layout_row_static(GUI, 15, 15, 1);
+
+                if(i == 0)
+                    nk_image(GUI, gui::dot_player);
+                else 
+                    nk_image(GUI, gui::dot_enemy);
+
+                nk_popup_end(GUI);
+	        }
+        }
+        
+
+    }
+
+
+
+
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+
+}
 
 void gui::init() {
-    gui::image = gui::loadTexture("media/img/iconoSeta.png");
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+
+    device->setGUIDrawFunction(drawRPS_GUI_Menu);
+
+    gui::background     = gui::loadTexture("media/img/background.jpg");
+
+
+    //==========================================================================================
+    //  MAIN MENU
+    //==========================================================================================
+    if(GlobalVariables::getInstance().getLanguage() == 0) {
+        gui::menuBase                   =   gui::loadTexture("media/img/GUI/MainMenu/ENG/menuBase.png");
+        gui::text_singleplayer          =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bSingle.png");
+        gui::text_singleplayerHover     =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bSingleHover.png");
+        gui::text_multiplayer           =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bMultiplayer.png");
+        gui::text_multiplayerHover      =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bMultiplayerHover.png");
+        gui::text_options               =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bOptions.png");
+        gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bOptionsHover.png");
+        gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExit.png");
+        gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExitHover.png");
+    } 
+    else {
+        gui::menuBase                   =   gui::loadTexture("media/img/GUI/MainMenu/SPA/menuBase.png");
+        gui::text_singleplayer          =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSingle.png");
+        gui::text_singleplayerHover     =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSingleHover.png");
+        gui::text_multiplayer           =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bMultijugador.png");
+        gui::text_multiplayerHover      =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bMultijugadorHover.png");
+        gui::text_options               =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bOpciones.png");
+        gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bOpcionesHover.png");
+        gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalir.png");
+        gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalirHover.png");
+    }
+
+    //==========================================================================================
+    //  PLAYER  INTERFACE
+    //==========================================================================================
+    gui::minimap        = gui::loadTexture("media/img/GUI/PlayerInterface/minimap.png");
+    gui::dot_player     = gui::loadTexture("media/img/GUI/PlayerInterface/player.png");
+    gui::dot_enemy      = gui::loadTexture("media/img/GUI/PlayerInterface/enemy.png");
+
+    gui::lap_1  =   gui::loadTexture("media/img/GUI/PlayerInterface/LapNumbers/1.png");
+    gui::lap_2  =   gui::loadTexture("media/img/GUI/PlayerInterface/LapNumbers/2.png");
+    gui::lap_3  =   gui::loadTexture("media/img/GUI/PlayerInterface/LapNumbers/3.png");
+
+    gui::item_void      = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoVacio.png");
+    gui::item_banana    = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoTrampa.png");
+    gui::item_blue      = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoBomba.png");
+    gui::item_red       = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoRueda.png");
+    gui::item_star      = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoBotella.png");
+    gui::item_mushroom  = gui::loadTexture("media/img/GUI/PlayerInterface/ItemIcons/iconoSetas.png");
+
+    if(GlobalVariables::getInstance().getLanguage() == 0) {
+        gui::number_1       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/ENG/1.png");
+        gui::number_2       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/ENG/2.png");
+        gui::number_3       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/ENG/3.png");
+        gui::number_4       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/ENG/4.png");
+    }
+    else{
+        gui::number_1       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/1.png");
+        gui::number_2       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/2.png");
+        gui::number_3       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/3.png");
+        gui::number_4       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/4.png");
+    }
+
 }
 
 //Code to load a single texture
@@ -317,7 +525,7 @@ struct nk_image gui::loadTexture(const char* path) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 500, 500, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, sftex.getSize().x, sftex.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     
     return nk_image_id((int)tex);
 
@@ -334,11 +542,9 @@ void RenderRedPanda::changeImage(int32_t id, std::string img) {}
 void RenderRedPanda::deleteImage(int32_t id) {}
 //Clean images off of the screen
 void RenderRedPanda::cleanImages() {}
-
 ////////////
 //  Rectangle
 ////////////
-
 //Add rectangle of the given color and alpha channel, at the specified position with the given size
 int32_t RenderRedPanda::addRectangleColor(glm::vec2 pos, glm::vec2 size, int r, int g, int b, int a) {return 0;}
 //Change color of the rectangle known by the id given
@@ -346,8 +552,7 @@ void RenderRedPanda::changeRectangleColor(int32_t id, int r, int g, int b, int a
 //Deletes the rectangle with the passed id
 void RenderRedPanda::deleteRectangleColor(int32_t id) {}
 //Clean all rectangles off of the screen
-void RenderRedPanda::cleanRectangles() {} 
-
+void RenderRedPanda::cleanRectangles() {}
 ////////////
 //  Text
 ////////////
@@ -355,7 +560,6 @@ void RenderRedPanda::cleanRectangles() {}
 int32_t RenderRedPanda::addText(std::string text, glm::vec2 pos, int r, int g, int b, int a, glm::vec2 size, std::string) {
     return 0;
 }
-
 //Changes the specified text with the given message
 void RenderRedPanda::changeText(int32_t id, std::string text) {}
 //Changes the font of the game
@@ -370,7 +574,6 @@ void RenderRedPanda::deleteText(int32_t id) {}
 void RenderRedPanda::cleanTexts() {}
 //Erase all visual interface elements from the screen
 void RenderRedPanda::cleanInterface() {}
-
 ///////////////////////////////
 ///////      DEBUG      ///////    
 ///////////////////////////////
@@ -420,3 +623,9 @@ void RenderRedPanda::createItemIcon(glm::vec2 pos, std::string img) { }
 void RenderRedPanda::deleteItemIcon() { }
 
 void RenderRedPanda::updateItemIcon() { }
+
+//Delegates
+void addHUD(EventData eData) {
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_HUD);
+}

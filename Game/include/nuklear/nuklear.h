@@ -3019,7 +3019,7 @@ NK_API int nk_button_text(struct nk_context*, const char *title, int len);
 NK_API int nk_button_label(struct nk_context*, const char *title);
 NK_API int nk_button_color(struct nk_context*, struct nk_color);
 NK_API int nk_button_symbol(struct nk_context*, enum nk_symbol_type);
-NK_API int nk_button_image(struct nk_context*, struct nk_image img);
+NK_API int nk_button_image(struct nk_context*, struct nk_image img, struct nk_image img_hover);
 NK_API int nk_button_symbol_label(struct nk_context*, enum nk_symbol_type, const char*, nk_flags text_alignment);
 NK_API int nk_button_symbol_text(struct nk_context*, enum nk_symbol_type, const char*, int, nk_flags alignment);
 NK_API int nk_button_image_label(struct nk_context*, struct nk_image img, const char*, nk_flags text_alignment);
@@ -3027,7 +3027,7 @@ NK_API int nk_button_image_text(struct nk_context*, struct nk_image img, const c
 NK_API int nk_button_text_styled(struct nk_context*, const struct nk_style_button*, const char *title, int len);
 NK_API int nk_button_label_styled(struct nk_context*, const struct nk_style_button*, const char *title);
 NK_API int nk_button_symbol_styled(struct nk_context*, const struct nk_style_button*, enum nk_symbol_type);
-NK_API int nk_button_image_styled(struct nk_context*, const struct nk_style_button*, struct nk_image img);
+NK_API int nk_button_image_styled(struct nk_context*, const struct nk_style_button*, struct nk_image img, struct nk_image img_hover);
 NK_API int nk_button_symbol_text_styled(struct nk_context*,const struct nk_style_button*, enum nk_symbol_type, const char*, int, nk_flags alignment);
 NK_API int nk_button_symbol_label_styled(struct nk_context *ctx, const struct nk_style_button *style, enum nk_symbol_type symbol, const char *title, nk_flags align);
 NK_API int nk_button_image_label_styled(struct nk_context*,const struct nk_style_button*, struct nk_image img, const char*, nk_flags text_alignment);
@@ -15621,16 +15621,20 @@ nk_do_button_symbol(nk_flags *state,
 NK_INTERN void
 nk_draw_button_image(struct nk_command_buffer *out,
     const struct nk_rect *bounds, const struct nk_rect *content,
-    nk_flags state, const struct nk_style_button *style, const struct nk_image *img)
+    nk_flags state, const struct nk_style_button *style, const struct nk_image *img, const struct nk_image *img_hover)
 {
-    nk_draw_button(out, bounds, state, style);
-    nk_draw_image(out, *content, img, nk_white);
+    if (state & NK_WIDGET_STATE_HOVER)
+        nk_draw_image(out, *content, img_hover, nk_white);
+    else 
+        nk_draw_image(out, *content, img, nk_white);
+    //nk_draw_button(out, bounds, state, style);
+    
 }
 
 NK_INTERN int
 nk_do_button_image(nk_flags *state,
     struct nk_command_buffer *out, struct nk_rect bounds,
-    struct nk_image img, enum nk_button_behavior b,
+    struct nk_image img, struct nk_image img_hover, enum nk_button_behavior b,
     const struct nk_style_button *style, const struct nk_input *in)
 {
     int ret;
@@ -15649,7 +15653,7 @@ nk_do_button_image(nk_flags *state,
     content.h -= 2 * style->image_padding.y;
 
     if (style->draw_begin) style->draw_begin(out, style->userdata);
-    nk_draw_button_image(out, &bounds, &content, *state, style, &img);
+    nk_draw_button_image(out, &bounds, &content, *state, style, &img, &img_hover);
     if (style->draw_end) style->draw_end(out, style->userdata);
     return ret;
 }
@@ -19472,7 +19476,7 @@ nk_panel_end(struct nk_context *ctx)
     } else window->scrollbar_hiding_timer = 0;
 
     /* window border */
-    if (layout->flags & NK_WINDOW_BORDER)
+    /*if (layout->flags & NK_WINDOW_BORDER)
     {
         struct nk_color border_color = nk_panel_get_border_color(style, layout->type);
         const float padding_y = (layout->flags & NK_WINDOW_MINIMIZED)
@@ -19483,7 +19487,7 @@ nk_panel_end(struct nk_context *ctx)
         struct nk_rect b = window->bounds;
         b.h = padding_y - window->bounds.y;
         nk_stroke_rect(out, b, 0, layout->border, border_color);
-    }
+    }*/
 
     /* scaler */
     if ((layout->flags & NK_WINDOW_SCALABLE) && in && !(layout->flags & NK_WINDOW_MINIMIZED))
@@ -22123,7 +22127,7 @@ nk_button_symbol(struct nk_context *ctx, enum nk_symbol_type symbol)
 
 NK_API int
 nk_button_image_styled(struct nk_context *ctx, const struct nk_style_button *style,
-    struct nk_image img)
+    struct nk_image img, struct nk_image img_hover)
 {
     struct nk_window *win;
     struct nk_panel *layout;
@@ -22145,15 +22149,15 @@ nk_button_image_styled(struct nk_context *ctx, const struct nk_style_button *sty
     if (!state) return 0;
     in = (state == NK_WIDGET_ROM || layout->flags & NK_WINDOW_ROM) ? 0 : &ctx->input;
     return nk_do_button_image(&ctx->last_widget_state, &win->buffer, bounds,
-                img, ctx->button_behavior, style, in);
+                img, img_hover, ctx->button_behavior, style, in);
 }
 
 NK_API int
-nk_button_image(struct nk_context *ctx, struct nk_image img)
+nk_button_image(struct nk_context *ctx, struct nk_image img, struct nk_image img_hover)
 {
     NK_ASSERT(ctx);
     if (!ctx) return 0;
-    return nk_button_image_styled(ctx, &ctx->style.button, img);
+    return nk_button_image_styled(ctx, &ctx->style.button, img, img_hover);
 }
 
 NK_API int
@@ -24962,9 +24966,9 @@ nk_menu_begin_image(struct nk_context *ctx, const char *id, struct nk_image img,
     state = nk_widget(&header, ctx);
     if (!state) return 0;
     in = (state == NK_WIDGET_ROM || win->layout->flags & NK_WINDOW_ROM) ? 0 : &ctx->input;
-    if (nk_do_button_image(&ctx->last_widget_state, &win->buffer, header,
+    /*if (nk_do_button_image(&ctx->last_widget_state, &win->buffer, header,
         img, NK_BUTTON_DEFAULT, &ctx->style.menu_button, in))
-        is_clicked = nk_true;
+        is_clicked = nk_true;*/
     return nk_menu_begin(ctx, win, id, is_clicked, header, size);
 }
 

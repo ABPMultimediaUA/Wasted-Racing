@@ -5,7 +5,6 @@
 #include "TResourceMaterial.h"
 #include "TResourceTexture.h"
 #include <GL/glew.h>
-#include <GL/glut.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>

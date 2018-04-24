@@ -25,8 +25,6 @@ void WaypointManager::init() {
 
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletePathPlanning});
-
-    distanceLoD = 0;
 }
 
 void WaypointManager::update(float dTime) {
@@ -48,6 +46,7 @@ void WaypointManager::update(float dTime) {
                             (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
 
         //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, NOT UPDATE
+        float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
         if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
         {
             //auto pathPlanning = std::dynamic_pointer_cast<PathPlanningComponent>(pathPlanningComponentList[i]).get();
@@ -74,11 +73,11 @@ IComponent::Pointer WaypointManager::createWaypointComponent(GameObject::Pointer
 
     //Search for its place on the list of waypoints
     for(unsigned int i=0;i<listSubNodes->size();i++){
-        auto rad1 = listSubNodes->at(i).get()->getComponent<WaypointComponent>()->getLevel();
+        auto radius1 = listSubNodes->at(i).get()->getComponent<WaypointComponent>()->getLevel();
         for(unsigned int x=i+1;x<listSubNodes->size()-1;x++){
             //bubble sort
-            auto rad2 = listSubNodes->at(x).get()->getComponent<WaypointComponent>()->getLevel();
-            if(rad1>rad2){
+            auto radius2 = listSubNodes->at(x).get()->getComponent<WaypointComponent>()->getLevel();
+            if(radius1>radius2){
                 auto aux=listSubNodes->at(i);
                 listSubNodes->at(i)=listSubNodes->at(x);
                 listSubNodes->at(x)=aux;

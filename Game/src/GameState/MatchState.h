@@ -94,4 +94,16 @@ private:
     Clock* schedulingClock;
     bool schedulingOn;
 
+    //TESTEO DEL ODIO
+    double renderTime = 0;
+    double inputTime = 0;
+    double physicsTime = 0;
+    double aiTime = 0;
+    double waypointTime = 0;
+    double sensorTime = 0;
+    double itemTime = 0;
+    double scoreTime = 0;
+    double audioTime = 0;
+    double eventTime = 0;
+    double AIInterpolateTime = 0;
 };

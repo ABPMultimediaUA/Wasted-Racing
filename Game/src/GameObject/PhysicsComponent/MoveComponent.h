@@ -2,6 +2,7 @@
 
 #include "../IComponent.h"
 #include "../../GamePhysics/LAPALPhysics.h"
+#include "../../GlobalVariables.h"
 
 class MoveComponent : public IComponent {
 

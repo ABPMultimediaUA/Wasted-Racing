@@ -17,7 +17,7 @@ void ItemBoxComponent::update(float dTime){
 
     //Rotate the object (rotating motion)
     auto trans = getGameObject().getTransformData();
-    trans.rotation.y += 1*M_PI/180;
+    trans.rotation.y += 1*3.141592653589793/180;
     getGameObject().setTransformData(trans);
 
     //____>AÑADIR EVENTO MÁGICO QUE UPDATEE ESTO PA QUE NO HAYAN ERRORES MACHO Q MIRA EH

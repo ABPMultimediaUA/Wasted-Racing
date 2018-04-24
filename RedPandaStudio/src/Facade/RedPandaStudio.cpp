@@ -26,6 +26,7 @@ void RedPandaStudio::updateDevice() {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	renderCamera();
+
 	renderLights();
 
 	//Change shader program for drawing skybox
@@ -44,7 +45,6 @@ void RedPandaStudio::updateDevice() {
 		rpsGUI_draw();
 
 	SDL_GL_SwapWindow(window);
-
 	//Chrono to update the fps value
 	std::chrono::time_point<std::chrono::high_resolution_clock> currTime = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapsed = currTime - lastTime;
@@ -63,12 +63,12 @@ void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
 }
 
 void RedPandaStudio::dropDevice() {
-
+	
 	// Delete our OpengL context
-	SDL_GL_DeleteContext(&context);
+	//::>>SDL_GL_DeleteContext(&context); // probbly this shouldn't be commented, but it fails otherwise
 	SDL_DestroyWindow(window);
 	SDL_Quit();
-
+	
     //delete scene;
 	deleteNode(scene);
     delete resourceManager;

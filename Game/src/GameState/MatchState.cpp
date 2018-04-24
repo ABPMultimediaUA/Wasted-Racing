@@ -47,13 +47,56 @@ void MatchState::update(float &accumulatedTime) {
     //divide with ratio so we can accelerate or slow down the game
     accumulatedTime /= ratio;
     
+    schedulingClock->restart();
+
     //Out of loop
     renderManager->update(accumulatedTime);
+
+    renderTime = schedulingClock->getElapsedTime();
 
     //If time surpassed the loopTime
     if(accumulatedTime >= loopTime){
         //Update managers
-        updateManagers(accumulatedTime);
+    schedulingClock->restart();
+        inputManager->update();
+
+    inputTime = schedulingClock->getElapsedTime();
+
+        if(ratio != 0)
+        {
+    schedulingClock->restart();
+            physicsManager->update(accumulatedTime);
+    physicsTime = schedulingClock->getElapsedTime();
+
+    schedulingClock->restart();
+            aiManager->update(accumulatedTime);
+    aiTime = schedulingClock->getElapsedTime();
+
+    schedulingClock->restart();
+            waypointManager->update(accumulatedTime);
+    waypointTime = schedulingClock->getElapsedTime();
+
+    schedulingClock->restart();
+            sensorManager->update();
+    sensorTime = schedulingClock->getElapsedTime();
+
+    schedulingClock->restart();
+            itemManager->update(accumulatedTime);
+    itemTime = schedulingClock->getElapsedTime();
+
+    schedulingClock->restart();
+            scoreManager->update();
+    scoreTime = schedulingClock->getElapsedTime();
+
+    schedulingClock->restart();
+            audioManager->update();
+    audioTime = schedulingClock->getElapsedTime();
+        }
+
+    schedulingClock->restart();
+        //Event manager has to be the last to be updated
+        eventManager->update();
+    eventTime = schedulingClock->getElapsedTime();
         Game::getInstance().setStay(objectManager->getGameRunning());
         accumulatedTime = 0;
     }
@@ -66,6 +109,22 @@ void MatchState::update(float &accumulatedTime) {
     //Always interpolate
     interpolate(accumulatedTime);
 
+    AIInterpolateTime = schedulingClock->getElapsedTime();
+    //ESTE TESTEO ES EL SIDITA
+    /*system("clear");
+    std::cout<<"------------------"<<std::endl;
+    std::cout<<"Render manager:   "<<renderTime*1000<<std::endl;
+    std::cout<<"Input manager:    "<<inputTime*1000<<std::endl;
+    std::cout<<"Physics manager:  "<<physicsTime*1000<<std::endl;
+    std::cout<<"AI manager:       "<<aiTime*1000<<std::endl;
+    std::cout<<"Waypoint manager: "<<waypointTime*1000<<std::endl;
+    std::cout<<"Sensor manager:   "<<sensorTime*1000<<std::endl;
+    std::cout<<"Item manager:     " <<itemTime*1000<<std::endl;
+    std::cout<<"Audio manager:    "<<audioTime*1000<<std::endl;
+    std::cout<<"Score manager:    "<<scoreTime*1000<<std::endl;
+    std::cout<<"Event manager:    "<<eventTime*1000<<std::endl;
+    std::cout<<"AInter manager:   "<<AIInterpolateTime*1000<<std::endl;
+    std::cout<<"------------------"<<std::endl;*/
 }
 
 void MatchState::updateManagers(float dTime){

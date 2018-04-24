@@ -5,6 +5,10 @@
 #include <string>
 #include <cmath>
 
+#ifdef _WIN32
+#define M_PI 3.141592653589
+#endif
+
 #include "IRenderFacade.h"
 
 
@@ -63,6 +67,12 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
+    //Dont do nothing, only for the facade
+    virtual void setClipping(bool b)    {};
+
+    //Change mesh
+    virtual void changeMesh(int id, std::string newMesh)   {};
+
     //==============================================================
     //  VISUAL INTERFACE
     //==============================================================
@@ -104,7 +114,7 @@ public:
     virtual void cleanRectangles();
 
     ////////////
-    //  Text
+    //  Text  //
     ////////////
 
     //Adds specified text at the specified point with specified size, with the specified color and font
