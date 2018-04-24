@@ -85,7 +85,7 @@ void IntroState::swapToClientLobby()
     close();
 
     //Initalize networkManager here
-   NetworkManager::getInstance().init();
+    NetworkManager::getInstance().init();
 
     //Initialize Server IP
     NetworkManager::getInstance().setServerIP(ip);

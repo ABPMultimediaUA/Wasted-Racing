@@ -58,13 +58,13 @@ void MatchState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
     
-    //Always interpolate
-    interpolate(accumulatedTime);
-
     //AI Scheduling and timing
     double timePassed = schedulingClock->getElapsedTime();
     schedulingClock->restart();
     aiManager->updateScheduling(timePassed, loopTime);
+
+    //Always interpolate
+    interpolate(accumulatedTime);
 
 }
 
