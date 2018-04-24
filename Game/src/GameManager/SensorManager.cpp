@@ -18,8 +18,6 @@ void SensorManager::init() {
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteVSensor});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteMSensor});
 
-    distanceLoD = 0;
-
 }
 
 void SensorManager::update() {
@@ -36,6 +34,8 @@ void SensorManager::update() {
     //Get the objects
     fillWorldObjects();
 
+    float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
+    
     //CALCULATE LOD VISION SENSOR
     for(unsigned int i=0; i<sensorComponentList.size(); ++i)
     {

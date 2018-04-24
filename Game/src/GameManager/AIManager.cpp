@@ -28,7 +28,6 @@ void AIManager::init() {
     //changeAI = false;
     updateBattleBehaviour = false;
     //<___
-    distanceLoD = 0;
 
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
@@ -36,6 +35,8 @@ void AIManager::init() {
     //No delete for the moment
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIDriving});
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIBattle});
+
+    itemLoD = false;
 
 }
 
@@ -78,6 +79,7 @@ void AIManager::update(float dTime) {
 
                             
             //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, CALCULATE LOD
+            float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
             if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
             {
                 //:::>Explain what
@@ -235,19 +237,18 @@ void AIManager::updateDriving(AIDrivingComponent* aiDrivingComponent)
 
 void AIManager::calculateLoD(GameObject AI, float dTime)
 {
+    GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(AI.getId());
+    auto trans = AIObject->getTransformData();
+    AIObject->getComponent<CollisionComponent>()->setKinetic(false);
 
-    auto trans = AI.getTransformData();
-    AI.getComponent<CollisionComponent>()->setKinetic(false);
-    //std::cout<<AIObject->getComponent<CollisionComponent>()->getKinetic()<<"\n";
-
-    auto maxSpeed = AI.getComponent<MoveComponent>()->getMovemententData().max_vel;
-    AI.getComponent<MoveComponent>()->changeVel(maxSpeed);
+    auto maxSpeed = AIObject->getComponent<MoveComponent>()->getMovemententData().max_vel;
+    AIObject->getComponent<MoveComponent>()->changeVel(0);
 
     auto distCover = (maxSpeed * maxSpeed) * dTime;
 
     auto waypoints = WaypointManager::getInstance().getWaypoints();
 
-    unsigned int posVector = AI.getComponent<PathPlanningComponent>()->getLastPosVector();
+    unsigned int posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
 
     float distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
 						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
@@ -260,15 +261,15 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
         if(posVector < waypoints.size()-1)
         {
             posVector++;
-            AI.getComponent<PathPlanningComponent>()->setLastPosVector(posVector);
+            AIObject->getComponent<PathPlanningComponent>()->setLastPosVector(posVector);
         }
         else if(posVector == waypoints.size()-1)
         {
-            AI.getComponent<StartLineComponent>()->setActive(true);
-            AI.getComponent<PathPlanningComponent>()->setLastPosVector(0);
+            AIObject->getComponent<StartLineComponent>()->setActive(true);
+            AIObject->getComponent<PathPlanningComponent>()->setLastPosVector(0);
 
         }
-        posVector = AI.getComponent<PathPlanningComponent>()->getLastPosVector();
+        posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
         distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
                             (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
                             (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
@@ -299,22 +300,20 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     
     trans.position = nextPos;
     
-    AI.setNewTransformData(trans);
-    //AI->setOldTransformData(trans);
-    //AI->setTransformData(trans);
+    AIObject->setNewTransformData(trans);
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(AI.getId(), trans);
 
     ////////////////////////////////////
     /////    ASSIGN RANDOM ITEM    /////
     //////////////////////////////////// 
-    if(posVector%2 == 1)
+    if(posVector%5 == 0 && itemLoD == false)
     {
-        auto itemHolder = AI.getComponent<ItemHolderComponent>();
+        auto itemHolder = AIObject->getComponent<ItemHolderComponent>();
 
         if(itemHolder->getItemType() == -1){
             srand (time(NULL));
             int random;
-            if(AI.getComponent<ScoreComponent>()->getPosition() == 1)
+            if(AIObject->getComponent<ScoreComponent>()->getPosition() == 1)
             {
                 random = rand() % 3 + 2;
             }
@@ -324,7 +323,12 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
             }
 
             itemHolder->setItemType(random);
+            itemLoD = true;
         }
+    }
+    else if (itemLoD == true)
+    {
+        itemLoD = false;
     }
     //:::> Fix this
     /////////////////////////////////////////////////////////////////////////

@@ -21,16 +21,18 @@ class GlobalVariables{
         //==========================================
         // GETTERS AND SETTERS
         //==========================================
-        void setGameState(IGameState::stateType t){ game = t;       };
-        IGameState::stateType getGameState()      { return game;    };
-        void setPlayer(GameObject* p)             { player = p;     };
-        GameObject* getPlayer()                   { return player;  };
-        void setServer(bool s)                    { server = s;     };
-        bool getServer()                          { return server;  };
-        void setOnline(bool o)                    { online = o;     };
-        bool getOnline()                          { return online;  };
-        void setLanguage(int l)                   { language = l;     };
-        int  getLanguage()                        { return language;  };
+        void setGameState(IGameState::stateType t)  {     game = t;           };
+        IGameState::stateType getGameState()        {     return game;        };
+        void setPlayer(GameObject* p)               {     player = p;         };
+        GameObject* getPlayer()                     {     return player;      };
+        void setServer(bool s)                      {     server = s;         };
+        bool getServer()                            {     return server;      };
+        void setOnline(bool o)                      {     online = o;         };
+        bool getOnline()                            {     return online;      };
+        void setDistanceLoD(float d)                {     distanceLoD = d;    };
+        float getDistanceLoD()                      {     return distanceLoD; };
+        void setLanguage(int l)                     {     language = l;       };
+        int  getLanguage()                          {     return language;    };
         
     private:
 
@@ -46,5 +48,5 @@ class GlobalVariables{
         //==========================================
         // AI DATA
         //==========================================
-        
+        float distanceLoD;      //Define value in RenderManager init().     Value of distance player and other object or player to calculate LoD
 };

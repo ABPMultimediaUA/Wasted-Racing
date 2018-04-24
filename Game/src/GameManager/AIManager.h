@@ -20,7 +20,6 @@
 #include "../GameObject/ItemComponent/IItemComponent.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
-
 class AIManager{
 
 public: 
@@ -70,8 +69,7 @@ private:
 
     //___>
     //bool changeAI;
+    bool itemLoD;           //variable to know if we took item in this waypoint or not (only for lod)
     bool updateBattleBehaviour;
     //<___
-
-    float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 };
