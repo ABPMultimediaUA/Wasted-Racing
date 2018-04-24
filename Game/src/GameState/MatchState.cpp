@@ -1,9 +1,19 @@
 #include "MatchState.h"
 #include "../Game.h"
 
-//additional functions
+//==============================================
+// Delegate functions
+//==============================================
+void swapSchedulingDelegate(EventData data);
+
+//==============================================
+// Additional functions
+//==============================================
 void addAI();
 
+//==============================================
+// MAN FUNCTIONS
+//==============================================
 void MatchState::init() {
 
     audioManager    = &AudioManager::getInstance();     //Initialize true audio manager
@@ -18,17 +28,28 @@ void MatchState::init() {
     itemManager     = &ItemManager::getInstance();      //Initialize Sensor manager
     scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
 
+    //Initial arrangements
     Game::getInstance().setAccumulatedTime(0);
     
+    //Turn scheduling off initially
+    schedulingOn = false;
+    schedulingClock = new Clock();
+    schedulingClock->init();
+
     //Add AI's to the game
     addAI();
+
+    //Key Bindings
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Scheduling_Down, swapSchedulingDelegate});
 }
 
 void MatchState::update(float &accumulatedTime) {
     //divide with ratio so we can accelerate or slow down the game
     accumulatedTime /= ratio;
+    
     //Out of loop
     renderManager->update(accumulatedTime);
+
     //If time surpassed the loopTime
     if(accumulatedTime >= loopTime){
         //Update managers
@@ -37,8 +58,14 @@ void MatchState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
 
+    //AI Scheduling and timing
+    double timePassed = schedulingClock->getElapsedTime();
+    schedulingClock->restart();
+    aiManager->updateScheduling(timePassed, loopTime);
+
     //Always interpolate
     interpolate(accumulatedTime);
+
 }
 
 void MatchState::updateManagers(float dTime){
@@ -152,4 +179,12 @@ void addAI(){
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));*/
+}
+
+
+//==============================================
+// DELEGATE FUNCTIONS
+//==============================================
+void swapSchedulingDelegate(EventData data){
+    MatchState::getInstance().swapScheduling();
 }
