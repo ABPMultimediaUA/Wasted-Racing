@@ -38,6 +38,13 @@ class TResourceMesh : public TResource {
         void setTexture(TResourceTexture* t)    { texture=t;        }
         void setTextActive(bool b)              { textActive=b;     }
         void setMaterial(TResourceMaterial* m)  { material=m;       }
+        GLfloat getMaxX()                       { return maxX;      }
+        GLfloat getMinX()                       { return minX;      }
+        GLfloat getMaxY()                       { return maxY;      }
+        GLfloat getMinY()                       { return minY;      }
+        GLfloat getMaxZ()                       { return maxZ;      }
+        GLfloat getMinZ()                       { return minZ;      }
+
 
     private:
         //Vertex info

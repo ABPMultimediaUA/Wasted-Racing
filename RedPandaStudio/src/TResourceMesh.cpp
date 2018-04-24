@@ -50,6 +50,7 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     generateBoundingBox();
 
 /*
+
     std::cout << "nVertex: " << nVertex << std::endl;
     std::cout << "nTriangles: " << nTriangles << std::endl;
 
@@ -63,6 +64,7 @@ bool TResourceMesh::loadMesh(aiMesh* m)
         std::cout << i << ": " << vertex[i] << std::endl;
     }
 */
+
     return true;
 
 }
@@ -199,6 +201,10 @@ void TResourceMesh::generateBoundingBox()
         if(vertex[i+2] < minZ)
             minZ = vertex[i+2];
     }
+
+    //std::cout << "maxX: " << maxX << " minX: " << minX << std::endl;
+    //std::cout << "maxY: " << maxY << " minY: " << minY << std::endl;
+    //std::cout << "maxZ: " << maxZ << " minZ: " << minZ << std::endl;
 
     glm::vec3 size = glm::vec3(maxX-minX, maxY-minY, maxZ-minZ);
     glm::vec3 center = glm::vec3((minX+maxX)/2, (minY+maxY)/2, (minZ+maxZ)/2);
