@@ -1111,18 +1111,24 @@ void RenderManager::LoDmesh()
                 {
                     auto name = renderObject->getName();
                     auto folder = renderObject->getFolder();
-                    std::string newMesh = "media/mediumLoD/" + folder + "/" + name;
-                    renderFacade->changeMesh(object.getId(), newMesh);
-                    renderObject->setMesh(newMesh.c_str());
+                    std::string newMesh = "media/mesh/" + folder + "/" + folder + "1.obj";
+                    bool m = renderFacade->changeMesh(object.getId(), newMesh);
+                    if(m == true)
+                    {
+                        renderObject->setMesh(newMesh.c_str());
+                    }
                     renderObject->setPolyMesh(ObjectRenderComponent::Poly::Medium);
                 }  
                 else if((distance > ((distanceLoD*distanceLoD)*2)) && polyMesh != ObjectRenderComponent::Poly::Low)
                 {
                     auto name = renderObject->getName();
                     auto folder = renderObject->getFolder();
-                    std::string newMesh = "media/lowLoD/" + folder + "/" + name;
-                    renderFacade->changeMesh(object.getId(), newMesh);
-                    renderObject->setMesh(newMesh.c_str());
+                    std::string newMesh = "media/mesh/" + folder + "/" + folder + "2.obj";
+                    bool m = renderFacade->changeMesh(object.getId(), newMesh);
+                    if(m == true)
+                    {
+                        renderObject->setMesh(newMesh.c_str());
+                    }
                     renderObject->setPolyMesh(ObjectRenderComponent::Poly::Low);
                 }  
                 else if(distance <= distanceLoD*distanceLoD && polyMesh != ObjectRenderComponent::Poly::High)
@@ -1130,8 +1136,11 @@ void RenderManager::LoDmesh()
                     auto name = renderObject->getName();
                     auto folder = renderObject->getFolder();
                     std::string newMesh = "media/mesh/" + folder + "/" + name;
-                    renderFacade->changeMesh(object.getId(), newMesh);
-                    renderObject->setMesh(newMesh.c_str());
+                    bool m = renderFacade->changeMesh(object.getId(), newMesh);
+                    if(m == true)
+                    {
+                        renderObject->setMesh(newMesh.c_str());
+                    }
                     renderObject->setPolyMesh(ObjectRenderComponent::Poly::High);
 
                     //Change to maxSpeed when we return to high poly
