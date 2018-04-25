@@ -121,7 +121,9 @@ enum EventType {
     Score_OnOvertake,
     Score_OnOvertaken,
     //MUSIC: Music related events
-    Music_MainTheme
+    Music_MainTheme,
+    //Idle event
+    Idle
 };
 
 //Struct containg diferent types of data

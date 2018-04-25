@@ -94,4 +94,7 @@ private:
     Clock* schedulingClock;
     bool schedulingOn;
 
+    //Variable to check if the match state has already been initialized
+    bool initialized = false;
+
 };

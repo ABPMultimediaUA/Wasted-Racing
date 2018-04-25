@@ -53,7 +53,6 @@ void IntroState::update(float &accumulatedTime) {
 }
 
 void IntroState::draw() {
-    //Only draw GUI
     renderManager->draw();
 }
 
