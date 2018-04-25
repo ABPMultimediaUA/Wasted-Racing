@@ -61,7 +61,7 @@ void InputRedPanda::updateInput() {
 
         //Update input 
         DetectKeyInput(SPACE, Key_Jump_Down, Key_Jump_Up)
-        DetectKeyInput(ESCAPE,Key_Back_Down,Key_Back_Up)
+        DetectKeyInput(ESCAPE,Game_Close,Game_Close)
         DetectKeyInput(w,Key_Advance_Down,Key_Advance_Up)
         DetectKeyInput(s,Key_Brake_Down,Key_Brake_Up)
         DetectKeyInput(a,Key_TurnLeft_Down,Key_TurnLeft_Up)

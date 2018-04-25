@@ -75,8 +75,17 @@ void addHUD(EventData eData);
 //Creates a window depending on the engine
 void RenderRedPanda::openWindow() { 
 
+    window.fullscreen = true;
+
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
     InputRedPanda* receiver = new InputRedPanda();
+
+    if(window.fullscreen){
+        SDL_DisplayMode DM;
+        SDL_GetCurrentDisplayMode(0, &DM);
+        window.size.x = DM.w;
+        window.size.y = DM.h;
+    }
 
     uintptr_t aux = reinterpret_cast<uintptr_t>(device->getWindow());
     InputManager::getInstance().setDevice(aux);
@@ -303,7 +312,7 @@ void drawRPS_GUI_Menu(){
 
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.35, w*0.3, h*0.5))) {
 
-                nk_layout_row_dynamic(GUI, 50, 1);
+                nk_layout_row_dynamic(GUI, h*0.07, 1);
                 nk_spacing(GUI, 1);
                 if (nk_button_image(GUI, gui::text_singleplayer, gui::text_singleplayerHover))
                     EventManager::getInstance().addEvent(Event {EventType::Key_Singleplayer_Down});
@@ -331,9 +340,9 @@ void drawRPS_GUI_HUD(){
 
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0)) {
 
-        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(5, 5, 180, 180))) {
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.0039, h*0.007, w*0.13, h*0.25))) {
 
-            nk_layout_row_static(GUI, 150, 150, 1);
+            nk_layout_row_static(GUI, h*0.208, w*0.117, 1);
 
             int itemID = cameraTarget.getComponent<ItemHolderComponent>().get()->getItemType();
             switch(itemID){
@@ -359,9 +368,9 @@ void drawRPS_GUI_HUD(){
             nk_popup_end(GUI);
 	    }
 
-        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(5, h*0.77, 180, 180))) {
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.0039, h*0.77, w*0.13, h*0.25))) {
 
-            nk_layout_row_static(GUI, 150, 150, 1);
+            nk_layout_row_static(GUI, h*0.208, w*0.117, 1);
 
             int position = cameraTarget.getComponent<ScoreComponent>().get()->getPosition();
             switch(position){
@@ -383,9 +392,9 @@ void drawRPS_GUI_HUD(){
             nk_popup_end(GUI);
 	    }
 
-        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.885, 5, 140, 160))) {
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.885, h*0.007, w*0.1, h*0.2))) {
 
-            nk_layout_row_static(GUI, 126, 108, 1);
+            nk_layout_row_static(GUI, h*0.175, w*0.084, 1);
 
             int lap = cameraTarget.getComponent<ScoreComponent>().get()->getLap();
 
@@ -406,9 +415,9 @@ void drawRPS_GUI_HUD(){
             nk_popup_end(GUI);
 	    }
 
-        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.8, h*0.48, 220, 340))) {
+        if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.8, h*0.48, w*0.2, h*0.5))) {
 
-            nk_layout_row_static(GUI, 326, 203, 1);
+            nk_layout_row_static(GUI, h*0.45278, w*0.1586, 1);
 
             nk_image(GUI, gui::minimap);
             
@@ -419,9 +428,9 @@ void drawRPS_GUI_HUD(){
 
             glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(1140 - pos1.z * 0.15, 440 - pos1.x * 0.15, 180, 290))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.89 - pos1.z * h * 0.00021, h*0.6111 - pos1.x * h * 0.00021, w*0.2, h*0.5))) {
 
-                nk_layout_row_static(GUI, 15, 15, 1);
+                nk_layout_row_static(GUI, h*0.021, h*0.021, 1);
 
                 if(i == 0)
                     nk_image(GUI, gui::dot_player);

@@ -99,6 +99,7 @@ enum EventType {
     Key_Scheduling_Up,
     //GAME: Game related events
     Game_Start,
+    Game_Pause,
     Game_Close,
     State_Change,
     //CHOOSE: Choose game type
