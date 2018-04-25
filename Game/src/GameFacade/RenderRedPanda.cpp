@@ -498,8 +498,13 @@ void drawRPS_GUI_Pause(){
                     EventManager::getInstance().addEvent(Event {EventType::Game_Pause});
                 if (nk_button_image(GUI, gui::text_poptions, gui::text_poptionsHover))
                     EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
-                if (nk_button_image(GUI, gui::text_menu, gui::text_menuHover))
-                    fprintf(stdout, "Options!\n");
+                if (nk_button_image(GUI, gui::text_menu, gui::text_menuHover)) {
+                    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                    device->setGUIDrawFunction(drawRPS_GUI_Menu);
+                    EventData eData;
+                    eData.Id = IGameState::stateType::INTRO;
+                    EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
+                }
                 if (nk_button_image(GUI, gui::text_pexit, gui::text_pexitHover))
                     EventManager::getInstance().addEvent(Event {EventType::Game_Close});
                 nk_popup_end(GUI);
