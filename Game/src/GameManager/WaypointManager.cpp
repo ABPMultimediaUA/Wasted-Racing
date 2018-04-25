@@ -111,6 +111,7 @@ IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Poi
 
 void WaypointManager::updatePathPlanning(IComponent::Pointer pathPlanning, float dTime)
 {
+    //:::> If it hasn't the component, wouldn't the .get() give a null pointer?
     auto iItemComponent = pathPlanning->getGameObject().getComponent<IItemComponent>().get();
     if(iItemComponent == nullptr)
     {

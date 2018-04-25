@@ -53,5 +53,7 @@ public:
 private:
     std::vector<IComponent::Pointer> sensorComponentList;
     std::vector<IComponent::Pointer> sensorMComponentList;
+
+    //:::> Cambiar a std::queue y a punteros de GameObject. MACHO.
     std::vector<GameObject> worldObjects;
 };

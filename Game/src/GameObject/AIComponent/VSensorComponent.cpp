@@ -98,6 +98,8 @@ void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
         a = 0;
         b = 0;
     }
+
+    //:::>Wouldn't this just add the last item seen?
     if(box != nullptr)
     {
         seenObjects.push_back(box);                                     //Add box to seen objects

@@ -66,7 +66,7 @@ void PhysicsManager::update(const float dTime) {
         //:::> Right now: Move it, calculate collision: if collision happened or you trespassed the wall, then its done.
         //<___
         ourMove->update(dTime);
-        
+
         //==============================================================================
         // Check collisions with other objects
         //==============================================================================
@@ -392,6 +392,8 @@ void PhysicsManager::checkCollisionShellTerrain(GameObject& obj)
     {
         EventData data;
         data.Id = obj.getId();
+
+        //:::>Why isn't the event RedShell_collision or blue_collision?
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }
 }

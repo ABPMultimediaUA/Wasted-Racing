@@ -358,6 +358,7 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
     else if(move == 1)
     {
         //Instantiate both AI's and sensors
+        //:::>HARDCODED DATA IS SIN
         AIManager::getInstance().createAIDrivingComponent(*obj.get());
         AIManager::getInstance().createAIBattleComponent(*obj.get());
         SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle, 100.f, 10.f); 
