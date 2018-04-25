@@ -75,6 +75,12 @@ public:
 
     //Update single animation
     virtual void updateAnimation(IComponent* ptr) {};
+    
+    //Dont do nothing, only for the facade
+    virtual void setClipping(bool b)    {};
+
+    //Change mesh
+    virtual void changeMesh(int id, std::string newMesh)   {};
 
     //==============================================================
     //  VISUAL INTERFACE
@@ -117,7 +123,7 @@ public:
     virtual void cleanRectangles();
 
     ////////////
-    //  Text
+    //  Text  //
     ////////////
 
     //Adds specified text at the specified point with specified size, with the specified color and font

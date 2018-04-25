@@ -54,6 +54,4 @@ private:
     std::vector<IComponent::Pointer> sensorComponentList;
     std::vector<IComponent::Pointer> sensorMComponentList;
     std::vector<GameObject> worldObjects;
-
-    float distanceLoD; //////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
 };

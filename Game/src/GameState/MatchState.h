@@ -8,6 +8,9 @@
 #include <fstream>
 #include <stdio.h>
 
+
+#include "../GameFacade/Clock.h"
+
 #include "../Game.h"
 
 class Game;
@@ -50,6 +53,9 @@ public:
     void setRatio(float r)          {       ratio = r;      }
     float getRatio()                {       return ratio;   }
 
+    //Scheduling swapper
+    void swapScheduling()           {       schedulingOn = !schedulingOn;      }
+
 private:
     
     //==============================================================
@@ -83,5 +89,9 @@ private:
 
     //Game velocity
     float ratio = 1.0;
+
+    //Scheduling checker and clock
+    Clock* schedulingClock;
+    bool schedulingOn;
 
 };

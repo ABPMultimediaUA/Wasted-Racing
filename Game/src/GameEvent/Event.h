@@ -95,6 +95,8 @@ enum EventType {
     Key_FastControl_Up,
     Key_NormalControl_Down,
     Key_NormalControl_Up,
+    Key_Scheduling_Down,
+    Key_Scheduling_Up,
     //GAME: Game related events
     Game_Start,
     Game_Close,
