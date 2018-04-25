@@ -263,7 +263,7 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 //Update game animations
 void RenderRedPanda::updateAnimations(float dTime) {
     for(auto anim : animationMap) {
-        anim.second->getAnimation()->update(dTime);
+        anim.second->update(dTime);
     }
 }
 
@@ -278,15 +278,15 @@ void RenderRedPanda::updateAnimation(IComponent* ptr) {
     TAnimation* node = animationMap.find(id)->second;
 
     if(state == 0) {
-        node->getAnimation()->setPause(true);
+        node->setPause(true);
     }
     else if(state == 1) {
-        node->getAnimation()->playNoLoop();
-        node->getAnimation()->setLoop(false);
+        node->playNoLoop();
+        node->setLoop(false);
     }
     else if(state == 2) {
-        node->getAnimation()->playNoLoop();
-        node->getAnimation()->setLoop(true);
+        node->playNoLoop();
+        node->setLoop(true);
     }
 }
 

@@ -8,6 +8,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <glm/ext.hpp>
 
 
 class TResourceMesh : public TResource {
@@ -37,6 +38,13 @@ class TResourceMesh : public TResource {
         void setTexture(TResourceTexture* t)    { texture=t;        }
         void setTextActive(bool b)              { textActive=b;     }
         void setMaterial(TResourceMaterial* m)  { material=m;       }
+        GLfloat getMaxX()                       { return maxX;      }
+        GLfloat getMinX()                       { return minX;      }
+        GLfloat getMaxY()                       { return maxY;      }
+        GLfloat getMinY()                       { return minY;      }
+        GLfloat getMaxZ()                       { return maxZ;      }
+        GLfloat getMinZ()                       { return minZ;      }
+
 
     private:
         //Vertex info
@@ -55,4 +63,20 @@ class TResourceMesh : public TResource {
         TResourceMaterial* material = NULL;
         //Buffer handles
         GLuint* vboHandles;
-};
+
+        ///////////////////////////////////////
+        //// Bounding box asociated data //////
+        //Maximum X, Y and Z values of the mesh. They define the first of the two points needed
+        GLfloat maxX, maxY, maxZ;
+        //Minimum X, Y and Z values of the mesh. They define the second of the points needed
+        GLfloat minX, minY, minZ;
+        //VBO Buffer handler for the bounding box's vertex
+        GLuint boxVBOVertices;
+        //IBO Buffer handler for the bounding box's vertex
+        GLuint boxIBOIndices;
+        //Transform of the bounding box
+        glm::mat4 bbTransform;
+
+        void generateBoundingBox();
+        void drawBoundingBox();
+};  
