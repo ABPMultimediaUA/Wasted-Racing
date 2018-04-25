@@ -197,9 +197,6 @@ private:
     //Debug state checker
     bool debugState;
 
-    //LoD state
-    bool lodState;
-
     //When we start adding components, we add them in a list,
     //Once we've added them all, we split them in a QuadTree structure
     std::vector<IComponent::Pointer>      renderComponentList;

@@ -54,9 +54,6 @@ void RenderManager::init(int engine) {
     //Data init
     debugState = false;
 
-    //LoD init
-    lodState = false;
-
     //QuadTree data init
     //maxObjPerNode = 2;
     //updateRange = 2;
