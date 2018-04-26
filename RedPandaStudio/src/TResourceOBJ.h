@@ -45,6 +45,8 @@ class TResourceOBJ : public TResource {
         GLuint boxIBOIndices;
         //Transform of the bounding box
         glm::mat4 bbTransform;
+        //Activates and deactivates the culling with the bounding box
+        bool bbActivated = true;
 
         //Auxiliar function to split strings
         std::vector<std::string> split(const std::string& s, const char& c);
@@ -52,4 +54,5 @@ class TResourceOBJ : public TResource {
         //Generates bounding box. Must be called after generating the bounding boxes of all the meshes contained in the obj
         void generateBoundingBox();
         void drawBoundingBox();
+        bool checkBoundingBox();
 };

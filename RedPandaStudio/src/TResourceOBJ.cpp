@@ -118,14 +118,16 @@ bool TResourceOBJ::loadResource()
 
 void TResourceOBJ::draw()
 {
-    //The textures, materials and meshes are loaded, suposedly, in a way that they should just correspond, so we draw one of each
-    for(unsigned int i = 0; i < meshes.size(); i++)
+    if((bbActivated && checkBoundingBox()) || !bbActivated)
     {
-        meshes[i]->draw();
+        //The textures, materials and meshes are loaded, suposedly, in a way that they should just correspond, so we draw one of each
+        for(unsigned int i = 0; i < meshes.size(); i++)
+        {
+            meshes[i]->draw();
+        }
+
+        drawBoundingBox();
     }
-
-    drawBoundingBox();
-
 }
 
 void TResourceOBJ::generateBoundingBox()
@@ -208,4 +210,76 @@ void TResourceOBJ::drawBoundingBox()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &TEntity::modelMatrix()[0][0]);
+}
+
+bool TResourceOBJ::checkBoundingBox()
+{
+    GLfloat boxVertices[] = {
+    -0.5, -0.5, -0.5, 1.0,
+     0.5, -0.5, -0.5, 1.0,
+     0.5,  0.5, -0.5, 1.0,
+    -0.5,  0.5, -0.5, 1.0,
+    -0.5, -0.5,  0.5, 1.0,
+     0.5, -0.5,  0.5, 1.0,
+     0.5,  0.5,  0.5, 1.0,
+    -0.5,  0.5,  0.5, 1.0,
+  };
+
+    glm::mat4 m = TEntity::projectionMatrix() * TEntity::viewMatrix() * TEntity::modelMatrix() * bbTransform;
+    glm::vec4 p1 = m * glm::vec4(-0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p2 = m * glm::vec4(0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p3 = m * glm::vec4(0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p4 = m * glm::vec4(-0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p5 = m * glm::vec4(-0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p6 = m * glm::vec4(0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p7 = m * glm::vec4(0.5, 0.5, 0.5, 1.0);
+    glm::vec4 p8 = m * glm::vec4(-0.5, 0.5, 0.5, 1.0);
+
+
+    float leftX = -11.f;
+    float rightX = 11.f;
+    float topY = 11.f;
+    float bottomY = -11.f;
+    float nearZ = -1.f;
+    float farZ = 500.f;
+
+    //std::cout << p1.x << " " << p1.y << " " << p1.z << std::endl;
+    if(p1.x >= leftX && p1.x <= rightX && p1.y >= bottomY && p1.y <=topY && p1.z >= nearZ && p1.z <=farZ)
+    {
+        return true;
+    }
+    if(p2.x >= leftX && p2.x <= rightX && p2.y >= bottomY && p2.y <=topY && p2.z >= nearZ && p2.z <=farZ)
+    {
+        return true;
+    }
+    if(p3.x >= leftX && p3.x <= rightX && p3.y >= bottomY && p3.y <=topY && p3.z >= nearZ && p3.z <=farZ)
+    {
+        return true;
+    }
+    if(p4.x >= leftX && p4.x <= rightX && p4.y >= bottomY && p4.y <=topY && p4.z >= nearZ && p4.z <=farZ)
+    {
+        return true;
+    }
+    if(p5.x >= leftX && p5.x <= rightX && p5.y >= bottomY && p5.y <=topY && p5.z >= nearZ && p5.z <=farZ)
+    {
+        return true;
+    }
+    if(p6.x >= leftX && p6.x <= rightX && p6.y >= bottomY && p6.y <=topY && p6.z >= nearZ && p6.z <=farZ)
+    {
+        return true;
+    }
+    if(p7.x >= leftX && p7.x <= rightX && p7.y >= bottomY && p7.y <=topY && p7.z >= nearZ && p7.z <=farZ)
+    {
+        return true;
+    }
+    if(p8.x >= leftX && p8.x <= rightX && p8.y >= bottomY && p8.y <=topY && p8.z >= nearZ && p8.z <=farZ)
+    {
+        return true;
+    }
+    
+
+
+
+
+    return false;
 }

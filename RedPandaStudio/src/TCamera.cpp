@@ -10,7 +10,7 @@ TCamera::TCamera(float z)
     top=1.f;
     bottom=2.f;
     nnear=0.1f;
-    ffar=10000.f;
+    ffar=1000.f;
     zoom = z;
 
     projectionMatrix() = glm::perspective(glm::radians(zoom), (float)16 / (float)9, nnear, ffar);

@@ -123,56 +123,61 @@ bool TResourceMesh::loadResource()
 
 void TResourceMesh::draw()
 {
-    
-    //glEnable(GL_COLOR_MATERIAL);
-
-    GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
-    glUniform1i(id, textActive);
-
-    //First we draw the texture of our mesh
-    if(texture!=NULL && textActive)
+    if((bbActivated && checkBoundingBox()) || !bbActivated)
     {
-        texture->draw();
+        //glEnable(GL_COLOR_MATERIAL);
+
+        GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
+        glUniform1i(id, textActive);
+
+        //First we draw the texture of our mesh
+        if(texture!=NULL && textActive)
+        {
+            texture->draw();
+        }
+        
+        if(material!=NULL)
+        {
+            material->draw();
+        }
+
+        //Bind and pass to OpenGL the first array (vertex coordinates)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        glEnableVertexAttribArray(0);
+        
+        //Bind and pass to OpenGL the second array (vertex normals)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        glEnableVertexAttribArray(1);
+
+        //Bind and pass to OpenGL the third array (vertex texture coordinates)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        glEnableVertexAttribArray(2);
+
+        //Bind and pass to OpenGL the fourth array (vertex indices)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*6*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
+
+        //We order to draw here
+        glDrawElements(GL_TRIANGLES_ADJACENCY, nTriangles*6, GL_UNSIGNED_INT, 0);
+
+        drawBoundingBox();
+        /*
+        if(texture!=NULL && textActive)
+        {
+            texture->endDraw();
+        }
+        */
     }
-    
-    if(material!=NULL)
+    else
     {
-        material->draw();
+        std::cout << "Frustum culling working" << std::endl;
     }
-
-    //Bind and pass to OpenGL the first array (vertex coordinates)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-    glEnableVertexAttribArray(0);
-    
-    //Bind and pass to OpenGL the second array (vertex normals)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-    glEnableVertexAttribArray(1);
-
-    //Bind and pass to OpenGL the third array (vertex texture coordinates)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-    glEnableVertexAttribArray(2);
-
-    //Bind and pass to OpenGL the fourth array (vertex indices)
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*6*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
-
-    //We order to draw here
-    glDrawElements(GL_TRIANGLES_ADJACENCY, nTriangles*6, GL_UNSIGNED_INT, 0);
-
-    drawBoundingBox();
-/*
-    if(texture!=NULL && textActive)
-    {
-        texture->endDraw();
-    }
-*/
-
 }
 
 void TResourceMesh::generateBoundingBox()
@@ -261,6 +266,78 @@ void TResourceMesh::drawBoundingBox()
 
     glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &TEntity::modelMatrix()[0][0]);
 
+}
+
+bool TResourceMesh::checkBoundingBox()
+{
+    GLfloat boxVertices[] = {
+    -0.5, -0.5, -0.5, 1.0,
+     0.5, -0.5, -0.5, 1.0,
+     0.5,  0.5, -0.5, 1.0,
+    -0.5,  0.5, -0.5, 1.0,
+    -0.5, -0.5,  0.5, 1.0,
+     0.5, -0.5,  0.5, 1.0,
+     0.5,  0.5,  0.5, 1.0,
+    -0.5,  0.5,  0.5, 1.0,
+  };
+
+    glm::mat4 m = TEntity::projectionMatrix() * TEntity::viewMatrix() * TEntity::modelMatrix() * bbTransform;
+    glm::vec4 p1 = m * glm::vec4(-0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p2 = m * glm::vec4(0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p3 = m * glm::vec4(0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p4 = m * glm::vec4(-0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p5 = m * glm::vec4(-0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p6 = m * glm::vec4(0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p7 = m * glm::vec4(0.5, 0.5, 0.5, 1.0);
+    glm::vec4 p8 = m * glm::vec4(-0.5, 0.5, 0.5, 1.0);
+
+
+    float leftX = -15.f;
+    float rightX = 15.f;
+    float topY = 15.f;
+    float bottomY = -15.f;
+    float nearZ = -1.f;
+    float farZ = 500.f;
+
+    //std::cout << p1.x << " " << p1.y << " " << p1.z << std::endl;
+    if(p1.x >= leftX && p1.x <= rightX && p1.y >= bottomY && p1.y <=topY && p1.z >= nearZ && p1.z <=farZ)
+    {
+        return true;
+    }
+    if(p2.x >= leftX && p2.x <= rightX && p2.y >= bottomY && p2.y <=topY && p2.z >= nearZ && p2.z <=farZ)
+    {
+        return true;
+    }
+    if(p3.x >= leftX && p3.x <= rightX && p3.y >= bottomY && p3.y <=topY && p3.z >= nearZ && p3.z <=farZ)
+    {
+        return true;
+    }
+    if(p4.x >= leftX && p4.x <= rightX && p4.y >= bottomY && p4.y <=topY && p4.z >= nearZ && p4.z <=farZ)
+    {
+        return true;
+    }
+    if(p5.x >= leftX && p5.x <= rightX && p5.y >= bottomY && p5.y <=topY && p5.z >= nearZ && p5.z <=farZ)
+    {
+        return true;
+    }
+    if(p6.x >= leftX && p6.x <= rightX && p6.y >= bottomY && p6.y <=topY && p6.z >= nearZ && p6.z <=farZ)
+    {
+        return true;
+    }
+    if(p7.x >= leftX && p7.x <= rightX && p7.y >= bottomY && p7.y <=topY && p7.z >= nearZ && p7.z <=farZ)
+    {
+        return true;
+    }
+    if(p8.x >= leftX && p8.x <= rightX && p8.y >= bottomY && p8.y <=topY && p8.z >= nearZ && p8.z <=farZ)
+    {
+        return true;
+    }
+    
+
+
+
+
+    return false;
 }
 
 //This functions looks for a specific adjacent vertex for the vertex indices. Due to the computational cost, this should be improved

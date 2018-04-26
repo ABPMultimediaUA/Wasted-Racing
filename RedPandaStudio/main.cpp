@@ -24,7 +24,7 @@ int main() {
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
 
-    TNode* t = rps->createAnimatedNode(rps->getSceneRoot(), glm::vec3(0,-2,0), "media/anim/WitchFINAL_000", true, 60, 0.1f);
+    TNode* t = rps->createAnimatedNode(rps->getSceneRoot(), glm::vec3(0,-2,0), "media/anim/WitchFINAL_000", true, 60, 60);
     //TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(5,0,1), "media/cuboprueba.obj");
     //TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
     TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(20,25,0), glm::vec3(0,0,0));
@@ -59,7 +59,7 @@ int main() {
         anim->update(30);
         rps->updateCamera(glm::vec3(10, 0, 0), glm::vec3(0,0,0));
         rps->updateDevice();
-        //rps::translateNode(t, glm::vec3(i,i,i));
+        rps::translateNode(t, glm::vec3(0, 0, i));
         i += 0.01;
 
     }
