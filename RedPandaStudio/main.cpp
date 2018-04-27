@@ -34,15 +34,10 @@ int main() {
     TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
     TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
 
-    TEmitter* emitter = new TEmitter(nullptr, glm::vec3(0,0,0), 10, 10, 0, glm::vec3(0,0,0), 0, glm::vec4(0,0,0,0));
-    glm::vec3 pos;
+    ResourceManager* rm = rps->getResourceManager();
+    TResourceMesh* tm = rm->getResourceMesh("media/particle.obj");
 
-    //for(int i=0; i<10; i++){
-    //    emitter->setParticlePositionData(pos);
-    //    std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
-    //}
-    
-
+    TEmitter* emitter = new TEmitter(tm, glm::vec3(0,5,0), 10, 10, 2, glm::vec3(0,0.1,0), 2, glm::vec4(125,125,125,1));
 
     delete emitter;
 

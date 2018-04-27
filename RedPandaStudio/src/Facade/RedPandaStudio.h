@@ -44,6 +44,13 @@ public:
     TNode* createCamera(TNode* parent, glm::vec3 position, glm::vec3 target);
     //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity);
+    //Creates an emitter and return a TEmitter
+    TNode* createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, 
+            int nBirthrate, float nParticleLife, glm::vec3 nBirthDirection, float nBirthSize, glm::vec4 nBirthColor);
+            
+    TNode* createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, int nBirthrate, float nParticleLife,
+            glm::vec3 nBirthDirection, glm::vec3 nDeathDirection, float nVariationDirection, float nBirthSize, float nDeathSize, 
+            float nVariationSize, glm::vec4 nBirthColor, glm::vec4 nDeathColor, float nVariationColor);
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
 
@@ -82,9 +89,10 @@ private:
     SDL_GLContext* context;
     TNode *scene;
     ResourceManager *resourceManager;
-    //Lights and camera
+    //Lights and camera and particles
     TNode *camera;
     std::vector<TNode*> lights;
+    std::vector<TNode*> emitters;
 
     //Skybox
     TResourceSkybox*  skybox;
@@ -92,6 +100,10 @@ private:
     GLuint skyboxID;
     //SKybox vertex array
     GLuint skyVertexArray;
+
+    //Particles
+    GLuint particlesID;
+    GLuint paticlesVertexArray;
 
 
     //Chrono

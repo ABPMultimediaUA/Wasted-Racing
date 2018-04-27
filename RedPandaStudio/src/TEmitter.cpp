@@ -116,11 +116,31 @@ void TEmitter::update(float dTime) {
 
             particlePool[i] = new Particle(this);
             pendingFrames--;
+            std::cout << "I ENTER __________________________________________________--" << std::endl;
 
         }
     }
+
+    std::cout << cummulatedFrame << std::endl;
 }
 
+//Stop particle emission (remaining particles are updated until death)
+void TEmitter::stop() {
+    emitting = false;
+} 
+//Start normal particle emission             
+void TEmitter::play() {
+    emitting = true;
+}
+
+//Draw current particles               
+void TEmitter::draw() {
+    for(int i = 0; i <birthrate; i++){
+        if(particlePool[i] != nullptr) {
+            particlePool[i]->draw();
+        }
+    }
+}            
 
 //Functions to be used by particles
 //Set particle vertex data
@@ -203,9 +223,9 @@ void TEmitter::setParticleColorData(glm::vec4 & nCurrentColor, glm::vec4 & nBirt
     int signZ = (rand() % 2 == 0) ? 1 : -1;
     int signA = (rand() % 2 == 0) ? 1 : -1;
 
-    float r = birthColor.x + 255*signA*variationColor*randX;
-    float g = birthColor.y + 255*signA*variationColor*randY;
-    float b = birthColor.z + 255*signA*variationColor*randZ;
+    float r = birthColor.x + 255*signX*variationColor*randX;
+    float g = birthColor.y + 255*signY*variationColor*randY;
+    float b = birthColor.z + 255*signZ*variationColor*randZ;
     float a = birthColor.w + birthColor.w*signA*variationColor*randA;
 
     if (r > 255)
@@ -241,9 +261,9 @@ void TEmitter::setParticleColorData(glm::vec4 & nCurrentColor, glm::vec4 & nBirt
     signZ = (rand() % 2 == 0) ? 1 : -1;
     signA = (rand() % 2 == 0) ? 1 : -1;
 
-    r = deathColor.x + 255*signA*variationColor*randX;
-    g = deathColor.y + 255*signA*variationColor*randY;
-    b = deathColor.z + 255*signA*variationColor*randZ;
+    r = deathColor.x + 255*signX*variationColor*randX;
+    g = deathColor.y + 255*signY*variationColor*randY;
+    b = deathColor.z + 255*signZ*variationColor*randZ;
     a = deathColor.w + deathColor.w*signA*variationColor*randA;
 
     if (r > 255)
@@ -280,9 +300,19 @@ TEmitter::Particle::Particle(TEmitter * emitter) {
     emitter->setParticleSizeData(currentSize, birthSize, deathSize);
     emitter->setParticleColorData(currentColor, birthColor, deathColor);
 
-}           
+}      
 
 //Delete particle    
 TEmitter::Particle::~Particle() {
 
 }               
+
+//Update particle properties
+void TEmitter::Particle::update(float dTime) {
+
+}
+
+//Draw the particle          
+void TEmitter::Particle::draw() {
+
+}              
