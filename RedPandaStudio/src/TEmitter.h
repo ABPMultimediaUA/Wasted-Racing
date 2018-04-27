@@ -28,7 +28,7 @@ class TEmitter : public TEntity {
         void setParticleVertexData(GLfloat*& vertex, long & nVertex, GLuint*& vertexIndices);
         void setParticleLifeData(float & nCurrentLife, float & nParticleLife);
         void setParticlePositionData(glm::vec3 & nPosition);
-        void setParticleDirectionData(glm::vec3 & nCurrentDirection, glm::vec3 & nBirthDirection, glm::vec3 & nDeathDirection);
+        void setParticleDirectionData(glm::vec3 & nBirthDirection, glm::vec3 & nDeathDirection);
         void setParticleSizeData(float & nCurrentSize, float & nBirthSize, float & nDeathSize);
         void setParticleColorData(glm::vec4 & nCurrentColor, glm::vec4 & nBirthColor, glm::vec4 & nDeathColor);
 
@@ -86,7 +86,6 @@ class TEmitter : public TEntity {
 
                 glm::vec3   position;           //Current position of the particle
                 
-                glm::vec3   currentDirection;   //Current direction of the particle
                 glm::vec3   birthDirection;     //Initial direction of the particle
                 glm::vec3   deathDirection;     //Final direction of the particle
 

@@ -583,10 +583,15 @@ void RedPandaStudio::renderLights() {
 }
 void RedPandaStudio::renderParticles() {
 
+	glEnable (GL_BLEND); 
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	for(unsigned int i = 0; i < emitters.size(); i++){
 		TEmitter* e = (TEmitter*)emitters[i]->getEntity();
 		e->draw(particlesID);
 	}
+
+	glDisable(GL_BLEND);
 	
 }
 void RedPandaStudio::updateParticles() {

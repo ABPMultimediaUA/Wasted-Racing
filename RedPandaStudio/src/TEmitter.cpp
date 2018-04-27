@@ -174,7 +174,7 @@ void TEmitter::setParticlePositionData(glm::vec3 & nPosition) {
 
 }
 //Randomize particle direction
-void TEmitter::setParticleDirectionData(glm::vec3 & nCurrentDirection, glm::vec3 & nBirthDirection, glm::vec3 & nDeathDirection) {
+void TEmitter::setParticleDirectionData(glm::vec3 & nBirthDirection, glm::vec3 & nDeathDirection) {
 
     float randX = ((int)rand()) / (float)INT_MAX;
     float randY = ((int)rand()) / (float)INT_MAX;
@@ -184,9 +184,8 @@ void TEmitter::setParticleDirectionData(glm::vec3 & nCurrentDirection, glm::vec3
     int signY = (rand() % 2 == 0) ? 1 : -1;
     int signZ = (rand() % 2 == 0) ? 1 : -1;
 
-    float lenght = glm::length(nBirthDirection);
+    float lenght = glm::length(birthDirection);
 
-    nCurrentDirection = glm::vec3( birthDirection.x + lenght*variationDirection*randX*signX, birthDirection.y + lenght*variationDirection*randY*signY, birthDirection.z + lenght*variationDirection*randZ*signZ);
     nBirthDirection   = glm::vec3( birthDirection.x + lenght*variationDirection*randX*signX, birthDirection.y + lenght*variationDirection*randY*signY, birthDirection.z + lenght*variationDirection*randZ*signZ);
 
     randX = ((int)rand()) / (float)INT_MAX;
@@ -300,7 +299,7 @@ TEmitter::Particle::Particle(TEmitter * emitter) {
     emitter->setParticleVertexData(vertex, nVertex, vertexIndices);
     emitter->setParticleLifeData(currentLife, particleLife);
     emitter->setParticlePositionData(position);
-    emitter->setParticleDirectionData(currentDirection, birthDirection, deathDirection);
+    emitter->setParticleDirectionData(birthDirection, deathDirection);
     emitter->setParticleSizeData(currentSize, birthSize, deathSize);
     emitter->setParticleColorData(currentColor, birthColor, deathColor);
 
@@ -332,8 +331,8 @@ void TEmitter::Particle::draw(GLuint programID) {
 
     //Create model matrix for the given particle
     glm::mat4 model(1.0);
-    model = glm::scale(model, glm::vec3(currentSize));
     model = glm::translate(model, position);
+    model = glm::scale(model, glm::vec3(currentSize));
 
     model = TEntity::projectionMatrix() * TEntity::viewMatrix() * model;
 
