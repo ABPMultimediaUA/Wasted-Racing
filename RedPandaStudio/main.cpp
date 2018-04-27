@@ -34,6 +34,18 @@ int main() {
     TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
     TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
 
+    TEmitter* emitter = new TEmitter(nullptr, glm::vec3(0,0,0), 10, 10, 0, glm::vec3(0,0,0), 0, glm::vec4(0,0,0,0));
+    glm::vec3 pos;
+
+    //for(int i=0; i<10; i++){
+    //    emitter->setParticlePositionData(pos);
+    //    std::cout << pos.x << " " << pos.y << " " << pos.z << std::endl;
+    //}
+    
+
+
+    delete emitter;
+
     bool quit = true;
     SDL_Event event;
 

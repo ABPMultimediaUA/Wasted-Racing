@@ -38,6 +38,9 @@ class TResourceMesh : public TResource {
         void setTextActive(bool b)              { textActive=b;     }
         void setMaterial(TResourceMaterial* m)  { material=m;       }
 
+        GLfloat* getVertex()                    {   return vertex;  }
+        long     getNVertex()                   {   return nVertex; }
+
     private:
         //Vertex info
         GLfloat* vertex, *normals, *textures;
