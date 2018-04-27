@@ -36,6 +36,7 @@
 #include "GameState/MatchState.h"
 #include "GameState/ClientLobbyState.h"
 #include "GameState/MultiMatchState.h"
+#include "GameState/PauseState.h"
 
 class IntroState;
 class MultiMatchState;

@@ -176,6 +176,10 @@ void Game::setState(IGameState::stateType type){
                 globalVariables->setGameState(MultiMatchState::getInstance().type);
                 state = &MultiMatchState::getInstance();
                 break;
+            case IGameState::stateType::PAUSE:
+                globalVariables->setGameState(PauseState::getInstance().type);
+                state = &PauseState::getInstance();
+                break;
             default:
                 globalVariables->setGameState(IntroState::getInstance().type);
                 state = &IntroState::getInstance();
