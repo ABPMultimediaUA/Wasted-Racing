@@ -89,7 +89,7 @@ public:
     virtual void setClipping(bool b) = 0;
 
     //Change mesh
-    virtual void changeMesh(int id, std::string newMesh) = 0;
+    virtual bool changeMesh(int id, std::string newMesh) = 0;
 
     //==============================================================
     //  VISUAL INTERFACE

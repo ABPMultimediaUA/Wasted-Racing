@@ -19,6 +19,8 @@ class TResourceOBJ : public TResource {
         //Draws the mesh
         void draw();
 
+        std::vector<TResourceMesh*> getMeshes() {       return meshes;      }
+        
 
     private:
         std::vector<TResourceMesh*> meshes;
