@@ -34,10 +34,15 @@ int main() {
     TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
     TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
 
-    TNode* temitter = rps->createEmitter(rps->getSceneRoot(), "media/particle.obj", glm::vec3(0,0,0), 1, 10, 10, 
+    //TNode* temitter = rps->createEmitter(rps->getSceneRoot(), "media/particle.obj", glm::vec3(0,0,0), 1, 10, 10, 
+    //                glm::vec3(0,0.02,0), glm::vec3(0,0.01,0), 1,
+    //                0, 0.5, 0,
+    //                glm::vec4(0.5,0.5,0.5,1), glm::vec4(0,0,0,1), 0);
+
+    TNode* temitter1 = rps->createEmitter(rps->getSceneRoot(), "media/particle.obj", glm::vec3(0,0,15), 1, 10, 10, 
                     glm::vec3(0,0.02,0), glm::vec3(0,0.01,0), 1,
                     0, 0.5, 0,
-                    glm::vec4(255,0,0,1), glm::vec4(0,0,0,1), 0);
+                    glm::vec4(0.5,0.5,0.5,1), glm::vec4(0,0,0,1), 0);
 
     bool quit = true;
     SDL_Event event;

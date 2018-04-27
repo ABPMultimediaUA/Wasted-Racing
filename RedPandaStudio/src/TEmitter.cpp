@@ -227,23 +227,23 @@ void TEmitter::setParticleColorData(glm::vec4 & nCurrentColor, glm::vec4 & nBirt
     int signZ = (rand() % 2 == 0) ? 1 : -1;
     int signA = (rand() % 2 == 0) ? 1 : -1;
 
-    float r = birthColor.x + 255*signX*variationColor*randX;
-    float g = birthColor.y + 255*signY*variationColor*randY;
-    float b = birthColor.z + 255*signZ*variationColor*randZ;
+    float r = birthColor.x + signX*variationColor*randX;
+    float g = birthColor.y + signY*variationColor*randY;
+    float b = birthColor.z + signZ*variationColor*randZ;
     float a = birthColor.w + birthColor.w*signA*variationColor*randA;
 
-    if (r > 255)
-        r = 255;
+    if (r > 1)
+        r = 1;
     else if (r < 0)
         r = 0;
 
-    if (g > 255)
-        g = 255;
+    if (g > 1)
+        g = 1;
     else if (g < 0)
         g = 0;
 
-    if (b > 255)
-        b = 255;
+    if (b > 1)
+        b = 1;
     else if (b < 0)
         b = 0;
 
@@ -265,23 +265,23 @@ void TEmitter::setParticleColorData(glm::vec4 & nCurrentColor, glm::vec4 & nBirt
     signZ = (rand() % 2 == 0) ? 1 : -1;
     signA = (rand() % 2 == 0) ? 1 : -1;
 
-    r = deathColor.x + 255*signX*variationColor*randX;
-    g = deathColor.y + 255*signY*variationColor*randY;
-    b = deathColor.z + 255*signZ*variationColor*randZ;
+    r = deathColor.x + signX*variationColor*randX;
+    g = deathColor.y + signY*variationColor*randY;
+    b = deathColor.z + signZ*variationColor*randZ;
     a = deathColor.w + deathColor.w*signA*variationColor*randA;
 
-    if (r > 255)
-        r = 255;
+    if (r > 1)
+        r = 1;
     else if (r < 0)
         r = 0;
 
-    if (g > 255)
-        g = 255;
+    if (g > 1)
+        g = 1;
     else if (g < 0)
         g = 0;
 
-    if (b > 255)
-        b = 255;
+    if (b > 1)
+        b = 1;
     else if (b < 0)
         b = 0;
 
@@ -351,7 +351,7 @@ void TEmitter::Particle::draw(GLuint programID) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(0);
 
-        //Bind and pass to OpenGL the fourth array (vertex indices)
+    //Bind and pass to OpenGL the fourth array (vertex indices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandle[1]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, nVertex*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 

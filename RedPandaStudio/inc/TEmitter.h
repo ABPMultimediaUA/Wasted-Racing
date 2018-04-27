@@ -79,7 +79,7 @@ class TEmitter : public TEntity {
 
                 GLfloat*    vertex;             //Vertex conforming a particle
                 long        nVertex;            //Number of vertex of the particle
-                GLuint*      vertexIndices;      //Index list for every vertex
+                GLuint*     vertexIndices;      //Index list for every vertex
 
                 float       currentLife;        //Current life time of the particle
                 float       particleLife;       //Maximum lifespan of the particle
