@@ -2,14 +2,11 @@
 
 layout(location = 0) in vec4 vertexPosition;
 
-uniform mat4 modelViewProjectionMatrix;
-
-varying vec4 v_Color;
-
+uniform mat4 MVP;
 
 void main()
 {
 
-    gl_Position = modelViewProjectionMatrix * vertexPosition;
+    gl_Position = MVP * vertexPosition;
 
 }

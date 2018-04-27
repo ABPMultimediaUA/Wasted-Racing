@@ -1,6 +1,6 @@
 #version 450 core
 
-varying vec4 v_Color;		// in: color del vertex shader
+uniform vec4 v_Color;
 
 out vec4 FragColor;
 

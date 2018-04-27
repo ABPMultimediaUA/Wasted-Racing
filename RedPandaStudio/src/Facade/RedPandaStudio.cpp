@@ -23,11 +23,11 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 void RedPandaStudio::updateDevice() {
 
+	//Update particles
+	updateParticles();
+
+	//Clean screen
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-	renderCamera();
-
-	renderLights();
 
 	//Change shader program for drawing skybox
 	glUseProgram(skyboxID);
@@ -36,10 +36,16 @@ void RedPandaStudio::updateDevice() {
 	glUseProgram(scene->getEntity()->getProgramID());
 	glEnable(GL_DEPTH_TEST);
 
+	//Render our scene
 	renderCamera();
 	renderLights();
 
 	scene->draw();
+
+	//RenderParticles
+	glUseProgram(particlesID);
+	glBindVertexArray(paticlesVertexArray);
+	renderParticles();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -50,7 +56,7 @@ void RedPandaStudio::updateDevice() {
 	std::chrono::duration<double> elapsed = currTime - lastTime;
 	lastTime = currTime;
 
-	double fps = 1/elapsed.count();
+	fps = 1/elapsed.count();
 	
 	if(showFPS)
 	{
@@ -550,8 +556,8 @@ TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {
 
 }
 
-////////////////////////////////////
-//  LIGHTS AND CAMERA MANAGEMENT
+/////////////////////////////////////////////////
+//  LIGHTS,CAMERA AND PARTICLES MANAGEMENT
 void RedPandaStudio::renderLights() {
 
 	for(unsigned int i = 0; i < lights.size(); i++){
@@ -574,6 +580,27 @@ void RedPandaStudio::renderLights() {
 	GLuint numL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numLights");
 	glUniform1i(numL, lights.size());
 
+}
+void RedPandaStudio::renderParticles() {
+
+	for(unsigned int i = 0; i < emitters.size(); i++){
+		TEmitter* e = (TEmitter*)emitters[i]->getEntity();
+		e->draw(particlesID);
+	}
+	
+}
+void RedPandaStudio::updateParticles() {
+
+	if(firstUpdate) {
+		fps = 60;
+		firstUpdate = false;
+	}
+
+	for(unsigned int i = 0; i < emitters.size(); i++){
+		TEmitter* e = (TEmitter*)emitters[i]->getEntity();
+		e->update(1/fps);
+	}
+	
 }
 void RedPandaStudio::renderCamera() {
 

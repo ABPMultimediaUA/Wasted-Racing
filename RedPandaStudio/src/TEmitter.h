@@ -19,13 +19,13 @@ class TEmitter : public TEntity {
         void update(float dTime);   //Update particle properties
         void stop();                //Stop particle emission (remaining particles are updated until death)
         void play();                //Start normal particle emission
-        void draw();                //Draw current particles
+        void draw(GLuint programID);                //Draw current particles
 
         virtual void beginDraw() {} //This function is unused here
         virtual void endDraw() {}   //This function is unused here
 
         //Functions to be used by particles
-        void setParticleVertexData(GLfloat*& vertex, long & nVertex);
+        void setParticleVertexData(GLfloat*& vertex, long & nVertex, GLuint*& vertexIndices);
         void setParticleLifeData(float & nCurrentLife, float & nParticleLife);
         void setParticlePositionData(glm::vec3 & nPosition);
         void setParticleDirectionData(glm::vec3 & nCurrentDirection, glm::vec3 & nBirthDirection, glm::vec3 & nDeathDirection);
@@ -71,7 +71,7 @@ class TEmitter : public TEntity {
                 ~Particle();                    //Delete particle
 
                 void update(float dTime);       //Update particle properties
-                void draw();                    //Draw the particle
+                void draw(GLuint programID);                    //Draw the particle
 
                 float getLife() { return currentLife; } //Returns current life of the particle
 
@@ -79,6 +79,7 @@ class TEmitter : public TEntity {
 
                 GLfloat*    vertex;             //Vertex conforming a particle
                 long        nVertex;            //Number of vertex of the particle
+                GLuint*      vertexIndices;      //Index list for every vertex
 
                 float       currentLife;        //Current life time of the particle
                 float       particleLife;       //Maximum lifespan of the particle
@@ -96,6 +97,8 @@ class TEmitter : public TEntity {
                 glm::vec4   currentColor;       //Current color of the particle
                 glm::vec4   birthColor;         //Initial color of the particle
                 glm::vec4   deathColor;         //Final color of the particle
+
+                GLuint* vboHandle;
 
         };
 

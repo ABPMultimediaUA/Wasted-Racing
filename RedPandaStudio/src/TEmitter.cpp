@@ -99,6 +99,7 @@ void TEmitter::update(float dTime) {
     cummulatedFrame += particlesFrame;
 
     int pendingFrames = (int)cummulatedFrame;
+
     cummulatedFrame -= pendingFrames;
 
     for(int i = 0; i < birthrate; i++) {
@@ -116,12 +117,11 @@ void TEmitter::update(float dTime) {
 
             particlePool[i] = new Particle(this);
             pendingFrames--;
-            std::cout << "I ENTER __________________________________________________--" << std::endl;
 
         }
     }
 
-    std::cout << cummulatedFrame << std::endl;
+    
 }
 
 //Stop particle emission (remaining particles are updated until death)
@@ -134,20 +134,22 @@ void TEmitter::play() {
 }
 
 //Draw current particles               
-void TEmitter::draw() {
+void TEmitter::draw(GLuint programID) {
+
     for(int i = 0; i <birthrate; i++){
         if(particlePool[i] != nullptr) {
-            particlePool[i]->draw();
+            particlePool[i]->draw(programID);
         }
     }
 }            
 
 //Functions to be used by particles
 //Set particle vertex data
-void TEmitter::setParticleVertexData(GLfloat*& vertex, long & nVertex) {
+void TEmitter::setParticleVertexData(GLfloat*& vertex, long & nVertex, GLuint*& vertexIndices) {
 
     vertex = shape->getVertex();
     nVertex = shape->getNVertex();
+    vertexIndices = shape->getVertexIndices();
 
 }
 //Set particle life data
@@ -182,8 +184,10 @@ void TEmitter::setParticleDirectionData(glm::vec3 & nCurrentDirection, glm::vec3
     int signY = (rand() % 2 == 0) ? 1 : -1;
     int signZ = (rand() % 2 == 0) ? 1 : -1;
 
-    nCurrentDirection = glm::vec3( birthDirection.x + birthDirection.x*variationDirection*randX*signX, birthDirection.y + birthDirection.y*variationDirection*randY*signY, birthDirection.z + birthDirection.z*variationDirection*randZ*signZ);
-    nBirthDirection   = glm::vec3( birthDirection.x + birthDirection.x*variationDirection*randX*signX, birthDirection.y + birthDirection.y*variationDirection*randY*signY, birthDirection.z + birthDirection.z*variationDirection*randZ*signZ);
+    float lenght = glm::length(nBirthDirection);
+
+    nCurrentDirection = glm::vec3( birthDirection.x + lenght*variationDirection*randX*signX, birthDirection.y + lenght*variationDirection*randY*signY, birthDirection.z + lenght*variationDirection*randZ*signZ);
+    nBirthDirection   = glm::vec3( birthDirection.x + lenght*variationDirection*randX*signX, birthDirection.y + lenght*variationDirection*randY*signY, birthDirection.z + lenght*variationDirection*randZ*signZ);
 
     randX = ((int)rand()) / (float)INT_MAX;
     randY = ((int)rand()) / (float)INT_MAX;
@@ -193,7 +197,7 @@ void TEmitter::setParticleDirectionData(glm::vec3 & nCurrentDirection, glm::vec3
     signY = (rand() % 2 == 0) ? 1 : -1;
     signZ = (rand() % 2 == 0) ? 1 : -1;
 
-    nDeathDirection   = glm::vec3( deathDirection.x + deathDirection.x*variationDirection*randX*signX, deathDirection.y + deathDirection.y*variationDirection*randY*signY, deathDirection.z + deathDirection.z*variationDirection*randZ*signZ);
+    nDeathDirection   = glm::vec3( deathDirection.x + lenght*variationDirection*randX*signX, deathDirection.y + lenght*variationDirection*randY*signY, deathDirection.z + lenght*variationDirection*randZ*signZ);
 
 }
 //Randomize particle size
@@ -293,12 +297,15 @@ void TEmitter::setParticleColorData(glm::vec4 & nCurrentColor, glm::vec4 & nBirt
 //Create a particle (given the properties of its emitter)   
 TEmitter::Particle::Particle(TEmitter * emitter) {
 
-    emitter->setParticleVertexData(vertex, nVertex);
+    emitter->setParticleVertexData(vertex, nVertex, vertexIndices);
     emitter->setParticleLifeData(currentLife, particleLife);
     emitter->setParticlePositionData(position);
     emitter->setParticleDirectionData(currentDirection, birthDirection, deathDirection);
     emitter->setParticleSizeData(currentSize, birthSize, deathSize);
     emitter->setParticleColorData(currentColor, birthColor, deathColor);
+
+    vboHandle = (unsigned int *)malloc(sizeof(unsigned int) * 2);
+    glGenBuffers(2, vboHandle);
 
 }      
 
@@ -310,9 +317,44 @@ TEmitter::Particle::~Particle() {
 //Update particle properties
 void TEmitter::Particle::update(float dTime) {
 
+    currentLife += dTime;
+
+    float lifeState = currentLife / particleLife;
+
+    position += birthDirection*(1-lifeState) + deathDirection*lifeState;
+    currentSize = birthSize*(1-lifeState) + deathSize*lifeState;
+    currentColor = birthColor*(1-lifeState) + deathColor*lifeState;
+
 }
 
 //Draw the particle          
-void TEmitter::Particle::draw() {
+void TEmitter::Particle::draw(GLuint programID) {
+
+    //Create model matrix for the given particle
+    glm::mat4 model(1.0);
+    model = glm::scale(model, glm::vec3(currentSize));
+    model = glm::translate(model, position);
+
+    model = TEntity::projectionMatrix() * TEntity::viewMatrix() * model;
+
+    //Give the model matrix to the shader
+    GLuint modelID = glGetUniformLocation(programID, "MVP");
+    glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
+
+    //Give the model matrix to the shader
+    GLuint colorID = glGetUniformLocation(programID, "v_Color");
+    glUniform4fv(colorID, 1, &currentColor[0]);
+
+    //Bind and pass to OpenGL the first array (vertex coordinates)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandle[0]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    glEnableVertexAttribArray(0);
+
+        //Bind and pass to OpenGL the fourth array (vertex indices)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandle[1]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nVertex*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLES, nVertex*3, GL_UNSIGNED_INT, 0);
 
 }              

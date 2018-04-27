@@ -47,7 +47,7 @@ public:
     //Creates an emitter and return a TEmitter
     TNode* createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, 
             int nBirthrate, float nParticleLife, glm::vec3 nBirthDirection, float nBirthSize, glm::vec4 nBirthColor);
-            
+
     TNode* createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, int nBirthrate, float nParticleLife,
             glm::vec3 nBirthDirection, glm::vec3 nDeathDirection, float nVariationDirection, float nBirthSize, float nDeathSize, 
             float nVariationSize, glm::vec4 nBirthColor, glm::vec4 nDeathColor, float nVariationColor);
@@ -78,6 +78,8 @@ private:
     void initScene();
     void renderLights();
     void renderCamera();
+    void renderParticles();
+    void updateParticles();
     void calculateNodeTransform(TNode* node, glm::mat4& mat);  //Given a node, returns its accumulated transform. Should receive an identity as input
     TNode* addRotScaPos(TNode* parent, glm::vec3 position); //Returns the Position Node
     void deleteNode(TNode* node); //Deletes a node and all his children
@@ -108,6 +110,8 @@ private:
 
     //Chrono
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
+    double fps = 0;
+    bool firstUpdate = true;
 
     //Chrono flag
     bool showFPS = false;

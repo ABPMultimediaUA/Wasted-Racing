@@ -40,6 +40,7 @@ class TResourceMesh : public TResource {
 
         GLfloat* getVertex()                    {   return vertex;  }
         long     getNVertex()                   {   return nVertex; }
+        GLuint*  getVertexIndices()             {   return vertexIndices; }
 
     private:
         //Vertex info
