@@ -644,7 +644,6 @@ void translateNode(TNode* node, glm::vec3 position) {
 	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr ||
-		(t = dynamic_cast<TEmitter*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getEntity();
@@ -652,6 +651,15 @@ void translateNode(TNode* node, glm::vec3 position) {
 		tr->identity();
 		tr->translate(position.x, position.y, position.z);
 
+	}
+	else if(node != nullptr && (t = dynamic_cast<TEmitter*>(node->getEntity())) != nullptr) {
+
+		TTransform* tr = (TTransform*)node->getFather()->getEntity();
+
+		tr->identity();
+		tr->translate(position.x, position.y, position.z);
+
+		((TEmitter*)t)->setEmitterPosition(position);
 	}
 
 }

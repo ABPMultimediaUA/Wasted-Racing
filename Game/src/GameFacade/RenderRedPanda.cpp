@@ -461,12 +461,7 @@ void drawRPS_GUI_HUD(){
                 nk_popup_end(GUI);
 	        }
         }
-        
-
     }
-
-
-
 
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);

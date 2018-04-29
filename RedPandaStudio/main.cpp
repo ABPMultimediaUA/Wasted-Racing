@@ -68,6 +68,7 @@ int main() {
 
         //rps->updateCamera(glm::vec3(10*cos(i), 0, 10*sin(i)), glm::vec3(0,0,0));
         rps->updateDevice();
+        rps::translateNode(temitter,glm::vec3(i*10,0, 0));
         i += 0.001;
     }
 

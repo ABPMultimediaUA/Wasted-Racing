@@ -19,7 +19,9 @@ class TEmitter : public TEntity {
         void update(float dTime);   //Update particle properties
         void stop();                //Stop particle emission (remaining particles are updated until death)
         void play();                //Start normal particle emission
-        void draw(GLuint programID);                //Draw current particles
+        void draw(GLuint programID);//Draw current particles
+
+        void setEmitterPosition(glm::vec3 pos) { position = pos; } //Set emitter new position
 
         virtual void beginDraw() {} //This function is unused here
         virtual void endDraw() {}   //This function is unused here
