@@ -21,18 +21,20 @@ class GlobalVariables{
         //==========================================
         // GETTERS AND SETTERS
         //==========================================
-        void setGameState(IGameState::stateType t)  {     game = t;           };
-        IGameState::stateType getGameState()        {     return game;        };
-        void setPlayer(GameObject* p)               {     player = p;         };
-        GameObject* getPlayer()                     {     return player;      };
-        void setServer(bool s)                      {     server = s;         };
-        bool getServer()                            {     return server;      };
-        void setOnline(bool o)                      {     online = o;         };
-        bool getOnline()                            {     return online;      };
-        void setDistanceLoD(float d)                {     distanceLoD = d;    };
-        float getDistanceLoD()                      {     return distanceLoD; };
-        void setLanguage(int l)                     {     language = l;       };
-        int  getLanguage()                          {     return language;    };
+        void setGameState(IGameState::stateType t)      {     game = t;           };
+        IGameState::stateType getGameState()            {     return game;        };
+        void setPlayer(GameObject* p)                   {     player = p;         };
+        GameObject* getPlayer()                         {     return player;      };
+        void setServer(bool s)                          {     server = s;         };
+        bool getServer()                                {     return server;      };
+        void setOnline(bool o)                          {     online = o;         };
+        bool getOnline()                                {     return online;      };
+        void setDistanceLoD(float d)                    {     distanceLoD = d;    };
+        float getDistanceLoD()                          {     return distanceLoD; };
+        void setLanguage(int l)                         {     language = l;       };
+        int  getLanguage()                              {     return language;    };
+        void setMaxDTime(float d)                       {     maxDTime = d;       };
+        float  getMaxDTime()                            {     return maxDTime;    };
         
     private:
 
@@ -44,6 +46,8 @@ class GlobalVariables{
         bool server;
         bool online;
         int language;
+        //Max value for dTime
+        float maxDTime = 1.0f/30.0f;
 
         //==========================================
         // AI DATA

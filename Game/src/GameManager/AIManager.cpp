@@ -223,6 +223,12 @@ void AIManager::updateScheduling(float dTime, float loopTime) {
                 auto AIObject = aiDrivingComponent2->getGameObject();
                 double timePassed = clock->getInitTime() - a.timeStamp + dTime; //Actual interval of time (dTime + time passed since creation of event)
 
+                float maxDTime = GlobalVariables::getInstance().getMaxDTime();
+                if(timePassed > maxDTime)
+                {
+                    timePassed = maxDTime;
+                }
+
                 //Launch effect
                 calculateLoD(AIObject, timePassed);
 
