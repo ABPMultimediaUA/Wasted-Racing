@@ -127,11 +127,11 @@ void TResourceMesh::draw()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(1);
 
-    ////Bind and pass to OpenGL the third array (vertex texture coordinates)
-    //glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
-    //glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
-    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-    //glEnableVertexAttribArray(2);
+    //Bind and pass to OpenGL the third array (vertex texture coordinates)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    glEnableVertexAttribArray(2);
 
     //Bind and pass to OpenGL the fourth array (vertex indices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
