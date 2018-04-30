@@ -1855,9 +1855,9 @@ namespace RakNet
 		if (qx < 0.0) qx=0.0;
 		if (qy < 0.0) qy=0.0;
 		if (qz < 0.0) qz=0.0;
-		qx = _copysign( (double) qx, (double) (m21 - m12) );
-		qy = _copysign( (double) qy, (double) (m02 - m20) );
-		qz = _copysign( (double) qz, (double) (m10 - m01) );
+		qx = copysign( (double) qx, (double) (m21 - m12) );
+		qy = copysign( (double) qy, (double) (m02 - m20) );
+		qz = copysign( (double) qz, (double) (m10 - m01) );
 
 		WriteNormQuat(qw,qx,qy,qz);
 	}
