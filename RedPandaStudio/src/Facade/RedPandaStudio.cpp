@@ -1,7 +1,26 @@
 #include "RedPandaStudio.h"
 
-//GUI drawing function adress
+////////////////////////////////
+//  ADDITIONAL USEFUL FUNCTIONS
+////////////////////////////////
+
+//GUI draw
 void (*rpsGUI_draw)() = nullptr;
+
+//Message callback for printing OpenGL errors
+void MessageCallback( GLenum source,
+                      GLenum type,
+                      GLuint id,
+                      GLenum severity,
+                      GLsizei length,
+                      const GLchar* message,
+                      const void* userParam )
+{
+  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+
 
 namespace rps{
 
@@ -23,23 +42,28 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 void RedPandaStudio::updateDevice() {
 
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	//Clean the scene
+	//glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	renderCamera();
-
-	renderLights();
+	//Render camera and lights
+	//renderCamera();
+	//renderLights();
 
 	//Change shader program for drawing skybox
-	glUseProgram(skyboxID);
-	glBindVertexArray(skyVertexArray);
-	skybox->draw();
-	glUseProgram(scene->getEntity()->getProgramID());
-	glEnable(GL_DEPTH_TEST);
+	//glUseProgram(skyboxID);
+	//glBindVertexArray(skyVertexArray);
+	//skybox->draw();
+	//glUseProgram(scene->getEntity()->getProgramID());
+	//glEnable(GL_DEPTH_TEST);
 
-	renderCamera();
-	renderLights();
+	//==================
+	drawShadowMapping();
+	//==================
 
-	scene->draw();
+	//renderCamera();
+	//renderLights();
+
+	//scene->draw();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -123,9 +147,16 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 	scene = new TNode();
     resourceManager = new ResourceManager();
 
+
+	//=================================================
+	//Window size assignation
+	windowWidth = width;
+	windowHeight = height;
+	//=================================================
 }
 
 void RedPandaStudio::initOpenGL() {
+
 
     const char * vertex_file_path = "shaders/test.vert";
     const char * fragment_file_path = "shaders/test.frag";
@@ -136,6 +167,9 @@ void RedPandaStudio::initOpenGL() {
 
 	glewExperimental = GL_TRUE;
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
+
+	//glEnable( GL_DEBUG_OUTPUT );
+    //glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
 
     //Init VBO
     GLuint VertexArrayID;
@@ -162,6 +196,11 @@ void RedPandaStudio::initOpenGL() {
 	skybox->loadResource(r5, 5);
 
 	skybox->initSkybox();
+
+	//=============================
+	//Initialize all parameters needed for the shadow mapping
+	initializeShadowMappping();
+	//=============================
 
 	//Get main shaders
 	TResourceShader* vertexShader = resourceManager->getResourceShader(vertex_file_path, (GLenum)GL_VERTEX_SHADER);
@@ -223,7 +262,6 @@ void RedPandaStudio::initOpenGL() {
 
     //Give the ProgramID to our engine
     scene->getEntity()->setProgramID(ProgramID);
-
     glEnable(GL_DEPTH_TEST);
 
 	GLuint model = glGetUniformLocation(ProgramID, "ModelMatrix");   
@@ -235,7 +273,6 @@ void RedPandaStudio::initOpenGL() {
 
 	GLuint viewSky = glGetUniformLocation(skyboxID, "ViewMatrix");
 	skybox->setView(viewSky);
-
 }
 
 void RedPandaStudio::initScene() {
@@ -520,6 +557,155 @@ void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat) {
 //////////////////////////////////////////////
 // GRAPHICS OPTIONS AND PARAMETERS
 
+//================================================= Alexei's magic touch
+void RedPandaStudio::initializeShadowMappping()
+{
+	//Generating and binding the frame buffer
+	glGenFramebuffers(1, &depthBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	//glDrawBuffer(GL_NONE);
+	//glReadBuffer(GL_NONE);    
+	
+	//Binding and generating texture 2D
+	glGenTextures(1, &colorMap);
+	glBindTexture(GL_TEXTURE_2D, colorMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//Bind created texture to the frame buffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorMap, 0);
+
+	//Binding the render buffer
+    glGenRenderbuffers(1, &renderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, windowWidth, windowHeight); // use a single renderbuffer object for both a depth AND stencil buffer.
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer); // now actually attach it
+
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Que pasadía que no vaya" << std::endl;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+
+	//BASIC STUFFY FOR SHADER CREATION
+	const char *shadowMap_fragment_path = "shaders/shadowMap.frag";
+	const char *shadowMap_vertex_path = "shaders/shadowMap.vert";
+
+	TResourceShader* shadowVertex = resourceManager->getResourceShader(shadowMap_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* shadowFragment = resourceManager->getResourceShader(shadowMap_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	GLuint shadowVertexID = shadowVertex->getShaderID();
+	GLuint shadowFragmentID = shadowFragment->getShaderID();
+
+	shadowID = glCreateProgram();
+	glAttachShader(shadowID, shadowVertexID);
+	glAttachShader(shadowID, shadowFragmentID);
+	glLinkProgram(shadowID);
+	std::cout << "Linking shadowID" << std::endl;
+
+	//Check the program is ok
+	glGetProgramiv(shadowID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(shadowID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(shadowID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+	//Delete because the program is cool
+	glDetachShader(shadowID,shadowVertexID);
+	glDetachShader(shadowID,shadowFragmentID);
+	glDeleteShader(shadowVertexID);
+	glDeleteShader(shadowFragmentID);
+
+	glUseProgram(shadowID); //REQUIRED for attaching variables
+
+	float near_plane = 1.0f, far_plane = 7.5f;
+	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+
+	GLuint lightProjectionID = glGetUniformLocation(shadowID, "lightProjectionMatrix");
+	glUniformMatrix4fv(lightProjectionID, 1, false, &lightProjection[0][0]);
+	
+	//Quad in which we'll paint the scene
+    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    // screen quad VAO
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0); //Vertex points
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1); //Vertex textures
+
+	//Quad texture assignment
+	
+	GLuint screenTextureID = glGetUniformLocation(shadowID, "screenTexture");
+	glUniform1i(screenTextureID, 0);
+	std::cout<<"The ID is: "<<screenTextureID<<std::endl;
+	
+}
+
+void RedPandaStudio::drawShadowMapping()
+{
+	//TESTING THIS SHIET
+	// bind to framebuffer and draw scene as we normally would to color texture 
+	//glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	glEnable(GL_DEPTH_TEST);
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	//glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	//glUseProgram(scene->getEntity()->getProgramID());
+	renderCamera();
+	/*renderLights();
+	scene->draw();*/
+
+	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded
+	glClear(GL_COLOR_BUFFER_BIT); //Clean the dirty color
+
+	glUseProgram(shadowID);
+	//glBindVertexArray(quadVAO);
+	glBindTexture(GL_TEXTURE_2D, colorMap);	// use the color attachment texture as the texture of the quad plane
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	//Render scene into the depth buffer
+	/*GLuint lightViewID = glGetUniformLocation(shadowID, "lightView");
+	GLuint lightModelID = glGetUniformLocation(shadowID, "lightModel");
+	glUniformMatrix4fv(lightViewID, 1, false, &lights[0]->getEntity()->viewMatrix()[0][0]);
+	glUniformMatrix4fv(lightModelID, 1, false, &lights[0]->getEntity()->modelMatrix()[0][0]);*/
+
+
+	/*glViewport(0, 0, windowWidth, windowHeight);    //Change viewport size to shadow size
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer); //Choose depthBuffer
+		glClear(GL_DEPTH_BUFFER_BIT); 				//Clean screen with buffer
+
+		//paint the thing
+		scene->draw();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
+
+	// 2. then render scene as normal with shadow mapping (using depth map)
+	/*glViewport(0, 0, windowWidth, windowHeight);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	scene->draw();
+	glBindTexture(GL_TEXTURE_2D, colorMap);*/
+}
+//=================================================
+
 void RedPandaStudio::setCulling(bool b, GLenum e)
 {
 	if(b)
@@ -592,5 +778,7 @@ void rotateNode(TNode* node, glm::vec3 rotation) {
 	}
 
 }
+
+
 
 }
