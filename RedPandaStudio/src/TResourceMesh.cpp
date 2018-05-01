@@ -99,7 +99,7 @@ bool TResourceMesh::loadResource()
 void TResourceMesh::draw()
 {
     
-    //glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_COLOR_MATERIAL);
 
     GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
     glUniform1i(id, textActive);
@@ -109,7 +109,7 @@ void TResourceMesh::draw()
     {
         texture->draw();
     }
-    
+
     if(material!=NULL)
     {
         material->draw();

@@ -10,6 +10,7 @@
 
 #include "../GameManager/InputManager.h"
 
+
 class RenderRedPanda : public IRenderFacade {
 
 public:

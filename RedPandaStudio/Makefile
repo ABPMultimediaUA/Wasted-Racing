@@ -150,6 +150,7 @@ compileP: all
 
 compilePwin: win
 	cp ./bin/libRedPanda.dll ../Game/lib/win
+	cp ./bin/libRedPanda.dll ../Game/bin
 
 
 

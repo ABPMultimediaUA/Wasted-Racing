@@ -1,6 +1,8 @@
 #include "MatchState.h"
 #include "../Game.h"
 
+#include "../GlobalVariables.h"
+
 //==============================================
 // Delegate functions
 //==============================================
@@ -49,6 +51,12 @@ void MatchState::init() {
 }
 
 void MatchState::update(float &accumulatedTime) {
+    
+    float maxDTime = GlobalVariables::getInstance().getMaxDTime();
+    if(accumulatedTime > maxDTime)
+    {
+        accumulatedTime = maxDTime;
+    }
     //divide with ratio so we can accelerate or slow down the game
     accumulatedTime /= ratio;
     

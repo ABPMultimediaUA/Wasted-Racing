@@ -18,6 +18,7 @@
 #include "../GameManager/RenderManager.h"
 #include "../GameManager/ObjectManager.h"
 #include "../GlobalVariables.h"
+#include "../GameState/MatchState.h"
 
 //==============================================================
 // Gui Related functions and variables declarations
@@ -768,12 +769,14 @@ void addPause(EventData eData) {
         device->setGUIDrawFunction(drawRPS_GUI_Pause);
         EventData eData;
         eData.Id = IGameState::stateType::PAUSE;
+        MatchState::getInstance().setRatio(0.0);
         EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
     }
     else if (state == IGameState::stateType::PAUSE){
         device->setGUIDrawFunction(drawRPS_GUI_HUD);
         EventData eData;
         eData.Id = IGameState::stateType::MATCH;
+        MatchState::getInstance().setRatio(1.0);
         EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
     }
 }
