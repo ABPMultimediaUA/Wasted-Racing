@@ -1,7 +1,6 @@
 #include <MidiFile.h>
 #include <Options.h>
 #include <iostream>
-#include <iomanip>
 #include <vector>
 #include <stdio.h>
 
@@ -82,11 +81,11 @@ int main(int argc, char** argv) {
             }    
         }
 
-        if(newTrack != nullptr && newTrack->notes.size() > 100) {
+        if(newTrack != nullptr && newTrack->notes.size() > 100 && newTrack->channel != 9) {
             //If track is not empty or has few notes, add track
             tracks.push_back(newTrack);
         }
-        else if (newTrack != nullptr && newTrack->notes.size() <= 100) {
+        else if (newTrack != nullptr && (newTrack->notes.size() <= 100 || newTrack->channel == 9)) {
             delete newTrack;
         }
     }
@@ -122,7 +121,7 @@ int main(int argc, char** argv) {
                 for(int l = 0; l < 9; l++) {
 
                     if(l == 0)
-                        prC[j][k][l] = 0;
+                        prC[j][k][l] = 1;
                     else 
                         prC[j][k][l] = 0;
                 }
@@ -202,19 +201,19 @@ int main(int argc, char** argv) {
         }
     }
 
-    //for (int i = 0; i < tracks[0]->maxTone - tracks[0]->minTone + 1; i++) {
+    for (int i = 0; i < tracks[0]->maxTone - tracks[0]->minTone + 1; i++) {
 //
-    //    for(int j = 0; j < tracks[0]->maxTone - tracks[0]->minTone + 1; j++) {
-    //        
-    //        if(probabilities[0][i][j][0] < 10) {
-    //            std::cout << " " << probabilities[0][i][j][0] << " ";
-    //        }
-    //        else {
-    //            std::cout << probabilities[0][i][j][0] << " ";
-    //        }
-    //    }
-    //    std::cout << std::endl;
-    //}
+        for(int j = 0; j < tracks[0]->maxTone - tracks[0]->minTone + 1; j++) {
+            
+            if(probabilities[0][i][j][0] < 10) {
+                std::cout << " " << probabilities[0][i][j][0] << " ";
+            }
+            else {
+                std::cout << probabilities[0][i][j][0] << " ";
+            }
+        }
+        std::cout << std::endl;
+    }
 
     //===================================================================================
     //  WRITING TO BINARY FILE
@@ -251,6 +250,23 @@ int main(int argc, char** argv) {
     fclose(pFile);
 
     std::cout << "Done!" << std::endl;
+
+    //Delete all the data we've used
+    for(int i = 0; i < tracks.size(); i++) {
+
+        int noteSize = tracks[i]->maxTone - tracks[i]->minTone + 1;
+
+        for(int j = 0; j < noteSize; j++) {
+            for(int k = 0; k < noteSize; k++) {
+                delete [] probabilityCounter[i][j][k];
+                delete [] probabilities[i][j][k];
+            }
+            delete [] probabilityCounter[i][j];
+            delete [] probabilities[i][j];
+        }
+        delete [] probabilityCounter[i];
+        delete [] probabilities[i];
+    }
 
     return 0;
 }
