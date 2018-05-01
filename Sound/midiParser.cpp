@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <stdio.h>
 
 struct note {
     uint8_t tone;
@@ -15,26 +16,6 @@ struct track {
     uint8_t maxTone = 0;
     uint8_t minTone = 255;
     std::vector<note> notes;
-};
-
-struct noteProbability {
-    float note;
-    uint8_t duration[8] = {0,0,0,0,0,0,0,0};
-    unsigned int count = 1;
-};
-
-struct notesProbability {
-    noteProbability* notes;
-    unsigned int count = 0;
-};
-
-struct trackProbability {
-    uint8_t channel;
-    uint8_t program;
-    uint8_t maxTone;
-    uint8_t minTone;
-    notesProbability* notes;
-    int size;
 };
 
 int main(int argc, char** argv) {
@@ -101,9 +82,12 @@ int main(int argc, char** argv) {
             }    
         }
 
-        if(newTrack != nullptr && newTrack->notes.size()>0) {
-            //If track is not empty, add track
+        if(newTrack != nullptr && newTrack->notes.size() > 100) {
+            //If track is not empty or has few notes, add track
             tracks.push_back(newTrack);
+        }
+        else if (newTrack != nullptr && newTrack->notes.size() <= 100) {
+            delete newTrack;
         }
     }
 
@@ -112,21 +96,161 @@ int main(int argc, char** argv) {
     //===================================================================================
     std::cout << "Calculating probabilities..." << std::endl;
 
-    std::vector<noteProbability> probabilities;
+    std::vector<int***> probabilityCounter;
+    std::vector<float***> probabilities;
 
-    for(int i = 0; i < tracks.size(); i++) {  //for every track
+    //Initialize probability counters
+    for(int i = 0; i < tracks.size(); i++) {
 
-        trackProbability prob = {tracks[i]->channel, tracks[i]->program, tracks[i]->maxTone, tracks[i]->minTone, nullptr, tracks[i]->maxTone - tracks[i]->minTone + 1};
+        int noteSize = tracks[i]->maxTone - tracks[i]->minTone + 1;
+        int*** prC = new int**[noteSize];
 
-        //initialize probabilities
-        prob.notes = new notesProbability[prob.size];
+        float*** prB = new float**[noteSize];
 
-        for(int j = 0; j < prob.size; j++) {    //create every note counter
-            prob.notes[j].notes = new noteProbability[prob.size];
+        for(int j = 0; j < noteSize; j++) {
+
+            prC[j] = new int*[noteSize];
+
+            prB[j] = new float*[noteSize];
+
+            for(int k = 0; k < noteSize; k++) {
+
+                prC[j][k] = new int [9];
+
+                prB[j][k] = new float [9];
+
+                for(int l = 0; l < 9; l++) {
+
+                    if(l == 0)
+                        prC[j][k][l] = 0;
+                    else 
+                        prC[j][k][l] = 0;
+                }
+
+                for(int l = 0; l < 9; l++)
+                    prB[j][k][l] = 0.0;
+            }
         }
-
+        probabilityCounter.push_back(prC);
+        probabilities.push_back(prB);
     }
     
+    //Go through all the notes and update counters
+    for(int i = 0; i < tracks.size(); i++) {
+
+        int noteSize = tracks[i]->maxTone - tracks[i]->minTone + 1;
+        int minTone = tracks[i]->minTone;
+        uint8_t lastNote = tracks[i]->notes[0].tone;
+
+        for(int j = 1; j < tracks[i]->notes.size(); j++) {
+
+            uint8_t duration = tracks[i]->notes[j].duration;
+
+            int index;
+
+            if      (duration > 200)    index = 8;
+            else if (duration > 100)    index = 7;
+            else if (duration >  50)    index = 6;
+            else if (duration >  25)    index = 5;
+            else if (duration >  12)    index = 4;
+            else if (duration >   6)    index = 3;
+            else if (duration >   3)    index = 2;
+            else                        index = 1;
+
+            probabilityCounter[i][lastNote-minTone][tracks[i]->notes[j].tone-minTone][0]++;         //Update tone counter
+            probabilityCounter[i][lastNote-minTone][tracks[i]->notes[j].tone-minTone][index]++;     //Update duration counter
+            
+            lastNote = tracks[i]->notes[j].tone;
+        }
+    }
+
+    //Go through all the counters and calculate probabilities
+    for(int i = 0; i < tracks.size(); i++) {
+
+        int noteSize = tracks[i]->maxTone - tracks[i]->minTone + 1;
+
+        for(int j = 0; j < noteSize; j++) {
+
+            //Update note probability
+            int noteCounter = 0;
+
+            for(int k = 0; k < noteSize; k++) {
+
+                //Update duration probability
+                int durCounter = 0;
+
+                //Count given cases
+                for (int l = 1; l < 9; l++)
+                    durCounter += probabilityCounter[i][j][k][l];
+
+                if(durCounter < 1) durCounter = 1;
+
+                //Give probabilities to every possible case
+                for (int l = 1; l < 9; l++)
+                    probabilities[i][j][k][l] = (float)probabilityCounter[i][j][k][l]/(float)durCounter;
+
+                //Update noteCounter
+                noteCounter += probabilityCounter[i][j][k][0];
+
+            }
+            //Update notes probability
+            if(noteCounter < 1) noteCounter = 1;
+
+            for(int k = 0; k < noteSize; k++) {
+                probabilities[i][j][k][0] = (float)probabilityCounter[i][j][k][0]/(float)noteCounter;
+            }
+        }
+    }
+
+    //for (int i = 0; i < tracks[0]->maxTone - tracks[0]->minTone + 1; i++) {
+//
+    //    for(int j = 0; j < tracks[0]->maxTone - tracks[0]->minTone + 1; j++) {
+    //        
+    //        if(probabilities[0][i][j][0] < 10) {
+    //            std::cout << " " << probabilities[0][i][j][0] << " ";
+    //        }
+    //        else {
+    //            std::cout << probabilities[0][i][j][0] << " ";
+    //        }
+    //    }
+    //    std::cout << std::endl;
+    //}
+
+    //===================================================================================
+    //  WRITING TO BINARY FILE
+    //===================================================================================
+    std::cout << "Writing binary file..." << std::endl;
+
+    FILE* pFile;
+    pFile = fopen("probabilities.bin", "wb");
+
+    //Write number of tracks
+    int size = tracks.size();
+    fwrite(&size, sizeof(int), 1, pFile);
+
+    for (int i = 0; i < tracks.size(); i++){
+
+        int channel = (int)tracks[i]->channel;
+        int program = (int)tracks[i]->program;
+        int maxNote = (int)tracks[i]->maxTone;
+        int minNote = (int)tracks[i]->minTone;
+        int noteSize = tracks[i]->maxTone - tracks[i]->minTone + 1;
+        
+        //Write per track header
+        fwrite(&channel, sizeof(int), 1, pFile);
+        fwrite(&program, sizeof(int), 1, pFile);
+        fwrite(&maxNote, sizeof(int), 1, pFile);
+        fwrite(&minNote, sizeof(int), 1, pFile);
+        fwrite(&noteSize, sizeof(int), 1, pFile);
+
+        //Write probabilities
+        for(int j = 0; j < noteSize; j++) 
+            for(int k = 0; k < noteSize; k++)
+                fwrite(probabilities[i][j][k], sizeof(float), 9, pFile);
+    }
+    fclose(pFile);
+
+    std::cout << "Done!" << std::endl;
 
     return 0;
 }
