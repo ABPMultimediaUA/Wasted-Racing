@@ -44,6 +44,13 @@ public:
     TNode* createCamera(TNode* parent, glm::vec3 position, glm::vec3 target);
     //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity);
+    //Creates an emitter and return a TEmitter
+    TNode* createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, 
+            int nBirthrate, float nParticleLife, glm::vec3 nBirthDirection, float nBirthSize, glm::vec4 nBirthColor);
+
+    TNode* createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, int nBirthrate, float nParticleLife,
+            glm::vec3 nBirthDirection, glm::vec3 nDeathDirection, float nVariationDirection, float nBirthSize, float nDeathSize, 
+            float nVariationSize, glm::vec4 nBirthColor, glm::vec4 nDeathColor, float nVariationColor);
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
 
@@ -71,6 +78,8 @@ private:
     void initScene();
     void renderLights();
     void renderCamera();
+    void renderParticles();
+    void updateParticles();
     void calculateNodeTransform(TNode* node, glm::mat4& mat);  //Given a node, returns its accumulated transform. Should receive an identity as input
     TNode* addRotScaPos(TNode* parent, glm::vec3 position); //Returns the Position Node
     void deleteNode(TNode* node); //Deletes a node and all his children
@@ -82,9 +91,10 @@ private:
     SDL_GLContext* context;
     TNode *scene;
     ResourceManager *resourceManager;
-    //Lights and camera
+    //Lights and camera and particles
     TNode *camera;
     std::vector<TNode*> lights;
+    std::vector<TNode*> emitters;
 
     //Skybox
     TResourceSkybox*  skybox;
@@ -93,9 +103,15 @@ private:
     //SKybox vertex array
     GLuint skyVertexArray;
 
+    //Particles
+    GLuint particlesID;
+    GLuint paticlesVertexArray;
+
 
     //Chrono
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
+    double fps = 0;
+    bool firstUpdate = true;
 
     //Chrono flag
     bool showFPS = false;

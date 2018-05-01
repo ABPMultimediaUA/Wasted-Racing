@@ -91,7 +91,7 @@ void addPause(EventData eData);
 //Creates a window depending on the engine
 void RenderRedPanda::openWindow() { 
 
-    window.fullscreen = true;
+    window.fullscreen = false;
 
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
     InputRedPanda* receiver = new InputRedPanda();
@@ -217,6 +217,22 @@ void RenderRedPanda::addObject(IComponent* ptr) {
 
 }
 
+//Particles
+void RenderRedPanda::createParticleSystem(uint16_t id, const char* shape, glm::vec3 position, float radius, int birthrate, float particleLife,
+                                            glm::vec3 birthDirection, glm::vec3 deathDirection, float variationDirection,
+                                            float birthSize, float deathSize, float variationSize,
+                                            glm::vec4 birthColor, glm::vec4 deathColor, float variationColor) {
+
+    TNode * node = device->createEmitter(device->getSceneRoot(), shape, position, radius, birthrate, particleLife,
+            birthDirection, deathDirection, variationDirection, birthSize, deathSize, 
+            variationSize, birthColor, deathColor, variationColor);
+
+    rps::translateNode(node, glm::vec3(-position.x, position.y, position.z));
+
+    nodeMap.insert(std::pair<uint16_t, TNode*>(id, node));
+
+}
+
 //Add an object to the game (Cylinder or Cone)
 void RenderRedPanda::addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) { }
 
@@ -258,6 +274,17 @@ void RenderRedPanda::addSkybox(IComponent* ptr, std::string t, std::string bo, s
 void RenderRedPanda::deleteObject(IComponent* ptr) { 
 
     auto id = ptr->getGameObject().getId();
+    auto itr = nodeMap.find(id);
+
+    if(itr != nodeMap.end()){
+        auto node = itr->second;
+        device->deleteObject(node);
+        nodeMap.erase(id);
+    }
+
+}
+void RenderRedPanda::deleteObject(uint16_t id) {
+
     auto itr = nodeMap.find(id);
 
     if(itr != nodeMap.end()){
@@ -462,12 +489,7 @@ void drawRPS_GUI_HUD(){
                 nk_popup_end(GUI);
 	        }
         }
-        
-
     }
-
-
-
 
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);

@@ -15,6 +15,7 @@
 #include "../GlobalVariables.h"
 
 class ObjectManager;
+class ParticleManager;
 
 class RenderManager{
 
@@ -198,6 +199,9 @@ private:
     //Once we've added them all, we split them in a QuadTree structure
     std::vector<IComponent::Pointer>      renderComponentList;
     QuadTree                              renderComponentTree;
+
+    //Particle manager
+    ParticleManager* particleManager;
 
     //==============================================================
     // HUD DATA
