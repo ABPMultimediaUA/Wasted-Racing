@@ -157,7 +157,6 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-
     const char * vertex_file_path = "shaders/test.vert";
     const char * fragment_file_path = "shaders/test.frag";
 	const char * skybox_vertex_path = "shaders/skybox.vert";
@@ -560,6 +559,10 @@ void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat) {
 //================================================= Alexei's magic touch
 void RedPandaStudio::initializeShadowMappping()
 {
+	//Debugging data
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
+
 	//Generating and binding the frame buffer
 	glGenFramebuffers(1, &depthBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
@@ -568,26 +571,33 @@ void RedPandaStudio::initializeShadowMappping()
 	
 	//Binding and generating texture 2D
 	glGenTextures(1, &colorMap);
+	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, colorMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	//Bind created texture to the frame buffer
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorMap, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 	//Binding the render buffer
     glGenRenderbuffers(1, &renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, windowWidth, windowHeight); // use a single renderbuffer object for both a depth AND stencil buffer.
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer); // now actually attach it
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, windowWidth, windowHeight); // use a single renderbuffer object for both a depth AND stencil buffer.
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer); // now actually attach it
 
+	//Bind created texture to the frame buffer
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colorMap, 0);
+
+	// Set the list of draw buffers.
+	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+	//ERROR Checking
 	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Que pasadía que no vaya" << std::endl;
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+	glBindFramebuffer(GL_RENDERBUFFER, 0); 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//BASIC STUFFY FOR SHADER CREATION
 	const char *shadowMap_fragment_path = "shaders/shadowMap.frag";
@@ -640,23 +650,29 @@ void RedPandaStudio::initializeShadowMappping()
          1.0f,  1.0f,  1.0f, 1.0f
     };
 
-    // screen quad VAO
-    glGenVertexArrays(1, &quadVAO);
+    //Bind the array to the array buffer
     glGenBuffers(1, &quadVBO);
-    glBindVertexArray(quadVAO);
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+
+	//Push vertex array and the disable it
+    glGenVertexArrays(1, &quadVAO);
+    glBindVertexArray(quadVAO);
+	
 	glEnableVertexAttribArray(0); //Vertex points
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1); //Vertex textures
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	//Closing bindings
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Quad texture assignment
-	
 	GLuint screenTextureID = glGetUniformLocation(shadowID, "screenTexture");
 	glUniform1i(screenTextureID, 0);
-	std::cout<<"The ID is: "<<screenTextureID<<std::endl;
-	
 }
 
 void RedPandaStudio::drawShadowMapping()
@@ -666,22 +682,38 @@ void RedPandaStudio::drawShadowMapping()
 	//glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
 	glEnable(GL_DEPTH_TEST);
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	//glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
-	//glUseProgram(scene->getEntity()->getProgramID());
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	glBindFramebuffer(GL_RENDERBUFFER, renderBuffer);
+	glUseProgram(scene->getEntity()->getProgramID());
 	renderCamera();
-	/*renderLights();
-	scene->draw();*/
+	renderLights();
+	scene->draw();
 
 	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT); //Clean the dirty color
+	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded
 
+	//Use our program and the texture given by the frame buffer
 	glUseProgram(shadowID);
-	//glBindVertexArray(quadVAO);
+	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, colorMap);	// use the color attachment texture as the texture of the quad plane
 
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	//Bind array buffer and vertex array of data
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBindVertexArray(quadVAO);
+	glEnableVertexAttribArray(0); //Vertex points
+	glEnableVertexAttribArray(1); //Vertex texture
+
+	//Draw the quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	//Unbind all info
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+    glBindVertexArray(0);
+	glDisable(GL_TEXTURE_2D);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Render scene into the depth buffer
 	/*GLuint lightViewID = glGetUniformLocation(shadowID, "lightView");

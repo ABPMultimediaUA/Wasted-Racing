@@ -30,7 +30,7 @@ public:
     ~RedPandaStudio() {
         //=========================================================================
         //Delete frame buffers
-        glDeleteFramebuffers(1, &depthBuffer);  
+        glDeleteFramebuffers(1, &depthBuffer);
         //=========================================================================
     }
 
