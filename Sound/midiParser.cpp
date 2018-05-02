@@ -98,6 +98,7 @@ int main(int argc, char** argv) {
         }
     }
 
+    //Calculate probability of the track to be played
     for (int i=0; i < tracks.size(); i++) {
         tracks[i]->probability = tracks[i]->probability/(float)noteSizeCounter;
     }
@@ -107,6 +108,10 @@ int main(int argc, char** argv) {
     //===================================================================================
     std::cout << "Calculating probabilities..." << std::endl;
 
+    //A probability counter is a 3dimensional array being
+    //  [lastNotePlayed][nextNoteProbability][tone and duration probability]
+    //  the 3rd part of the array is and array containing the tone to be played and the probabilities of the
+    //  duration of that tone
     std::vector<int***> probabilityCounter;
     std::vector<float***> probabilities;
 
@@ -125,7 +130,7 @@ int main(int argc, char** argv) {
             prB[j] = new float*[noteSize];
 
             for(int k = 0; k < noteSize; k++) {
-
+                //Initialize counter to 9, [0] for the note tone and [1-8] for duration probability
                 prC[j][k] = new int [9];
 
                 prB[j][k] = new float [9];

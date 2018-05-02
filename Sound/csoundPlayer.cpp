@@ -40,22 +40,25 @@ int main(int argc, char** argv) {
 
     srand (time(NULL));
 
+    //Read arguments
     int playTime = std::atoi(argv[2]);
     const char* binaryFile = argv[1];
 
     std::cout << "File to read: " << binaryFile << std::endl;
     std::cout << "Playing for: " << playTime << std::endl;
 
+    //Open binary file to be read
     FILE* pFile;
     pFile = fopen(binaryFile, "rb");
 
     //Tracks
     std::vector<track*> tracks;
     
-    //Write number of tracks
+    //Read number of tracks
     int size;
     fread(&size, sizeof(int), 1, pFile);
 
+    //Read binary file
     for (int i = 0; i < size; i++){
 
         track* newTrack = new track;
@@ -79,6 +82,7 @@ int main(int argc, char** argv) {
             }
         }
 
+        //Read probabilities per track
         for(int j = 0; j < newTrack->noteSize; j++)
             for(int k = 0; k < newTrack->noteSize; k++)
                 fread(newTrack->notes[j][k], sizeof(float), 9, pFile);
@@ -87,16 +91,7 @@ int main(int argc, char** argv) {
     }
     fclose(pFile);
 
-    //Output track proabilities
-    //for (int i = 0; i < tracks[2]->noteSize; i++) {
-    //
-    //    for(int j = 0; j < tracks[2]->noteSize; j++) {
-    //        
-    //            std::cout << tracks[2]->notes[i][j][0] << " ";
-    //    }
-    //    std::cout << std::endl;
-    //}
-
+    //Write orchesta
     std::string orchestra =    "sr = 44100\n\
                                 ksmps = 32\n\
                                 nchnls = 2\n\
@@ -106,12 +101,12 @@ int main(int argc, char** argv) {
                                 ; soundfont path to manual/examples\n\
                                 isfnum	 fluidLoad \"FluidSynth.sf2\", giengine, 1\n";
 
-    //Load programs to be used
+    //Write programs to be used
     for(int i = 0; i < size; i++) {
         orchestra += "	 fluidProgramSelect giengine, " + std::to_string(tracks[i]->channel) + ", isfnum, 0, " + std::to_string(tracks[i]->program) + "\n";
     }
 
-    //Load instruments to be used
+    //Write instruments to be used
     for(int i = 0; i < size; i++) {
         orchestra += "	    instr " + std::to_string(i+1) + "\n\
                             \n\
@@ -128,7 +123,7 @@ int main(int argc, char** argv) {
                             \n";
     }
 
-    //Load midi instrument to be used
+    //Write midi instrument to be used
     orchestra +=           "instr 99\n\
                             \n\
                             imvol  init 7\n\
@@ -137,7 +132,7 @@ int main(int argc, char** argv) {
                             \n\
                             endin";
 
-    //Load score
+    //Write score
     std::string score = "i 99 0 " + std::to_string(playTime) + " \n";
 
     //Generate score out of probabilities for playTime time
@@ -158,25 +153,28 @@ int main(int argc, char** argv) {
             if(durations[j].cummulatedDuration <= 0 && durations[j].trackSilence <= 0) {
 
                 float prob = ((int)rand())/((float)INT_MAX);
-
+                //If there's still notes to be played
                 if(tracks[j]->probability >= prob || durations[j].trackPlay > 0) {
+                    //Obtain next note
                     getNextNote(*tracks[j], lastNote[j], durations[j].currentDuration);
+
+                    //Write note in the score
                     score += "i " + std::to_string(j+1) + " " + std::to_string(i) + " " + std::to_string(durations[j].currentDuration);
                     score += " " + std::to_string(lastNote[j]) + "\n";
 
+                    //Update note and track remaining time to be played duration
                     durations[j].cummulatedDuration = durations[j].currentDuration;
-
                     durations[j].trackPlay -= durations[j].currentDuration;
                 }
                 else {
                     prob = ((int)rand())/((float)INT_MAX);
-                    durations[j].trackSilence = 0.5*prob*playTime*(1-tracks[j]->probability);
-                    durations[j].trackPlay = 0.5*prob*playTime*tracks[j]->probability;
+                    //If there is no notes to be played, generate new silence time and new play time for the track
+                    durations[j].trackSilence = 0.5*prob*100*(1-tracks[j]->probability);
+                    durations[j].trackPlay = 0.5*prob*100*tracks[j]->probability;
                 }
-                
-                
             }
             else{
+                //Update durations
                 durations[j].cummulatedDuration -= 0.0625;
                 durations[j].trackSilence -= 0.0625;
             }
@@ -229,9 +227,10 @@ int main(int argc, char** argv) {
 
 }
 
-
+//Calculate next note
 void getNextNote(const track& newTrack, uint8_t & lastNote, float & duration) {
 
+    //Generate random number from 0 to 1
     float probability = ((int)rand())/((float)INT_MAX);
 
     float cummulatedProb = 0.0;
@@ -239,6 +238,7 @@ void getNextNote(const track& newTrack, uint8_t & lastNote, float & duration) {
     float*** notes = newTrack.notes;
 
     for(int i = 0; i < newTrack.noteSize; i++) {
+        //Add probability until the probability of the note been played is inside the cummulated probability reach
         cummulatedProb += notes[lastNote-newTrack.minTone][i][0];
 
         if(cummulatedProb > probability){
@@ -252,10 +252,10 @@ void getNextNote(const track& newTrack, uint8_t & lastNote, float & duration) {
             for(int j = 1; j < 9; j++) {
 
                 cummulatedProb += notes[lastNote-newTrack.minTone][i][j];
-
+                //Add probability until the probability of the note duration been played is inside the cummulated probability reach
                 if(cummulatedProb > probability){
                     
-                    duration = pow(2, j) * 0.03125;
+                    duration = pow(2, j) * 0.03125; //Duration is a number between 0.0625 and 8.0 seconds
 
                     return;
                 }
