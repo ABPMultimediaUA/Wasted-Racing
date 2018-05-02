@@ -14,6 +14,7 @@ struct track {
     uint8_t program;
     uint8_t maxTone = 0;
     uint8_t minTone = 255;
+    float   probability = 0.0;
     std::vector<note> notes;
 };
 
@@ -36,6 +37,8 @@ int main(int argc, char** argv) {
     midifile.linkNotePairs();
 
     std::vector<track*> tracks;
+
+    unsigned int noteSizeCounter = 0;
 
     //===================================================================================
     //  PARSING MIDI
@@ -84,10 +87,19 @@ int main(int argc, char** argv) {
         if(newTrack != nullptr && newTrack->notes.size() > 100 && newTrack->channel != 9) {
             //If track is not empty or has few notes, add track
             tracks.push_back(newTrack);
+
+            //Add probability of the track for being played
+            if(newTrack->notes.size() > noteSizeCounter)
+                noteSizeCounter = newTrack->notes.size();
+            newTrack->probability = newTrack->notes.size();
         }
         else if (newTrack != nullptr && (newTrack->notes.size() <= 100 || newTrack->channel == 9)) {
             delete newTrack;
         }
+    }
+
+    for (int i=0; i < tracks.size(); i++) {
+        tracks[i]->probability = tracks[i]->probability/(float)noteSizeCounter;
     }
 
     //===================================================================================
@@ -120,10 +132,11 @@ int main(int argc, char** argv) {
 
                 for(int l = 0; l < 9; l++) {
 
+                    //Initial count of notes and durations ocurrences
                     if(l == 0)
                         prC[j][k][l] = 1;
                     else 
-                        prC[j][k][l] = 0;
+                        prC[j][k][l] = 1;
                 }
 
                 for(int l = 0; l < 9; l++)
@@ -201,19 +214,19 @@ int main(int argc, char** argv) {
         }
     }
 
-    for (int i = 0; i < tracks[0]->maxTone - tracks[0]->minTone + 1; i++) {
-//
-        for(int j = 0; j < tracks[0]->maxTone - tracks[0]->minTone + 1; j++) {
-            
-            if(probabilities[0][i][j][0] < 10) {
-                std::cout << " " << probabilities[0][i][j][0] << " ";
-            }
-            else {
-                std::cout << probabilities[0][i][j][0] << " ";
-            }
-        }
-        std::cout << std::endl;
-    }
+    //Output track proabilities
+    //for (int i = 0; i < tracks[0]->maxTone - tracks[0]->minTone + 1; i++) {
+    //    for(int j = 0; j < tracks[0]->maxTone - tracks[0]->minTone + 1; j++) {
+    //        
+    //        if(probabilities[0][i][j][0] < 10) {
+    //            std::cout << " " << probabilities[0][i][j][0] << " ";
+    //        }
+    //        else {
+    //            std::cout << probabilities[0][i][j][0] << " ";
+    //        }
+    //    }
+    //    std::cout << std::endl;
+    //}
 
     //===================================================================================
     //  WRITING TO BINARY FILE
@@ -234,6 +247,7 @@ int main(int argc, char** argv) {
         int maxNote = (int)tracks[i]->maxTone;
         int minNote = (int)tracks[i]->minTone;
         int noteSize = tracks[i]->maxTone - tracks[i]->minTone + 1;
+        float probTrack = tracks[i]->probability;
         
         //Write per track header
         fwrite(&channel, sizeof(int), 1, pFile);
@@ -241,6 +255,7 @@ int main(int argc, char** argv) {
         fwrite(&maxNote, sizeof(int), 1, pFile);
         fwrite(&minNote, sizeof(int), 1, pFile);
         fwrite(&noteSize, sizeof(int), 1, pFile);
+        fwrite(&probTrack, sizeof(float), 1, pFile);
 
         //Write probabilities
         for(int j = 0; j < noteSize; j++) 
