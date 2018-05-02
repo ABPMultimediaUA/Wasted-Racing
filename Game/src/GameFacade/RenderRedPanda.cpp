@@ -86,11 +86,14 @@ namespace gui {
     struct nk_image text_menuHover;
     struct nk_image text_pexit;
     struct nk_image text_pexitHover;
+    struct nk_image text_currentSound;
+    struct nk_image text_currentSoundHover;
 
     void init();
     struct nk_image loadTexture(const char* path);
 
     std::vector<GLuint> textures;
+    static size_t volume = 100;   
 
 }
 
@@ -426,6 +429,52 @@ void drawRPS_GUI_Options(){
                 nk_popup_end(GUI);
             }
 
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.16, h*0.235, w*0.21, w*0.06))) {
+                nk_layout_row_static(GUI, w*0.0568, w*0.2, 1);
+
+                float vol = GlobalVariables::getInstance().getVolume();
+
+                if(vol > 0){
+                    gui::text_currentSound      = gui::text_soundON;
+                    gui::text_currentSoundHover = gui::text_soundONHover;
+                }
+                else {
+                    gui::text_currentSound      = gui::text_soundOFF;
+                    gui::text_currentSoundHover = gui::text_soundOFFHover;
+                }
+
+                if (nk_button_image(GUI, gui::text_currentSound, gui::text_currentSoundHover)){
+                    
+                    if(vol == 0)       vol = (float)gui::volume/100.0;
+                    else if (vol > 0)  vol = 0;
+
+                    EventManager::getInstance().addEvent(Event {EventType::Global_ChangeVolume});
+
+                    GlobalVariables::getInstance().setVolume(vol);
+
+                }           
+                nk_popup_end(GUI);
+            }
+
+            //if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(h*0.1388, 0, w, h))) {
+            //    nk_layout_row_static(GUI, h, h*1.5, 1);
+            //    nk_image(GUI, gui::optionsBase);
+            //    nk_popup_end(GUI);
+            //}
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.4, h*0.235, w*0.21, w*0.06))) {  
+
+                nk_layout_row_static(GUI, w*0.0568, w*0.2, 1);
+
+                if(nk_progress(GUI, &gui::volume, 100, nk_true)) {
+
+                    GlobalVariables::getInstance().setVolume((float)gui::volume/100.0);
+
+                }
+
+                nk_popup_end(GUI);
+            }
+
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.135, h*0.107, w*0.25, w*0.04))) {
                 nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
                 if (nk_button_image(GUI, gui::text_language, gui::text_languageHover)){
@@ -633,7 +682,7 @@ void drawRPS_GUI_Pause(){
 
 void gui::init() {
 
-    for(int i = 0; i < textures.size(); i++) {
+    for(unsigned int i = 0; i < textures.size(); i++) {
         glDeleteTextures(1, &textures[i]);
     }
     textures.clear();

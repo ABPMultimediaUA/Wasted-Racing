@@ -97,6 +97,8 @@ void AudioFMOD::update() {
     //Update listener position and orientation
     setListenerPosition();
 
+    float vol = GlobalVariables::getInstance().getVolume();
+
     //Update position of events
     for(auto event : soundEvents) {        
         if(!event.second->isPlaying() || event.second->getEmitter().expired()) {
@@ -108,6 +110,7 @@ void AudioFMOD::update() {
             //Set sound position
             auto pos = event.second->getEmitter().lock().get()->getGameObject().getTransformData().position;
             event.second->setPosition(pos * worldUnits);
+            event.second->setVolume(vol);
         }
 
     }
