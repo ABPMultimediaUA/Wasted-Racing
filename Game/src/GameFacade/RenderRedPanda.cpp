@@ -44,6 +44,19 @@ namespace gui {
     struct nk_image text_exit;
     struct nk_image text_exitHover;
 
+    //OPTION MENU Images
+    struct nk_image optionsBase;
+    struct nk_image text_language;
+    struct nk_image text_languageHover;
+    struct nk_image text_soundON;
+    struct nk_image text_soundONHover;
+    struct nk_image text_soundOFF;
+    struct nk_image text_soundOFFHover;
+    struct nk_image text_volume;
+    struct nk_image text_volumeHover;
+    struct nk_image text_oexit;
+    struct nk_image text_oexitHover;
+
     //GUI Images
     struct nk_image item_void;
     struct nk_image item_banana;
@@ -77,6 +90,8 @@ namespace gui {
     void init();
     struct nk_image loadTexture(const char* path);
 
+    std::vector<GLuint> textures;
+
 }
 
 //==============================================
@@ -84,6 +99,7 @@ namespace gui {
 //==============================================
 void addHUD(EventData eData); 
 void addPause(EventData eData); 
+void changeLanguage(EventData eData);
 
 //==============================================================
 // Engine Related functions
@@ -118,10 +134,14 @@ void RenderRedPanda::openWindow() {
 
     gui::init();
 
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_Menu);
+
     addCamera();
 
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, addHUD});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeLanguage});
     EventManager::getInstance().addListener(EventListener {EventType::Game_Pause, addPause});
 
 
@@ -335,7 +355,6 @@ bool RenderRedPanda::changeMesh(int id, std::string newMesh)
 // GUI Related Functions
 //==============================================================
 
-//GUI update function
 void drawRPS_GUI_Menu(){
 
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
@@ -367,10 +386,75 @@ void drawRPS_GUI_Menu(){
                     EventManager::getInstance().addEvent(Event {EventType::Key_Singleplayer_Down});
                 if (nk_button_image(GUI, gui::text_multiplayer, gui::text_multiplayerHover))
                     EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
-                if (nk_button_image(GUI, gui::text_options, gui::text_optionsHover))
-                    fprintf(stdout, "Options!\n");
+                if (nk_button_image(GUI, gui::text_options, gui::text_optionsHover)){
+                    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                    device->setGUIDrawFunction(drawRPS_GUI_Options);
+                }
                 if (nk_button_image(GUI, gui::text_exit, gui::text_exitHover))
                     EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+                nk_popup_end(GUI);
+            }
+            
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
+void drawRPS_GUI_Options(){
+
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::INTRO)
+                    nk_image(GUI, gui::background);
+                else if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::PAUSE)
+                    nk_image(GUI, gui::pbackground);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(h*0.1388, 0, w, h))) {
+                nk_layout_row_static(GUI, h, h*1.5, 1);
+                nk_image(GUI, gui::optionsBase);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.135, h*0.107, w*0.25, w*0.04))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+                if (nk_button_image(GUI, gui::text_language, gui::text_languageHover)){
+
+                    int lang = GlobalVariables::getInstance().getLanguage();
+                    if(lang == 0)       lang = 1;
+                    else if (lang == 1) lang = 0;
+
+                    EventData eData;
+                    eData.Id = lang;
+                    EventManager::getInstance().addEvent(Event {EventType::Global_ChangeLanguage, eData});
+
+                    GlobalVariables::getInstance().setLanguage(lang);
+                }                
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.705, h*0.81, w*0.15, h*0.15))) {
+                nk_layout_row_static(GUI, h*0.15, w*0.15, 1);
+                if (nk_button_image(GUI, gui::text_oexit, gui::text_oexitHover)){
+                    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::INTRO){
+                        rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                        device->setGUIDrawFunction(drawRPS_GUI_Menu);
+                    }
+                    else if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::PAUSE){
+                        rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                        device->setGUIDrawFunction(drawRPS_GUI_Pause);
+                    }
+                }                
                 nk_popup_end(GUI);
             }
             
@@ -524,8 +608,10 @@ void drawRPS_GUI_Pause(){
                 nk_layout_row_dynamic(GUI, h*0.12, 1);
                 if (nk_button_image(GUI, gui::text_resume, gui::text_resumeHover))
                     EventManager::getInstance().addEvent(Event {EventType::Game_Pause});
-                if (nk_button_image(GUI, gui::text_poptions, gui::text_poptionsHover))
-                    EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
+                if (nk_button_image(GUI, gui::text_poptions, gui::text_poptionsHover)){
+                    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                    device->setGUIDrawFunction(drawRPS_GUI_Options);
+                }
                 if (nk_button_image(GUI, gui::text_menu, gui::text_menuHover)) {
                     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
                     device->setGUIDrawFunction(drawRPS_GUI_Menu);
@@ -547,12 +633,10 @@ void drawRPS_GUI_Pause(){
 
 void gui::init() {
 
-    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
-
-    device->setGUIDrawFunction(drawRPS_GUI_Menu);
-
-    gui::background     = gui::loadTexture("media/img/background.jpg");
-
+    for(int i = 0; i < textures.size(); i++) {
+        glDeleteTextures(1, &textures[i]);
+    }
+    textures.clear();
 
     //==========================================================================================
     //  MAIN MENU
@@ -567,6 +651,7 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bOptionsHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExit.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExitHover.png");
+        gui::background                 =   gui::loadTexture("media/img/background.jpg");
     } 
     else {
         gui::menuBase                   =   gui::loadTexture("media/img/GUI/MainMenu/SPA/menuBase.png");
@@ -578,6 +663,37 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bOpcionesHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalir.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalirHover.png");
+        gui::background                 =   gui::loadTexture("media/img/background.jpg");
+    }
+
+    //==========================================================================================
+    //  OPTIONS MENU
+    //==========================================================================================
+    if(GlobalVariables::getInstance().getLanguage() == 0) {
+        gui::optionsBase                =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/opcionesBase.png");
+        gui::text_language              =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bLanguageEnglish.png");
+        gui::text_languageHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bLanguageEnglishHover.png");
+        gui::text_soundON               =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSoundOn.png");
+        gui::text_soundONHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSoundOnHover.png");
+        gui::text_soundOFF              =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSoundOff.png");
+        gui::text_soundOFFHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSoundOffHover.png");
+        gui::text_volume                =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolume.png");
+        gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolumeHover.png");
+        gui::text_oexit                 =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bExit.png");
+        gui::text_oexitHover            =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bExitHover.png");
+    } 
+    else {
+        gui::optionsBase                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/opcionesBase.png");
+        gui::text_language              =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bIdiomaEspañol.png");
+        gui::text_languageHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bIdiomaEspañolHover.png");
+        gui::text_soundON               =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOn.png");
+        gui::text_soundONHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOnHover.png");
+        gui::text_soundOFF              =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOff.png");
+        gui::text_soundOFFHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOffHover.png");
+        gui::text_volume                =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolume.png");
+        gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolumeHover.png");
+        gui::text_oexit                 =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalir.png");
+        gui::text_oexitHover            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalirHover.png");
     }
 
     //==========================================================================================
@@ -657,6 +773,8 @@ struct nk_image gui::loadTexture(const char* path) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, sftex.getSize().x, sftex.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    textures.push_back(tex);
     
     return nk_image_id((int)tex);
 
@@ -779,4 +897,8 @@ void addPause(EventData eData) {
         MatchState::getInstance().setRatio(1.0);
         EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
     }
+}
+
+void changeLanguage(EventData eData) {
+    gui::init();
 }
