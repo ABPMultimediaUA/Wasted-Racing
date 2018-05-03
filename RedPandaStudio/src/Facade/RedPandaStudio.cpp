@@ -57,13 +57,13 @@ void RedPandaStudio::updateDevice() {
 	glEnable(GL_DEPTH_TEST);
 
 	//==================
-	drawShadowMapping();
+	//drawShadowMapping();
 	//==================
 
-	//renderCamera();
-	//renderLights();
+	renderCamera();
+	renderLights();
 
-	//scene->draw();
+	scene->draw();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
