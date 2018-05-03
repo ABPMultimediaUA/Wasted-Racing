@@ -311,15 +311,32 @@ void RenderRedPanda::updateAnimation(IComponent* ptr) {
     }
 }
 
+//add mesh lod
+void RenderRedPanda::addMeshLoD(int lvl, const char* mesh)
+{
+    if(lvl > 0 && mesh != "")
+    {
+        device->addMeshLoD(lvl, mesh);
+    }
+}
+
 //Change mesh
-void RenderRedPanda::changeMesh(int id, std::string newMesh)
+void RenderRedPanda::changeMesh(int id, int lvl, const char* mesh)
 {
     auto node = nodeMap.find(id)->second;
     auto resourceManager = device->getResourceManager();
-    auto resourceObj = resourceManager->getResourceOBJ(newMesh.c_str());
-    auto tEntity = node->getEntity();
-    auto tMesh = dynamic_cast<TMesh*>(tEntity);
-    tMesh->setMesh(resourceObj);
+    auto resourceLoD = resourceManager->getResourceLoD(mesh);
+    if(resourceLoD != nullptr)
+    {
+        auto resourceObj = resourceLoD->getResourceObj(lvl);
+        if(resourceObj != nullptr)
+        {
+            auto tEntity = node->getEntity();
+            auto tMesh = dynamic_cast<TMesh*>(tEntity);
+            tMesh->setMesh(resourceObj);
+        }
+    }
+    
 }
 
 //==============================================================

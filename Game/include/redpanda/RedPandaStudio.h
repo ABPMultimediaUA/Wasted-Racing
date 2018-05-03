@@ -27,7 +27,12 @@ class RedPandaStudio{
 public:
 
     RedPandaStudio() {}
-    ~RedPandaStudio() {}
+    ~RedPandaStudio() {
+        //=========================================================================
+        //Delete frame buffers
+        glDeleteFramebuffers(1, &depthBuffer);
+        //=========================================================================
+    }
 
     //////////////////////////////
     //  DEVICE CONSTRUCTORS
@@ -56,9 +61,17 @@ public:
     ////////////////////////////////////////
     //  GRAPHICS OPTIONS AND PARAMETERS
 
+    //Initializes all parameters and programs to operate with the shadow mapping
+    void initializeShadowMappping();
+
+    //Draws the shadow mapping
+    void drawShadowMapping();
+
     //Activates and deactivates the culling. The second parameter determinates which type of faces are culled (when deactivating the culling, that parameter doesnt matter)
     void setCulling(bool b, GLenum e);
 
+    //To add some mesh into lod array.   
+    void addMeshLoD(int lvl, const char* mesh);    
 
     //////////////////////////////
     //  GETTERS
@@ -85,16 +98,23 @@ private:
     void deleteNode(TNode* node); //Deletes a node and all his children
     
 
-    //////////////////////////////
-    //  VARIABLES
+    //=========================
+    //  GENERAL VARIABLES
+    //=========================
     SDL_Window* window;
     SDL_GLContext* context;
     TNode *scene;
     ResourceManager *resourceManager;
-    //Lights and camera
+
+    //=========================
+    //  CAMERA/LIGHTS
+    //=========================
     TNode *camera;
     std::vector<TNode*> lights;
 
+    //=========================
+    //  SKYBOX
+    //=========================
     //Skybox
     TResourceSkybox*  skybox;
     //Skybox shader
@@ -102,7 +122,21 @@ private:
     //SKybox vertex array
     GLuint skyVertexArray;
 
+    //=========================
+    //  SHADOWMAP
+    //=========================
+	GLuint depthBuffer; //Depth buffer
+	GLuint colorMap;    //Texture in which we paint the scene
+    GLuint shadowID;    //Shadow map program ID
+	GLuint renderBuffer;//Render buffer ID
+    GLuint quadVAO, quadVBO; //Quad indexes
 
+    int windowWidth = 1024;
+    int windowHeight = 1024;
+
+    //=========================
+    //  TIME
+    //=========================
     //Chrono
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
 

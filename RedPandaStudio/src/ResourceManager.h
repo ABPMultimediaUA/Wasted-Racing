@@ -7,6 +7,7 @@
 #include "TResourceTexture.h"
 #include "TResourceShader.h"
 #include "TResourceOBJ.h"
+#include "TResourceLoD.h"
 #include "TResourceAnimation.h"
 #include <GL/glew.h>
 
@@ -27,6 +28,8 @@ class ResourceManager {
         TResourceShader* getResourceShader(const char* n, GLenum e);
         TResourceOBJ* getResourceOBJ(const char* n);
         TResourceAnimation* getResourceAnimation(const char* n, int frames);
+        TResourceLoD* getResourceLoD(const char* n);
+
 
     private:
         std::vector<TResourceMesh*> meshes;
@@ -35,5 +38,6 @@ class ResourceManager {
         std::vector<TResourceShader*> shaders;
         std::vector<TResourceOBJ*> objs;
         std::vector<TResourceAnimation*> animations;
+        std::vector<TResourceLoD*> lods;
 
 };

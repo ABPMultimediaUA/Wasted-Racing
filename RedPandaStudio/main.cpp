@@ -26,6 +26,7 @@ int main() {
 
     //TNode* t = rps->createAnimatedNode(rps->getSceneRoot(), glm::vec3(0,-2,0), "media/anim/WitchFINAL_000", true, 60, 0.1f);
     TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,-7,0), "media/cuboprueba.obj");
+    rps->addMeshLoD(2,"media/cuboprueba.obj");
     //TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
     TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(5,4,5), glm::vec3(0,0,0));
 

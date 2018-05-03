@@ -1123,8 +1123,8 @@ void RenderManager::LoDmesh()
                 {
                     auto name = renderObject->getName();
                     auto folder = renderObject->getFolder();
-                    std::string newMesh = "media/mediumLoD/" + folder + "/" + name;
-                    renderFacade->changeMesh(object.getId(), newMesh);
+                    std::string newMesh = "media/mesh/" + folder + "/" + name;
+                    renderFacade->changeMesh(object.getId(), 1, newMesh.c_str());
                     renderObject->setMesh(newMesh.c_str());
                     renderObject->setPolyMesh(ObjectRenderComponent::Poly::Medium);
                 }  
@@ -1132,8 +1132,8 @@ void RenderManager::LoDmesh()
                 {
                     auto name = renderObject->getName();
                     auto folder = renderObject->getFolder();
-                    std::string newMesh = "media/lowLoD/" + folder + "/" + name;
-                    renderFacade->changeMesh(object.getId(), newMesh);
+                    std::string newMesh = "media/mesh/" + folder + "/" + name;
+                    renderFacade->changeMesh(object.getId(), 2, newMesh.c_str());
                     renderObject->setMesh(newMesh.c_str());
                     renderObject->setPolyMesh(ObjectRenderComponent::Poly::Low);
                 }  
@@ -1142,7 +1142,7 @@ void RenderManager::LoDmesh()
                     auto name = renderObject->getName();
                     auto folder = renderObject->getFolder();
                     std::string newMesh = "media/mesh/" + folder + "/" + name;
-                    renderFacade->changeMesh(object.getId(), newMesh);
+                    renderFacade->changeMesh(object.getId(), 0, newMesh.c_str());
                     renderObject->setMesh(newMesh.c_str());
                     renderObject->setPolyMesh(ObjectRenderComponent::Poly::High);
 
