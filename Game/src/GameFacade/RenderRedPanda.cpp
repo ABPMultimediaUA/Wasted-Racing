@@ -200,7 +200,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     distance *= 1.5;
 
     float cameraHeight = camera->getOldHeight() + (accTime * (camera->getHeight() - camera->getOldHeight()))/maxTime;
-
+    std::cout << camera->getHeight() << std::endl;
     float dMultiplier = 0.3;
 
     if(cameraHeight < pos.y && abs(cameraHeight-pos.y) >= 1.0) {

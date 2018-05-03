@@ -32,8 +32,8 @@ public:
 	float 								getDistance()		{	return distance;	}
 	float 								getMaxDistance()	{	return maxDistance;	}
 	float 								getOldDistance()	{	return oldDistance; }
-	float								getHeight()			{	return height;		}
-	float								getOldHeight()		{	return oldHeight;	}
+	float								getHeight()			{	return mheight;		}
+	float								getOldHeight()		{	return moldHeight;	}
 
 	//Setters
 	void setTerrain(std::shared_ptr<TerrainComponent> t) 	{	terrain = t; 		}
@@ -47,8 +47,10 @@ private:
 	float distance;
 	float maxDistance;
 	float oldDistance;
-	float height;
-	float oldHeight;
+	float height[5] = {0,0,0,0,0};
+	float oldHeight[5] = {0,0,0,0,0};
+	float mheight;
+	float moldHeight;
 	int count;
 	int spinDir;
 
