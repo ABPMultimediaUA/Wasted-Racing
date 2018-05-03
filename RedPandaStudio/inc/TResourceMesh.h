@@ -61,8 +61,14 @@ class TResourceMesh : public TResource {
         bool textActive=0;
         //Material asociated to this mesh
         TResourceMaterial* material = NULL;
+        /*
         //Buffer handles
         GLuint* vboHandles;
+        */
+        //======================
+        //Buffer handles
+        GLuint* vboHandles, vaoHandles;
+        //======================
 
         ///////////////////////////////////////
         //// Bounding box asociated data //////

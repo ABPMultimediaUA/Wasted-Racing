@@ -24,12 +24,12 @@ int main() {
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
 
-    //TNode* t = rps->createAnimatedNode(rps->getSceneRoot(), glm::vec3(0,-2,0), "media/anim/WitchFINAL_000", true, 60, 0.1f);
-    TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,-7,0), "media/cuboprueba.obj");
+    TNode* t = rps->createAnimatedNode(rps->getSceneRoot(), glm::vec3(0,-2,0), "media/anim/WitchFINAL_000", true, 60, 0.1f);
+    TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(3,-3,3), "media/cuboprueba.obj");
     //TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
     TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(5,4,5), glm::vec3(0,0,0));
 
-    //rps::scaleNode(t, glm::vec3(0.25, 0.25, 0.25));
+    rps::scaleNode(t, glm::vec3(0.25, 0.25, 0.25));
     rps::scaleNode(t2, glm::vec3(5,5,5));
     //rps::rotateNode(t2, glm::vec3(0, 180.0, 0));
     rps->setCulling(true, (GLenum)GL_BACK);
@@ -43,8 +43,8 @@ int main() {
     float i = 0;
     float j = 0;
 
-    //TAnimation* anim = dynamic_cast<TAnimation*>(t->getEntity());
-    //anim->setLoop(true);
+    TAnimation* anim = dynamic_cast<TAnimation*>(t->getEntity());
+    anim->setLoop(true);
 
     while( quit ){
 
@@ -56,10 +56,10 @@ int main() {
         }
 
         
-        //anim->update(30);
-        //rps->updateCamera(glm::vec3(20,20,20), glm::vec3(0,0,0));
+        anim->update(30);
+        rps->updateCamera(glm::vec3(20,20,20), glm::vec3(0,0,0));
         rps->updateDevice();
-        //rps::translateNode(t, glm::vec3(i,i,i));
+        rps::translateNode(t, glm::vec3(i,i,i));
         i += 0.01;
 
     }

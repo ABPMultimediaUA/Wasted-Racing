@@ -43,18 +43,18 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 void RedPandaStudio::updateDevice() {
 
 	//Clean the scene
-	//glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	//Render camera and lights
 	//renderCamera();
 	//renderLights();
 
 	//Change shader program for drawing skybox
-	//glUseProgram(skyboxID);
-	//glBindVertexArray(skyVertexArray);
-	//skybox->draw();
-	//glUseProgram(scene->getEntity()->getProgramID());
-	//glEnable(GL_DEPTH_TEST);
+	glUseProgram(skyboxID);
+	glBindVertexArray(skyVertexArray);
+	skybox->draw();
+	glUseProgram(scene->getEntity()->getProgramID());
+	glEnable(GL_DEPTH_TEST);
 
 	//==================
 	drawShadowMapping();
@@ -167,8 +167,8 @@ void RedPandaStudio::initOpenGL() {
 	glewExperimental = GL_TRUE;
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
 
-	//glEnable( GL_DEBUG_OUTPUT );
-    //glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
+	glEnable( GL_DEBUG_OUTPUT );
+    glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
 
     //Init VBO
     GLuint VertexArrayID;
@@ -566,38 +566,66 @@ void RedPandaStudio::initializeShadowMappping()
 	//Generating and binding the frame buffer
 	glGenFramebuffers(1, &depthBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
-	//glDrawBuffer(GL_NONE);
-	//glReadBuffer(GL_NONE);    
 	
 	//Binding and generating texture 2D
 	glGenTextures(1, &colorMap);
-	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, colorMap);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	
+	//Bind created texture to the frame buffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorMap, 0);
 
-	//Binding the render buffer
+	//Binding the render buffer. Even if we don't use it, it's needed because otherwise the image gets corrupted without a depth
     glGenRenderbuffers(1, &renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, windowWidth, windowHeight); // use a single renderbuffer object for both a depth AND stencil buffer.
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer); // now actually attach it
-
-	//Bind created texture to the frame buffer
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colorMap, 0);
-
-	// Set the list of draw buffers.
-	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
-
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, windowWidth, windowHeight); // use a single renderbuffer object for both a depth AND stencil buffer.
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer); // now actually attach it
+	
 	//ERROR Checking
 	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Que pasadía que no vaya" << std::endl;
 
 	glBindFramebuffer(GL_RENDERBUFFER, 0); 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	std::cout<<"Buffers y texturas creados"<<std::endl;
+
+	//BASIC STUFFY FOR SHADER CREATION
+	const char *shadowTESTMap_fragment_path = "shaders/shadowMapTest.frag";
+	const char *shadowTESTMap_vertex_path = "shaders/shadowMapTest.vert";
+
+	TResourceShader* shadowTESTVertex = resourceManager->getResourceShader(shadowTESTMap_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* shadowTESTFragment = resourceManager->getResourceShader(shadowTESTMap_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	GLuint shadowTESTVertexID = shadowTESTVertex->getShaderID();
+	GLuint shadowTESTFragmentID = shadowTESTFragment->getShaderID();
+
+	shadowTESTID = glCreateProgram();
+	glAttachShader(shadowTESTID, shadowTESTVertexID);
+	glAttachShader(shadowTESTID, shadowTESTFragmentID);
+	glLinkProgram(shadowTESTID);
+	std::cout << "Linking shadowTESTID" << std::endl;
+
+	//Check the program is ok
+	glGetProgramiv(shadowTESTID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(shadowTESTID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(shadowTESTID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+	//Delete because the program is cool
+	glDetachShader(shadowTESTID,shadowTESTVertexID);
+	glDetachShader(shadowTESTID,shadowTESTFragmentID);
+	glDeleteShader(shadowTESTVertexID);
+	glDeleteShader(shadowTESTFragmentID);
+
+	glUseProgram(shadowTESTID); //REQUIRED for attaching variables
 
 	//BASIC STUFFY FOR SHADER CREATION
 	const char *shadowMap_fragment_path = "shaders/shadowMap.frag";
@@ -659,35 +687,122 @@ void RedPandaStudio::initializeShadowMappping()
     glGenVertexArrays(1, &quadVAO);
     glBindVertexArray(quadVAO);
 	
-	glEnableVertexAttribArray(0); //Vertex points
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1); //Vertex textures
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(3); //Vertex points
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(4); //Vertex textures
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	// cube VAO
+    float cubeVertices[] = {
+        // positions          // texture Coords
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    };
+
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(1, &cubeVBO);
+    glBindVertexArray(cubeVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0); //Vertices positions
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1); //Texture coordinates
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	//Closing bindings
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
-    glBindVertexArray(quadVAO);
+    glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Quad texture assignment
-	GLuint screenTextureID = glGetUniformLocation(shadowID, "screenTexture");
-	glUniform1i(screenTextureID, 0);
+	shadow_sampler = glGetUniformLocation(shadowID, "screenTexture");
+
+	//CubeTexture
+	cubeTexture = new TResourceTexture();
+	cubeTexture->setName("media/cubotex.png");
+	cubeTexture->loadResource();
 }
 
 void RedPandaStudio::drawShadowMapping()
 {
-	//TESTING THIS SHIET
-	// bind to framebuffer and draw scene as we normally would to color texture 
-	//glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
-	glEnable(GL_DEPTH_TEST);
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
-	glBindFramebuffer(GL_RENDERBUFFER, renderBuffer);
+	//Bind the buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);     //Binding where we'll store our image
+	glEnable(GL_DEPTH_TEST);						      //Enabling for 3D renders
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); //Cleaning the buffers
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 			      //Clean window
+ 
+	//Draw the scene normally
 	glUseProgram(scene->getEntity()->getProgramID());
 	renderCamera();
 	renderLights();
 	scene->draw();
+	//((((((((((((((((()))))))))))))))))
+	// cubes
+    /*glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+	glBindVertexArray(cubeVAO);
+	glEnableVertexAttribArray(0); //Vertex points
+	glEnableVertexAttribArray(1); //Vertex texture
+	
+	//Draw texture
+	cubeTexture->draw();
+
+	//Draw cube
+	glm::mat4 model;
+	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+	GLuint modelMatrixID = glGetUniformLocation(scene->getEntity()->getProgramID(), "ModelMatrix");
+	glUniformMatrix4fv(modelMatrixID, 1, false, &model[0][0]);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 36);
+	model = glm::mat4();
+	model = glm::translate(model, glm::vec3(2.0f, 1.0f, 0.0f));
+	glUniformMatrix4fv(modelMatrixID, 1, false, &model[0][0]);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 36);
+
+	//Unbind all info
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+	//((((((((((((((((()))))))))))))))))W
 
 	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -696,23 +811,24 @@ void RedPandaStudio::drawShadowMapping()
 
 	//Use our program and the texture given by the frame buffer
 	glUseProgram(shadowID);
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, colorMap);	// use the color attachment texture as the texture of the quad plane
 
 	//Bind array buffer and vertex array of data
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
     glBindVertexArray(quadVAO);
-	glEnableVertexAttribArray(0); //Vertex points
-	glEnableVertexAttribArray(1); //Vertex texture
+	glEnableVertexAttribArray(3); //Vertex points
+	glEnableVertexAttribArray(4); //Vertex texture
+
+	//Bind the texture where we draw the scene
+	glBindTexture(GL_TEXTURE_2D, colorMap);	//use the color attachment texture as the texture of the quad plane
+	glUniform1i(shadow_sampler, 0);  	 	//ID assignment for the fragment shader (using GL_TEXTURE1 to avoid collisions)
 
 	//Draw the quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	//Unbind all info
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
     glBindVertexArray(0);
-	glDisable(GL_TEXTURE_2D);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Render scene into the depth buffer
@@ -737,6 +853,7 @@ void RedPandaStudio::drawShadowMapping()
 	glBindTexture(GL_TEXTURE_2D, colorMap);*/
 }
 //=================================================
+
 
 void RedPandaStudio::setCulling(bool b, GLenum e)
 {
