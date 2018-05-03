@@ -25,8 +25,6 @@ void WaypointManager::init() {
 
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeletePathPlanning});
-
-    distanceLoD = 0;
 }
 
 void WaypointManager::update(float dTime) {
@@ -48,6 +46,7 @@ void WaypointManager::update(float dTime) {
                             (posPlayer.z - posAI.z) * (posPlayer.z - posAI.z);
 
         //IF DISTANCE PLAYER-AI IS BIGER THAN DISTANCELOD, NOT UPDATE
+        float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
         if(distPlayerAI <= distanceLoD*distanceLoD || distanceLoD == 0)
         {
             //auto pathPlanning = std::dynamic_pointer_cast<PathPlanningComponent>(pathPlanningComponentList[i]).get();

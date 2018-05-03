@@ -17,7 +17,7 @@ void ObjectRenderComponent::close() {
     RenderManager::getInstance().getRenderFacade()->deleteObject(this);
 
 }
-
+  
 //Drawer
 void ObjectRenderComponent::draw() {
        

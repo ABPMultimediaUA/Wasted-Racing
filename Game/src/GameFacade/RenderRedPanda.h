@@ -78,6 +78,12 @@ public:
 
     //Update single animation
     virtual void updateAnimation(IComponent* ptr);
+    
+    //Set active or inactive clipping
+    virtual void setClipping(bool b)    {};
+
+    //Change mesh
+    virtual void changeMesh(int id, std::string newMesh);
 
     ////////////
     //  Image

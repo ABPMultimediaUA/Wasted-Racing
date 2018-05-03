@@ -74,6 +74,7 @@ void InputRedPanda::updateInput() {
         DetectKeyInput(F9,Key_DebugAI_Down,Key_DebugAI_Up)
         DetectKeyInput(F10,Key_DebugBehaviour_Down,Key_DebugBehaviour_Up)
         DetectKeyInput(F11,Key_DebugCamera_Down,Key_DebugCamera_Up)
+        DetectKeyInput(0,Key_Scheduling_Down,Key_Scheduling_Up)
 
         DetectButtonInput(A, Key_Jump_Down, Key_Jump_Up, 0)
         DetectButtonInput(B, Key_Drift_Down, Key_Drift_Up, 1)

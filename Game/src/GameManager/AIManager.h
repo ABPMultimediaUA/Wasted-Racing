@@ -3,7 +3,10 @@
 #include <memory>
 #include <iostream>
 #include <vector>
+#include <queue>
+
 #include "../GlobalVariables.h"
+#include "../GameFacade/Clock.h"
 #include "../GameObject/IComponent.h"
 #include "../GameObject/GameObject.h"
 #include "../GameEvent/EventManager.h"
@@ -21,21 +24,42 @@
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
 
+//AI Type event
+enum AIEventType {
+    UPDATE_BATTLE,
+    UPDATE_DRIVING_TURN,
+    UPDATE_DRIVING_ACCELERATION,
+    UPDATE_LOD
+};
+
+//Event to be updated by the scheduling
+struct AIEvent{
+    IComponent::Pointer object; //Object to be updated;
+    AIEventType event;          //Event type to be updated
+    double average;             //Average time of the function for processing
+    double timeStamp;           //When it was generated
+};
+
 class AIManager{
 
 public: 
 
     //Constructor
-    AIManager() {}
+    AIManager();
 
     //Destructor
-    ~AIManager() {}
+    ~AIManager() {
+        delete clock;
+    }
 
     //Initialization
     void init();
 
     //Update
     void update(const float dTime);
+
+    //Update
+    void updateScheduling(const float dTime, const float loopTime);
 
     //Shutdown
     void close();
@@ -64,14 +88,35 @@ public:
     void calculateLoD(GameObject AI, float dTime);
 
 private:
-    //:::> Explain what are the variables for if the name is not self explaining
-    std::vector<IComponent::Pointer> objectsAI;
-    std::vector<IComponent::Pointer> battleAI;
+    std::vector<IComponent::Pointer> objectsAI; //AIDrivingComponents to be processed
+    std::vector<IComponent::Pointer> battleAI;  //BattleBehaviour componentes to be processed
 
     //___>
     //bool changeAI;
+    bool itemLoD;           //variable to know if we took item in this waypoint or not (only for lod)
     bool updateBattleBehaviour;
     //<___
 
-    float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
+    //float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
+
+    //==============================================
+    // SCHEDULING
+    //==============================================
+    std::queue<AIEvent> AIQueue;    //Processing queue
+    double maxTimeSchedule;         //Maximum time for all processes per turn
+    double accumulatedTimeSchedule; //Time accumulated between all the events
+    
+    //Samples to measure the mean value of each average time
+    int samplesBattle;
+    int samplesDriving;
+    int samplesLOD;
+
+    //Average time info of each function
+    double averageTimeBattle;
+    double averageTimeDriving;
+    double averageTimeLOD;
+
+    //Clocks
+    Clock* clock;
+    Clock* clock_scheduling;
 };

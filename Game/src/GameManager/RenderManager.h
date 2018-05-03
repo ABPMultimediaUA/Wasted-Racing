@@ -10,8 +10,10 @@
 #include "../GameFacade/RenderIrrlicht.h"
 #include "../GameFacade/RenderRedPanda.h"
 #include "WaypointManager.h"
+#include "../GameEvent/EventManager.h"
 #include "AIManager.h"
 #include "ObjectManager.h"
+#include "../GlobalVariables.h"
 
 class ObjectManager;
 
@@ -66,6 +68,13 @@ public:
     IComponent::Pointer createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back);
     //Create animation
     IComponent::Pointer createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames);
+
+
+    /////////////
+    //  LoD
+    /////////////
+    void LoDmesh();
+
 
     //==============================================
     // VISUAL INTERFACE

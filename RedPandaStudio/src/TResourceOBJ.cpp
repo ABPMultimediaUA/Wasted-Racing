@@ -126,8 +126,18 @@ void TResourceOBJ::draw()
             meshes[i]->draw();
         }
 
-        drawBoundingBox();
+        //drawBoundingBox();
     }
+    /*
+    else
+    {
+        std::cout << "Culling OBJ" << std::endl;
+        if(bbActivated)
+        {
+            std::cout << "WTF" << std::endl;
+        }
+    }
+    */
 }
 
 void TResourceOBJ::generateBoundingBox()
@@ -214,17 +224,7 @@ void TResourceOBJ::drawBoundingBox()
 
 bool TResourceOBJ::checkBoundingBox()
 {
-    GLfloat boxVertices[] = {
-    -0.5, -0.5, -0.5, 1.0,
-     0.5, -0.5, -0.5, 1.0,
-     0.5,  0.5, -0.5, 1.0,
-    -0.5,  0.5, -0.5, 1.0,
-    -0.5, -0.5,  0.5, 1.0,
-     0.5, -0.5,  0.5, 1.0,
-     0.5,  0.5,  0.5, 1.0,
-    -0.5,  0.5,  0.5, 1.0,
-  };
-
+    //First we set the bounding box's points in the scene
     glm::mat4 m = TEntity::projectionMatrix() * TEntity::viewMatrix() * TEntity::modelMatrix() * bbTransform;
     glm::vec4 p1 = m * glm::vec4(-0.5, -0.5, -0.5, 1.0);
     glm::vec4 p2 = m * glm::vec4(0.5, -0.5, -0.5, 1.0);
@@ -236,50 +236,68 @@ bool TResourceOBJ::checkBoundingBox()
     glm::vec4 p8 = m * glm::vec4(-0.5, 0.5, 0.5, 1.0);
 
 
-    float leftX = -11.f;
-    float rightX = 11.f;
-    float topY = 11.f;
-    float bottomY = -11.f;
-    float nearZ = -1.f;
-    float farZ = 500.f;
-
-    //std::cout << p1.x << " " << p1.y << " " << p1.z << std::endl;
-    if(p1.x >= leftX && p1.x <= rightX && p1.y >= bottomY && p1.y <=topY && p1.z >= nearZ && p1.z <=farZ)
+    //Then we check if atleast one point is inside the view frustum
+    if(p1.x >= -p1.w && p1.x <= p1.w && p1.y >= -p1.w && p1.y <= p1.w && p1.z >= -p1.w && p1.z <= p1.w)
     {
         return true;
     }
-    if(p2.x >= leftX && p2.x <= rightX && p2.y >= bottomY && p2.y <=topY && p2.z >= nearZ && p2.z <=farZ)
+    if(p2.x >= -p2.w && p2.x <= p2.w && p2.y >= -p2.w && p2.y <= p2.w && p2.z >= -p2.w && p2.z <= p2.w)
     {
         return true;
     }
-    if(p3.x >= leftX && p3.x <= rightX && p3.y >= bottomY && p3.y <=topY && p3.z >= nearZ && p3.z <=farZ)
+    if(p3.x >= -p3.w && p3.x <= p3.w && p3.y >= -p3.w && p3.y <= p3.w && p3.z >= -p3.w && p3.z <= p3.w)
     {
         return true;
     }
-    if(p4.x >= leftX && p4.x <= rightX && p4.y >= bottomY && p4.y <=topY && p4.z >= nearZ && p4.z <=farZ)
+    if(p4.x >= -p4.w && p4.x <= p4.w && p4.y >= -p4.w && p4.y <= p4.w && p4.z >= -p4.w && p4.z <= p4.w)
     {
         return true;
     }
-    if(p5.x >= leftX && p5.x <= rightX && p5.y >= bottomY && p5.y <=topY && p5.z >= nearZ && p5.z <=farZ)
+    if(p5.x >= -p5.w && p5.x <= p5.w && p5.y >= -p5.w && p5.y <= p5.w && p5.z >= -p5.w && p5.z <= p5.w)
     {
         return true;
     }
-    if(p6.x >= leftX && p6.x <= rightX && p6.y >= bottomY && p6.y <=topY && p6.z >= nearZ && p6.z <=farZ)
+    if(p6.x >= -p6.w && p6.x <= p6.w && p6.y >= -p6.w && p6.y <= p6.w && p6.z >= -p6.w && p6.z <= p6.w)
     {
         return true;
     }
-    if(p7.x >= leftX && p7.x <= rightX && p7.y >= bottomY && p7.y <=topY && p7.z >= nearZ && p7.z <=farZ)
+    if(p7.x >= -p7.w && p7.x <= p7.w && p7.y >= -p7.w && p7.y <= p7.w && p7.z >= -p7.w && p7.z <= p7.w)
     {
         return true;
     }
-    if(p8.x >= leftX && p8.x <= rightX && p8.y >= bottomY && p8.y <=topY && p8.z >= nearZ && p8.z <=farZ)
+    if(p8.x >= -p8.w && p8.x <= p8.w && p8.y >= -p8.w && p8.y <= p8.w && p8.z >= -p8.w && p8.z <= p8.w)
     {
         return true;
     }
-    
 
 
+    //If not a single point is in the view frustum, we check that all the points are outside at the same time from atleast one
+    //of the planes. This is to fix fake negatives in cases where the bounding volume is higher than the frustum camera (which happens with our map)
+    if(p1.x < -p1.w && p2.x < -p2.w && p3.x < -p3.w && p4.x < -p4.w && p5.x < -p5.w && p6.x < -p6.w && p7.x < -p7.w && p8.x < -p8.w)
+    {
+        return false;
+    }
+    if(p1.x > p1.w && p2.x > p2.w && p3.x > p3.w && p4.x > p4.w && p5.x > p5.w && p6.x > p6.w && p7.x > p7.w && p8.x > p8.w)
+    {
+        return false;
+    }
+    if(p1.y < -p1.w && p2.y < -p2.w && p3.y < -p3.w && p4.y < -p4.w && p5.y < -p5.w && p6.y < -p6.w && p7.y < -p7.w && p8.y < -p8.w)
+    {
+        return false;
+    }
+    if(p1.y > p1.w && p2.y > p2.w && p3.y > p3.w && p4.y > p4.w && p5.y > p5.w && p6.y > p6.w && p7.y > p7.w && p8.y > p8.w)
+    {
+        return false;
+    }
+    if(p1.z < -p1.w && p2.z < -p2.w && p3.z < -p3.w && p4.z < -p4.w && p5.z < -p5.w && p6.z < -p6.w && p7.z < -p7.w && p8.z < -p8.w)
+    {
+        return false;
+    }
+    if(p1.z > p1.w && p2.z > p2.w && p3.z > p3.w && p4.z > p4.w && p5.z > p5.w && p6.z > p6.w && p7.z > p7.w && p8.z > p8.w)
+    {
+        return false;
+    }
 
 
-    return false;
+    return true;
 }

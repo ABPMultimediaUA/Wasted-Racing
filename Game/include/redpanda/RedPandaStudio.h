@@ -14,7 +14,7 @@
 #include <vector>
 #include <chrono>
 
-#include "RedPanda.h"
+#include <RedPanda.h>
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -117,5 +117,6 @@ private:
 void translateNode(TNode* node, glm::vec3 position);
 void rotateNode(TNode* node, glm::vec3 rotation);
 void scaleNode(TNode* node, glm::vec3 scale);
+
 
 }

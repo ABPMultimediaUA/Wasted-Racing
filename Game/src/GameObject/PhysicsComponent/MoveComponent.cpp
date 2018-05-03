@@ -142,53 +142,63 @@ void MoveComponent::changeVel(float v){
 //Activate temporal speed change
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
 
-    if(mData.max_vel != maxSpeed){
-        auxData.max_vel         = mData.max_vel;
-        mData.max_vel           = maxSpeed;      
+    auto objectRender = this->getGameObject().getComponent<ObjectRenderComponent>();
+
+    if(objectRender!=nullptr &&objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
+    {
+        if(mData.max_vel != maxSpeed){
+            auxData.max_vel         = mData.max_vel;
+            mData.max_vel           = maxSpeed;      
+        }
+        constantAlteredTime     = constTime;
+        decrementalAlteredTime  = decTime;
+        maxDecrementalAT        = decTime;
+        mData.boost             = true;
     }
-    constantAlteredTime     = constTime;
-    decrementalAlteredTime  = decTime;
-    maxDecrementalAT        = decTime;
-    mData.boost             = true;
 
 }
 
 //Update and interpolate temporal speed change
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    if(mData.boost && !mData.coll) {
-        if(constantAlteredTime > 0) {
-            //While time is constant, velocity is constant and maximum
-            mData.vel = mData.max_vel;
-            constantAlteredTime -= dTime;
-        }
-        else if (decrementalAlteredTime > 0) {
-            //Calculate velocity decrease depending on dTime
-            float vel_diff = mData.max_vel - auxData.max_vel;
-            float vel      = (dTime*vel_diff)/maxDecrementalAT;
+    auto objectRender = this->getGameObject().getComponent<ObjectRenderComponent>();
 
-            mData.vel     -= vel; 
-
-            decrementalAlteredTime -= dTime;
-
-            if(decrementalAlteredTime < 0) {
-                mData.max_vel = auxData.max_vel;
-                mData.boost   = false;
+    if(objectRender!=nullptr && objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
+    {
+        if(mData.boost && !mData.coll) {
+            if(constantAlteredTime > 0) {
+                //While time is constant, velocity is constant and maximum
+                mData.vel = mData.max_vel;
+                constantAlteredTime -= dTime;
             }
-                
-        }
-    }
-    else {
-        constantAlteredTime = 0;
-        decrementalAlteredTime = 0;
-        mData.max_vel = auxData.max_vel;
+            else if (decrementalAlteredTime > 0) {
+                //Calculate velocity decrease depending on dTime
+                float vel_diff = mData.max_vel - auxData.max_vel;
+                float vel      = (dTime*vel_diff)/maxDecrementalAT;
 
-        //<___ deactive if collided
-        if(mData.coll)
-        {
-            mData.boost = false;
+                mData.vel     -= vel; 
+
+                decrementalAlteredTime -= dTime;
+
+                if(decrementalAlteredTime < 0) {
+                    mData.max_vel = auxData.max_vel;
+                    mData.boost   = false;
+                }
+                    
+            }
         }
-        //___>
+        else {
+            constantAlteredTime = 0;
+            decrementalAlteredTime = 0;
+            mData.max_vel = auxData.max_vel;
+
+            //<___ deactive if collided
+            if(mData.coll)
+            {
+                mData.boost = false;
+            }
+            //___>
+        }
     }
 }
 

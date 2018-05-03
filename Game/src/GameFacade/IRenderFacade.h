@@ -93,6 +93,12 @@ public:
 
     //Update single animation
     virtual void updateAnimation(IComponent* ptr) = 0;
+    
+    //Dont so nothing in irrlicht, only works on rps
+    virtual void setClipping(bool b) = 0;
+
+    //Change mesh
+    virtual void changeMesh(int id, std::string newMesh) = 0;
 
     //==============================================================
     //  VISUAL INTERFACE

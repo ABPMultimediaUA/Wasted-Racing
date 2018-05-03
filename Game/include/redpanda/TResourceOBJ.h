@@ -45,7 +45,7 @@ class TResourceOBJ : public TResource {
         GLuint boxIBOIndices;
         //Transform of the bounding box
         glm::mat4 bbTransform;
-        //Activates and deactivates the comprobation with the bounding box
+        //Activates and deactivates the culling with the bounding box
         bool bbActivated = true;
 
         //Auxiliar function to split strings
