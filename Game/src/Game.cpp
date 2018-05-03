@@ -192,22 +192,11 @@ void Game::setState(IGameState::stateType type){
 
 //adding minimum objects needed to play the game
 void addObjects(){
+    
     //===============================================================
-    // add player 
+    // add map
     //===============================================================
     loadMap();
-
-    uint16_t id = 25000;
-    GameObject::TransformationData transform;
-    
-    //:::>Needs to be set by the map
-    transform.position = glm::vec3(-35,0, -20);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    
-    ObjectManager::getInstance().createPlayer(transform, 0, 0, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     //===============================================================
     // Update to distribute all creation events

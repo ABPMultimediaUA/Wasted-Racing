@@ -14,6 +14,9 @@ void PauseState::init() {
 void PauseState::update(float &accumulatedTime) {
     //Update input manager
     inputManager->update();
+    
+    //Update audio manager
+    audioManager->update();
 
     //Event manager has to be the last to be updated
     eventManager->update();

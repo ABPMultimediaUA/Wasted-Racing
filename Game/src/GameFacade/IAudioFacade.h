@@ -31,6 +31,10 @@ public:
     //Closes engine window
     virtual void closeAudioEngine() = 0;
 
+    //Load and unload backs
+    virtual void loadBanks() = 0;
+    virtual void unloadBanks() = 0;
+
     //==============================================================
     // Audio Related functions
     //==============================================================
