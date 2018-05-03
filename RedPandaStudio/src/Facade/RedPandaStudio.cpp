@@ -57,13 +57,13 @@ void RedPandaStudio::updateDevice() {
 	glEnable(GL_DEPTH_TEST);
 
 	//==================
-	//drawShadowMapping();
+	drawShadowMapping();
 	//==================
 
-	renderCamera();
+	/*renderCamera();
 	renderLights();
 
-	scene->draw();
+	scene->draw();*/
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -595,39 +595,6 @@ void RedPandaStudio::initializeShadowMappping()
 	std::cout<<"Buffers y texturas creados"<<std::endl;
 
 	//BASIC STUFFY FOR SHADER CREATION
-	const char *shadowTESTMap_fragment_path = "shaders/shadowMapTest.frag";
-	const char *shadowTESTMap_vertex_path = "shaders/shadowMapTest.vert";
-
-	TResourceShader* shadowTESTVertex = resourceManager->getResourceShader(shadowTESTMap_vertex_path, (GLenum)GL_VERTEX_SHADER);
-	TResourceShader* shadowTESTFragment = resourceManager->getResourceShader(shadowTESTMap_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
-
-	GLuint shadowTESTVertexID = shadowTESTVertex->getShaderID();
-	GLuint shadowTESTFragmentID = shadowTESTFragment->getShaderID();
-
-	shadowTESTID = glCreateProgram();
-	glAttachShader(shadowTESTID, shadowTESTVertexID);
-	glAttachShader(shadowTESTID, shadowTESTFragmentID);
-	glLinkProgram(shadowTESTID);
-	std::cout << "Linking shadowTESTID" << std::endl;
-
-	//Check the program is ok
-	glGetProgramiv(shadowTESTID, GL_LINK_STATUS, &Result);
-	glGetProgramiv(shadowTESTID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
-		glGetProgramInfoLog(shadowTESTID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		printf("%s\n", &ProgramErrorMessage[0]);
-	}
-
-	//Delete because the program is cool
-	glDetachShader(shadowTESTID,shadowTESTVertexID);
-	glDetachShader(shadowTESTID,shadowTESTFragmentID);
-	glDeleteShader(shadowTESTVertexID);
-	glDeleteShader(shadowTESTFragmentID);
-
-	glUseProgram(shadowTESTID); //REQUIRED for attaching variables
-
-	//BASIC STUFFY FOR SHADER CREATION
 	const char *shadowMap_fragment_path = "shaders/shadowMap.frag";
 	const char *shadowMap_vertex_path = "shaders/shadowMap.vert";
 
@@ -692,75 +659,14 @@ void RedPandaStudio::initializeShadowMappping()
 	glEnableVertexAttribArray(4); //Vertex textures
     glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
-	// cube VAO
-    float cubeVertices[] = {
-        // positions          // texture Coords
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-
-    glGenVertexArrays(1, &cubeVAO);
-    glGenBuffers(1, &cubeVBO);
-    glBindVertexArray(cubeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0); //Vertices positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1); //Texture coordinates
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-
 	//Closing bindings
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Quad texture assignment
 	shadow_sampler = glGetUniformLocation(shadowID, "screenTexture");
-
-	//CubeTexture
-	cubeTexture = new TResourceTexture();
-	cubeTexture->setName("media/cubotex.png");
-	cubeTexture->loadResource();
 }
 
 void RedPandaStudio::drawShadowMapping()
@@ -776,33 +682,6 @@ void RedPandaStudio::drawShadowMapping()
 	renderCamera();
 	renderLights();
 	scene->draw();
-	//((((((((((((((((()))))))))))))))))
-	// cubes
-    /*glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-	glBindVertexArray(cubeVAO);
-	glEnableVertexAttribArray(0); //Vertex points
-	glEnableVertexAttribArray(1); //Vertex texture
-	
-	//Draw texture
-	cubeTexture->draw();
-
-	//Draw cube
-	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-	GLuint modelMatrixID = glGetUniformLocation(scene->getEntity()->getProgramID(), "ModelMatrix");
-	glUniformMatrix4fv(modelMatrixID, 1, false, &model[0][0]);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 36);
-	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(2.0f, 1.0f, 0.0f));
-	glUniformMatrix4fv(modelMatrixID, 1, false, &model[0][0]);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 36);
-
-	//Unbind all info
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
-	//((((((((((((((((()))))))))))))))))W
 
 	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
