@@ -34,7 +34,6 @@ void CameraRenderComponent::update(float dTime) {
     //Data for next position
     auto moveCMP = getGameObject().getComponent<MoveComponent>();
 
-
     if(moveCMP != nullptr)
     {
         auto move = moveCMP.get()->getMovemententData();
@@ -120,6 +119,10 @@ void CameraRenderComponent::update(float dTime) {
         if (move.spin == 0)
             distance = oldDistance;
     }
+
+    //Update camera
+    oldHeight = height;
+    height = LAPAL::calculateExpectedY(terrain.get()->getTerrain(), currentPosition);
 
 }
 

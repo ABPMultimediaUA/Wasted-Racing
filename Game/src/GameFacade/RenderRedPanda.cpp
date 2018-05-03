@@ -190,15 +190,25 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     //Get target y angle
     float radianAngle = cameraTarget->getTransformData().rotation.y;
 
+    auto camera = cameraTarget->getComponent<CameraRenderComponent>().get();
+
     //Get interpolated distance to the player
-    float oldD = cameraTarget->getComponent<CameraRenderComponent>().get()->getOldDistance();
-    float newD = cameraTarget->getComponent<CameraRenderComponent>().get()->getDistance();
+    float oldD = camera->getOldDistance();
+    float newD = camera->getDistance();
 
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
     distance *= 1.5;
 
+    float cameraHeight = camera->getOldHeight() + (accTime * (camera->getHeight() - camera->getOldHeight()))/maxTime;
+
+    float dMultiplier = 0.3;
+
+    if(cameraHeight < pos.y && abs(cameraHeight-pos.y) >= 1.0) {
+        dMultiplier = 0.3 / abs(cameraHeight-pos.y);
+    }
+
     glm::vec3 target(-pos.x, pos.y, pos.z);
-    glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y + distance * 0.4, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+    glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), cameraHeight + distance * dMultiplier, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
 
     device->updateCamera(position, target);
 

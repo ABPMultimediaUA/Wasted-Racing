@@ -32,6 +32,8 @@ public:
 	float 								getDistance()		{	return distance;	}
 	float 								getMaxDistance()	{	return maxDistance;	}
 	float 								getOldDistance()	{	return oldDistance; }
+	float								getHeight()			{	return height;		}
+	float								getOldHeight()		{	return oldHeight;	}
 
 	//Setters
 	void setTerrain(std::shared_ptr<TerrainComponent> t) 	{	terrain = t; 		}
@@ -45,6 +47,8 @@ private:
 	float distance;
 	float maxDistance;
 	float oldDistance;
+	float height;
+	float oldHeight;
 	int count;
 	int spinDir;
 
