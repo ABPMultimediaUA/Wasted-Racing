@@ -456,15 +456,15 @@ void drawRPS_GUI_Options(){
                 nk_popup_end(GUI);
             }
 
-            //if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(h*0.1388, 0, w, h))) {
-            //    nk_layout_row_static(GUI, h, h*1.5, 1);
-            //    nk_image(GUI, gui::optionsBase);
-            //    nk_popup_end(GUI);
-            //}
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(h*0.2, h*0.415, w*0.2, w*0.06))) {
+                nk_layout_row_static(GUI, w*0.043, w*0.15, 1);
+                nk_image(GUI, gui::text_volume);
+                nk_popup_end(GUI);
+            }
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.4, h*0.235, w*0.21, w*0.06))) {  
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.26, h*0.42, w*0.2, w*0.06))) {  
 
-                nk_layout_row_static(GUI, w*0.0568, w*0.2, 1);
+                nk_layout_row_static(GUI, w*0.025, w*0.14, 1);
 
                 if(nk_progress(GUI, &gui::volume, 100, nk_true)) {
 
@@ -739,8 +739,8 @@ void gui::init() {
         gui::text_soundONHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOnHover.png");
         gui::text_soundOFF              =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOff.png");
         gui::text_soundOFFHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOffHover.png");
-        gui::text_volume                =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolume.png");
-        gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolumeHover.png");
+        gui::text_volume                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bVolumen.png");
+        gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bVolumenHover.png");
         gui::text_oexit                 =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalir.png");
         gui::text_oexitHover            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalirHover.png");
     }
