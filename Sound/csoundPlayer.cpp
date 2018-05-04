@@ -38,7 +38,13 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    srand (time(NULL));
+    if(argc == 4) {
+        srand (std::atoi(argv[3]));
+    }
+    else {
+        srand (time(NULL));
+    }
+    
 
     //Read arguments
     int playTime = std::atoi(argv[2]);
