@@ -162,9 +162,9 @@ void TEmitter::setParticleLifeData(float & nCurrentLife, float & nParticleLife) 
 //Randomize particle initial position
 void TEmitter::setParticlePositionData(glm::vec3 & nPosition) {
 
-    float randX = ((int)rand()) / (float)INT_MAX;
-    float randY = ((int)rand()) / (float)INT_MAX;
-    float randZ = ((int)rand()) / (float)INT_MAX;
+    float randX = ((int)rand()) / (float)RAND_MAX;
+    float randY = ((int)rand()) / (float)RAND_MAX;
+    float randZ = ((int)rand()) / (float)RAND_MAX;
 
     int signX = (rand() % 2 == 0) ? 1 : -1;
     int signY = (rand() % 2 == 0) ? 1 : -1;
@@ -176,9 +176,9 @@ void TEmitter::setParticlePositionData(glm::vec3 & nPosition) {
 //Randomize particle direction
 void TEmitter::setParticleDirectionData(glm::vec3 & nBirthDirection, glm::vec3 & nDeathDirection) {
 
-    float randX = ((int)rand()) / (float)INT_MAX;
-    float randY = ((int)rand()) / (float)INT_MAX;
-    float randZ = ((int)rand()) / (float)INT_MAX;
+    float randX = ((int)rand()) / (float)RAND_MAX;
+    float randY = ((int)rand()) / (float)RAND_MAX;
+    float randZ = ((int)rand()) / (float)RAND_MAX;
 
     int signX = (rand() % 2 == 0) ? 1 : -1;
     int signY = (rand() % 2 == 0) ? 1 : -1;
@@ -188,9 +188,9 @@ void TEmitter::setParticleDirectionData(glm::vec3 & nBirthDirection, glm::vec3 &
 
     nBirthDirection   = glm::vec3( birthDirection.x + lenght*variationDirection*randX*signX, birthDirection.y + lenght*variationDirection*randY*signY, birthDirection.z + lenght*variationDirection*randZ*signZ);
 
-    randX = ((int)rand()) / (float)INT_MAX;
-    randY = ((int)rand()) / (float)INT_MAX;
-    randZ = ((int)rand()) / (float)INT_MAX;
+    randX = ((int)rand()) / (float)RAND_MAX;
+    randY = ((int)rand()) / (float)RAND_MAX;
+    randZ = ((int)rand()) / (float)RAND_MAX;
 
     signX = (rand() % 2 == 0) ? 1 : -1;
     signY = (rand() % 2 == 0) ? 1 : -1;
@@ -203,23 +203,23 @@ void TEmitter::setParticleDirectionData(glm::vec3 & nBirthDirection, glm::vec3 &
 void TEmitter::setParticleSizeData(float & nCurrentSize, float & nBirthSize, float & nDeathSize) {
 
     int sign = (rand() % 2 == 0) ? 1 : -1;
-    float randX = ((int)rand()) / (float)INT_MAX;
+    float randX = ((int)rand()) / (float)RAND_MAX;
 
     nBirthSize   = birthSize + birthSize*sign*variationSize*randX;
     nCurrentSize = nBirthSize;
 
     sign = (rand() % 2 == 0) ? 1 : -1;
-    randX = ((int)rand()) / (float)INT_MAX;
+    randX = ((int)rand()) / (float)RAND_MAX;
     nDeathSize   = deathSize + deathSize*sign*variationSize*randX;
 
 }
 //Randomize color
 void TEmitter::setParticleColorData(glm::vec4 & nCurrentColor, glm::vec4 & nBirthColor, glm::vec4 & nDeathColor) {
 
-    float randX = ((int)rand()) / (float)INT_MAX;
-    float randY = ((int)rand()) / (float)INT_MAX;
-    float randZ = ((int)rand()) / (float)INT_MAX;
-    float randA = ((int)rand()) / (float)INT_MAX;
+    float randX = ((int)rand()) / (float)RAND_MAX;
+    float randY = ((int)rand()) / (float)RAND_MAX;
+    float randZ = ((int)rand()) / (float)RAND_MAX;
+    float randA = ((int)rand()) / (float)RAND_MAX;
 
     int signX = (rand() % 2 == 0) ? 1 : -1;
     int signY = (rand() % 2 == 0) ? 1 : -1;
@@ -254,10 +254,10 @@ void TEmitter::setParticleColorData(glm::vec4 & nCurrentColor, glm::vec4 & nBirt
     nCurrentColor = glm::vec4(r,g,b,a);
     nBirthColor = glm::vec4(r,g,b,a);
 
-    randX = ((int)rand()) / (float)INT_MAX;
-    randY = ((int)rand()) / (float)INT_MAX;
-    randZ = ((int)rand()) / (float)INT_MAX;
-    randA = ((int)rand()) / (float)INT_MAX;
+    randX = ((int)rand()) / (float)RAND_MAX;
+    randY = ((int)rand()) / (float)RAND_MAX;
+    randZ = ((int)rand()) / (float)RAND_MAX;
+    randA = ((int)rand()) / (float)RAND_MAX;
 
     signX = (rand() % 2 == 0) ? 1 : -1;
     signY = (rand() % 2 == 0) ? 1 : -1;
