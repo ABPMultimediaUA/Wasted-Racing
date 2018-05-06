@@ -30,8 +30,7 @@ void TResourceTexture::draw()
     {
         //Bind and enable the texture
         glBindTexture(GL_TEXTURE_2D, textureID);
-        glEnable(GL_TEXTURE_2D);
-        
+
         //Set all the parameters of the texture
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -41,13 +40,8 @@ void TResourceTexture::draw()
         //Set the texture to be drawn
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)sizeX, (GLsizei)sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getPixelsPtr());
     }
-    else
-    {
-        glDisable(GL_TEXTURE_2D);
-    }
 }
 
 void TResourceTexture::endDraw()
 {
-    glDisable(GL_TEXTURE_2D);
 }

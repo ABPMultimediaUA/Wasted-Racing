@@ -11,8 +11,6 @@ uniform bool textActive;
 
 out vec4 FragColor;
 
-layout(location = 0) out vec3 colorTexture;
-
 void main()
 {
   if(textActive)
@@ -25,8 +23,6 @@ void main()
     FragColor.y = floor(FragColor.y * levels) / levels;
     FragColor.z = floor(FragColor.z * levels) / levels;
     FragColor.w = 1.0;
-  
-    colorTexture = FragColor.rgb;
   }
   else
   {

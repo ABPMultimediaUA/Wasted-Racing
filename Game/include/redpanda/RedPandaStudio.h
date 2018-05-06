@@ -31,6 +31,9 @@ public:
         //=========================================================================
         //Delete frame buffers
         glDeleteFramebuffers(1, &depthBuffer);
+
+        //DELETE TESTING VARIABLES
+        delete cubeTexture;
         //=========================================================================
     }
 
@@ -130,6 +133,11 @@ private:
     GLuint shadowID;    //Shadow map program ID
 	GLuint renderBuffer;//Render buffer ID
     GLuint quadVAO, quadVBO; //Quad indexes
+    GLuint cubeVAO, cubeVBO; //TESTNG CUBE
+    GLuint shadow_sampler; //Sampler2D of the texture rendered to the quad
+    GLuint cubeTextureID;
+    TResourceTexture* cubeTexture; //TESTING CUBE TEXTURE
+    GLuint shadowTESTID;    //Shadow map program ID
 
     int windowWidth = 1024;
     int windowHeight = 1024;

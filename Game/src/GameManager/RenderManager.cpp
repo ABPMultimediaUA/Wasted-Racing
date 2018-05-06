@@ -85,12 +85,22 @@ void RenderManager::init(int engine) {
     GlobalVariables::getInstance().setDistanceLoD(500);
 
     createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
+
+    EventManager::getInstance().update();
+
+    //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/punk/punk.obj");
+    //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
 }
 
 void RenderManager::update(float dTime) {
     //Update HUD
     updateHUD();
-
+    if(enter == 200)
+    {
+        RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/punk/punk.obj");
+        RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
+    }
+    enter++;
     //Check LoD mesh
     LoDmesh();
 
@@ -1099,7 +1109,8 @@ void RenderManager::cleanVI()
 
 void RenderManager::LoDmesh()
 {
-    for(unsigned int i = 0; i < renderComponentList.size(); i++)
+    
+    /*for(unsigned int i = 0; i < renderComponentList.size(); i++)
     {
         auto component = RenderManager::getInstance().getComponentList()[i];
         auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
@@ -1156,5 +1167,5 @@ void RenderManager::LoDmesh()
                 }
             }
         }
-    }
+    }*/
 }

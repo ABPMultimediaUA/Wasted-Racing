@@ -27,6 +27,8 @@ class TResourceLoD : public TResource {
         //Return an obj by lvl of lod
         TResourceOBJ* getResourceObj(int lvl);
 
+        std::map<int,TResourceOBJ*> getMap()                {       return objs;        }
+
 
     private:
     

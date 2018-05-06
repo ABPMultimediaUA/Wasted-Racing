@@ -5,7 +5,7 @@
 
 void TResourceLoD::insertObj(int lvl, TResourceOBJ* obj)
 {
-    if(lvl > 0 && obj != nullptr)
+    if(lvl >= 0 && obj != nullptr)
     {
         if(objs.find(lvl)->second == nullptr)
         {

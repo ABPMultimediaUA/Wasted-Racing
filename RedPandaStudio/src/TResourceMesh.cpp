@@ -45,6 +45,42 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     //Generate an array of 4 buffer identifiers
     vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
     glGenBuffers(4, vboHandles);
+    
+    //=============================================================================
+    //Generate an array of 3 vertex array identifiers
+    glGenVertexArrays(1, &vaoHandles);
+    glBindVertexArray(vaoHandles);
+
+    //Bind and pass to OpenGL the first array (vertex coordinates)
+   /* glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    glDisableVertexAttribArray(0);
+    
+    //Bind and pass to OpenGL the second array (vertex normals)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    glDisableVertexAttribArray(1);
+
+    //Bind and pass to OpenGL the third array (vertex texture coordinates)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+    glDisableVertexAttribArray(2);
+
+    //Bind and pass to OpenGL the fourth array (vertex indices)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*6*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
+
+    //Detach elements
+    glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+    //=============================================================================
 
     //Generates the two points needed for a parallel-to-edges bounding box
     generateBoundingBox();
@@ -123,40 +159,45 @@ bool TResourceMesh::loadResource()
 
 void TResourceMesh::draw()
 {
-    
-    //glEnable(GL_COLOR_MATERIAL);
-
-    GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
-    glUniform1i(id, textActive);
-
-    //First we draw the texture of our mesh
-    if(texture!=NULL && textActive)
+    if((bbActivated && checkBoundingBox()) || !bbActivated)
     {
-        texture->draw();
-    }
-    
-    if(material!=NULL)
-    {
-        material->draw();
-    }
+        //glEnable(GL_COLOR_MATERIAL);
 
+        GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
+        glUniform1i(id, textActive);
+
+        //First we draw the texture of our mesh
+        if(texture!=NULL && textActive)
+        {
+            texture->draw();
+        }
+        
+        if(material!=NULL)
+        {
+            material->draw();
+        }
+
+    //==============================================
+    //BIND VAO
+    glBindVertexArray(vaoHandles);
+    //==============================================  
+    
     //Bind and pass to OpenGL the first array (vertex coordinates)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(0);
-    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     //Bind and pass to OpenGL the second array (vertex normals)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     //Bind and pass to OpenGL the third array (vertex texture coordinates)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
     glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     //Bind and pass to OpenGL the fourth array (vertex indices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
@@ -165,14 +206,20 @@ void TResourceMesh::draw()
     //We order to draw here
     glDrawElements(GL_TRIANGLES_ADJACENCY, nTriangles*6, GL_UNSIGNED_INT, 0);
 
-    drawBoundingBox();
-/*
-    if(texture!=NULL && textActive)
-    {
-        texture->endDraw();
-    }
-*/
 
+    //==============================================    
+    //Detach elements
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //==============================================
+
+    //drawBoundingBox();
+
+    }
 }
 
 void TResourceMesh::generateBoundingBox()
@@ -246,6 +293,10 @@ void TResourceMesh::drawBoundingBox()
 
     glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &m[0][0]);
 
+    //========================================
+    //Bind VAO
+    glBindVertexArray(vaoHandles);
+    //========================================
     glBindBuffer(GL_ARRAY_BUFFER, boxVBOVertices);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
@@ -257,10 +308,94 @@ void TResourceMesh::drawBoundingBox()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glDisableVertexAttribArray(0);
+    //========================================
+    //Closing VAO binding
+    glBindVertexArray(0);
+    //========================================
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &TEntity::modelMatrix()[0][0]);
 
+}
+
+bool TResourceMesh::checkBoundingBox()
+{
+    //First we set the bounding box's points in the scene
+    glm::mat4 m = TEntity::projectionMatrix() * TEntity::viewMatrix() * TEntity::modelMatrix() * bbTransform;
+    glm::vec4 p1 = m * glm::vec4(-0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p2 = m * glm::vec4(0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p3 = m * glm::vec4(0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p4 = m * glm::vec4(-0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p5 = m * glm::vec4(-0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p6 = m * glm::vec4(0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p7 = m * glm::vec4(0.5, 0.5, 0.5, 1.0);
+    glm::vec4 p8 = m * glm::vec4(-0.5, 0.5, 0.5, 1.0);
+
+
+    //Then we check if atleast one point is inside the view frustum
+    if(p1.x >= -p1.w && p1.x <= p1.w && p1.y >= -p1.w && p1.y <= p1.w && p1.z >= -p1.w && p1.z <= p1.w)
+    {
+        return true;
+    }
+    if(p2.x >= -p2.w && p2.x <= p2.w && p2.y >= -p2.w && p2.y <= p2.w && p2.z >= -p2.w && p2.z <= p2.w)
+    {
+        return true;
+    }
+    if(p3.x >= -p3.w && p3.x <= p3.w && p3.y >= -p3.w && p3.y <= p3.w && p3.z >= -p3.w && p3.z <= p3.w)
+    {
+        return true;
+    }
+    if(p4.x >= -p4.w && p4.x <= p4.w && p4.y >= -p4.w && p4.y <= p4.w && p4.z >= -p4.w && p4.z <= p4.w)
+    {
+        return true;
+    }
+    if(p5.x >= -p5.w && p5.x <= p5.w && p5.y >= -p5.w && p5.y <= p5.w && p5.z >= -p5.w && p5.z <= p5.w)
+    {
+        return true;
+    }
+    if(p6.x >= -p6.w && p6.x <= p6.w && p6.y >= -p6.w && p6.y <= p6.w && p6.z >= -p6.w && p6.z <= p6.w)
+    {
+        return true;
+    }
+    if(p7.x >= -p7.w && p7.x <= p7.w && p7.y >= -p7.w && p7.y <= p7.w && p7.z >= -p7.w && p7.z <= p7.w)
+    {
+        return true;
+    }
+    if(p8.x >= -p8.w && p8.x <= p8.w && p8.y >= -p8.w && p8.y <= p8.w && p8.z >= -p8.w && p8.z <= p8.w)
+    {
+        return true;
+    }
+
+
+    //If not a single point is in the view frustum, we check that all the points are outside at the same time from atleast one
+    //of the planes. This is to fix fake negatives in cases where the bounding volume is higher than the frustum camera (which happens with our map)
+    if(p1.x < -p1.w && p2.x < -p2.w && p3.x < -p3.w && p4.x < -p4.w && p5.x < -p5.w && p6.x < -p6.w && p7.x < -p7.w && p8.x < -p8.w)
+    {
+        return false;
+    }
+    if(p1.x > p1.w && p2.x > p2.w && p3.x > p3.w && p4.x > p4.w && p5.x > p5.w && p6.x > p6.w && p7.x > p7.w && p8.x > p8.w)
+    {
+        return false;
+    }
+    if(p1.y < -p1.w && p2.y < -p2.w && p3.y < -p3.w && p4.y < -p4.w && p5.y < -p5.w && p6.y < -p6.w && p7.y < -p7.w && p8.y < -p8.w)
+    {
+        return false;
+    }
+    if(p1.y > p1.w && p2.y > p2.w && p3.y > p3.w && p4.y > p4.w && p5.y > p5.w && p6.y > p6.w && p7.y > p7.w && p8.y > p8.w)
+    {
+        return false;
+    }
+    if(p1.z < -p1.w && p2.z < -p2.w && p3.z < -p3.w && p4.z < -p4.w && p5.z < -p5.w && p6.z < -p6.w && p7.z < -p7.w && p8.z < -p8.w)
+    {
+        return false;
+    }
+    if(p1.z > p1.w && p2.z > p2.w && p3.z > p3.w && p4.z > p4.w && p5.z > p5.w && p6.z > p6.w && p7.z > p7.w && p8.z > p8.w)
+    {
+        return false;
+    }
+
+
+    return true;
 }
 
 //This functions looks for a specific adjacent vertex for the vertex indices. Due to the computational cost, this should be improved

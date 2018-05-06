@@ -255,5 +255,5 @@ private:
     float maxTimeP = 5.0f;
     bool wait = false;
     
-
+    int enter = 0;
 };
