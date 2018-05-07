@@ -46,8 +46,8 @@ void RedPandaStudio::updateDevice() {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	//Render camera and lights
-	//renderCamera();
-	//renderLights();
+	renderCamera();
+	renderLights();
 
 	//Change shader program for drawing skybox
 	glUseProgram(skyboxID);
@@ -57,13 +57,13 @@ void RedPandaStudio::updateDevice() {
 	glEnable(GL_DEPTH_TEST);
 
 	//==================
-	drawShadowMapping();
+	//drawShadowMapping();
 	//==================
 
-	/*renderCamera();
+	renderCamera();
 	renderLights();
 
-	scene->draw();*/
+	scene->draw();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
