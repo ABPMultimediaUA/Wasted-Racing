@@ -1,8 +1,6 @@
 #include "TResourceMesh.h"
 #include <iostream>
 
-unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3);
-
 bool TResourceMesh::loadMesh(aiMesh* m)
 {
     int nFaces = m->mNumFaces;
@@ -85,8 +83,8 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     //Generates the two points needed for a parallel-to-edges bounding box
     generateBoundingBox();
 
-/*
 
+/*
     std::cout << "nVertex: " << nVertex << std::endl;
     std::cout << "nTriangles: " << nTriangles << std::endl;
 
@@ -94,7 +92,8 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     {
         std::cout << i << ": " << vertexIndices[i] << std::endl;
     }
-
+*/
+/*
     for(int i = 0; i < nVertex * 3; i++)
     {
         std::cout << i << ": " << vertex[i] << std::endl;
@@ -400,7 +399,7 @@ bool TResourceMesh::checkBoundingBox()
 
 //This functions looks for a specific adjacent vertex for the vertex indices. Due to the computational cost, this should be improved
 //using the half-edge structure, to avoid a massive number of searchs through the mesh
-unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3)
+unsigned int TResourceMesh::getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3)
 {
     for(unsigned int i=0; i < m->mNumFaces; i++)
     {
@@ -409,6 +408,15 @@ unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsign
             unsigned int v1 = m->mFaces[i].mIndices[edge];
             unsigned int v2 = m->mFaces[i].mIndices[(edge+1)%3];
             unsigned int v3 = m->mFaces[i].mIndices[(edge+2)%3];
+
+            if( (m->mVertices[v1].x == m->mVertices[index1].x && m->mVertices[v1].y == m->mVertices[index1].y && m->mVertices[v1].z == m->mVertices[index1].z && 
+                m->mVertices[v2].x == m->mVertices[index2].x && m->mVertices[v2].y == m->mVertices[index2].y && m->mVertices[v2].z == m->mVertices[index2].z) ||
+                (m->mVertices[v2].x == m->mVertices[index1].x && m->mVertices[v2].y == m->mVertices[index1].y && m->mVertices[v2].z == m->mVertices[index1].z && 
+                m->mVertices[v1].x == m->mVertices[index2].x && m->mVertices[v1].y == m->mVertices[index2].y && m->mVertices[v1].z == m->mVertices[index2].z) &&
+                (m->mVertices[v3].x != m->mVertices[index3].x || m->mVertices[v3].y != m->mVertices[index3].y || m->mVertices[v3].z != m->mVertices[index3].z))
+            {
+                return v3;
+            }
 
             if((v1 == index1 && v2 == index2) || (v1 == index2 && v2 == index1))
             {
@@ -423,5 +431,5 @@ unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsign
             }
         }
     }
-    return 0;
+    return -1;
 }

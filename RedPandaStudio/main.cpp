@@ -32,7 +32,7 @@ int main() {
     //rps::scaleNode(t, glm::vec3(0.25, 0.25, 0.25));
     rps::scaleNode(t2, glm::vec3(0.25,0.25,0.25));
     //rps::rotateNode(t2, glm::vec3(0, 180.0, 0));
-    rps->setCulling(true, (GLenum)GL_BACK);
+    rps->setCulling(false, (GLenum)GL_BACK);
 
     TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
     TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
@@ -59,7 +59,7 @@ int main() {
         //anim->update(30);
         rps->updateCamera(glm::vec3(10, 0, 0), glm::vec3(0,0,0));
         rps->updateDevice();
-        rps::translateNode(t2, glm::vec3(0, 0, i));
+        rps::rotateNode(t2, glm::vec3(0, i, 0));
         i += 0.01;
 
     }

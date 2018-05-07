@@ -19,7 +19,7 @@ std::vector<std::string> TResourceOBJ::split(const std::string& s, const char& c
 bool TResourceOBJ::loadOnlyMeshes()
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs | aiProcess_OptimizeMeshes |aiProcess_FlipWindingOrder);
 
     if(scene)
     {
@@ -60,7 +60,7 @@ bool TResourceOBJ::loadResource()
 {
     Assimp::Importer importer;
     //First we attempt to load the obj
-    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs | aiProcess_OptimizeMeshes |aiProcess_FlipWindingOrder);
 
 
     //If loaded succesfully, we proceed to get all his data

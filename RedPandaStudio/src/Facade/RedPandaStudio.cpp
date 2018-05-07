@@ -159,6 +159,7 @@ void RedPandaStudio::initOpenGL() {
 
     const char * vertex_file_path = "shaders/test.vert";
     const char * fragment_file_path = "shaders/test.frag";
+	const char * geometry_file_path = "shaders/test.geo";
 	const char * skybox_vertex_path = "shaders/skybox.vert";
 	const char * skybox_fragment_path = "shaders/skybox.frag";
 	GLint Result = GL_FALSE;
@@ -167,8 +168,11 @@ void RedPandaStudio::initOpenGL() {
 	glewExperimental = GL_TRUE;
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
 
+/*
+	//Enables the debug output from OpenGL (must be disabled in Release)
 	glEnable( GL_DEBUG_OUTPUT );
     glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
+*/
 
     //Init VBO
     GLuint VertexArrayID;
@@ -203,10 +207,12 @@ void RedPandaStudio::initOpenGL() {
 
 	//Get main shaders
 	TResourceShader* vertexShader = resourceManager->getResourceShader(vertex_file_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* geometryShader = resourceManager->getResourceShader(geometry_file_path, (GLenum)GL_GEOMETRY_SHADER);
 	TResourceShader* fragmentShader = resourceManager->getResourceShader(fragment_file_path, (GLenum)GL_FRAGMENT_SHADER);
 
 	//Get main shaders ID
 	GLuint vertexID = vertexShader->getShaderID();
+	GLuint geometryID = geometryShader->getShaderID();
 	GLuint fragmentID = fragmentShader->getShaderID();
 
 	//Get skybox shaders
@@ -223,14 +229,26 @@ void RedPandaStudio::initOpenGL() {
 	printf("\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexID);
+	glAttachShader(ProgramID, geometryID);
 	glAttachShader(ProgramID, fragmentID);
 	glLinkProgram(ProgramID);
 
+	//Check the program is ok
+	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
     //We no longer need the shaders (we have them in the program)
 	glDetachShader(ProgramID, vertexID);
+	glDetachShader(ProgramID, geometryID);
 	glDetachShader(ProgramID, fragmentID);
 	
 	glDeleteShader(vertexID);
+	glDeleteShader(geometryID);
 	glDeleteShader(fragmentID);
 
 	//Create Skybox program
