@@ -97,8 +97,11 @@ public:
     //Dont so nothing in irrlicht, only works on rps
     virtual void setClipping(bool b) = 0;
 
+    //add mesh lod
+    virtual void addMeshLoD(int lvl, const char* mesh) = 0;
+
     //Change mesh
-    virtual void changeMesh(int id, std::string newMesh) = 0;
+    virtual void changeMesh(int id, int lvl, const char* mesh) = 0;
 
     //==============================================================
     //  VISUAL INTERFACE

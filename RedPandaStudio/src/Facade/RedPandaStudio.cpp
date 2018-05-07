@@ -46,8 +46,8 @@ void RedPandaStudio::updateDevice() {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	//Render camera and lights
-	//renderCamera();
-	//renderLights();
+	renderCamera();
+	renderLights();
 
 	//Change shader program for drawing skybox
 	glUseProgram(skyboxID);
@@ -322,10 +322,10 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 
 		//Create new mesh entity
 		TMesh* m = new TMesh();
-		m->setMesh(resourceManager->getResourceOBJ(mesh));
+		TResourceOBJ* obj = resourceManager->getResourceOBJ(mesh);
+		m->setMesh(obj);
 		TNode* mesh = new TNode(transformT, m);
 		transformT->addChild(mesh);
-
 		//Return mesh
 		return mesh;
 	}
@@ -886,6 +886,33 @@ void RedPandaStudio::setCulling(bool b, GLenum e)
 	}
 }
 
+
+//Add lod object
+void RedPandaStudio::addMeshLoD(int lvl, const char* mesh)
+{
+	if(mesh != "" && lvl > 0)
+	{
+		TResourceLoD* lod = resourceManager->getResourceLoD(mesh);
+
+		std::string route = "";
+		int x = 0;
+
+		while(mesh[x]!='.'){
+			route += mesh[x];
+			x++;
+		}
+
+		for(int i = 1; i <= lvl; i++)
+		{
+			std::string m = route+std::to_string(i);
+			std::string o = ".obj";
+			m += o;
+			TResourceOBJ* obj = resourceManager->getResourceOBJ(m.c_str());
+			lod->insertObj(i, obj);
+		}
+	}
+}
+
 //////////////////////////////
 //  TRANSFORMATION FACADE
 void translateNode(TNode* node, glm::vec3 position) {
@@ -945,7 +972,6 @@ void rotateNode(TNode* node, glm::vec3 rotation) {
 	}
 
 }
-
 
 
 }

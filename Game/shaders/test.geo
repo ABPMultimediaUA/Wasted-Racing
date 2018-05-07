@@ -17,7 +17,11 @@ flat out int GIsEdge;
 
 bool isFrontFacing(vec3 a, vec3 b, vec3 c)
 {
-    return ((a.x * b.y - b.x * a.y) + (b.x * c.y - c.x * b.y) + (c.x * a.y - a.x * c.y)) < 0 ;
+    if(((a.x * b.y - b.x * a.y) + (b.x * c.y - c.x * b.y) + (c.x * a.y - a.x * c.y)) > 0 )
+    {
+        return true;
+    }
+    return false;
 }
 
 void emitEdgeQuad(vec3 e0, vec3 e1)
@@ -52,6 +56,7 @@ void main()
     vec3 p4 = gl_in[4].gl_Position.xyz / gl_in[4].gl_Position.w;
     vec3 p5 = gl_in[5].gl_Position.xyz / gl_in[5].gl_Position.w;
 
+
     if( isFrontFacing(p0, p2, p4))
     {
         if(!isFrontFacing(p0, p1, p2))
@@ -69,6 +74,7 @@ void main()
             emitEdgeQuad(p4, p0);
         }
     }
+
 
     int i;
     GIsEdge = 0;

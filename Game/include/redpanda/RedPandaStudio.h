@@ -14,7 +14,7 @@
 #include <vector>
 #include <chrono>
 
-#include "RedPanda.h"
+#include <RedPanda.h>
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -73,6 +73,8 @@ public:
     //Activates and deactivates the culling. The second parameter determinates which type of faces are culled (when deactivating the culling, that parameter doesnt matter)
     void setCulling(bool b, GLenum e);
 
+    //To add some mesh into lod array.   
+    void addMeshLoD(int lvl, const char* mesh);    
 
     //////////////////////////////
     //  GETTERS

@@ -359,6 +359,7 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
         AIManager::getInstance().createAIBattleComponent(*obj.get());
         SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle, 100.f, 10.f); 
         SensorManager::getInstance().createMSensorComponent(*obj.get(), 30.f, mData.angle);
+        
     }
     //Online player imitator
     else if(move == 2)

@@ -7,6 +7,7 @@
  #include "TNode.h"
  #include "TResourceAnimation.h"
  #include "TResource.h"
+ #include "TResourceLoD.h"
  #include "TResourceMaterial.h"
  #include "TResourceMesh.h"
  #include "TResourceOBJ.h"
