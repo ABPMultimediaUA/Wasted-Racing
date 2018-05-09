@@ -85,7 +85,11 @@ class TResourceMesh : public TResource {
         //Activates and deactivates the culling with the bounding box
         bool bbActivated = true;
 
+        //Auxiliar functions for generating bounding box and frustum culling
         void generateBoundingBox();
         void drawBoundingBox();
         bool checkBoundingBox();
+
+        //Auxiliar function to generate the vertex triangle adjacency vertex index buffer
+        unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3);
 };  

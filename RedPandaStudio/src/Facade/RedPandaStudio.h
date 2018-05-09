@@ -51,6 +51,8 @@ public:
     TNode* createCamera(TNode* parent, glm::vec3 position, glm::vec3 target);
     //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity);
+    //Creates a spotlight and returns a TSpotlight
+    TNode* createSpotlight(TNode* parent, glm::vec3 position, glm::vec3 intensity, glm::vec3 direction, float cutoff);
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
 
@@ -116,6 +118,7 @@ private:
     //=========================
     TNode *camera;
     std::vector<TNode*> lights;
+    std::vector<TNode*> spotlights;
 
     //=========================
     //  SKYBOX
