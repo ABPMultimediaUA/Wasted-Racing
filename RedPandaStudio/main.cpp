@@ -37,7 +37,7 @@ int main() {
     //rps::rotateNode(t2, glm::vec3(0, 180.0, 0));
     rps->setCulling(false, (GLenum)GL_FRONT);
 
-    TNode* spotlight0 = rps->createSpotlight(rps->getSceneRoot(), glm::vec3(0, 0, 40), glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), 77);
+    //TNode* spotlight0 = rps->createSpotlight(rps->getSceneRoot(), glm::vec3(0, 0, 40), glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), 77);
     //TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(10, 20, 0), glm::vec3(1, 1, 1));
     //TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
 
