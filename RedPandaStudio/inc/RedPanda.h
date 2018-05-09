@@ -14,5 +14,6 @@
  #include "TResourceShader.h"
  #include "TResourceSkybox.h"
  #include "TResourceTexture.h"
+ #include "TSpotlight.h"
  #include "TTransform.h"
 

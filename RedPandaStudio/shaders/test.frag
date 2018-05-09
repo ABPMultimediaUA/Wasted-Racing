@@ -19,7 +19,7 @@ void main()
   {
     if(textActive)
     {
-      FragColor = texture(sampler, GUV_Coordinates);
+      FragColor = texture(sampler, GUV_Coordinates) * G_Color;
       
       float levels = 6.0;
 

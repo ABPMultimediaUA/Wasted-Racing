@@ -416,7 +416,8 @@ void RedPandaStudio::updateCamera(glm::vec3 position, glm::vec3 target) {
 	translation->setMatrix(trans);
 }
 
-TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity) {
+TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity) 
+{
 
 	//Check parent node is valid
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
@@ -439,6 +440,31 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 
 		return nullptr;
 	}
 
+}
+
+TNode* RedPandaStudio::createSpotlight(TNode* parent, glm::vec3 position, glm::vec3 intensity, glm::vec3 direction, float cutoff)
+{
+	//Check parent node is valid
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
+	{
+		//Create new transformation tree
+		TNode* transformT = addRotScaPos(parent, position);
+
+		//Create new light entity
+		TSpotlight* l = new TSpotlight(intensity, direction, cutoff);
+		TNode* light = new TNode(transformT, l);
+		transformT->addChild(light);
+
+		//Register light
+		spotlights.push_back(light);
+
+		//Return light
+		return light;
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 void RedPandaStudio::deleteObject(TNode* leaf) {
@@ -521,7 +547,8 @@ TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {
 
 ////////////////////////////////////
 //  LIGHTS AND CAMERA MANAGEMENT
-void RedPandaStudio::renderLights() {
+void RedPandaStudio::renderLights() 
+{
 
 	for(unsigned int i = 0; i < lights.size(); i++){
 
@@ -540,9 +567,37 @@ void RedPandaStudio::renderLights() {
 		glUniform4fv(intID, 1, &l->getIntensity()[0]);
 	}
 
+	
+	for(unsigned int i = 0; i < spotlights.size(); i++)
+	{
+		glm::mat4 mat = glm::mat4(1.0);
+		calculateNodeTransform(spotlights[i], mat);
+
+		glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+		TSpotlight* l = (TSpotlight*)spotlights[i]->getEntity();
+
+		std::string lightName = std::string("spotlight[" +  std::to_string(i) + "].light.position");
+		GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
+		glUniform4fv(posID, 1, &pos[0]);
+
+		std::string lightName2 = std::string("spotlight[" + std::to_string(i) + "].light.intensity");
+		GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
+		glUniform4fv(intID, 1, &l->getIntensity()[0]);
+
+		std::string lightName3 = std::string("spotlight[" + std::to_string(i) + "].direction");
+		GLuint dirID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName3.c_str());
+		glUniform3fv(dirID, 1, &l->getDirection()[0]);
+
+		std::string lightName4 = std::string("spotlight[" + std::to_string(i) + "].cutoff");
+		GLuint cutID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName4.c_str());
+		glUniform1f(cutID, l->getCutoff());
+	}
+
 	GLuint numL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numLights");
 	glUniform1i(numL, lights.size());
 
+	GLuint numSL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numSpotLights");
+	glUniform1i(numSL, spotlights.size());
 }
 void RedPandaStudio::renderCamera() {
 

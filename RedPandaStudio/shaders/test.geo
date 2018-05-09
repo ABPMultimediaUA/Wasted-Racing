@@ -26,7 +26,7 @@ bool isFrontFacing(vec3 a, vec3 b, vec3 c)
 
 void emitEdgeQuad(vec3 e0, vec3 e1)
 {
-    EdgeWidth = 0.003;
+    EdgeWidth = 0.004;
     PctExtend = 0.00001;
  
     vec2 ext = PctExtend * (e1.xy - e0.xy);
@@ -56,7 +56,7 @@ void main()
     vec3 p4 = gl_in[4].gl_Position.xyz / gl_in[4].gl_Position.w;
     vec3 p5 = gl_in[5].gl_Position.xyz / gl_in[5].gl_Position.w;
 
-
+/*
     if( isFrontFacing(p0, p2, p4))
     {
         if(!isFrontFacing(p0, p1, p2))
@@ -74,7 +74,7 @@ void main()
             emitEdgeQuad(p4, p0);
         }
     }
-
+*/
 
     int i;
     GIsEdge = 0;
