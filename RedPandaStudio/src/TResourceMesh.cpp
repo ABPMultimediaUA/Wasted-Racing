@@ -159,22 +159,23 @@ bool TResourceMesh::loadResource()
 
 void TResourceMesh::draw()
 {
-    
-    //glEnable(GL_COLOR_MATERIAL);
-
-    GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
-    glUniform1i(id, textActive);
-
-    //First we draw the texture of our mesh
-    if(texture!=NULL && textActive)
+    if((bbActivated && checkBoundingBox()) || !bbActivated)
     {
-        texture->draw();
-    }
-    
-    if(material!=NULL)
-    {
-        material->draw();
-    }
+        //glEnable(GL_COLOR_MATERIAL);
+
+        GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
+        glUniform1i(id, textActive);
+
+        //First we draw the texture of our mesh
+        if(texture!=NULL && textActive)
+        {
+            texture->draw();
+        }
+        
+        if(material!=NULL)
+        {
+            material->draw();
+        }
 
     //==============================================
     //BIND VAO
@@ -216,14 +217,9 @@ void TResourceMesh::draw()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     //==============================================
 
-    drawBoundingBox();
-/*
-    if(texture!=NULL && textActive)
-    {
-        texture->endDraw();
-    }
-*/
+    //drawBoundingBox();
 
+    }
 }
 
 void TResourceMesh::generateBoundingBox()
@@ -320,6 +316,86 @@ void TResourceMesh::drawBoundingBox()
 
     glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &TEntity::modelMatrix()[0][0]);
 
+}
+
+bool TResourceMesh::checkBoundingBox()
+{
+    //First we set the bounding box's points in the scene
+    glm::mat4 m = TEntity::projectionMatrix() * TEntity::viewMatrix() * TEntity::modelMatrix() * bbTransform;
+    glm::vec4 p1 = m * glm::vec4(-0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p2 = m * glm::vec4(0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p3 = m * glm::vec4(0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p4 = m * glm::vec4(-0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p5 = m * glm::vec4(-0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p6 = m * glm::vec4(0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p7 = m * glm::vec4(0.5, 0.5, 0.5, 1.0);
+    glm::vec4 p8 = m * glm::vec4(-0.5, 0.5, 0.5, 1.0);
+
+
+    //Then we check if atleast one point is inside the view frustum
+    if(p1.x >= -p1.w && p1.x <= p1.w && p1.y >= -p1.w && p1.y <= p1.w && p1.z >= -p1.w && p1.z <= p1.w)
+    {
+        return true;
+    }
+    if(p2.x >= -p2.w && p2.x <= p2.w && p2.y >= -p2.w && p2.y <= p2.w && p2.z >= -p2.w && p2.z <= p2.w)
+    {
+        return true;
+    }
+    if(p3.x >= -p3.w && p3.x <= p3.w && p3.y >= -p3.w && p3.y <= p3.w && p3.z >= -p3.w && p3.z <= p3.w)
+    {
+        return true;
+    }
+    if(p4.x >= -p4.w && p4.x <= p4.w && p4.y >= -p4.w && p4.y <= p4.w && p4.z >= -p4.w && p4.z <= p4.w)
+    {
+        return true;
+    }
+    if(p5.x >= -p5.w && p5.x <= p5.w && p5.y >= -p5.w && p5.y <= p5.w && p5.z >= -p5.w && p5.z <= p5.w)
+    {
+        return true;
+    }
+    if(p6.x >= -p6.w && p6.x <= p6.w && p6.y >= -p6.w && p6.y <= p6.w && p6.z >= -p6.w && p6.z <= p6.w)
+    {
+        return true;
+    }
+    if(p7.x >= -p7.w && p7.x <= p7.w && p7.y >= -p7.w && p7.y <= p7.w && p7.z >= -p7.w && p7.z <= p7.w)
+    {
+        return true;
+    }
+    if(p8.x >= -p8.w && p8.x <= p8.w && p8.y >= -p8.w && p8.y <= p8.w && p8.z >= -p8.w && p8.z <= p8.w)
+    {
+        return true;
+    }
+
+
+    //If not a single point is in the view frustum, we check that all the points are outside at the same time from atleast one
+    //of the planes. This is to fix fake negatives in cases where the bounding volume is higher than the frustum camera (which happens with our map)
+    if(p1.x < -p1.w && p2.x < -p2.w && p3.x < -p3.w && p4.x < -p4.w && p5.x < -p5.w && p6.x < -p6.w && p7.x < -p7.w && p8.x < -p8.w)
+    {
+        return false;
+    }
+    if(p1.x > p1.w && p2.x > p2.w && p3.x > p3.w && p4.x > p4.w && p5.x > p5.w && p6.x > p6.w && p7.x > p7.w && p8.x > p8.w)
+    {
+        return false;
+    }
+    if(p1.y < -p1.w && p2.y < -p2.w && p3.y < -p3.w && p4.y < -p4.w && p5.y < -p5.w && p6.y < -p6.w && p7.y < -p7.w && p8.y < -p8.w)
+    {
+        return false;
+    }
+    if(p1.y > p1.w && p2.y > p2.w && p3.y > p3.w && p4.y > p4.w && p5.y > p5.w && p6.y > p6.w && p7.y > p7.w && p8.y > p8.w)
+    {
+        return false;
+    }
+    if(p1.z < -p1.w && p2.z < -p2.w && p3.z < -p3.w && p4.z < -p4.w && p5.z < -p5.w && p6.z < -p6.w && p7.z < -p7.w && p8.z < -p8.w)
+    {
+        return false;
+    }
+    if(p1.z > p1.w && p2.z > p2.w && p3.z > p3.w && p4.z > p4.w && p5.z > p5.w && p6.z > p6.w && p7.z > p7.w && p8.z > p8.w)
+    {
+        return false;
+    }
+
+
+    return true;
 }
 
 //This functions looks for a specific adjacent vertex for the vertex indices. Due to the computational cost, this should be improved

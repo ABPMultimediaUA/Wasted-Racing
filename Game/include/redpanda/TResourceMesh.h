@@ -61,8 +61,14 @@ class TResourceMesh : public TResource {
         bool textActive=0;
         //Material asociated to this mesh
         TResourceMaterial* material = NULL;
+        /*
         //Buffer handles
         GLuint* vboHandles;
+        */
+        //======================
+        //Buffer handles
+        GLuint* vboHandles, vaoHandles;
+        //======================
 
         ///////////////////////////////////////
         //// Bounding box asociated data //////
@@ -76,7 +82,10 @@ class TResourceMesh : public TResource {
         GLuint boxIBOIndices;
         //Transform of the bounding box
         glm::mat4 bbTransform;
+        //Activates and deactivates the culling with the bounding box
+        bool bbActivated = true;
 
         void generateBoundingBox();
         void drawBoundingBox();
+        bool checkBoundingBox();
 };  

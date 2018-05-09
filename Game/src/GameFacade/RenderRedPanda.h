@@ -82,8 +82,11 @@ public:
     //Set active or inactive clipping
     virtual void setClipping(bool b)    {};
 
+    //add mesh lod
+    virtual void addMeshLoD(int lvl, const char* mesh);
+
     //Change mesh
-    virtual void changeMesh(int id, std::string newMesh);
+    virtual void changeMesh(int id, int lvl, const char* mesh);
 
     ////////////
     //  Image

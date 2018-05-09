@@ -60,9 +60,14 @@ public:
 
     ////////////////////////////////////////
     //  GRAPHICS OPTIONS AND PARAMETERS
+    //Initializes all parameters and programs to operate with the shadow mapping
+    void initPostProcessing();
+
+    //Draws the shadow mapping
+    void drawPostProcessing();
 
     //Initializes all parameters and programs to operate with the shadow mapping
-    void initializeShadowMappping();
+    void initShadowMappping();
 
     //Draws the shadow mapping
     void drawShadowMapping();
@@ -70,6 +75,8 @@ public:
     //Activates and deactivates the culling. The second parameter determinates which type of faces are culled (when deactivating the culling, that parameter doesnt matter)
     void setCulling(bool b, GLenum e);
 
+    //To add some mesh into lod array.   
+    void addMeshLoD(int lvl, const char* mesh);    
 
     //////////////////////////////
     //  GETTERS
@@ -121,17 +128,35 @@ private:
     GLuint skyVertexArray;
 
     //=========================
+    //  POST-PROCESSING
+    //=========================
+	GLuint postProcessingBuffer;   //Texture (color) buffer
+	GLuint renderBuffer;           //Render buffer ID
+	GLuint colorMap;               //Texture in which we paint the scene
+    GLuint processingID;           //Shadow map program ID
+    GLuint postprocessing_sampler; //Sampler2D of the texture rendered to the quad
+
+    GLuint processingQuadVAO, processingQuadVBO; //Quad indexes
+    
+    //Window size (used to paint over the quad)
+    int windowWidth = 1024;
+    int windowHeight = 1024;
+
+    //=========================
     //  SHADOWMAP
     //=========================
 	GLuint depthBuffer; //Depth buffer
-	GLuint colorMap;    //Texture in which we paint the scene
+	GLuint depthMap;    //Texture in which we paint the scene
     GLuint shadowID;    //Shadow map program ID
-	GLuint renderBuffer;//Render buffer ID
-    GLuint quadVAO, quadVBO; //Quad indexes
+    GLuint shadowQuadID; //TESTING
+	GLuint shadowRenderBuffer;//Render buffer ID
+    GLuint shadowQuadVAO, shadowQuadVBO; //Quad indexes
     GLuint shadow_sampler; //Sampler2D of the texture rendered to the quad
+    GLuint shadowMap_sampler; //Sampler2D of the depth map in the normal shader
 
-    int windowWidth = 1024;
-    int windowHeight = 1024;
+    //Shadow map texture size
+    int shadowWidth = 1024;
+    int shadowHeight = 1024;
 
     //=========================
     //  TIME

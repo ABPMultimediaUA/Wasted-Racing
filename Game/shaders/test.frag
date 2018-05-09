@@ -23,7 +23,6 @@ void main()
     FragColor.y = floor(FragColor.y * levels) / levels;
     FragColor.z = floor(FragColor.z * levels) / levels;
     FragColor.w = 1.0;
-  
   }
   else
   {

@@ -116,6 +116,7 @@ struct Light {
    vec4 position;
    vec4 intensity;
 };
+
 uniform Light light[maxLights];
 
 struct Material {
@@ -126,10 +127,20 @@ struct Material {
 };
 uniform Material material;
 
+//================================
+uniform vec4 lightSpaceView;
+
+varying vec4 FragPos;
+varying vec4 FragLightPos;
+varying vec3 Normal;
+
+out vec4 lightPos;
+out vec4 viewPos;
+//================================
 
 void main()
 {
-    float ambient = 1;                               
+   /* float ambient = 1;                               
 
     v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -167,11 +178,20 @@ void main()
 
     }
 
-    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
+    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);*/
 
+    v_Color = vec4(1.0, 1.0, 1.0, 1.0);
 
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 
     UV_Coordinates = UV;
 
+    //================================
+    FragPos = ModelMatrix * vertexPosition;
+    FragLightPos = lightSpaceView * FragPos;
+    Normal = transpose(inverse(mat3(ModelMatrix))) * vertexNormal;
+
+    lightPos = light[0].position;
+    viewPos = ViewMatrix * ModelMatrix * vertexPosition;
+    //================================
 }

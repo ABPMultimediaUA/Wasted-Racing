@@ -82,7 +82,10 @@ class TResourceMesh : public TResource {
         GLuint boxIBOIndices;
         //Transform of the bounding box
         glm::mat4 bbTransform;
+        //Activates and deactivates the culling with the bounding box
+        bool bbActivated = true;
 
         void generateBoundingBox();
         void drawBoundingBox();
+        bool checkBoundingBox();
 };  
