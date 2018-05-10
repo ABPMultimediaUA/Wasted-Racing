@@ -153,7 +153,7 @@ all_windows:
 ################################################################################
 # MAC
 ################################################################################
-all_mac: LDFLAGS += -L./lib/mac -lfmod -lfmodstudio -lRakNetDLL -lIrrlicht
+all_mac: LDFLAGS += -L./lib/mac -lfmod -lfmodstudio -lRakNetDLL -lIrrlicht -lSDL2 -lGLEW -lassimp -lsfml-graphics -lsfml-system -lRedPanda
 all_mac: LDFLAGS += -dylib_file \
 /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:\
 /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib \
