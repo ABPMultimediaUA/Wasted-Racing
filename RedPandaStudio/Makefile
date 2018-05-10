@@ -206,5 +206,6 @@ compilePwin: win
 
 compilePmac: mac
 	cp ./bin/libRedPanda.dylib ../Game/lib/mac
+	cp ./bin/libRedPanda.dylib ../Game/bin
 
 .PHONY: all clean clean_linux info install win
