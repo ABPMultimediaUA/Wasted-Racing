@@ -167,6 +167,11 @@ all_mac:
 	rm -rf $(BIN_PATH)$(TARGET).sh
 	@echo $(sh_valueMAC) >> $(BIN_PATH)$(TARGET).sh
 	chmod +x $(BIN_PATH)$(TARGET).sh	
-
+	
+install_mac:
+	brew reinstall sdl2 
+	brew reinstall sfml 
+	brew reinstall assimp 
+	brew reinstall glew
 
 .PHONY: all clean clean_linux info install win
