@@ -93,7 +93,7 @@ void AudioFMOD::openAudioEngine(int lang) {
 
 //Updater
 void AudioFMOD::update() {
-
+    #ifndef __APPLE__
     //Update listener position and orientation
     setListenerPosition();
 
@@ -117,7 +117,7 @@ void AudioFMOD::update() {
 
     //Update FMOD system
     ERRCHECK( FMOD_Studio_System_Update(system) );
-
+    #endif
 }
 
 //Closer
