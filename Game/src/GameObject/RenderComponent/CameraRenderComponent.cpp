@@ -2,13 +2,14 @@
 #include "../../GameManager/PhysicsManager.h"
 
 CameraRenderComponent::CameraRenderComponent(GameObject& newGameObject) : IRenderComponent(newGameObject) {
-		distance = 25;
-        minDistanceCP = 25;
-		maxDistance = 50;
+		distance = 20;
+        minDistanceCP = 20;
+		maxDistance = 40;
 		oldDistance = distance;
 		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
 		count = 0;
 		spinDir = 1;
+        cameraMaxVel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().max_vel;
 }
 
 //Initilizer
@@ -21,13 +22,12 @@ void CameraRenderComponent::update(float dTime) {
 
     //Actual velocity
     float vel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
-    float maxVel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().max_vel;
 
     //calculate distance camera-player
-    float sumDistanceCP = (maxDistance - minDistanceCP) * (vel/maxVel);
+    float sumDistanceCP = (maxDistance - minDistanceCP) * (vel/cameraMaxVel);
 
     //Camera velocity
-    const float camVel = 30;
+    const float camVel = 8;
 
     //Set oldDistance to currentDistance
     oldDistance = distance;
@@ -138,6 +138,7 @@ void CameraRenderComponent::update(float dTime) {
         }
         //if (move.spin == 0)
             //distance = oldDistance;
+        std::cout << distance << std::endl;
     }
 
     //Update camera

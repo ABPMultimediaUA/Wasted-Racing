@@ -35,7 +35,7 @@ namespace gui {
     //For controlling animations
     const int bkgSize = 21;
     int currImg = 0;
-    const int frameSkip = 10;
+    const int frameSkip = 3;
     int currFrame = 0;
 
     //MAIN  MENU Images

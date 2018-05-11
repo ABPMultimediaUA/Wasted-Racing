@@ -55,5 +55,6 @@ private:
 	float moldHeight;
 	int count;
 	int spinDir;
+	float cameraMaxVel;
 
 };
