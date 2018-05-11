@@ -4,7 +4,7 @@
 CameraRenderComponent::CameraRenderComponent(GameObject& newGameObject) : IRenderComponent(newGameObject) {
 		distance = 25;
         minDistanceCP = 25;
-		maxDistance = 40;
+		maxDistance = 50;
 		oldDistance = distance;
 		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
 		count = 0;
@@ -148,7 +148,7 @@ void CameraRenderComponent::update(float dTime) {
     
     oldHeight[0] = height[0];
     height[0] = LAPAL::calculateExpectedY(terrain.get()->getTerrain(), currentPosition);
-
+    
     moldHeight = (oldHeight[0] + oldHeight[1] + oldHeight[2] + oldHeight[3] + oldHeight[4])/5;
     mheight = (height[0] + height[1] + height[2] + height[3] + height[4])/5;
 

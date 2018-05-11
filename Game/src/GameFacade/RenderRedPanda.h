@@ -200,4 +200,6 @@ private:
     //Value angleY camera
     float valueY;
 
+    float sum;
+
 };

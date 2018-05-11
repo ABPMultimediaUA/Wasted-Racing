@@ -161,7 +161,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 145.0f;
+    mData.max_vel = 200.0f;
     mData.brake_vel = 10.f;
     mData.velY = 10.f;
     mData.acc = 0;
@@ -203,7 +203,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 135.0f;
+    mData.max_vel = 200.0f;
     mData.brake_vel = 10.f;
     mData.velY = 10.f;
     mData.acc = 0;
@@ -245,7 +245,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 160.0f;
+    mData.max_vel = 200.0f;
     mData.brake_vel = 10.f;
     mData.velY = 10.f;
     mData.acc = 0;
@@ -283,7 +283,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 160.0f;
+    mData.max_vel = 200.0f;
     mData.brake_vel = 10.f;
     mData.velY = 10.f;
     mData.acc = 0;

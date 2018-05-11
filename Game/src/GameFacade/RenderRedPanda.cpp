@@ -179,7 +179,7 @@ void RenderRedPanda::addCamera() {
 
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
     valueY = 0.4;
-
+    sum = 0;
 }
 
 //Update the current camera
@@ -200,12 +200,27 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
     distance *= 1.5;
 
-    float cameraHeight = camera->getOldHeight() + (accTime * (camera->getHeight() - camera->getOldHeight()))/maxTime;
-    //std::cout << camera->getHeight() << std::endl;
-    float dMultiplier = 0.3;
-
-    if(cameraHeight < pos.y && abs(cameraHeight-pos.y) >= 1.0) {
-        dMultiplier = 0.3 / abs(cameraHeight-pos.y);
+    auto oldPosPlayer = camera->getGameObject().getOldTransformData().position;
+    auto newPosPlayer = camera->getGameObject().getNewTransformData().position;
+    auto posPlayer = oldPosPlayer.y - newPosPlayer.y;
+    if(posPlayer > 0.5 && posPlayer < 2 && sum < 20)
+    {
+        sum += 1;
+    }
+    else if(posPlayer < -0.5 && posPlayer > -2 && sum > -20)
+    {
+        sum -= 1;
+    }
+    else if(posPlayer < 0.5 && posPlayer > -0.5)
+    {
+        if(sum > 0)
+        {
+            sum -= 1;
+        }
+        else if(sum < 0)
+        {
+            sum += 1; 
+        }
     }
 
     glm::vec3 target(-pos.x, pos.y+12, pos.z);
@@ -215,7 +230,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
         {
             valueY -= 0.02;
         }
-        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), cameraHeight + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
         position = position;
         device->updateCamera(position, target);
     }
@@ -225,7 +240,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
         {
             valueY += 0.02;
         }
-        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), cameraHeight + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
         position = position;
         device->updateCamera(position, target);
     }
