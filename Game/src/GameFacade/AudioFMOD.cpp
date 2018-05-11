@@ -45,6 +45,8 @@ void shootOnOvertakeEvent(EventData e);
 void shootOnOvertakenEvent(EventData e);
 //MUSIC
 void shootOnMusicMainTheme(EventData e);
+//OTHERS
+void changeAudioLanguage(EventData e);
 
 
 
@@ -65,15 +67,7 @@ void AudioFMOD::openAudioEngine(int lang) {
     ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Master Bank.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank));
     ERRCHECK(FMOD_Studio_System_LoadBankFile(system, "media/audio/banks/Master Bank.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank));
 
-    if(lang == 1){
-
-        LOAD_EVENT(CharacterES, CharacterES);
-        LOAD_EVENT(Music, Music);
-
-    }
-    else{
-
-    }
+    loadBanks();
 
     //Listeners
     //COLLISION
@@ -87,6 +81,9 @@ void AudioFMOD::openAudioEngine(int lang) {
     EventManager::getInstance().addListener(EventListener {EventType::Score_OnOvertaken, shootOnOvertakenEvent});
     //MUSIC
     EventManager::getInstance().addListener(EventListener {EventType::Music_MainTheme, shootOnMusicMainTheme});
+    //OTHERS
+    EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeAudioLanguage});
+    
 
     //Game veriables
     worldUnits = 0.05;
@@ -96,9 +93,11 @@ void AudioFMOD::openAudioEngine(int lang) {
 
 //Updater
 void AudioFMOD::update() {
-
+    #ifndef __APPLE__
     //Update listener position and orientation
     setListenerPosition();
+
+    float vol = GlobalVariables::getInstance().getVolume();
 
     //Update position of events
     for(auto event : soundEvents) {        
@@ -111,23 +110,20 @@ void AudioFMOD::update() {
             //Set sound position
             auto pos = event.second->getEmitter().lock().get()->getGameObject().getTransformData().position;
             event.second->setPosition(pos * worldUnits);
+            event.second->setVolume(vol);
         }
 
     }
 
     //Update FMOD system
     ERRCHECK( FMOD_Studio_System_Update(system) );
-
+    #endif
 }
 
 //Closer
 void AudioFMOD::closeAudioEngine() {
 
-    for(auto description : eventDescriptions)
-        ERRCHECK( FMOD_Studio_EventDescription_ReleaseAllInstances(description.second) );
-
-    for(auto bank : banks)
-        ERRCHECK( FMOD_Studio_Bank_Unload(bank.second) );
+    unloadBanks();
 
     ERRCHECK( FMOD_Studio_Bank_Unload(stringsBank) );
     ERRCHECK( FMOD_Studio_Bank_Unload(masterBank) );
@@ -155,6 +151,44 @@ void AudioFMOD::setListenerPosition() {
 
     ERRCHECK( FMOD_Studio_System_SetListenerAttributes(system, 0, &attributes) );
 
+}
+
+//Load and unload backs
+void AudioFMOD::loadBanks() {
+
+    int lang = GlobalVariables::getInstance().getLanguage();
+
+    if(lang == 0){
+
+        LOAD_EVENT(CharacterES, CharacterES);
+        LOAD_EVENT(Music, Music);
+
+    }
+    else if (lang == 1){
+
+        LOAD_EVENT(CharacterES, CharacterES);
+        LOAD_EVENT(Music, Music);
+
+    }
+
+}
+void AudioFMOD::unloadBanks() {
+
+    for(auto event : soundEvents)         
+        delete event.second;
+
+    soundEvents.clear();
+
+    for(auto description : eventDescriptions)
+        ERRCHECK( FMOD_Studio_EventDescription_ReleaseAllInstances(description.second) );
+
+    eventDescriptions.clear();
+
+    for(auto bank : banks)
+        ERRCHECK( FMOD_Studio_Bank_Unload(bank.second) );
+
+    banks.clear();
+    
 }
 
 //Inserts a new event if it doesn't exist
@@ -229,5 +263,13 @@ void shootOnMusicMainTheme(EventData e) {
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "MusicMainThemeEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
+
+}
+
+void changeAudioLanguage(EventData e) {
+
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    audioFMOD->unloadBanks();
+    audioFMOD->loadBanks();
 
 }

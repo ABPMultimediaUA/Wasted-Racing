@@ -23,11 +23,11 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 void RedPandaStudio::updateDevice() {
 
+	//Update particles
+	updateParticles();
+
+	//Clean screen
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-	renderCamera();
-
-	renderLights();
 
 	//Change shader program for drawing skybox
 	glUseProgram(skyboxID);
@@ -36,10 +36,16 @@ void RedPandaStudio::updateDevice() {
 	glUseProgram(scene->getEntity()->getProgramID());
 	glEnable(GL_DEPTH_TEST);
 
+	//Render our scene
 	renderCamera();
 	renderLights();
 
 	scene->draw();
+
+	//RenderParticles
+	glUseProgram(particlesID);
+	glBindVertexArray(paticlesVertexArray);
+	renderParticles();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -50,7 +56,7 @@ void RedPandaStudio::updateDevice() {
 	std::chrono::duration<double> elapsed = currTime - lastTime;
 	lastTime = currTime;
 
-	double fps = 1/elapsed.count();
+	fps = 1/elapsed.count();
 	
 	if(showFPS)
 	{
@@ -84,8 +90,15 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 	// Request an OpenGL 4.5 context (should be core)
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+	
+	#ifndef __APPLE__
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+	#else
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	#endif
 	// Also request a depth buffer
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, depth);
@@ -127,10 +140,22 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "shaders/test.vert";
-    const char * fragment_file_path = "shaders/test.frag";
-	const char * skybox_vertex_path = "shaders/skybox.vert";
-	const char * skybox_fragment_path = "shaders/skybox.frag";
+	#ifndef __APPLE__
+		const char * vertex_file_path = "shaders/test.vert";
+    	const char * fragment_file_path = "shaders/test.frag";
+		const char * skybox_vertex_path = "shaders/skybox.vert";
+		const char * skybox_fragment_path = "shaders/skybox.frag";
+		const char * particles_vertex_path = "shaders/particles.vert";
+		const char * particles_fragment_path = "shaders/particles.frag";
+	#else 
+		const char * vertex_file_path = "shaders/MAC/test.vert";
+    	const char * fragment_file_path = "shaders/MAC/test.frag";
+		const char * skybox_vertex_path = "shaders/MAC/skybox.vert";
+		const char * skybox_fragment_path = "shaders/MAC/skybox.frag";
+		const char * particles_vertex_path = "shaders/MAC/particles.vert";
+		const char * particles_fragment_path = "shaders/MAC/particles.frag";
+	#endif
+    
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
@@ -141,6 +166,8 @@ void RedPandaStudio::initOpenGL() {
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+
+	glGenVertexArrays(1, &paticlesVertexArray);
 
 	glGenVertexArrays(1, &skyVertexArray);
 	glDepthFunc(GL_LEQUAL);
@@ -179,10 +206,22 @@ void RedPandaStudio::initOpenGL() {
 	GLuint skyVertexID = skyboxVertex->getShaderID();
 	GLuint skyFragmentID = skyboxFragment->getShaderID();
 
+	//Get particles shaders
+	TResourceShader* particlesVertex = resourceManager->getResourceShader(particles_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* particlesFragment = resourceManager->getResourceShader(particles_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	//Get particles shaders ID
+	GLuint particlesVertexID = particlesVertex->getShaderID();
+	GLuint particlesFragmentID = particlesFragment->getShaderID();
+
 	//Link OpenGL program using the id
 	printf("Linking OpenGL program\n");
 	printf("\n");
 	printf("\n");
+
+	//==============================================================================================
+	//Create Basic program
+	//==============================================================================================
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexID);
 	glAttachShader(ProgramID, fragmentID);
@@ -195,7 +234,9 @@ void RedPandaStudio::initOpenGL() {
 	glDeleteShader(vertexID);
 	glDeleteShader(fragmentID);
 
+	//==============================================================================================
 	//Create Skybox program
+	//==============================================================================================
 	skyboxID = glCreateProgram();
 	glAttachShader(skyboxID, skyVertexID);
 	glAttachShader(skyboxID, skyFragmentID);
@@ -216,6 +257,30 @@ void RedPandaStudio::initOpenGL() {
 	
 	glDeleteShader(skyVertexID);
 	glDeleteShader(skyFragmentID);
+
+	//==============================================================================================
+	//Create Particles program
+	//==============================================================================================
+	particlesID = glCreateProgram();
+	glAttachShader(particlesID, particlesVertexID);
+	glAttachShader(particlesID, particlesFragmentID);
+	glLinkProgram(particlesID);
+
+	//Check the program is ok
+	glGetProgramiv(particlesID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(particlesID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(particlesID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+	//We no longer need the shaders (we have them in the program)
+	glDetachShader(particlesID, particlesVertexID);
+	glDetachShader(particlesID, particlesFragmentID);
+	
+	glDeleteShader(particlesVertexID);
+	glDeleteShader(particlesFragmentID);
 
     //Use the program we have just created
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -363,6 +428,64 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 
 
 }
 
+TNode* RedPandaStudio::createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, 
+        int nBirthrate, float nParticleLife, glm::vec3 nBirthDirection, float nBirthSize, glm::vec4 nBirthColor) {
+
+	//Check parent node is valid
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+
+		//Create new transformation tree
+		TNode* transformT = addRotScaPos(parent, nPosition);
+
+    	TResourceMesh* tm = resourceManager->getResourceMesh(shape);
+
+		//Create new light entity
+		TEmitter* e = new TEmitter(tm, nPosition, nRadius, nBirthrate, nParticleLife, nBirthDirection, nBirthSize, nBirthColor);
+		TNode* emitter = new TNode(transformT, e);
+		transformT->addChild(emitter);
+
+		//Register light
+		emitters.push_back(emitter);
+
+		//Return light
+		return emitter;
+	}
+	else{
+		return nullptr;
+	}
+
+}
+
+TNode* RedPandaStudio::createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, int nBirthrate, float nParticleLife,
+            glm::vec3 nBirthDirection, glm::vec3 nDeathDirection, float nVariationDirection, float nBirthSize, float nDeathSize, 
+            float nVariationSize, glm::vec4 nBirthColor, glm::vec4 nDeathColor, float nVariationColor) {
+
+	//Check parent node is valid
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+
+		//Create new transformation tree
+		TNode* transformT = addRotScaPos(parent, nPosition);
+
+    	TResourceMesh* tm = resourceManager->getResourceMesh(shape);
+
+		//Create new light entity
+		TEmitter* e = new TEmitter(tm, nPosition, nRadius, nBirthrate, nParticleLife, nBirthDirection, nDeathDirection, nVariationDirection,
+									nBirthSize, nDeathSize, nVariationSize, nBirthColor, nDeathColor, nVariationColor);
+		TNode* emitter = new TNode(transformT, e);
+		transformT->addChild(emitter);
+
+		//Register light
+		emitters.push_back(emitter);
+
+		//Return light
+		return emitter;
+	}
+	else{
+		return nullptr;
+	}
+
+}
+
 void RedPandaStudio::deleteObject(TNode* leaf) {
 
 	TEntity* t;
@@ -380,10 +503,20 @@ void RedPandaStudio::deleteObject(TNode* leaf) {
 			if(lights[i] == leaf)
 				lights.erase(lights.begin() + i);
 		}
+	} //Unregister particles
+	if(leaf != nullptr && (t = dynamic_cast<TEmitter*>(leaf->getEntity())) != nullptr){
+
+		for(unsigned int i = 0; i < emitters.size(); i++){
+
+			if(emitters[i] == leaf)
+				emitters.erase(emitters.begin() + i);
+		}
 	}
 
 	if(leaf != nullptr && ((t = dynamic_cast<TMesh*>(leaf->getEntity())) != nullptr ||
 		(t = dynamic_cast<TCamera*>(leaf->getEntity())) != nullptr ||
+		(t = dynamic_cast<TAnimation*>(leaf->getEntity())) != nullptr ||
+		(t = dynamic_cast<TEmitter*>(leaf->getEntity())) != nullptr ||
 		(t = dynamic_cast<TLight*>(leaf->getEntity())) != nullptr)) {
 
 			TNode* first = leaf->getFather()->getFather()->getFather();
@@ -440,8 +573,8 @@ TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {
 
 }
 
-////////////////////////////////////
-//  LIGHTS AND CAMERA MANAGEMENT
+/////////////////////////////////////////////////
+//  LIGHTS,CAMERA AND PARTICLES MANAGEMENT
 void RedPandaStudio::renderLights() {
 
 	for(unsigned int i = 0; i < lights.size(); i++){
@@ -464,6 +597,32 @@ void RedPandaStudio::renderLights() {
 	GLuint numL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numLights");
 	glUniform1i(numL, lights.size());
 
+}
+void RedPandaStudio::renderParticles() {
+
+	glEnable (GL_BLEND); 
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	for(unsigned int i = 0; i < emitters.size(); i++){
+		TEmitter* e = (TEmitter*)emitters[i]->getEntity();
+		e->draw(particlesID);
+	}
+
+	glDisable(GL_BLEND);
+	
+}
+void RedPandaStudio::updateParticles() {
+
+	if(firstUpdate) {
+		fps = 60;
+		firstUpdate = false;
+	}
+
+	for(unsigned int i = 0; i < emitters.size(); i++){
+		TEmitter* e = (TEmitter*)emitters[i]->getEntity();
+		e->update(1/fps);
+	}
+	
 }
 void RedPandaStudio::renderCamera() {
 
@@ -501,6 +660,7 @@ void translateNode(TNode* node, glm::vec3 position) {
 	//Check the input is a mesh, camera or light
 	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getEntity();
@@ -508,6 +668,15 @@ void translateNode(TNode* node, glm::vec3 position) {
 		tr->identity();
 		tr->translate(position.x, position.y, position.z);
 
+	}
+	else if(node != nullptr && (t = dynamic_cast<TEmitter*>(node->getEntity())) != nullptr) {
+
+		TTransform* tr = (TTransform*)node->getFather()->getEntity();
+
+		tr->identity();
+		tr->translate(position.x, position.y, position.z);
+
+		((TEmitter*)t)->setEmitterPosition(position);
 	}
 
 }
@@ -519,6 +688,8 @@ void scaleNode(TNode* node, glm::vec3 scale) {
 	//Check the input is a mesh, camera or light
 	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TEmitter*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getFather()->getEntity();
@@ -537,6 +708,8 @@ void rotateNode(TNode* node, glm::vec3 rotation) {
 	//Check the input is a mesh, camera or light
 	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr ||
+		(t = dynamic_cast<TEmitter*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
 
 		TTransform* tr = (TTransform*)node->getFather()->getFather()->getFather()->getEntity();

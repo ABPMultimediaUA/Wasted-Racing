@@ -44,6 +44,19 @@ namespace gui {
     struct nk_image text_exit;
     struct nk_image text_exitHover;
 
+    //OPTION MENU Images
+    struct nk_image optionsBase;
+    struct nk_image text_language;
+    struct nk_image text_languageHover;
+    struct nk_image text_soundON;
+    struct nk_image text_soundONHover;
+    struct nk_image text_soundOFF;
+    struct nk_image text_soundOFFHover;
+    struct nk_image text_volume;
+    struct nk_image text_volumeHover;
+    struct nk_image text_oexit;
+    struct nk_image text_oexitHover;
+
     //GUI Images
     struct nk_image item_void;
     struct nk_image item_banana;
@@ -73,9 +86,14 @@ namespace gui {
     struct nk_image text_menuHover;
     struct nk_image text_pexit;
     struct nk_image text_pexitHover;
+    struct nk_image text_currentSound;
+    struct nk_image text_currentSoundHover;
 
     void init();
     struct nk_image loadTexture(const char* path);
+
+    std::vector<GLuint> textures;
+    static size_t volume = 100;   
 
 }
 
@@ -84,6 +102,7 @@ namespace gui {
 //==============================================
 void addHUD(EventData eData); 
 void addPause(EventData eData); 
+void changeLanguage(EventData eData);
 
 //==============================================================
 // Engine Related functions
@@ -91,7 +110,7 @@ void addPause(EventData eData);
 //Creates a window depending on the engine
 void RenderRedPanda::openWindow() { 
 
-    window.fullscreen = true;
+    window.fullscreen = false;
 
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
     InputRedPanda* receiver = new InputRedPanda();
@@ -118,10 +137,14 @@ void RenderRedPanda::openWindow() {
 
     gui::init();
 
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_Menu);
+
     addCamera();
 
     EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, addHUD});
     EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeLanguage});
     EventManager::getInstance().addListener(EventListener {EventType::Game_Pause, addPause});
 
 
@@ -168,12 +191,22 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     //Get target y angle
     float radianAngle = cameraTarget->getTransformData().rotation.y;
 
+    auto camera = cameraTarget->getComponent<CameraRenderComponent>().get();
+
     //Get interpolated distance to the player
-    float oldD = cameraTarget->getComponent<CameraRenderComponent>().get()->getOldDistance();
-    float newD = cameraTarget->getComponent<CameraRenderComponent>().get()->getDistance();
+    float oldD = camera->getOldDistance();
+    float newD = camera->getDistance();
 
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
     distance *= 1.5;
+
+    float cameraHeight = camera->getOldHeight() + (accTime * (camera->getHeight() - camera->getOldHeight()))/maxTime;
+    //std::cout << camera->getHeight() << std::endl;
+    float dMultiplier = 0.3;
+
+    if(cameraHeight < pos.y && abs(cameraHeight-pos.y) >= 1.0) {
+        dMultiplier = 0.3 / abs(cameraHeight-pos.y);
+    }
 
     glm::vec3 target(-pos.x, pos.y+12, pos.z);
     if(newD > 15)
@@ -235,6 +268,22 @@ void RenderRedPanda::addObject(IComponent* ptr) {
 
 }
 
+//Particles
+void RenderRedPanda::createParticleSystem(uint16_t id, const char* shape, glm::vec3 position, float radius, int birthrate, float particleLife,
+                                            glm::vec3 birthDirection, glm::vec3 deathDirection, float variationDirection,
+                                            float birthSize, float deathSize, float variationSize,
+                                            glm::vec4 birthColor, glm::vec4 deathColor, float variationColor) {
+
+    TNode * node = device->createEmitter(device->getSceneRoot(), shape, position, radius, birthrate, particleLife,
+            birthDirection, deathDirection, variationDirection, birthSize, deathSize, 
+            variationSize, birthColor, deathColor, variationColor);
+
+    rps::translateNode(node, glm::vec3(-position.x, position.y, position.z));
+
+    nodeMap.insert(std::pair<uint16_t, TNode*>(id, node));
+
+}
+
 //Add an object to the game (Cylinder or Cone)
 void RenderRedPanda::addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) { }
 
@@ -285,6 +334,17 @@ void RenderRedPanda::deleteObject(IComponent* ptr) {
     }
 
 }
+void RenderRedPanda::deleteObject(uint16_t id) {
+
+    auto itr = nodeMap.find(id);
+
+    if(itr != nodeMap.end()){
+        auto node = itr->second;
+        device->deleteObject(node);
+        nodeMap.erase(id);
+    }
+
+}
 
 //Change the position of an object in-game
 void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::TransformationData transform) { 
@@ -326,7 +386,6 @@ bool RenderRedPanda::changeMesh(int id, std::string newMesh)
 // GUI Related Functions
 //==============================================================
 
-//GUI update function
 void drawRPS_GUI_Menu(){
 
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
@@ -358,10 +417,121 @@ void drawRPS_GUI_Menu(){
                     EventManager::getInstance().addEvent(Event {EventType::Key_Singleplayer_Down});
                 if (nk_button_image(GUI, gui::text_multiplayer, gui::text_multiplayerHover))
                     EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
-                if (nk_button_image(GUI, gui::text_options, gui::text_optionsHover))
-                    fprintf(stdout, "Options!\n");
+                if (nk_button_image(GUI, gui::text_options, gui::text_optionsHover)){
+                    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                    device->setGUIDrawFunction(drawRPS_GUI_Options);
+                }
                 if (nk_button_image(GUI, gui::text_exit, gui::text_exitHover))
                     EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+                nk_popup_end(GUI);
+            }
+            
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
+void drawRPS_GUI_Options(){
+
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::INTRO)
+                    nk_image(GUI, gui::background);
+                else if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::PAUSE)
+                    nk_image(GUI, gui::pbackground);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(h*0.1388, 0, w, h))) {
+                nk_layout_row_static(GUI, h, h*1.5, 1);
+                nk_image(GUI, gui::optionsBase);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.16, h*0.235, w*0.21, w*0.06))) {
+                nk_layout_row_static(GUI, w*0.0568, w*0.2, 1);
+
+                float vol = GlobalVariables::getInstance().getVolume();
+
+                if(vol > 0){
+                    gui::text_currentSound      = gui::text_soundON;
+                    gui::text_currentSoundHover = gui::text_soundONHover;
+                }
+                else {
+                    gui::text_currentSound      = gui::text_soundOFF;
+                    gui::text_currentSoundHover = gui::text_soundOFFHover;
+                }
+
+                if (nk_button_image(GUI, gui::text_currentSound, gui::text_currentSoundHover)){
+                    
+                    if(vol == 0)       vol = (float)gui::volume/100.0;
+                    else if (vol > 0)  vol = 0;
+
+                    EventManager::getInstance().addEvent(Event {EventType::Global_ChangeVolume});
+
+                    GlobalVariables::getInstance().setVolume(vol);
+
+                }           
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(h*0.2, h*0.415, w*0.2, w*0.06))) {
+                nk_layout_row_static(GUI, w*0.043, w*0.15, 1);
+                nk_image(GUI, gui::text_volume);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.26, h*0.42, w*0.2, w*0.06))) {  
+
+                nk_layout_row_static(GUI, w*0.025, w*0.14, 1);
+
+                if(nk_progress(GUI, &gui::volume, 100, nk_true)) {
+
+                    GlobalVariables::getInstance().setVolume((float)gui::volume/100.0);
+
+                }
+
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.135, h*0.107, w*0.25, w*0.04))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+                if (nk_button_image(GUI, gui::text_language, gui::text_languageHover)){
+
+                    int lang = GlobalVariables::getInstance().getLanguage();
+                    if(lang == 0)       lang = 1;
+                    else if (lang == 1) lang = 0;
+
+                    EventData eData;
+                    eData.Id = lang;
+                    EventManager::getInstance().addEvent(Event {EventType::Global_ChangeLanguage, eData});
+
+                    GlobalVariables::getInstance().setLanguage(lang);
+                }                
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.705, h*0.81, w*0.15, h*0.15))) {
+                nk_layout_row_static(GUI, h*0.15, w*0.15, 1);
+                if (nk_button_image(GUI, gui::text_oexit, gui::text_oexitHover)){
+                    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::INTRO){
+                        rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                        device->setGUIDrawFunction(drawRPS_GUI_Menu);
+                    }
+                    else if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::PAUSE){
+                        rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                        device->setGUIDrawFunction(drawRPS_GUI_Pause);
+                    }
+                }                
                 nk_popup_end(GUI);
             }
             
@@ -480,12 +650,7 @@ void drawRPS_GUI_HUD(){
                 nk_popup_end(GUI);
 	        }
         }
-        
-
     }
-
-
-
 
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
@@ -520,8 +685,10 @@ void drawRPS_GUI_Pause(){
                 nk_layout_row_dynamic(GUI, h*0.12, 1);
                 if (nk_button_image(GUI, gui::text_resume, gui::text_resumeHover))
                     EventManager::getInstance().addEvent(Event {EventType::Game_Pause});
-                if (nk_button_image(GUI, gui::text_poptions, gui::text_poptionsHover))
-                    EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
+                if (nk_button_image(GUI, gui::text_poptions, gui::text_poptionsHover)){
+                    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                    device->setGUIDrawFunction(drawRPS_GUI_Options);
+                }
                 if (nk_button_image(GUI, gui::text_menu, gui::text_menuHover)) {
                     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
                     device->setGUIDrawFunction(drawRPS_GUI_Menu);
@@ -543,12 +710,10 @@ void drawRPS_GUI_Pause(){
 
 void gui::init() {
 
-    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
-
-    device->setGUIDrawFunction(drawRPS_GUI_Menu);
-
-    gui::background     = gui::loadTexture("media/img/background.jpg");
-
+    for(unsigned int i = 0; i < textures.size(); i++) {
+        glDeleteTextures(1, &textures[i]);
+    }
+    textures.clear();
 
     //==========================================================================================
     //  MAIN MENU
@@ -563,6 +728,7 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bOptionsHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExit.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExitHover.png");
+        gui::background                 =   gui::loadTexture("media/img/background.jpg");
     } 
     else {
         gui::menuBase                   =   gui::loadTexture("media/img/GUI/MainMenu/SPA/menuBase.png");
@@ -574,6 +740,37 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bOpcionesHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalir.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalirHover.png");
+        gui::background                 =   gui::loadTexture("media/img/background.jpg");
+    }
+
+    //==========================================================================================
+    //  OPTIONS MENU
+    //==========================================================================================
+    if(GlobalVariables::getInstance().getLanguage() == 0) {
+        gui::optionsBase                =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/opcionesBase.png");
+        gui::text_language              =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bLanguageEnglish.png");
+        gui::text_languageHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bLanguageEnglishHover.png");
+        gui::text_soundON               =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSoundOn.png");
+        gui::text_soundONHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSoundOnHover.png");
+        gui::text_soundOFF              =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSoundOff.png");
+        gui::text_soundOFFHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSoundOffHover.png");
+        gui::text_volume                =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolume.png");
+        gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolumeHover.png");
+        gui::text_oexit                 =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bExit.png");
+        gui::text_oexitHover            =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bExitHover.png");
+    } 
+    else {
+        gui::optionsBase                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/opcionesBase.png");
+        gui::text_language              =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bIdiomaEspañol.png");
+        gui::text_languageHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bIdiomaEspañolHover.png");
+        gui::text_soundON               =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOn.png");
+        gui::text_soundONHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOnHover.png");
+        gui::text_soundOFF              =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOff.png");
+        gui::text_soundOFFHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOffHover.png");
+        gui::text_volume                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bVolumen.png");
+        gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bVolumenHover.png");
+        gui::text_oexit                 =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalir.png");
+        gui::text_oexitHover            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalirHover.png");
     }
 
     //==========================================================================================
@@ -653,6 +850,8 @@ struct nk_image gui::loadTexture(const char* path) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, sftex.getSize().x, sftex.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    textures.push_back(tex);
     
     return nk_image_id((int)tex);
 
@@ -775,4 +974,8 @@ void addPause(EventData eData) {
         MatchState::getInstance().setRatio(1.0);
         EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
     }
+}
+
+void changeLanguage(EventData eData) {
+    gui::init();
 }

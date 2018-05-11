@@ -22,18 +22,39 @@ int main() {
     std::cout << "                                                     \\______/ "              << std::endl;
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
-
-    TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
-    TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/cuboprueba.obj");
+    std::cout << "1" << std::endl;
+    //TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
+    //TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/cuboprueba.obj");
     TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
-    TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
+    std::cout << "2" << std::endl;
+    TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(10,2,0), glm::vec3(0,2,0));
+    std::cout << "3" << std::endl;
 
-    rps::scaleNode(t, glm::vec3(0.25,0.25,0.25));
-    rps::scaleNode(t2, glm::vec3(10,0.25,10));
+    //rps::scaleNode(t, glm::vec3(0.25,0.25,0.25));
+    //rps::scaleNode(t2, glm::vec3(10,0.25,10));
 
     TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
+    std::cout << "1" << std::endl;
     TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
-
+    std::cout << "2" << std::endl;
+     /* //Fountain
+    TNode* temitter = rps->createEmitter(rps->getSceneRoot(), "media/particle.obj", glm::vec3(0,0,-5), 0, 2000, 4, 
+                    glm::vec3(0,0.05,0), glm::vec3(0,-0.01,0), 0.1,
+                    0.01, 0.05, 0.5,
+                    glm::vec4(0.2,0.2,0.6,1), glm::vec4(1,1,1,1), 0.01);
+    std::cout << "3" << std::endl;
+    //Sparks
+    TNode* temitter1 = rps->createEmitter(rps->getSceneRoot(), "media/particle.obj", glm::vec3(0,0,0), 0.01, 200, 0.5, 
+                    glm::vec3(0,0.02,0.02), glm::vec3(0,0.04,0.04), 0.1,
+                    0.02, 0.01, 0.5,
+                    glm::vec4(1,1,0,1), glm::vec4(1,0,0,0.5), 0.1);
+    std::cout << "4" << std::endl;
+    //Smoke
+    TNode* temitter2 = rps->createEmitter(rps->getSceneRoot(), "media/particle.obj", glm::vec3(0,0,5), 0, 100, 10, 
+                    glm::vec3(0,0.01,0), glm::vec3(0,0.01,0), 0.2,
+                    0, 0.5, 0.5,
+                    glm::vec4(0.1,0.1,0.1,1), glm::vec4(1,1,1,0.5), 0);
+    std::cout << "5" << std::endl;*/
     bool quit = true;
     SDL_Event event;
 
@@ -48,10 +69,10 @@ int main() {
             }            
         }
 
-        rps->updateCamera(glm::vec3(10, i, 0), glm::vec3(0,0,0));
+        rps->updateCamera(glm::vec3(cos(i), 0, sin(i)), glm::vec3(0,0,0));
         rps->updateDevice();
-        i += 0.01;
-
+        //rps::translateNode(temitter,glm::vec3(i*10,0, 0));
+        i += 0.001;
     }
 
     rps->dropDevice();

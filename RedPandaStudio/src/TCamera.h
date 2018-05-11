@@ -1,7 +1,13 @@
 #pragma once
 #include "TEntity.h"
 #include <iostream>
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
+
 #include <glm/ext.hpp>
 
 class TCamera : public TEntity {

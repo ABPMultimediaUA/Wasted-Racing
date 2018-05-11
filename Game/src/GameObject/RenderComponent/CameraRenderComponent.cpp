@@ -42,7 +42,6 @@ void CameraRenderComponent::update(float dTime) {
     //Data for next position
     auto moveCMP = getGameObject().getComponent<MoveComponent>();
 
-
     if(moveCMP != nullptr)
     {
         auto move = moveCMP.get()->getMovemententData();
@@ -140,6 +139,18 @@ void CameraRenderComponent::update(float dTime) {
         //if (move.spin == 0)
             //distance = oldDistance;
     }
+
+    //Update camera
+    for(int i = 4; i > 0; i--) {
+        oldHeight[i] = oldHeight[i-1];
+        height[i] = height[i-1];
+    }
+    
+    oldHeight[0] = height[0];
+    height[0] = LAPAL::calculateExpectedY(terrain.get()->getTerrain(), currentPosition);
+
+    moldHeight = (oldHeight[0] + oldHeight[1] + oldHeight[2] + oldHeight[3] + oldHeight[4])/5;
+    mheight = (height[0] + height[1] + height[2] + height[3] + height[4])/5;
 
 }
 

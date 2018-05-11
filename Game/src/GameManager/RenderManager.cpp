@@ -1,4 +1,5 @@
 #include "RenderManager.h"
+#include "ParticleManager.h"
 
 //////////////////////////////////////////////
 //            THINGS TO DO HERE
@@ -85,6 +86,10 @@ void RenderManager::init(int engine) {
     GlobalVariables::getInstance().setDistanceLoD(0);
 
     createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
+
+    particleManager = &ParticleManager::getInstance();
+    particleManager->init();
+
 }
 
 void RenderManager::update(float dTime) {
@@ -109,6 +114,8 @@ void RenderManager::update(float dTime) {
         //:::>Function should be erased and replaced with another one generated here, doing the same thing
         renderFacade->updateItemIcon();
     }
+
+    particleManager->update();
 }
 
 void RenderManager::draw() {
@@ -131,6 +138,8 @@ void RenderManager::close(){
 
     //Clear render component list
     renderComponentList.clear();
+
+    particleManager->close();
 }
 
 void RenderManager::splitQuadTree(){

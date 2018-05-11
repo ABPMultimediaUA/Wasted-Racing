@@ -10,7 +10,7 @@ OBJECTS := $(patsubst %,$(BIN_DIR)$(OBJ_DIR)%,$(_OBJECTS))
 # general compiler settings (might need to be set when compiling the lib, too)
 CPPFLAGS += -I./../../inc -I./../../include -I./..
 ifndef NDEBUG
-CXXFLAGS += -g -Wall -DBUILDING_EXAMPLE_DLL  -std=c++14
+CXXFLAGS += -g -Wall  -std=c++14
 else
 CXXFLAGS += -O3
 endif

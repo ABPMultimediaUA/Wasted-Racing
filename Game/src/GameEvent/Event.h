@@ -122,6 +122,12 @@ enum EventType {
     Score_OnOvertaken,
     //MUSIC: Music related events
     Music_MainTheme,
+    //PARTICLES: Particle related events
+    Particles_SmokeON,
+    Particles_SmokeOFF,
+    //GLOBAL: Global related events
+    Global_ChangeVolume,
+    Global_ChangeLanguage,
     //Idle event
     Idle
 };

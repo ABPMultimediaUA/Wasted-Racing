@@ -81,6 +81,7 @@ public:
 
     //Delete an object or light of the game
     virtual void deleteObject(IComponent* ptr) = 0;
+    virtual void deleteObject(uint16_t id) = 0;
 
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
@@ -90,6 +91,12 @@ public:
 
     //Change mesh
     virtual bool changeMesh(int id, std::string newMesh) = 0;
+
+    //Particles
+    virtual void createParticleSystem(uint16_t id, const char* shape, glm::vec3 position, float radius, int birthrate, float particleLife,
+                                        glm::vec3 birthDirection, glm::vec3 deathDirection, float variationDirection,
+                                        float birthSize, float deathSize, float variationSize,
+                                        glm::vec4 birthColor, glm::vec4 deathColor, float variationColor) = 0;
 
     //==============================================================
     //  VISUAL INTERFACE
