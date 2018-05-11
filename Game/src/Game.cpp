@@ -127,7 +127,7 @@ void Game::Run() {
         //Measure elapsed time
         accumulatedTime += (float)clock->getElapsedTime();
         clock->restart();
-
+        
         if(dynamic_cast<MatchState*>(state) != nullptr) 
         {
             //If the state is Match, divide with ratio so we can accelerate or slow down the game
