@@ -119,6 +119,7 @@ struct Light {
    vec4 position;
    vec4 intensity;
 };
+
 uniform Light light[maxLights];
 
 struct SpotLight
@@ -137,6 +138,16 @@ struct Material {
 };
 uniform Material material;
 
+//================================
+uniform vec4 lightSpaceView;
+
+varying vec4 FragPos;
+varying vec4 FragLightPos;
+varying vec3 Normal;
+
+out vec4 lightPos;
+out vec4 viewPos;
+//================================
 
 void main()
 {
@@ -213,5 +224,4 @@ void main()
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 
     UV_Coordinates = UV;
-
 }

@@ -215,7 +215,7 @@ void RedPandaStudio::initOpenGL() {
 
 	//=============================
 	//Initialize all parameters needed for the shadow mapping
-	initializeShadowMappping();
+	//initShadowMappping();
 	//=============================
 
 	//Get main shaders
@@ -712,17 +712,17 @@ void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat)
 // GRAPHICS OPTIONS AND PARAMETERS
 
 //================================================= Alexei's magic touch
-void RedPandaStudio::initializeShadowMappping()
+void RedPandaStudio::initPostProcessing()
 {
 	//Debugging data
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
 	//Generating and binding the frame buffer
-	glGenFramebuffers(1, &depthBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	glGenFramebuffers(1, &postProcessingBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, postProcessingBuffer);
 	
-	//Binding and generating texture 2D
+	//Binding and generating texture 2D which stores the depth data to render later
 	glGenTextures(1, &colorMap);
 	glBindTexture(GL_TEXTURE_2D, colorMap);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -750,39 +750,188 @@ void RedPandaStudio::initializeShadowMappping()
 	std::cout<<"Buffers y texturas creados"<<std::endl;
 
 	//BASIC STUFFY FOR SHADER CREATION
-	const char *shadowTESTMap_fragment_path = "shaders/shadowMapTest.frag";
-	const char *shadowTESTMap_vertex_path = "shaders/shadowMapTest.vert";
+	const char *processing_fragment_path = "shaders/postProcessing.frag";
+	const char *processing_vertex_path = "shaders/postProcessing.vert";
 
-	TResourceShader* shadowTESTVertex = resourceManager->getResourceShader(shadowTESTMap_vertex_path, (GLenum)GL_VERTEX_SHADER);
-	TResourceShader* shadowTESTFragment = resourceManager->getResourceShader(shadowTESTMap_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+	TResourceShader* processingVertex = resourceManager->getResourceShader(processing_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* processingragment = resourceManager->getResourceShader(processing_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
 
-	GLuint shadowTESTVertexID = shadowTESTVertex->getShaderID();
-	GLuint shadowTESTFragmentID = shadowTESTFragment->getShaderID();
+	GLuint processingVertexID = processingVertex->getShaderID();
+	GLuint processingFragmentID = processingragment->getShaderID();
 
-	shadowTESTID = glCreateProgram();
-	glAttachShader(shadowTESTID, shadowTESTVertexID);
-	glAttachShader(shadowTESTID, shadowTESTFragmentID);
-	glLinkProgram(shadowTESTID);
-	std::cout << "Linking shadowTESTID" << std::endl;
+	processingID = glCreateProgram();
+	glAttachShader(processingID, processingVertexID);
+	glAttachShader(processingID, processingFragmentID);
+	glLinkProgram(processingID);
+	std::cout << "Linking processingID" << std::endl;
 
 	//Check the program is ok
-	glGetProgramiv(shadowTESTID, GL_LINK_STATUS, &Result);
-	glGetProgramiv(shadowTESTID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	glGetProgramiv(processingID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(processingID, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	if ( InfoLogLength > 0 ){
 		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
-		glGetProgramInfoLog(shadowTESTID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		glGetProgramInfoLog(processingID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
 		printf("%s\n", &ProgramErrorMessage[0]);
 	}
 
 	//Delete because the program is cool
-	glDetachShader(shadowTESTID,shadowTESTVertexID);
-	glDetachShader(shadowTESTID,shadowTESTFragmentID);
-	glDeleteShader(shadowTESTVertexID);
-	glDeleteShader(shadowTESTFragmentID);
+	glDetachShader(processingID,processingVertexID);
+	glDetachShader(processingID,processingFragmentID);
+	glDeleteShader(processingVertexID);
+	glDeleteShader(processingFragmentID);
 
-	glUseProgram(shadowTESTID); //REQUIRED for attaching variables
+	glUseProgram(processingID); //REQUIRED for attaching variables
+	
+	//Quad in which we'll paint the scene
+    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
 
-	//BASIC STUFFY FOR SHADER CREATION
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    //Bind the array to the array buffer
+    glGenBuffers(1, &processingQuadVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, processingQuadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+
+	//Push vertex array and the disable it
+    glGenVertexArrays(1, &processingQuadVAO);
+    glBindVertexArray(processingQuadVAO);
+	
+	glEnableVertexAttribArray(3); //Vertex points
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(4); //Vertex textures
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	//Closing bindings
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//Quad texture assignment
+	postprocessing_sampler = glGetUniformLocation(processingID, "screenTexture");
+}
+
+
+void RedPandaStudio::drawPostProcessing()
+{
+	//Bind the buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, postProcessingBuffer);     //Binding where we'll store our image
+	glEnable(GL_DEPTH_TEST);						      //Enabling for 3D renders
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); //Cleaning the buffers
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 			      //Clean window
+ 
+	//Draw the scene normally
+	glUseProgram(scene->getEntity()->getProgramID());
+	renderCamera();
+	renderLights();
+	scene->draw();
+
+	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT); //Clean the dirty color
+	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded
+
+	//Use our program and the texture given by the frame buffer
+	glUseProgram(processingID);
+
+	//Bind array buffer and vertex array of data
+    glBindBuffer(GL_ARRAY_BUFFER, processingQuadVBO);
+    glBindVertexArray(processingQuadVAO);
+	glEnableVertexAttribArray(3); //Vertex points
+	glEnableVertexAttribArray(4); //Vertex texture
+
+	//Bind the texture where we draw the scene
+	glBindTexture(GL_TEXTURE_2D, colorMap);	//use the color attachment texture as the texture of the quad plane
+	glUniform1i(postprocessing_sampler, 0);  	 	//ID assignment for the fragment shader (using GL_TEXTURE1 to avoid collisions)
+
+	//Draw the quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	//Unbind all info
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void RedPandaStudio::initShadowMappping()
+{
+	//Debugging data
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
+	
+	//Generating and binding the frame buffer
+	glGenFramebuffers(1, &depthBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+
+	//Set this to GL_NONE so no color data is written in the frame buffer. We only want the depth data.
+	glReadBuffer(GL_NONE);
+	glDrawBuffer(GL_NONE);
+	
+	//Binding and generating texture 2D which stores the depth data to render later
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	
+	//Bind created texture to the frame buffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+
+	//ERROR Checking
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Que pasadía que no vaya" << std::endl;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	std::cout<<"Buffers y texturas creados"<<std::endl;
+
+	//==========================================
+	///TESTING::: the quad shader
+	//==========================================
+
+	const char *shadowMapQuad_fragment_path = "shaders/shadowMapQuad.frag";
+	const char *shadowMapQuad_vertex_path = "shaders/shadowMapQuad.vert";
+
+	TResourceShader* shadowQuadVertex = resourceManager->getResourceShader(shadowMapQuad_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* shadowQuadFragment = resourceManager->getResourceShader(shadowMapQuad_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	GLuint shadowQuadVertexID = shadowQuadVertex->getShaderID();
+	GLuint shadowQuadFragmentID = shadowQuadFragment->getShaderID();
+
+	shadowQuadID = glCreateProgram();
+	glAttachShader(shadowQuadID, shadowQuadVertexID);
+	glAttachShader(shadowQuadID, shadowQuadFragmentID);
+	glLinkProgram(shadowQuadID);
+	std::cout << "Linking shadowQuadID" << std::endl;
+
+	//Check the program is ok
+	glGetProgramiv(shadowQuadID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(shadowQuadID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(shadowQuadID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+	//Delete because the program is cool
+	glDetachShader(shadowQuadID,shadowQuadVertexID);
+	glDetachShader(shadowQuadID,shadowQuadFragmentID);
+	glDeleteShader(shadowQuadVertexID);
+	glDeleteShader(shadowQuadFragmentID);
+
+	//==========================================
+	// Shadow map Shader
+	//==========================================
 	const char *shadowMap_fragment_path = "shaders/shadowMap.frag";
 	const char *shadowMap_vertex_path = "shaders/shadowMap.vert";
 
@@ -814,12 +963,6 @@ void RedPandaStudio::initializeShadowMappping()
 	glDeleteShader(shadowFragmentID);
 
 	glUseProgram(shadowID); //REQUIRED for attaching variables
-
-	float near_plane = 1.0f, far_plane = 7.5f;
-	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-
-	GLuint lightProjectionID = glGetUniformLocation(shadowID, "lightProjectionMatrix");
-	glUniformMatrix4fv(lightProjectionID, 1, false, &lightProjection[0][0]);
 	
 	//Quad in which we'll paint the scene
     float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
@@ -834,147 +977,106 @@ void RedPandaStudio::initializeShadowMappping()
     };
 
     //Bind the array to the array buffer
-    glGenBuffers(1, &quadVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glGenBuffers(1, &shadowQuadVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, shadowQuadVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
 
 	//Push vertex array and the disable it
-    glGenVertexArrays(1, &quadVAO);
-    glBindVertexArray(quadVAO);
+    glGenVertexArrays(1, &shadowQuadVAO);
+    glBindVertexArray(shadowQuadVAO);
 	
 	glEnableVertexAttribArray(3); //Vertex points
     glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(4); //Vertex textures
     glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
-	// cube VAO
-    float cubeVertices[] = {
-        // positions          // texture Coords
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-
-    glGenVertexArrays(1, &cubeVAO);
-    glGenBuffers(1, &cubeVBO);
-    glBindVertexArray(cubeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0); //Vertices positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1); //Texture coordinates
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-
 	//Closing bindings
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//Quad texture assignment
 	shadow_sampler = glGetUniformLocation(shadowID, "screenTexture");
-
-	//CubeTexture
-	cubeTexture = new TResourceTexture();
-	cubeTexture->setName("media/cubotex.png");
-	cubeTexture->loadResource();
 }
 
 void RedPandaStudio::drawShadowMapping()
 {
+	//=========================
+	//Data and states preparation
+
+	//Backup data
+	GLuint programID = scene->getEntity()->getProgramID();
+	GLuint restoreModel = glGetUniformLocation(programID, "ModelMatrix");
+
+	//Secundary sampler2D
+	shadowMap_sampler = glGetUniformLocation(programID, "shadowMap");
+	glUniform1i(shadowMap_sampler, 0);
+
 	//Bind the buffer
+	glViewport(0, 0, shadowWidth, shadowHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);     //Binding where we'll store our image
-	glEnable(GL_DEPTH_TEST);						      //Enabling for 3D renders
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); //Cleaning the buffers
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 			      //Clean window
+	glEnable(GL_DEPTH_TEST);						    //Enabling for 3D renders
+	glClear( GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT );//Cleaning the buffers
  
-	//Draw the scene normally
-	glUseProgram(scene->getEntity()->getProgramID());
+	//Testeo de escena normal
+	
+
+	/*glUseProgram(programID);
 	renderCamera();
 	renderLights();
 	scene->draw();
-	//((((((((((((((((()))))))))))))))))
-	// cubes
-    /*glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-	glBindVertexArray(cubeVAO);
-	glEnableVertexAttribArray(0); //Vertex points
-	glEnableVertexAttribArray(1); //Vertex texture
+*/
 	
-	//Draw texture
-	cubeTexture->draw();
 
-	//Draw cube
-	glm::mat4 model;
-	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-	GLuint modelMatrixID = glGetUniformLocation(scene->getEntity()->getProgramID(), "ModelMatrix");
-	glUniformMatrix4fv(modelMatrixID, 1, false, &model[0][0]);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 36);
-	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(2.0f, 1.0f, 0.0f));
-	glUniformMatrix4fv(modelMatrixID, 1, false, &model[0][0]);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 36);
+	//Use shadow program to render the depth
+	glUseProgram(shadowID);
 
-	//Unbind all info
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
-	//((((((((((((((((()))))))))))))))))W
+	//=========================
+	//Calculate light variables
+	glm::mat4 mat = glm::mat4(1.0);
+	calculateNodeTransform(lights[0], mat);
+
+	glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+    glm::mat4 lightView = glm::lookAt(
+                                        glm::vec3(pos), 	//Eye: light position
+                                        glm::vec3(0, 0, 0), //Center: object position
+                                    	glm::vec3(0, 1, 0)  //Up: Y¹
+                                     );
+
+	GLuint lightModelID = glGetUniformLocation(shadowID, "lightModel");
+	scene->getEntity()->setModelID(lightModelID);
+
+	float near_plane = 0.0000001f, far_plane = 7.5f;
+	glm::mat4 lightProView = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane) * lightView;
+
+	GLuint lightProViewID = glGetUniformLocation(shadowID, "lightProView");
+	glUniformMatrix4fv(lightProViewID, 1, false, &lightProView[0][0]);
+
+	//Draw the scene under this context
+	scene->draw();
 
 	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//=========================
+	//QUAD CHECKER
+/*
+	glViewport(0, 0, windowWidth, windowHeight);
 	glClear(GL_COLOR_BUFFER_BIT); //Clean the dirty color
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded
+	glDisable(GL_DEPTH_TEST);     // disable depth test so screen-space quad isn't discarded
 
 	//Use our program and the texture given by the frame buffer
-	glUseProgram(shadowID);
+	glUseProgram(shadowQuadID);
 
 	//Bind array buffer and vertex array of data
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, shadowQuadVBO);
+    glBindVertexArray(shadowQuadVAO);
 	glEnableVertexAttribArray(3); //Vertex points
 	glEnableVertexAttribArray(4); //Vertex texture
 
 	//Bind the texture where we draw the scene
-	glBindTexture(GL_TEXTURE_2D, colorMap);	//use the color attachment texture as the texture of the quad plane
+	glBindTexture(GL_TEXTURE_2D, depthMap);	//use the color attachment texture as the texture of the quad plane
 	glUniform1i(shadow_sampler, 0);  	 	//ID assignment for the fragment shader (using GL_TEXTURE1 to avoid collisions)
 
 	//Draw the quad
@@ -984,28 +1086,31 @@ void RedPandaStudio::drawShadowMapping()
 	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(4);
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 
-	//Render scene into the depth buffer
-	/*GLuint lightViewID = glGetUniformLocation(shadowID, "lightView");
-	GLuint lightModelID = glGetUniformLocation(shadowID, "lightModel");
-	glUniformMatrix4fv(lightViewID, 1, false, &lights[0]->getEntity()->viewMatrix()[0][0]);
-	glUniformMatrix4fv(lightModelID, 1, false, &lights[0]->getEntity()->modelMatrix()[0][0]);*/
+	//Restore data
+	scene->getEntity()->setModelID(restoreModel);
+	scene->getEntity()->setProgramID(programID);
 
-
-	/*glViewport(0, 0, windowWidth, windowHeight);    //Change viewport size to shadow size
-	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer); //Choose depthBuffer
-		glClear(GL_DEPTH_BUFFER_BIT); 				//Clean screen with buffer
-
-		//paint the thing
-		scene->draw();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
-
-	// 2. then render scene as normal with shadow mapping (using depth map)
-	/*glViewport(0, 0, windowWidth, windowHeight);
+	//Render scene as normal with shadow mapping (using depth map)
+	glViewport(0, 0, windowWidth, windowHeight);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(programID);
+
+	//Passing shadow variables
+	GLuint lightSpaceViewID = glGetUniformLocation(programID, "lightSpaceView");
+	glUniformMatrix4fv(lightSpaceViewID, 1, false, &lightProView[0][0]);
+
+	//Texture 0: object, Texture 1: shadow map
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+
+	glActiveTexture(GL_TEXTURE0);
+
+	//Normal render
+	renderLights();
+	renderCamera();
 	scene->draw();
-	glBindTexture(GL_TEXTURE_2D, colorMap);*/
 }
 //=================================================
 
