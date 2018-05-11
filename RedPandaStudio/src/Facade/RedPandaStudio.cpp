@@ -53,8 +53,18 @@ void RedPandaStudio::updateDevice() {
 	glUseProgram(skyboxID);
 	glBindVertexArray(skyVertexArray);
 	skybox->draw();
-	glUseProgram(scene->getEntity()->getProgramID());
 	glEnable(GL_DEPTH_TEST);
+	
+	
+	//Activate the billboard shader
+	glUseProgram(billboardID);
+
+	//Render all the billboards in the scene
+	renderBillboards();
+
+	//Activate the shader used to draw the scene
+	glUseProgram(scene->getEntity()->getProgramID());
+
 
 	//==================
 	//drawShadowMapping();
@@ -162,17 +172,20 @@ void RedPandaStudio::initOpenGL() {
 	const char * geometry_file_path = "shaders/test.geo";
 	const char * skybox_vertex_path = "shaders/skybox.vert";
 	const char * skybox_fragment_path = "shaders/skybox.frag";
+	const char * billboard_vertex_path = "shaders/billboard.vert";
+	const char * billboard_geometry_path = "shaders/billboard.gs";
+	const char * billboard_fragment_path = "shaders/billboard.frag";
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
 	glewExperimental = GL_TRUE;
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
 
-/*
+
 	//Enables the debug output from OpenGL (must be disabled in Release)
 	glEnable( GL_DEBUG_OUTPUT );
     glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
-*/
+
 
     //Init VBO
     GLuint VertexArrayID;
@@ -223,6 +236,16 @@ void RedPandaStudio::initOpenGL() {
 	GLuint skyVertexID = skyboxVertex->getShaderID();
 	GLuint skyFragmentID = skyboxFragment->getShaderID();
 
+	//Get billboards shaders
+	TResourceShader* billboardVertex = resourceManager->getResourceShader(billboard_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* billboardGeometry = resourceManager->getResourceShader(billboard_geometry_path, (GLenum)GL_GEOMETRY_SHADER);
+	TResourceShader* billboardFragment = resourceManager->getResourceShader(billboard_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	//Get billboard shaders ID
+	GLuint billVertexID = billboardVertex->getShaderID();
+	GLuint billGeometryID = billboardGeometry->getShaderID();
+	GLuint billFragmentID = billboardFragment->getShaderID();
+
 	//Link OpenGL program using the id
 	printf("Linking OpenGL program\n");
 	printf("\n");
@@ -272,6 +295,30 @@ void RedPandaStudio::initOpenGL() {
 	
 	glDeleteShader(skyVertexID);
 	glDeleteShader(skyFragmentID);
+
+	billboardID = glCreateProgram();
+	glAttachShader(billboardID, billVertexID);
+	glAttachShader(billboardID, billGeometryID);
+	glAttachShader(billboardID, billFragmentID);
+	glLinkProgram(billboardID);
+
+	//Check the program is ok
+	glGetProgramiv(billboardID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(billboardID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(billboardID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+    //We no longer need the shaders (we have them in the program)
+	glDetachShader(billboardID, billVertexID);
+	glDetachShader(billboardID, billGeometryID);
+	glDetachShader(billboardID, billFragmentID);
+	
+	glDeleteShader(billVertexID);
+	glDeleteShader(billGeometryID);
+	glDeleteShader(billFragmentID);
 
     //Use the program we have just created
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -467,6 +514,18 @@ TNode* RedPandaStudio::createSpotlight(TNode* parent, glm::vec3 position, glm::v
 	}
 }
 
+TBillboard* RedPandaStudio::createBillboard(char* n, glm::vec3 p)
+{
+	//Create or get a reference to the texture from the resourceManager
+	TResourceTexture* t = resourceManager->getResourceTexture(n);
+	
+	//Create the billboard
+	TBillboard* b = new TBillboard(t, p);
+	billboards.push_back(b);
+
+	return b;
+}
+
 void RedPandaStudio::deleteObject(TNode* leaf) {
 
 	TEntity* t;
@@ -599,9 +658,11 @@ void RedPandaStudio::renderLights()
 	GLuint numSL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numSpotLights");
 	glUniform1i(numSL, spotlights.size());
 }
-void RedPandaStudio::renderCamera() {
+void RedPandaStudio::renderCamera() 
+{
 
-	if(camera != nullptr){
+	if(camera != nullptr)
+	{
 		glm::mat4 mat = glm::mat4(1.0);
 		calculateNodeTransform(camera, mat);
 
@@ -613,10 +674,31 @@ void RedPandaStudio::renderCamera() {
 	}
 }
 
-//Recursive function. Should receive an identity as input. Returns the accumulated transformation
-void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat) {
+void RedPandaStudio::renderBillboards()
+{
+	glm::mat4 v = scene->getEntity()->viewMatrix();
+	glm::mat4 p = scene->getEntity()->projectionMatrix();
+	glm::mat4 m = p * v;
+	glm::vec3 camPos = glm::vec3(-v[3][2], -v[3][1], -v[3][0]);
 
-	if(node!= nullptr && node->getFather() != nullptr) {
+	GLuint VPMat = glGetUniformLocation(billboardID, "VPMatrix");
+	glUniformMatrix4fv(VPMat, 1, GL_FALSE, &m[0][0]);
+
+	GLuint cameraPosition = glGetUniformLocation(billboardID, "cameraPosition");
+	glUniform3fv(cameraPosition, 1, &camPos[0]);
+
+	for(int i = 0; i < billboards.size(); i++)
+	{
+		billboards[i]->beginDraw();
+	}
+}
+
+//Recursive function. Should receive an identity as input. Returns the accumulated transformation
+void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat) 
+{
+
+	if(node!= nullptr && node->getFather() != nullptr) 
+	{
 
 		TTransform* t = dynamic_cast<TTransform*>(node->getEntity());
 		if( t != nullptr) 

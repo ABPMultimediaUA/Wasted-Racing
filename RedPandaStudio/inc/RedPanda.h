@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
  #include "TAnimation.h"
+ #include "TBillboard.h"
  #include "TCamera.h"
  #include "TEntity.h"
  #include "TLight.h"

@@ -56,6 +56,8 @@ public:
     TNode* createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity);
     //Creates a spotlight and returns a TSpotlight
     TNode* createSpotlight(TNode* parent, glm::vec3 position, glm::vec3 intensity, glm::vec3 direction, float cutoff);
+    //Creates a billboard and returns a reference to it
+    TBillboard* createBillboard(char* n, glm::vec3 p);
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
 
@@ -80,10 +82,10 @@ public:
 
     //////////////////////////////
     //  GETTERS
-    SDL_Window* getWindow()               { return window;           }
-    TNode* getSceneRoot()                 { return scene;            }
-    ResourceManager* getResourceManager() { return resourceManager;  }
-    SDL_GLContext* getContext()           { return context;          }  
+    SDL_Window* getWindow()                             { return window;           }
+    TNode* getSceneRoot()                               { return scene;            }
+    ResourceManager* getResourceManager()               { return resourceManager;  }
+    SDL_GLContext* getContext()                         { return context;          }  
 
     //////////////////////////////
     //  SETTERS
@@ -98,6 +100,7 @@ private:
     void initScene();
     void renderLights();
     void renderCamera();
+    void renderBillboards();
     void calculateNodeTransform(TNode* node, glm::mat4& mat);  //Given a node, returns its accumulated transform. Should receive an identity as input
     TNode* addRotScaPos(TNode* parent, glm::vec3 position); //Returns the Position Node
     void deleteNode(TNode* node); //Deletes a node and all his children
@@ -117,6 +120,14 @@ private:
     TNode *camera;
     std::vector<TNode*> lights;
     std::vector<TNode*> spotlights;
+
+    //=========================
+    //  BILLBOARDS
+    //=========================
+    //Vector containing all the billboards in the scene
+    std::vector<TBillboard*> billboards;
+    //Billboard shader
+    GLuint billboardID;
 
     //=========================
     //  SKYBOX
