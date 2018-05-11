@@ -190,4 +190,7 @@ private:
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
 
+    //Value angleY camera
+    float valueY;
+
 };

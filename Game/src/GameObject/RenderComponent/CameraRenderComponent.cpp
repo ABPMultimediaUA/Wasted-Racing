@@ -2,8 +2,9 @@
 #include "../../GameManager/PhysicsManager.h"
 
 CameraRenderComponent::CameraRenderComponent(GameObject& newGameObject) : IRenderComponent(newGameObject) {
-		distance = 30;
-		maxDistance = 30;
+		distance = 25;
+        minDistanceCP = 25;
+		maxDistance = 40;
 		oldDistance = distance;
 		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
 		count = 0;
@@ -17,6 +18,13 @@ void CameraRenderComponent::init() {
 
 //Update   
 void CameraRenderComponent::update(float dTime) {
+
+    //Actual velocity
+    float vel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
+    float maxVel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().max_vel;
+
+    //calculate distance camera-player
+    float sumDistanceCP = (maxDistance - minDistanceCP) * (vel/maxVel);
 
     //Camera velocity
     const float camVel = 30;
@@ -107,18 +115,30 @@ void CameraRenderComponent::update(float dTime) {
         }
 
         ++count;
-
-        if(count > 5 && distance < 30)
+        
+        if(count > 5 && distance < sumDistanceCP + minDistanceCP)
             distance += camVel * dTime / 2;
 
-        if (distance < 5)
-            distance = 5;
+        if (distance < 15)
+            distance = 15;
 
-        if (distance > 30)
-            distance = 30;
-        
-        if (move.spin == 0)
-            distance = oldDistance;
+        if (distance > sumDistanceCP + minDistanceCP){
+            if(vel <= 1)
+            {
+                distance = distance-1;
+                if(distance < minDistanceCP)
+                {
+                    distance = minDistanceCP;
+                }
+            }
+            else
+            {
+                distance = sumDistanceCP + minDistanceCP;
+            }
+            
+        }
+        //if (move.spin == 0)
+            //distance = oldDistance;
     }
 
 }

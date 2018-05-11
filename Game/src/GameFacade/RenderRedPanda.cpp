@@ -155,6 +155,7 @@ void RenderRedPanda::renderDraw() {
 void RenderRedPanda::addCamera() {
 
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
+    valueY = 0.4;
 
 }
 
@@ -174,10 +175,27 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
     distance *= 1.5;
 
-    glm::vec3 target(-pos.x, pos.y, pos.z);
-    glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y + distance * 0.4, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-
-    device->updateCamera(position, target);
+    glm::vec3 target(-pos.x, pos.y+12, pos.z);
+    if(newD > 15)
+    {
+        if(valueY > 0.4)
+        {
+            valueY -= 0.02;
+        }
+        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+        position = position;
+        device->updateCamera(position, target);
+    }
+    else
+    {
+        if(valueY < 1.2)
+        {
+            valueY += 0.02;
+        }
+        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+        position = position;
+        device->updateCamera(position, target);
+    }
 
 }
 

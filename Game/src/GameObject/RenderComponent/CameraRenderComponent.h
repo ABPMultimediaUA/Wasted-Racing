@@ -43,7 +43,9 @@ private:
 
 	std::shared_ptr<TerrainComponent> terrain;
 	float distance;
+	float minDistanceCP;
 	float maxDistance;
+	float sumDistanceCP;
 	float oldDistance;
 	int count;
 	int spinDir;
