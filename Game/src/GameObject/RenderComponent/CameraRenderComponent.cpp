@@ -138,7 +138,6 @@ void CameraRenderComponent::update(float dTime) {
         }
         //if (move.spin == 0)
             //distance = oldDistance;
-        std::cout << distance << std::endl;
     }
 
     //Update camera
