@@ -66,6 +66,7 @@ bool TResourceOBJ::loadResource()
     //If loaded succesfully, we proceed to get all his data
     if(scene)
     {
+        std::cout << "NumMeshes: " << scene->mNumMeshes << std::endl;
         //For each mesh in the obj, we create a new resourceMesh and storage the mesh data on it
         for(unsigned int i = 0; i<scene->mNumMeshes; i++)
         {
@@ -88,6 +89,7 @@ bool TResourceOBJ::loadResource()
             route+=v[i] + "/";
         }
         
+        std::cout << "NumMaterials: " << scene->mNumMaterials << std::endl;
 
         //We proceed to get all the materials and textures
         for(unsigned int i = 1; i<scene->mNumMaterials; i++)
