@@ -409,10 +409,10 @@ unsigned int TResourceMesh::getAdjacentIndex(aiMesh* m, const unsigned int index
             unsigned int v2 = m->mFaces[i].mIndices[(edge+1)%3];
             unsigned int v3 = m->mFaces[i].mIndices[(edge+2)%3];
 
-            if( (m->mVertices[v1].x == m->mVertices[index1].x && m->mVertices[v1].y == m->mVertices[index1].y && m->mVertices[v1].z == m->mVertices[index1].z && 
+            if( ((m->mVertices[v1].x == m->mVertices[index1].x && m->mVertices[v1].y == m->mVertices[index1].y && m->mVertices[v1].z == m->mVertices[index1].z && 
                 m->mVertices[v2].x == m->mVertices[index2].x && m->mVertices[v2].y == m->mVertices[index2].y && m->mVertices[v2].z == m->mVertices[index2].z) ||
                 (m->mVertices[v2].x == m->mVertices[index1].x && m->mVertices[v2].y == m->mVertices[index1].y && m->mVertices[v2].z == m->mVertices[index1].z && 
-                m->mVertices[v1].x == m->mVertices[index2].x && m->mVertices[v1].y == m->mVertices[index2].y && m->mVertices[v1].z == m->mVertices[index2].z) &&
+                m->mVertices[v1].x == m->mVertices[index2].x && m->mVertices[v1].y == m->mVertices[index2].y && m->mVertices[v1].z == m->mVertices[index2].z)) &&
                 (m->mVertices[v3].x != m->mVertices[index3].x || m->mVertices[v3].y != m->mVertices[index3].y || m->mVertices[v3].z != m->mVertices[index3].z))
             {
                 return v3;

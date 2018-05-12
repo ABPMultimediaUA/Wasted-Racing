@@ -101,7 +101,7 @@ void TResourceAnimation::draw()
     objs[0]->draw();
 }
 
-void TResourceAnimation::draw(int i)
+void TResourceAnimation::draw(unsigned int i)
 {
     if(i >= 0 && i < objs.size())
     {

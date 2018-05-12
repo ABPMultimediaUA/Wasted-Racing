@@ -42,7 +42,14 @@ void ItemRedShellComponent::update(float dTime)
 
         auto pos =getGameObject().getTransformData().position;
 
+        /*std::cout<<"x: "<<pos.x<<"\n";
+        std::cout<<"y: "<<pos.y<<"\n";
+        std::cout<<"z: "<<pos.z<<"\n";*/
         auto posWay = listNodes[lastVector].get()->getTransformData().position;
+
+        /*std::cout<<"way x: "<<posWay.x<<"\n";
+        std::cout<<"way y: "<<posWay.y<<"\n";
+        std::cout<<"way z: "<<posWay.z<<"\n";*/
 
         float distaneActualWay = (posWay.x - pos.x) * (posWay.x - pos.x) +
                             (posWay.y - pos.y) * (posWay.y - pos.y) +
@@ -66,6 +73,10 @@ void ItemRedShellComponent::update(float dTime)
 
         objective = enemy.get()->getGameObject().getTransformData().position; 
 
+        /*std::cout<<"objec x: "<<objective.x<<"\n";
+        std::cout<<"objec y: "<<objective.y<<"\n";
+        std::cout<<"objec z: "<<objective.z<<"\n";*/
+
         float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
                             (objective.y - pos.y) * (objective.y - pos.y) +
                             (objective.z - pos.z) * (objective.z - pos.z);
@@ -83,6 +94,7 @@ void ItemRedShellComponent::update(float dTime)
         float turnValue = aiDrivingComponent->girar(getGameObject(), seenObjects, seenObjects, objective, a, b);
 
         moveComponent->changeSpin(turnValue);
+        //std::cout<<"turn: "<<turnValue<<"\n";
     }
     //Accelerate and brake
     moveComponent->isMoving(true);

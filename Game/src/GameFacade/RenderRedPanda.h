@@ -10,6 +10,7 @@
 
 #include "../GameManager/InputManager.h"
 
+
 class RenderRedPanda : public IRenderFacade {
 
 public:
@@ -69,6 +70,7 @@ public:
 
     //Delete an object of the game
     virtual void deleteObject(IComponent* ptr);
+    virtual void deleteObject(uint16_t id);
 
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
@@ -86,7 +88,13 @@ public:
     virtual void addMeshLoD(int lvl, const char* mesh);
 
     //Change mesh
-    virtual void changeMesh(int id, int lvl, const char* mesh);
+    virtual bool changeMesh(int id, std::string newMesh);
+
+    //Particles
+    virtual void createParticleSystem(uint16_t id, const char* shape, glm::vec3 position, float radius, int birthrate, float particleLife,
+                                        glm::vec3 birthDirection, glm::vec3 deathDirection, float variationDirection,
+                                        float birthSize, float deathSize, float variationSize,
+                                        glm::vec4 birthColor, glm::vec4 deathColor, float variationColor);
 
     ////////////
     //  Image
@@ -201,5 +209,10 @@ private:
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
     std::map<uint16_t, TAnimation*> animationMap;
+
+    //Value angleY camera
+    float valueY;
+
+    float sum;
 
 };

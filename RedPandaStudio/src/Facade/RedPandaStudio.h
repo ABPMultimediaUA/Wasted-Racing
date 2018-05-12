@@ -54,7 +54,14 @@ public:
     //Creates a spotlight and returns a TSpotlight
     TNode* createSpotlight(TNode* parent, glm::vec3 position, glm::vec3 intensity, glm::vec3 direction, float cutoff);
     //Creates a billboard and returns a reference to it
-    TBillboard* createBillboard(char* n, glm::vec3 p);
+    TBillboard* createBillboard(const char* n, glm::vec3 p);
+    //Creates an emitter and return a TEmitter
+    TNode* createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, 
+            int nBirthrate, float nParticleLife, glm::vec3 nBirthDirection, float nBirthSize, glm::vec4 nBirthColor);
+
+    TNode* createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, int nBirthrate, float nParticleLife,
+            glm::vec3 nBirthDirection, glm::vec3 nDeathDirection, float nVariationDirection, float nBirthSize, float nDeathSize, 
+            float nVariationSize, glm::vec4 nBirthColor, glm::vec4 nDeathColor, float nVariationColor);
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
 
@@ -103,6 +110,8 @@ private:
     void renderLights();
     void renderCamera();
     void renderBillboards();
+    void renderParticles();
+    void updateParticles();
     void calculateNodeTransform(TNode* node, glm::mat4& mat);  //Given a node, returns its accumulated transform. Should receive an identity as input
     TNode* addRotScaPos(TNode* parent, glm::vec3 position); //Returns the Position Node
     void deleteNode(TNode* node); //Deletes a node and all his children
@@ -130,6 +139,13 @@ private:
     std::vector<TBillboard*> billboards;
     //Billboard shader
     GLuint billboardID;
+
+    //=========================
+    //  PARTICLES
+    //=========================
+    std::vector<TNode*> emitters;
+    GLuint particlesID;
+    GLuint paticlesVertexArray;
 
     //=========================
     //  SKYBOX
@@ -177,6 +193,8 @@ private:
     //=========================
     //Chrono
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
+    double fps = 0;
+    bool firstUpdate = true;
 
     //Chrono flag
     bool showFPS = false;

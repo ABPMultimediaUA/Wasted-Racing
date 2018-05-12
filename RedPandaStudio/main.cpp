@@ -23,7 +23,7 @@ int main() {
     std::cout << "                                                     \\______/ "              << std::endl;
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
-
+    
     //TNode* t = rps->createAnimatedNode(rps->getSceneRoot(), glm::vec3(0,-2,0), "media/anim/WitchFINAL_000", true, 60, 60);
    /* 
     //PRUEBAS DE ALEXEI

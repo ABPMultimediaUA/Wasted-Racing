@@ -19,10 +19,10 @@ class TResourceOBJ : public TResource {
         bool loadOnlyMeshes();
 
         //Sets the provided texture in the mesh placed in position i, if possible
-        void setTexture(int i, TResourceTexture* t);
+        void setTexture(unsigned int i, TResourceTexture* t);
 
         //Sets the provided material in the mesh placed in position i, if possible
-        void setMaterial(int i, TResourceMaterial* m);
+        void setMaterial(unsigned int i, TResourceMaterial* m);
 
         //Load the resource specified in the route provided
         bool loadResource();
@@ -30,6 +30,8 @@ class TResourceOBJ : public TResource {
         //Draws the mesh
         void draw();
 
+        std::vector<TResourceMesh*> getMeshes() {       return meshes;      }
+        
 
     private:
         //Array of meshes contained in this OBJ

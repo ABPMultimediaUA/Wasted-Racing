@@ -99,6 +99,7 @@ enum EventType {
     Key_Scheduling_Up,
     //GAME: Game related events
     Game_Start,
+    Game_Pause,
     Game_Close,
     State_Change,
     //CHOOSE: Choose game type
@@ -120,7 +121,15 @@ enum EventType {
     Score_OnOvertake,
     Score_OnOvertaken,
     //MUSIC: Music related events
-    Music_MainTheme
+    Music_MainTheme,
+    //PARTICLES: Particle related events
+    Particles_SmokeON,
+    Particles_SmokeOFF,
+    //GLOBAL: Global related events
+    Global_ChangeVolume,
+    Global_ChangeLanguage,
+    //Idle event
+    Idle
 };
 
 //Struct containg diferent types of data

@@ -119,7 +119,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     //Get item
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = itemHolder->getItemType();
+    int random = 0;//itemHolder->getItemType();
 
     //-----------------------
     //Generate the right item
@@ -254,6 +254,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
     mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.player = 5;
 
     //Initial component data
     auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
@@ -372,6 +373,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
     mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.player = 5;
 
 
     //Initial component data

@@ -38,7 +38,7 @@ bool TResourceOBJ::loadOnlyMeshes()
     return false;
 }
 
-void TResourceOBJ::setTexture(int i, TResourceTexture* t)
+void TResourceOBJ::setTexture(unsigned int i, TResourceTexture* t)
 {
     if(i>=0 && i<meshes.size())
     {
@@ -48,7 +48,7 @@ void TResourceOBJ::setTexture(int i, TResourceTexture* t)
 }
 
 
-void TResourceOBJ::setMaterial(int i, TResourceMaterial* m)
+void TResourceOBJ::setMaterial(unsigned int i, TResourceMaterial* m)
 {
     if(i >= 0 && i < meshes.size())
     {
@@ -151,7 +151,7 @@ void TResourceOBJ::generateBoundingBox()
     maxZ = meshes[0]->getMaxZ();
     minZ = meshes[0]->getMinZ();
 
-    for(int i = 1; i < meshes.size(); i++)
+    for(unsigned int i = 1; i < meshes.size(); i++)
     {
         if(meshes[i]->getMaxX() > maxX)
             maxX = meshes[i]->getMaxX();
