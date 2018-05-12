@@ -70,6 +70,7 @@ void IntroState::swapToMatch()
  
     //Initialize match state
     Game::getInstance().setState(IGameState::stateType::MATCH);
+
 }
 
 //==============================================
@@ -121,7 +122,6 @@ void multiplayerActivated(EventData eData) {
     IntroState::getInstance().swapToClientLobby();
 }
 void singleplayerActivated(EventData eData) {
-
     //Change to match state
     IntroState::getInstance().swapToMatch();
 }

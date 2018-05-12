@@ -24,10 +24,13 @@ void EventManager::init() {
 }
 
 void EventManager::update() {
+
     while(EventManager::eventQueue.size() != 0){
-        EventManager::processEvent(EventManager::eventQueue.front());
+        Event e = EventManager::eventQueue.front();
         EventManager::eventQueue.pop();
+        EventManager::processEvent(e);
     }
+
 }
 
 void EventManager::close() {

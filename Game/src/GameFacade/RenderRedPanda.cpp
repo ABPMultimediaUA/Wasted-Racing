@@ -1051,6 +1051,7 @@ void RenderRedPanda::updateItemIcon() { }
 
 //Delegates
 void addHUD(EventData eData) {
+    
     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
     device->setGUIDrawFunction(drawRPS_GUI_HUD);
 }

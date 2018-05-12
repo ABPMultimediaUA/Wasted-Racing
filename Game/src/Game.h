@@ -83,6 +83,10 @@ public:
     float getAccumulatedTime() {     return accumulatedTime;}//Get accumulated time
     float getRatio()           {     return ratio;          }//Get game ratio
 
+
+    void loadMap();
+    std::vector<std::string> split(const std::string& s, const char& c);
+
     //Static class getter
     static Game& getInstance() {
         static Game instance;

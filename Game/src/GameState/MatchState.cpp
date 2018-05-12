@@ -37,6 +37,9 @@ void MatchState::init() {
         schedulingClock = new Clock();
         schedulingClock->init();
 
+        //Load map
+        Game::getInstance().loadMap();
+
         //Add AI's to the game
         addAI();
 
