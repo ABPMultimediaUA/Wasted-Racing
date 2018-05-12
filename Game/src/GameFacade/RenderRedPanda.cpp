@@ -95,6 +95,9 @@ namespace gui {
     struct nk_image text_currentSound;
     struct nk_image text_currentSoundHover;
 
+    //OTHER Images
+    struct nk_image loadingScreen;
+
     void init();
     struct nk_image loadTexture(const char* path);
     void playAnimation();
@@ -810,6 +813,7 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bOptionsHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExit.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExitHover.png");
+        gui::loadingScreen              =   gui::loadTexture("media/img/GUI/Other/loadScreenENG.png");
     } 
     else {
         gui::menuBase                   =   gui::loadTexture("media/img/GUI/MainMenu/SPA/menuBase.png");
@@ -821,6 +825,7 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bOpcionesHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalir.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalirHover.png");
+        gui::loadingScreen              =   gui::loadTexture("media/img/GUI/Other/loadScreenSPA.png");
     }
 
     //==========================================================================================
