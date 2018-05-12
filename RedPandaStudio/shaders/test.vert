@@ -119,7 +119,6 @@ struct Light {
    vec4 position;
    vec4 intensity;
 };
-
 uniform Light light[maxLights];
 
 struct SpotLight

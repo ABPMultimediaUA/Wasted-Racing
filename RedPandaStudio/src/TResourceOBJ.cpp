@@ -87,6 +87,7 @@ bool TResourceOBJ::loadResource()
         {
             route+=v[i] + "/";
         }
+        
 
         //We proceed to get all the materials and textures
         for(unsigned int i = 1; i<scene->mNumMaterials; i++)
@@ -110,6 +111,7 @@ bool TResourceOBJ::loadResource()
         }
 
         generateBoundingBox();
+
 
         return true;
     }

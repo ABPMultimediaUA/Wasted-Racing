@@ -20,14 +20,15 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 6);
     unsigned int faceIndex = 0;
 
+
     for(int j = 0; j<nFaces; j++, faceIndex += 6)
     {
         vertexIndices[0+faceIndex] = m->mFaces[j].mIndices[0];
         vertexIndices[2+faceIndex] = m->mFaces[j].mIndices[1];
         vertexIndices[4+faceIndex] = m->mFaces[j].mIndices[2];
-        vertexIndices[1+faceIndex] = getAdjacentIndex(m, vertexIndices[0+faceIndex], vertexIndices[2+faceIndex], vertexIndices[4+faceIndex]);
-        vertexIndices[3+faceIndex] = getAdjacentIndex(m, vertexIndices[2+faceIndex], vertexIndices[4+faceIndex], vertexIndices[0+faceIndex]);
-        vertexIndices[5+faceIndex] = getAdjacentIndex(m, vertexIndices[4+faceIndex], vertexIndices[0+faceIndex], vertexIndices[2+faceIndex]);
+        vertexIndices[1+faceIndex] = 0;
+        vertexIndices[3+faceIndex] = 0;
+        vertexIndices[5+faceIndex] = 0;
     }
 
     if(m->HasTextureCoords(0))
@@ -415,18 +416,6 @@ unsigned int TResourceMesh::getAdjacentIndex(aiMesh* m, const unsigned int index
                 m->mVertices[v1].x == m->mVertices[index2].x && m->mVertices[v1].y == m->mVertices[index2].y && m->mVertices[v1].z == m->mVertices[index2].z) &&
                 (m->mVertices[v3].x != m->mVertices[index3].x || m->mVertices[v3].y != m->mVertices[index3].y || m->mVertices[v3].z != m->mVertices[index3].z))
             {
-                return v3;
-            }
-
-            if((v1 == index1 && v2 == index2) || (v1 == index2 && v2 == index1))
-            {
-                //std::cout << "Index1: " << index1 << " and index2: " << index2 << std::endl;
-                //std::cout << "Entro aqui: " << v3 << " and index3: " << index3 << std::endl;
-            }
-
-            if(((v1 == index1 && v2 == index2) || (v1 == index2 && v2 == index1)) && (v3 != index3))
-            {
-                //std::cout << "Aqui tambien" << std::endl;
                 return v3;
             }
         }

@@ -169,7 +169,7 @@ void RedPandaStudio::initOpenGL() {
 
     const char * vertex_file_path = "shaders/test.vert";
     const char * fragment_file_path = "shaders/test.frag";
-	const char * geometry_file_path = "shaders/test.geo";
+	const char * geometry_file_path = "shaders/test.gs";
 	const char * skybox_vertex_path = "shaders/skybox.vert";
 	const char * skybox_fragment_path = "shaders/skybox.frag";
 	const char * billboard_vertex_path = "shaders/billboard.vert";
@@ -252,7 +252,7 @@ void RedPandaStudio::initOpenGL() {
 	printf("\n");
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexID);
-	glAttachShader(ProgramID, geometryID);
+	//glAttachShader(ProgramID, geometryID);
 	glAttachShader(ProgramID, fragmentID);
 	glLinkProgram(ProgramID);
 
@@ -267,11 +267,11 @@ void RedPandaStudio::initOpenGL() {
 
     //We no longer need the shaders (we have them in the program)
 	glDetachShader(ProgramID, vertexID);
-	glDetachShader(ProgramID, geometryID);
+	//glDetachShader(ProgramID, geometryID);
 	glDetachShader(ProgramID, fragmentID);
 	
 	glDeleteShader(vertexID);
-	glDeleteShader(geometryID);
+	//glDeleteShader(geometryID);
 	glDeleteShader(fragmentID);
 
 	//Create Skybox program

@@ -44,15 +44,15 @@ int main() {
     //===================================================================================================
 */
 
-    TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
-    TNode* t4 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,20,20), "media/Link.obj");
+    //TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
+    TNode* t4 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,20,20), "media/PistaTerrenoFINAL/circuitoFINAL.obj");
     //rps->addMeshLoD(1,"media/mesh/Link/Link.obj");
     //TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
     TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(10,5,0), glm::vec3(0, 5, 0));
     TBillboard* bill = rps->createBillboard("media/tree.png", glm::vec3(0,5,0));
 
     //rps::scaleNode(t, glm::vec3(0.25, 0.25, 0.25));
-    rps::scaleNode(t2, glm::vec3(0.25, 0.25, 0.25));
+    //rps::scaleNode(t2, glm::vec3(0.25, 0.25, 0.25));
     rps::scaleNode(t4, glm::vec3(0.25, 0.25, 0.25));
     //rps::rotateNode(t2, glm::vec3(0, 180.0, 0));
     rps->setCulling(false, (GLenum)GL_FRONT);
@@ -90,7 +90,7 @@ int main() {
 
         //rps->updateCamera(glm::vec3(10, 0, 0), glm::vec3(0,0,0));
         rps->updateDevice();
-        rps::translateNode(t2, glm::vec3(0, 0, -i));
+        //rps::translateNode(t2, glm::vec3(0, 0, -i));
         i += 0.1;
         /*auto e = rps->getResourceManager()->getResourceLoD("media/mesh/Link/Link.obj");
         std::cout<<e->getMap().size()<<"\n";*/

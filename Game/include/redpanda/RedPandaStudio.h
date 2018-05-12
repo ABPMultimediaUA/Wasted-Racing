@@ -14,7 +14,7 @@
 #include <vector>
 #include <chrono>
 
-#include <RedPanda.h>
+#include "RedPanda.h"
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -31,9 +31,6 @@ public:
         //=========================================================================
         //Delete frame buffers
         glDeleteFramebuffers(1, &depthBuffer);
-
-        //DELETE TESTING VARIABLES
-        delete cubeTexture;
         //=========================================================================
     }
 
@@ -54,6 +51,10 @@ public:
     TNode* createCamera(TNode* parent, glm::vec3 position, glm::vec3 target);
     //Creates a light and returns a TLight
     TNode* createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity);
+    //Creates a spotlight and returns a TSpotlight
+    TNode* createSpotlight(TNode* parent, glm::vec3 position, glm::vec3 intensity, glm::vec3 direction, float cutoff);
+    //Creates a billboard and returns a reference to it
+    TBillboard* createBillboard(char* n, glm::vec3 p);
     //Deletes a mesh, camera or light, given a TMesh, TCamera or TLight
     void deleteObject(TNode* leaf);
 
@@ -63,9 +64,14 @@ public:
 
     ////////////////////////////////////////
     //  GRAPHICS OPTIONS AND PARAMETERS
+    //Initializes all parameters and programs to operate with the shadow mapping
+    void initPostProcessing();
+
+    //Draws the shadow mapping
+    void drawPostProcessing();
 
     //Initializes all parameters and programs to operate with the shadow mapping
-    void initializeShadowMappping();
+    void initShadowMappping();
 
     //Draws the shadow mapping
     void drawShadowMapping();
@@ -78,10 +84,10 @@ public:
 
     //////////////////////////////
     //  GETTERS
-    SDL_Window* getWindow()               { return window;           }
-    TNode* getSceneRoot()                 { return scene;            }
-    ResourceManager* getResourceManager() { return resourceManager;  }
-    SDL_GLContext* getContext()           { return context;          }  
+    SDL_Window* getWindow()                             { return window;           }
+    TNode* getSceneRoot()                               { return scene;            }
+    ResourceManager* getResourceManager()               { return resourceManager;  }
+    SDL_GLContext* getContext()                         { return context;          }  
 
     //////////////////////////////
     //  SETTERS
@@ -96,6 +102,7 @@ private:
     void initScene();
     void renderLights();
     void renderCamera();
+    void renderBillboards();
     void calculateNodeTransform(TNode* node, glm::mat4& mat);  //Given a node, returns its accumulated transform. Should receive an identity as input
     TNode* addRotScaPos(TNode* parent, glm::vec3 position); //Returns the Position Node
     void deleteNode(TNode* node); //Deletes a node and all his children
@@ -114,6 +121,15 @@ private:
     //=========================
     TNode *camera;
     std::vector<TNode*> lights;
+    std::vector<TNode*> spotlights;
+
+    //=========================
+    //  BILLBOARDS
+    //=========================
+    //Vector containing all the billboards in the scene
+    std::vector<TBillboard*> billboards;
+    //Billboard shader
+    GLuint billboardID;
 
     //=========================
     //  SKYBOX
@@ -126,21 +142,35 @@ private:
     GLuint skyVertexArray;
 
     //=========================
+    //  POST-PROCESSING
+    //=========================
+	GLuint postProcessingBuffer;   //Texture (color) buffer
+	GLuint renderBuffer;           //Render buffer ID
+	GLuint colorMap;               //Texture in which we paint the scene
+    GLuint processingID;           //Shadow map program ID
+    GLuint postprocessing_sampler; //Sampler2D of the texture rendered to the quad
+
+    GLuint processingQuadVAO, processingQuadVBO; //Quad indexes
+    
+    //Window size (used to paint over the quad)
+    int windowWidth = 1024;
+    int windowHeight = 1024;
+
+    //=========================
     //  SHADOWMAP
     //=========================
 	GLuint depthBuffer; //Depth buffer
-	GLuint colorMap;    //Texture in which we paint the scene
+	GLuint depthMap;    //Texture in which we paint the scene
     GLuint shadowID;    //Shadow map program ID
-	GLuint renderBuffer;//Render buffer ID
-    GLuint quadVAO, quadVBO; //Quad indexes
-    GLuint cubeVAO, cubeVBO; //TESTNG CUBE
+    GLuint shadowQuadID; //TESTING
+	GLuint shadowRenderBuffer;//Render buffer ID
+    GLuint shadowQuadVAO, shadowQuadVBO; //Quad indexes
     GLuint shadow_sampler; //Sampler2D of the texture rendered to the quad
-    GLuint cubeTextureID;
-    TResourceTexture* cubeTexture; //TESTING CUBE TEXTURE
-    GLuint shadowTESTID;    //Shadow map program ID
+    GLuint shadowMap_sampler; //Sampler2D of the depth map in the normal shader
 
-    int windowWidth = 1024;
-    int windowHeight = 1024;
+    //Shadow map texture size
+    int shadowWidth = 1024;
+    int shadowHeight = 1024;
 
     //=========================
     //  TIME

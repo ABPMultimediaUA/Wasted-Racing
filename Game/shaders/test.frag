@@ -2,11 +2,11 @@
 
 precision mediump float;	// Precisión media
 
-varying vec4 G_Color;		// in: color del vertex shader
+varying vec4 v_Color;		// in: color del vertex shader
 
-in vec2 GUV_Coordinates; //UV del vertex shader
+in vec2 UV_Coordinates; //UV del vertex shader
 
-flat in int GIsEdge;
+//flat in int GIsEdge;
 
 uniform sampler2D sampler;
 uniform bool textActive;
@@ -15,11 +15,13 @@ out vec4 FragColor;
 
 void main()
 {
+  /*
   if(GIsEdge == 0)
   {
-    if(textActive)
+    */
+   if(textActive)
     {
-      FragColor = texture(sampler, GUV_Coordinates);
+      FragColor = texture(sampler, UV_Coordinates) * v_Color;
       
       float levels = 6.0;
 
@@ -30,11 +32,11 @@ void main()
     }
     else
     {
-      FragColor = G_Color;
+      FragColor = v_Color;
     }
-  }
+  /*}
   else
   {
     FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-  }
+  }*/
 }

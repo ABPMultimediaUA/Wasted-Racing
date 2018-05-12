@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
  #include "TAnimation.h"
+ #include "TBillboard.h"
  #include "TCamera.h"
  #include "TEntity.h"
  #include "TLight.h"
@@ -14,5 +15,6 @@
  #include "TResourceShader.h"
  #include "TResourceSkybox.h"
  #include "TResourceTexture.h"
+ #include "TSpotlight.h"
  #include "TTransform.h"
 
