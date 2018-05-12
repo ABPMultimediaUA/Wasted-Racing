@@ -90,8 +90,15 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 	// Request an OpenGL 4.5 context (should be core)
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+	
+	#ifndef __APPLE__
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+	#else
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	#endif
 	// Also request a depth buffer
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, depth);
@@ -133,12 +140,22 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 
 void RedPandaStudio::initOpenGL() {
 
-    const char * vertex_file_path = "shaders/test.vert";
-    const char * fragment_file_path = "shaders/test.frag";
-	const char * skybox_vertex_path = "shaders/skybox.vert";
-	const char * skybox_fragment_path = "shaders/skybox.frag";
-	const char * particles_vertex_path = "shaders/particles.vert";
-	const char * particles_fragment_path = "shaders/particles.frag";
+	#ifndef __APPLE__
+		const char * vertex_file_path = "shaders/test.vert";
+    	const char * fragment_file_path = "shaders/test.frag";
+		const char * skybox_vertex_path = "shaders/skybox.vert";
+		const char * skybox_fragment_path = "shaders/skybox.frag";
+		const char * particles_vertex_path = "shaders/particles.vert";
+		const char * particles_fragment_path = "shaders/particles.frag";
+	#else 
+		const char * vertex_file_path = "shaders/MAC/test.vert";
+    	const char * fragment_file_path = "shaders/MAC/test.frag";
+		const char * skybox_vertex_path = "shaders/MAC/skybox.vert";
+		const char * skybox_fragment_path = "shaders/MAC/skybox.frag";
+		const char * particles_vertex_path = "shaders/MAC/particles.vert";
+		const char * particles_fragment_path = "shaders/MAC/particles.frag";
+	#endif
+    
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 

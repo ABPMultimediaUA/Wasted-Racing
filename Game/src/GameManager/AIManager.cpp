@@ -406,7 +406,7 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     auto maxSpeed = AIObject->getComponent<MoveComponent>()->getMovemententData().max_vel;
     AIObject->getComponent<MoveComponent>()->changeVel(0);
 
-    auto distCover = (maxSpeed * maxSpeed) * dTime;
+    auto distCover = (maxSpeed * maxSpeed)*0.7 * dTime;
 
     auto waypoints = WaypointManager::getInstance().getWaypoints();
 

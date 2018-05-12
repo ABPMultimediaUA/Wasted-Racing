@@ -45,7 +45,9 @@ private:
 
 	std::shared_ptr<TerrainComponent> terrain;
 	float distance;
+	float minDistanceCP;
 	float maxDistance;
+	float sumDistanceCP;
 	float oldDistance;
 	float height[5] = {0,0,0,0,0};
 	float oldHeight[5] = {0,0,0,0,0};
@@ -53,5 +55,6 @@ private:
 	float moldHeight;
 	int count;
 	int spinDir;
+	float cameraMaxVel;
 
 };

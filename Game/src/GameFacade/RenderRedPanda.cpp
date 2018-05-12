@@ -32,8 +32,14 @@ void drawRPS_GUI_Pause(); //:::> function that is given as parameter to redpanda
 
 namespace gui {
 
+    //For controlling animations
+    const int bkgSize = 21;
+    int currImg = 0;
+    const int frameSkip = 3;
+    int currFrame = 0;
+
     //MAIN  MENU Images
-    struct nk_image background;
+    struct nk_image background[bkgSize];
     struct nk_image menuBase;
     struct nk_image text_singleplayer;
     struct nk_image text_singleplayerHover;
@@ -91,6 +97,7 @@ namespace gui {
 
     void init();
     struct nk_image loadTexture(const char* path);
+    void playAnimation();
 
     std::vector<GLuint> textures;
     static size_t volume = 100;   
@@ -178,7 +185,8 @@ void RenderRedPanda::renderDraw() {
 void RenderRedPanda::addCamera() {
 
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
-
+    valueY = 0.4;
+    sum = 0;
 }
 
 //Update the current camera
@@ -199,18 +207,50 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
     distance *= 1.5;
 
-    float cameraHeight = camera->getOldHeight() + (accTime * (camera->getHeight() - camera->getOldHeight()))/maxTime;
-    std::cout << camera->getHeight() << std::endl;
-    float dMultiplier = 0.3;
-
-    if(cameraHeight < pos.y && abs(cameraHeight-pos.y) >= 1.0) {
-        dMultiplier = 0.3 / abs(cameraHeight-pos.y);
+    auto oldPosPlayer = camera->getGameObject().getOldTransformData().position;
+    auto newPosPlayer = camera->getGameObject().getNewTransformData().position;
+    auto posPlayer = oldPosPlayer.y - newPosPlayer.y;
+    if(posPlayer > 0.5 && posPlayer < 2 && sum < 20)
+    {
+        sum += 1;
+    }
+    else if(posPlayer < -0.5 && posPlayer > -2 && sum > -20)
+    {
+        sum -= 1;
+    }
+    else if(posPlayer < 0.5 && posPlayer > -0.5)
+    {
+        if(sum > 0)
+        {
+            sum -= 1;
+        }
+        else if(sum < 0)
+        {
+            sum += 1; 
+        }
     }
 
-    glm::vec3 target(-pos.x, pos.y, pos.z);
-    glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), cameraHeight + distance * dMultiplier, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-
-    device->updateCamera(position, target);
+    glm::vec3 target(-pos.x, pos.y+12, pos.z);
+    if(newD > 15)
+    {
+        if(valueY > 0.4)
+        {
+            valueY -= 0.02;
+        }
+        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+        position = position;
+        device->updateCamera(position, target);
+    }
+    else
+    {
+        if(valueY < 1.2)
+        {
+            valueY += 0.02;
+        }
+        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+        position = position;
+        device->updateCamera(position, target);
+    }
 
 }
 
@@ -381,7 +421,7 @@ void drawRPS_GUI_Menu(){
             
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
                 nk_layout_row_static(GUI, h, w, 1);
-                nk_image(GUI, gui::background);
+                gui::playAnimation();
                 nk_popup_end(GUI);
             }
 
@@ -407,7 +447,6 @@ void drawRPS_GUI_Menu(){
                     EventManager::getInstance().addEvent(Event {EventType::Game_Close});
                 nk_popup_end(GUI);
             }
-            
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
@@ -427,7 +466,7 @@ void drawRPS_GUI_Options(){
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
                 nk_layout_row_static(GUI, h, w, 1);
                 if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::INTRO)
-                    nk_image(GUI, gui::background);
+                    gui::playAnimation();
                 else if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::PAUSE)
                     nk_image(GUI, gui::pbackground);
                 nk_popup_end(GUI);
@@ -698,6 +737,31 @@ void gui::init() {
     textures.clear();
 
     //==========================================================================================
+    //  BACKGROUND
+    //==========================================================================================
+    gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/frame_00_delay-0.04s.gif");
+    gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/frame_01_delay-0.04s.gif");
+    gui::background[2]                  =   gui::loadTexture("media/img/GUI/Background/frame_02_delay-0.04s.gif");
+    gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/frame_03_delay-0.04s.gif");
+    gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/frame_04_delay-0.04s.gif");
+    gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/frame_05_delay-0.04s.gif");
+    gui::background[6]                  =   gui::loadTexture("media/img/GUI/Background/frame_06_delay-0.04s.gif");
+    gui::background[7]                  =   gui::loadTexture("media/img/GUI/Background/frame_07_delay-0.04s.gif");
+    gui::background[8]                  =   gui::loadTexture("media/img/GUI/Background/frame_08_delay-0.04s.gif");
+    gui::background[9]                  =   gui::loadTexture("media/img/GUI/Background/frame_09_delay-0.04s.gif");
+    gui::background[10]                 =   gui::loadTexture("media/img/GUI/Background/frame_10_delay-0.04s.gif");
+    gui::background[11]                 =   gui::loadTexture("media/img/GUI/Background/frame_11_delay-0.04s.gif");
+    gui::background[12]                 =   gui::loadTexture("media/img/GUI/Background/frame_12_delay-0.04s.gif");
+    gui::background[13]                 =   gui::loadTexture("media/img/GUI/Background/frame_13_delay-0.04s.gif");
+    gui::background[14]                 =   gui::loadTexture("media/img/GUI/Background/frame_14_delay-0.04s.gif");
+    gui::background[15]                 =   gui::loadTexture("media/img/GUI/Background/frame_15_delay-0.04s.gif");
+    gui::background[16]                 =   gui::loadTexture("media/img/GUI/Background/frame_16_delay-0.04s.gif");
+    gui::background[17]                 =   gui::loadTexture("media/img/GUI/Background/frame_17_delay-0.04s.gif");
+    gui::background[18]                 =   gui::loadTexture("media/img/GUI/Background/frame_18_delay-0.04s.gif");
+    gui::background[19]                 =   gui::loadTexture("media/img/GUI/Background/frame_19_delay-0.04s.gif");
+    gui::background[20]                 =   gui::loadTexture("media/img/GUI/Background/frame_20_delay-0.04s.gif");
+
+    //==========================================================================================
     //  MAIN MENU
     //==========================================================================================
     if(GlobalVariables::getInstance().getLanguage() == 0) {
@@ -710,7 +774,6 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bOptionsHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExit.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExitHover.png");
-        gui::background                 =   gui::loadTexture("media/img/background.jpg");
     } 
     else {
         gui::menuBase                   =   gui::loadTexture("media/img/GUI/MainMenu/SPA/menuBase.png");
@@ -722,7 +785,6 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bOpcionesHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalir.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalirHover.png");
-        gui::background                 =   gui::loadTexture("media/img/background.jpg");
     }
 
     //==========================================================================================
@@ -743,8 +805,8 @@ void gui::init() {
     } 
     else {
         gui::optionsBase                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/opcionesBase.png");
-        gui::text_language              =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bIdiomaEspañol.png");
-        gui::text_languageHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bIdiomaEspañolHover.png");
+        gui::text_language              =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bIdiomaEspanol.png");
+        gui::text_languageHover         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bIdiomaEspanolHover.png");
         gui::text_soundON               =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOn.png");
         gui::text_soundONHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOnHover.png");
         gui::text_soundOFF              =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSonidoOff.png");
@@ -837,6 +899,25 @@ struct nk_image gui::loadTexture(const char* path) {
     
     return nk_image_id((int)tex);
 
+}
+
+//Play animation loop
+void gui::playAnimation() {
+
+    nk_image(GUI, gui::background[currImg]); 
+
+    if(currFrame == frameSkip) {
+
+        if(currImg == bkgSize - 1)
+            currImg = 0;
+        else 
+            currImg++;
+
+        currFrame = 0;
+    }
+    else {
+        currFrame++;
+    }
 }
 
 ////////////
