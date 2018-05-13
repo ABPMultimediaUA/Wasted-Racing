@@ -13,7 +13,8 @@ class ItemBlueShellComponent : public IItemComponent
 
         ~ItemBlueShellComponent();
 
-        void init();
+        void init() {};
+        void init(float actualVector);
 
         void update(float dTime);
 

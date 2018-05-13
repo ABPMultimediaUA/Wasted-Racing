@@ -281,7 +281,7 @@ void PhysicsManager::calculateMovingCollision(std::shared_ptr<MoveComponent> mov
 
 //Calculate if we are inside a terrain or if we are going to another one
 void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std::shared_ptr<MoveComponent> move, std::shared_ptr<TerrainComponent> terr, std::shared_ptr<CollisionComponent> coll, const float dTime) {
-    if(move != nullptr && terr != nullptr && coll != nullptr)
+    if(move != nullptr && terr != nullptr && coll != nullptr /*&& coll->getType() != CollisionComponent::Type::BlueShell*/)
     {
         MoveComponent* ourMove = move.get();
         TerrainComponent* ourTerr = terr.get();
