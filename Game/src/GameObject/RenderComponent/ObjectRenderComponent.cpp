@@ -1,4 +1,5 @@
 #include "ObjectRenderComponent.h"
+#include "../../GameManager/RenderManager.h"
 //:::>With proper initialization could be just a type information class
 
 //Initilizer
@@ -18,7 +19,7 @@ void ObjectRenderComponent::update(float dTime) {
 void ObjectRenderComponent::close() {
     //:::> Shouldn't the render manager erase it?
     //<___ I did it in the render manager
-    //RenderManager::getInstance().getRenderFacade()->deleteObject(this);
+    RenderManager::getInstance().getRenderFacade()->deleteObject(this);
     //___>
 }
   

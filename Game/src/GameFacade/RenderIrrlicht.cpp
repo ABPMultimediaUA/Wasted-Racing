@@ -84,6 +84,10 @@ void RenderIrrlicht::addCamera() {
     camera->setPosition(irr::core::vector3df(0,0,0));
 }
 
+void RenderIrrlicht::setCameraTarget(glm::vec3 position, glm::vec3 target) {
+
+}
+
 void RenderIrrlicht::interpolateCamera(float accTime, float maxTime) {
     //Get target position
     auto pos = cameraTarget->getTransformData().position;

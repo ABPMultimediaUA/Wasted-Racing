@@ -29,14 +29,22 @@ void drawRPS_GUI_HUD(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_Options(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_PlayerSelect(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_Pause(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI_CityName(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI_Countdown(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI_AfterMatch(); //:::> function that is given as parameter to redpanda
 
 namespace gui {
 
     //For controlling animations
     const int bkgSize = 21;
     int currImg = 0;
-    const int frameSkip = 3;
     int currFrame = 0;
+
+    #ifdef __WIN32__
+        const int frameSkip = 10;
+    #else
+        const int frameSkip = 3;
+    #endif
 
     //MAIN  MENU Images
     struct nk_image background[bkgSize];
@@ -95,6 +103,13 @@ namespace gui {
     struct nk_image text_currentSound;
     struct nk_image text_currentSoundHover;
 
+    //OTHER Images
+    struct nk_image loadingScreen;
+    struct nk_image cityName;
+    struct nk_image countdown[4];
+    struct nk_image winner;
+    struct nk_image looser;
+
     void init();
     struct nk_image loadTexture(const char* path);
     void playAnimation();
@@ -108,7 +123,10 @@ namespace gui {
 // DELEGATES DECLARATIONS
 //==============================================
 void addHUD(EventData eData); 
+void addCityName(EventData eData); 
+void addCountdown(EventData eData); 
 void addPause(EventData eData); 
+void addResult(EventData eData);
 void changeLanguage(EventData eData);
 
 //==============================================================
@@ -149,8 +167,11 @@ void RenderRedPanda::openWindow() {
 
     addCamera();
 
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, addHUD});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Match_Start, addCityName});
+    EventManager::getInstance().addListener(EventListener {EventType::Match_Countdown, addCountdown});
+    EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Match_Race_End, addResult});
     EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeLanguage});
     EventManager::getInstance().addListener(EventListener {EventType::Game_Pause, addPause});
 
@@ -176,7 +197,6 @@ void RenderRedPanda::closeWindow() {
 //==============================================================
 //Renders all the scene
 void RenderRedPanda::renderDraw() {
-    
     device->updateDevice();
 
 }
@@ -203,26 +223,28 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     //Get interpolated distance to the player
     float oldD = camera->getOldDistance();
     float newD = camera->getDistance();
-
+    
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
     distance *= 1.5;
 
     auto player = camera->getGameObject();
+    auto vel = player.getComponent<MoveComponent>()->getMovemententData().vel;
+    auto maxVel = player.getComponent<MoveComponent>()->getMovemententData().max_vel;
     auto oldPosPlayer = player.getOldTransformData().position;
     auto newPosPlayer = player.getNewTransformData().position;
 
     auto mData = player.getComponent<MoveComponent>()->getMovemententData();
 
     auto posPlayer = oldPosPlayer.y - newPosPlayer.y;
-    if(posPlayer > 0.5 && posPlayer < 2 && sum < 20)
+    if(posPlayer > 0.25 && posPlayer < 2 && sum < 20)
     {
         sum += 0.25;
     }
-    else if(posPlayer < -0.5 && posPlayer > -2 && sum > -20)
+    else if(posPlayer < -0.25 && posPlayer > -2 && sum > -20)
     {
         sum -= 0.25;
     }
-    else if(posPlayer < 0.5 && posPlayer > -0.5)
+    else if(posPlayer < 0.25 && posPlayer > -0.25 && vel > maxVel/10)
     {
         if(sum > 0)
         {
@@ -288,6 +310,10 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             device->updateCamera(position, target);
         }
     }
+}
+
+void RenderRedPanda::setCameraTarget(glm::vec3 position, glm::vec3 target) {
+    device->updateCamera(position, target);
 }
 
 //Add an object to the game
@@ -481,6 +507,66 @@ void drawRPS_GUI_Menu(){
                 }
                 if (nk_button_image(GUI, gui::text_exit, gui::text_exitHover))
                     EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+                nk_popup_end(GUI);
+            }
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
+void drawRPS_GUI_CityName() {
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                nk_image(GUI, gui::cityName);
+                nk_popup_end(GUI);
+            }
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
+void drawRPS_GUI_Countdown() {
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                nk_image(GUI, gui::countdown[GlobalVariables::getInstance().getCountdown()]);
+                nk_popup_end(GUI);
+            }
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
+void drawRPS_GUI_AfterMatch() {
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                nk_image(GUI, gui::winner);
                 nk_popup_end(GUI);
             }
 		}
@@ -773,7 +859,7 @@ void gui::init() {
     textures.clear();
 
     //==========================================================================================
-    //  BACKGROUND
+    //  BACKGROUND & OTHERS
     //==========================================================================================
     gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/frame_00_delay-0.04s.gif");
     gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/frame_01_delay-0.04s.gif");
@@ -796,6 +882,10 @@ void gui::init() {
     gui::background[18]                 =   gui::loadTexture("media/img/GUI/Background/frame_18_delay-0.04s.gif");
     gui::background[19]                 =   gui::loadTexture("media/img/GUI/Background/frame_19_delay-0.04s.gif");
     gui::background[20]                 =   gui::loadTexture("media/img/GUI/Background/frame_20_delay-0.04s.gif");
+    gui::cityName                       =   gui::loadTexture("media/img/GUI/Other/cityName.png");
+    gui::countdown[1]                   =   gui::loadTexture("media/img/GUI/Other/1.png");
+    gui::countdown[2]                   =   gui::loadTexture("media/img/GUI/Other/2.png");
+    gui::countdown[3]                   =   gui::loadTexture("media/img/GUI/Other/3.png");
 
     //==========================================================================================
     //  MAIN MENU
@@ -810,6 +900,10 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bOptionsHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExit.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExitHover.png");
+        gui::loadingScreen              =   gui::loadTexture("media/img/GUI/Other/loadScreenENG.png");
+        gui::countdown[0]               =   gui::loadTexture("media/img/GUI/Other/startENG.png");
+        gui::winner                     =   gui::loadTexture("media/img/GUI/Other/winnerENG.png");
+        gui::looser                     =   gui::loadTexture("media/img/GUI/Other/looserENG.png");
     } 
     else {
         gui::menuBase                   =   gui::loadTexture("media/img/GUI/MainMenu/SPA/menuBase.png");
@@ -821,6 +915,10 @@ void gui::init() {
         gui::text_optionsHover          =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bOpcionesHover.png");
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalir.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalirHover.png");
+        gui::loadingScreen              =   gui::loadTexture("media/img/GUI/Other/loadScreenSPA.png");
+        gui::countdown[0]               =   gui::loadTexture("media/img/GUI/Other/startSPA.png");
+        gui::winner                     =   gui::loadTexture("media/img/GUI/Other/winnerSPA.png");
+        gui::looser                     =   gui::loadTexture("media/img/GUI/Other/looserSPA.png");
     }
 
     //==========================================================================================
@@ -1051,9 +1149,32 @@ void RenderRedPanda::updateItemIcon() { }
 
 //Delegates
 void addHUD(EventData eData) {
+    
     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
     device->setGUIDrawFunction(drawRPS_GUI_HUD);
 }
+
+void addCityName(EventData eData) {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_CityName);
+
+}
+
+void addCountdown(EventData eData) {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_Countdown);
+
+}
+
+void addResult(EventData eData) {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_AfterMatch);
+
+}
+
 void addPause(EventData eData) {
     IGameState::stateType state = GlobalVariables::getInstance().getGameState();
 
@@ -1073,6 +1194,13 @@ void addPause(EventData eData) {
         MatchState::getInstance().setRatio(1.0);
         EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
     }
+    else if (state == IGameState::stateType::PREMATCH) {
+        EventData eData;
+        eData.Id = IGameState::stateType::MATCH;
+        EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
+        GlobalVariables::getInstance().setIgnoreInput(false);
+    }
+
 }
 
 void changeLanguage(EventData eData) {

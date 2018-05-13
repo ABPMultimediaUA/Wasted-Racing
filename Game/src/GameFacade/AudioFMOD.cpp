@@ -139,17 +139,19 @@ void AudioFMOD::setVolume(float vol) {
 //Sets the 3D position of the listener
 void AudioFMOD::setListenerPosition() {
 
-    //Update listener position
-    FMOD_3D_ATTRIBUTES attributes;
-    auto pos = getListener().getTransformData().position;
-    auto vel = getListener().getComponent<MoveComponent>().get()->getMovemententData().velocity;
-    auto ang = getListener().getComponent<MoveComponent>().get()->getMovemententData().angle;
-    attributes.position = { pos.x * worldUnits, pos.y * worldUnits, pos.z * worldUnits };
-    attributes.velocity = { vel.x * worldUnits, vel.y * worldUnits, vel.z * worldUnits };
-    attributes.forward = { -std::cos(ang), 0.0f, -std::sin(ang) };
-    attributes.up = { 0.0f, -1.0f, 0.0f };
+    if(getListener()!=nullptr){
+        //Update listener position
+        FMOD_3D_ATTRIBUTES attributes;
+        auto pos = getListener()->getTransformData().position;
+        auto vel = getListener()->getComponent<MoveComponent>().get()->getMovemententData().velocity;
+        auto ang = getListener()->getComponent<MoveComponent>().get()->getMovemententData().angle;
+        attributes.position = { pos.x * worldUnits, pos.y * worldUnits, pos.z * worldUnits };
+        attributes.velocity = { vel.x * worldUnits, vel.y * worldUnits, vel.z * worldUnits };
+        attributes.forward = { -std::cos(ang), 0.0f, -std::sin(ang) };
+        attributes.up = { 0.0f, -1.0f, 0.0f };
 
-    ERRCHECK( FMOD_Studio_System_SetListenerAttributes(system, 0, &attributes) );
+        ERRCHECK( FMOD_Studio_System_SetListenerAttributes(system, 0, &attributes) );
+    }
 
 }
 
