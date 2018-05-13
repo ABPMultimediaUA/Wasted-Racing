@@ -46,6 +46,10 @@ class TResourceMesh : public TResource {
         GLfloat getMinZ()                       { return minZ;      }
 
 
+        GLfloat* getVertex()                    {   return vertex;  }
+        long     getNVertex()                   {   return nVertex; }
+        GLuint*  getVertexIndices()             {   return vertexIndices; }
+
     private:
         //Vertex info
         GLfloat* vertex, *normals, *textures;

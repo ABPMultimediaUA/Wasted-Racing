@@ -38,7 +38,7 @@ bool TResourceOBJ::loadOnlyMeshes()
     return false;
 }
 
-void TResourceOBJ::setTexture(int i, TResourceTexture* t)
+void TResourceOBJ::setTexture(unsigned int i, TResourceTexture* t)
 {
     if(i>=0 && i<meshes.size())
     {
@@ -48,7 +48,7 @@ void TResourceOBJ::setTexture(int i, TResourceTexture* t)
 }
 
 
-void TResourceOBJ::setMaterial(int i, TResourceMaterial* m)
+void TResourceOBJ::setMaterial(unsigned int i, TResourceMaterial* m)
 {
     if(i >= 0 && i < meshes.size())
     {
@@ -66,16 +66,6 @@ bool TResourceOBJ::loadResource()
     //If loaded succesfully, we proceed to get all his data
     if(scene)
     {
-        std::cout << "NumMeshes: " << scene->mNumMeshes << std::endl;
-        //For each mesh in the obj, we create a new resourceMesh and storage the mesh data on it
-        for(unsigned int i = 0; i<scene->mNumMeshes; i++)
-        {
-            TResourceMesh* mesh = new TResourceMesh();
-            aiMesh* m = scene->mMeshes[i];
-            mesh->loadMesh(m);
-            meshes.push_back(mesh);
-        }
-
         //We get the directory path to load properly the textures
         std::string s(name);
         std::vector<std::string> v = split(s, '/');
@@ -88,14 +78,37 @@ bool TResourceOBJ::loadResource()
         {
             route+=v[i] + "/";
         }
-        
-        std::cout << "NumMaterials: " << scene->mNumMaterials << std::endl;
 
+        //For each mesh in the obj, we create a new resourceMesh and storage the mesh data on it
+        for(unsigned int i = 0; i<scene->mNumMeshes; i++)
+        {
+            TResourceMesh* mesh = new TResourceMesh();
+            aiMesh* m = scene->mMeshes[i];
+            mesh->loadMesh(m);
+            meshes.push_back(mesh);
+
+            TResourceMaterial* mat = new TResourceMaterial();
+            mat->loadResource(scene->mMaterials[m->mMaterialIndex]);
+            mesh->setMaterial(mat);
+            aiString path;
+            if(scene->mMaterials[m->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
+            {
+                TResourceTexture* texture = new TResourceTexture();
+                
+                //First we combine the path we just got with the directory path of the obj, and then we just load the texture
+                std::string completePath = route + path.data;
+                texture->setName(completePath.c_str());
+                texture->loadResource();
+                mesh->setTexture(texture);
+                mesh->setTextActive(true);
+            }
+        }
+        
+/*
         //We proceed to get all the materials and textures
         for(unsigned int i = 1; i<scene->mNumMaterials; i++)
         {
-            TResourceMaterial* mat = new TResourceMaterial();
-            mat->loadResource(scene->mMaterials[i]);
+
             meshes[i-1]->setMaterial(mat);
             aiString path;
             //If the material has a diffuse texture, we get his path
@@ -111,7 +124,7 @@ bool TResourceOBJ::loadResource()
                 meshes[i-1]->setTextActive(true);
             }
         }
-
+*/
         generateBoundingBox();
 
 
@@ -122,7 +135,7 @@ bool TResourceOBJ::loadResource()
 
 void TResourceOBJ::draw()
 {
-    if((bbActivated && checkBoundingBox()) || !bbActivated)
+    if((TEntity::getFrustumCulling() && checkBoundingBox()) || !TEntity::getFrustumCulling())
     {
         //The textures, materials and meshes are loaded, suposedly, in a way that they should just correspond, so we draw one of each
         for(unsigned int i = 0; i < meshes.size(); i++)
@@ -132,16 +145,15 @@ void TResourceOBJ::draw()
 
         //drawBoundingBox();
     }
-    /*
+    
     else
     {
         std::cout << "Culling OBJ" << std::endl;
-        if(bbActivated)
+        if(TEntity::getFrustumCulling())
         {
             std::cout << "WTF" << std::endl;
         }
     }
-    */
 }
 
 void TResourceOBJ::generateBoundingBox()
@@ -155,7 +167,7 @@ void TResourceOBJ::generateBoundingBox()
     maxZ = meshes[0]->getMaxZ();
     minZ = meshes[0]->getMinZ();
 
-    for(int i = 1; i < meshes.size(); i++)
+    for(unsigned int i = 1; i < meshes.size(); i++)
     {
         if(meshes[i]->getMaxX() > maxX)
             maxX = meshes[i]->getMaxX();
@@ -228,6 +240,7 @@ void TResourceOBJ::drawBoundingBox()
 
 bool TResourceOBJ::checkBoundingBox()
 {
+    std::cout << "Checking bounding box" << std::endl;
     //First we set the bounding box's points in the scene
     glm::mat4 m = TEntity::projectionMatrix() * TEntity::viewMatrix() * TEntity::modelMatrix() * bbTransform;
     glm::vec4 p1 = m * glm::vec4(-0.5, -0.5, -0.5, 1.0);

@@ -32,17 +32,22 @@ void ItemRedShellComponent::update(float dTime)
         return;
 
     //:::> PLEASE, COMMENT ALL OF THIS
-    auto listNodes = WaypointManager::getInstance().getWaypoints();
-    auto vSensorComponent = getGameObject().getComponent<VSensorComponent>().get();
     auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
-    
+
+    auto pos =getGameObject().getTransformData().position;
+
+    //pos.y = pos.y+0.01
+
     if(myPos > 1)
     {
+
+        /*auto listNodes = WaypointManager::getInstance().getWaypoints();
+        auto vSensorComponent = getGameObject().getComponent<VSensorComponent>().get();
         auto aiDrivingComponent = getGameObject().getComponent<AIDrivingComponent>().get();
 
-        auto pos =getGameObject().getTransformData().position;
 
         auto posWay = listNodes[lastVector].get()->getTransformData().position;
+
 
         float distaneActualWay = (posWay.x - pos.x) * (posWay.x - pos.x) +
                             (posWay.y - pos.y) * (posWay.y - pos.y) +
@@ -82,7 +87,7 @@ void ItemRedShellComponent::update(float dTime)
         //DECIDE 
         float turnValue = aiDrivingComponent->girar(getGameObject(), seenObjects, seenObjects, objective, a, b);
 
-        moveComponent->changeSpin(turnValue);
+        moveComponent->changeSpin(turnValue);*/
     }
     //Accelerate and brake
     moveComponent->isMoving(true);

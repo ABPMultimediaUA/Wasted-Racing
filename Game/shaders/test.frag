@@ -25,10 +25,12 @@ void main()
       
       float levels = 6.0;
 
+/*
       FragColor.x = floor(FragColor.x * levels) / levels;
       FragColor.y = floor(FragColor.y * levels) / levels;
       FragColor.z = floor(FragColor.z * levels) / levels;
       FragColor.w = 1.0;
+*/
     }
     else
     {

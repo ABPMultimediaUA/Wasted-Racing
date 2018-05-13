@@ -4,16 +4,18 @@
 #include <nuklear/nuklear_sdl_gl3.h>
 
 //Define macros
-#define DetectKeyInput(TheKey,Event_Down,Event_Up) \
-    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_##TheKey) { \
+#define DetectKeyInput(TheKey,Event_Down,Event_Up,Mapping) \
+    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_##TheKey && keyMapping[Mapping] == false) { \
             EventData eventD; \
             eventD.grade = -2; \
             EventManager::getInstance().addEvent(Event {EventType::Event_Down, eventD}); \
+            keyMapping[Mapping] = true; \
     } \
     else if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_##TheKey){ \
             EventData eventD; \
             eventD.grade = -2; \
             EventManager::getInstance().addEvent(Event {EventType::Event_Up, eventD}); \
+            keyMapping[Mapping] = false; \
     };
 
 
@@ -60,21 +62,21 @@ void InputRedPanda::updateInput() {
         //___>
 
         //Update input 
-        DetectKeyInput(SPACE, Key_Jump_Down, Key_Jump_Up)
-        DetectKeyInput(ESCAPE,Key_Back_Down,Key_Back_Up)
-        DetectKeyInput(w,Key_Advance_Down,Key_Advance_Up)
-        DetectKeyInput(s,Key_Brake_Down,Key_Brake_Up)
-        DetectKeyInput(a,Key_TurnLeft_Down,Key_TurnLeft_Up)
-        DetectKeyInput(d,Key_TurnRight_Down,Key_TurnRight_Up)
-        DetectKeyInput(t,Key_Drift_Down,Key_Drift_Up)
-        DetectKeyInput(q,Key_UseItem_Down,Key_UseItem_Up)
-        DetectKeyInput(F6,Key_SlowControl_Down,Key_SlowControl_Up)
-        DetectKeyInput(F7,Key_NormalControl_Down,Key_NormalControl_Up)
-        DetectKeyInput(F8,Key_FastControl_Down,Key_FastControl_Up)
-        DetectKeyInput(F9,Key_DebugAI_Down,Key_DebugAI_Up)
-        DetectKeyInput(F10,Key_DebugBehaviour_Down,Key_DebugBehaviour_Up)
-        DetectKeyInput(F11,Key_DebugCamera_Down,Key_DebugCamera_Up)
-        DetectKeyInput(0,Key_Scheduling_Down,Key_Scheduling_Up)
+        DetectKeyInput(SPACE, Key_Jump_Down, Key_Jump_Up,0)
+        DetectKeyInput(ESCAPE,Idle,Game_Pause,1)
+        DetectKeyInput(w,Key_Advance_Down,Key_Advance_Up,2)
+        DetectKeyInput(s,Key_Brake_Down,Key_Brake_Up,3)
+        DetectKeyInput(a,Key_TurnLeft_Down,Key_TurnLeft_Up,4)
+        DetectKeyInput(d,Key_TurnRight_Down,Key_TurnRight_Up,5)
+        DetectKeyInput(t,Key_Drift_Down,Key_Drift_Up,6)
+        DetectKeyInput(q,Key_UseItem_Down,Key_UseItem_Up,7)
+        DetectKeyInput(F6,Key_SlowControl_Down,Key_SlowControl_Up,8)
+        DetectKeyInput(F7,Key_NormalControl_Down,Key_NormalControl_Up,9)
+        DetectKeyInput(F8,Key_FastControl_Down,Key_FastControl_Up,10)
+        DetectKeyInput(F9,Key_DebugAI_Down,Key_DebugAI_Up,11)
+        DetectKeyInput(F10,Key_DebugBehaviour_Down,Key_DebugBehaviour_Up,12)
+        DetectKeyInput(F11,Key_DebugCamera_Down,Key_DebugCamera_Up,13)
+        DetectKeyInput(0,Key_Scheduling_Down,Key_Scheduling_Up,14)
 
         DetectButtonInput(A, Key_Jump_Down, Key_Jump_Up, 0)
         DetectButtonInput(B, Key_Drift_Down, Key_Drift_Up, 1)

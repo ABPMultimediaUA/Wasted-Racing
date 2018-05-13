@@ -26,7 +26,7 @@ class TResourceAnimation : public TResource {
         void draw();
 
         //Draws the frame given by parameter, if possible
-        void draw(int i);
+        void draw(unsigned int i);
 
         //////////////////////////////////////////////////////////////////////
         /////////////////////////// GETTERS && SETTERS ///////////////////////

@@ -223,6 +223,12 @@ void AIManager::updateScheduling(float dTime, float loopTime) {
                 auto AIObject = aiDrivingComponent2->getGameObject();
                 double timePassed = clock->getInitTime() - a.timeStamp + dTime; //Actual interval of time (dTime + time passed since creation of event)
 
+                float maxDTime = GlobalVariables::getInstance().getMaxDTime();
+                if(timePassed > maxDTime)
+                {
+                    timePassed = maxDTime;
+                }
+
                 //Launch effect
                 calculateLoD(AIObject, timePassed);
 
@@ -234,6 +240,11 @@ void AIManager::updateScheduling(float dTime, float loopTime) {
                 
                 break;
             }
+            case AIEventType::UPDATE_DRIVING_ACCELERATION:
+            {
+                break;
+            }
+            default: break;
         }
 
         //Release 
@@ -400,7 +411,7 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     auto maxSpeed = AIObject->getComponent<MoveComponent>()->getMovemententData().max_vel;
     AIObject->getComponent<MoveComponent>()->changeVel(0);
 
-    auto distCover = (maxSpeed * maxSpeed) * dTime;
+    auto distCover = (maxSpeed * maxSpeed)*0.7 * dTime;
 
     auto waypoints = WaypointManager::getInstance().getWaypoints();
 

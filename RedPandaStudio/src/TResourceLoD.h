@@ -16,7 +16,7 @@ class TResourceLoD : public TResource {
         void insertObj(int lvl, TResourceOBJ* obj);
 
         //Load the resource specified in the route provided
-        virtual bool loadResource() {};
+        virtual bool loadResource() { return false; };
 
         //Draws the shader (in this case, activates it)
         virtual void draw() {};

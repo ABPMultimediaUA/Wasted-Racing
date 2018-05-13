@@ -119,7 +119,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     //Get item
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = itemHolder->getItemType();
+    int random = 0;//itemHolder->getItemType();
 
     //-----------------------
     //Generate the right item
@@ -246,14 +246,15 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 300.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 500.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_vel = 0.f;
-    mData.velY = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.velY = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.acc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_acc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.dAcc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.brake_acc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.player = 5;
 
     //Initial component data
     auto terrain = obj.getComponent<MoveComponent>()->getTerrain();
@@ -364,14 +365,15 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 300.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_vel = 500.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
     mData.brake_vel = 0.f;
-    mData.velY = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.velY = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.acc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.max_acc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.dAcc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.brake_acc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.player = 5;
 
 
     //Initial component data

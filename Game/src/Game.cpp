@@ -127,7 +127,7 @@ void Game::Run() {
         //Measure elapsed time
         accumulatedTime += (float)clock->getElapsedTime();
         clock->restart();
-
+        
         if(dynamic_cast<MatchState*>(state) != nullptr) 
         {
             //If the state is Match, divide with ratio so we can accelerate or slow down the game
@@ -176,6 +176,10 @@ void Game::setState(IGameState::stateType type){
                 globalVariables->setGameState(MultiMatchState::getInstance().type);
                 state = &MultiMatchState::getInstance();
                 break;
+            case IGameState::stateType::PAUSE:
+                globalVariables->setGameState(PauseState::getInstance().type);
+                state = &PauseState::getInstance();
+                break;
             default:
                 globalVariables->setGameState(IntroState::getInstance().type);
                 state = &IntroState::getInstance();
@@ -188,22 +192,11 @@ void Game::setState(IGameState::stateType type){
 
 //adding minimum objects needed to play the game
 void addObjects(){
+    
     //===============================================================
-    // add player 
+    // add map
     //===============================================================
     loadMap();
-
-    uint16_t id = 25000;
-    GameObject::TransformationData transform;
-    
-    //:::>Needs to be set by the map
-    transform.position = glm::vec3(-35,0, -20);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    
-    ObjectManager::getInstance().createPlayer(transform, 0, 0, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     //===============================================================
     // Update to distribute all creation events
@@ -325,7 +318,7 @@ void loadMap() {
                     type = LightRenderComponent::Type::Directional;
 
                 //Create LIGHT component
-                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,100);
+                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,radius);
 
             }
 

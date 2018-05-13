@@ -9,7 +9,8 @@ public:
         MAIN,           //Game main menu
         MATCH,          //Inside the singleplayer game
         CLIENTLOBBY,    //Client waiting in the lobby for a match
-        MULTIMATCH      //Inside the multiplayer game
+        MULTIMATCH,     //Inside the multiplayer game
+        PAUSE           //For when the game is paused
     };
 
     //Constructor

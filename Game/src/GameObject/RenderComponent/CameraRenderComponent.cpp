@@ -2,12 +2,14 @@
 #include "../../GameManager/PhysicsManager.h"
 
 CameraRenderComponent::CameraRenderComponent(GameObject& newGameObject) : IRenderComponent(newGameObject) {
-		distance = 30;
-		maxDistance = 30;
+		distance = 20;
+        minDistanceCP = 20;
+		maxDistance = 40;
 		oldDistance = distance;
 		terrain = PhysicsManager::getInstance().getTerrainFromPos(newGameObject.getTransformData().position);
 		count = 0;
 		spinDir = 1;
+        cameraMaxVel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().max_vel;
 }
 
 //Initilizer
@@ -18,8 +20,14 @@ void CameraRenderComponent::init() {
 //Update   
 void CameraRenderComponent::update(float dTime) {
 
+    //Actual velocity
+    float vel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().vel;
+
+    //calculate distance camera-player
+    float sumDistanceCP = (maxDistance - minDistanceCP) * (vel/cameraMaxVel);
+
     //Camera velocity
-    const float camVel = 30;
+    const float camVel = 8;
 
     //Set oldDistance to currentDistance
     oldDistance = distance;
@@ -33,7 +41,6 @@ void CameraRenderComponent::update(float dTime) {
 
     //Data for next position
     auto moveCMP = getGameObject().getComponent<MoveComponent>();
-
 
     if(moveCMP != nullptr)
     {
@@ -107,19 +114,43 @@ void CameraRenderComponent::update(float dTime) {
         }
 
         ++count;
-
-        if(count > 5 && distance < 30)
+        
+        if(count > 5 && distance < sumDistanceCP + minDistanceCP)
             distance += camVel * dTime / 2;
 
-        if (distance < 5)
-            distance = 5;
+        if (distance < 15)
+            distance = 15;
 
-        if (distance > 30)
-            distance = 30;
-        
-        if (move.spin == 0)
-            distance = oldDistance;
+        if (distance > sumDistanceCP + minDistanceCP){
+            if(vel <= 1)
+            {
+                distance = distance-1;
+                if(distance < minDistanceCP)
+                {
+                    distance = minDistanceCP;
+                }
+            }
+            else
+            {
+                distance = sumDistanceCP + minDistanceCP;
+            }
+            
+        }
+        //if (move.spin == 0)
+            //distance = oldDistance;
     }
+
+    //Update camera
+    for(int i = 4; i > 0; i--) {
+        oldHeight[i] = oldHeight[i-1];
+        height[i] = height[i-1];
+    }
+    
+    oldHeight[0] = height[0];
+    height[0] = LAPAL::calculateExpectedY(terrain.get()->getTerrain(), currentPosition);
+    
+    moldHeight = (oldHeight[0] + oldHeight[1] + oldHeight[2] + oldHeight[3] + oldHeight[4])/5;
+    mheight = (height[0] + height[1] + height[2] + height[3] + height[4])/5;
 
 }
 
