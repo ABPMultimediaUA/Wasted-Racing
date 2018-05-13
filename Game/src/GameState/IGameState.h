@@ -6,6 +6,7 @@ public:
     //Type of states
     enum stateType {
         INTRO,          //Game intro (initial state)
+        SELECTION,      //Choose character and load game
         PREMATCH,       //State before match
         MATCH,          //Inside the singleplayer game
         POSTMATCH,      //State after match

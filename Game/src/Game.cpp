@@ -115,7 +115,8 @@ void Game::Run() {
     while(stay){
         
         //Measure elapsed time
-        accumulatedTime += (float)clock->getElapsedTime();
+        elapsedTime = (float)clock->getElapsedTime();
+        accumulatedTime += elapsedTime;
         clock->restart();
         
         if(dynamic_cast<MatchState*>(state) != nullptr) 
@@ -128,9 +129,9 @@ void Game::Run() {
         else
         {
             //Update the game once every maxTime
-            state->update(accumulatedTime); 
+            state->update(elapsedTime); 
         }
-        
+
         //Always draw the game
         state->draw();
         
@@ -158,9 +159,14 @@ void Game::setState(IGameState::stateType type){
                 globalVariables->setGameState(ClientLobbyState::getInstance().type);
                 state = &ClientLobbyState::getInstance();
                 break;
+            case IGameState::stateType::SELECTION:
+                globalVariables->setGameState(SelectionState::getInstance().type);
+                state = &SelectionState::getInstance();
+                break;
             case IGameState::stateType::PREMATCH:
                 globalVariables->setGameState(PreMatchState::getInstance().type);
                 state = &PreMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Start});
                 break;
             case IGameState::stateType::MATCH:
                 globalVariables->setGameState(MatchState::getInstance().type);

@@ -47,7 +47,16 @@ private:
     //Audio Manager
     AudioManager* audioManager;
 
-    GameObject::Pointer camera;
-    int i = 0;
+    glm::vec3 cameraPositions[6];   //[0],[1] initial target/position
+                                    //[2],[3] final target/position
+                                    //[4],[5] current target/position
+
+    float currTime;                 //Current cummulated time
+    float maxTime = 4;              //Max time per camera plane
+    int stateCounter = -1;          // 0 - first camera movement
+                                    // 1 - second camera movement
+                                    // 2 - third camera movement
+                                    // 3 - countdown
+                                    // 4 - change state
 
 };

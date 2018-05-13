@@ -29,14 +29,22 @@ void drawRPS_GUI_HUD(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_Options(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_PlayerSelect(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_Pause(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI_CityName(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI_Countdown(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI_AfterMatch(); //:::> function that is given as parameter to redpanda
 
 namespace gui {
 
     //For controlling animations
     const int bkgSize = 21;
     int currImg = 0;
-    const int frameSkip = 3;
     int currFrame = 0;
+
+    #ifdef __WIN32__
+        const int frameSkip = 10;
+    #else
+        const int frameSkip = 3;
+    #endif
 
     //MAIN  MENU Images
     struct nk_image background[bkgSize];
@@ -97,6 +105,7 @@ namespace gui {
 
     //OTHER Images
     struct nk_image loadingScreen;
+    struct nk_image cityName;
 
     void init();
     struct nk_image loadTexture(const char* path);
@@ -111,6 +120,7 @@ namespace gui {
 // DELEGATES DECLARATIONS
 //==============================================
 void addHUD(EventData eData); 
+void addCityName(EventData eData); 
 void addPause(EventData eData); 
 void changeLanguage(EventData eData);
 
@@ -152,6 +162,7 @@ void RenderRedPanda::openWindow() {
 
     addCamera();
 
+    EventManager::getInstance().addListener(EventListener {EventType::Match_Start, addCityName});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
     EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeLanguage});
@@ -205,7 +216,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     //Get interpolated distance to the player
     float oldD = camera->getOldDistance();
     float newD = camera->getDistance();
-
+    
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
     distance *= 1.5;
 
@@ -238,6 +249,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
         }
     }
     glm::vec3 target(-pos.x, pos.y+12, pos.z);
+    std::cout << "T" <<target.x<< " " << target.y << " " << target.z << std::endl;
     if(newD > 15)
     {
         if(valueY > 0.4)
@@ -249,6 +261,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
             position = position;
             device->updateCamera(position, target);
+            std::cout <<"P" << position.x<< " " << position.y << " " << position.z << std::endl;
         }
         else
         {
@@ -489,6 +502,26 @@ void drawRPS_GUI_Menu(){
                 }
                 if (nk_button_image(GUI, gui::text_exit, gui::text_exitHover))
                     EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+                nk_popup_end(GUI);
+            }
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
+void drawRPS_GUI_CityName() {
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                nk_image(GUI, gui::cityName);
                 nk_popup_end(GUI);
             }
 		}
@@ -781,7 +814,7 @@ void gui::init() {
     textures.clear();
 
     //==========================================================================================
-    //  BACKGROUND
+    //  BACKGROUND & OTHERS
     //==========================================================================================
     gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/frame_00_delay-0.04s.gif");
     gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/frame_01_delay-0.04s.gif");
@@ -804,6 +837,7 @@ void gui::init() {
     gui::background[18]                 =   gui::loadTexture("media/img/GUI/Background/frame_18_delay-0.04s.gif");
     gui::background[19]                 =   gui::loadTexture("media/img/GUI/Background/frame_19_delay-0.04s.gif");
     gui::background[20]                 =   gui::loadTexture("media/img/GUI/Background/frame_20_delay-0.04s.gif");
+    gui::cityName                       =   gui::loadTexture("media/img/GUI/Other/cityName.png");
 
     //==========================================================================================
     //  MAIN MENU
@@ -1065,6 +1099,14 @@ void addHUD(EventData eData) {
     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
     device->setGUIDrawFunction(drawRPS_GUI_HUD);
 }
+
+void addCityName(EventData eData) {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_CityName);
+
+}
+
 void addPause(EventData eData) {
     IGameState::stateType state = GlobalVariables::getInstance().getGameState();
 

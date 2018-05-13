@@ -32,6 +32,7 @@
 
 //State includes
 #include "GameState/IntroState.h"
+#include "GameState/SelectionState.h"
 #include "GameState/PreMatchState.h"
 #include "GameState/MatchState.h"
 #include "GameState/PostMatchState.h"
@@ -158,6 +159,7 @@ private:
 
     //Accumulate time in game
     float accumulatedTime;
+    float elapsedTime;
 
     //Game velocity
     float ratio = 1.0f;
