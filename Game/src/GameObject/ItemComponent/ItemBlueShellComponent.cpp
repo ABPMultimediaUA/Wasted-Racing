@@ -96,43 +96,65 @@ void ItemBlueShellComponent::update(float dTime)
 
 
 
-    auto shell = getGameObject();
-    auto trans = shell.getTransformData();
-
-    auto maxSpeed = shell.getComponent<MoveComponent>()->getMovemententData().max_vel;
+    auto trans = getGameObject().getTransformData();
+    auto pos = trans.position;
+    auto maxSpeed = getGameObject().getComponent<MoveComponent>()->getMovemententData().max_vel;
     getGameObject().getComponent<MoveComponent>()->changeVel(0);
 
     auto distCover = (maxSpeed * maxSpeed) * 0.25 * dTime;
+    glm::vec3 distination;
 
-    auto waypoints = WaypointManager::getInstance().getWaypoints();
+    objective = enemy.get()->getGameObject().getTransformData().position; 
 
-    unsigned int posVector = shell.getComponent<PathPlanningComponent>()->getLastPosVector();
-
-    float distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
-						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
-						     (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
+    float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
+						(objective.y - pos.y) * (objective.y - pos.y) +
+						(objective.z - pos.z) * (objective.z - pos.z);
 
     glm::vec3 nextPos;
-    if(distaneActualWay <= maxSpeed*10)
+
+    if((distancePlayer < 1000) /*|| (objective.x - pos.x < 120 && objective.z - pos.z < 120)*/)
     {
-        if(posVector < waypoints.size()-1)
+        /*getGameObject().getComponent<MoveComponent>()->changeVel(maxSpeed);
+        objective.y += 10; 
+        distination = objective;
+        nextPos = distination;*/
+    }
+    else
+    {
+        auto waypoints = WaypointManager::getInstance().getWaypoints();
+
+        unsigned int posVector = getGameObject().getComponent<PathPlanningComponent>()->getLastPosVector();
+
+        float distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
+                                (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
+                                (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
+
+        if(distaneActualWay <= maxSpeed*10)
         {
-            posVector++;
-            shell.getComponent<PathPlanningComponent>()->setLastPosVector(posVector);
+            if(posVector < waypoints.size()-1)
+            {
+                posVector++;
+                getGameObject().getComponent<PathPlanningComponent>()->setLastPosVector(posVector);
+            }
+            else if(posVector == waypoints.size()-1)
+            {
+                getGameObject().getComponent<PathPlanningComponent>()->setLastPosVector(0);
+            }
+            posVector = getGameObject().getComponent<PathPlanningComponent>()->getLastPosVector();
+            distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
+                                (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
+                                (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
         }
-        else if(posVector == waypoints.size()-1)
-        {
-            shell.getComponent<PathPlanningComponent>()->setLastPosVector(0);
-        }
-        posVector = shell.getComponent<PathPlanningComponent>()->getLastPosVector();
-        distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
-                            (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
-                            (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
+        
+        distination = waypoints[posVector].get()->getTransformData().position;
+        nextPos = ((distCover/5000) * (distination - trans.position)) + trans.position;
     }
     
-    nextPos = ((distCover/distaneActualWay) * (waypoints[posVector].get()->getTransformData().position - trans.position)) + trans.position;
+
     
-    
+    trans.position = nextPos;
+
+
     getGameObject().setNewTransformData(trans);
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
