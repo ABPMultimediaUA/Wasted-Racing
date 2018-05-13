@@ -1194,6 +1194,13 @@ void addPause(EventData eData) {
         MatchState::getInstance().setRatio(1.0);
         EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
     }
+    else if (state == IGameState::stateType::PREMATCH) {
+        EventData eData;
+        eData.Id = IGameState::stateType::MATCH;
+        EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
+        GlobalVariables::getInstance().setIgnoreInput(false);
+    }
+
 }
 
 void changeLanguage(EventData eData) {

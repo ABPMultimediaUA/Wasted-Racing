@@ -46,5 +46,14 @@ private:
     ObjectManager* objectManager;
     //Audio Manager
     AudioManager* audioManager;
+    //Physics manager
+    PhysicsManager* physicsManager;
+    //Waypoint manager
+    WaypointManager* waypointManager;
+    //AI manager
+    AIManager* aiManager;
+    //Sensor manager
+    SensorManager* sensorManager;
+
 
 };

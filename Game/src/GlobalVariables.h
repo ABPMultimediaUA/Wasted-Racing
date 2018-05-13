@@ -39,6 +39,8 @@ class GlobalVariables{
         float   getVolume()                                 {     return volume;      };
         void    setCountdown(int c)                         {     countdown = c;      };
         int     getCountdown()                              {     return countdown;   };
+        void    setIgnoreInput(bool i)                      {     ignoreInput = i;    };
+        bool    getIgnoreInput()                            {     return ignoreInput; };
         
     private:
 
@@ -58,6 +60,7 @@ class GlobalVariables{
         //Variable for options
         float volume = 1.0;
         int language;
+        bool ignoreInput = false;
 
         //==========================================
         // AI DATA

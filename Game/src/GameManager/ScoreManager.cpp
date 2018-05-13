@@ -126,7 +126,7 @@ void ScoreManager::update()
         EventManager::getInstance().addEvent(Event {EventType::Score_OnOvertaken, data});
 
         playerPosition = position;
-    }
+    } 
     if(position < playerPosition){
 
         EventData data;
@@ -154,7 +154,7 @@ void ScoreManager::update()
         EventManager::getInstance().addEvent(Event {EventType::Score_OnNewLap, data});
 
         playerLap = lap;
-
+        
         if(lap == 4) {
             Game::getInstance().setState(IGameState::stateType::POSTMATCH);
         }

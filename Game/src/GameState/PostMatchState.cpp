@@ -7,13 +7,27 @@ void PostMatchState::init() {
     renderManager = &RenderManager::getInstance();
     objectManager = &ObjectManager::getInstance();
     audioManager = &AudioManager::getInstance();
+    physicsManager = &PhysicsManager::getInstance();
+    waypointManager = &WaypointManager::getInstance();
+    aiManager = &AIManager::getInstance();
+    sensorManager = &SensorManager::getInstance();
 
+    GlobalVariables::getInstance().setIgnoreInput(true);
     Game::getInstance().setAccumulatedTime(0);
 }
 
 void PostMatchState::update(float &accumulatedTime) {
     //Update input manager
+
     inputManager->update();
+
+    physicsManager->update(accumulatedTime);
+
+    aiManager->update(accumulatedTime);
+
+    waypointManager->update(accumulatedTime);
+
+    sensorManager->update();
     
     //Update audio manager
     audioManager->update();

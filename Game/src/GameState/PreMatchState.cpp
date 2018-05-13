@@ -9,6 +9,7 @@ void PreMatchState::init() {
     audioManager = &AudioManager::getInstance();
 
     Game::getInstance().setAccumulatedTime(0);
+    GlobalVariables::getInstance().setIgnoreInput(true);
 
     
 }
@@ -104,7 +105,9 @@ void PreMatchState::update(float &accumulatedTime) {
 
         stateCounter = -1;
 
+        GlobalVariables::getInstance().setIgnoreInput(false);
         Game::getInstance().setState(IGameState::stateType::MATCH);
+        
     }
 
 
