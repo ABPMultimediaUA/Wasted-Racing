@@ -37,6 +37,8 @@ class GlobalVariables{
         float   getMaxDTime()                               {     return maxDTime;    };
         void    setVolume(float v)                          {     volume = v;         };
         float   getVolume()                                 {     return volume;      };
+        void    setCountdown(int c)                         {     countdown = c;      };
+        int     getCountdown()                              {     return countdown;   };
         
     private:
 
@@ -49,6 +51,9 @@ class GlobalVariables{
         bool online;
         //Max value for dTime
         float maxDTime = 1.0f/30.0f;
+
+        //Countdown value
+        int countdown;
 
         //Variable for options
         float volume = 1.0;

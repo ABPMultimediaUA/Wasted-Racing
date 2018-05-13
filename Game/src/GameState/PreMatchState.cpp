@@ -77,15 +77,21 @@ void PreMatchState::update(float &accumulatedTime) {
     else if (stateCounter == 2 && currTime <= 0){
 
         stateCounter = 3;
-        currTime = maxTime;
+        currTime = maxTime - 0.01;
 
         //initial camera movement
         cameraPositions[0] = glm::vec3(95,12.6469,-20);
         cameraPositions[1] = glm::vec3(65,13.7496,-20);
         cameraPositions[2] = glm::vec3(65,12.6469,-20);
         cameraPositions[3] = glm::vec3(35,13.7496,-20);
+
+        //Set event for countdown start
+        EventManager::getInstance().addEvent(Event {EventType::Match_Countdown});
+        GlobalVariables::getInstance().setCountdown(3);
     }
     else if (stateCounter == 3 && currTime > 0){
+
+        GlobalVariables::getInstance().setCountdown((int)currTime);
 
         cameraPositions[4] = cameraPositions[0] + ((maxTime-currTime) * (cameraPositions[2]-cameraPositions[0]))/maxTime;
         cameraPositions[5] = cameraPositions[1] + ((maxTime-currTime) * (cameraPositions[3]-cameraPositions[1]))/maxTime;

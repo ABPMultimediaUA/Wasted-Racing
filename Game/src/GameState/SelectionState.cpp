@@ -27,8 +27,6 @@ void SelectionState::update(float &accumulatedTime) {
         //Add AI's to the game
         addAI();
     }
-        
-    std::cout << i << std::endl;
 
     //Update input manager
     inputManager->update();

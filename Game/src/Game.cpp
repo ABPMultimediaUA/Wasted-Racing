@@ -176,6 +176,7 @@ void Game::setState(IGameState::stateType type){
             case IGameState::stateType::POSTMATCH:
                 globalVariables->setGameState(PostMatchState::getInstance().type);
                 state = &PostMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_End});
                 break;
             case IGameState::stateType::MULTIMATCH:
                 globalVariables->setGameState(MultiMatchState::getInstance().type);
