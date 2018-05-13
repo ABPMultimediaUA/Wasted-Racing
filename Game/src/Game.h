@@ -32,8 +32,9 @@
 
 //State includes
 #include "GameState/IntroState.h"
-#include "GameState/MainState.h"
+#include "GameState/PreMatchState.h"
 #include "GameState/MatchState.h"
+#include "GameState/PostMatchState.h"
 #include "GameState/ClientLobbyState.h"
 #include "GameState/MultiMatchState.h"
 #include "GameState/PauseState.h"

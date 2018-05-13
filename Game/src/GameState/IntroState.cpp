@@ -69,7 +69,7 @@ void IntroState::swapToMatch()
     close();    
  
     //Initialize match state
-    Game::getInstance().setState(IGameState::stateType::MATCH);
+    Game::getInstance().setState(IGameState::stateType::PREMATCH);
 
 }
 

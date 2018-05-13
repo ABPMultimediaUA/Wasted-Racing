@@ -152,8 +152,8 @@ void RenderRedPanda::openWindow() {
 
     addCamera();
 
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Multiplayer_Down, addHUD});
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Singleplayer_Down, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
+    EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
     EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeLanguage});
     EventManager::getInstance().addListener(EventListener {EventType::Game_Pause, addPause});
 
@@ -179,7 +179,6 @@ void RenderRedPanda::closeWindow() {
 //==============================================================
 //Renders all the scene
 void RenderRedPanda::renderDraw() {
-    
     device->updateDevice();
 
 }
@@ -291,6 +290,10 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             device->updateCamera(position, target);
         }
     }
+}
+
+void RenderRedPanda::setCameraTarget(glm::vec3 position, glm::vec3 target) {
+    device->updateCamera(position, target);
 }
 
 //Add an object to the game

@@ -130,7 +130,7 @@ void Game::Run() {
             //Update the game once every maxTime
             state->update(accumulatedTime); 
         }
-
+        
         //Always draw the game
         state->draw();
         
@@ -158,9 +158,18 @@ void Game::setState(IGameState::stateType type){
                 globalVariables->setGameState(ClientLobbyState::getInstance().type);
                 state = &ClientLobbyState::getInstance();
                 break;
+            case IGameState::stateType::PREMATCH:
+                globalVariables->setGameState(PreMatchState::getInstance().type);
+                state = &PreMatchState::getInstance();
+                break;
             case IGameState::stateType::MATCH:
                 globalVariables->setGameState(MatchState::getInstance().type);
                 state = &MatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_Start});
+                break;
+            case IGameState::stateType::POSTMATCH:
+                globalVariables->setGameState(PostMatchState::getInstance().type);
+                state = &PostMatchState::getInstance();
                 break;
             case IGameState::stateType::MULTIMATCH:
                 globalVariables->setGameState(MultiMatchState::getInstance().type);

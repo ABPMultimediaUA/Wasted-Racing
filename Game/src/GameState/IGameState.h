@@ -6,8 +6,9 @@ public:
     //Type of states
     enum stateType {
         INTRO,          //Game intro (initial state)
-        MAIN,           //Game main menu
+        PREMATCH,       //State before match
         MATCH,          //Inside the singleplayer game
+        POSTMATCH,      //State after match
         CLIENTLOBBY,    //Client waiting in the lobby for a match
         MULTIMATCH,     //Inside the multiplayer game
         PAUSE           //For when the game is paused

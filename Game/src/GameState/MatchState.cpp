@@ -105,6 +105,11 @@ void MatchState::updateManagers(float dTime){
         audioManager->update();
     }
 
+    EventData data;
+    data.Component      = AudioManager().getInstance().getListenerComponent();
+
+    EventManager::getInstance().addEvent(Event {EventType::Music_MainTheme, data});
+
     //Event manager has to be the last to be updated
     eventManager->update();
 }
