@@ -1,4 +1,4 @@
-dr# Blender MTL File: 'circuitoFINAL.blend'
+# Blender MTL File: 'circuitoFINAL2.blend'
 # Material Count: 11
 
 newmtl CircuitMaterial
@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Puente/CircuitMaterial_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/Puente/CircuitMaterial_Base_Color.png
 
 newmtl CircuitMaterial.001
 Ns 96.078431
@@ -21,7 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd EdificiosPasillo/CircuitMaterial_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/EdificiosPasillo/CircuitMaterial_Base_Color.png
 
 newmtl CircuitMaterial_CircuitMaterial_Base_Color.png.009
 Ns 0.000000
@@ -32,7 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd CircuitMaterial_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/Bidones/CircuitMaterial_Base_Color.png
 
 newmtl CircuitMaterial_CircuitMaterial_Base_Color.png.010
 Ns 0.000000
@@ -43,7 +43,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd /EdificiosFuera/CircuitMaterial_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/EdificiosFuera/CircuitMaterial_Base_Color.png
 
 newmtl CircuitMaterial_CircuitMaterial_Base_Color.png.011
 Ns 0.000000
@@ -54,7 +54,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Farolas/CircuitMaterial_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/Farolas/CircuitMaterial_Base_Color.png
 
 newmtl CircuitMaterial_DefaultMaterial_Base_Color.png.006
 Ns 0.000000
@@ -65,7 +65,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd PistaBordillo/DefaultMaterial_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/PistaBordillo/DefaultMaterial_Base_Color.png
 
 newmtl CircuitMaterial_DefaultMaterial_Base_Color.png.007
 Ns 0.000000
@@ -76,7 +76,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Señales/DefaultMaterial_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/Señales/DefaultMaterial_Base_Color.png
 
 newmtl DefaultMaterial.001
 Ns 96.078431
@@ -87,7 +87,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ObjetosPasillo/DefaultMaterial_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/ObjetosPasillo/DefaultMaterial_Base_Color.png
 
 newmtl Material.001
 Ns 96.078431
@@ -98,7 +98,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd PlanoCarretera/Material.001_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/PlanoCarretera/Material.001_Base_Color.png
 
 newmtl Material2
 Ns 96.078431
@@ -109,7 +109,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd EdificiosPasillo/Material2_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/EdificiosPasillo/Material2_Base_Color.png
 
 newmtl None
 Ns 0
@@ -118,4 +118,4 @@ Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
-map_Kd PistaBordillo/DefaultMaterial_Base_Color.png
+map_Kd /home/alexei/Escritorio/ABP/Wasted-Racing/Docs/RV/Texturas/Terreno/TexturasExportadas/PistaBordillo/DefaultMaterial_Base_Color.png

@@ -207,29 +207,32 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
     distance *= 1.5;
 
-    auto oldPosPlayer = camera->getGameObject().getOldTransformData().position;
-    auto newPosPlayer = camera->getGameObject().getNewTransformData().position;
+    auto player = camera->getGameObject();
+    auto oldPosPlayer = player.getOldTransformData().position;
+    auto newPosPlayer = player.getNewTransformData().position;
+
+    auto mData = player.getComponent<MoveComponent>()->getMovemententData();
+
     auto posPlayer = oldPosPlayer.y - newPosPlayer.y;
     if(posPlayer > 0.5 && posPlayer < 2 && sum < 20)
     {
-        sum += 1;
+        sum += 0.25;
     }
     else if(posPlayer < -0.5 && posPlayer > -2 && sum > -20)
     {
-        sum -= 1;
+        sum -= 0.25;
     }
     else if(posPlayer < 0.5 && posPlayer > -0.5)
     {
         if(sum > 0)
         {
-            sum -= 1;
+            sum -= 0.25;
         }
         else if(sum < 0)
         {
-            sum += 1; 
+            sum += 0.25; 
         }
     }
-
     glm::vec3 target(-pos.x, pos.y+12, pos.z);
     if(newD > 15)
     {
@@ -237,9 +240,26 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
         {
             valueY -= 0.02;
         }
-        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-        position = position;
-        device->updateCamera(position, target);
+        if(mData.jump == false && mData.asc == false)
+        {
+            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+            position = position;
+            device->updateCamera(position, target);
+        }
+        else
+        {
+            if(sum > 0)
+            {
+                sum -= 0.25;
+            }
+            else if(sum < 0)
+            {
+                sum += 0.25; 
+            }
+            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+            position = position;
+            device->updateCamera(position, target);
+        }
     }
     else
     {
@@ -247,11 +267,27 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
         {
             valueY += 0.02;
         }
-        glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-        position = position;
-        device->updateCamera(position, target);
+        if(mData.jump == false && mData.asc == false)
+        {
+            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+            position = position;
+            device->updateCamera(position, target);
+        }
+        else
+        {
+            if(sum > 0)
+            {
+                sum -= 0.25;
+            }
+            else if(sum < 0)
+            {
+                sum += 0.25; 
+            }
+            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+            position = position;
+            device->updateCamera(position, target);
+        }
     }
-
 }
 
 //Add an object to the game
