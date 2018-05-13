@@ -69,6 +69,7 @@ public:
 
     //Update the current camera
     virtual void interpolateCamera(float accTime, float maxTime) = 0;
+    virtual void setCameraTarget(glm::vec3 position, glm::vec3 target) = 0;
 
     //Add an object to the game
     virtual void addObject(IComponent* ptr) = 0;

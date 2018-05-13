@@ -256,7 +256,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.driftAngleIncrMax = 2.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "cyborg.obj");
 
     return ob;
 
@@ -293,7 +293,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.player = 3;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "croco.obj");
 
     return ob;
 
