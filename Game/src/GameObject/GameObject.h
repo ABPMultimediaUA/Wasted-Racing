@@ -90,6 +90,17 @@ public:
 		return nullptr;
 	}
 
+	//Get component
+	template<typename Component>
+	void deleteComponent() {
+		std::list<std::shared_ptr<IComponent>>::iterator it;
+		for (it = components.begin(); it != components.end(); it++) {
+			if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(*it)) {
+				components.erase(it);
+			}
+		}
+	}
+
 
 private:
 

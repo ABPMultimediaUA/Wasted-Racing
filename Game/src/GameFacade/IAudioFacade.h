@@ -54,13 +54,13 @@ public:
     }
 
     //Returns the gameObject that is listening
-    GameObject& getListener() {
-        return *listener;
+    GameObject* getListener() {
+        return listener;
     }
 
 protected:
 
     //Listener
-    GameObject* listener;
+    GameObject* listener = nullptr;
 
 };
