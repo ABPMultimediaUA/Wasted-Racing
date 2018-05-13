@@ -208,21 +208,23 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     distance *= 1.5;
 
     auto player = camera->getGameObject();
+    auto vel = player.getComponent<MoveComponent>()->getMovemententData().vel;
+    auto maxVel = player.getComponent<MoveComponent>()->getMovemententData().max_vel;
     auto oldPosPlayer = player.getOldTransformData().position;
     auto newPosPlayer = player.getNewTransformData().position;
 
     auto mData = player.getComponent<MoveComponent>()->getMovemententData();
 
     auto posPlayer = oldPosPlayer.y - newPosPlayer.y;
-    if(posPlayer > 0.5 && posPlayer < 2 && sum < 20)
+    if(posPlayer > 0.25 && posPlayer < 2 && sum < 20)
     {
         sum += 0.25;
     }
-    else if(posPlayer < -0.5 && posPlayer > -2 && sum > -20)
+    else if(posPlayer < -0.25 && posPlayer > -2 && sum > -20)
     {
         sum -= 0.25;
     }
-    else if(posPlayer < 0.5 && posPlayer > -0.5)
+    else if(posPlayer < 0.25 && posPlayer > -0.25 && vel > maxVel/10)
     {
         if(sum > 0)
         {

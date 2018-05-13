@@ -18,7 +18,7 @@ void ItemRedShellComponent::init()
 {
     lastVector = player.getComponent<PathPlanningComponent>()->getLastPosVector();
     myPos = player.getComponent<ScoreComponent>()->getPosition(); 
-    
+
     if(myPos > 1)
     {
         enemy = ScoreManager::getInstance().getPlayers()[myPos-2];
@@ -34,10 +34,6 @@ void ItemRedShellComponent::update(float dTime)
     //:::> PLEASE, COMMENT ALL OF THIS
     auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
 
-    auto pos =getGameObject().getTransformData().position;
-
-    //pos.y = pos.y+0.01
-
     if(myPos > 1)
     {
 
@@ -45,6 +41,7 @@ void ItemRedShellComponent::update(float dTime)
         auto vSensorComponent = getGameObject().getComponent<VSensorComponent>().get();
         auto aiDrivingComponent = getGameObject().getComponent<AIDrivingComponent>().get();
 
+        auto pos = getGameObject().getTransformData().position;
 
         auto posWay = listNodes[lastVector].get()->getTransformData().position;
 
