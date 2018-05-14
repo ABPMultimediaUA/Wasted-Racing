@@ -1,7 +1,26 @@
 #include "RedPandaStudio.h"
 
-//GUI drawing function adress
+////////////////////////////////
+//  ADDITIONAL USEFUL FUNCTIONS
+////////////////////////////////
+
+//GUI draw
 void (*rpsGUI_draw)() = nullptr;
+
+//Message callback for printing OpenGL errors
+void MessageCallback( GLenum source,
+                      GLenum type,
+                      GLuint id,
+                      GLenum severity,
+                      GLsizei length,
+                      const GLchar* message,
+                      const void* userParam )
+{
+  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+
 
 namespace rps{
 
@@ -26,15 +45,33 @@ void RedPandaStudio::updateDevice() {
 	//Update particles
 	updateParticles();
 
-	//Clean screen
+	//Clean the scene
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+	//Render camera and lights
+	renderCamera();
+	renderLights();
 
 	//Change shader program for drawing skybox
 	glUseProgram(skyboxID);
 	glBindVertexArray(skyVertexArray);
 	skybox->draw();
-	glUseProgram(scene->getEntity()->getProgramID());
 	glEnable(GL_DEPTH_TEST);
+	
+	
+	//Activate the billboard shader
+	glUseProgram(billboardID);
+
+	//Render all the billboards in the scene
+	renderBillboards();
+
+	//Activate the shader used to draw the scene
+	glUseProgram(scene->getEntity()->getProgramID());
+
+
+	//==================
+	//drawShadowMapping();
+	//==================
 
 	//Render our scene
 	renderCamera();
@@ -136,6 +173,12 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 	scene = new TNode();
     resourceManager = new ResourceManager();
 
+
+	//=================================================
+	//Window size assignation
+	windowWidth = width;
+	windowHeight = height;
+	//=================================================
 }
 
 void RedPandaStudio::initOpenGL() {
@@ -143,17 +186,25 @@ void RedPandaStudio::initOpenGL() {
 	#ifndef __APPLE__
 		const char * vertex_file_path = "shaders/test.vert";
     	const char * fragment_file_path = "shaders/test.frag";
+		const char * geometry_file_path = "shaders/test.gs";
 		const char * skybox_vertex_path = "shaders/skybox.vert";
 		const char * skybox_fragment_path = "shaders/skybox.frag";
 		const char * particles_vertex_path = "shaders/particles.vert";
 		const char * particles_fragment_path = "shaders/particles.frag";
+		const char * billboard_vertex_path = "shaders/billboard.vert";
+		const char * billboard_geometry_path = "shaders/billboard.gs";
+		const char * billboard_fragment_path = "shaders/billboard.frag";
 	#else 
 		const char * vertex_file_path = "shaders/MAC/test.vert";
     	const char * fragment_file_path = "shaders/MAC/test.frag";
+		const char * geometry_file_path = "shaders/MAC/test.gs";
 		const char * skybox_vertex_path = "shaders/MAC/skybox.vert";
 		const char * skybox_fragment_path = "shaders/MAC/skybox.frag";
 		const char * particles_vertex_path = "shaders/MAC/particles.vert";
 		const char * particles_fragment_path = "shaders/MAC/particles.frag";
+		const char * billboard_vertex_path = "shaders/MAC/billboard.vert";
+		const char * billboard_geometry_path = "shaders/MAC/billboard.gs";
+		const char * billboard_fragment_path = "shaders/MAC/billboard.frag";
 	#endif
     
 	GLint Result = GL_FALSE;
@@ -161,6 +212,13 @@ void RedPandaStudio::initOpenGL() {
 
 	glewExperimental = GL_TRUE;
 	std::cout << "GLEW: " << glewGetErrorString(glewInit()) << std::endl;
+
+
+	//Enables the debug output from OpenGL (must be disabled in Release)
+	//glEnable( GL_DEBUG_OUTPUT );
+    //glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
+
+	setFrustumCulling(false);
 
     //Init VBO
     GLuint VertexArrayID;
@@ -174,12 +232,12 @@ void RedPandaStudio::initOpenGL() {
 	
 	//Init skybox
 	skybox = new TResourceSkybox();
-	char* r0 = "media/img/darkskies_ft.tga";
-	char* r1 = "media/img/darkskies_bk.tga";
-	char* r2 = "media/img/darkskies_up.tga";
-	char* r3 = "media/img/darkskies_dn.tga";
-	char* r4 = "media/img/darkskies_rt.tga";
-	char* r5 = "media/img/darkskies_lf.tga";
+	const char* r0 = "media/img/darkskies_ft.tga";
+	const char* r1 = "media/img/darkskies_bk.tga";
+	const char* r2 = "media/img/darkskies_up.tga";
+	const char* r3 = "media/img/darkskies_dn.tga";
+	const char* r4 = "media/img/darkskies_rt.tga";
+	const char* r5 = "media/img/darkskies_lf.tga";
 	
 	skybox->loadResource(r0, 0);
 	skybox->loadResource(r1, 1);
@@ -190,12 +248,19 @@ void RedPandaStudio::initOpenGL() {
 
 	skybox->initSkybox();
 
+	//=============================
+	//Initialize all parameters needed for the shadow mapping
+	//initShadowMappping();
+	//=============================
+
 	//Get main shaders
 	TResourceShader* vertexShader = resourceManager->getResourceShader(vertex_file_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* geometryShader = resourceManager->getResourceShader(geometry_file_path, (GLenum)GL_GEOMETRY_SHADER);
 	TResourceShader* fragmentShader = resourceManager->getResourceShader(fragment_file_path, (GLenum)GL_FRAGMENT_SHADER);
 
 	//Get main shaders ID
 	GLuint vertexID = vertexShader->getShaderID();
+	GLuint geometryID = geometryShader->getShaderID();
 	GLuint fragmentID = fragmentShader->getShaderID();
 
 	//Get skybox shaders
@@ -206,6 +271,15 @@ void RedPandaStudio::initOpenGL() {
 	GLuint skyVertexID = skyboxVertex->getShaderID();
 	GLuint skyFragmentID = skyboxFragment->getShaderID();
 
+	//Get billboards shaders
+	TResourceShader* billboardVertex = resourceManager->getResourceShader(billboard_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* billboardGeometry = resourceManager->getResourceShader(billboard_geometry_path, (GLenum)GL_GEOMETRY_SHADER);
+	TResourceShader* billboardFragment = resourceManager->getResourceShader(billboard_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	//Get billboard shaders ID
+	GLuint billVertexID = billboardVertex->getShaderID();
+	GLuint billGeometryID = billboardGeometry->getShaderID();
+	GLuint billFragmentID = billboardFragment->getShaderID();
 	//Get particles shaders
 	TResourceShader* particlesVertex = resourceManager->getResourceShader(particles_vertex_path, (GLenum)GL_VERTEX_SHADER);
 	TResourceShader* particlesFragment = resourceManager->getResourceShader(particles_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
@@ -224,14 +298,26 @@ void RedPandaStudio::initOpenGL() {
 	//==============================================================================================
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexID);
+	//glAttachShader(ProgramID, geometryID);
 	glAttachShader(ProgramID, fragmentID);
 	glLinkProgram(ProgramID);
 
+	//Check the program is ok
+	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
     //We no longer need the shaders (we have them in the program)
 	glDetachShader(ProgramID, vertexID);
+	//glDetachShader(ProgramID, geometryID);
 	glDetachShader(ProgramID, fragmentID);
 	
 	glDeleteShader(vertexID);
+	//glDeleteShader(geometryID);
 	glDeleteShader(fragmentID);
 
 	//==============================================================================================
@@ -258,6 +344,29 @@ void RedPandaStudio::initOpenGL() {
 	glDeleteShader(skyVertexID);
 	glDeleteShader(skyFragmentID);
 
+	billboardID = glCreateProgram();
+	glAttachShader(billboardID, billVertexID);
+	glAttachShader(billboardID, billGeometryID);
+	glAttachShader(billboardID, billFragmentID);
+	glLinkProgram(billboardID);
+
+	//Check the program is ok
+	glGetProgramiv(billboardID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(billboardID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(billboardID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+    //We no longer need the shaders (we have them in the program)
+	glDetachShader(billboardID, billVertexID);
+	glDetachShader(billboardID, billGeometryID);
+	glDetachShader(billboardID, billFragmentID);
+	
+	glDeleteShader(billVertexID);
+	glDeleteShader(billGeometryID);
+	glDeleteShader(billFragmentID);
 	//==============================================================================================
 	//Create Particles program
 	//==============================================================================================
@@ -288,8 +397,6 @@ void RedPandaStudio::initOpenGL() {
 
     //Give the ProgramID to our engine
     scene->getEntity()->setProgramID(ProgramID);
-
-	glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
 	GLuint model = glGetUniformLocation(ProgramID, "ModelMatrix");   
@@ -301,7 +408,6 @@ void RedPandaStudio::initOpenGL() {
 
 	GLuint viewSky = glGetUniformLocation(skyboxID, "ViewMatrix");
 	skybox->setView(viewSky);
-
 }
 
 void RedPandaStudio::initScene() {
@@ -326,23 +432,48 @@ void RedPandaStudio::initScene() {
 TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char* mesh) {
 
 	//Check parent node is valid
-	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
+	{
 
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, pos);
 
 		//Create new mesh entity
 		TMesh* m = new TMesh();
-		m->setMesh(resourceManager->getResourceOBJ(mesh));
+		TResourceOBJ* obj = resourceManager->getResourceOBJ(mesh);
+		m->setMesh(obj);
 		TNode* mesh = new TNode(transformT, m);
 		transformT->addChild(mesh);
-
 		//Return mesh
 		return mesh;
 	}
 	else{
 		return nullptr;
 	}
+}
+
+TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const char* animation, bool loop, int frames, double framerate)
+{
+	
+	//Check parent node is valid
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
+	{
+		//Create new transformation tree
+		TNode* transformT = addRotScaPos(parent, pos);
+
+		//Create new mesh entity
+		TAnimation* a = new TAnimation();
+		a->setAnimation(resourceManager->getResourceAnimation(animation, frames));
+		a->setFrames(frames);
+		a->setLoop(loop);
+		a->setFramerate(framerate);
+		TNode* animation = new TNode(transformT, a);
+		transformT->addChild(animation);
+
+		//Return mesh
+		return animation;
+	}
+	return nullptr;
 }
 
 TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position, glm::vec3 target) {
@@ -403,7 +534,8 @@ void RedPandaStudio::updateCamera(glm::vec3 position, glm::vec3 target) {
 	translation->setMatrix(trans);
 }
 
-TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity) {
+TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity) 
+{
 
 	//Check parent node is valid
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
@@ -426,6 +558,43 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 
 		return nullptr;
 	}
 
+}
+
+TNode* RedPandaStudio::createSpotlight(TNode* parent, glm::vec3 position, glm::vec3 intensity, glm::vec3 direction, float cutoff)
+{
+	//Check parent node is valid
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
+	{
+		//Create new transformation tree
+		TNode* transformT = addRotScaPos(parent, position);
+
+		//Create new light entity
+		TSpotlight* l = new TSpotlight(intensity, direction, cutoff);
+		TNode* light = new TNode(transformT, l);
+		transformT->addChild(light);
+
+		//Register light
+		spotlights.push_back(light);
+
+		//Return light
+		return light;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+TBillboard* RedPandaStudio::createBillboard(const char* n, glm::vec3 p)
+{
+	//Create or get a reference to the texture from the resourceManager
+	TResourceTexture* t = resourceManager->getResourceTexture(n);
+	
+	//Create the billboard
+	TBillboard* b = new TBillboard(t, p);
+	billboards.push_back(b);
+
+	return b;
 }
 
 TNode* RedPandaStudio::createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, 
@@ -594,9 +763,37 @@ void RedPandaStudio::renderLights() {
 		glUniform4fv(intID, 1, &l->getIntensity()[0]);
 	}
 
+	
+	for(unsigned int i = 0; i < spotlights.size(); i++)
+	{
+		glm::mat4 mat = glm::mat4(1.0);
+		calculateNodeTransform(spotlights[i], mat);
+
+		glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+		TSpotlight* l = (TSpotlight*)spotlights[i]->getEntity();
+
+		std::string lightName = std::string("spotlight[" +  std::to_string(i) + "].light.position");
+		GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
+		glUniform4fv(posID, 1, &pos[0]);
+
+		std::string lightName2 = std::string("spotlight[" + std::to_string(i) + "].light.intensity");
+		GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
+		glUniform4fv(intID, 1, &l->getIntensity()[0]);
+
+		std::string lightName3 = std::string("spotlight[" + std::to_string(i) + "].direction");
+		GLuint dirID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName3.c_str());
+		glUniform3fv(dirID, 1, &l->getDirection()[0]);
+
+		std::string lightName4 = std::string("spotlight[" + std::to_string(i) + "].cutoff");
+		GLuint cutID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName4.c_str());
+		glUniform1f(cutID, l->getCutoff());
+	}
+
 	GLuint numL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numLights");
 	glUniform1i(numL, lights.size());
 
+	GLuint numSL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numSpotLights");
+	glUniform1i(numSL, spotlights.size());
 }
 void RedPandaStudio::renderParticles() {
 
@@ -626,7 +823,8 @@ void RedPandaStudio::updateParticles() {
 }
 void RedPandaStudio::renderCamera() {
 
-	if(camera != nullptr){
+	if(camera != nullptr)
+	{
 		glm::mat4 mat = glm::mat4(1.0);
 		calculateNodeTransform(camera, mat);
 
@@ -638,16 +836,488 @@ void RedPandaStudio::renderCamera() {
 	}
 }
 
-//Recursive function. Should receive an identity as input. Returns the accumulated transformation
-void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat) {
+void RedPandaStudio::renderBillboards()
+{
+	glm::mat4 v = scene->getEntity()->viewMatrix();
+	glm::mat4 p = scene->getEntity()->projectionMatrix();
+	glm::mat4 m = p * v;
+	glm::vec3 camPos = glm::vec3(-v[3][2], -v[3][1], -v[3][0]);
 
-	if(node!= nullptr && node->getFather() != nullptr) {
+	GLuint VPMat = glGetUniformLocation(billboardID, "VPMatrix");
+	glUniformMatrix4fv(VPMat, 1, GL_FALSE, &m[0][0]);
+
+	GLuint cameraPosition = glGetUniformLocation(billboardID, "cameraPosition");
+	glUniform3fv(cameraPosition, 1, &camPos[0]);
+
+	for(unsigned int i = 0; i < billboards.size(); i++)
+	{
+		billboards[i]->beginDraw();
+	}
+}
+
+//Recursive function. Should receive an identity as input. Returns the accumulated transformation
+void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat) 
+{
+
+	if(node!= nullptr && node->getFather() != nullptr) 
+	{
 
 		TTransform* t = dynamic_cast<TTransform*>(node->getEntity());
 		if( t != nullptr) 
 			mat *= t->getMatrix(); 
 
 		calculateNodeTransform(node->getFather(), mat);
+	}
+}
+
+//////////////////////////////////////////////
+// GRAPHICS OPTIONS AND PARAMETERS
+
+//================================================= Alexei's magic touch
+void RedPandaStudio::initPostProcessing()
+{
+	//Debugging data
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
+
+	//Generating and binding the frame buffer
+	glGenFramebuffers(1, &postProcessingBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, postProcessingBuffer);
+	
+	//Binding and generating texture 2D which stores the depth data to render later
+	glGenTextures(1, &colorMap);
+	glBindTexture(GL_TEXTURE_2D, colorMap);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	
+	//Bind created texture to the frame buffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorMap, 0);
+
+	//Binding the render buffer. Even if we don't use it, it's needed because otherwise the image gets corrupted without a depth
+    glGenRenderbuffers(1, &renderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, windowWidth, windowHeight); // use a single renderbuffer object for both a depth AND stencil buffer.
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer); // now actually attach it
+	
+	//ERROR Checking
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Que pasadía que no vaya" << std::endl;
+
+	glBindFramebuffer(GL_RENDERBUFFER, 0); 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	std::cout<<"Buffers y texturas creados"<<std::endl;
+
+	//BASIC STUFFY FOR SHADER CREATION
+	const char *processing_fragment_path = "shaders/postProcessing.frag";
+	const char *processing_vertex_path = "shaders/postProcessing.vert";
+
+	TResourceShader* processingVertex = resourceManager->getResourceShader(processing_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* processingragment = resourceManager->getResourceShader(processing_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	GLuint processingVertexID = processingVertex->getShaderID();
+	GLuint processingFragmentID = processingragment->getShaderID();
+
+	processingID = glCreateProgram();
+	glAttachShader(processingID, processingVertexID);
+	glAttachShader(processingID, processingFragmentID);
+	glLinkProgram(processingID);
+	std::cout << "Linking processingID" << std::endl;
+
+	//Check the program is ok
+	glGetProgramiv(processingID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(processingID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(processingID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+	//Delete because the program is cool
+	glDetachShader(processingID,processingVertexID);
+	glDetachShader(processingID,processingFragmentID);
+	glDeleteShader(processingVertexID);
+	glDeleteShader(processingFragmentID);
+
+	glUseProgram(processingID); //REQUIRED for attaching variables
+	
+	//Quad in which we'll paint the scene
+    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    //Bind the array to the array buffer
+    glGenBuffers(1, &processingQuadVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, processingQuadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+
+	//Push vertex array and the disable it
+    glGenVertexArrays(1, &processingQuadVAO);
+    glBindVertexArray(processingQuadVAO);
+	
+	glEnableVertexAttribArray(3); //Vertex points
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(4); //Vertex textures
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	//Closing bindings
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//Quad texture assignment
+	postprocessing_sampler = glGetUniformLocation(processingID, "screenTexture");
+}
+
+
+void RedPandaStudio::drawPostProcessing()
+{
+	//Bind the buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, postProcessingBuffer);     //Binding where we'll store our image
+	glEnable(GL_DEPTH_TEST);						      //Enabling for 3D renders
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); //Cleaning the buffers
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 			      //Clean window
+ 
+	//Draw the scene normally
+	glUseProgram(scene->getEntity()->getProgramID());
+	renderCamera();
+	renderLights();
+	scene->draw();
+
+	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glClear(GL_COLOR_BUFFER_BIT); //Clean the dirty color
+	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded
+
+	//Use our program and the texture given by the frame buffer
+	glUseProgram(processingID);
+
+	//Bind array buffer and vertex array of data
+    glBindBuffer(GL_ARRAY_BUFFER, processingQuadVBO);
+    glBindVertexArray(processingQuadVAO);
+	glEnableVertexAttribArray(3); //Vertex points
+	glEnableVertexAttribArray(4); //Vertex texture
+
+	//Bind the texture where we draw the scene
+	glBindTexture(GL_TEXTURE_2D, colorMap);	//use the color attachment texture as the texture of the quad plane
+	glUniform1i(postprocessing_sampler, 0);  	 	//ID assignment for the fragment shader (using GL_TEXTURE1 to avoid collisions)
+
+	//Draw the quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	//Unbind all info
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void RedPandaStudio::initShadowMappping()
+{
+	//Debugging data
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
+	
+	//Generating and binding the frame buffer
+	glGenFramebuffers(1, &depthBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+
+	//Set this to GL_NONE so no color data is written in the frame buffer. We only want the depth data.
+	glReadBuffer(GL_NONE);
+	glDrawBuffer(GL_NONE);
+	
+	//Binding and generating texture 2D which stores the depth data to render later
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	
+	//Bind created texture to the frame buffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+
+	//ERROR Checking
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Que pasadía que no vaya" << std::endl;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	std::cout<<"Buffers y texturas creados"<<std::endl;
+
+	//==========================================
+	///TESTING::: the quad shader
+	//==========================================
+
+	const char *shadowMapQuad_fragment_path = "shaders/shadowMapQuad.frag";
+	const char *shadowMapQuad_vertex_path = "shaders/shadowMapQuad.vert";
+
+	TResourceShader* shadowQuadVertex = resourceManager->getResourceShader(shadowMapQuad_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* shadowQuadFragment = resourceManager->getResourceShader(shadowMapQuad_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	GLuint shadowQuadVertexID = shadowQuadVertex->getShaderID();
+	GLuint shadowQuadFragmentID = shadowQuadFragment->getShaderID();
+
+	shadowQuadID = glCreateProgram();
+	glAttachShader(shadowQuadID, shadowQuadVertexID);
+	glAttachShader(shadowQuadID, shadowQuadFragmentID);
+	glLinkProgram(shadowQuadID);
+	std::cout << "Linking shadowQuadID" << std::endl;
+
+	//Check the program is ok
+	glGetProgramiv(shadowQuadID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(shadowQuadID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(shadowQuadID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+	//Delete because the program is cool
+	glDetachShader(shadowQuadID,shadowQuadVertexID);
+	glDetachShader(shadowQuadID,shadowQuadFragmentID);
+	glDeleteShader(shadowQuadVertexID);
+	glDeleteShader(shadowQuadFragmentID);
+
+	//==========================================
+	// Shadow map Shader
+	//==========================================
+	const char *shadowMap_fragment_path = "shaders/shadowMap.frag";
+	const char *shadowMap_vertex_path = "shaders/shadowMap.vert";
+
+	TResourceShader* shadowVertex = resourceManager->getResourceShader(shadowMap_vertex_path, (GLenum)GL_VERTEX_SHADER);
+	TResourceShader* shadowFragment = resourceManager->getResourceShader(shadowMap_fragment_path, (GLenum)GL_FRAGMENT_SHADER);
+
+	GLuint shadowVertexID = shadowVertex->getShaderID();
+	GLuint shadowFragmentID = shadowFragment->getShaderID();
+
+	shadowID = glCreateProgram();
+	glAttachShader(shadowID, shadowVertexID);
+	glAttachShader(shadowID, shadowFragmentID);
+	glLinkProgram(shadowID);
+	std::cout << "Linking shadowID" << std::endl;
+
+	//Check the program is ok
+	glGetProgramiv(shadowID, GL_LINK_STATUS, &Result);
+	glGetProgramiv(shadowID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if ( InfoLogLength > 0 ){
+		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+		glGetProgramInfoLog(shadowID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		printf("%s\n", &ProgramErrorMessage[0]);
+	}
+
+	//Delete because the program is cool
+	glDetachShader(shadowID,shadowVertexID);
+	glDetachShader(shadowID,shadowFragmentID);
+	glDeleteShader(shadowVertexID);
+	glDeleteShader(shadowFragmentID);
+
+	glUseProgram(shadowID); //REQUIRED for attaching variables
+	
+	//Quad in which we'll paint the scene
+    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    //Bind the array to the array buffer
+    glGenBuffers(1, &shadowQuadVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, shadowQuadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+
+	//Push vertex array and the disable it
+    glGenVertexArrays(1, &shadowQuadVAO);
+    glBindVertexArray(shadowQuadVAO);
+	
+	glEnableVertexAttribArray(3); //Vertex points
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(4); //Vertex textures
+    glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	//Closing bindings
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//Quad texture assignment
+	shadow_sampler = glGetUniformLocation(shadowID, "screenTexture");
+}
+
+void RedPandaStudio::drawShadowMapping()
+{
+	//=========================
+	//Data and states preparation
+
+	//Backup data
+	GLuint programID = scene->getEntity()->getProgramID();
+	GLuint restoreModel = glGetUniformLocation(programID, "ModelMatrix");
+
+	//Secundary sampler2D
+	shadowMap_sampler = glGetUniformLocation(programID, "shadowMap");
+	glUniform1i(shadowMap_sampler, 0);
+
+	//Bind the buffer
+	glViewport(0, 0, shadowWidth, shadowHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);     //Binding where we'll store our image
+	glEnable(GL_DEPTH_TEST);						    //Enabling for 3D renders
+	glClear( GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT );//Cleaning the buffers
+ 
+	//Testeo de escena normal
+	
+
+	/*glUseProgram(programID);
+	renderCamera();
+	renderLights();
+	scene->draw();
+*/
+	
+
+	//Use shadow program to render the depth
+	glUseProgram(shadowID);
+
+	//=========================
+	//Calculate light variables
+	glm::mat4 mat = glm::mat4(1.0);
+	calculateNodeTransform(lights[0], mat);
+
+	glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+    glm::mat4 lightView = glm::lookAt(
+                                        glm::vec3(pos), 	//Eye: light position
+                                        glm::vec3(0, 0, 0), //Center: object position
+                                    	glm::vec3(0, 1, 0)  //Up: Y¹
+                                     );
+
+	GLuint lightModelID = glGetUniformLocation(shadowID, "lightModel");
+	scene->getEntity()->setModelID(lightModelID);
+
+	float near_plane = 0.0000001f, far_plane = 7.5f;
+	glm::mat4 lightProView = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane) * lightView;
+
+	GLuint lightProViewID = glGetUniformLocation(shadowID, "lightProView");
+	glUniformMatrix4fv(lightProViewID, 1, false, &lightProView[0][0]);
+
+	//Draw the scene under this context
+	scene->draw();
+
+	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//=========================
+	//QUAD CHECKER
+/*
+	glViewport(0, 0, windowWidth, windowHeight);
+	glClear(GL_COLOR_BUFFER_BIT); //Clean the dirty color
+	glDisable(GL_DEPTH_TEST);     // disable depth test so screen-space quad isn't discarded
+
+	//Use our program and the texture given by the frame buffer
+	glUseProgram(shadowQuadID);
+
+	//Bind array buffer and vertex array of data
+    glBindBuffer(GL_ARRAY_BUFFER, shadowQuadVBO);
+    glBindVertexArray(shadowQuadVAO);
+	glEnableVertexAttribArray(3); //Vertex points
+	glEnableVertexAttribArray(4); //Vertex texture
+
+	//Bind the texture where we draw the scene
+	glBindTexture(GL_TEXTURE_2D, depthMap);	//use the color attachment texture as the texture of the quad plane
+	glUniform1i(shadow_sampler, 0);  	 	//ID assignment for the fragment shader (using GL_TEXTURE1 to avoid collisions)
+
+	//Draw the quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	//Unbind all info
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+
+	//Restore data
+	scene->getEntity()->setModelID(restoreModel);
+	scene->getEntity()->setProgramID(programID);
+
+	//Render scene as normal with shadow mapping (using depth map)
+	glViewport(0, 0, windowWidth, windowHeight);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(programID);
+
+	//Passing shadow variables
+	GLuint lightSpaceViewID = glGetUniformLocation(programID, "lightSpaceView");
+	glUniformMatrix4fv(lightSpaceViewID, 1, false, &lightProView[0][0]);
+
+	//Texture 0: object, Texture 1: shadow map
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+
+	glActiveTexture(GL_TEXTURE0);
+
+	//Normal render
+	renderLights();
+	renderCamera();
+	scene->draw();
+}
+//=================================================
+
+
+void RedPandaStudio::setCulling(bool b, GLenum e)
+{
+	if(b)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(e);
+	}
+	else
+	{
+		glDisable(GL_CULL_FACE);
+	}
+}
+
+void RedPandaStudio::setFrustumCulling(bool b)
+{
+	scene->getEntity()->setFrustumCulling(b);
+}
+
+//Add lod object
+void RedPandaStudio::addMeshLoD(int lvl, const char* mesh)
+{
+	if(std::strcmp(mesh, "") != 0 && lvl > 0)
+	{
+		TResourceLoD* lod = resourceManager->getResourceLoD(mesh);
+
+		std::string route = "";
+		int x = 0;
+
+		while(mesh[x]!='.'){
+			route += mesh[x];
+			x++;
+		}
+
+		for(int i = 1; i <= lvl; i++)
+		{
+			std::string m = route+std::to_string(i);
+			std::string o = ".obj";
+			m += o;
+			TResourceOBJ* obj = resourceManager->getResourceOBJ(m.c_str());
+			lod->insertObj(i, obj);
+		}
 	}
 }
 
@@ -721,5 +1391,6 @@ void rotateNode(TNode* node, glm::vec3 rotation) {
 	}
 
 }
+
 
 }

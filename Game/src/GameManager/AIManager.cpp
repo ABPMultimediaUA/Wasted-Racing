@@ -240,6 +240,11 @@ void AIManager::updateScheduling(float dTime, float loopTime) {
                 
                 break;
             }
+            case AIEventType::UPDATE_DRIVING_ACCELERATION:
+            {
+                break;
+            }
+            default: break;
         }
 
         //Release 

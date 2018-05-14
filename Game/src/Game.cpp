@@ -306,7 +306,7 @@ void Game::loadMap() {
                     type = LightRenderComponent::Type::Directional;
 
                 //Create LIGHT component
-                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,100);
+                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,radius);
 
             }
 

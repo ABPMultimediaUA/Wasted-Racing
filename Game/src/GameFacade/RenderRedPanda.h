@@ -59,6 +59,9 @@ public:
 
     //Add an object to the game (Cylinder or Cone)
     virtual void addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency);
+
+    //Add an animation to the game
+    virtual void addAnimation(IComponent* ptr);
     
     //Add a light to the game
     virtual void addLight(IComponent* ptr);
@@ -73,8 +76,17 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform);
 
+    //Update game animations
+    virtual void updateAnimations(float dTime);
+
+    //Update single animation
+    virtual void updateAnimation(IComponent* ptr);
+    
     //Set active or inactive clipping
     virtual void setClipping(bool b)    {};
+
+    //add mesh lod
+    virtual void addMeshLoD(int lvl, const char* mesh);
 
     //Change mesh
     virtual bool changeMesh(int id, std::string newMesh);
@@ -197,6 +209,7 @@ private:
 
     //RedPanda node map
     std::map<uint16_t, TNode*> nodeMap;
+    std::map<uint16_t, TAnimation*> animationMap;
 
     //Value angleY camera
     float valueY;

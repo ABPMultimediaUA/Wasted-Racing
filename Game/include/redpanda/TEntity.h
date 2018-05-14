@@ -43,16 +43,18 @@ public:
     };
 
     //Setters for initilization
-    static void setProgramID(GLuint p)     {   programID = p;  }
-    static void setModelID(GLuint m)       {   modelID = m;      }
-    static void setViewID(GLuint v)        {   viewID = v;       }
-    static void setProjectionID(GLuint p)  {   projectionID = p; }
+    static void setProgramID(GLuint p)              {   programID = p;       }
+    static void setModelID(GLuint m)                {   modelID = m;         }
+    static void setViewID(GLuint v)                 {   viewID = v;          }
+    static void setProjectionID(GLuint p)           {   projectionID = p;    }
+    static void setFrustumCulling(bool b)           {   frustumFlag = b;     }
 
     //Getters
-    static GLuint getProgramID()       {   return programID;   }
-    static GLuint getModelID()         {   return modelID;       }
-    static GLuint getViewID()          {   return viewID;        }
-    static GLuint getProjectionID()    {   return projectionID;  }
+    static GLuint getProgramID()                {   return programID;        }
+    static GLuint getModelID()                  {   return modelID;          }
+    static GLuint getViewID()                   {   return viewID;           }
+    static GLuint getProjectionID()             {   return projectionID;     }
+    static bool getFrustumCulling()             {   return frustumFlag;      }
 
 protected:
 
@@ -61,5 +63,8 @@ protected:
     static GLuint modelID;
     static GLuint viewID;
     static GLuint projectionID;
+
+    //Graphic variables to control optional techniques
+    static bool frustumFlag;
 
 };

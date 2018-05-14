@@ -15,6 +15,7 @@
 #include "../GameObject/RenderComponent/CameraRenderComponent.h"
 #include "../GameObject/RenderComponent/LightRenderComponent.h"
 #include "../GameObject/RenderComponent/ObjectRenderComponent.h"
+#include "../GameObject/RenderComponent/AnimationRenderComponent.h"
 #include "../GameManager/RenderManager.h"
 #include "../GameManager/ObjectManager.h"
 #include "../GlobalVariables.h"
@@ -318,14 +319,14 @@ void RenderRedPanda::setCameraTarget(glm::vec3 position, glm::vec3 target) {
 
 //Add an object to the game
 void RenderRedPanda::addObject(IComponent* ptr) { 
-
+    
     ObjectRenderComponent* cmp = dynamic_cast<ObjectRenderComponent*>(ptr);
 
     auto shape = cmp->getObjectShape();
     auto obj = cmp->getGameObject();
     auto pos = obj.getTransformData().position;
     auto sca = obj.getTransformData().scale;
-    
+
     TNode * node = nullptr;
     //Initialize the node
     switch(shape){
@@ -371,6 +372,24 @@ void RenderRedPanda::createParticleSystem(uint16_t id, const char* shape, glm::v
 //Add an object to the game (Cylinder or Cone)
 void RenderRedPanda::addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) { }
 
+//Add an animation to the game
+void RenderRedPanda::addAnimation(IComponent* ptr) {
+
+    AnimationRenderComponent* cmp = dynamic_cast<AnimationRenderComponent*>(ptr);
+
+    auto obj = cmp->getGameObject();
+    auto pos = obj.getTransformData().position;
+    //auto sca = obj.getTransformData().scale;
+    
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24);
+
+    rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
+
+    nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
+    animationMap.insert(std::pair<uint16_t, TAnimation*>(obj.getId(), (TAnimation*)node->getEntity()));
+
+}
+
 //Add a light to the game
 void RenderRedPanda::addLight(IComponent* ptr) {
     
@@ -415,8 +434,8 @@ void RenderRedPanda::deleteObject(IComponent* ptr) {
         auto node = itr->second;
         device->deleteObject(node);
         nodeMap.erase(id);
+        animationMap.erase(id);
     }
-
 }
 void RenderRedPanda::deleteObject(uint16_t id) {
 
@@ -447,6 +466,45 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
             rps::scaleNode(node, sca);
 
             rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
+    }
+}
+
+//Update game animations
+void RenderRedPanda::updateAnimations(float dTime) {
+    for(auto anim : animationMap) {
+        anim.second->update(dTime);
+    }
+}
+
+//Update single animation
+void RenderRedPanda::updateAnimation(IComponent* ptr) {
+
+    AnimationRenderComponent* anim = (AnimationRenderComponent*)ptr;
+
+    int state = anim->getState();
+    int16_t id = anim->getGameObject().getId();
+
+    TAnimation* node = animationMap.find(id)->second;
+
+    if(state == 0) {
+        node->setPause(true);
+    }
+    else if(state == 1) {
+        node->playNoLoop();
+        node->setLoop(false);
+    }
+    else if(state == 2) {
+        node->playNoLoop();
+        node->setLoop(true);
+    }
+}
+
+//add mesh lod
+void RenderRedPanda::addMeshLoD(int lvl, const char* mesh)
+{
+    if(lvl > 0 && std::strcmp(mesh, "") != 0)
+    {
+        device->addMeshLoD(lvl, mesh);
     }
 }
 
@@ -1010,7 +1068,6 @@ void gui::init() {
         gui::number_3       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/3.png");
         gui::number_4       = gui::loadTexture("media/img/GUI/PlayerInterface/Positions/SPA/4.png");
     }
-
 }
 
 //Code to load a single texture

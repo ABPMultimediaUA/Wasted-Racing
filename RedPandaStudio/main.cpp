@@ -1,5 +1,6 @@
 #include "src/Facade/RedPandaStudio.h"
 #include <iostream>
+#include <GL/glew.h>
 
 #ifdef _WIN32
 #define main WinMain 
@@ -22,43 +23,52 @@ int main() {
     std::cout << "                                                     \\______/ "              << std::endl;
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
-    std::cout << "1" << std::endl;
-    //TNode* t = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
-    //TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/cuboprueba.obj");
-    TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
-    std::cout << "2" << std::endl;
-    TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(10,2,0), glm::vec3(0,2,0));
-    std::cout << "3" << std::endl;
+    
+    //TNode* t = rps->createAnimatedNode(rps->getSceneRoot(), glm::vec3(0,-2,0), "media/anim/WitchFINAL_000", true, 60, 60);
+   /* 
+    //PRUEBAS DE ALEXEI
+    //===================================================================================================
 
-    //rps::scaleNode(t, glm::vec3(0.25,0.25,0.25));
-    //rps::scaleNode(t2, glm::vec3(10,0.25,10));
+    TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(5,0,1), "media/Link.obj");
+    //rps->addMeshLoD(1,"media/mesh/Link/Link.obj");
+    TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/cuboprueba.obj");
+    TNode* t4 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(40,-1,0), "media/cuboprueba.obj");
+    TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(30,30,5), glm::vec3(0,0,0));
 
-    TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,5), glm::vec3(0.3,0.01,0.01));
-    std::cout << "1" << std::endl;
+    rps::scaleNode(t2, glm::vec3(0.25,0.25,0.25));
+    rps::scaleNode(t4, glm::vec3(100,0.05,100));
+    rps->setCulling(true, (GLenum)GL_BACK);
+
+    TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(5,2,2), glm::vec3(0.3,0.01,0.01));
     TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
-    std::cout << "2" << std::endl;
-     /* //Fountain
-    TNode* temitter = rps->createEmitter(rps->getSceneRoot(), "media/particle.obj", glm::vec3(0,0,-5), 0, 2000, 4, 
-                    glm::vec3(0,0.05,0), glm::vec3(0,-0.01,0), 0.1,
-                    0.01, 0.05, 0.5,
-                    glm::vec4(0.2,0.2,0.6,1), glm::vec4(1,1,1,1), 0.01);
-    std::cout << "3" << std::endl;
-    //Sparks
-    TNode* temitter1 = rps->createEmitter(rps->getSceneRoot(), "media/particle.obj", glm::vec3(0,0,0), 0.01, 200, 0.5, 
-                    glm::vec3(0,0.02,0.02), glm::vec3(0,0.04,0.04), 0.1,
-                    0.02, 0.01, 0.5,
-                    glm::vec4(1,1,0,1), glm::vec4(1,0,0,0.5), 0.1);
-    std::cout << "4" << std::endl;
-    //Smoke
-    TNode* temitter2 = rps->createEmitter(rps->getSceneRoot(), "media/particle.obj", glm::vec3(0,0,5), 0, 100, 10, 
-                    glm::vec3(0,0.01,0), glm::vec3(0,0.01,0), 0.2,
-                    0, 0.5, 0.5,
-                    glm::vec4(0.1,0.1,0.1,1), glm::vec4(1,1,1,0.5), 0);
-    std::cout << "5" << std::endl;*/
+    //===================================================================================================
+*/
+
+    //TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
+    TNode* t4 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,20,20), "media/PistaTerrenoFINAL/circuitoFINAL.obj");
+    //rps->addMeshLoD(1,"media/mesh/Link/Link.obj");
+    //TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
+    TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(10,5,0), glm::vec3(0, 5, 0));
+    TBillboard* bill = rps->createBillboard("media/tree.png", glm::vec3(0,5,0));
+
+    //rps::scaleNode(t, glm::vec3(0.25, 0.25, 0.25));
+    //rps::scaleNode(t2, glm::vec3(0.25, 0.25, 0.25));
+    rps::scaleNode(t4, glm::vec3(0.25, 0.25, 0.25));
+    //rps::rotateNode(t2, glm::vec3(0, 180.0, 0));
+    rps->setCulling(false, (GLenum)GL_FRONT);
+
+    //TNode* spotlight0 = rps->createSpotlight(rps->getSceneRoot(), glm::vec3(0, 0, 40), glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), 77);
+    //TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(10, 20, 0), glm::vec3(1, 1, 1));
+    //TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
+
     bool quit = true;
     SDL_Event event;
 
     float i = 0;
+    float j = 0;
+
+    //TAnimation* anim = dynamic_cast<TAnimation*>(t->getEntity());
+    //anim->setLoop(true);
 
     while( quit ){
 
@@ -69,10 +79,21 @@ int main() {
             }            
         }
 
-        rps->updateCamera(glm::vec3(cos(i), 0, sin(i)), glm::vec3(0,0,0));
+        
+        //anim->update(30);
+    //===================================================================================================
+     /*   rps->updateCamera(glm::vec3(15*glm::cos(i), 15, 15*glm::sin(i)), glm::vec3(0,0,0));
         rps->updateDevice();
-        //rps::translateNode(temitter,glm::vec3(i*10,0, 0));
-        i += 0.001;
+        rps::translateNode(t2, glm::vec3(0, 0, 5));
+        i += 0.01;*/
+    //===================================================================================================
+
+        //rps->updateCamera(glm::vec3(10, 0, 0), glm::vec3(0,0,0));
+        rps->updateDevice();
+        //rps::translateNode(t2, glm::vec3(0, 0, -i));
+        i += 0.1;
+        /*auto e = rps->getResourceManager()->getResourceLoD("media/mesh/Link/Link.obj");
+        std::cout<<e->getMap().size()<<"\n";*/
     }
 
     rps->dropDevice();

@@ -4,7 +4,7 @@
 
 class TLight : public TEntity{
 
-private:
+protected:
     glm::vec4 intensity = glm::vec4(1.0,1.0,1.0,1.0);
 
 public:
