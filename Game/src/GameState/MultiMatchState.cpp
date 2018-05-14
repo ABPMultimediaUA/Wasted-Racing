@@ -19,10 +19,9 @@ void MultiMatchState::init() {
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
     debugManager    = &DebugManager::getInstance();     //Initialize Debug manager
     
-    Game::getInstance().setAccumulatedTime(0);
+    Game::getInstance().loadMap();
 
-    //Initalize visual part
-    renderManager->initHUD();
+    Game::getInstance().setAccumulatedTime(0);
 }
 
 void MultiMatchState::update(float &accumulatedTime) {

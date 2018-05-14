@@ -9,11 +9,6 @@
 void swapSchedulingDelegate(EventData data);
 
 //==============================================
-// Additional functions
-//==============================================
-void addAI();
-
-//==============================================
 // MAN FUNCTIONS
 //==============================================
 void MatchState::init() {
@@ -36,9 +31,6 @@ void MatchState::init() {
         schedulingOn = false;
         schedulingClock = new Clock();
         schedulingClock->init();
-
-        //Add AI's to the game
-        addAI();
 
         //Key Bindings
         EventManager::getInstance().addListener(EventListener {EventType::Key_Scheduling_Down, swapSchedulingDelegate});
@@ -102,6 +94,11 @@ void MatchState::updateManagers(float dTime){
         audioManager->update();
     }
 
+    EventData data;
+    data.Component      = AudioManager().getInstance().getListenerComponent();
+
+    EventManager::getInstance().addEvent(Event {EventType::Music_MainTheme, data});
+
     //Event manager has to be the last to be updated
     eventManager->update();
 }
@@ -130,71 +127,6 @@ void MatchState::interpolate(float &accumulatedTime) {
 void MatchState::close() {
 
 }
-
-
-//Additional functions
-void addAI(){
-    GameObject::TransformationData transform;
-    uint16_t id;
-
-    id = 25000;
-    transform.position = glm::vec3(-35,0, -30);
-
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 0, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    id = 25001;
-    transform.position = glm::vec3(-35,0,-20);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 1, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    id = 25002;
-    transform.position = glm::vec3(-35,0,-10);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 2, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    id = 25003;
-    transform.position = glm::vec3(-35,0,0);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 3, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    /*id = 25004;
-    transform.position = glm::vec3(-35,0,20);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    id = 25005;
-    transform.position = glm::vec3(-35,0,-30);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    id = 25006;
-    transform.position = glm::vec3(-35,0,-40);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));*/
-}
-
 
 //==============================================
 // DELEGATE FUNCTIONS

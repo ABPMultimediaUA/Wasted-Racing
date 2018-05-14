@@ -221,7 +221,7 @@
 <player name="5">
     <waypoint>
         <left   wp_left_min="0.25"      wp_left_c="0.75"        wp_left_max="0.00"></left>
-        <center wp_center_min="0.20"      wp_center_c="0.25"        wp_center_max="0.30"></center>
+        <center wp_center_min="0.15"      wp_center_c="0.25"        wp_center_max="0.35"></center>
         <right  wp_right_min="-0.25"      wp_right_c="0.25"        wp_right_max="1.00"></right>
     </waypoint>
     <obstacle>
