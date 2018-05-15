@@ -27,7 +27,7 @@ TResourceSkybox::TResourceSkybox()
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
 }
 
-bool TResourceSkybox::loadResource(char* route, int i)
+bool TResourceSkybox::loadResource(const char* route, int i)
 {
     if(i>= 0 && i<6)
     {

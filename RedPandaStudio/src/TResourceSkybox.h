@@ -22,7 +22,7 @@ class TResourceSkybox {
         ~TResourceSkybox() {};
 
         //Loads the texture given in the route and stores it in the position specified (check position correspondency for more info)
-        bool loadResource(char* route, int i);
+        bool loadResource(const char* route, int i);
 
         //Loads all the textures in OpenGL (doesn't check if they are already loaded, error prone)
         bool initSkybox();
