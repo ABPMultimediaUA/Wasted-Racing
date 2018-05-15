@@ -19055,6 +19055,7 @@ nk_panel_get_border(const struct nk_style *style, nk_flags flags,
     }} else return 0;
 }
 
+/*
 NK_INTERN struct nk_color
 nk_panel_get_border_color(const struct nk_style *style, enum nk_panel_type type)
 {
@@ -19068,7 +19069,7 @@ nk_panel_get_border_color(const struct nk_style *style, enum nk_panel_type type)
     case NK_PANEL_MENU: return style->window.menu_border_color;
     case NK_PANEL_TOOLTIP: return style->window.menu_border_color;
     }
-}
+}*/
 
 NK_INTERN int
 nk_panel_is_sub(enum nk_panel_type type)
@@ -24952,7 +24953,7 @@ nk_menu_begin_image(struct nk_context *ctx, const char *id, struct nk_image img,
 {
     struct nk_window *win;
     struct nk_rect header;
-    const struct nk_input *in;
+    //const struct nk_input *in;
     int is_clicked = nk_false;
     nk_flags state;
 
@@ -24965,7 +24966,7 @@ nk_menu_begin_image(struct nk_context *ctx, const char *id, struct nk_image img,
     win = ctx->current;
     state = nk_widget(&header, ctx);
     if (!state) return 0;
-    in = (state == NK_WIDGET_ROM || win->layout->flags & NK_WINDOW_ROM) ? 0 : &ctx->input;
+    //in = (state == NK_WIDGET_ROM || win->layout->flags & NK_WINDOW_ROM) ? 0 : &ctx->input;
     /*if (nk_do_button_image(&ctx->last_widget_state, &win->buffer, header,
         img, NK_BUTTON_DEFAULT, &ctx->style.menu_button, in))
         is_clicked = nk_true;*/

@@ -151,3 +151,66 @@ TResourceOBJ* ResourceManager::getResourceOBJ(const char* n)
     
     return res;
 }
+
+TResourceAnimation* ResourceManager::getResourceAnimation(const char* n, int frames)
+{
+    unsigned int i;
+    TResourceAnimation* res=NULL;
+    bool found = false;
+
+    //First we look in memory loaded resources
+    for(i=0; i<animations.size() && found == false; i++)
+    {
+        if(strcmp(n, animations[i]->getName()) == 0)
+        {
+            found = true;
+            res=animations[i];
+        }
+    }
+    //If it's not loaded, we create a new resource and try to load it
+    if(found == false)
+    {
+        res = new TResourceAnimation();
+        
+        res->setFrames(frames);
+        res->setName(n);
+        if(res->loadResource())
+        {
+            animations.push_back(res);
+        }
+    }
+    
+    return res;
+}
+
+
+TResourceLoD* ResourceManager::getResourceLoD(const char* n)
+{
+    unsigned int i;
+    TResourceLoD* res=NULL;
+    bool found = false;
+
+    //First we look in memory loaded resources
+    for(i=0; i<lods.size() && found == false; i++)
+    {
+        if(strcmp(n, lods[i]->getName()) == 0)
+        {
+            found = true;
+            res=lods[i];
+        }
+    }
+    //If it's not loaded, we create a new resource and try to load it
+    if(found == false)
+    {
+        res = new TResourceLoD();
+        TResourceOBJ* rObj = ResourceManager::getResourceOBJ(n);
+
+        res->setName(n);
+        
+        res->insertObj(0,rObj);
+        lods.push_back(res);
+        
+    }
+    
+    return res;
+}

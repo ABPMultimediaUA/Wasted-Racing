@@ -87,6 +87,10 @@ void RenderManager::init(int engine) {
 
     createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
 
+    EventManager::getInstance().update();
+
+    //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/punk/punk.obj");
+    //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
     particleManager = &ParticleManager::getInstance();
     particleManager->init();
 
@@ -95,7 +99,12 @@ void RenderManager::init(int engine) {
 void RenderManager::update(float dTime) {
     //Update HUD
     updateHUD();
-
+    if(enter == 200)
+    {
+        //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/punk/punk.obj");
+        //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
+    }
+    enter++;
     //Check LoD mesh
     LoDmesh();
 
@@ -115,6 +124,8 @@ void RenderManager::update(float dTime) {
         renderFacade->updateItemIcon();
     }
 
+    renderFacade->updateAnimations(dTime);
+
     particleManager->update();
 }
 
@@ -129,12 +140,6 @@ void RenderManager::drawHUD() {
 void RenderManager::close(){
     //Clear all interface elements
     renderFacade->cleanInterface();
-
-    //Clear all objects from render engine
-    for(unsigned int i = 0; i < renderComponentList.size(); i++)
-    {
-        renderFacade->deleteObject(renderComponentList[i].get());
-    }
 
     //Clear render component list
     renderComponentList.clear();
@@ -256,6 +261,21 @@ IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, Objec
 
     return component;
 }
+
+//Create animation
+IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames) {
+
+    //Creating object renderer component
+    IComponent::Pointer component = std::make_shared<AnimationRenderComponent>(newGameObject, newStr, frames);
+
+    //Adding component to object
+    newGameObject.addComponent(component);
+
+    renderFacade->addAnimation(component.get());
+
+    return component;
+}
+
 
 //==============================================
 // DELEGATES

@@ -77,6 +77,9 @@ public:
     //Add an object to the game
     virtual void addObject(IComponent* ptr, float radius, float length, int tesselation, bool transparency) = 0;
 
+    //Add an animation to the game
+    virtual void addAnimation(IComponent* ptr) = 0;
+
     //Add a light to the game
     virtual void addLight(IComponent* ptr) = 0;
 
@@ -87,8 +90,17 @@ public:
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
 
+    //Update game animations
+    virtual void updateAnimations(float dTime) = 0;
+
+    //Update single animation
+    virtual void updateAnimation(IComponent* ptr) = 0;
+    
     //Dont so nothing in irrlicht, only works on rps
     virtual void setClipping(bool b) = 0;
+
+    //add mesh lod
+    virtual void addMeshLoD(int lvl, const char* mesh) = 0;
 
     //Change mesh
     virtual bool changeMesh(int id, std::string newMesh) = 0;
