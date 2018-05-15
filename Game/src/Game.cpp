@@ -6,13 +6,6 @@
 void setStateEvent(EventData eData);
 
 //====================================================
-//  ADDITIONAL FUNCTIONS
-//====================================================
-void addObjects();
-void loadMap();
-std::vector<std::string> split(const std::string& s, const char& c);
-
-//====================================================
 //  GAME INITIALIZATION
 //====================================================
 void Game::init() {
@@ -63,9 +56,6 @@ void Game::init() {
     itemManager->init();
     scoreManager->init();
     debugManager->init();
-
-    //Add initial objects
-    addObjects();
 
     //Initial state
     setState(IGameState::stateType::INTRO);
@@ -125,7 +115,8 @@ void Game::Run() {
     while(stay){
         
         //Measure elapsed time
-        accumulatedTime += (float)clock->getElapsedTime();
+        elapsedTime = (float)clock->getElapsedTime();
+        accumulatedTime += elapsedTime;
         clock->restart();
         
         if(dynamic_cast<MatchState*>(state) != nullptr) 
@@ -138,7 +129,7 @@ void Game::Run() {
         else
         {
             //Update the game once every maxTime
-            state->update(accumulatedTime); 
+            state->update(elapsedTime); 
         }
 
         //Always draw the game
@@ -168,9 +159,24 @@ void Game::setState(IGameState::stateType type){
                 globalVariables->setGameState(ClientLobbyState::getInstance().type);
                 state = &ClientLobbyState::getInstance();
                 break;
+            case IGameState::stateType::SELECTION:
+                globalVariables->setGameState(SelectionState::getInstance().type);
+                state = &SelectionState::getInstance();
+                break;
+            case IGameState::stateType::PREMATCH:
+                globalVariables->setGameState(PreMatchState::getInstance().type);
+                state = &PreMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Start});
+                break;
             case IGameState::stateType::MATCH:
                 globalVariables->setGameState(MatchState::getInstance().type);
                 state = &MatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_Start});
+                break;
+            case IGameState::stateType::POSTMATCH:
+                globalVariables->setGameState(PostMatchState::getInstance().type);
+                state = &PostMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_End});
                 break;
             case IGameState::stateType::MULTIMATCH:
                 globalVariables->setGameState(MultiMatchState::getInstance().type);
@@ -185,30 +191,12 @@ void Game::setState(IGameState::stateType type){
                 state = &IntroState::getInstance();
                 break;
         }
-
         //Initialize state here
         state->init();
-    }
-
-//adding minimum objects needed to play the game
-void addObjects(){
-    
-    //===============================================================
-    // add map
-    //===============================================================
-    loadMap();
-
-    //===============================================================
-    // Update to distribute all creation events
-    //===============================================================
-    //:::>Can be avoided if objects are treated by their managers at the moment.
-    //:::>By now: CreateObject, createObjectRenderComponent, createCollisionComponent, createMoveComponent, createInputComponent, createCameraComponent, createListenerComponent
-    //:::>Makes sense if scheduling is will be implemented, hence the need to update the manager
-    EventManager::getInstance().update();
-    
+        GlobalVariables::getInstance().setGameState(type);
 }
 
-std::vector<std::string> split(const std::string& s, const char& c) {
+std::vector<std::string> Game::split(const std::string& s, const char& c) {
 	std::string buff{""};
 	std::vector<std::string> v;
 	
@@ -222,7 +210,7 @@ std::vector<std::string> split(const std::string& s, const char& c) {
 	return v;
 }
 
-void loadMap() {
+void Game::loadMap() {
 
     using namespace rapidxml;
 
@@ -318,7 +306,7 @@ void loadMap() {
                     type = LightRenderComponent::Type::Directional;
 
                 //Create LIGHT component
-                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,100);
+                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,radius);
 
             }
 

@@ -256,7 +256,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.driftAngleIncrMax = 2.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "cyborg.obj");
 
     return ob;
 
@@ -293,7 +293,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.player = 3;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
+    createComponents(ob, terrain, terrainComponent, mData, "croco.obj");
 
     return ob;
 
@@ -306,10 +306,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model)
 {
     //Create representation of the model if there is a model
-    if(model!=nullptr)
-    {
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, model);
-    }
+    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "WitchFINAL_000", 60);
 
     //Create collision component
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
@@ -362,6 +359,7 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
         AIManager::getInstance().createAIBattleComponent(*obj.get());
         SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle, 100.f, 10.f); 
         SensorManager::getInstance().createMSensorComponent(*obj.get(), 30.f, mData.angle);
+        
     }
     //Online player imitator
     else if(move == 2)

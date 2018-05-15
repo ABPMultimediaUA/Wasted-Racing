@@ -144,7 +144,7 @@ void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, floa
 
     auto objectRender = this->getGameObject().getComponent<ObjectRenderComponent>();
 
-    if(objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
+    if(objectRender!=nullptr &&objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
     {
         if(mData.max_vel != maxSpeed){
             auxData.max_vel         = mData.max_vel;
@@ -163,7 +163,7 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
     auto objectRender = this->getGameObject().getComponent<ObjectRenderComponent>();
 
-    if(objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
+    if(objectRender!=nullptr && objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
     {
         if(mData.boost && !mData.coll) {
             if(constantAlteredTime > 0) {
