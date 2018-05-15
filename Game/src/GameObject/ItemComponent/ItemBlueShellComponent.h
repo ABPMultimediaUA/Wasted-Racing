@@ -34,6 +34,7 @@ class ItemBlueShellComponent : public IItemComponent
         glm::vec3 objective;               //Objective position of the enemy
         ScoreComponent::Pointer enemy;     //Score component of the guy you're aiming at
         IItemComponent::InstanceType mode; //How the object was created
+        float valueY;                      //Max value to increase Y
 
 };
  
