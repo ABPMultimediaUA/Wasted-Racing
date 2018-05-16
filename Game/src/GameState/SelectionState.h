@@ -8,7 +8,7 @@ class SelectionState : public IGameState {
 public: 
 
     //Constructor
-    SelectionState (){ type = IGameState::PAUSE; };
+    SelectionState (){ type = IGameState::SELECTION; };
 
     //Destructor
     virtual ~SelectionState() {}
@@ -24,6 +24,8 @@ public:
 
     //Shutdown
     virtual void close();
+
+    bool getLoadState() {   return load;    }
 
     //Static class getter
     static SelectionState& getInstance() {
@@ -48,6 +50,7 @@ private:
     AudioManager* audioManager;
 
     GameObject::Pointer camera;
-    int i = 0;
+
+    bool load = false;
 
 };

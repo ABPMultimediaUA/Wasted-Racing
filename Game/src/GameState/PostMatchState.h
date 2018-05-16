@@ -8,7 +8,7 @@ class PostMatchState : public IGameState {
 public: 
 
     //Constructor
-    PostMatchState (){ type = IGameState::PAUSE; };
+    PostMatchState (){ type = IGameState::POSTMATCH; };
 
     //Destructor
     virtual ~PostMatchState() {}

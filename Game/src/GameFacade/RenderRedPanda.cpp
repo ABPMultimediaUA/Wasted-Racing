@@ -33,6 +33,7 @@ void drawRPS_GUI_Pause(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_CityName(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_Countdown(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_AfterMatch(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI_LoadingScreen(); //:::> function that is given as parameter to redpanda
 
 namespace gui {
 
@@ -106,6 +107,7 @@ namespace gui {
 
     //OTHER Images
     struct nk_image loadingScreen;
+    struct nk_image loadedScreen;
     struct nk_image cityName;
     struct nk_image countdown[4];
     struct nk_image winner;
@@ -128,6 +130,7 @@ void addCityName(EventData eData);
 void addCountdown(EventData eData); 
 void addPause(EventData eData); 
 void addResult(EventData eData);
+void addLoadingScreen(EventData eData);
 void changeLanguage(EventData eData);
 
 //==============================================================
@@ -168,6 +171,7 @@ void RenderRedPanda::openWindow() {
 
     addCamera();
 
+    EventManager::getInstance().addListener(EventListener {EventType::Game_LoadingScreen, addLoadingScreen});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Start, addCityName});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Countdown, addCountdown});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
@@ -632,6 +636,31 @@ void drawRPS_GUI_AfterMatch() {
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
 }
 
+void drawRPS_GUI_LoadingScreen() {
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+
+            GUI->style.window.fixed_background = nk_style_item_hide();
+            
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+
+                if(GlobalVariables::getInstance().getGameLoaded())
+                    nk_image(GUI, gui::loadedScreen);
+                else
+                    nk_image(GUI, gui::loadingScreen);
+                    
+                nk_popup_end(GUI);
+            }
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
 void drawRPS_GUI_Options(){
 
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
@@ -959,6 +988,7 @@ void gui::init() {
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExit.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/ENG/bExitHover.png");
         gui::loadingScreen              =   gui::loadTexture("media/img/GUI/Other/loadScreenENG.png");
+        gui::loadedScreen               =   gui::loadTexture("media/img/GUI/Other/loadedScreenENG.png");
         gui::countdown[0]               =   gui::loadTexture("media/img/GUI/Other/startENG.png");
         gui::winner                     =   gui::loadTexture("media/img/GUI/Other/winnerENG.png");
         gui::looser                     =   gui::loadTexture("media/img/GUI/Other/looserENG.png");
@@ -974,6 +1004,7 @@ void gui::init() {
         gui::text_exit                  =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalir.png");
         gui::text_exitHover             =   gui::loadTexture("media/img/GUI/MainMenu/SPA/bSalirHover.png");
         gui::loadingScreen              =   gui::loadTexture("media/img/GUI/Other/loadScreenSPA.png");
+        gui::loadedScreen               =   gui::loadTexture("media/img/GUI/Other/loadedScreenSPA.png");
         gui::countdown[0]               =   gui::loadTexture("media/img/GUI/Other/startSPA.png");
         gui::winner                     =   gui::loadTexture("media/img/GUI/Other/winnerSPA.png");
         gui::looser                     =   gui::loadTexture("media/img/GUI/Other/looserSPA.png");
@@ -1229,6 +1260,13 @@ void addResult(EventData eData) {
 
     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
     device->setGUIDrawFunction(drawRPS_GUI_AfterMatch);
+
+}
+
+void addLoadingScreen(EventData eData) {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_LoadingScreen);
 
 }
 

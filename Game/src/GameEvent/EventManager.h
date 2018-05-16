@@ -26,6 +26,9 @@ public:
     //Close
     void close();
 
+    //Clear events
+    void clearEvents();
+
     //==================================
     // Event related functions
     //==================================

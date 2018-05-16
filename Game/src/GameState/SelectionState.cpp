@@ -4,6 +4,7 @@
 // Additional functions
 //==============================================
 void addAI();
+void addStateChange(EventData eData);
 
 void SelectionState::init() {
     //Bind all managers that are going to be used
@@ -14,19 +15,29 @@ void SelectionState::init() {
     audioManager = &AudioManager::getInstance();
 
     Game::getInstance().setAccumulatedTime(0);
+
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Pressed, addStateChange});
 }
 
 void SelectionState::update(float &accumulatedTime) {
 
-    i++;
-    if(i == 10){
-        Game::getInstance().setState(IGameState::stateType::PREMATCH);
+    if(!load){
+        EventManager::getInstance().addEvent(Event {EventType::Game_LoadingScreen});
+        load = true;
+    }
+    else if (!GlobalVariables::getInstance().getGameLoaded()) {
+
         //Load map
         Game::getInstance().loadMap();
 
         //Add AI's to the game
         addAI();
+
+        GlobalVariables::getInstance().setGameLoaded(true);
+
     }
+
+    
 
     //Update input manager
     inputManager->update();
@@ -111,4 +122,14 @@ void addAI(){
     ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));*/
+}
+
+
+void addStateChange(EventData eData) {
+
+    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION && GlobalVariables::getInstance().getGameLoaded()){
+        //Change state
+        Game::getInstance().setState(IGameState::stateType::PREMATCH);
+    }
+    
 }

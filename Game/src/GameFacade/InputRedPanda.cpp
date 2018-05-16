@@ -9,6 +9,7 @@
             EventData eventD; \
             eventD.grade = -2; \
             EventManager::getInstance().addEvent(Event {EventType::Event_Down, eventD}); \
+            EventManager::getInstance().addEvent(Event {EventType::Key_Pressed}); \
             keyMapping[Mapping] = true; \
     } \
     else if(event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_##TheKey){ \
@@ -24,6 +25,7 @@
             EventData eventD; \
             eventD.grade = -2; \
             EventManager::getInstance().addEvent(Event {EventType::Event_Down, eventD}); \
+            EventManager::getInstance().addEvent(Event {EventType::Key_Pressed}); \
             buttonMapping[Mapping] = true; \
     } \
     else if(buttonMapping[Mapping]){ \
