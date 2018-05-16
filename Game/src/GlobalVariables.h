@@ -43,6 +43,10 @@ class GlobalVariables{
         bool    getIgnoreInput()                            {     return ignoreInput; };
         void    setGameLoaded(bool g)                       {     gameLoaded = g;     };
         bool    getGameLoaded()                             {     return gameLoaded;  };
+        void    setSelectedPlayer(int s)                    {     selectedPlayer = s; };
+        int     getSelectedPlayer()                         {     return selectedPlayer;};
+        void    setFixedPlayer(bool f)                      {     fixedPlayer = f;    };
+        bool    getFixedPlayer()                            {     return fixedPlayer; };
         
     private:
 
@@ -64,6 +68,10 @@ class GlobalVariables{
         float volume = 1.0;
         int language;
         bool ignoreInput = false;
+
+        //Player selection
+        int selectedPlayer = 0;
+        bool fixedPlayer = false;
 
         //==========================================
         // AI DATA

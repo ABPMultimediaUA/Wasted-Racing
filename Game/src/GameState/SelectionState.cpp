@@ -14,6 +14,8 @@ void SelectionState::init() {
     objectManager = &ObjectManager::getInstance();
     audioManager = &AudioManager::getInstance();
 
+    eventManager->addEvent(Event {Game_PlayerSelection});
+
     Game::getInstance().setAccumulatedTime(0);
 
     EventManager::getInstance().addListener(EventListener {EventType::Key_Pressed, addStateChange});
@@ -21,21 +23,27 @@ void SelectionState::init() {
 
 void SelectionState::update(float &accumulatedTime) {
 
-    if(!load){
-        EventManager::getInstance().addEvent(Event {EventType::Game_LoadingScreen});
-        load = true;
+    if(GlobalVariables::getInstance().getFixedPlayer()) {
+
+        if(!load){
+            EventManager::getInstance().addEvent(Event {EventType::Game_LoadingScreen});
+            load = true;
+        }
+        else if (!GlobalVariables::getInstance().getGameLoaded()) {
+
+            //Load map
+            Game::getInstance().loadMap();
+
+            //Add AI's to the game
+            addAI();
+
+            GlobalVariables::getInstance().setGameLoaded(true);
+
+        }
+
     }
-    else if (!GlobalVariables::getInstance().getGameLoaded()) {
 
-        //Load map
-        Game::getInstance().loadMap();
-
-        //Add AI's to the game
-        addAI();
-
-        GlobalVariables::getInstance().setGameLoaded(true);
-
-    }
+    
 
     
 
