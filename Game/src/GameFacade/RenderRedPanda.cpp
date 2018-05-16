@@ -352,7 +352,7 @@ void RenderRedPanda::addObject(IComponent* ptr) {
         }
         break;
         case ObjectRenderComponent::Shape::Cube: {
-            node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), "media/mesh/box/box.obj");
+            node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), "media/mesh/box2/box2.obj");
         }
         break;
         case ObjectRenderComponent::Shape::Plane: {
