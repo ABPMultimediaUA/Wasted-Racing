@@ -58,6 +58,7 @@ enum EventType {
     BlueShellComponent_Collision,
     RedShellComponent_Collision,
     //PLAYER: Basic control keys
+    Key_Pressed,
     Key_Advance_Down,
     Key_Advance_Up,
     Key_Brake_Down,
@@ -101,6 +102,8 @@ enum EventType {
     Game_Start,
     Game_Pause,
     Game_Close,
+    Game_PlayerSelection,
+    Game_LoadingScreen,
     State_Change,
     //CHOOSE: Choose game type
     Key_Multiplayer_Down,
@@ -129,6 +132,7 @@ enum EventType {
     //GLOBAL: Global related events
     Global_ChangeVolume,
     Global_ChangeLanguage,
+    Global_ChangeFullscreen,
     //Idle event
     Idle
 };

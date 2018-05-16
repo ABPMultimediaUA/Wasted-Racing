@@ -37,6 +37,7 @@ void MatchState::init() {
 
         //Set as initialized
         initialized = true;
+
     }
 
     Game::getInstance().setAccumulatedTime(0);

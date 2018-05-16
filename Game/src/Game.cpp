@@ -4,6 +4,7 @@
 //  DELEGATE DECLARATIONS
 //====================================================
 void setStateEvent(EventData eData);
+void changeFullscreen(EventData eData);
 
 //====================================================
 //  GAME INITIALIZATION
@@ -62,6 +63,7 @@ void Game::init() {
 
     //Change state listener
     EventManager::getInstance().addListener(EventListener {EventType::State_Change, setStateEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeFullscreen, changeFullscreen});
 }
 
 //====================================================
@@ -193,7 +195,6 @@ void Game::setState(IGameState::stateType type){
         }
         //Initialize state here
         state->init();
-        GlobalVariables::getInstance().setGameState(type);
 }
 
 std::vector<std::string> Game::split(const std::string& s, const char& c) {
@@ -484,4 +485,40 @@ void Game::loadMap() {
 void setStateEvent(EventData eData)
 {
     Game::getInstance().setState((IGameState::stateType) eData.Id);
+}
+
+void changeFullscreen(EventData eData) {
+
+    if(GlobalVariables::getInstance().getFullscreen()) {
+
+        GlobalVariables::getInstance().setFullscreen(false);
+        SDL_Window* w = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice()->getWindow();
+
+        int width, height;
+
+        SDL_GetWindowSize(w,&width,&height); 
+
+        SDL_SetWindowFullscreen(w, 0);
+        
+        SDL_SetWindowSize(w, width/1.5, height/1.5);
+             
+
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.x = width/1.5;
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.y = height/1.5;
+
+    }
+    else {
+        
+        GlobalVariables::getInstance().setFullscreen(true);
+        SDL_Window* w = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice()->getWindow();
+
+        int width, height;
+        
+        SDL_SetWindowFullscreen(w, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_GetWindowSize(w,&width,&height);      
+
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.x = width;
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.y = height;
+    }
+
 }
