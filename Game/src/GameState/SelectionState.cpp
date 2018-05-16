@@ -77,6 +77,8 @@ void SelectionState::init() {
 
 void SelectionState::update(float &accumulatedTime) {
 
+    int selectedPlayer = GlobalVariables::getInstance().getSelectedPlayer(); 
+
     if(GlobalVariables::getInstance().getFixedPlayer()) {
 
         if(!load){
@@ -89,7 +91,7 @@ void SelectionState::update(float &accumulatedTime) {
             Game::getInstance().loadMap();
 
             //Add AI's to the game
-            addAI(currPlayer);
+            addAI(selectedPlayer);
 
             GlobalVariables::getInstance().setGameLoaded(true);
             GlobalVariables::getInstance().setIgnoreInput(false);
@@ -98,7 +100,6 @@ void SelectionState::update(float &accumulatedTime) {
 
     }
 
-    int selectedPlayer = GlobalVariables::getInstance().getSelectedPlayer(); 
     if(!ongoing && currPlayer != selectedPlayer) {
         ongoing = true;
         currTime = maxTime;
