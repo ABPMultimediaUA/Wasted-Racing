@@ -193,7 +193,6 @@ void Game::setState(IGameState::stateType type){
         }
         //Initialize state here
         state->init();
-        GlobalVariables::getInstance().setGameState(type);
 }
 
 std::vector<std::string> Game::split(const std::string& s, const char& c) {

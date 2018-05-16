@@ -41,6 +41,8 @@ class GlobalVariables{
         int     getCountdown()                              {     return countdown;   };
         void    setIgnoreInput(bool i)                      {     ignoreInput = i;    };
         bool    getIgnoreInput()                            {     return ignoreInput; };
+        void    setGameLoaded(bool g)                       {     gameLoaded = g;     };
+        bool    getGameLoaded()                             {     return gameLoaded;  };
         
     private:
 
@@ -56,6 +58,7 @@ class GlobalVariables{
 
         //Countdown value
         int countdown;
+        bool gameLoaded = false;
 
         //Variable for options
         float volume = 1.0;

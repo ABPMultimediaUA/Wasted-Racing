@@ -1,6 +1,7 @@
 #include "PreMatchState.h"
 
 void PreMatchState::init() {
+
     //Bind all managers that are going to be used
     eventManager  = &EventManager::getInstance();
     inputManager  = &InputManager::getInstance();
