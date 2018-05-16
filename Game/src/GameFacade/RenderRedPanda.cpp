@@ -73,6 +73,21 @@ namespace gui {
     struct nk_image text_oexit;
     struct nk_image text_oexitHover;
 
+    //SELECTION Images
+    struct nk_image post_left;
+    struct nk_image post_leftHover;
+    struct nk_image post_right;
+    struct nk_image post_rightHover;
+    struct nk_image post_up;
+    struct nk_image text_punk;
+    struct nk_image text_croco;
+    struct nk_image text_cyborg;
+    struct nk_image text_witch;
+    struct nk_image text_punkHover;
+    struct nk_image text_crocoHover;
+    struct nk_image text_cyborgHover;
+    struct nk_image text_witchHover;
+
     //GUI Images
     struct nk_image item_void;
     struct nk_image item_banana;
@@ -131,6 +146,7 @@ void addCountdown(EventData eData);
 void addPause(EventData eData); 
 void addResult(EventData eData);
 void addLoadingScreen(EventData eData);
+void addSelection(EventData eData);
 void changeLanguage(EventData eData);
 
 //==============================================================
@@ -171,6 +187,7 @@ void RenderRedPanda::openWindow() {
 
     addCamera();
 
+    EventManager::getInstance().addListener(EventListener {EventType::Game_PlayerSelection, addSelection});
     EventManager::getInstance().addListener(EventListener {EventType::Game_LoadingScreen, addLoadingScreen});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Start, addCityName});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Countdown, addCountdown});
@@ -330,12 +347,14 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     auto obj = cmp->getGameObject();
     auto pos = obj.getTransformData().position;
     auto sca = obj.getTransformData().scale;
+    auto rot = obj.getTransformData().rotation;
 
     TNode * node = nullptr;
     //Initialize the node
     switch(shape){
         case ObjectRenderComponent::Shape::Mesh: {
             node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str());
+            rps::scaleNode(node,sca);
         }
         break;
         case ObjectRenderComponent::Shape::Cube: {
@@ -352,7 +371,7 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     }
 
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
-
+    rps::rotateNode(node, rot);
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
 
 }
@@ -653,12 +672,87 @@ void drawRPS_GUI_LoadingScreen() {
                     nk_image(GUI, gui::loadedScreen);
                 else
                     nk_image(GUI, gui::loadingScreen);
-                    
+
                 nk_popup_end(GUI);
             }
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
+void drawRPS_GUI_PlayerSelect() {
+
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+
+    int currPlayer = GlobalVariables::getInstance().getSelectedPlayer();
+    
+    if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+            //Upper bar
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -h*0.05, w+15, h+6))) {
+                nk_layout_row_static(GUI, w*0.194, w, 1);
+                nk_image(GUI, gui::post_up);
+                nk_popup_end(GUI);
+            }
+            //Left sign
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.06, h*0.254, w*0.3, h*0.8))) {
+
+                nk_layout_row_static(GUI, w*0.42, w*0.168, 1);
+                if (nk_button_image(GUI, gui::post_left, gui::post_leftHover)){
+                    if(!GlobalVariables::getInstance().getSelecting()) {
+                        if(currPlayer > 0)
+                            GlobalVariables::getInstance().setSelectedPlayer(currPlayer-1);
+                        else
+                            GlobalVariables::getInstance().setSelectedPlayer(3);
+                    }
+                }
+                nk_popup_end(GUI);
+            }
+            //Right sign
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.7, h*0.254, w*0.3, h*0.8))) {
+
+                nk_layout_row_static(GUI, w*0.42, w*0.168, 1);
+                if (nk_button_image(GUI, gui::post_right, gui::post_rightHover)){
+                    if(!GlobalVariables::getInstance().getSelecting()) {
+                        if(currPlayer < 3)
+                            GlobalVariables::getInstance().setSelectedPlayer(currPlayer+1);
+                        else
+                            GlobalVariables::getInstance().setSelectedPlayer(0);
+                    }
+                    
+                }
+                nk_popup_end(GUI);
+            }
+            //Lower sign
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.7, w*0.33, w*0.2))) {
+
+                nk_layout_row_static(GUI, w*0.142, w*0.3, 1);
+                
+                if(currPlayer == 0) {
+                    if (nk_button_image(GUI, gui::text_punk, gui::text_punkHover))
+                        GlobalVariables::getInstance().setFixedPlayer(true);
+                }
+                else if(currPlayer == 1) {
+                    if (nk_button_image(GUI, gui::text_croco, gui::text_crocoHover))
+                        GlobalVariables::getInstance().setFixedPlayer(true);
+                }
+                else if(currPlayer == 2) {
+                    if (nk_button_image(GUI, gui::text_cyborg, gui::text_cyborgHover))
+                        GlobalVariables::getInstance().setFixedPlayer(true);
+                }
+                else if(currPlayer == 3) {
+                    if (nk_button_image(GUI, gui::text_witch, gui::text_witchHover))
+                        GlobalVariables::getInstance().setFixedPlayer(true);
+                }
+                
+                nk_popup_end(GUI);
+            }
+		}
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+
 }
 
 void drawRPS_GUI_Options(){
@@ -1011,6 +1105,40 @@ void gui::init() {
     }
 
     //==========================================================================================
+    //  PLAYER SELECTION
+    //==========================================================================================
+    if(GlobalVariables::getInstance().getLanguage() == 0) {
+        gui::post_left                  =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/bIzq.png");
+        gui::post_leftHover             =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/bIzqHover.png");
+        gui::post_right                 =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/bDrch.png");
+        gui::post_rightHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/bDrchHover.png");
+        gui::post_up                    =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/superiorBase.png");
+        gui::text_punk                  =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/NeonDemon.png");
+        gui::text_croco                 =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/KillahDryla.png");
+        gui::text_cyborg                =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/GameEnder.png");
+        gui::text_witch                 =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/UltraViolet.png");
+        gui::text_punkHover             =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/NeonDemonHover.png");
+        gui::text_crocoHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/KillahDrylaHover.png");
+        gui::text_cyborgHover           =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/GameEnderHover.png");
+        gui::text_witchHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/UltraVioletHover.png");
+    } 
+    else {
+        gui::post_left                  =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/bIzq.png");
+        gui::post_leftHover             =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/bIzqHover.png");
+        gui::post_right                 =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/bDrch.png");
+        gui::post_rightHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/bDrchHover.png");
+        gui::post_up                    =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/superiorBase.png");
+        gui::text_punk                  =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/NeonDemon.png");
+        gui::text_croco                 =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/KillahDryla.png");
+        gui::text_cyborg                =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/GameEnder.png");
+        gui::text_witch                 =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/UltraViolet.png");
+        gui::text_punkHover             =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/NeonDemonHover.png");
+        gui::text_crocoHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/KillahDrylaHover.png");
+        gui::text_cyborgHover           =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/GameEnderHover.png");
+        gui::text_witchHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/UltraVioletHover.png");
+    }
+
+    //==========================================================================================
     //  OPTIONS MENU
     //==========================================================================================
     if(GlobalVariables::getInstance().getLanguage() == 0) {
@@ -1267,6 +1395,13 @@ void addLoadingScreen(EventData eData) {
 
     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
     device->setGUIDrawFunction(drawRPS_GUI_LoadingScreen);
+
+}
+
+void addSelection(EventData eData) {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_PlayerSelect);
 
 }
 

@@ -43,6 +43,14 @@ class GlobalVariables{
         bool    getIgnoreInput()                            {     return ignoreInput; };
         void    setGameLoaded(bool g)                       {     gameLoaded = g;     };
         bool    getGameLoaded()                             {     return gameLoaded;  };
+        void    setSelectedPlayer(int s)                    {     selectedPlayer = s; };
+        int     getSelectedPlayer()                         {     return selectedPlayer;};
+        void    setFixedPlayer(bool f)                      {     fixedPlayer = f;    };
+        bool    getFixedPlayer()                            {     return fixedPlayer; };
+        void    setSelecting(bool s)                        {     selecting = s;      };
+        bool    getSelecting()                              {     return selecting;   };
+        void    setFullscreen(bool f)                       {     fullscreen = f;     };
+        bool    getFullscreen()                             {     return fullscreen;  };
         
     private:
 
@@ -64,6 +72,12 @@ class GlobalVariables{
         float volume = 1.0;
         int language;
         bool ignoreInput = false;
+        bool fullscreen = false;
+
+        //Player selection
+        int selectedPlayer = 0;     //Current player to choose
+        bool fixedPlayer = false;   //If we chose a player
+        bool selecting = false;     //If we are chosing a different player
 
         //==========================================
         // AI DATA

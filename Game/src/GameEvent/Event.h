@@ -102,6 +102,7 @@ enum EventType {
     Game_Start,
     Game_Pause,
     Game_Close,
+    Game_PlayerSelection,
     Game_LoadingScreen,
     State_Change,
     //CHOOSE: Choose game type
@@ -131,6 +132,7 @@ enum EventType {
     //GLOBAL: Global related events
     Global_ChangeVolume,
     Global_ChangeLanguage,
+    Global_ChangeFullscreen,
     //Idle event
     Idle
 };
