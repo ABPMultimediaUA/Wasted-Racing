@@ -140,6 +140,7 @@ namespace gui {
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
+void addMenu(EventData eData);
 void addHUD(EventData eData); 
 void addCityName(EventData eData); 
 void addCountdown(EventData eData); 
@@ -187,6 +188,7 @@ void RenderRedPanda::openWindow() {
 
     addCamera();
 
+    EventManager::getInstance().addListener(EventListener {EventType::Game_Menu, addMenu});
     EventManager::getInstance().addListener(EventListener {EventType::Game_PlayerSelection, addSelection});
     EventManager::getInstance().addListener(EventListener {EventType::Game_LoadingScreen, addLoadingScreen});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Start, addCityName});
@@ -1395,6 +1397,13 @@ void addLoadingScreen(EventData eData) {
 
     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
     device->setGUIDrawFunction(drawRPS_GUI_LoadingScreen);
+
+}
+
+void addMenu(EventData eData) {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_Menu);
 
 }
 

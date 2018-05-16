@@ -7,18 +7,23 @@ void addAI(int selectedPlayer);
 void addStateChange(EventData eData);
 
 void SelectionState::init() {
-    //Bind all managers that are going to be used
-    eventManager  = &EventManager::getInstance();
-    inputManager  = &InputManager::getInstance();
-    renderManager = &RenderManager::getInstance();
-    objectManager = &ObjectManager::getInstance();
-    audioManager = &AudioManager::getInstance();
 
+    if(!initialized) {
+        //Bind all managers that are going to be used
+        eventManager  = &EventManager::getInstance();
+        inputManager  = &InputManager::getInstance();
+        renderManager = &RenderManager::getInstance();
+        objectManager = &ObjectManager::getInstance();
+        audioManager = &AudioManager::getInstance();
+
+        EventManager::getInstance().addListener(EventListener {EventType::Key_Pressed, addStateChange});
+
+        initialized = true;
+    }
+    
     eventManager->addEvent(Event {Game_PlayerSelection});
 
     Game::getInstance().setAccumulatedTime(0);
-
-    EventManager::getInstance().addListener(EventListener {EventType::Key_Pressed, addStateChange});
 
     GlobalVariables::getInstance().setIgnoreInput(true);
 

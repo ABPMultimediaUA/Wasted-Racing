@@ -25,6 +25,8 @@ public:
     //Shutdown
     virtual void close();
 
+    void interpolate(float &accumulatedTime);
+
     //Static class getter
     static PostMatchState& getInstance() {
         static PostMatchState instance;
@@ -55,5 +57,7 @@ private:
     //Sensor manager
     SensorManager* sensorManager;
 
+    Clock* schedulingClock;
+    float remainingTime;
 
 };

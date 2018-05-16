@@ -60,4 +60,6 @@ private:
     float maxTime = 1;
     bool ongoing = false;
 
+    int initialized = false;
+
 };

@@ -38,12 +38,15 @@ void MatchState::init() {
         //Set as initialized
         initialized = true;
 
+        GameObject::Pointer player = ObjectManager::getInstance().getObject(25000);
     }
 
     Game::getInstance().setAccumulatedTime(0);
 }
 
 void MatchState::update(float &accumulatedTime) {
+
+    Game::getInstance().setState(IGameState::stateType::POSTMATCH);
     
     float maxDTime = GlobalVariables::getInstance().getMaxDTime();
     if(accumulatedTime > maxDTime)
@@ -126,7 +129,7 @@ void MatchState::interpolate(float &accumulatedTime) {
 }
 
 void MatchState::close() {
-
+    delete schedulingClock;
 }
 
 //==============================================
