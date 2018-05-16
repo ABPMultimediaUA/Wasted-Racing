@@ -40,8 +40,9 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 }
 
-void RedPandaStudio::updateDevice() {
-
+void RedPandaStudio::updateDevice() 
+{
+/*
 	//Update particles
 	updateParticles();
 
@@ -86,6 +87,8 @@ void RedPandaStudio::updateDevice() {
 	glBindVertexArray(paticlesVertexArray);
 	renderParticles();
 	glUseProgram(scene->getEntity()->getProgramID());
+*/
+	drawPostProcessing();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -218,8 +221,8 @@ void RedPandaStudio::initOpenGL() {
 
 
 	//Enables the debug output from OpenGL (must be disabled in Release)
-	glEnable( GL_DEBUG_OUTPUT );
-    glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
+	//glEnable( GL_DEBUG_OUTPUT );
+    //glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
 
 	setFrustumCulling(false);
 
@@ -253,7 +256,7 @@ void RedPandaStudio::initOpenGL() {
 
 	//=============================
 	//Initialize all parameters needed for the shadow mapping
-	//initShadowMappping();
+	initPostProcessing();
 	//=============================
 
 	//Get main shaders
@@ -994,6 +997,27 @@ void RedPandaStudio::drawPostProcessing()
 	glEnable(GL_DEPTH_TEST);						      //Enabling for 3D renders
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); //Cleaning the buffers
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 			      //Clean window
+
+	//Render camera and lights
+	renderCamera();
+	renderLights();
+
+
+	//Change shader program for drawing skybox
+	glUseProgram(skyboxID);
+	glBindVertexArray(skyVertexArray);
+	skybox->draw();
+	glEnable(GL_DEPTH_TEST);
+	
+
+	//Activate the billboard shader
+	glUseProgram(billboardID);
+
+	//Render all the billboards in the scene
+	renderBillboards();
+
+	//Activate the shader used to draw the scene
+	glUseProgram(scene->getEntity()->getProgramID());
  
 	//Draw the scene normally
 	glUseProgram(scene->getEntity()->getProgramID());

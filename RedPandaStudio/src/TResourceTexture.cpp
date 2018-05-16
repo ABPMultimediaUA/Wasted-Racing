@@ -8,15 +8,15 @@ TResourceTexture::~TResourceTexture()
 
 bool TResourceTexture::loadResource()
 {
-    std::cout << "Loading texture: " << name << std::endl;
+    //SFML Class to store our texture
+    sf::Image* texture = new sf::Image();
     //Attempt to load the file
-    if(texture.loadFromFile(name))
+    if(texture->loadFromFile(name))
     {
-        std::cout << "Loaded" << std::endl;
         active=true;
         //Get his width and height
-        sizeX = texture.getSize().x;
-        sizeY = texture.getSize().y;
+        sizeX = texture->getSize().x;
+        sizeY = texture->getSize().y;
 
         //Generate a OpenGL texture for later
         glGenTextures(1, &textureID);
@@ -31,7 +31,9 @@ bool TResourceTexture::loadResource()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
 
         //Set the texture to be drawn
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)sizeX, (GLsizei)sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getPixelsPtr());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, (GLsizei)sizeX, (GLsizei)sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->getPixelsPtr());
+
+        delete texture;
 
         return true;
     }

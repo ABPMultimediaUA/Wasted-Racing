@@ -56,6 +56,7 @@ void calculatePointLights()
     {
 
         float diffuse = 0.0;
+        float specular = 0.0;
 
         vec4 LightPos = view * light[i].position;
 
@@ -66,14 +67,17 @@ void calculatePointLights()
         // Cálculo de la atenuación
         float attenuation = 80.0/(0.25+(0.1*d)+(0.005*d*d));
         diffuse = diffuse * attenuation;
+
+        vec3 mid = normalize(V + L);
+
         
-        float specular = 2 * attenuation * pow(max(0.0, dot(reflect(-L, N), V)), material.ns);
+        specular = pow(max(0.0, dot(reflect(-L, N), mid)), material.ns);
 
         v_Color += vec4(light[i].intensity * diffuse) * vec4(material.kd, 1.0);
 
-        if(specular > 0)
+        if(specular > 0.0)
         {
-            //v_Color += vec4(specular) * vec4(material.ks, 1.0);
+            //v_Color += vec4(specular * light[i].intensity) * vec4(material.ks, 1.0);
         }
 
     }
@@ -101,13 +105,15 @@ void calculateSpotLights()
             float attenuation = 80.0/(0.25+(0.1*d)+(0.005*d*d));
             diffuse = diffuse * attenuation;
 
-            float specular = 2 * attenuation * pow(max(0.0, dot(reflect(-L, N), V)), material.ns);
+            vec3 mid = normalize(V + L);
+
+            float specular = 2 * attenuation * pow(max(0.0, dot(reflect(-L, N), mid)), material.ns);
 
             v_Color += vec4(spotlight[i].light.intensity * diffuse) * vec4(material.kd, 1.0);
 
             if(specular > 0)
             {
-                //v_Color += vec4(specular) * vec4(material.ks, 1.0);
+                v_Color += vec4(specular) * vec4(material.ks, 1.0);
             }
         }
     }
@@ -119,7 +125,8 @@ void main()
     v_Color = vec4(0.0, 0.0, 0.0, 0.0);
 
     P2 = vec4(P.x, P.y, P.z, 1.0);
-    V = normalize(vec3(modelViewMatrix * CamPos * (vec4(0.0, 0.0, 0.0, 1.0) - P2)));
+    V = vec3(normalize(CamPos - P2));
+
 
     calculatePointLights();
     //calculateSpotLights();
