@@ -19,6 +19,15 @@ void SelectionState::init() {
     Game::getInstance().setAccumulatedTime(0);
 
     EventManager::getInstance().addListener(EventListener {EventType::Key_Pressed, addStateChange});
+
+    GameObject::TransformationData tr;
+    tr.position = glm::vec3(0,0,0);
+    tr.rotation = glm::vec3(0,0,0);
+    tr.scale    = glm::vec3(1,1,1);
+    GameObject::Pointer background = ObjectManager::getInstance().createObject(60000, tr);
+
+    
+    RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
 }
 
 void SelectionState::update(float &accumulatedTime) {

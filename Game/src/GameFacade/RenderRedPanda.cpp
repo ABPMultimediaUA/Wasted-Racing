@@ -83,6 +83,10 @@ namespace gui {
     struct nk_image text_croco;
     struct nk_image text_cyborg;
     struct nk_image text_witch;
+    struct nk_image text_punkHover;
+    struct nk_image text_crocoHover;
+    struct nk_image text_cyborgHover;
+    struct nk_image text_witchHover;
 
     //GUI Images
     struct nk_image item_void;
@@ -691,10 +695,9 @@ void drawRPS_GUI_PlayerSelect() {
                 nk_popup_end(GUI);
             }
             //Left sign
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.35, w*0.3, h*0.5))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.06, h*0.254, w*0.3, h*0.8))) {
 
-                nk_layout_row_dynamic(GUI, h*0.07, 1);
-                nk_spacing(GUI, 1);
+                nk_layout_row_static(GUI, w*0.42, w*0.168, 1);
                 if (nk_button_image(GUI, gui::post_left, gui::post_leftHover)){
                     if(currPlayer > 0)
                         GlobalVariables::getInstance().setSelectedPlayer(currPlayer-1);
@@ -704,11 +707,10 @@ void drawRPS_GUI_PlayerSelect() {
                 nk_popup_end(GUI);
             }
             //Right sign
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.35, w*0.3, h*0.5))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.7, h*0.254, w*0.3, h*0.8))) {
 
-                nk_layout_row_dynamic(GUI, h*0.07, 1);
-                nk_spacing(GUI, 1);
-                if (nk_button_image(GUI, gui::post_left, gui::post_leftHover)){
+                nk_layout_row_static(GUI, w*0.42, w*0.168, 1);
+                if (nk_button_image(GUI, gui::post_right, gui::post_rightHover)){
                     if(currPlayer < 3)
                         GlobalVariables::getInstance().setSelectedPlayer(currPlayer+1);
                     else
@@ -717,20 +719,26 @@ void drawRPS_GUI_PlayerSelect() {
                 nk_popup_end(GUI);
             }
             //Lower sign
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.35, w*0.3, h*0.5))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.35, h*0.7, w*0.33, w*0.2))) {
 
-                nk_layout_row_dynamic(GUI, h*0.07, 1);
-                nk_spacing(GUI, 1);
+                nk_layout_row_static(GUI, w*0.142, w*0.3, 1);
                 
-                if(currPlayer == 0)
-                    nk_image(GUI, gui::text_punk);
-                else if(currPlayer == 1)
-                    nk_image(GUI, gui::text_croco);
-                else if(currPlayer == 2)
-                    nk_image(GUI, gui::text_cyborg);
-                else if(currPlayer == 3)
-                    nk_image(GUI, gui::text_witch);
-
+                if(currPlayer == 0) {
+                    if (nk_button_image(GUI, gui::text_punk, gui::text_punkHover))
+                        GlobalVariables::getInstance().setFixedPlayer(true);
+                }
+                else if(currPlayer == 1) {
+                    if (nk_button_image(GUI, gui::text_croco, gui::text_crocoHover))
+                        GlobalVariables::getInstance().setFixedPlayer(true);
+                }
+                else if(currPlayer == 2) {
+                    if (nk_button_image(GUI, gui::text_cyborg, gui::text_cyborgHover))
+                        GlobalVariables::getInstance().setFixedPlayer(true);
+                }
+                else if(currPlayer == 3) {
+                    if (nk_button_image(GUI, gui::text_witch, gui::text_witchHover))
+                        GlobalVariables::getInstance().setFixedPlayer(true);
+                }
                 
                 nk_popup_end(GUI);
             }
@@ -1102,6 +1110,10 @@ void gui::init() {
         gui::text_croco                 =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/KillahDryla.png");
         gui::text_cyborg                =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/GameEnder.png");
         gui::text_witch                 =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/UltraViolet.png");
+        gui::text_punkHover             =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/NeonDemonHover.png");
+        gui::text_crocoHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/KillahDrylaHover.png");
+        gui::text_cyborgHover           =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/GameEnderHover.png");
+        gui::text_witchHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/ENG/UltraVioletHover.png");
     } 
     else {
         gui::post_left                  =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/bIzq.png");
@@ -1113,6 +1125,10 @@ void gui::init() {
         gui::text_croco                 =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/KillahDryla.png");
         gui::text_cyborg                =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/GameEnder.png");
         gui::text_witch                 =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/UltraViolet.png");
+        gui::text_punkHover             =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/NeonDemonHover.png");
+        gui::text_crocoHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/KillahDrylaHover.png");
+        gui::text_cyborgHover           =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/GameEnderHover.png");
+        gui::text_witchHover            =   gui::loadTexture("media/img/GUI/CharacterSelect/SPA/UltraVioletHover.png");
     }
 
     //==========================================================================================
