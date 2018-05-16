@@ -38,6 +38,8 @@ void IntroState::init() {
     background = renderManager->createImage( "media/img/menuProv.png", glm::vec2(renderManager->getRenderFacade()->getWindow().size.x/2-600, renderManager->getRenderFacade()->getWindow().size.y/2-331));
 
     Game::getInstance().setAccumulatedTime(0);
+
+    GlobalVariables::getInstance().setIgnoreInput(true);
 }
 
 void IntroState::update(float &accumulatedTime) {

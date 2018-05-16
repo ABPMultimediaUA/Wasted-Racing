@@ -47,6 +47,8 @@ class GlobalVariables{
         int     getSelectedPlayer()                         {     return selectedPlayer;};
         void    setFixedPlayer(bool f)                      {     fixedPlayer = f;    };
         bool    getFixedPlayer()                            {     return fixedPlayer; };
+        void    setSelecting(bool s)                        {     selecting = s;      };
+        bool    getSelecting()                              {     return selecting;   };
         
     private:
 
@@ -70,8 +72,9 @@ class GlobalVariables{
         bool ignoreInput = false;
 
         //Player selection
-        int selectedPlayer = 0;
-        bool fixedPlayer = false;
+        int selectedPlayer = 0;     //Current player to choose
+        bool fixedPlayer = false;   //If we chose a player
+        bool selecting = false;     //If we are chosing a different player
 
         //==========================================
         // AI DATA

@@ -347,12 +347,14 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     auto obj = cmp->getGameObject();
     auto pos = obj.getTransformData().position;
     auto sca = obj.getTransformData().scale;
+    auto rot = obj.getTransformData().rotation;
 
     TNode * node = nullptr;
     //Initialize the node
     switch(shape){
         case ObjectRenderComponent::Shape::Mesh: {
             node = device->createObjectNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getMesh().c_str());
+            rps::scaleNode(node,sca);
         }
         break;
         case ObjectRenderComponent::Shape::Cube: {
@@ -369,7 +371,7 @@ void RenderRedPanda::addObject(IComponent* ptr) {
     }
 
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
-
+    rps::rotateNode(node, rot);
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
 
 }
@@ -699,10 +701,12 @@ void drawRPS_GUI_PlayerSelect() {
 
                 nk_layout_row_static(GUI, w*0.42, w*0.168, 1);
                 if (nk_button_image(GUI, gui::post_left, gui::post_leftHover)){
-                    if(currPlayer > 0)
-                        GlobalVariables::getInstance().setSelectedPlayer(currPlayer-1);
-                    else
-                        GlobalVariables::getInstance().setSelectedPlayer(3);
+                    if(!GlobalVariables::getInstance().getSelecting()) {
+                        if(currPlayer > 0)
+                            GlobalVariables::getInstance().setSelectedPlayer(currPlayer-1);
+                        else
+                            GlobalVariables::getInstance().setSelectedPlayer(3);
+                    }
                 }
                 nk_popup_end(GUI);
             }
@@ -711,10 +715,13 @@ void drawRPS_GUI_PlayerSelect() {
 
                 nk_layout_row_static(GUI, w*0.42, w*0.168, 1);
                 if (nk_button_image(GUI, gui::post_right, gui::post_rightHover)){
-                    if(currPlayer < 3)
-                        GlobalVariables::getInstance().setSelectedPlayer(currPlayer+1);
-                    else
-                        GlobalVariables::getInstance().setSelectedPlayer(0);
+                    if(!GlobalVariables::getInstance().getSelecting()) {
+                        if(currPlayer < 3)
+                            GlobalVariables::getInstance().setSelectedPlayer(currPlayer+1);
+                        else
+                            GlobalVariables::getInstance().setSelectedPlayer(0);
+                    }
+                    
                 }
                 nk_popup_end(GUI);
             }

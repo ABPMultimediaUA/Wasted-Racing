@@ -48,7 +48,7 @@ void ObjectManager::close() {
 GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::TransformationData transform) {
     //make shared pointer
     GameObject::Pointer object = std::make_shared<GameObject>(id, transform);
-
+   
     //Launch creation event
     //:::>No need for it without scheduling
     EventData data;

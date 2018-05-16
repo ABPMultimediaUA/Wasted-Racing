@@ -52,5 +52,12 @@ private:
     GameObject::Pointer camera;
 
     bool load = false;
+    int currPlayer = 0;
+    glm::vec3 cameraPositions[6];   //[0],[1] initial target/position
+                                    //[2],[3] final target/position
+                                    //[4],[5] current target/position
+    float currTime;                 //Current cummulated time
+    float maxTime = 1;
+    bool ongoing = false;
 
 };
