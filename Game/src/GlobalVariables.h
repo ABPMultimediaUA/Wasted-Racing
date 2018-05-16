@@ -49,6 +49,8 @@ class GlobalVariables{
         bool    getFixedPlayer()                            {     return fixedPlayer; };
         void    setSelecting(bool s)                        {     selecting = s;      };
         bool    getSelecting()                              {     return selecting;   };
+        void    setFullscreen(bool f)                       {     fullscreen = f;     };
+        bool    getFullscreen()                             {     return fullscreen;  };
         
     private:
 
@@ -70,6 +72,7 @@ class GlobalVariables{
         float volume = 1.0;
         int language;
         bool ignoreInput = false;
+        bool fullscreen = false;
 
         //Player selection
         int selectedPlayer = 0;     //Current player to choose

@@ -132,6 +132,7 @@ enum EventType {
     //GLOBAL: Global related events
     Global_ChangeVolume,
     Global_ChangeLanguage,
+    Global_ChangeFullscreen,
     //Idle event
     Idle
 };
