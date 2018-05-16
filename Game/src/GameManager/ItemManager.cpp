@@ -248,14 +248,14 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 300.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 300.f;
+    mData.max_vel = 300.f;
     mData.brake_vel = 0.f;
-    mData.velY = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.velY = 300.f;
+    mData.acc = 300.f;
+    mData.max_acc = 300.f;
+    mData.dAcc = 300.f;
+    mData.brake_acc = 300.f;
     mData.player = 5;
 
     //Initial component data
@@ -367,14 +367,14 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 300.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 300.f;
+    mData.max_vel = 300.f;
     mData.brake_vel = 0.f;
-    mData.velY = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.velY = 300.f;
+    mData.acc = 300.f;
+    mData.max_acc = 300.f;
+    mData.dAcc = 300.f;
+    mData.brake_acc = 300.f;
     mData.player = 5;
 
 
@@ -411,7 +411,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
 
         //--------------------------
         //Create collision component
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "bomb.obj");
         
         //Create move component with the movement data
         std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -422,7 +422,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
 
         //--------------------------
         //Create collision component
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "bomb.obj");
 
         //:::>Better use enumerators rather than hardcoded if's and types
         std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::BlueShell);
