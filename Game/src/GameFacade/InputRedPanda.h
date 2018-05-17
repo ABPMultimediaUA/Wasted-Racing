@@ -44,6 +44,6 @@ private:
     SDL_GameController *gamepad = nullptr;
 
     bool buttonMapping[7] = {false, false, false, false, false, false, false};
-    bool keyMapping[15] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+    bool keyMapping[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
 };

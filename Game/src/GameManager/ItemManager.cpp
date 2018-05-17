@@ -153,7 +153,8 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
         //Create item and initialize it
         auto component = createBlueShell(obj, IItemComponent::InstanceType::LOCAL);
-        std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init();
+        float actualVector = obj.getComponent<PathPlanningComponent>()->getLastPosVector();
+        std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init(actualVector);
         return component;
     }
 
@@ -247,14 +248,14 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 500.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 400.f;
+    mData.max_vel = 400.f;
     mData.brake_vel = 0.f;
-    mData.velY = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.acc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_acc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.dAcc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.brake_acc = 500.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.velY = 400.f;
+    mData.acc = 400.f;
+    mData.max_acc = 400.f;
+    mData.dAcc = 400.f;
+    mData.brake_acc = 400.f;
     mData.player = 5;
 
     //Initial component data
@@ -341,7 +342,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
     //:::>No hardcode pls
     transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
-    transform.rotation = glm::vec3(0, 0, 0);
+    transform.rotation = obj.getTransformData().rotation;
     transform.scale    = glm::vec3(2,2,2);
 
     //Create object
@@ -366,14 +367,14 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_vel = 300.0f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.vel = 400.f;
+    mData.max_vel = 400.f;
     mData.brake_vel = 0.f;
-    mData.velY = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.max_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.dAcc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
-    mData.brake_acc = 300.f + obj.getComponent<MoveComponent>()->getMovemententData().vel;
+    mData.velY = 400.f;
+    mData.acc = 400.f;
+    mData.max_acc = 400.f;
+    mData.dAcc = 400.f;
+    mData.brake_acc = 400.f;
     mData.player = 5;
 
 
@@ -410,7 +411,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
 
         //--------------------------
         //Create collision component
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "bomb.obj");
         
         //Create move component with the movement data
         std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -421,7 +422,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
 
         //--------------------------
         //Create collision component
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "ball.obj");
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "bomb.obj");
 
         //:::>Better use enumerators rather than hardcoded if's and types
         std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::BlueShell);
@@ -557,6 +558,7 @@ void ItemManager::deleteItem(IComponent::Pointer component)
     EventData data;
     data.Id = component->getGameObject().getId();
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+    std::cout<<"Deleteeeeeeeeeeeeeeee: "<<component->getGameObject().getId()<<"\n";
 
 }
 

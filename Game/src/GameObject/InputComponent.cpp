@@ -114,8 +114,10 @@ void turnRightUpI(EventData eData) {
     comp->isSpinning(false);
 }
 void jumpDownI(EventData eData){
-    auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
-    comp->isJumping(true);
+    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::MATCH){
+        auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();
+        comp->isJumping(true);
+    }
 }
 void jumpUpI(EventData eData){
     auto comp = GlobalVariables::getInstance().getPlayer()->getComponent<MoveComponent>();

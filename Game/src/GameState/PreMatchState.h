@@ -8,7 +8,7 @@ class PreMatchState : public IGameState {
 public: 
 
     //Constructor
-    PreMatchState (){ type = IGameState::PAUSE; };
+    PreMatchState (){ type = IGameState::PREMATCH; };
 
     //Destructor
     virtual ~PreMatchState() {}

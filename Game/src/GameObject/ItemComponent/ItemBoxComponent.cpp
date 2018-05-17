@@ -6,6 +6,7 @@ ItemBoxComponent::ItemBoxComponent(GameObject& newGameObject) : IComponent(newGa
 
     boxTime = 5.f;
     actTime = 5.f;
+    scale = getGameObject().getTransformData().scale;
 
 }
 
@@ -41,9 +42,9 @@ void ItemBoxComponent::update(float dTime){
         actTime = boxTime;
         auto trans = getGameObject().getTransformData();
 
-        trans.scale.x = 0.65;
-        trans.scale.y = 0.65;
-        trans.scale.z = 0.65;
+        trans.scale.x = scale.x;
+        trans.scale.y = scale.y;
+        trans.scale.z = scale.z;
 
         getGameObject().setTransformData(trans);
 

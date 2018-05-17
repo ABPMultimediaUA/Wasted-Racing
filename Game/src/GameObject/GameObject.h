@@ -5,7 +5,7 @@
 
 #include "IComponent.h"
 #include "../GameEvent/EventManager.h"
-
+#include <iostream>
 class GameObject {
 
 public:
@@ -97,6 +97,7 @@ public:
 		for (it = components.begin(); it != components.end(); it++) {
 			if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(*it)) {
 				components.erase(it);
+				return;
 			}
 		}
 	}

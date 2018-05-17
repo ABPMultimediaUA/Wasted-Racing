@@ -26,11 +26,11 @@ public:
 
     enum PlayerType{
             
-        punk            = 0,      
-        witch           = 1,      
-        cyborg          = 2,      
-        crocodile       = 3
-    
+        punk            = 0,   
+        crocodile       = 1,   
+        cyborg          = 2,    
+        witch           = 3        
+        
     };
 
     //Constructor

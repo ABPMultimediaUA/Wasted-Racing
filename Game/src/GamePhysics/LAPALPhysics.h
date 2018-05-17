@@ -68,4 +68,6 @@ namespace LAPAL {
     //Calculates if a circle is inside a rectangle
     bool checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const LAPAL::vec3f& nextPosition, const float length, const float length2);
 
+    //calculate angle a-b and a-c
+    float calculateAngleVector(glm::vec3 a, glm::vec3 b, glm::vec3 c);
 }
