@@ -45,8 +45,6 @@ void MatchState::init() {
 }
 
 void MatchState::update(float &accumulatedTime) {
-
-    Game::getInstance().setState(IGameState::stateType::POSTMATCH);
     
     float maxDTime = GlobalVariables::getInstance().getMaxDTime();
     if(accumulatedTime > maxDTime)

@@ -68,6 +68,11 @@ void SelectionState::init() {
         GameObject::Pointer light = ObjectManager::getInstance().createObject(60005, tr5);
 
         RenderManager::getInstance().createLightRenderComponent(*light.get(),LightRenderComponent::Type::Point, 100); 
+
+        cameraPositions[4] = glm::vec3(10,-27,0);
+        cameraPositions[5] = glm::vec3(0,-30,0);
+
+        currPlayer = 0;
     }
 
     eventManager->addEvent(Event {Game_PlayerSelection});
@@ -76,12 +81,8 @@ void SelectionState::init() {
 
     GlobalVariables::getInstance().setIgnoreInput(true);
 
-    cameraPositions[4] = glm::vec3(10,-27,0);
-    cameraPositions[5] = glm::vec3(0,-30,0);
-
     RenderManager::getInstance().getRenderFacade()->setCameraTarget(cameraPositions[4], cameraPositions[5]);
     
-    currPlayer = 0;
     ongoing = false;
     GlobalVariables::getInstance().setFixedPlayer(false);
 }
