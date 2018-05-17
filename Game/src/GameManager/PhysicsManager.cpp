@@ -129,7 +129,7 @@ void PhysicsManager::interpolate(float accumulatedTime, const float maxTime) {
 
 void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
-    if(move != nullptr && coll != nullptr)
+    if(move != nullptr && coll != nullptr && coll->getCollisionOn() == true)
     {
         CollisionComponent* ourColl = coll.get();
 
@@ -583,6 +583,8 @@ void collideBlueShell(EventData eData) {
 
         EventData data;
         data.Id = shell->getGameObject().getId();
+        
+        std::cout<<"Delete2222222222: "<<shell->getGameObject().getId()<<"\n";
 
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
     }

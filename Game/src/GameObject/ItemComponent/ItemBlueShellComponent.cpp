@@ -20,11 +20,15 @@ void ItemBlueShellComponent::init(float actualVector)
     enemy = ScoreManager::getInstance().getPlayers()[0];
     valueY = 0;
     getGameObject().getComponent<PathPlanningComponent>()->setLastPosVector(actualVector);
+    waypoints = WaypointManager::getInstance().getWaypoints();
+    go = false;
+    getGameObject().getComponent<CollisionComponent>()->setCollisionOn(false);
 }
 
 //:::> This ALL should be in AIManager since it does calculations using all components
 void ItemBlueShellComponent::update(float dTime)
 {
+
     //Return if object was created as a copy of a remote online object
     if(mode == IItemComponent::InstanceType::REMOTE)
         return;
@@ -36,22 +40,25 @@ void ItemBlueShellComponent::update(float dTime)
     getGameObject().getComponent<MoveComponent>()->changeVel(0);
 
     auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
-    
+
+    objective = enemy.get()->getGameObject().getTransformData().position; 
+    /*glm::vec3 nextPos;
+
     auto distCover = (maxSpeed * maxSpeed) * dTime;
     glm::vec3 distination;
 
-    objective = enemy.get()->getGameObject().getTransformData().position; 
 
     float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
 						(objective.y - pos.y) * (objective.y - pos.y) +
 						(objective.z - pos.z) * (objective.z - pos.z);
 
-    glm::vec3 nextPos;
 
     auto terrain = moveComponent->getTerrain();
     float yTerrain = LAPAL::calculateExpectedY(terrain, pos);
 
-    if((distancePlayer <= 10000) /*|| (objective.x - pos.x < 7 && objective.z - pos.z < 7)*/)
+    unsigned int posVector = getGameObject().getComponent<PathPlanningComponent>()->getLastPosVector();
+
+    if((distancePlayer <= 10000))
     {   //When the distance enemy-missile is to small, we change the position of missile to enemy and event collision
 
         if(distancePlayer <= 100)
@@ -79,9 +86,6 @@ void ItemBlueShellComponent::update(float dTime)
     else
     {
 
-        auto waypoints = WaypointManager::getInstance().getWaypoints();
-
-        unsigned int posVector = getGameObject().getComponent<PathPlanningComponent>()->getLastPosVector();
 
         float distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
                                 (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
@@ -106,23 +110,66 @@ void ItemBlueShellComponent::update(float dTime)
         distination = waypoints[posVector].get()->getTransformData().position;
         nextPos = ((distCover/8000) * (distination - trans.position)) + trans.position;
         
-    }
+    }*/
 
     //Animation missile
-    if(distancePlayer <= 4000 && distancePlayer >= 500)
+    
+    std::cout<<getGameObject().getId()<<" :1 x: "<<trans.position.x<<"\n";
+    std::cout<<getGameObject().getId()<<" :1 y: "<<trans.position.y<<"\n";
+    std::cout<<getGameObject().getId()<<" :1 z: "<<trans.position.z<<"\n";
+
+    if(valueY < 60 && go == false)
     {
-        if(valueY > 0)
-            valueY -= 5;
+        valueY += 5;
+        trans.position.y = trans.position.y + valueY;
     }
-    else if(distancePlayer >= 4000)
+    else if(valueY == 60)
     {
-        valueY = 40;
+        go = true;
     }
 
-    nextPos.y += valueY;
-    trans.position = nextPos;
+    if(go == true)
+    {
+        auto terrain = moveComponent->getTerrain();
+        float yTerrain = LAPAL::calculateExpectedY(terrain, pos);
+        trans.position = objective;
+        auto length = enemy->getGameObject().getComponent<CollisionComponent>()->getLength();
+        trans.position.y = yTerrain + length + valueY;
+        if(valueY == 60)
+            valueY = 20;
+        else if(valueY > 0)
+            valueY -= 1;
 
+        if(valueY == 5)
+        {
+            EventData data;
+            data.Id             = getGameObject().getId();
+            data.Component      = enemy.get()->getGameObject().getComponent<MoveComponent>();
+            data.CollComponent  = getGameObject().getComponent<CollisionComponent>();
+
+            EventManager::getInstance().addEvent(Event {EventType::BlueShellComponent_Collision, data});
+        }
+    }
+    //nextPos.y += valueY;
+
+    //trans.position = objective;
+
+    std::cout<<getGameObject().getId()<<" :2 x: "<<trans.position.x<<"\n";
+    std::cout<<getGameObject().getId()<<" :2 y: "<<trans.position.y<<"\n";
+    std::cout<<getGameObject().getId()<<" :2 z: "<<trans.position.z<<"\n";
+
+        /*
+            EventData data;
+            data.Id             = getGameObject().getId();
+            data.Component      = enemy.get()->getGameObject().getComponent<MoveComponent>();
+            data.CollComponent  = getGameObject().getComponent<CollisionComponent>();
+
+            EventManager::getInstance().addEvent(Event {EventType::BlueShellComponent_Collision, data});
+            */
+           
     getGameObject().setNewTransformData(trans);
+    getGameObject().setOldTransformData(trans);
+    getGameObject().setTransformData(trans);
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
 }

@@ -248,14 +248,14 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 300.f;
-    mData.max_vel = 300.f;
+    mData.vel = 400.f;
+    mData.max_vel = 400.f;
     mData.brake_vel = 0.f;
-    mData.velY = 300.f;
-    mData.acc = 300.f;
-    mData.max_acc = 300.f;
-    mData.dAcc = 300.f;
-    mData.brake_acc = 300.f;
+    mData.velY = 400.f;
+    mData.acc = 400.f;
+    mData.max_acc = 400.f;
+    mData.dAcc = 400.f;
+    mData.brake_acc = 400.f;
     mData.player = 5;
 
     //Initial component data
@@ -342,7 +342,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
     //:::>No hardcode pls
     transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
-    transform.rotation = glm::vec3(0, 0, 0);
+    transform.rotation = obj.getTransformData().rotation;
     transform.scale    = glm::vec3(2,2,2);
 
     //Create object
@@ -367,14 +367,14 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 300.f;
-    mData.max_vel = 300.f;
+    mData.vel = 400.f;
+    mData.max_vel = 400.f;
     mData.brake_vel = 0.f;
-    mData.velY = 300.f;
-    mData.acc = 300.f;
-    mData.max_acc = 300.f;
-    mData.dAcc = 300.f;
-    mData.brake_acc = 300.f;
+    mData.velY = 400.f;
+    mData.acc = 400.f;
+    mData.max_acc = 400.f;
+    mData.dAcc = 400.f;
+    mData.brake_acc = 400.f;
     mData.player = 5;
 
 
@@ -558,6 +558,7 @@ void ItemManager::deleteItem(IComponent::Pointer component)
     EventData data;
     data.Id = component->getGameObject().getId();
     EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, data});
+    std::cout<<"Deleteeeeeeeeeeeeeeee: "<<component->getGameObject().getId()<<"\n";
 
 }
 
