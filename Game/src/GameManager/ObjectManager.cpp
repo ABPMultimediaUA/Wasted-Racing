@@ -380,6 +380,7 @@ void objectCreated(EventData eData) {
 
 void objectDeleted(EventData eData) {
 
+        std::cout<<"Delete101010101010: "<<eData.Id<<"\n";
     ObjectManager::getInstance().deleteObject(eData.Id);
 
 }

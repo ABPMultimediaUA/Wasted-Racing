@@ -37,7 +37,8 @@ class ItemBlueShellComponent : public IItemComponent
         IItemComponent::InstanceType mode; //How the object was created
         float valueY;                      //Max value to increase Y
         float lastPosVector;
-
+        std::vector<GameObject::Pointer> waypoints;
+        bool go;
 };
  
 

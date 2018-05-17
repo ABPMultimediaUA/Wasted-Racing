@@ -1,6 +1,7 @@
 #include "LAPALPhysics.h"
 #include <math.h>
 #include <iostream>
+#include <glm/gtx/rotate_vector.hpp>
 
 
 //--------------------------------------
@@ -516,3 +517,36 @@ bool LAPAL::checkCircleRectangleCollision(const LAPAL::plane3f& terrain, const L
     return true;
 
 }
+
+//calculate angle a-b and a-c
+float LAPAL::calculateAngleVector(glm::vec3 a, glm::vec3 b, glm::vec3 c)
+{
+    glm::vec3 ab = b-a;
+    ab = glm::normalize(ab);
+
+    glm::vec3 ac = c-a;
+    ac = glm::normalize(ac);
+
+    float dot = glm::dot(ab, ac);
+    float angleCos = glm::acos(dot);
+    
+    if(dot > 0)
+    {
+        ab = glm::rotateY(ab, (float)-M_PI/2);
+        if(glm::dot(ab, ac) > 0)
+        {
+            angleCos = 2*M_PI - angleCos;
+        }
+    }
+    else if(dot < 0)
+    {
+        ab = glm::rotateY(ab, (float)M_PI/2);
+        if(glm::dot(ab, ac) < 0)
+        {
+            angleCos = 2*M_PI - angleCos;
+        }
+    }
+
+    return angleCos;
+}
+
