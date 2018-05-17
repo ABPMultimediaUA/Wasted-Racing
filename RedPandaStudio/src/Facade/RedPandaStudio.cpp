@@ -40,8 +40,9 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 }
 
-void RedPandaStudio::updateDevice() {
-
+void RedPandaStudio::updateDevice() 
+{
+/*
 	//Update particles
 	updateParticles();
 
@@ -52,13 +53,14 @@ void RedPandaStudio::updateDevice() {
 	renderCamera();
 	renderLights();
 
+
 	//Change shader program for drawing skybox
 	glUseProgram(skyboxID);
 	glBindVertexArray(skyVertexArray);
 	skybox->draw();
 	glEnable(GL_DEPTH_TEST);
 	
-	
+
 	//Activate the billboard shader
 	glUseProgram(billboardID);
 
@@ -79,10 +81,14 @@ void RedPandaStudio::updateDevice() {
 
 	scene->draw();
 
+
 	//RenderParticles
 	glUseProgram(particlesID);
 	glBindVertexArray(paticlesVertexArray);
 	renderParticles();
+	glUseProgram(scene->getEntity()->getProgramID());
+*/
+	drawPostProcessing();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -184,8 +190,8 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 void RedPandaStudio::initOpenGL() {
 
 	#ifndef __APPLE__
-		const char * vertex_file_path = "shaders/test.vert";
-    	const char * fragment_file_path = "shaders/test.frag";
+		const char * vertex_file_path = "shaders/phong.vert";
+    	const char * fragment_file_path = "shaders/phong.frag";
 		const char * geometry_file_path = "shaders/test.gs";
 		const char * skybox_vertex_path = "shaders/skybox.vert";
 		const char * skybox_fragment_path = "shaders/skybox.frag";
@@ -250,17 +256,17 @@ void RedPandaStudio::initOpenGL() {
 
 	//=============================
 	//Initialize all parameters needed for the shadow mapping
-	//initShadowMappping();
+	initPostProcessing();
 	//=============================
 
 	//Get main shaders
 	TResourceShader* vertexShader = resourceManager->getResourceShader(vertex_file_path, (GLenum)GL_VERTEX_SHADER);
-	TResourceShader* geometryShader = resourceManager->getResourceShader(geometry_file_path, (GLenum)GL_GEOMETRY_SHADER);
+	//TResourceShader* geometryShader = resourceManager->getResourceShader(geometry_file_path, (GLenum)GL_GEOMETRY_SHADER);
 	TResourceShader* fragmentShader = resourceManager->getResourceShader(fragment_file_path, (GLenum)GL_FRAGMENT_SHADER);
 
 	//Get main shaders ID
 	GLuint vertexID = vertexShader->getShaderID();
-	GLuint geometryID = geometryShader->getShaderID();
+	//GLuint geometryID = geometryShader->getShaderID();
 	GLuint fragmentID = fragmentShader->getShaderID();
 
 	//Get skybox shaders
@@ -344,6 +350,9 @@ void RedPandaStudio::initOpenGL() {
 	glDeleteShader(skyVertexID);
 	glDeleteShader(skyFragmentID);
 
+	//==============================================================================================
+	//Create Billboard program
+	//==============================================================================================
 	billboardID = glCreateProgram();
 	glAttachShader(billboardID, billVertexID);
 	glAttachShader(billboardID, billGeometryID);
@@ -988,6 +997,27 @@ void RedPandaStudio::drawPostProcessing()
 	glEnable(GL_DEPTH_TEST);						      //Enabling for 3D renders
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); //Cleaning the buffers
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 			      //Clean window
+
+	//Render camera and lights
+	renderCamera();
+	renderLights();
+
+
+	//Change shader program for drawing skybox
+	glUseProgram(skyboxID);
+	glBindVertexArray(skyVertexArray);
+	skybox->draw();
+	glEnable(GL_DEPTH_TEST);
+	
+
+	//Activate the billboard shader
+	glUseProgram(billboardID);
+
+	//Render all the billboards in the scene
+	renderBillboards();
+
+	//Activate the shader used to draw the scene
+	glUseProgram(scene->getEntity()->getProgramID());
  
 	//Draw the scene normally
 	glUseProgram(scene->getEntity()->getProgramID());

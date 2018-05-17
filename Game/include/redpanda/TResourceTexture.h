@@ -22,8 +22,6 @@ class TResourceTexture : public TResource {
 
 
     private:
-        //SFML Class to store our texture
-        sf::Image texture;
         //Width and height of the texture
         int sizeX, sizeY;
         //OpenGL ID of the texture
