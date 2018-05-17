@@ -26,47 +26,47 @@ void SelectionState::init() {
         tr.rotation = glm::vec3(0,0,0);
         tr.scale    = glm::vec3(2,2,2);
         GameObject::Pointer background = ObjectManager::getInstance().createObject(60000, tr);
-    
+
         RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
-    
+
         GameObject::TransformationData tr1;
         tr1.position = glm::vec3(-5,-30,0);
         tr1.rotation = glm::vec3(0,glm::pi<float>(),0);
         tr1.scale    = glm::vec3(0.2,0.2,0.2);
         GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
-    
+
         RenderManager::getInstance().createObjectRenderComponent(*player1.get(),ObjectRenderComponent::Shape::Mesh, "punk.obj");
-    
+
         GameObject::TransformationData tr2;
         tr2.position = glm::vec3(-5,-30,-6);
         tr2.rotation = glm::vec3(0,0,0);
         tr2.scale    = glm::vec3(0.35,0.35,0.35);
         GameObject::Pointer player2 = ObjectManager::getInstance().createObject(60002, tr2);
-    
+
         RenderManager::getInstance().createObjectRenderComponent(*player2.get(),ObjectRenderComponent::Shape::Mesh, "croco.obj");
-    
+
         GameObject::TransformationData tr3;
         tr3.position = glm::vec3(-5,-30,-12);
         tr3.rotation = glm::vec3(0,-glm::half_pi<float>(),0);
         tr3.scale    = glm::vec3(0.25,0.25,0.25);
         GameObject::Pointer player3 = ObjectManager::getInstance().createObject(60003, tr3);
-    
+
         RenderManager::getInstance().createObjectRenderComponent(*player3.get(),ObjectRenderComponent::Shape::Mesh, "cyborg.obj");
-    
+
         GameObject::TransformationData tr4;
         tr4.position = glm::vec3(-5,-30,-18);
         tr4.rotation = glm::vec3(0,glm::pi<float>(),0);
         tr4.scale    = glm::vec3(0.2,0.2,0.2);
         GameObject::Pointer player4 = ObjectManager::getInstance().createObject(60004, tr4);
-    
+
         RenderManager::getInstance().createObjectRenderComponent(*player4.get(),ObjectRenderComponent::Shape::Mesh, "witch.obj");
-    
+
         GameObject::TransformationData tr5;
         tr5.position = glm::vec3(-20,-10,-9);
         tr5.rotation = glm::vec3(0,0,0);
         tr5.scale    = glm::vec3(1,1,1);
         GameObject::Pointer light = ObjectManager::getInstance().createObject(60005, tr5);
-    
+
         RenderManager::getInstance().createLightRenderComponent(*light.get(),LightRenderComponent::Type::Point, 100); 
     }
 
@@ -81,6 +81,9 @@ void SelectionState::init() {
 
     RenderManager::getInstance().getRenderFacade()->setCameraTarget(cameraPositions[4], cameraPositions[5]);
     
+    currPlayer = 0;
+    ongoing = false;
+    GlobalVariables::getInstance().setFixedPlayer(false);
 }
 
 void SelectionState::update(float &accumulatedTime) {
@@ -104,6 +107,10 @@ void SelectionState::update(float &accumulatedTime) {
             GlobalVariables::getInstance().setGameLoaded(true);
             GlobalVariables::getInstance().setIgnoreInput(false);
 
+        }
+        else if(load && GlobalVariables::getInstance().getGameLoaded()){
+            EventManager::getInstance().addEvent(Event {EventType::Game_LoadingScreen});
+            GlobalVariables::getInstance().setIgnoreInput(false);
         }
 
     }
