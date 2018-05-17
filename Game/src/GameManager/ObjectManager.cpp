@@ -51,9 +51,10 @@ GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::Transfo
    
     //Launch creation event
     //:::>No need for it without scheduling
-    EventData data;
-    data.Object = object;
-    EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
+    //EventData data;
+    //data.Object = object;
+    //EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
+    ObjectManager::getInstance().addObject(object);
 
     return object;
 }

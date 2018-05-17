@@ -649,7 +649,12 @@ void drawRPS_GUI_AfterMatch() {
             
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
                 nk_layout_row_static(GUI, h, w, 1);
-                nk_image(GUI, gui::winner);
+                if((RenderManager::getInstance().getRenderFacade()->getCameraTarget()).getComponent<ScoreComponent>().get()->getPosition() == 1) {
+                    nk_image(GUI, gui::winner);
+                }
+                else {
+                    nk_image(GUI, gui::looser);
+                }
                 nk_popup_end(GUI);
             }
 		}
@@ -910,16 +915,16 @@ void drawRPS_GUI_HUD(){
 
             int position = cameraTarget.getComponent<ScoreComponent>().get()->getPosition();
             switch(position){
-                case 1: //BLUE SHELL
+                case 1: 
                         nk_image(GUI, gui::number_1);
                         break;
-                case 2: //TRAP
+                case 2: 
                         nk_image(GUI, gui::number_2);
                         break;
-                case 3: //MUSHROOM
+                case 3: 
                         nk_image(GUI, gui::number_3);
                         break;
-                case 4: //STAR
+                case 4: 
                         nk_image(GUI, gui::number_4);
                         break;
                 default:

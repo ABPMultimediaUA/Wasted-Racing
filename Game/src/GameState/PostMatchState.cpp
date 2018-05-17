@@ -28,7 +28,7 @@ void PostMatchState::init() {
     schedulingClock = new Clock();
     schedulingClock->init();
 
-    remainingTime = 10.0;
+    remainingTime = 1.0;
 
 
 }

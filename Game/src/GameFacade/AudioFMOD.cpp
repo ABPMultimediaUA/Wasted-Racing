@@ -127,7 +127,7 @@ void AudioFMOD::closeAudioEngine() {
 
     ERRCHECK( FMOD_Studio_Bank_Unload(stringsBank) );
     ERRCHECK( FMOD_Studio_Bank_Unload(masterBank) );
-
+    
     ERRCHECK( FMOD_Studio_System_Release(system) );
 }
 

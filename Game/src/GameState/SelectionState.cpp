@@ -19,65 +19,68 @@ void SelectionState::init() {
         EventManager::getInstance().addListener(EventListener {EventType::Key_Pressed, addStateChange});
 
         initialized = true;
-    }
+
+        //Add selection  scene
+        GameObject::TransformationData tr;
+        tr.position = glm::vec3(0,-30,-8);
+        tr.rotation = glm::vec3(0,0,0);
+        tr.scale    = glm::vec3(2,2,2);
+        GameObject::Pointer background = ObjectManager::getInstance().createObject(60000, tr);
     
+        RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
+    
+        GameObject::TransformationData tr1;
+        tr1.position = glm::vec3(-5,-30,0);
+        tr1.rotation = glm::vec3(0,glm::pi<float>(),0);
+        tr1.scale    = glm::vec3(0.2,0.2,0.2);
+        GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
+    
+        RenderManager::getInstance().createObjectRenderComponent(*player1.get(),ObjectRenderComponent::Shape::Mesh, "punk.obj");
+    
+        GameObject::TransformationData tr2;
+        tr2.position = glm::vec3(-5,-30,-6);
+        tr2.rotation = glm::vec3(0,0,0);
+        tr2.scale    = glm::vec3(0.35,0.35,0.35);
+        GameObject::Pointer player2 = ObjectManager::getInstance().createObject(60002, tr2);
+    
+        RenderManager::getInstance().createObjectRenderComponent(*player2.get(),ObjectRenderComponent::Shape::Mesh, "croco.obj");
+    
+        GameObject::TransformationData tr3;
+        tr3.position = glm::vec3(-5,-30,-12);
+        tr3.rotation = glm::vec3(0,-glm::half_pi<float>(),0);
+        tr3.scale    = glm::vec3(0.25,0.25,0.25);
+        GameObject::Pointer player3 = ObjectManager::getInstance().createObject(60003, tr3);
+    
+        RenderManager::getInstance().createObjectRenderComponent(*player3.get(),ObjectRenderComponent::Shape::Mesh, "cyborg.obj");
+    
+        GameObject::TransformationData tr4;
+        tr4.position = glm::vec3(-5,-30,-18);
+        tr4.rotation = glm::vec3(0,glm::pi<float>(),0);
+        tr4.scale    = glm::vec3(0.2,0.2,0.2);
+        GameObject::Pointer player4 = ObjectManager::getInstance().createObject(60004, tr4);
+    
+        RenderManager::getInstance().createObjectRenderComponent(*player4.get(),ObjectRenderComponent::Shape::Mesh, "witch.obj");
+    
+        GameObject::TransformationData tr5;
+        tr5.position = glm::vec3(-20,-10,-9);
+        tr5.rotation = glm::vec3(0,0,0);
+        tr5.scale    = glm::vec3(1,1,1);
+        GameObject::Pointer light = ObjectManager::getInstance().createObject(60005, tr5);
+    
+        RenderManager::getInstance().createLightRenderComponent(*light.get(),LightRenderComponent::Type::Point, 100); 
+    }
+
     eventManager->addEvent(Event {Game_PlayerSelection});
 
     Game::getInstance().setAccumulatedTime(0);
 
     GlobalVariables::getInstance().setIgnoreInput(true);
 
-    cameraPositions[4] = glm::vec3(10,3,0);
-    cameraPositions[5] = glm::vec3(0,0,0);
+    cameraPositions[4] = glm::vec3(10,-27,0);
+    cameraPositions[5] = glm::vec3(0,-30,0);
 
-    //Add selection  scene
-    GameObject::TransformationData tr;
-    tr.position = glm::vec3(0,0,-8);
-    tr.rotation = glm::vec3(0,0,0);
-    tr.scale    = glm::vec3(2,2,2);
-    GameObject::Pointer background = ObjectManager::getInstance().createObject(60000, tr);
-
-    RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
-
-    GameObject::TransformationData tr1;
-    tr1.position = glm::vec3(-5,0,0);
-    tr1.rotation = glm::vec3(0,glm::pi<float>(),0);
-    tr1.scale    = glm::vec3(0.2,0.2,0.2);
-    GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
-
-    RenderManager::getInstance().createObjectRenderComponent(*player1.get(),ObjectRenderComponent::Shape::Mesh, "punk.obj");
-
-    GameObject::TransformationData tr2;
-    tr2.position = glm::vec3(-5,0,-6);
-    tr2.rotation = glm::vec3(0,0,0);
-    tr2.scale    = glm::vec3(0.35,0.35,0.35);
-    GameObject::Pointer player2 = ObjectManager::getInstance().createObject(60002, tr2);
-
-    RenderManager::getInstance().createObjectRenderComponent(*player2.get(),ObjectRenderComponent::Shape::Mesh, "croco.obj");
-
-    GameObject::TransformationData tr3;
-    tr3.position = glm::vec3(-5,0,-12);
-    tr3.rotation = glm::vec3(0,-glm::half_pi<float>(),0);
-    tr3.scale    = glm::vec3(0.25,0.25,0.25);
-    GameObject::Pointer player3 = ObjectManager::getInstance().createObject(60003, tr3);
-
-    RenderManager::getInstance().createObjectRenderComponent(*player3.get(),ObjectRenderComponent::Shape::Mesh, "cyborg.obj");
-
-    GameObject::TransformationData tr4;
-    tr4.position = glm::vec3(-5,0,-18);
-    tr4.rotation = glm::vec3(0,glm::pi<float>(),0);
-    tr4.scale    = glm::vec3(0.2,0.2,0.2);
-    GameObject::Pointer player4 = ObjectManager::getInstance().createObject(60004, tr4);
-
-    RenderManager::getInstance().createObjectRenderComponent(*player4.get(),ObjectRenderComponent::Shape::Mesh, "witch.obj");
-
-    GameObject::TransformationData tr5;
-    tr5.position = glm::vec3(-20,20,-9);
-    tr5.rotation = glm::vec3(0,0,0);
-    tr5.scale    = glm::vec3(1,1,1);
-    GameObject::Pointer light = ObjectManager::getInstance().createObject(60005, tr5);
-
-    RenderManager::getInstance().createLightRenderComponent(*light.get(),LightRenderComponent::Type::Point, 100);
+    RenderManager::getInstance().getRenderFacade()->setCameraTarget(cameraPositions[4], cameraPositions[5]);
+    
 }
 
 void SelectionState::update(float &accumulatedTime) {
@@ -110,28 +113,28 @@ void SelectionState::update(float &accumulatedTime) {
         currTime = maxTime;
         GlobalVariables::getInstance().setSelecting(true);
         if(currPlayer == 0 && selectedPlayer == 3) {
-            cameraPositions[0] = glm::vec3(10,3,0);
-            cameraPositions[1] = glm::vec3(0,0,0);
-            cameraPositions[2] = glm::vec3(10,3,-18);
-            cameraPositions[3] = glm::vec3(0,0,-18);
+            cameraPositions[0] = glm::vec3(10,-27,0);
+            cameraPositions[1] = glm::vec3(0,-30,0);
+            cameraPositions[2] = glm::vec3(10,-27,-18);
+            cameraPositions[3] = glm::vec3(0,-30,-18);
         }
         else if (currPlayer == 3 && selectedPlayer == 0) {
-            cameraPositions[0] = glm::vec3(10,3,-18);
-            cameraPositions[1] = glm::vec3(0,0,-18);
-            cameraPositions[2] = glm::vec3(10,3,0);
-            cameraPositions[3] = glm::vec3(0,0,0); 
+            cameraPositions[0] = glm::vec3(10,-27,-18);
+            cameraPositions[1] = glm::vec3(0,-30,-18);
+            cameraPositions[2] = glm::vec3(10,-27,0);
+            cameraPositions[3] = glm::vec3(0,-30,0); 
         }
         else if (currPlayer > selectedPlayer) {
             cameraPositions[0] = cameraPositions[4];
             cameraPositions[1] = cameraPositions[5];
-            cameraPositions[2] = glm::vec3(10,3,cameraPositions[4].z + 6);
-            cameraPositions[3] = glm::vec3(0,0,cameraPositions[5].z + 6);
+            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z + 6);
+            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z + 6);
         }
         else if (currPlayer < selectedPlayer) {
             cameraPositions[0] = cameraPositions[4];
             cameraPositions[1] = cameraPositions[5];
-            cameraPositions[2] = glm::vec3(10,3,cameraPositions[4].z - 6);
-            cameraPositions[3] = glm::vec3(0,0,cameraPositions[5].z - 6);
+            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z - 6);
+            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z - 6);
         }
     }
 
@@ -252,13 +255,6 @@ void addAI(int selectedPlayer){
 void addStateChange(EventData eData) {
 
     if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION && GlobalVariables::getInstance().getGameLoaded()){
-
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60000}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60001}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60002}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60003}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60004}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60005}});
         //Change state
         Game::getInstance().setState(IGameState::stateType::PREMATCH);
     }
