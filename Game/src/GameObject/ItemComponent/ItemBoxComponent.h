@@ -38,5 +38,6 @@ class ItemBoxComponent : public IComponent{
         int active = 1;
         float boxTime;
         float actTime;
+        glm::vec3 scale;
 
 };

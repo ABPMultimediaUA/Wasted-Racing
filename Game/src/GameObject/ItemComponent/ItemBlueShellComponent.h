@@ -13,7 +13,8 @@ class ItemBlueShellComponent : public IItemComponent
 
         ~ItemBlueShellComponent();
 
-        void init();
+        void init() {};
+        void init(float actualVector);
 
         void update(float dTime);
 
@@ -35,7 +36,9 @@ class ItemBlueShellComponent : public IItemComponent
         ScoreComponent::Pointer enemy;     //Score component of the guy you're aiming at
         IItemComponent::InstanceType mode; //How the object was created
         float valueY;                      //Max value to increase Y
-
+        float lastPosVector;
+        std::vector<GameObject::Pointer> waypoints;
+        bool go;
 };
  
 

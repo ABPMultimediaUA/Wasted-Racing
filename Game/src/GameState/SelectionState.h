@@ -8,7 +8,7 @@ class SelectionState : public IGameState {
 public: 
 
     //Constructor
-    SelectionState (){ type = IGameState::PAUSE; };
+    SelectionState (){ type = IGameState::SELECTION; };
 
     //Destructor
     virtual ~SelectionState() {}
@@ -24,6 +24,8 @@ public:
 
     //Shutdown
     virtual void close();
+
+    bool getLoadState() {   return load;    }
 
     //Static class getter
     static SelectionState& getInstance() {
@@ -48,6 +50,16 @@ private:
     AudioManager* audioManager;
 
     GameObject::Pointer camera;
-    int i = 0;
+
+    bool load = false;
+    int currPlayer = 0;
+    glm::vec3 cameraPositions[6];   //[0],[1] initial target/position
+                                    //[2],[3] final target/position
+                                    //[4],[5] current target/position
+    float currTime;                 //Current cummulated time
+    float maxTime = 1;
+    bool ongoing = false;
+
+    int initialized = false;
 
 };

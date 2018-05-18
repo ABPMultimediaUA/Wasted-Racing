@@ -37,6 +37,8 @@ void MatchState::init() {
 
         //Set as initialized
         initialized = true;
+
+        GameObject::Pointer player = ObjectManager::getInstance().getObject(25000);
     }
 
     Game::getInstance().setAccumulatedTime(0);
@@ -125,7 +127,7 @@ void MatchState::interpolate(float &accumulatedTime) {
 }
 
 void MatchState::close() {
-
+    delete schedulingClock;
 }
 
 //==============================================

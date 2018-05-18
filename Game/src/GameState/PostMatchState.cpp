@@ -14,11 +14,37 @@ void PostMatchState::init() {
 
     GlobalVariables::getInstance().setIgnoreInput(true);
     Game::getInstance().setAccumulatedTime(0);
+
+    GameObject::Pointer player = ObjectManager::getInstance().getObject(25000);
+
+    //add AI to the player
+    auto listNodes = WaypointManager::getInstance().getWaypoints();
+    (WaypointManager::getInstance().createPathPlanningComponent(player, listNodes)).get()->init();
+    (AIManager::getInstance().createAIDrivingComponent(*player.get())).get()->init();
+    (AIManager::getInstance().createAIBattleComponent(*player.get())).get()->init();
+    (SensorManager::getInstance().createVSensorComponent(*player.get(), 55.f, 0.0, 100.f, 10.f)).get()->init(); 
+    (SensorManager::getInstance().createMSensorComponent(*player.get(), 30.f, 0.0)).get()->init();
+
+    schedulingClock = new Clock();
+    schedulingClock->init();
+
+    remainingTime = 1.0;
+
+
 }
 
 void PostMatchState::update(float &accumulatedTime) {
-    //Update input manager
 
+    if(remainingTime < 0) {
+        
+        close();
+
+        EventManager::getInstance().addEvent(Event {EventType::Game_Menu});
+
+        Game::getInstance().setState(IGameState::stateType::INTRO);
+    }
+
+    //Update input manager
     inputManager->update();
 
     physicsManager->update(accumulatedTime);
@@ -35,15 +61,49 @@ void PostMatchState::update(float &accumulatedTime) {
     //Event manager has to be the last to be updated
     eventManager->update();
 
+    //AI Scheduling and timing
+    double timePassed = schedulingClock->getElapsedTime();
+    schedulingClock->restart();
+    aiManager->updateScheduling(timePassed, 0.03);
+
+    interpolate(accumulatedTime);
+
     //Sets if the game keeps running or not
     //:::>Change with event that closes the game
     Game::getInstance().setStay(objectManager->getGameRunning());
+
+    remainingTime -= accumulatedTime;
+}
+
+void PostMatchState::interpolate(float &accumulatedTime) {
+    //Interpolate positions
+    physicsManager->interpolate(accumulatedTime, 0.03);
+
+    //Update each position in Render Manager
+    for(unsigned int i=0; i<physicsManager->getMovingCharacterList().size(); ++i){
+        //Interpolate every moving object
+        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getId(), 
+                physicsManager->getMovingCharacterList()[i].moveComponent.get()->getGameObject().getTransformData()
+        );
+    }
+
+    //Update camera position
+    renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, 0.03);
 }
 
 void PostMatchState::draw() {
+
     renderManager->draw();
 }
 
 void PostMatchState::close() {
     
+    delete schedulingClock;
+    GameObject::Pointer player = ObjectManager::getInstance().getObject(25000);
+    player.get()->deleteComponent<PathPlanningComponent>();
+    player.get()->deleteComponent<AIDrivingComponent>();
+    player.get()->deleteComponent<AIBattleComponent>();
+    player.get()->deleteComponent<VSensorComponent>();
+    player.get()->deleteComponent<MSensorComponent>();
 }

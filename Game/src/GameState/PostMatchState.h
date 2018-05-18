@@ -8,7 +8,7 @@ class PostMatchState : public IGameState {
 public: 
 
     //Constructor
-    PostMatchState (){ type = IGameState::PAUSE; };
+    PostMatchState (){ type = IGameState::POSTMATCH; };
 
     //Destructor
     virtual ~PostMatchState() {}
@@ -24,6 +24,8 @@ public:
 
     //Shutdown
     virtual void close();
+
+    void interpolate(float &accumulatedTime);
 
     //Static class getter
     static PostMatchState& getInstance() {
@@ -55,5 +57,7 @@ private:
     //Sensor manager
     SensorManager* sensorManager;
 
+    Clock* schedulingClock;
+    float remainingTime;
 
 };

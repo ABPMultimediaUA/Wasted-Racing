@@ -165,12 +165,11 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
 
     //Send event of creation
     //:::>Why not adding it directly to the list? That's the only use for this event
-    EventData data;
-    data.Component = component;
-    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
+    //EventData data;
+    //data.Component = component;
+    //EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
 
-    //:::> Initialize here from the render, eliminates dependencies
-    //:::> renderFacade->addObject(this);
+    renderFacade->addObject(component.get());
 
     return component;
 }
@@ -210,11 +209,12 @@ IComponent::Pointer RenderManager::createLightRenderComponent(GameObject& newGam
 
     //Send event of creation
     //:::>Same as object render component
-    EventData data;
-    data.Component = component;
-    EventManager::getInstance().addEvent(Event {EventType::LightRenderComponent_Create, data});
+    //EventData data;
+    //data.Component = component;
+    //EventManager::getInstance().addEvent(Event {EventType::LightRenderComponent_Create, data});
 
     //:::> Initialize here from the render, eliminates dependencies
+    renderFacade->addLight(component.get());
     //:::> renderFacade->addLight(this);
 
     return component;

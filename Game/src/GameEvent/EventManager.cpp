@@ -40,6 +40,12 @@ void EventManager::close() {
     eventListenerMap.clear();
 }
 
+void EventManager::clearEvents() {
+    while(!eventQueue.empty()){
+        eventQueue.pop();
+    }
+}
+
 void EventManager::addEvent(Event event) {
     EventManager::eventQueue.push(event);
 }

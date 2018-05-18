@@ -48,12 +48,13 @@ void ObjectManager::close() {
 GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::TransformationData transform) {
     //make shared pointer
     GameObject::Pointer object = std::make_shared<GameObject>(id, transform);
-
+   
     //Launch creation event
     //:::>No need for it without scheduling
-    EventData data;
-    data.Object = object;
-    EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
+    //EventData data;
+    //data.Object = object;
+    //EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
+    ObjectManager::getInstance().addObject(object);
 
     return object;
 }
@@ -110,9 +111,9 @@ void ObjectManager::initObjects() {
 //              init pos player
 //  type:       
 //              0 -> Punk
-//              1 -> Witch
+//              1 -> Crocodile
 //              2 -> Cyborg
-//              3 -> Crocodile
+//              3 -> Witch
 //  move:       
 //              0 -> Player (Input)
 //              1 -> IA
@@ -306,7 +307,8 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model)
 {
     //Create representation of the model if there is a model
-    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "WitchFINAL_000", 60);
+    //RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "WitchFINAL_000", 60);
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, model);
 
     //Create collision component
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
@@ -378,6 +380,7 @@ void objectCreated(EventData eData) {
 
 void objectDeleted(EventData eData) {
 
+        std::cout<<"Delete101010101010: "<<eData.Id<<"\n";
     ObjectManager::getInstance().deleteObject(eData.Id);
 
 }
