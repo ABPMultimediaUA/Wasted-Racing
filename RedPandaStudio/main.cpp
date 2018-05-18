@@ -45,7 +45,7 @@ int main() {
 */
 
     //TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
-    TNode* t4 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,5,0), "media/Link.obj");
+    TNode* t4 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,5,0), "media/bomb/bomb.obj");
     //rps->addMeshLoD(1,"media/mesh/Link/Link.obj");
     //TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
     TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(5,5,0), glm::vec3(0, 5, 0));
@@ -58,7 +58,7 @@ int main() {
     rps->setCulling(false, (GLenum)GL_FRONT);
 
     //TNode* spotlight0 = rps->createSpotlight(rps->getSceneRoot(), glm::vec3(0, 0, 40), glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), 77);
-    TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(5, 7, 0), glm::vec3(0.4, 0.1, 0.2));
+    TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(5, 7, 0), glm::vec3(0.3, 0.3, 0.3));
     //TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
 
     bool quit = true;

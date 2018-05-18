@@ -104,6 +104,7 @@ bool TResourceOBJ::loadResource()
             }
             if(scene->mMaterials[m->mMaterialIndex]->GetTexture(aiTextureType_NORMALS, 0, &path) == AI_SUCCESS)
             {
+                std::cout << "Carga normales" << std::endl;
                 TResourceNormalTexture* normalTexture = new TResourceNormalTexture();
 
                 //First we combine the path we just got with the directory path of the obj, and then we just load the texture
