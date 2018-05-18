@@ -104,6 +104,7 @@ bool TResourceOBJ::loadResource()
             }
             std::cout << "Number of difuse maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
             std::cout << "Number of normal maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_NORMALS) << std::endl;
+            std::cout << "Number of unknown maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_UNKNOWN) << std::endl;
             if(scene->mMaterials[m->mMaterialIndex]->GetTexture(aiTextureType_NORMALS, 0, &path) == AI_SUCCESS)
             {
                 std::cout << "Carga normales" << std::endl;
