@@ -102,6 +102,8 @@ bool TResourceOBJ::loadResource()
                 mesh->setTexture(texture);
                 mesh->setTextActive(true);
             }
+            std::cout << "Number of difuse maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
+            std::cout << "Number of normal maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_NORMALS) << std::endl;
             if(scene->mMaterials[m->mMaterialIndex]->GetTexture(aiTextureType_NORMALS, 0, &path) == AI_SUCCESS)
             {
                 std::cout << "Carga normales" << std::endl;
