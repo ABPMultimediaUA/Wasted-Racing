@@ -13,6 +13,7 @@
  #include "TResourceLoD.h"
  #include "TResourceMaterial.h"
  #include "TResourceMesh.h"
+ #include "TResourceNormalTexture.h"
  #include "TResourceOBJ.h"
  #include "TResourceShader.h"
  #include "TResourceSkybox.h"

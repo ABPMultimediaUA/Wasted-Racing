@@ -15,8 +15,8 @@ bool TResourceTexture::loadResource()
     {
         active=true;
         //Get his width and height
-        sizeX = texture->getSize().x;
-        sizeY = texture->getSize().y;
+        int sizeX = texture->getSize().x;
+        int sizeY = texture->getSize().y;
 
         //Generate a OpenGL texture for later
         glGenTextures(1, &textureID);

@@ -22,8 +22,6 @@ class TResourceTexture : public TResource {
 
 
     private:
-        //Width and height of the texture
-        int sizeX, sizeY;
         //OpenGL ID of the texture
         GLuint textureID;
         //Defines if we have a loaded texture ready to be drawn
