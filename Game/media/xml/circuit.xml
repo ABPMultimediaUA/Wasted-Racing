@@ -2401,16 +2401,16 @@
 <object id="10070" pos="442.983643,0.826965,-1.982025" rot="0,0,0" sca="1,1,1">
     <component name="waypoint" radius="72" level="70" />
 </object>
-<object id="14000" pos="546.937256,126.346100,-5.485352" rot="0,0,0" sca="1,1,1">
+<object id="14000" pos="602.124329,114.418625,20.787802" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
-<object id="14001" pos="1406.681152,126.346100,-5.485352" rot="0,0,0" sca="1,1,1">
+<object id="14001" pos="1373.401855,115.706161,-19.497700" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
-<object id="14002" pos="1462.002930,126.346100,251.847809" rot="0,0,0" sca="1,1,1">
+<object id="14002" pos="1749.256104,78.357925,386.716675" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
-<object id="14003" pos="1462.002930,126.346100,468.642548" rot="0,0,0" sca="1,1,1">
+<object id="14003" pos="1595.680786,77.954689,456.031433" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
 <object id="14004" pos="990.832764,126.346100,468.642548" rot="0,0,0" sca="1,1,1">
@@ -2443,7 +2443,7 @@
 <object id="14013" pos="-1211.407715,-72.427132,-247.360504" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
-<object id="14014" pos="-832.109863,32.677017,-124.558624" rot="0,0,0" sca="1,1,1">
+<object id="14014" pos="325.590637,32.677017,-26.191925" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
 <object id="16000" pos="1168.625366,-0.876968,-28.837448" rot="0,0,0" sca="1.25,1.25,1.25">

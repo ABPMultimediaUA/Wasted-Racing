@@ -73,7 +73,7 @@ void calculatePointLights()
         
         specular = pow(max(0.0, dot(reflect(-L, N), mid)), material.ns);
 
-        v_Color += vec4(light[i].intensity * diffuse) * vec4(material.kd, 1.0);
+        v_Color += vec4(vec4(0.8, 0.7, 0.4,1) * diffuse) * vec4(material.kd, 1.0);
 
         if(specular > 0.0)
         {

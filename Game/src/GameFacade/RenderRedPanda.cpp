@@ -438,7 +438,7 @@ void RenderRedPanda::addLight(IComponent* ptr) {
             default:
             break;
         }
-
+        rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
         nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
     }
  }
