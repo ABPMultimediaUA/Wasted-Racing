@@ -70,7 +70,7 @@ void calculatePointLights()
 	    float d = length(LightPos.xyz - P);			        // distancia de la luz
 	    vec3  L = normalize(LightPos.xyz - P);			    // Vector Luz
 
-        diffuse = max(dot(N, L), 0.0);		            // Cálculo de la int. difusa
+        diffuse = max(dot(normal, L), 0.0);		            // Cálculo de la int. difusa
         // Cálculo de la atenuación
         float attenuation = 80.0/(0.25+(0.1*d)+(0.005*d*d));
         diffuse = diffuse * attenuation;
@@ -78,7 +78,7 @@ void calculatePointLights()
         vec3 mid = normalize(V + L);
 
         
-        specular = pow(max(0.0, dot(reflect(-L, N), mid)), material.ns);
+        specular = pow(max(0.0, dot(reflect(-L, normal), mid)), material.ns);
 
         v_Color += vec4(light[i].intensity * diffuse) * vec4(material.kd, 1.0);
 
@@ -107,14 +107,14 @@ void calculateSpotLights()
             float d = length(LightPos.xyz - P);			        // distancia de la luz
             L = normalize(LightPos.xyz - P);			    // Vector Luz
 
-            diffuse = max(dot(normalize(N), L), 0.0);		            // Cálculo de la int. difusa
+            diffuse = max(dot(normalize(normal), L), 0.0);		            // Cálculo de la int. difusa
             // Cálculo de la atenuación
             float attenuation = 80.0/(0.25+(0.1*d)+(0.005*d*d));
             diffuse = diffuse * attenuation;
 
             vec3 mid = normalize(V + L);
 
-            float specular = 2 * attenuation * pow(max(0.0, dot(reflect(-L, N), mid)), material.ns);
+            float specular = 2 * attenuation * pow(max(0.0, dot(reflect(-L, normal), mid)), material.ns);
 
             v_Color += vec4(spotlight[i].light.intensity * diffuse) * vec4(material.kd, 1.0);
 
@@ -133,7 +133,7 @@ void main()
 
     normal = N;
 
-    if(normalActive)
+    if(textActive)
     {
         normal = texture(normalTexture, UV_Coordinates).rgb;
         normal = normalize(normal * 2.0 - 1.0);

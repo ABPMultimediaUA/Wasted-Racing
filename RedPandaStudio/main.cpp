@@ -48,7 +48,7 @@ int main() {
     TNode* t4 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,5,0), "media/bomb/cubonormal.obj");
     //rps->addMeshLoD(1,"media/mesh/Link/Link.obj");
     //TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
-    TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(5,5,0), glm::vec3(0, 5, 0));
+    TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(1,5,0), glm::vec3(0, 5, 0));
     //TBillboard* bill = rps->createBillboard("media/tree.png", glm::vec3(0,5,0));
 
     //rps::scaleNode(t, glm::vec3(0.25, 0.25, 0.25));
@@ -58,7 +58,7 @@ int main() {
     rps->setCulling(false, (GLenum)GL_FRONT);
 
     //TNode* spotlight0 = rps->createSpotlight(rps->getSceneRoot(), glm::vec3(0, 0, 40), glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), 77);
-    TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(5, 7, 0), glm::vec3(0.3, 0.3, 0.3));
+    TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(5, 7, 0), glm::vec3(0.05, 0.05, 0.05));
     //TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
 
     bool quit = true;
@@ -90,8 +90,8 @@ int main() {
 
         //rps->updateCamera(glm::vec3(10, 0, 0), glm::vec3(0,0,0));
         rps->updateDevice();
-        //rps::translateNode(t2, glm::vec3(0, 0, -i));
-        i += 0.1;
+        rps::rotateNode(t4, glm::vec3(0, i, 0));
+        i += 0.01;
         /*auto e = rps->getResourceManager()->getResourceLoD("media/mesh/Link/Link.obj");
         std::cout<<e->getMap().size()<<"\n";*/
     }

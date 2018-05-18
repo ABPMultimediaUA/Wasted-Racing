@@ -105,7 +105,18 @@ bool TResourceOBJ::loadResource()
             std::cout << "Number of difuse maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
             std::cout << "Number of normal maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_NORMALS) << std::endl;
             std::cout << "Number of unknown maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_UNKNOWN) << std::endl;
-            if(scene->mMaterials[m->mMaterialIndex]->GetTexture(aiTextureType_NORMALS, 0, &path) == AI_SUCCESS)
+            std::cout << "Number of none maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_NONE) << std::endl;
+            std::cout << "Number of specular maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_SPECULAR) << std::endl;
+            std::cout << "Number of ambient maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_AMBIENT) << std::endl;
+            std::cout << "Number of emissive maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_EMISSIVE) << std::endl;
+            std::cout << "Number of height maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_HEIGHT) << std::endl;
+            std::cout << "Number of shininess maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_SHININESS) << std::endl;
+            std::cout << "Number of opacity maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_OPACITY) << std::endl;
+            std::cout << "Number of displacement maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_DISPLACEMENT) << std::endl;
+            std::cout << "Number of lightmap maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_LIGHTMAP) << std::endl;
+            std::cout << "Number of reflection maps: " << scene->mMaterials[m->mMaterialIndex]->GetTextureCount(aiTextureType_REFLECTION) << std::endl;
+            std::cout << "END OF MESH" << std::endl;
+            if(scene->mMaterials[m->mMaterialIndex]->GetTexture(aiTextureType_HEIGHT, 0, &path) == AI_SUCCESS)
             {
                 std::cout << "Carga normales" << std::endl;
                 TResourceNormalTexture* normalTexture = new TResourceNormalTexture();
