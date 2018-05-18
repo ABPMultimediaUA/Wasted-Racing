@@ -11,15 +11,7 @@ public:
 	AnimationRenderComponent(GameObject& newGameObject, const char* newStr, int newFrames) : 
         IRenderComponent(newGameObject), frames(newFrames) {
 
-		std::string folder = "";
-		int i = 0;
-
-		while(newStr[i]!='_'){
-			folder += newStr[i];
-			i++;
-		}
-
-		path = "media/anim/" + folder + "/" + std::string(newStr);
+		path = "media/anim/" + std::string(newStr);
 
 	}
 

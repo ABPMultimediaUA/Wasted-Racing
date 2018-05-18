@@ -86,6 +86,10 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
 
 IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 
+    GameObject::TransformationData t = obj.getTransformData();
+    t.scale = glm::vec3(1.5,1.5,1.5);
+    obj.setTransformData(t);
+
     //Create sharerd pointer
     IComponent::Pointer component = std::make_shared<ItemBoxComponent>(obj);
 

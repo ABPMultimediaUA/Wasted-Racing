@@ -229,7 +229,7 @@ void RenderRedPanda::renderDraw() {
 void RenderRedPanda::addCamera() {
 
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
-    valueY = 0.4;
+    valueY = 0.3;
     sum = 0;
 }
 
@@ -249,7 +249,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     float newD = camera->getDistance();
     
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
-    distance *= 1.5;
+    distance *= 1.3;
 
     auto player = camera->getGameObject();
     auto vel = player.getComponent<MoveComponent>()->getMovemententData().vel;
@@ -279,7 +279,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             sum += 0.25; 
         }
     }
-    glm::vec3 target(-pos.x, pos.y+12, pos.z);
+    glm::vec3 target(-pos.x, pos.y+15, pos.z);
     if(newD > 15)
     {
         if(valueY > 0.4)
@@ -486,11 +486,19 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 
         auto node = iterator->second;
 
+        if(id >= 25000 && id <= 25010){
+            rps::rotateNode(node, glm::vec3(rot.x, -rot.y+glm::half_pi<float>(), rot.z));
+        }
+        else {
             rps::rotateNode(node, glm::vec3(rot.x, -rot.y, rot.z));
-
+        }
+        
+        if(id == 25000)
+            rps::scaleNode(node, glm::vec3(0.7,0.7,0.7));
+        else 
             rps::scaleNode(node, sca);
 
-            rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
+        rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
     }
 }
 
