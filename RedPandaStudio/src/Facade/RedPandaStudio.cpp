@@ -411,6 +411,12 @@ void RedPandaStudio::initOpenGL() {
 	GLuint model = glGetUniformLocation(ProgramID, "ModelMatrix");   
     GLuint view  = glGetUniformLocation(ProgramID, "ViewMatrix");
     GLuint projection = glGetUniformLocation(ProgramID, "ProjectionMatrix");
+	GLuint colorTexture = glGetUniformLocation(ProgramID, "colorTexture");
+	GLuint normalTexture = glGetUniformLocation(ProgramID, "normalTexture");
+
+	glUniform1i(colorTexture, 0);
+	glUniform1i(normalTexture, 1);
+
 	scene->getEntity()->setModelID(model);
 	scene->getEntity()->setViewID(view);
 	scene->getEntity()->setProjectionID(projection);
@@ -1040,8 +1046,8 @@ void RedPandaStudio::drawPostProcessing()
 	glEnableVertexAttribArray(4); //Vertex texture
 
 	//Bind the texture where we draw the scene
-	glBindTexture(GL_TEXTURE_2D, colorMap);	//use the color attachment texture as the texture of the quad plane
-	glUniform1i(postprocessing_sampler, 0);  	 	//ID assignment for the fragment shader (using GL_TEXTURE1 to avoid collisions)
+	glBindTexture(GL_TEXTURE_2D, colorMap);			//use the color attachment texture as the texture of the quad plane
+	glUniform1i(postprocessing_sampler, 0);  	 	//ID assignment for the fragment shader (using GL_TEXTURE0)
 
 	//Draw the quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);

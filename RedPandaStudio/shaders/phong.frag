@@ -13,8 +13,11 @@ varying vec4 CamPos;
 varying mat4 view;
 varying mat4 modelViewMatrix;
 
+varying mat3 TBN;
+
 vec4 P2;
 vec3 V = vec3(0.0, 0.0, 0.0);
+vec3 normal;
 
 //Light uniform and variables
 const int maxLights = 25;
@@ -44,8 +47,12 @@ struct Material {
 uniform Material material;
 
 //Texture uniforms
-uniform sampler2D sampler;
+uniform sampler2D colorTexture;
 uniform bool textActive;
+
+//Texture normal uniforms
+uniform sampler2D normalTexture;
+uniform bool normalActive;
 
 out vec4 FragColor;
 
@@ -124,12 +131,21 @@ void main()
 {
     v_Color = vec4(0.0, 0.0, 0.0, 0.0);
 
+    normal = N;
+
+    if(normalActive)
+    {
+        normal = texture(normalTexture, UV_Coordinates).rgb;
+        normal = normalize(normal * 2.0 - 1.0);
+        normal = normalize(TBN * normal);
+    }
+
     P2 = vec4(P.x, P.y, P.z, 1.0);
     V = vec3(normalize(CamPos - P2));
 
 
     calculatePointLights();
-    //calculateSpotLights();
+    calculateSpotLights();
 
 
     float ambient = 0.2;
@@ -137,7 +153,7 @@ void main()
 
    if(textActive)
     {
-      FragColor = texture(sampler, UV_Coordinates) * v_Color;
+      FragColor = texture(colorTexture, UV_Coordinates) * v_Color;
       
     }
     else

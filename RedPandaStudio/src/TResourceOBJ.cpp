@@ -19,7 +19,7 @@ std::vector<std::string> TResourceOBJ::split(const std::string& s, const char& c
 bool TResourceOBJ::loadOnlyMeshes()
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs |aiProcess_MakeLeftHanded);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs  | aiProcess_CalcTangentSpace);
 
     if(scene)
     {
@@ -60,7 +60,7 @@ bool TResourceOBJ::loadResource()
 {
     Assimp::Importer importer;
     //First we attempt to load the obj
-    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs |aiProcess_MakeLeftHanded);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 
     //If loaded succesfully, we proceed to get all his data
@@ -102,6 +102,17 @@ bool TResourceOBJ::loadResource()
                 mesh->setTexture(texture);
                 mesh->setTextActive(true);
             }
+            if(scene->mMaterials[m->mMaterialIndex]->GetTexture(aiTextureType_NORMALS, 0, &path) == AI_SUCCESS)
+            {
+                TResourceNormalTexture* normalTexture = new TResourceNormalTexture();
+
+                //First we combine the path we just got with the directory path of the obj, and then we just load the texture
+                std::string completePath = route + path.data;
+                normalTexture->setName(completePath.c_str());
+                normalTexture->loadResource();
+                mesh->setNormalTexture(normalTexture);
+                mesh->setNormalActive(true);
+            }
         }
         
 /*
@@ -142,8 +153,6 @@ void TResourceOBJ::draw()
         {
             meshes[i]->draw();
         }
-
-        //drawBoundingBox();
     }
     
     else
@@ -240,7 +249,6 @@ void TResourceOBJ::drawBoundingBox()
 
 bool TResourceOBJ::checkBoundingBox()
 {
-    std::cout << "Checking bounding box" << std::endl;
     //First we set the bounding box's points in the scene
     glm::mat4 m = TEntity::projectionMatrix() * TEntity::viewMatrix() * TEntity::modelMatrix() * bbTransform;
     glm::vec4 p1 = m * glm::vec4(-0.5, -0.5, -0.5, 1.0);
