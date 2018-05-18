@@ -17,7 +17,7 @@ varying mat3 TBN;
 
 vec4 P2;
 vec3 V = vec3(0.0, 0.0, 0.0);
-vec3 normal;
+vec3 normal = vec3(0.0, 0.0, 0.0);
 
 //Light uniform and variables
 const int maxLights = 25;
@@ -133,7 +133,7 @@ void main()
 
     normal = N;
 
-    if(textActive)
+    if(normalActive)
     {
         normal = texture(normalTexture, UV_Coordinates).rgb;
         normal = normalize(normal * 2.0 - 1.0);

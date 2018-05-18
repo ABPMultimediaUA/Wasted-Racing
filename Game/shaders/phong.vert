@@ -101,6 +101,8 @@ void main()
 layout(location = 0) in vec4 vertexPosition;
 layout(location = 1) in vec3 vertexNormal;
 layout(location = 2) in vec2 UV;
+layout(location = 3) in vec3 tangents;
+layout(location = 4) in vec3 bitangents;
 
 uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
@@ -114,34 +116,7 @@ varying vec4 CamPos;
 varying mat4 view;
 varying mat4 modelViewMatrix;
 
-/*
-const int maxLights = 25;
-uniform int numLights;
-uniform int numSpotLights;
-
-struct Light {
-   vec4 position;
-   vec4 intensity;
-};
-uniform Light light[maxLights];
-
-struct SpotLight
-{
-    Light light;
-    vec3 direction;
-    float cutoff;
-};
-uniform SpotLight spotlight[maxLights];
-
-
-struct Material {
-    vec3 kd;
-    vec3 ka;
-    vec3 ks;
-    float ns;
-};
-uniform Material material;
-*/
+varying mat3 TBN;
 
 //================================
 uniform vec4 lightSpaceView;
@@ -164,6 +139,11 @@ void main()
 	N = vec3(modelViewMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
 
     view = ViewMatrix;
+
+    vec3 T = normalize(vec3(ModelMatrix * vec4(tangents, 0.0)));
+    vec3 B = normalize(vec3(ModelMatrix * vec4(bitangents, 0.0)));
+    vec3 N = normalize(vec3(ModelMatrix * vec4(vertexNormal, 0.0)));
+    TBN = mat3(T, B, N);
 
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 

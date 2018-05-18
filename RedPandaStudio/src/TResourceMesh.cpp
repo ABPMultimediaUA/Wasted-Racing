@@ -174,6 +174,9 @@ void TResourceMesh::draw()
         GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
         glUniform1i(id, textActive);
 
+        GLuint normalID = glGetUniformLocation(TEntity::getProgramID(), "normalActive");
+        glUniform1i(normalID, normalActive);
+
         //First we draw the texture of our mesh
         if(texture!=NULL && textActive)
         {
