@@ -1,0 +1,217 @@
+# Blender MTL File: 'circuitoFINAL.blend'
+# Material Count: 20
+
+newmtl CircuitMaterial
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\EdificiosFuera\CircuitMaterial_Base_Color.png
+
+newmtl CircuitMaterial_NONE
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Material.001
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.640000 0.153454
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\PlanoCarretera\Material.001_Base_Color.png
+
+newmtl Material.002
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd D:\WastedHorchata ART\Texturas\TERRENO\TexturasExportadas\Coche\DefaultMaterial_Base_Color.png
+
+newmtl Material.005
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\PistaBordillo\DefaultMaterial_Base_Color.png
+
+newmtl Material.006
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\Farolas\CircuitMaterial_Base_Color.png
+
+newmtl Material.009
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\Bidones\CircuitMaterial_Base_Color.png
+
+newmtl Material.010
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\ObjetosPasillo\DefaultMaterial_Base_Color.png
+
+newmtl Material.011
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\Señales\DefaultMaterial_Base_Color.png
+
+newmtl Material.012
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\EdificiosIndustrial\CircuitMaterial_Base_Color.png
+
+newmtl Material.013
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd D:\WastedHorchata ART\Texturas\TERRENO\TexturasExportadas\Tuberias\CircuitMaterial_Base_Color.png
+
+newmtl Material.014
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\EdificiosPasillo\CircuitMaterial_Base_Color.png
+
+newmtl Material.015
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\Puente\CircuitMaterial_Base_Color.png
+
+newmtl Material.016
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Personajes\Croc\DefaultMaterial_Base_Color.png
+
+newmtl Material.016_NONE
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Material.017
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Personajes\Witch\DefaultMaterial_Base_Color.png
+
+newmtl Material.018
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Personajes\Cyborg\DefaultMaterial_Base_Color.png
+
+newmtl Material.018_NONE
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl Material2
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Terreno\TexturasExportadas\EdificiosPasillo\Material2_Base_Color.png
+
+newmtl None
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd C:\Users\Laura\Documents\GitHub\Wasted-Racing\Docs\RV\Texturas\Personajes\Cyborg\DefaultMaterial_Base_Color.png
