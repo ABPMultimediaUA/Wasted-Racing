@@ -38,7 +38,7 @@ void drawRPS_GUI_LoadingScreen(); //:::> function that is given as parameter to 
 namespace gui {
 
     //For controlling animations
-    const int bkgSize = 6;
+    const int bkgSize = 21;
     int currImg = 0;
     int currFrame = 0;
 
@@ -229,7 +229,7 @@ void RenderRedPanda::renderDraw() {
 void RenderRedPanda::addCamera() {
 
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
-    valueY = 0.4;
+    valueY = 0.3;
     sum = 0;
 }
 
@@ -249,7 +249,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     float newD = camera->getDistance();
     
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
-    distance *= 1.5;
+    distance *= 1.3;
 
     auto player = camera->getGameObject();
     auto vel = player.getComponent<MoveComponent>()->getMovemententData().vel;
@@ -279,7 +279,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             sum += 0.25; 
         }
     }
-    glm::vec3 target(-pos.x, pos.y+12, pos.z);
+    glm::vec3 target(-pos.x, pos.y+15, pos.z);
     if(newD > 15)
     {
         if(valueY > 0.4)
@@ -438,7 +438,7 @@ void RenderRedPanda::addLight(IComponent* ptr) {
             default:
             break;
         }
-
+        rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
         nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
     }
  }
@@ -486,11 +486,19 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 
         auto node = iterator->second;
 
+        if(id >= 25000 && id <= 25010){
+            rps::rotateNode(node, glm::vec3(rot.x, -rot.y+glm::half_pi<float>(), rot.z));
+        }
+        else {
             rps::rotateNode(node, glm::vec3(rot.x, -rot.y, rot.z));
-
+        }
+        
+        if(id == 25000)
+            rps::scaleNode(node, glm::vec3(0.7,0.7,0.7));
+        else 
             rps::scaleNode(node, sca);
 
-            rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
+        rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
     }
 }
 
@@ -1049,12 +1057,28 @@ void gui::init() {
     //==========================================================================================
     //  BACKGROUND & OTHERS
     //==========================================================================================
-    gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck1.gif");
-    gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck2.gif");
-    gui::background[2]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck3.gif");
-    gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck4.gif");
-    gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck5.gif");
-    gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck6.gif");
+    gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/frame_00_delay-0.04s.gif");
+    gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/frame_01_delay-0.04s.gif");
+    gui::background[2]                  =   gui::loadTexture("media/img/GUI/Background/frame_02_delay-0.04s.gif");
+    gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/frame_03_delay-0.04s.gif");
+    gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/frame_04_delay-0.04s.gif");
+    gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/frame_05_delay-0.04s.gif");
+    gui::background[6]                  =   gui::loadTexture("media/img/GUI/Background/frame_06_delay-0.04s.gif");
+    gui::background[7]                  =   gui::loadTexture("media/img/GUI/Background/frame_07_delay-0.04s.gif");
+    gui::background[8]                  =   gui::loadTexture("media/img/GUI/Background/frame_08_delay-0.04s.gif");
+    gui::background[9]                  =   gui::loadTexture("media/img/GUI/Background/frame_09_delay-0.04s.gif");
+    gui::background[10]                 =   gui::loadTexture("media/img/GUI/Background/frame_10_delay-0.04s.gif");
+    gui::background[11]                 =   gui::loadTexture("media/img/GUI/Background/frame_11_delay-0.04s.gif");
+    gui::background[12]                 =   gui::loadTexture("media/img/GUI/Background/frame_12_delay-0.04s.gif");
+    gui::background[13]                 =   gui::loadTexture("media/img/GUI/Background/frame_13_delay-0.04s.gif");
+    gui::background[14]                 =   gui::loadTexture("media/img/GUI/Background/frame_14_delay-0.04s.gif");
+    gui::background[15]                 =   gui::loadTexture("media/img/GUI/Background/frame_15_delay-0.04s.gif");
+    gui::background[16]                 =   gui::loadTexture("media/img/GUI/Background/frame_16_delay-0.04s.gif");
+    gui::background[17]                 =   gui::loadTexture("media/img/GUI/Background/frame_17_delay-0.04s.gif");
+    gui::background[18]                 =   gui::loadTexture("media/img/GUI/Background/frame_18_delay-0.04s.gif");
+    gui::background[19]                 =   gui::loadTexture("media/img/GUI/Background/frame_19_delay-0.04s.gif");
+    gui::background[20]                 =   gui::loadTexture("media/img/GUI/Background/frame_20_delay-0.04s.gif");
+    gui::cityName                       =   gui::loadTexture("media/img/GUI/Other/cityName.png");
     gui::countdown[1]                   =   gui::loadTexture("media/img/GUI/Other/1.png");
     gui::countdown[2]                   =   gui::loadTexture("media/img/GUI/Other/2.png");
     gui::countdown[3]                   =   gui::loadTexture("media/img/GUI/Other/3.png");
