@@ -413,6 +413,8 @@ void RenderRedPanda::addAnimation(IComponent* ptr) {
     rps::scaleNode(node, sca);
     rps::rotateNode(node, rot);
 
+    ((TAnimation*)node->getEntity())->setRender(true);
+
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
     animationMap.insert(std::pair<uint16_t, TAnimation*>(obj.getId(), (TAnimation*)node->getEntity()));
 
