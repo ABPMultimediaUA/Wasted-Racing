@@ -87,7 +87,7 @@ IComponent::Pointer ItemManager::createItemHolderComponent(GameObject& newGameOb
 IComponent::Pointer ItemManager::createItemBox(GameObject& obj){
 
     GameObject::TransformationData t = obj.getTransformData();
-    t.scale = glm::vec3(1.5,1.5,1.5);
+    t.scale = glm::vec3(1,1,1);
     obj.setTransformData(t);
 
     //Create sharerd pointer
@@ -124,7 +124,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     //Get item
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = 1;//itemHolder->getItemType();
+    int random = itemHolder->getItemType();
 
     //-----------------------
     //Generate the right item
@@ -135,14 +135,14 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         //Set item to no item
         itemHolder->setItemType(-1);
 
-        //Send event of creation
-        EventData eData;
-        EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, eData});
-        
-        //Create item and initialize it
-        auto component = createRedShell(obj, IItemComponent::InstanceType::LOCAL );
-        std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();     
-        return component;
+        ////Send event of creation
+        //EventData eData;
+        //EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, eData});
+        //
+        ////Create item and initialize it
+        //auto component = createRedShell(obj, IItemComponent::InstanceType::LOCAL );
+        //std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();     
+        //return component;
     }
 
     //Blue shell item
@@ -151,15 +151,15 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         //Set item to no item
         itemHolder->setItemType(-1);
 
-        //Send event of creation
-        EventData eData;
-        EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, eData});
-
-        //Create item and initialize it
-        auto component = createBlueShell(obj, IItemComponent::InstanceType::LOCAL);
-        float actualVector = obj.getComponent<PathPlanningComponent>()->getLastPosVector();
-        std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init(actualVector);
-        return component;
+        ////Send event of creation
+        //EventData eData;
+        //EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, eData});
+//
+        ////Create item and initialize it
+        //auto component = createBlueShell(obj, IItemComponent::InstanceType::LOCAL);
+        //float actualVector = obj.getComponent<PathPlanningComponent>()->getLastPosVector();
+        //std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init(actualVector);
+        //return component;
     }
 
     //Trap item
@@ -571,7 +571,7 @@ void ItemManager::deleteItem(IComponent::Pointer component)
 //==============================================
 
 void createItemEvent(EventData eData) {
-    /*if(GlobalVariables::getInstance().getServer())
+    if(GlobalVariables::getInstance().getServer())
     {
         //Create item
         auto item = ItemManager::getInstance().createItem(eData.Component.get()->getGameObject());
@@ -583,13 +583,13 @@ void createItemEvent(EventData eData) {
         }
     }
     else
-    {*/
+    {
         //get the player with the input
-        /*GameObject* player = GlobalVariables::getInstance().getPlayer();
+        GameObject* player = GlobalVariables::getInstance().getPlayer();
 
         //Create the item
-        ItemManager::getInstance().createItem(*player);*/
-   // }
+        ItemManager::getInstance().createItem(*player);
+    }
 }
 
 void objectDeleteItem(EventData eData) {

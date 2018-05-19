@@ -30,6 +30,65 @@ void MoveComponent::update(float dTime) {
     updateJump(mData, position, terrain);
     LAPAL::correctYPosition(mData, dTime, terrain, position);
 
+    bool animPlaying = RenderManager::getInstance().getRenderFacade()->isAnimationPLaying(getGameObject().getId());
+
+    //Update animation depending on speed
+    if(mData.mov && !moving && !colliding && !drifting && !itemThrown) {
+        moving = true;
+        RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 1);
+    }
+    else if(!mData.mov && moving && !colliding && !drifting && !itemThrown) {
+        moving = false;
+        RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 0);
+    }
+    //Update animation depending on collisions
+    if(mData.coll) {
+        RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 2);
+        RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
+        colliding = true;
+        movingOnCollision = mData.mov;
+    }
+    else if(colliding && !animPlaying) {
+        colliding = false;
+        animPlaying = true;
+        if(movingOnCollision == mData.mov && !itemThrown)
+            moving = !moving;
+    }
+    //Update animation depending on drift
+    if(mData.drift && !drifting) {
+        drifting = true;
+        if(mData.spin <= 0)
+            RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 5);
+        else 
+            RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 6);
+    }
+    else if(!mData.drift && drifting){
+        drifting = false;
+    }
+    //Update animation depending on item
+    int itemType = (getGameObject().getComponent<ItemHolderComponent>()).get()->getItemType();
+    if(itemType == -1 && (item == 0 || item == 1)){
+        itemThrown = true;
+        if(mData.mov){
+            RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 4);
+            RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
+        }
+        else{
+            RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 3);
+            RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
+        }
+            
+        movingOnItem = mData.mov;
+    }
+    else if(itemThrown && !animPlaying) {
+        itemThrown = false;
+        animPlaying = true;
+        if(movingOnItem == mData.mov && !colliding)
+            moving = !moving;
+    }
+
+    item = itemType;
+
     //Set collision value to false (if it was true it has already been processed)
     mData.coll = false;
 
@@ -47,6 +106,8 @@ void MoveComponent::update(float dTime) {
 
     //Set final transform of position
     getGameObject().setTransformData(trans);
+
+
     //auto id = getGameObject().getId();
     //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
     

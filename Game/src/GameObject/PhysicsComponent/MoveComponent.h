@@ -78,5 +78,12 @@ private:
 	float decrementalAlteredTime;	//Time during max_speed is reduced to its former value
 	float maxDecrementalAT;			//Complete time interval whitin speed is reduced constantly
 	LAPAL::movementData auxData;
+	bool moving = false;
+	bool colliding = false;
+	bool movingOnCollision = false;
+	bool movingOnItem = false;
+	bool drifting = false;
+	bool itemThrown = false;
+	int item = -1;
 
 };

@@ -596,6 +596,8 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
         
         if(id == 25000)
             rps::scaleNode(node, glm::vec3(0.7,0.7,0.7));
+        else if (id > 25000 && id < 25010)
+            rps::scaleNode(node, glm::vec3(2,2,2));
         else 
             rps::scaleNode(node, sca);
 
@@ -1089,7 +1091,7 @@ void drawRPS_GUI_HUD(){
 
             glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.89 - pos1.z * h * 0.00021, h*0.6111 - pos1.x * h * 0.00021, w*0.2, h*0.5))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.89 - pos1.z * h * 0.00018, h*0.65 - pos1.x * h * 0.00018 * 0.5, w*0.2, h*0.5))) {
 
                 nk_layout_row_static(GUI, h*0.021, h*0.021, 1);
 

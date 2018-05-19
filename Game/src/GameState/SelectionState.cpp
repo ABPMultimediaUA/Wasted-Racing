@@ -36,6 +36,7 @@ void SelectionState::init() {
         tr1.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
 
+
         RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 167, 0);
 
         GameObject::TransformationData tr2;
