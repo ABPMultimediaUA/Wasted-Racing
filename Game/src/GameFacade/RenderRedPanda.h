@@ -62,6 +62,7 @@ public:
 
     //Add an animation to the game
     virtual void addAnimation(IComponent* ptr);
+    virtual void addAnimation(uint16_t id, const char * mesh, int frames);
     
     //Add a light to the game
     virtual void addLight(IComponent* ptr);
@@ -96,6 +97,18 @@ public:
                                         glm::vec3 birthDirection, glm::vec3 deathDirection, float variationDirection,
                                         float birthSize, float deathSize, float variationSize,
                                         glm::vec4 birthColor, glm::vec4 deathColor, float variationColor);
+
+
+    /////////////////////////////////////////
+    // ANIMATIONS
+    /////////////////////////////////////////
+    virtual void stopAnimation(uint16_t id);
+    virtual void loopOnceAnimation(uint16_t id);
+    virtual void playAnimation(uint16_t id);
+    virtual void loopAnimation(uint16_t id);
+    virtual void resetAnimation(uint16_t id);
+    virtual void changeAnimation(uint16_t id, uint16_t animation);
+    virtual bool isAnimationPLaying(uint16_t);
 
     ////////////
     //  Image

@@ -22,6 +22,7 @@ void TAnimation::playNoLoop()
 
 void TAnimation::update(double eTime)
 {
+    
     if(playing)
     {
         elapsedTime += eTime;
@@ -39,4 +40,8 @@ void TAnimation::update(double eTime)
             pointer = 0;
         }
     }
+}
+
+void TAnimation::reset() {
+    pointer = 0;
 }

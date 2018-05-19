@@ -18,6 +18,7 @@ class TAnimation : public TEntity{
 
         //Plays a no-loop animation that is currently paused
         void playNoLoop();
+        void reset();       //Resets animation state
 
         //Updates the animation
         void update(double eTime);

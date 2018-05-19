@@ -4,6 +4,7 @@
 // Additional functions
 //==============================================
 void addAI(int selectedPlayer);
+void loadAnimations();
 void addStateChange(EventData eData);
 
 void SelectionState::init() {
@@ -30,36 +31,36 @@ void SelectionState::init() {
         RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
 
         GameObject::TransformationData tr1;
-        tr1.position = glm::vec3(-5,-30,0);
-        tr1.rotation = glm::vec3(0,glm::pi<float>(),0);
-        tr1.scale    = glm::vec3(0.2,0.2,0.2);
+        tr1.position = glm::vec3(-5,-30,0.5);
+        tr1.rotation = glm::vec3(0,glm::half_pi<float>(),0);
+        tr1.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
 
-        RenderManager::getInstance().createObjectRenderComponent(*player1.get(),ObjectRenderComponent::Shape::Mesh, "punk.obj");
+        RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 167, 0);
 
         GameObject::TransformationData tr2;
-        tr2.position = glm::vec3(-5,-30,-6);
-        tr2.rotation = glm::vec3(0,0,0);
-        tr2.scale    = glm::vec3(0.35,0.35,0.35);
+        tr2.position = glm::vec3(-5,-30,-5.5);
+        tr2.rotation = glm::vec3(0,glm::half_pi<float>(),0);
+        tr2.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player2 = ObjectManager::getInstance().createObject(60002, tr2);
 
-        RenderManager::getInstance().createObjectRenderComponent(*player2.get(),ObjectRenderComponent::Shape::Mesh, "croco.obj");
+        RenderManager::getInstance().createAnimationRenderComponent(*player2.get(),"Crocodile/CharSelect/cocodrilaBonesSelect_000", 91, 0);
 
         GameObject::TransformationData tr3;
-        tr3.position = glm::vec3(-5,-30,-12);
-        tr3.rotation = glm::vec3(0,-glm::half_pi<float>(),0);
-        tr3.scale    = glm::vec3(0.25,0.25,0.25);
+        tr3.position = glm::vec3(-5,-30,-11.5);
+        tr3.rotation = glm::vec3(0,glm::half_pi<float>(),0);
+        tr3.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player3 = ObjectManager::getInstance().createObject(60003, tr3);
 
-        RenderManager::getInstance().createObjectRenderComponent(*player3.get(),ObjectRenderComponent::Shape::Mesh, "cyborg.obj");
+        RenderManager::getInstance().createAnimationRenderComponent(*player3.get(),"Cyborg/CharSelect/CyborgFINALAnimation_000", 183, 0);
 
         GameObject::TransformationData tr4;
-        tr4.position = glm::vec3(-5,-30,-18);
-        tr4.rotation = glm::vec3(0,glm::pi<float>(),0);
-        tr4.scale    = glm::vec3(0.2,0.2,0.2);
+        tr4.position = glm::vec3(-5,-30,-17.5);
+        tr4.rotation = glm::vec3(0,glm::half_pi<float>(),0);
+        tr4.scale    = glm::vec3(0.15,0.15,0.15);
         GameObject::Pointer player4 = ObjectManager::getInstance().createObject(60004, tr4);
 
-        RenderManager::getInstance().createObjectRenderComponent(*player4.get(),ObjectRenderComponent::Shape::Mesh, "witch.obj");
+        RenderManager::getInstance().createAnimationRenderComponent(*player4.get(),"Witch/CharSelect/bruja_000", 238, 0);
 
         GameObject::TransformationData tr5;
         tr5.position = glm::vec3(-20,-10,-9);
@@ -104,6 +105,12 @@ void SelectionState::update(float &accumulatedTime) {
 
             //Add AI's to the game
             addAI(selectedPlayer);
+            loadAnimations();
+
+            renderManager->getRenderFacade()->changeAnimation(25000, 0);
+            renderManager->getRenderFacade()->changeAnimation(25001, 0);
+            renderManager->getRenderFacade()->changeAnimation(25002, 0);
+            renderManager->getRenderFacade()->changeAnimation(25003, 0);
 
             GlobalVariables::getInstance().setGameLoaded(true);
             GlobalVariables::getInstance().setIgnoreInput(false);
@@ -166,6 +173,7 @@ void SelectionState::update(float &accumulatedTime) {
     
     //Update audio manager
     audioManager->update();
+    renderManager->getRenderFacade()->updateAnimations(accumulatedTime);
 
     //Event manager has to be the last to be updated
     eventManager->update();
@@ -233,36 +241,58 @@ void addAI(int selectedPlayer){
     ObjectManager::getInstance().createPlayer(transform, pl3, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+}
 
-    /*id = 25004;
-    transform.position = glm::vec3(-35,0,20);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+void loadAnimations() {
 
-    id = 25005;
-    transform.position = glm::vec3(-35,0,-30);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
+    IRenderFacade* f = RenderManager::getInstance().getRenderFacade();
 
-    id = 25006;
-    transform.position = glm::vec3(-35,0,-40);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    ObjectManager::getInstance().createPlayer(transform, 0, 1, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));*/
+    f->addAnimation(00, "Punk/Idle/punkAnimation_000", 62);
+    f->addAnimation(01, "Punk/Correr/punkAnimation_000", 70);
+    f->addAnimation(02, "Punk/Choque/punkAnimation_000", 38);
+    f->addAnimation(03, "Punk/LanzarItem/punkAnimation_000", 37);
+    f->addAnimation(04, "Punk/LanzarItemMovimiento/punkAnimation_000", 38);
+    f->addAnimation(05, "Punk/DerrapeDCHA/punkAnimation_000", 81);
+    f->addAnimation(06, "Punk/DerrapeIZQ/punkAnimation_000", 78);
+
+    f->addAnimation(10, "Crocodile/Idle/cocodrilaBonesSelect_000", 83);
+    f->addAnimation(11, "Crocodile/Correr/cocodrilaBonesSelect_000", 20);
+    f->addAnimation(12, "Crocodile/Choque/cocodrilaBonesSelect_000", 0);
+    f->addAnimation(13, "Crocodile/LanzarItem/cocodrilaBonesSelect_000", 56);
+    f->addAnimation(14, "Crocodile/LanzarItemMovimiento/cocodrilaBonesSelect_000", 40);
+    f->addAnimation(15, "Crocodile/DerrapeDCHA/cocodrilaBonesSelect_000", 81);
+    f->addAnimation(16, "Crocodile/DerrapeIZQ/cocodrilaBonesSelect_000", 78);
+
+    f->addAnimation(20, "Cyborg/Idle/CyborgFINALAnimation_000", 82);
+    f->addAnimation(21, "Cyborg/Correr/CyborgFINALAnimation_000", 28);
+    f->addAnimation(22, "Cyborg/Choque/CyborgFINALAnimation_000", 38);
+    f->addAnimation(23, "Cyborg/LanzarItem/CyborgFINALAnimation_000", 45);
+    f->addAnimation(24, "Cyborg/LanzarItemMovimiento/CyborgFINALAnimation_000", 39);
+    f->addAnimation(25, "Cyborg/DerrapeDCHA/CyborgFINALAnimation_000", 81);
+    f->addAnimation(26, "Cyborg/DerrapeIZQ/CyborgFINALAnimation_000", 68);
+
+    f->addAnimation(30, "Witch/Idle/bruja_000", 53);
+    f->addAnimation(31, "Witch/Correr/bruja_000", 23);
+    f->addAnimation(32, "Witch/Choque/bruja_000", 42);
+    f->addAnimation(33, "Witch/LanzarItem/bruja_000", 56);
+    f->addAnimation(34, "Witch/LanzarItemMovimiento/bruja_000", 39);
+    f->addAnimation(35, "Witch/DerrapeDCHA/bruja_000", 81);
+    f->addAnimation(36, "Witch/DerrapeIZQ/bruja_000", 78);
+    
 }
 
 
 void addStateChange(EventData eData) {
 
     if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION && GlobalVariables::getInstance().getGameLoaded()){
+
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60000}});
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60001}});
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60002}});
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60003}});
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60004}});
+        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60005}});
+
         //Change state
         Game::getInstance().setState(IGameState::stateType::PREMATCH);
     }

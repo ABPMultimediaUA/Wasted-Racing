@@ -404,14 +404,113 @@ void RenderRedPanda::addAnimation(IComponent* ptr) {
 
     auto obj = cmp->getGameObject();
     auto pos = obj.getTransformData().position;
-    //auto sca = obj.getTransformData().scale;
+    auto sca = obj.getTransformData().scale;
+    auto rot = obj.getTransformData().rotation;
     
-    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24);
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24.0);
 
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
+    rps::scaleNode(node, sca);
+    rps::rotateNode(node, rot);
 
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
     animationMap.insert(std::pair<uint16_t, TAnimation*>(obj.getId(), (TAnimation*)node->getEntity()));
+
+}
+
+//Add an animation to the game
+void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames) {
+    
+    std::string s = std::string("media/anim/") + std::string(mesh);
+
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), s.c_str(), true, frames, 1/24.0);
+
+    animationMap.insert(std::pair<uint16_t, TAnimation*>(id, (TAnimation*)node->getEntity()));
+
+}
+
+void RenderRedPanda::stopAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->setPause(true);
+    }
+
+}
+void RenderRedPanda::loopOnceAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->reset();
+        t->setPause(true);
+        t->setLoop(false);
+    }
+
+}
+void RenderRedPanda::playAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->reset();
+        t->setPause(true);
+    }
+
+}
+void RenderRedPanda::loopAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->reset();
+        t->setPause(true);
+        t->setLoop(true);
+    }
+
+}
+void RenderRedPanda::resetAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->reset();
+    }
+
+}
+void RenderRedPanda::changeAnimation(uint16_t id, uint16_t animation) {
+
+    TAnimation* character = animationMap[id];
+
+    auto a = (ObjectManager::getInstance().getObject(id)).get()->getComponent<AnimationRenderComponent>();
+
+    if(a != nullptr) {
+        animation += 10 * a.get()->getPlayer();
+    }
+    
+    TAnimation* anim = animationMap[animation];
+
+    if(character != nullptr && anim != nullptr) {
+
+        character->setAnimation(anim->getAnimation());
+
+        character->setFrames(anim->getFrames());
+
+        character->setPause(true);
+        character->setLoop(true);
+        character->reset();
+    }
+
+}
+bool RenderRedPanda::isAnimationPLaying(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr)
+        return t->getPauseState();
+
+    return false;
 
 }
 
@@ -504,9 +603,20 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 
 //Update game animations
 void RenderRedPanda::updateAnimations(float dTime) {
-    for(auto anim : animationMap) {
-        anim.second->update(dTime);
+    
+    if(animationMap.find(25000) != animationMap.end()) {
+        animationMap[25000]->update(dTime);
+        animationMap[25001]->update(dTime);
+        animationMap[25002]->update(dTime);
+        animationMap[25003]->update(dTime);
     }
+    else if(animationMap.find(60001) != animationMap.end()) {
+        animationMap[60001]->update(dTime);
+        animationMap[60002]->update(dTime);
+        animationMap[60003]->update(dTime);
+        animationMap[60004]->update(dTime);
+    }
+    
 }
 
 //Update single animation

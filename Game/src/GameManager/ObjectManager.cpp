@@ -177,7 +177,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "Punk/Idle/punkAnimation_000", 61);
+    createComponents(ob, terrain, terrainComponent, mData, 0);
 
     return ob;
 
@@ -219,7 +219,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "Witch/Idle/bruja_000", 52);
+    createComponents(ob, terrain, terrainComponent, mData, 3);
 
     return ob;
 
@@ -257,7 +257,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.driftAngleIncrMax = 2.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "Cyborg/Idle/CyborgFINALAnimation_000", 81);
+    createComponents(ob, terrain, terrainComponent, mData, 2);
 
     return ob;
 
@@ -294,7 +294,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.player = 3;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "Crocodile/Idle/cocodrilaBonesSelect_000", 82);
+    createComponents(ob, terrain, terrainComponent, mData, 1);
 
     return ob;
 
@@ -304,10 +304,10 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 // Create player auxiliars
 //============================================== 
 
-void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model, int frames)
+void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, int player)
 {
     //Create representation of the model if there is a model
-    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), model, frames);
+    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "", 0, player);
 
     //Create collision component
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
