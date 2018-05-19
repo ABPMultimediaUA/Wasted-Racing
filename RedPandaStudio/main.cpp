@@ -45,10 +45,10 @@ int main() {
 */
 
     //TNode* t2 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "media/Link.obj");
-    TNode* t4 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,5,0), "media/bomb/bomb.obj");
+    TNode* t4 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,4,0), "media/Link.obj");
     //rps->addMeshLoD(1,"media/mesh/Link/Link.obj");
     //TNode* t3 = rps->createObjectNode(rps->getSceneRoot(), glm::vec3(0,0,0), "");
-    TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(1,5,0), glm::vec3(0, 5, 0));
+    TNode* camera = rps->createCamera(rps->getSceneRoot(), glm::vec3(3,5,0), glm::vec3(0, 5, 0));
     //TBillboard* bill = rps->createBillboard("media/tree.png", glm::vec3(0,5,0));
 
     //rps::scaleNode(t, glm::vec3(0.25, 0.25, 0.25));

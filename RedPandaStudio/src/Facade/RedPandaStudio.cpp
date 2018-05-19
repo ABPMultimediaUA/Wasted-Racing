@@ -190,8 +190,8 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 void RedPandaStudio::initOpenGL() {
 
 	#ifndef __APPLE__
-		const char * vertex_file_path = "shaders/phong.vert";
-    	const char * fragment_file_path = "shaders/phong.frag";
+		const char * vertex_file_path = "shaders/cartoon.vert";
+    	const char * fragment_file_path = "shaders/cartoon.frag";
 		const char * geometry_file_path = "shaders/test.gs";
 		const char * skybox_vertex_path = "shaders/skybox.vert";
 		const char * skybox_fragment_path = "shaders/skybox.frag";
@@ -1029,7 +1029,28 @@ void RedPandaStudio::drawPostProcessing()
 	glUseProgram(scene->getEntity()->getProgramID());
 	renderCamera();
 	renderLights();
+
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(1.0, 10.0);
+
+	glLineWidth(4.0);
+
+	GLuint silID = glGetUniformLocation(TEntity::getProgramID(), "silhouette");
+	glUniform1i(silID, false);
+
 	scene->draw();
+
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+
+    glUniform1i(silID, true);
+
+	scene->draw();
+
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
