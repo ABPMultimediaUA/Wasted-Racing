@@ -190,8 +190,8 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 void RedPandaStudio::initOpenGL() {
 
 	#ifndef __APPLE__
-		const char * vertex_file_path = "shaders/cartoon.vert";
-    	const char * fragment_file_path = "shaders/cartoon.frag";
+		const char * vertex_file_path = "shaders/phong.vert";
+    	const char * fragment_file_path = "shaders/phong.frag";
 		const char * geometry_file_path = "shaders/test.gs";
 		const char * skybox_vertex_path = "shaders/skybox.vert";
 		const char * skybox_fragment_path = "shaders/skybox.frag";
@@ -224,7 +224,11 @@ void RedPandaStudio::initOpenGL() {
 	//glEnable( GL_DEBUG_OUTPUT );
     //glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
 
+	//Deactivate Frustum Culling by default
 	setFrustumCulling(false);
+
+	//Set a default value to Line Width for the Silhouette render
+	glLineWidth(4.0);
 
     //Init VBO
     GLuint VertexArrayID;
@@ -413,6 +417,8 @@ void RedPandaStudio::initOpenGL() {
     GLuint projection = glGetUniformLocation(ProgramID, "ProjectionMatrix");
 	GLuint colorTexture = glGetUniformLocation(ProgramID, "colorTexture");
 	GLuint normalTexture = glGetUniformLocation(ProgramID, "normalTexture");
+
+	silFlagIdentifier = glGetUniformLocation(ProgramID, "silhouette");
 
 	glUniform1i(colorTexture, 0);
 	glUniform1i(normalTexture, 1);
@@ -1030,27 +1036,31 @@ void RedPandaStudio::drawPostProcessing()
 	renderCamera();
 	renderLights();
 
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(1.0, 10.0);
+	if(silhouetteActivated)
+	{
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(1.0, 10.0);
 
-	glLineWidth(4.0);
+		glUniform1i(silFlagIdentifier, false);
 
-	GLuint silID = glGetUniformLocation(TEntity::getProgramID(), "silhouette");
-	glUniform1i(silID, false);
+		scene->draw();
 
-	scene->draw();
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
 
-	glDisable(GL_POLYGON_OFFSET_FILL);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+    	glUniform1i(silFlagIdentifier, true);
 
-    glUniform1i(silID, true);
+		scene->draw();
 
-	scene->draw();
-
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else
+	{
+		scene->draw();
+	}
 
 	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
