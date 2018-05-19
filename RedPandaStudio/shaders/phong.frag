@@ -6,14 +6,15 @@ vec4 v_Color;
 
 in vec2 UV_Coordinates; //UV del vertex shader
 
-varying vec3 P;
-varying vec3 N;
-varying vec4 CamPos;
+in vec3 P;
+in vec3 N;
+in vec4 CamPos;
 
-varying mat4 view;
-varying mat4 modelViewMatrix;
+in mat4 view;
+in mat4 modelViewMatrix;
 
-varying mat3 TBN;
+//Tangent-Bitangent-Normal Matrix used to convert from tangent space to world space.
+in mat3 TBN;
 
 vec4 P2;
 vec3 V = vec3(0.0, 0.0, 0.0);

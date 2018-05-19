@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 
+//Auxiliar method used to split strings. Obtained from the internet
 std::vector<std::string> TResourceOBJ::split(const std::string& s, const char& c) {
 	std::string buff{""};
 	std::vector<std::string> v;
@@ -16,6 +17,7 @@ std::vector<std::string> TResourceOBJ::split(const std::string& s, const char& c
 	return v;
 }
 
+//Loads only the meshes in the scene, ignoring the materials and textures. This is used for the animations, to avoid loading one different material for every frame
 bool TResourceOBJ::loadOnlyMeshes()
 {
     Assimp::Importer importer;
@@ -38,6 +40,7 @@ bool TResourceOBJ::loadOnlyMeshes()
     return false;
 }
 
+//Sets a texture for a specified mesh. This is used for the animations.
 void TResourceOBJ::setTexture(unsigned int i, TResourceTexture* t)
 {
     if(i>=0 && i<meshes.size())
@@ -47,7 +50,7 @@ void TResourceOBJ::setTexture(unsigned int i, TResourceTexture* t)
     }
 }
 
-
+//Sets a material for a specified mesh. This is used for the animations
 void TResourceOBJ::setMaterial(unsigned int i, TResourceMaterial* m)
 {
     if(i >= 0 && i < meshes.size())
@@ -56,6 +59,7 @@ void TResourceOBJ::setMaterial(unsigned int i, TResourceMaterial* m)
     }
 }
 
+//Loads the OBJ contained in the name variable.
 bool TResourceOBJ::loadResource()
 {
     Assimp::Importer importer;
@@ -91,6 +95,8 @@ bool TResourceOBJ::loadResource()
             mat->loadResource(scene->mMaterials[m->mMaterialIndex]);
             mesh->setMaterial(mat);
             aiString path;
+            
+            //Now we load the diffuse texture asociated to this mesh
             if(scene->mMaterials[m->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
                 TResourceTexture* texture = new TResourceTexture();
@@ -102,6 +108,8 @@ bool TResourceOBJ::loadResource()
                 mesh->setTexture(texture);
                 mesh->setTextActive(true);
             }
+
+            //And now we load the normal texture, identified by assimp as height texture, asociated to this mesh
             if(scene->mMaterials[m->mMaterialIndex]->GetTexture(aiTextureType_HEIGHT, 0, &path) == AI_SUCCESS)
             {
                 TResourceNormalTexture* normalTexture = new TResourceNormalTexture();
@@ -115,27 +123,7 @@ bool TResourceOBJ::loadResource()
             }
         }
         
-/*
-        //We proceed to get all the materials and textures
-        for(unsigned int i = 1; i<scene->mNumMaterials; i++)
-        {
-
-            meshes[i-1]->setMaterial(mat);
-            aiString path;
-            //If the material has a diffuse texture, we get his path
-            if(scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
-            {
-                TResourceTexture* texture = new TResourceTexture();
-                
-                //First we combine the path we just got with the directory path of the obj, and then we just load the texture
-                std::string completePath = route + path.data;
-                texture->setName(completePath.c_str());
-                texture->loadResource();
-                meshes[i-1]->setTexture(texture);
-                meshes[i-1]->setTextActive(true);
-            }
-        }
-*/
+        //Finally we generate the bounding box of the model, in case it's needed for the frustum culling
         generateBoundingBox();
 
 
@@ -144,6 +132,7 @@ bool TResourceOBJ::loadResource()
     return false;
 }
 
+//Draws every mesh asociated to this OBJ
 void TResourceOBJ::draw()
 {
     if((TEntity::getFrustumCulling() && checkBoundingBox()) || !TEntity::getFrustumCulling())
@@ -152,15 +141,6 @@ void TResourceOBJ::draw()
         for(unsigned int i = 0; i < meshes.size(); i++)
         {
             meshes[i]->draw();
-        }
-    }
-    
-    else
-    {
-        std::cout << "Culling OBJ" << std::endl;
-        if(TEntity::getFrustumCulling())
-        {
-            std::cout << "WTF" << std::endl;
         }
     }
 }
@@ -225,6 +205,7 @@ void TResourceOBJ::generateBoundingBox()
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+//Function used only for debug purposes. Draws a cube (not polygonal, only the edges) surrounding the OBJ
 void TResourceOBJ::drawBoundingBox()
 {
     glm::mat4 m = TEntity::modelMatrix() * bbTransform;
@@ -247,6 +228,7 @@ void TResourceOBJ::drawBoundingBox()
     glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &TEntity::modelMatrix()[0][0]);
 }
 
+//Checks if the bounding box is in the frustum, for frustum culling purposes
 bool TResourceOBJ::checkBoundingBox()
 {
     //First we set the bounding box's points in the scene
