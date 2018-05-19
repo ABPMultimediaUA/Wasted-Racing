@@ -49,7 +49,7 @@ bool TResourceAnimation::loadResource()
 void TResourceAnimation::populateTextures()
 {
     std::string s = name;
-    s+= "001.obj";
+    s+= "000.obj";
 
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(s, 0);
@@ -83,7 +83,7 @@ void TResourceAnimation::populateTextures()
                 TResourceTexture* texture = new TResourceTexture();
                 //First we combine the path we just got with the directory path of the obj, and then we just load the texture
                 std::string completePath = route + path.data;
-                std::cout << completePath << std::endl;
+
                 texture->setName(completePath.c_str());
                 texture->loadResource();
                 for(unsigned int j = 0; j < objs.size(); j++)

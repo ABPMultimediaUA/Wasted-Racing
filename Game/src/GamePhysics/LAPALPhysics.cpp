@@ -103,7 +103,8 @@ void LAPAL::updateVelocity(LAPAL::movementData& mData, LAPAL::plane3f& terrain){
 //Updates all spin related variables
 void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
     //if spinning
-    mData.spin += mData.spin_inc * dTime; //Spin depends on vel and spin_inc
+    float rel = 1 - (mData.vel / (mData.max_vel*1.5));
+    mData.spin += mData.spin_inc * dTime * rel; //Spin depends on vel and spin_inc
 
     //if not
     if(!mData.spi) {
@@ -116,8 +117,8 @@ void LAPAL::updateSpin(LAPAL::movementData& mData, const float dTime){
         }
     }
 
-    if(abs(mData.spin)>abs(mData.max_spin)){
-        mData.spin = copysign(mData.max_spin, mData.spin);
+    if(abs(mData.spin)>abs(mData.max_spin * rel)){
+        mData.spin = copysign(mData.max_spin * rel, mData.spin);
     }
 
     //:::>No hardcoded variables

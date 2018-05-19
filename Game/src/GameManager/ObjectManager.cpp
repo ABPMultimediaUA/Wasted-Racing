@@ -162,8 +162,8 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 200.0f;
-    mData.brake_vel = 10.f;
+    mData.max_vel = 430.0f;
+    mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
     mData.max_acc = 60.f;
@@ -177,7 +177,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
+    createComponents(ob, terrain, terrainComponent, mData, 0);
 
     return ob;
 
@@ -204,8 +204,8 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 200.0f;
-    mData.brake_vel = 10.f;
+    mData.max_vel = 430.0f;
+    mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
     mData.max_acc = 60.f;
@@ -219,7 +219,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
+    createComponents(ob, terrain, terrainComponent, mData, 3);
 
     return ob;
 
@@ -246,8 +246,8 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 200.0f;
-    mData.brake_vel = 10.f;
+    mData.max_vel = 430.0f;
+    mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
     mData.max_acc = 60.f;
@@ -257,7 +257,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.driftAngleIncrMax = 2.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "cyborg.obj");
+    createComponents(ob, terrain, terrainComponent, mData, 2);
 
     return ob;
 
@@ -284,8 +284,8 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 200.0f;
-    mData.brake_vel = 10.f;
+    mData.max_vel = 430.0f;
+    mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
     mData.max_acc = 60.f;
@@ -294,7 +294,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.player = 3;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "croco.obj");
+    createComponents(ob, terrain, terrainComponent, mData, 1);
 
     return ob;
 
@@ -304,11 +304,10 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 // Create player auxiliars
 //============================================== 
 
-void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model)
+void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, int player)
 {
     //Create representation of the model if there is a model
-    //RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "WitchFINAL_000", 60);
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, model);
+    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "", 0, player);
 
     //Create collision component
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);

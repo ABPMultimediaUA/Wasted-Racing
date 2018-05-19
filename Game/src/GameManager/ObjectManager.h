@@ -82,7 +82,7 @@ public:
     //============================================== 
 
     //Adds the components needed to the character created
-    void createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model);
+    void createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, int player);
 
     //Creates character depending on option selected specified by the int
     void createMove(GameObject::Pointer obj, int move);

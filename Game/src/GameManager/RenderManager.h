@@ -68,7 +68,7 @@ public:
     //Create skybox
     IComponent::Pointer createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back);
     //Create animation
-    IComponent::Pointer createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames);
+    IComponent::Pointer createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames, int player);
 
 
     /////////////

@@ -229,7 +229,7 @@ void RenderRedPanda::renderDraw() {
 void RenderRedPanda::addCamera() {
 
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
-    valueY = 0.4;
+    valueY = 0.3;
     sum = 0;
 }
 
@@ -249,7 +249,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     float newD = camera->getDistance();
     
     float distance = oldD + (accTime * (newD - oldD))/maxTime;
-    distance *= 1.5;
+    distance *= 1.3;
 
     auto player = camera->getGameObject();
     auto vel = player.getComponent<MoveComponent>()->getMovemententData().vel;
@@ -279,7 +279,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             sum += 0.25; 
         }
     }
-    glm::vec3 target(-pos.x, pos.y+12, pos.z);
+    glm::vec3 target(-pos.x, pos.y+15, pos.z);
     if(newD > 15)
     {
         if(valueY > 0.4)
@@ -404,14 +404,115 @@ void RenderRedPanda::addAnimation(IComponent* ptr) {
 
     auto obj = cmp->getGameObject();
     auto pos = obj.getTransformData().position;
-    //auto sca = obj.getTransformData().scale;
+    auto sca = obj.getTransformData().scale;
+    auto rot = obj.getTransformData().rotation;
     
-    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24);
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24.0);
 
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
+    rps::scaleNode(node, sca);
+    rps::rotateNode(node, rot);
+
+    ((TAnimation*)node->getEntity())->setRender(true);
 
     nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
     animationMap.insert(std::pair<uint16_t, TAnimation*>(obj.getId(), (TAnimation*)node->getEntity()));
+
+}
+
+//Add an animation to the game
+void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames) {
+    
+    std::string s = std::string("media/anim/") + std::string(mesh);
+
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), s.c_str(), true, frames, 1/24.0);
+
+    animationMap.insert(std::pair<uint16_t, TAnimation*>(id, (TAnimation*)node->getEntity()));
+
+}
+
+void RenderRedPanda::stopAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->setPause(true);
+    }
+
+}
+void RenderRedPanda::loopOnceAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->reset();
+        t->setPause(true);
+        t->setLoop(false);
+    }
+
+}
+void RenderRedPanda::playAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->reset();
+        t->setPause(true);
+    }
+
+}
+void RenderRedPanda::loopAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->reset();
+        t->setPause(true);
+        t->setLoop(true);
+    }
+
+}
+void RenderRedPanda::resetAnimation(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->reset();
+    }
+
+}
+void RenderRedPanda::changeAnimation(uint16_t id, uint16_t animation) {
+
+    TAnimation* character = animationMap[id];
+
+    auto a = (ObjectManager::getInstance().getObject(id)).get()->getComponent<AnimationRenderComponent>();
+
+    if(a != nullptr) {
+        animation += 10 * a.get()->getPlayer();
+    }
+    
+    TAnimation* anim = animationMap[animation];
+
+    if(character != nullptr && anim != nullptr) {
+
+        character->setAnimation(anim->getAnimation());
+
+        character->setFrames(anim->getFrames());
+
+        character->setPause(true);
+        character->setLoop(true);
+        character->reset();
+    }
+
+}
+bool RenderRedPanda::isAnimationPLaying(uint16_t id) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr)
+        return t->getPauseState();
+
+    return false;
 
 }
 
@@ -438,7 +539,7 @@ void RenderRedPanda::addLight(IComponent* ptr) {
             default:
             break;
         }
-
+        rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
         nodeMap.insert(std::pair<uint16_t, TNode*>(obj.getId(), node));
     }
  }
@@ -486,19 +587,40 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
 
         auto node = iterator->second;
 
+        if(id >= 25000 && id <= 25010){
+            rps::rotateNode(node, glm::vec3(rot.x, -rot.y-glm::half_pi<float>(), rot.z));
+        }
+        else {
             rps::rotateNode(node, glm::vec3(rot.x, -rot.y, rot.z));
-
+        }
+        
+        if(id == 25000)
+            rps::scaleNode(node, glm::vec3(0.7,0.7,0.7));
+        else if (id > 25000 && id < 25010)
+            rps::scaleNode(node, glm::vec3(2,2,2));
+        else 
             rps::scaleNode(node, sca);
 
-            rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
+        rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
     }
 }
 
 //Update game animations
 void RenderRedPanda::updateAnimations(float dTime) {
-    for(auto anim : animationMap) {
-        anim.second->update(dTime);
+    
+    if(animationMap.find(25000) != animationMap.end()) {
+        animationMap[25000]->update(dTime);
+        animationMap[25001]->update(dTime);
+        animationMap[25002]->update(dTime);
+        animationMap[25003]->update(dTime);
     }
+    else if(animationMap.find(60001) != animationMap.end()) {
+        animationMap[60001]->update(dTime);
+        animationMap[60002]->update(dTime);
+        animationMap[60003]->update(dTime);
+        animationMap[60004]->update(dTime);
+    }
+    
 }
 
 //Update single animation
@@ -969,7 +1091,7 @@ void drawRPS_GUI_HUD(){
 
             glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.89 - pos1.z * h * 0.00021, h*0.6111 - pos1.x * h * 0.00021, w*0.2, h*0.5))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.89 - pos1.z * h * 0.00018, h*0.65 - pos1.x * h * 0.00018 * 0.5, w*0.2, h*0.5))) {
 
                 nk_layout_row_static(GUI, h*0.021, h*0.021, 1);
 
@@ -1055,6 +1177,7 @@ void gui::init() {
     gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck4.gif");
     gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck5.gif");
     gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck6.gif");
+    gui::cityName                       =   gui::loadTexture("media/img/GUI/Other/cityName.png");
     gui::countdown[1]                   =   gui::loadTexture("media/img/GUI/Other/1.png");
     gui::countdown[2]                   =   gui::loadTexture("media/img/GUI/Other/2.png");
     gui::countdown[3]                   =   gui::loadTexture("media/img/GUI/Other/3.png");

@@ -5,7 +5,7 @@
 namespace LAPAL{
 
     //Universal constant
-    const float gravity = 50.f;
+    const float gravity = 120.f;
 
     //3d float point
     typedef glm::vec3 vec3f;

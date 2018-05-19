@@ -11,7 +11,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd EdificiosFuera/CircuitMaterial_Base_Color.png
-bump EdificiosFuera/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.001
 Ns 96.078431
@@ -23,7 +22,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd PlanoCarretera/Material.001_Base_Color.png
-bump PlanoCarretera/Material.001_Normal_OpenGL.png
 
 newmtl Material.002
 Ns 96.078431
@@ -35,7 +33,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Coche/DefaultMaterial_Base_Color.png
-bump Coche/DefaultMaterial_Normal_OpenGL.png
 
 newmtl Material.005
 Ns 96.078431
@@ -47,7 +44,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd PistaBordillo/DefaultMaterial_Base_Color.png
-bump PistaBordillo/DefaultMaterial_Normal_OpenGL.png
 
 newmtl Material.006
 Ns 96.078431
@@ -59,7 +55,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Farolas/CircuitMaterial_Base_Color.png
-bump Farolas/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.009
 Ns 96.078431
@@ -71,7 +66,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Bidones/CircuitMaterial_Base_Color.png
-bump Bidones/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.010
 Ns 96.078431
@@ -83,7 +77,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd ObjetosPasillo/DefaultMaterial_Base_Color.png
-bump ObjetosPasillo/DefaultMaterial_Normal_OpenGL.png
 
 newmtl Material.011
 Ns 96.078431
@@ -95,7 +88,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Señales/DefaultMaterial_Base_Color.png
-bump Señales/DefaultMaterial_Normal_OpenGL.png
 
 newmtl Material.012
 Ns 96.078431
@@ -107,7 +99,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd EdificiosIndustrial/CircuitMaterial_Base_Color.png
-bump EdificiosIndustrial/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.013
 Ns 96.078431
@@ -119,7 +110,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Tuberias/CircuitMaterial_Base_Color.png
-bump Tuberias/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.014
 Ns 96.078431
@@ -131,7 +121,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd EdificiosPasillo/CircuitMaterial_Base_Color.png
-bump EdificiosPasillo/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.015
 Ns 96.078431
@@ -143,7 +132,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Puente/CircuitMaterial_Base_Color.png
-bump Puente/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material2
 Ns 96.078431
@@ -155,4 +143,3 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd EdificiosPasillo/Material2_Base_Color.png
-bump Puente/CircuitMaterial_Normal_OpenGL.png

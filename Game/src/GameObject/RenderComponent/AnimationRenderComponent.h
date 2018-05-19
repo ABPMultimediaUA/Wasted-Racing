@@ -8,18 +8,10 @@ class AnimationRenderComponent : public IRenderComponent {
 public:
 
     //Constructor
-	AnimationRenderComponent(GameObject& newGameObject, const char* newStr, int newFrames) : 
-        IRenderComponent(newGameObject), frames(newFrames) {
+	AnimationRenderComponent(GameObject& newGameObject, const char* newStr, int newFrames, int newPlayer) : 
+        IRenderComponent(newGameObject), frames(newFrames), player(newPlayer) {
 
-		std::string folder = "";
-		int i = 0;
-
-		while(newStr[i]!='_'){
-			folder += newStr[i];
-			i++;
-		}
-
-		path = "media/anim/" + folder + "/" + std::string(newStr);
+		path = "media/anim/" + std::string(newStr);
 
 	}
 
@@ -53,11 +45,13 @@ public:
 
 	int getState() 		{ return state; }
 	int getFrames()		{ return frames; }
+	int getPlayer()		{ return player; }
 
 private:
 
 	std::string path;
     int frames;
     int state = 2; // 0 = paused, 1 = play once, 2 = play loop
+	int player = 0; // 0 - punk, 1 - croco, 2 - cyborg, 3 - witch
 
 };
