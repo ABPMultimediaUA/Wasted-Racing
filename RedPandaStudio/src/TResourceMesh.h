@@ -54,7 +54,7 @@ class TResourceMesh : public TResource {
 
     private:
         //Vertex info
-        //GLfloat* vertex, *normals, *textures, *tangents, *bitangents;
+        GLfloat* vertex, *normals, *textures, *tangents, *bitangents;
         //Vertex indices
         GLuint* vertexIndices;
         //Number of faces (assuming faces are triangles, what we currently are forcing)

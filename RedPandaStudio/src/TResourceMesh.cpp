@@ -19,7 +19,7 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     vboHandles = (unsigned int *)malloc(sizeof(unsigned int) * 6);
     glGenBuffers(6, vboHandles);
     
-    float* vertex = new float[(sizeof(float) * nVertex * 3)];
+    vertex = new float[(sizeof(float) * nVertex * 3)];
     memcpy(&vertex[0], m->mVertices, 3 * sizeof(float) * nVertex);
 
     //Bind and pass to OpenGL the first array (vertex coordinates)
