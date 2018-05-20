@@ -7,9 +7,11 @@ void addAI(int selectedPlayer);
 void loadAnimations();
 void addStateChange(EventData eData);
 
-void SelectionState::init() {
+void SelectionState::init() 
+{
 
-    if(!initialized) {
+    if(!initialized) 
+    {
         //Bind all managers that are going to be used
         eventManager  = &EventManager::getInstance();
         inputManager  = &InputManager::getInstance();
@@ -89,7 +91,8 @@ void SelectionState::init() {
     GlobalVariables::getInstance().setFixedPlayer(false);
 }
 
-void SelectionState::update(float &accumulatedTime) {
+void SelectionState::update(float &accumulatedTime) 
+{
 
     int selectedPlayer = GlobalVariables::getInstance().getSelectedPlayer(); 
 
@@ -184,16 +187,19 @@ void SelectionState::update(float &accumulatedTime) {
     Game::getInstance().setStay(objectManager->getGameRunning());
 }
 
-void SelectionState::draw() {
+void SelectionState::draw() 
+{
     renderManager->draw();
 }
 
-void SelectionState::close() {
+void SelectionState::close() 
+{
     
 }
 
 //Additional functions
-void addAI(int selectedPlayer){
+void addAI(int selectedPlayer)
+{
     GameObject::TransformationData transform;
     uint16_t id;
 
@@ -244,9 +250,17 @@ void addAI(int selectedPlayer){
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 }
 
-void loadAnimations() {
+void loadAnimations() 
+{
 
     IRenderFacade* f = RenderManager::getInstance().getRenderFacade();
+
+    //f->deleteAnimation("Punk/CharSelect/punkAnimation_000");
+    //f->deleteAnimation("Crocodile/CharSelect/cocodrilaBonesSelect_000");
+    //f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
+    //f->deleteAnimation("Witch/CharSelect/bruja_000");
+
+    std::cout << "Loading animations" << std::endl;
 
     f->addAnimation(00, "Punk/Idle/punkAnimation_000", 62);
     f->addAnimation(01, "Punk/Correr/punkAnimation_000", 70);
@@ -279,11 +293,14 @@ void loadAnimations() {
     f->addAnimation(34, "Witch/LanzarItemMovimiento/bruja_000", 39);
     f->addAnimation(35, "Witch/DerrapeDCHA/bruja_000", 81);
     f->addAnimation(36, "Witch/DerrapeIZQ/bruja_000", 78);
+
+    std::cout << "Llega al final" << std::endl;
     
 }
 
 
-void addStateChange(EventData eData) {
+void addStateChange(EventData eData) 
+{
 
     if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION && GlobalVariables::getInstance().getGameLoaded()){
 
@@ -294,8 +311,19 @@ void addStateChange(EventData eData) {
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60004}});
         EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60005}});
 
+        EventManager::getInstance().update();
+
+        std::cout << "Empieza a borrar" << std::endl;
+
+        IRenderFacade* f = RenderManager::getInstance().getRenderFacade();
+
+        f->deleteAnimation("Punk/CharSelect/punkAnimation_000");
+        f->deleteAnimation("Crocodile/CharSelect/cocodrilaBonesSelect_000");
+        f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
+        f->deleteAnimation("Witch/CharSelect/bruja_000");
+
+        std::cout << "Acaba de borrar" << std::endl;
         //Change state
         Game::getInstance().setState(IGameState::stateType::PREMATCH);
     }
-    
 }

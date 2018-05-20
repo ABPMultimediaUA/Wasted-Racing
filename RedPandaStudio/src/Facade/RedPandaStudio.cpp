@@ -763,6 +763,16 @@ TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {
 
 }
 
+
+////////////////////////////////////////////////
+// RESOURCE DESTRUCTORS
+
+
+void RedPandaStudio::deleteAnimation(const char* n)
+{
+	resourceManager->deleteResourceAnimation(n);
+}
+
 /////////////////////////////////////////////////
 //  LIGHTS,CAMERA AND PARTICLES MANAGEMENT
 void RedPandaStudio::renderLights() {

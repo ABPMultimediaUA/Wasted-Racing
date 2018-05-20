@@ -14,7 +14,7 @@
 #include <vector>
 #include <chrono>
 
-#include "RedPanda.h"
+#include <RedPanda.h>
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -68,6 +68,10 @@ public:
     void updateCamera(glm::vec3 position, glm::vec3 target);
 
     void setGUIDrawFunction(void (*)());
+
+    ///////////////////////////////////////////
+    // RESOURCE DESTRUCTORS
+    void deleteAnimation(const char* n);
 
     ////////////////////////////////////////
     //  GRAPHICS OPTIONS AND PARAMETERS

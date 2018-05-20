@@ -4,7 +4,7 @@
 class TResource{
     public:
         TResource() {};
-        ~TResource() {
+        virtual ~TResource() {
             if(name!=NULL)
                 delete name;
         };

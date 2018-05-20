@@ -69,6 +69,10 @@ public:
 
     void setGUIDrawFunction(void (*)());
 
+    ///////////////////////////////////////////
+    // RESOURCE DESTRUCTORS
+    void deleteAnimation(const char* n);
+
     ////////////////////////////////////////
     //  GRAPHICS OPTIONS AND PARAMETERS
     //Initializes all parameters and programs to operate with the shadow mapping

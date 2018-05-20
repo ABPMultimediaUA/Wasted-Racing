@@ -17,7 +17,7 @@
 class TResourceAnimation : public TResource {
     public:
         TResourceAnimation(){};
-        ~TResourceAnimation(){};
+        virtual ~TResourceAnimation();
 
         //Load the resource specified in the route provided
         bool loadResource();

@@ -15,7 +15,7 @@
 class TResourceMesh : public TResource {
     public:
         TResourceMesh() {};
-        ~TResourceMesh() {};
+        virtual ~TResourceMesh();
 
         //Copies the data needed from an already loaded in memory mesh (loaded with assimp)
         bool loadMesh(aiMesh* m);
@@ -54,7 +54,7 @@ class TResourceMesh : public TResource {
 
     private:
         //Vertex info
-        GLfloat* vertex, *normals, *textures, *tangents, *bitangents;
+        //GLfloat* vertex, *normals, *textures, *tangents, *bitangents;
         //Vertex indices
         GLuint* vertexIndices;
         //Number of faces (assuming faces are triangles, what we currently are forcing)
