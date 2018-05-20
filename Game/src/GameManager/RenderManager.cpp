@@ -110,7 +110,13 @@ void RenderManager::update(float dTime) {
 
     //Update camera collision
     //:::>Depends on the player being created, it shouldn't
-    renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
+    
+    //Update camera
+    CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
+    c->update(dTime);
+
+    //Update blur
+    updateBlur();
 
     //Update debug if debug mode activated
     if(debugState){
@@ -150,6 +156,21 @@ void RenderManager::close(){
 void RenderManager::splitQuadTree(){
     //renderComponentTree.init(maxObjPerNode, updateRange, renderComponentList, x0, x1, y0, y1);
     //renderComponentTree.divide();
+}
+
+//==============================================
+// VISUAL EFFECTS
+//============================================== 
+void RenderManager::updateBlur()
+{
+    //Camera pointer
+    CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
+
+    //Update blur
+    renderFacade->setBlurOrigin(0.f, 0.0f);
+    renderFacade->setBlurEffect(c->getBlurActivation());
+    renderFacade->setBlurIntensity(1.5 * c->getBlurFactor());
+    renderFacade->setBlurRadius(0.5);
 }
 
 //==============================================

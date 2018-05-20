@@ -22,16 +22,28 @@
 
 namespace rps {
 
+//Enumerators
+enum PPOption{
+    DEFAULT,
+    BLACK_WHITE,
+    NEGATIVE,
+    HIGH_CONTRAST,
+    MEDIAN,
+    NEON,
+    BLUR
+};
+
 class RedPandaStudio{
 
 public:
 
+    
+
+
     RedPandaStudio() {}
     ~RedPandaStudio() {
-        //=========================================================================
         //Delete frame buffers
         glDeleteFramebuffers(1, &depthBuffer);
-        //=========================================================================
     }
 
     //////////////////////////////
@@ -110,14 +122,15 @@ public:
     void setWindow(SDL_Window* rw )     {   window = rw;              }   
     void setSilhouette(bool b)          {   silhouetteActivated = b;  }
 
-    //  POSTPROCESSING SETTERS
-    void setPPActive(bool b)           {   postProcessingActive = b; }
-    void setPPOption(int  o)           {   postProcessingOption = o; }
-    void setPPOffset(int  o)           {   postProcessingOption = o; }
-    void setPPBlurPos(float x, float y){   blur_x = x; blur_y = y;   }
-    void setPPBlurStrength(float  s)   {   blur_strength = s;        }
-    void setPPBlurDist(float  d)       {   blur_dist = d;            }
-    void setPPNeonFactor(float  n)     {   neonFactor = n;           }
+    //  POSTPROCESSING GETTERS & SETTERS
+    bool getPPActive()                 {   return postProcessingActive; }
+    void setPPActive(bool b)           {   postProcessingActive = b;    }
+    void setPPOption(PPOption  o)      {   postProcessingOption = o;    }
+    void setPPOffset(int  o)           {   offset = o;    }
+    void setPPBlurPos(float x, float y){   blur_x = x; blur_y = y;      }
+    void setPPBlurStrength(float  s)   {   blur_strength = s;           }
+    void setPPBlurDist(float  d)       {   blur_dist = d;               }
+    void setPPNeonFactor(float  n)     {   neonFactor = n;              }
 
 private: 
 
@@ -193,7 +206,8 @@ private:
     int windowHeight = 1024;
 
     //Option settings
-    int postProcessingOption = 0; //Integer that chooses the postprocessing option
+    PPOption postProcessingOption = PPOption::DEFAULT; //Integer that chooses the postprocessing option
+
     float neonFactor = 0;         //Negative factor of the neon
     float offset = 1/300;         //Kernel offset of pixel picking
     float blur_x = 0.f;           //blur X position (-1 to 1)

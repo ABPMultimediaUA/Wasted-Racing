@@ -133,7 +133,7 @@ void main()
         color = vec4(col, 1.0);
     }
 
-    if(option == 7)
+    if(option == 6)
     {
         //Emanation of the blur
         vec2 blur_center = vec2(blur_x, blur_y);

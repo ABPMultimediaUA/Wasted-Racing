@@ -1374,6 +1374,62 @@ void gui::playAnimation() {
     }
 }
 
+//==============================================================
+// VISUAL EFFECTS
+//==============================================================
+//Set the postprocessing state
+void RenderRedPanda::setPostProcessing(bool b)
+{
+    device->setPPActive(b);
+}
+
+//Set the current postprocessing option to render
+void RenderRedPanda::setPostProcessingOption(int o)
+{
+    device->setPPOption((rps::PPOption) o);
+}
+
+//Set the blur effect
+void RenderRedPanda::setBlurEffect(bool b)
+{
+    if(b)
+    {
+        //Check postprocessing
+        if(!device->getPPActive())
+            setPostProcessing(true);
+
+        //Set blur
+        device->setPPOption(rps::PPOption::BLUR);
+    }
+    else
+    {
+        //Check postprocessing
+        if(device->getPPActive())
+            setPostProcessing(false);
+
+        //Set blur
+        device->setPPOption(rps::PPOption::DEFAULT);
+    }
+}
+
+//Set the blur effect origin
+void RenderRedPanda::setBlurOrigin(float x, float y)
+{
+    device->setPPBlurPos(x, y);
+}
+
+//Set the blur effect effect intensity
+void RenderRedPanda::setBlurIntensity(float i)
+{
+    device->setPPBlurStrength(i);
+}
+
+//Set the blur effect radius
+void RenderRedPanda::setBlurRadius(float r)
+{
+    device->setPPBlurDist(r);
+}
+
 ////////////
 //  Image
 ////////////
