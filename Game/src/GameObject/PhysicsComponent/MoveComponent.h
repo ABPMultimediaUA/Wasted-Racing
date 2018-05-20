@@ -55,6 +55,9 @@ public:
 	void updateMaxSpeedOverTime(const float dTime);
 	void updateJump(LAPAL::movementData& mData, glm::vec3& trans, LAPAL::plane3f t);
 
+	//Invulnerability
+	void changeInvul(bool i);
+
     //==========================================
     // GETTERS AND SETTERS
     //==========================================

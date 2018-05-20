@@ -22,7 +22,7 @@ void ItemBlueShellComponent::init(float actualVector)
     getGameObject().getComponent<PathPlanningComponent>()->setLastPosVector(actualVector);
     waypoints = WaypointManager::getInstance().getWaypoints();
     go = false;
-    getGameObject().getComponent<CollisionComponent>()->setCollisionOn(false);
+    getGameObject().getComponent<MoveComponent>()->changeInvul(true);
 }
 
 //:::> This ALL should be in AIManager since it does calculations using all components

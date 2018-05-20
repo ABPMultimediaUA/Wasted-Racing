@@ -129,7 +129,7 @@ void PhysicsManager::interpolate(float accumulatedTime, const float maxTime) {
 
 void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
-    if(move != nullptr && coll != nullptr && coll->getCollisionOn() == true)
+    if(move != nullptr && coll != nullptr && move->getMovemententData().invul == false)
     {
         CollisionComponent* ourColl = coll.get();
 

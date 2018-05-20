@@ -308,6 +308,8 @@ void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terr
 {
     //Create representation of the model if there is a model
     RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "", 0, player);
+        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "");
+
 
     //Create collision component
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);

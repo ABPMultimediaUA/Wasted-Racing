@@ -136,13 +136,13 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         itemHolder->setItemType(-1);
 
         ////Send event of creation
-        //EventData eData;
-        //EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, eData});
-        //
-        ////Create item and initialize it
-        //auto component = createRedShell(obj, IItemComponent::InstanceType::LOCAL );
-        //std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();     
-        //return component;
+        /*EventData eData;
+        EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, eData});
+        
+        //Create item and initialize it
+        auto component = createRedShell(obj, IItemComponent::InstanceType::LOCAL );
+        std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();     
+        return component;*/
     }
 
     //Blue shell item
@@ -152,14 +152,14 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         itemHolder->setItemType(-1);
 
         ////Send event of creation
-        //EventData eData;
-        //EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, eData});
+        EventData eData;
+        /*EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, eData});
 //
-        ////Create item and initialize it
-        //auto component = createBlueShell(obj, IItemComponent::InstanceType::LOCAL);
-        //float actualVector = obj.getComponent<PathPlanningComponent>()->getLastPosVector();
-        //std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init(actualVector);
-        //return component;
+        //Create item and initialize it
+        auto component = createBlueShell(obj, IItemComponent::InstanceType::LOCAL);
+        float actualVector = obj.getComponent<PathPlanningComponent>()->getLastPosVector();
+        std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init(actualVector);
+        return component;*/
     }
 
     //Trap item
@@ -321,8 +321,8 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
 
         //Create AI components
         //:::>No hardcoded variables
-        AIManager::getInstance().createAIDrivingComponent(*ob.get());
-        SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
+        //AIManager::getInstance().createAIDrivingComponent(*ob.get());
+        //SensorManager::getInstance().createVSensorComponent(*ob.get(), 55.f, obj.getComponent<MoveComponent>()->getMovemententData().angle, 0.f, 0);
     }
     //___>
 
@@ -571,7 +571,7 @@ void ItemManager::deleteItem(IComponent::Pointer component)
 //==============================================
 
 void createItemEvent(EventData eData) {
-    if(GlobalVariables::getInstance().getServer())
+    /*if(GlobalVariables::getInstance().getServer())
     {
         //Create item
         auto item = ItemManager::getInstance().createItem(eData.Component.get()->getGameObject());
@@ -589,7 +589,7 @@ void createItemEvent(EventData eData) {
 
         //Create the item
         ItemManager::getInstance().createItem(*player);
-    }
+    }*/
 }
 
 void objectDeleteItem(EventData eData) {

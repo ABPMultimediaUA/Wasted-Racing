@@ -2,6 +2,7 @@
 
 #include "IItemComponent.h"
 #include "../PhysicsComponent/MoveComponent.h"
+#include "../PhysicsComponent/CollisionComponent.h"
 
 class ItemStarComponent : public IItemComponent
 {

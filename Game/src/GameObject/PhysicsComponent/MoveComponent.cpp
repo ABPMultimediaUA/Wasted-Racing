@@ -1,4 +1,5 @@
 #include "MoveComponent.h"
+#include "CollisionComponent.h"
 #include "../GameObject.h"
 #include "../../GameManager/RenderManager.h"
 #include <iostream>
@@ -196,6 +197,10 @@ void MoveComponent::changeVel(float v){
     mData.vel      = v;
 }
 
+void MoveComponent::changeInvul(bool i){
+    mData.invul      = i;
+}
+
 //=================================================
 //Functions related with temporal data changes
 //=================================================
@@ -203,9 +208,9 @@ void MoveComponent::changeVel(float v){
 //Activate temporal speed change
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
 
-    auto objectRender = this->getGameObject().getComponent<ObjectRenderComponent>();
+    auto animationRender = this->getGameObject().getComponent<AnimationRenderComponent>();
 
-    if(objectRender!=nullptr &&objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
+    if(animationRender!=nullptr && animationRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
     {
         if(mData.max_vel != maxSpeed){
             auxData.max_vel         = mData.max_vel;
@@ -222,9 +227,9 @@ void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, floa
 //Update and interpolate temporal speed change
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    auto objectRender = this->getGameObject().getComponent<ObjectRenderComponent>();
+    auto animationRender = this->getGameObject().getComponent<AnimationRenderComponent>();
 
-    if(objectRender!=nullptr && objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
+    if(animationRender!=nullptr && animationRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
     {
         if(mData.boost && !mData.coll) {
             if(constantAlteredTime > 0) {
@@ -244,6 +249,7 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
                 if(decrementalAlteredTime < 0) {
                     mData.max_vel = auxData.max_vel;
                     mData.boost   = false;
+                    mData.invul = false;
                 }
                     
             }

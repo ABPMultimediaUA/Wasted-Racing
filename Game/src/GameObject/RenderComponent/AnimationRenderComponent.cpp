@@ -15,7 +15,7 @@ void AnimationRenderComponent::update(float dTime) {
 void AnimationRenderComponent::close() {
 
     RenderManager::getInstance().getRenderFacade()->deleteObject(this);
-
+  
 }
 
 //Drawer

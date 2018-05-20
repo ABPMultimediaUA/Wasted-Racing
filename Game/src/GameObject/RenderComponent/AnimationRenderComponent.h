@@ -7,9 +7,15 @@ class AnimationRenderComponent : public IRenderComponent {
 
 public:
 
+	enum Poly {
+		High,
+		Medium,
+		Low
+	};
+	
     //Constructor
 	AnimationRenderComponent(GameObject& newGameObject, const char* newStr, int newFrames, int newPlayer) : 
-        IRenderComponent(newGameObject), frames(newFrames), player(newPlayer) {
+        IRenderComponent(newGameObject), frames(newFrames), player(newPlayer), polyMesh(Poly::High) {
 
 		path = "media/anim/" + std::string(newStr);
 
@@ -47,11 +53,23 @@ public:
 	int getFrames()		{ return frames; }
 	int getPlayer()		{ return player; }
 
+
+
+	void setPolyMesh(Poly p){
+		polyMesh = p;
+	}
+
+
+	Poly getPolyMesh() {
+		return polyMesh;
+	}
+
 private:
 
 	std::string path;
     int frames;
     int state = 2; // 0 = paused, 1 = play once, 2 = play loop
 	int player = 0; // 0 - punk, 1 - croco, 2 - cyborg, 3 - witch
+	Poly polyMesh;
 
 };
