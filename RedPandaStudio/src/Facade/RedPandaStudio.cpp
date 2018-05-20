@@ -42,9 +42,8 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 void RedPandaStudio::updateDevice() 
 {
-
 	//Update particles
-	updateParticles();
+	//updateParticles();
 
 	//Clean the scene
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -70,26 +69,43 @@ void RedPandaStudio::updateDevice()
 	//Render all the billboards in the scene
 	renderBillboards();
 
-	//Activate the shader used to draw the scene
+	//Draw the scene normally
 	glUseProgram(scene->getEntity()->getProgramID());
-
-
-	//==================
-	//drawShadowMapping();
-	//==================
-
-	//Render our scene
 	renderCamera();
 	renderLights();
 
-	scene->draw();
+	if(silhouetteActivated)
+	{
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(1.0, 10.0);
+
+		glUniform1i(silFlagIdentifier, false);
+
+		scene->draw();
+
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+    	glUniform1i(silFlagIdentifier, true);
+
+		scene->draw();
+
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else
+	{
+		scene->draw();
+	}
 
 	//RenderParticles
-	glUseProgram(particlesID);
+	/*glUseProgram(particlesID);
 	glBindVertexArray(paticlesVertexArray);
 	renderParticles();
 	glUseProgram(scene->getEntity()->getProgramID());
-
+*/
 	//Render the scene in a quad if post processing is selected
 	if(postProcessingActive)
 		quadDrawPostProcessing();
@@ -765,6 +781,16 @@ TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {
 
 		return transformT;
 
+}
+
+
+////////////////////////////////////////////////
+// RESOURCE DESTRUCTORS
+
+
+void RedPandaStudio::deleteAnimation(const char* n)
+{
+	resourceManager->deleteResourceAnimation(n);
 }
 
 /////////////////////////////////////////////////

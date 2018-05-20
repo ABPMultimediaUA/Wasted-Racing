@@ -15,6 +15,17 @@ std::vector<std::string> TResourceAnimation::split(const std::string& s, const c
 	return v;
 }
 
+TResourceAnimation::~TResourceAnimation()
+{
+    std::cout << "Empezamos a borrar animacion" << std::endl;
+    for(unsigned int i = 0; i < objs.size(); i++)
+    {
+        delete objs[i];
+    }
+    objs.clear();
+    std::cout << "Animacion borrada" << std::endl;
+}
+
 bool TResourceAnimation::loadResource()
 {
 

@@ -17,6 +17,17 @@ std::vector<std::string> TResourceOBJ::split(const std::string& s, const char& c
 	return v;
 }
 
+TResourceOBJ::~TResourceOBJ()
+{
+    std::cout << "Empezamos a borrar OBJ" << std::endl;
+    for(unsigned int i = 0; i < meshes.size(); i++)
+    {
+        delete meshes[i];
+    }
+    meshes.clear();
+    std::cout << "Terminamos de borrar OBJ" << std::endl;
+}
+
 //Loads only the meshes in the scene, ignoring the materials and textures. This is used for the animations, to avoid loading one different material for every frame
 bool TResourceOBJ::loadOnlyMeshes()
 {

@@ -63,6 +63,9 @@ public:
     virtual void addAnimation(IComponent* ptr) {};
     virtual void addAnimation(uint16_t id, const char * mesh, int frames) {}
     
+    //Delete an animation from the resource manager
+    virtual void deleteAnimation(const char * animation) {}
+
     //Add a light to the game
     virtual void addLight(IComponent* ptr);
 

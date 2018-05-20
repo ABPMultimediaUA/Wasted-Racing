@@ -30,6 +30,11 @@ class ResourceManager {
         TResourceAnimation* getResourceAnimation(const char* n, int frames);
         TResourceLoD* getResourceLoD(const char* n);
 
+        //The following set of functions erases the resource specified in the route n from
+        //the vector of resources and then deletes the object, freeing the memory asociated
+        void deleteResourceOBJ(const char* n);
+        void deleteResourceAnimation(const char* n);
+
 
     private:
         std::vector<TResourceMesh*> meshes;

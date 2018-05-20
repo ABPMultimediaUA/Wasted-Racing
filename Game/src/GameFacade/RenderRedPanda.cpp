@@ -411,14 +411,22 @@ void RenderRedPanda::addAnimation(IComponent* ptr) {
 }
 
 //Add an animation to the game
-void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames) {
-    
+void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames) 
+{
     std::string s = std::string("media/anim/") + std::string(mesh);
 
     TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), s.c_str(), true, frames, 1/24.0);
 
     animationMap.insert(std::pair<uint16_t, TAnimation*>(id, (TAnimation*)node->getEntity()));
 
+}
+
+void RenderRedPanda::deleteAnimation(const char * animation)
+{
+    std::cout << "Delete Animation: " << animation << std::endl;
+    std::string s = std::string("media/anim/") + std::string(animation);
+
+    device->deleteAnimation(s.c_str());
 }
 
 void RenderRedPanda::stopAnimation(uint16_t id) {

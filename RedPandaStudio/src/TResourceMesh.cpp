@@ -1,19 +1,39 @@
 #include "TResourceMesh.h"
 #include <iostream>
 
+TResourceMesh::~TResourceMesh()
+{
+    glDeleteBuffers(6, vboHandles);
+    glDeleteVertexArrays(1, &vaoHandles);
+    glDeleteBuffers(1, &boxIBOIndices);
+    glDeleteBuffers(1, &boxVBOVertices);
+}
+
 bool TResourceMesh::loadMesh(aiMesh* m)
 {
     int nFaces = m->mNumFaces;
     nTriangles = nFaces;
     nVertex = m->mNumVertices;
+
+    //Generate an array of 6 buffer identifiers
+    vboHandles = (unsigned int *)malloc(sizeof(unsigned int) * 6);
+    glGenBuffers(6, vboHandles);
     
-    vertex = (float *)malloc(sizeof(float) * nVertex * 3);
+    vertex = new float[(sizeof(float) * nVertex * 3)];
     memcpy(&vertex[0], m->mVertices, 3 * sizeof(float) * nVertex);
+
+    //Bind and pass to OpenGL the first array (vertex coordinates)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
 
     if(m->HasNormals())
     {
-        normals = (float *)malloc(sizeof(float) * nVertex * 3);
-        memcpy(&normals[0], m->mNormals, 3 * sizeof(float) * nVertex);
+        //normals = (float *)malloc(sizeof(float) * nVertex * 3);
+        memcpy(&vertex[0], m->mNormals, 3 * sizeof(float) * nVertex);
+
+        //Bind and pass to OpenGL the second array (vertex normals)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
     }
 
     //We assume we are always working with triangles
@@ -30,30 +50,45 @@ bool TResourceMesh::loadMesh(aiMesh* m)
 
     if(m->HasTextureCoords(0))
     {
-        textures=(float *)malloc(sizeof(float)*2*nVertex);
+        //textures=(float *)malloc(sizeof(float)*2*nVertex);
         for(unsigned int k = 0; k<nVertex;k++)
         {
-            textures[k*2] = m->mTextureCoords[0][k].x;
-            textures[k*2+1] = m->mTextureCoords[0][k].y;
+            vertex[k*2] = m->mTextureCoords[0][k].x;
+            vertex[k*2+1] = m->mTextureCoords[0][k].y;
         }
+        //Bind and pass to OpenGL the third array (vertex texture coordinates)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), vertex, GL_STATIC_DRAW);
     }
 
     if(m->HasTangentsAndBitangents())
     {
-        tangents = (float *)malloc(sizeof(float)*3*nVertex);
-        bitangents = (float *)malloc(sizeof(float)*3*nVertex);
-        memcpy(&tangents[0], m->mTangents, 3 * sizeof(float) * nVertex);
-        memcpy(&bitangents[0], m->mBitangents, 3 * sizeof(float) * nVertex);
-    }
+        //tangents = (float *)malloc(sizeof(float)*3*nVertex);
+        //bitangents = (float *)malloc(sizeof(float)*3*nVertex);
+        memcpy(&vertex[0], m->mTangents, 3 * sizeof(float) * nVertex);
 
-    //Generate an array of 4 buffer identifiers
-    vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
-    glGenBuffers(6, vboHandles);
+        //Bind and pass to OpenGL the fourth array (vertex tangent)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[3]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+
+        memcpy(&vertex[0], m->mBitangents, 3 * sizeof(float) * nVertex);
+
+        //Bind and pass to OpenGL the fifth array (vertex bitangent)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[4]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+    }
     
     //=============================================================================
-    //Generate an array of 3 vertex array identifiers
+    //Generate an array of a vertex array identifier
     glGenVertexArrays(1, &vaoHandles);
     glBindVertexArray(vaoHandles);
+
+    //==============================================
+    //BIND VAO
+    glBindVertexArray(vaoHandles);
+    //==============================================  
+
+
 
     //Bind and pass to OpenGL the first array (vertex coordinates)
    /* glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
@@ -89,22 +124,50 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     //Generates the two points needed for a parallel-to-edges bounding box
     generateBoundingBox();
 
-
 /*
-    std::cout << "nVertex: " << nVertex << std::endl;
-    std::cout << "nTriangles: " << nTriangles << std::endl;
+    //Bind and pass to OpenGL the first array (vertex coordinates)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
 
-    for(int i = 0; i < nTriangles * 6; i++)
-    {
-        std::cout << i << ": " << vertexIndices[i] << std::endl;
-    }
+    //Bind and pass to OpenGL the second array (vertex normals)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
+
+    //Bind and pass to OpenGL the third array (vertex texture coordinates)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
+
+    //Bind and pass to OpenGL the fourth array (vertex tangent)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[3]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), tangents, GL_STATIC_DRAW);
+
+    //Bind and pass to OpenGL the fifth array (vertex bitangent)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[4]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), bitangents, GL_STATIC_DRAW);
+
 */
-/*
-    for(int i = 0; i < nVertex * 3; i++)
+
+    //Bind and pass to OpenGL the fourth array (vertex indices)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[5]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
+
+    delete[] vertex;
+    free(vertexIndices);
+    /*
+    if(m->HasNormals())
     {
-        std::cout << i << ": " << vertex[i] << std::endl;
+        free(normals);
     }
-*/
+    if(m->HasTextureCoords(0))
+    {
+        free(textures);
+    }
+    if(m->HasTangentsAndBitangents())
+    {
+        free(tangents);
+        free(bitangents);
+    }
+    */
 
     return true;
 
@@ -195,36 +258,31 @@ void TResourceMesh::draw()
     
     //Bind and pass to OpenGL the first array (vertex coordinates)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
     //Bind and pass to OpenGL the second array (vertex normals)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     //Bind and pass to OpenGL the third array (vertex texture coordinates)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     //Bind and pass to OpenGL the fourth array (vertex tangent)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[3]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), tangents, GL_STATIC_DRAW);
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     //Bind and pass to OpenGL the fifth array (vertex bitangent)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[4]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), bitangents, GL_STATIC_DRAW);
     glEnableVertexAttribArray(4);
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     //Bind and pass to OpenGL the fourth array (vertex indices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[5]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 
     //We order to draw here
     glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);
@@ -232,6 +290,8 @@ void TResourceMesh::draw()
 
     //==============================================    
     //Detach elements
+    glDisableVertexAttribArray(4);
+    glDisableVertexAttribArray(3);
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);

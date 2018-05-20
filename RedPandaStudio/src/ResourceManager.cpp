@@ -1,5 +1,7 @@
 #include "ResourceManager.h"
 
+//Loads the mesh specified in the route provided and stores it in
+//the resource manager vector, for latter access
 TResourceMesh* ResourceManager::getResourceMesh(const char* n)
 {
     unsigned int i;
@@ -30,6 +32,8 @@ TResourceMesh* ResourceManager::getResourceMesh(const char* n)
     return res;
 }
 
+//Loads the material specified in the route provided and stores it in
+//the resource manager vector, for latter access
 TResourceMaterial* ResourceManager::getResourceMaterial(const char* n)
 {
     unsigned int i;
@@ -60,7 +64,8 @@ TResourceMaterial* ResourceManager::getResourceMaterial(const char* n)
     return res;
 }
 
-
+//Loads the texture specified in the route provided and stores it in
+//the resource manager vector, for latter access
 TResourceTexture* ResourceManager::getResourceTexture(const char* n)
 {
     unsigned int i;
@@ -91,6 +96,8 @@ TResourceTexture* ResourceManager::getResourceTexture(const char* n)
     return res;
 }
 
+//Loads the shader specified in the route provided and stores it in
+//the resource manager vector, for latter access
 TResourceShader* ResourceManager::getResourceShader(const char* n, GLenum e)
 {
     unsigned int i;
@@ -122,6 +129,8 @@ TResourceShader* ResourceManager::getResourceShader(const char* n, GLenum e)
     return res;
 }
 
+//Loads the obj specified in the route provided and stores it in
+//the resource manager vector, for latter access
 TResourceOBJ* ResourceManager::getResourceOBJ(const char* n)
 {
     unsigned int i;
@@ -152,6 +161,8 @@ TResourceOBJ* ResourceManager::getResourceOBJ(const char* n)
     return res;
 }
 
+//Loads the animation specified in the route provided and stores it in
+//the resource manager vector, for latter access
 TResourceAnimation* ResourceManager::getResourceAnimation(const char* n, int frames)
 {
     unsigned int i;
@@ -183,7 +194,8 @@ TResourceAnimation* ResourceManager::getResourceAnimation(const char* n, int fra
     return res;
 }
 
-
+//Loads the LoDResource specified in the route provided and stores it in
+//the resource manager vector, for latter access
 TResourceLoD* ResourceManager::getResourceLoD(const char* n)
 {
     unsigned int i;
@@ -213,4 +225,45 @@ TResourceLoD* ResourceManager::getResourceLoD(const char* n)
     }
     
     return res;
+}
+
+void ResourceManager::deleteResourceOBJ(const char* n)
+{
+    unsigned int i;
+    TResourceOBJ* obj = NULL;
+    bool found = false;
+
+    for(i = 0; i < objs.size() && !found; i++)
+    {
+        if(strcmp(n, objs[i]->getName()) == 0)
+        {
+            found = true;
+            obj = objs[i];
+            objs.erase(objs.begin()+i-1);
+            delete obj;
+        }
+    }
+}
+
+void ResourceManager::deleteResourceAnimation(const char* n)
+{
+    unsigned int i;
+    TResourceAnimation* animation = NULL;
+    bool found = false;
+
+    for(i = 0; i < animations.size(); i++)
+    {
+        std::cout << "Animation " << i << " : " << animations[i]->getName() << std::endl;
+    }
+
+    for(i = 0; i < animations.size() && !found; i++)
+    {
+        if(strcmp(n, animations[i]->getName()) == 0)
+        {
+            found = true;
+            animation = animations[i];
+            animations.erase(animations.begin()+i);
+            delete animation;
+        }
+    }
 }

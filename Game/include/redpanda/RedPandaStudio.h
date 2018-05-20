@@ -14,7 +14,7 @@
 #include <vector>
 #include <chrono>
 
-#include "RedPanda.h"
+#include <RedPanda.h>
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -22,28 +22,25 @@
 
 namespace rps {
 
+//Enumerators
+enum PPOption{
+    DEFAULT,
+    BLACK_WHITE,
+    NEGATIVE,
+    HIGH_CONTRAST,
+    MEDIAN,
+    NEON,
+    BLUR
+};
+
 class RedPandaStudio{
 
 public:
 
-    //Enumerators
-    enum PPOption{
-        DEFAULT,
-        BLACK_WHITE,
-        NEGATIVE,
-        HIGH_CONTRAST,
-        MEDIAN,
-        NEON,
-        BLUR
-    };
-
-
     RedPandaStudio() {}
     ~RedPandaStudio() {
-        //=========================================================================
         //Delete frame buffers
         glDeleteFramebuffers(1, &depthBuffer);
-        //=========================================================================
     }
 
     //////////////////////////////
@@ -80,6 +77,10 @@ public:
     void updateCamera(glm::vec3 position, glm::vec3 target);
 
     void setGUIDrawFunction(void (*)());
+
+    ///////////////////////////////////////////
+    // RESOURCE DESTRUCTORS
+    void deleteAnimation(const char* n);
 
     ////////////////////////////////////////
     //  GRAPHICS OPTIONS AND PARAMETERS
@@ -126,7 +127,7 @@ public:
     bool getPPActive()                 {   return postProcessingActive; }
     void setPPActive(bool b)           {   postProcessingActive = b;    }
     void setPPOption(PPOption  o)      {   postProcessingOption = o;    }
-    void setPPOffset(int  o)           {   offset = o;    }
+    void setPPOffset(int  o)           {   offset = o;                  }
     void setPPBlurPos(float x, float y){   blur_x = x; blur_y = y;      }
     void setPPBlurStrength(float  s)   {   blur_strength = s;           }
     void setPPBlurDist(float  d)       {   blur_dist = d;               }
