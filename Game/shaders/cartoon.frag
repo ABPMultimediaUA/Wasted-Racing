@@ -55,11 +55,12 @@ uniform bool textActive;
 uniform sampler2D normalTexture;
 uniform bool normalActive;
 
+uniform bool silhouette;
+
 out vec4 FragColor;
 
 void calculatePointLights()
 {
-
     for(int i = 0; i < numLights && i < maxLights; i++)
     {
 
@@ -130,35 +131,48 @@ void calculateSpotLights()
 
 void main()
 {
-    v_Color = vec4(0.0, 0.0, 0.0, 0.0);
-
-    normal = N;
-
-    if(normalActive)
+    if(silhouette)
     {
-        normal = texture(normalTexture, UV_Coordinates).rgb;
-        normal = normalize(normal * 2.0 - 1.0);
-        normal = normalize(TBN * normal);
-    }
-
-    P2 = vec4(P.x, P.y, P.z, 1.0);
-    V = vec3(normalize(CamPos - P2));
-
-
-    calculatePointLights();
-    calculateSpotLights();
-
-
-    float ambient = 0.2;
-    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
-
-   if(textActive)
-    {
-      FragColor = texture(colorTexture, UV_Coordinates) * v_Color;
-      
+        FragColor = vec4(0.0, 0.0, 0.0, 0.0);
     }
     else
     {
-      FragColor = v_Color;
+        v_Color = vec4(0.0, 0.0, 0.0, 0.0);
+
+        normal = N;
+
+        if(normalActive)
+        {
+            normal = texture(normalTexture, UV_Coordinates).rgb;
+            normal = normalize(normal * 2.0 - 1.0);
+            normal = normalize(TBN * normal);
+        }
+
+        P2 = vec4(P.x, P.y, P.z, 1.0);
+        V = vec3(normalize(CamPos - P2));
+
+
+        calculatePointLights();
+        calculateSpotLights();
+
+
+        float ambient = 0.2;
+        v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
+
+    if(textActive)
+        {
+        FragColor = texture(colorTexture, UV_Coordinates) * v_Color;
+        
+        float levels = 8.0;
+
+        FragColor.x = floor(FragColor.x * levels) / levels;
+        FragColor.y = floor(FragColor.y * levels) / levels;
+        FragColor.z = floor(FragColor.z * levels) / levels;
+
+        }
+        else
+        {
+        FragColor = v_Color;
+        }
     }
 }
