@@ -6,14 +6,15 @@ vec4 v_Color;
 
 in vec2 UV_Coordinates; //UV del vertex shader
 
-varying vec3 P;
-varying vec3 N;
-varying vec4 CamPos;
+in vec3 P;
+in vec3 N;
+in vec4 CamPos;
 
-varying mat4 view;
-varying mat4 modelViewMatrix;
+in mat4 view;
+in mat4 modelViewMatrix;
 
-varying mat3 TBN;
+//Tangent-Bitangent-Normal Matrix used to convert from tangent space to world space.
+in mat3 TBN;
 
 vec4 P2;
 vec3 V = vec3(0.0, 0.0, 0.0);
@@ -54,6 +55,8 @@ uniform bool textActive;
 uniform sampler2D normalTexture;
 uniform bool normalActive;
 
+uniform bool silhouette;
+
 out vec4 FragColor;
 
 void calculatePointLights()
@@ -84,7 +87,7 @@ void calculatePointLights()
 
         if(specular > 0.0)
         {
-            //v_Color += vec4(specular * light[i].intensity) * vec4(material.ks, 1.0);
+            v_Color += vec4(specular * light[i].intensity) * vec4(material.ks, 1.0);
         }
 
     }
@@ -129,35 +132,42 @@ void calculateSpotLights()
 
 void main()
 {
-    v_Color = vec4(0.0, 0.0, 0.0, 0.0);
-
-    normal = N;
-
-    if(normalActive)
+    if(silhouette)
     {
-        normal = texture(normalTexture, UV_Coordinates).rgb;
-        normal = normalize(normal * 2.0 - 1.0);
-        normal = normalize(TBN * normal);
-    }
-
-    P2 = vec4(P.x, P.y, P.z, 1.0);
-    V = vec3(normalize(CamPos - P2));
-
-
-    calculatePointLights();
-    calculateSpotLights();
-
-
-    float ambient = 0.2;
-    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
-
-   if(textActive)
-    {
-      FragColor = texture(colorTexture, UV_Coordinates) * v_Color;
-      
+        FragColor = vec4(0.0, 0.0, 0.0, 0.0);
     }
     else
     {
-      FragColor = v_Color;
+        v_Color = vec4(0.0, 0.0, 0.0, 0.0);
+
+        normal = N;
+
+        if(normalActive)
+        {
+            normal = texture(normalTexture, UV_Coordinates).rgb;
+            normal = normalize(normal * 2.0 - 1.0);
+            normal = normalize(TBN * normal);
+        }
+
+        P2 = vec4(P.x, P.y, P.z, 1.0);
+        V = vec3(normalize(CamPos - P2));
+
+
+        calculatePointLights();
+        calculateSpotLights();
+
+
+        float ambient = 0.2;
+        v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
+
+        if(textActive)
+        {
+            FragColor = texture(colorTexture, UV_Coordinates) * v_Color;
+        
+        }
+        else
+        {
+            FragColor = v_Color;
+        }
     }
 }

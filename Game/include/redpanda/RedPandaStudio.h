@@ -101,7 +101,8 @@ public:
 
     //////////////////////////////
     //  SETTERS
-    void setWindow(SDL_Window* rw )   {   window = rw;    }   
+    void setWindow(SDL_Window* rw )   {   window = rw;                  }   
+    void setSilhouette(bool b)        {   silhouetteActivated = b;      }
 
 private: 
 
@@ -201,7 +202,12 @@ private:
 
     //Chrono flag
     bool showFPS = false;
-    
+
+    //=========================
+    //  Silhouette
+    //=========================
+    bool silhouetteActivated = false;
+    GLuint silFlagIdentifier;
 
 };
 

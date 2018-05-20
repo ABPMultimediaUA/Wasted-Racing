@@ -17,18 +17,15 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     }
 
     //We assume we are always working with triangles
-    vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 6);
+    vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 3);
     unsigned int faceIndex = 0;
 
 
-    for(int j = 0; j<nFaces; j++, faceIndex += 6)
+    for(int j = 0; j<nFaces; j++, faceIndex += 3)
     {
         vertexIndices[0+faceIndex] = m->mFaces[j].mIndices[0];
-        vertexIndices[2+faceIndex] = m->mFaces[j].mIndices[1];
-        vertexIndices[4+faceIndex] = m->mFaces[j].mIndices[2];
-        vertexIndices[1+faceIndex] = 0;
-        vertexIndices[3+faceIndex] = 0;
-        vertexIndices[5+faceIndex] = 0;
+        vertexIndices[1+faceIndex] = m->mFaces[j].mIndices[1];
+        vertexIndices[2+faceIndex] = m->mFaces[j].mIndices[2];
     }
 
     if(m->HasTextureCoords(0))
@@ -169,8 +166,6 @@ void TResourceMesh::draw()
 {
     if((TEntity::getFrustumCulling() && checkBoundingBox()) || !TEntity::getFrustumCulling())
     {
-        //glEnable(GL_COLOR_MATERIAL);
-
         GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
         glUniform1i(id, textActive);
 
@@ -229,10 +224,10 @@ void TResourceMesh::draw()
 
     //Bind and pass to OpenGL the fourth array (vertex indices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[5]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*6*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 
     //We order to draw here
-    glDrawElements(GL_TRIANGLES_ADJACENCY, nTriangles*6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);
 
 
     //==============================================    

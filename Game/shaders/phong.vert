@@ -108,15 +108,15 @@ uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
-varying vec2 UV_Coordinates;
-varying vec3 P;
-varying vec3 N;
-varying vec4 CamPos;
+out vec2 UV_Coordinates;
+out vec3 P;
+out vec3 N;
+out vec4 CamPos;
 
-varying mat4 view;
-varying mat4 modelViewMatrix;
+out mat4 view;
+out mat4 modelViewMatrix;
 
-varying mat3 TBN;
+out mat3 TBN;
 
 //================================
 uniform vec4 lightSpaceView;
@@ -133,7 +133,7 @@ void main()
 {
     modelViewMatrix = ViewMatrix * ModelMatrix;
 
-    CamPos = vec4(modelViewMatrix[3][0], modelViewMatrix[3][1], modelViewMatrix[3][2], modelViewMatrix[3][0]);
+    CamPos = vec4(-modelViewMatrix[3][2], -modelViewMatrix[3][1], -modelViewMatrix[3][0], 1.0);
 
     P = vec3(modelViewMatrix * vertexPosition);	          // Posición del vértice
 	N = vec3(modelViewMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
