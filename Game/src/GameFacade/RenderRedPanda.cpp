@@ -397,7 +397,7 @@ void RenderRedPanda::addAnimation(IComponent* ptr) {
     auto sca = obj.getTransformData().scale;
     auto rot = obj.getTransformData().rotation;
     
-    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24.0);
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24.0, cmp->getTex().c_str());
 
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
     rps::scaleNode(node, sca);

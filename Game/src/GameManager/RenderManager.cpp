@@ -284,10 +284,10 @@ IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, Objec
 }
 
 //Create animation
-IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames, int player) {
+IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames, int player, const char* tex) {
 
     //Creating object renderer component
-    IComponent::Pointer component = std::make_shared<AnimationRenderComponent>(newGameObject, newStr, frames, player);
+    IComponent::Pointer component = std::make_shared<AnimationRenderComponent>(newGameObject, newStr, frames, player, tex);
 
     //Adding component to object
     newGameObject.addComponent(component);

@@ -104,6 +104,26 @@ void SelectionState::update(float &accumulatedTime)
         }
         else if (!GlobalVariables::getInstance().getGameLoaded()) {
 
+            EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60000}});
+            EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60001}});
+            EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60002}});
+            EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60003}});
+            EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60004}});
+            EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60005}});
+    
+            EventManager::getInstance().update();
+    
+            std::cout << "Empieza a borrar" << std::endl;
+    
+            IRenderFacade* f = RenderManager::getInstance().getRenderFacade();
+    
+            f->deleteAnimation("Punk/CharSelect/punkAnimation_000");
+            f->deleteAnimation("Crocodile/CharSelect/cocodrilaBonesSelect_000");
+            f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
+            f->deleteAnimation("Witch/CharSelect/bruja_000");
+    
+            std::cout << "Acaba de borrar" << std::endl;
+
             //Load map
             Game::getInstance().loadMap();
 
@@ -303,26 +323,6 @@ void addStateChange(EventData eData)
 {
 
     if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION && GlobalVariables::getInstance().getGameLoaded()){
-
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60000}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60001}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60002}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60003}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60004}});
-        EventManager::getInstance().addEvent(Event {EventType::GameObject_Delete, EventData {60005}});
-
-        EventManager::getInstance().update();
-
-        std::cout << "Empieza a borrar" << std::endl;
-
-        IRenderFacade* f = RenderManager::getInstance().getRenderFacade();
-
-        f->deleteAnimation("Punk/CharSelect/punkAnimation_000");
-        f->deleteAnimation("Crocodile/CharSelect/cocodrilaBonesSelect_000");
-        f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
-        f->deleteAnimation("Witch/CharSelect/bruja_000");
-
-        std::cout << "Acaba de borrar" << std::endl;
         //Change state
         Game::getInstance().setState(IGameState::stateType::PREMATCH);
     }
