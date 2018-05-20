@@ -62,7 +62,7 @@ public:
 
     //Add an animation to the game
     virtual void addAnimation(IComponent* ptr);
-    virtual void addAnimation(uint16_t id, const char * mesh, int frames);
+    virtual void addAnimation(uint16_t id, const char * mesh, int frames, const char* texture);
 
     //Delete an animation from the resource manager
     virtual void deleteAnimation(const char * animation);

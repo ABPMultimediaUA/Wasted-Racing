@@ -397,7 +397,7 @@ void RenderRedPanda::addAnimation(IComponent* ptr) {
     auto sca = obj.getTransformData().scale;
     auto rot = obj.getTransformData().rotation;
     
-    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24.0);
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24.0, cmp->getTex().c_str());
 
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
     rps::scaleNode(node, sca);
@@ -411,11 +411,13 @@ void RenderRedPanda::addAnimation(IComponent* ptr) {
 }
 
 //Add an animation to the game
-void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames) 
+void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames, const char* texture) 
 {
     std::string s = std::string("media/anim/") + std::string(mesh);
 
-    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), s.c_str(), true, frames, 1/24.0);
+    std::string t = std::string("media/anim/") + std::string(texture);
+
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), s.c_str(), true, frames, 1/24.0, t.c_str());
 
     animationMap.insert(std::pair<uint16_t, TAnimation*>(id, (TAnimation*)node->getEntity()));
 

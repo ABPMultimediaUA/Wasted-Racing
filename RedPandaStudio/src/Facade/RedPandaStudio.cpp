@@ -493,7 +493,7 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 	}
 }
 
-TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const char* animation, bool loop, int frames, double framerate)
+TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const char* animation, bool loop, int frames, double framerate, const char* texture)
 {
 	
 	//Check parent node is valid
@@ -504,7 +504,7 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 
 		//Create new mesh entity
 		TAnimation* a = new TAnimation();
-		a->setAnimation(resourceManager->getResourceAnimation(animation, frames));
+		a->setAnimation(resourceManager->getResourceAnimation(animation, frames, texture));
 		a->setFrames(frames);
 		a->setLoop(loop);
 		a->setFramerate(framerate);

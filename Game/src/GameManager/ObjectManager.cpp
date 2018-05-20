@@ -308,7 +308,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, int player)
 {
     //Create representation of the model if there is a model
-    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "", 0, player);
+    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "", 0, player, "");
 
     //Create collision component
     std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
