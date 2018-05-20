@@ -212,7 +212,8 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.dAcc = 0.f;
     mData.brake_acc = 120.f;
     mData.player = 1;
-    mData.driftAngleIncrMax = 0.5f;
+    mData.driftAngleIncrMax = 1.2f;
+    mData.driftAngleIncr    = 0.3f;
     mData.driftBoostTime    = 1.f;
     mData.driftSpeedBoost   = 250.f;
     mData.driftConstTime    = 0.1f;

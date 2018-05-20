@@ -39,7 +39,7 @@ void SelectionState::init()
         GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
 
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 167, 0);
+        //RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 167, 0);
 
         GameObject::TransformationData tr2;
         tr2.position = glm::vec3(-5,-30,-5.5);
@@ -47,7 +47,7 @@ void SelectionState::init()
         tr2.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player2 = ObjectManager::getInstance().createObject(60002, tr2);
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player2.get(),"Crocodile/CharSelect/cocodrilaBonesSelect_000", 91, 0);
+        //RenderManager::getInstance().createAnimationRenderComponent(*player2.get(),"Crocodile/CharSelect/cocodrilaBonesSelect_000", 91, 0);
 
         GameObject::TransformationData tr3;
         tr3.position = glm::vec3(-5,-30,-11.5);
@@ -55,7 +55,7 @@ void SelectionState::init()
         tr3.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player3 = ObjectManager::getInstance().createObject(60003, tr3);
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player3.get(),"Cyborg/CharSelect/CyborgFINALAnimation_000", 183, 0);
+        //RenderManager::getInstance().createAnimationRenderComponent(*player3.get(),"Cyborg/CharSelect/CyborgFINALAnimation_000", 183, 0);
 
         GameObject::TransformationData tr4;
         tr4.position = glm::vec3(-5,-30,-17.5);
@@ -262,7 +262,7 @@ void loadAnimations()
 
     std::cout << "Loading animations" << std::endl;
 
-    f->addAnimation(00, "Punk/Idle/punkAnimation_000", 62);
+  /*  f->addAnimation(00, "Punk/Idle/punkAnimation_000", 62);
     f->addAnimation(01, "Punk/Correr/punkAnimation_000", 70);
     f->addAnimation(02, "Punk/Choque/punkAnimation_000", 38);
     f->addAnimation(03, "Punk/LanzarItem/punkAnimation_000", 37);
@@ -285,7 +285,7 @@ void loadAnimations()
     f->addAnimation(24, "Cyborg/LanzarItemMovimiento/CyborgFINALAnimation_000", 39);
     f->addAnimation(25, "Cyborg/DerrapeDCHA/CyborgFINALAnimation_000", 81);
     f->addAnimation(26, "Cyborg/DerrapeIZQ/CyborgFINALAnimation_000", 68);
-
+*/
     f->addAnimation(30, "Witch/Idle/bruja_000", 53);
     f->addAnimation(31, "Witch/Correr/bruja_000", 23);
     f->addAnimation(32, "Witch/Choque/bruja_000", 42);

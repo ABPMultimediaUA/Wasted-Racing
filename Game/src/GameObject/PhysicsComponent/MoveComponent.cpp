@@ -175,10 +175,21 @@ void MoveComponent::changeAcc(float a){
 
 void MoveComponent::isDrifting(bool d){
     mData.drift          = mData.spin_inc != 0 ? d : false;              //Drifting is true
-    mData.driftDir       = (d && mData.spin_inc < 0) ? 1.f : -1.f ;      //if it is drifting activation, change direction of drift to the speed one. (negative spin = right turn)
-    mData.driftDir       = mData.spin_inc == 0 ? 0.f : mData.driftDir;   //if spin is 0, then no drift is happening
     mData.driftWallAngle = d ? mData.angle : 0.f;                        //Lock the maximum angle of turn back
-    mData.spin           = d ? mData.spin  : 0.f;                        //Set turning to 0 again to avoid fast rotation after stopping the drift
+    mData.spin           = d ? mData.spin  : mData.spin / 3.f;           //Set turning to a third of the speed to avoid fast rotation after stopping the drift
+
+    //Drift turn preservation
+    if(d)
+    {
+        if(mData.spin_inc < 0)
+            mData.driftDir = 1.f;
+
+        if(mData.spin_inc > 0 )
+            mData.driftDir = -1.f;
+
+        if(mData.spin_inc == 0)
+            mData.driftDir = 0;
+    }
 
     //Speed boost
     if(!d && mData.driftTimeCounter > mData.driftBoostTime)
