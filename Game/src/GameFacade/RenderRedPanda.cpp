@@ -141,10 +141,10 @@ namespace gui {
 // DELEGATES DECLARATIONS
 //==============================================
 void addMenu(EventData eData);
-void addHUD(EventData eData); 
-void addCityName(EventData eData); 
-void addCountdown(EventData eData); 
-void addPause(EventData eData); 
+void addHUD(EventData eData);
+void addCityName(EventData eData);
+void addCountdown(EventData eData);
+void addPause(EventData eData);
 void addResult(EventData eData);
 void addLoadingScreen(EventData eData);
 void addSelection(EventData eData);
@@ -279,20 +279,14 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             sum += 0.25; 
         }
     }
-    glm::vec3 target(-pos.x, pos.y+15, pos.z);
+
     if(newD > 15)
     {
         if(valueY > 0.4)
         {
             valueY -= 0.02;
         }
-        if(mData.jump == false && mData.asc == false)
-        {
-            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-            position = position;
-            device->updateCamera(position, target);
-        }
-        else
+        if(!(mData.jump == false && mData.asc == false))
         {
             if(sum > 0)
             {
@@ -302,9 +296,6 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             {
                 sum += 0.25; 
             }
-            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-            position = position;
-            device->updateCamera(position, target);
         }
     }
     else
@@ -313,13 +304,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
         {
             valueY += 0.02;
         }
-        if(mData.jump == false && mData.asc == false)
-        {
-            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-            position = position;
-            device->updateCamera(position, target);
-        }
-        else
+        if(!(mData.jump == false && mData.asc == false))
         {
             if(sum > 0)
             {
@@ -329,11 +314,16 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             {
                 sum += 0.25; 
             }
-            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-            position = position;
-            device->updateCamera(position, target);
         }
     }
+
+    //Define position and target
+    glm::vec3 target(-pos.x, pos.y+15, pos.z);
+    glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+    position = position;
+    
+    //Update camera
+    device->updateCamera(position, target);
 }
 
 void RenderRedPanda::setCameraTarget(glm::vec3 position, glm::vec3 target) {
