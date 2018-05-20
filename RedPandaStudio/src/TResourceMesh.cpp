@@ -151,6 +151,7 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[5]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 
+
     delete[] vertex;
     free(vertexIndices);
     /*

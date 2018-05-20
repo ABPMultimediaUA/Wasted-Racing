@@ -17,22 +17,21 @@ std::vector<std::string> TResourceOBJ::split(const std::string& s, const char& c
 	return v;
 }
 
+//Destructor
 TResourceOBJ::~TResourceOBJ()
 {
-    std::cout << "Empezamos a borrar OBJ" << std::endl;
     for(unsigned int i = 0; i < meshes.size(); i++)
     {
         delete meshes[i];
     }
     meshes.clear();
-    std::cout << "Terminamos de borrar OBJ" << std::endl;
 }
 
 //Loads only the meshes in the scene, ignoring the materials and textures. This is used for the animations, to avoid loading one different material for every frame
 bool TResourceOBJ::loadOnlyMeshes()
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs  | aiProcess_CalcTangentSpace);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
 
     if(scene)
     {
@@ -54,6 +53,7 @@ bool TResourceOBJ::loadOnlyMeshes()
 //Sets a texture for a specified mesh. This is used for the animations.
 void TResourceOBJ::setTexture(unsigned int i, TResourceTexture* t)
 {
+    std::cout << "Entra" << std::endl;
     if(i>=0 && i<meshes.size())
     {
         meshes[i]->setTextActive(true);

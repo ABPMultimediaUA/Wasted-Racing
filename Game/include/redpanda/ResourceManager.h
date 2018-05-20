@@ -27,7 +27,7 @@ class ResourceManager {
         TResourceTexture* getResourceTexture(const char* n);
         TResourceShader* getResourceShader(const char* n, GLenum e);
         TResourceOBJ* getResourceOBJ(const char* n);
-        TResourceAnimation* getResourceAnimation(const char* n, int frames);
+        TResourceAnimation* getResourceAnimation(const char* n, int frames, const char* t);
         TResourceLoD* getResourceLoD(const char* n);
 
         //The following set of functions erases the resource specified in the route n from

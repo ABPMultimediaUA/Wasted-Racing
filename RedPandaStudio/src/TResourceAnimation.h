@@ -31,8 +31,9 @@ class TResourceAnimation : public TResource {
         //////////////////////////////////////////////////////////////////////
         /////////////////////////// GETTERS && SETTERS ///////////////////////
         //////////////////////////////////////////////////////////////////////
-        int getFrames()                 {   return frames;      };
-        void setFrames(int i)           {   frames = i;         };
+        int getFrames()                                     {   return frames;      };
+        void setFrames(int i)                               {   frames = i;         };
+        void setTexture(TResourceTexture* t)                {   texture = t;        };
 
     private:
         //Maximum number of frames (initially set to 60)
@@ -40,6 +41,9 @@ class TResourceAnimation : public TResource {
 
         //Array of frames
         std::vector<TResourceOBJ*> objs;
+
+        //Texture of the animation meshes
+        TResourceTexture* texture = NULL;
 
         //Auxiliar function to split strings
         std::vector<std::string> split(const std::string& s, const char& c);

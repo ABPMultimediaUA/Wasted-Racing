@@ -163,11 +163,13 @@ TResourceOBJ* ResourceManager::getResourceOBJ(const char* n)
 
 //Loads the animation specified in the route provided and stores it in
 //the resource manager vector, for latter access
-TResourceAnimation* ResourceManager::getResourceAnimation(const char* n, int frames)
+TResourceAnimation* ResourceManager::getResourceAnimation(const char* n, int frames, const char* t)
 {
     unsigned int i;
     TResourceAnimation* res=NULL;
     bool found = false;
+    
+    TResourceTexture* text = this->getResourceTexture(t);
 
     //First we look in memory loaded resources
     for(i=0; i<animations.size() && found == false; i++)
@@ -188,6 +190,7 @@ TResourceAnimation* ResourceManager::getResourceAnimation(const char* n, int fra
         if(res->loadResource())
         {
             animations.push_back(res);
+            res->setTexture(text);
         }
     }
     
@@ -250,12 +253,6 @@ void ResourceManager::deleteResourceAnimation(const char* n)
     unsigned int i;
     TResourceAnimation* animation = NULL;
     bool found = false;
-
-    for(i = 0; i < animations.size(); i++)
-    {
-        std::cout << "Animation " << i << " : " << animations[i]->getName() << std::endl;
-    }
-
     for(i = 0; i < animations.size() && !found; i++)
     {
         if(strcmp(n, animations[i]->getName()) == 0)
