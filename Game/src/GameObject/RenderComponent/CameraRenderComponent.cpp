@@ -10,6 +10,8 @@ CameraRenderComponent::CameraRenderComponent(GameObject& newGameObject) : IRende
 		count = 0;
 		spinDir = 1;
         cameraMaxVel = this->getGameObject().getComponent<MoveComponent>()->getMovemententData().max_vel;
+        blur = false;
+        blurActivationDistance = (maxDistance - minDistanceCP) / 2;
 }
 
 //Initilizer
@@ -151,6 +153,21 @@ void CameraRenderComponent::update(float dTime) {
     
     moldHeight = (oldHeight[0] + oldHeight[1] + oldHeight[2] + oldHeight[3] + oldHeight[4])/5;
     mheight = (height[0] + height[1] + height[2] + height[3] + height[4])/5;
+
+    //Update blur effect if threshold is surpassed
+    if(sumDistanceCP > blurActivationDistance)
+    {
+        blur = true;
+        blurFactor = sumDistanceCP / (maxDistance - minDistanceCP);
+        
+        //Limit expression from 0 to 1
+        blurFactor = (blurFactor > 1) ? 1 : blurFactor;
+    }
+    else
+    {
+        blur = false;
+        blurFactor = 0.f;
+    }
 
 }
 

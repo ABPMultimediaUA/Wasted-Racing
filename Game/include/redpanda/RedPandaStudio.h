@@ -14,7 +14,7 @@
 #include <vector>
 #include <chrono>
 
-#include "RedPanda.h"
+#include <RedPanda.h>
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -22,16 +22,25 @@
 
 namespace rps {
 
+//Enumerators
+enum PPOption{
+    DEFAULT,
+    BLACK_WHITE,
+    NEGATIVE,
+    HIGH_CONTRAST,
+    MEDIAN,
+    NEON,
+    BLUR
+};
+
 class RedPandaStudio{
 
 public:
 
     RedPandaStudio() {}
     ~RedPandaStudio() {
-        //=========================================================================
         //Delete frame buffers
         glDeleteFramebuffers(1, &depthBuffer);
-        //=========================================================================
     }
 
     //////////////////////////////
@@ -75,11 +84,14 @@ public:
 
     ////////////////////////////////////////
     //  GRAPHICS OPTIONS AND PARAMETERS
-    //Initializes all parameters and programs to operate with the shadow mapping
+    //Initializes all parameters and programs to operate with the post processing
     void initPostProcessing();
+    
+    //Initializes the draw of the postprocessing (frame buffer)
+    void initDrawPostProcessing();
 
-    //Draws the shadow mapping
-    void drawPostProcessing();
+    //Draws the post processing on a quad
+    void quadDrawPostProcessing();
 
     //Initializes all parameters and programs to operate with the shadow mapping
     void initShadowMappping();
@@ -90,10 +102,10 @@ public:
     //Activates and deactivates the culling. The second parameter determinates which type of faces are culled (when deactivating the culling, that parameter doesnt matter)
     void setCulling(bool b, GLenum e);
 
-    //Activates and deactivates the CPU-frustum culling. Actually is done using bounding boxed for every Mesh and OBJ.
+    //Activates and deactivates the CPU-frustum culling. Actually is done using bounding boxed for every Mesh and OBJ
     void setFrustumCulling(bool b);
 
-    //To add some mesh into lod array.   
+    //To add some mesh into lod array
     void addMeshLoD(int lvl, const char* mesh);    
 
     //////////////////////////////
@@ -105,8 +117,18 @@ public:
 
     //////////////////////////////
     //  SETTERS
-    void setWindow(SDL_Window* rw )   {   window = rw;                  }   
-    void setSilhouette(bool b)        {   silhouetteActivated = b;      }
+    void setWindow(SDL_Window* rw )     {   window = rw;              }   
+    void setSilhouette(bool b)          {   silhouetteActivated = b;  }
+
+    //  POSTPROCESSING GETTERS & SETTERS
+    bool getPPActive()                 {   return postProcessingActive; }
+    void setPPActive(bool b)           {   postProcessingActive = b;    }
+    void setPPOption(PPOption  o)      {   postProcessingOption = o;    }
+    void setPPOffset(int  o)           {   offset = o;                  }
+    void setPPBlurPos(float x, float y){   blur_x = x; blur_y = y;      }
+    void setPPBlurStrength(float  s)   {   blur_strength = s;           }
+    void setPPBlurDist(float  d)       {   blur_dist = d;               }
+    void setPPNeonFactor(float  n)     {   neonFactor = n;              }
 
 private: 
 
@@ -168,29 +190,48 @@ private:
     //=========================
     //  POST-PROCESSING
     //=========================
+    bool postProcessingActive = false; //Boolean that checks if postprocessing is activated
+
 	GLuint postProcessingBuffer;   //Texture (color) buffer
 	GLuint renderBuffer;           //Render buffer ID
 	GLuint colorMap;               //Texture in which we paint the scene
     GLuint processingID;           //Shadow map program ID
     GLuint postprocessing_sampler; //Sampler2D of the texture rendered to the quad
-
     GLuint processingQuadVAO, processingQuadVBO; //Quad indexes
     
     //Window size (used to paint over the quad)
     int windowWidth = 1024;
     int windowHeight = 1024;
 
+    //Option settings
+    PPOption postProcessingOption = PPOption::DEFAULT; //Integer that chooses the postprocessing option
+
+    float neonFactor = 0;         //Negative factor of the neon
+    float offset = 1/300;         //Kernel offset of pixel picking
+    float blur_x = 0.f;           //blur X position (-1 to 1)
+    float blur_y = 0.f;           //blur Y position (-1 to 1)
+    float blur_strength = 2.2;    //blur strength
+    float blur_dist = 1.f;        //blur distance of pixel picking
+
+    //Options ID's
+    GLuint optionID;              
+    GLuint neonFactorID;         
+    GLuint offsetID;
+    GLuint blur_xID;
+    GLuint blur_yID;
+    GLuint blur_strengthID;
+    GLuint blur_distID;
     //=========================
     //  SHADOWMAP
     //=========================
-	GLuint depthBuffer; //Depth buffer
-	GLuint depthMap;    //Texture in which we paint the scene
-    GLuint shadowID;    //Shadow map program ID
-    GLuint shadowQuadID; //TESTING
-	GLuint shadowRenderBuffer;//Render buffer ID
+	GLuint depthBuffer;                  //Depth buffer
+	GLuint depthMap;                     //Texture in which we paint the scene
+    GLuint shadowID;                     //Shadow map program ID
+    GLuint shadowQuadID;                 //TESTING
+	GLuint shadowRenderBuffer;           //Render buffer ID
     GLuint shadowQuadVAO, shadowQuadVBO; //Quad indexes
-    GLuint shadow_sampler; //Sampler2D of the texture rendered to the quad
-    GLuint shadowMap_sampler; //Sampler2D of the depth map in the normal shader
+    GLuint shadow_sampler;               //Sampler2D of the texture rendered to the quad
+    GLuint shadowMap_sampler;            //Sampler2D of the depth map in the normal shader
 
     //Shadow map texture size
     int shadowWidth = 1024;

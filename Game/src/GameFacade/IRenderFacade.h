@@ -241,6 +241,27 @@ public:
     virtual void deleteItemIcon()  = 0;
 
     //==============================================================
+    // VISUAL EFFECTS
+    //==============================================================
+    //Set the postprocessing state to active or not
+    virtual void setPostProcessing(bool b) = 0;
+
+    //Set the current postprocessing option to render
+    virtual void setPostProcessingOption(int o) = 0;
+
+    //Set the blur effect
+    virtual void setBlurEffect(bool b) = 0;
+
+    //Set the blur effect origin
+    virtual void setBlurOrigin(float x, float y) = 0;
+
+    //Set the blur effect effect intensity
+    virtual void setBlurIntensity(float i) = 0;
+
+    //Set the blur effect radius
+    virtual void setBlurRadius(float r) = 0;
+
+    //==============================================================
     // Window Related functions
     //==============================================================
 

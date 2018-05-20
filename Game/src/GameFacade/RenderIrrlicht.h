@@ -215,6 +215,27 @@ public:
 
     virtual void setSubDescriptionText(std::string text);
 
+    //==============================================================
+    // VISUAL EFFECTS
+    //==============================================================
+    //Set the postprocessing state
+    virtual void setPostProcessing(bool b){};
+    
+    //Set the current postprocessing option to render
+    virtual void setPostProcessingOption(int o) {};
+    
+    //Set the blur effect
+    virtual void setBlurEffect(bool b){};
+
+    //Set the blur effect origin
+    virtual void setBlurOrigin(float x, float y){};
+
+    //Set the blur effect effect intensity
+    virtual void setBlurIntensity(float i){};
+
+    //Set the blur effect radius
+    virtual void setBlurRadius(float r){};
+    
 private: 
     //==============================================================
     // PRIVATE FUNCTIONS
