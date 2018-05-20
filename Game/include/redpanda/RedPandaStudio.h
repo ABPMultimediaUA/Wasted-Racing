@@ -86,10 +86,7 @@ public:
     //  GRAPHICS OPTIONS AND PARAMETERS
     //Initializes all parameters and programs to operate with the post processing
     void initPostProcessing();
-
-    //Draws the postprocessing setting mapping
-    void drawPostProcessing();
-
+    
     //Initializes the draw of the postprocessing (frame buffer)
     void initDrawPostProcessing();
 
