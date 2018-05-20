@@ -44,6 +44,7 @@ namespace LAPAL{
         //Speed variables
         float vel               = 0.0f;         //Lineal speed
         float max_vel           = 0.0f;         //Maximum lineal speed
+        float real_max_vel      = 0.0f;         //Only to save real max speed, used to change speed according to score
         float brake_vel         = 0.0f;         //Natural braking speed
         float velY              = 0.0f;         //vertical speed
 

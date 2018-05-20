@@ -154,8 +154,8 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.spi = false;
     mData.angle = 0.0f;
     mData.spin = 0;
-    mData.spin_inc = 0.001;
-    mData.max_spin = 0.08;
+    mData.spin_inc = 0.002;
+    mData.max_spin = 0.1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
@@ -163,6 +163,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.max_rotate = 3.f;
     mData.vel = 0;
     mData.max_vel = 430.0f;
+    mData.real_max_vel = 430.0f;
     mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
@@ -196,8 +197,8 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.spi = false;
     mData.angle = 0.0f;
     mData.spin = 0;
-    mData.spin_inc = 0.001;
-    mData.max_spin = 0.08;
+    mData.spin_inc = 0.002;
+    mData.max_spin = 0.1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
@@ -205,6 +206,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.max_rotate = 3.f;
     mData.vel = 0;
     mData.max_vel = 430.0f;
+    mData.real_max_vel = 430.0f;
     mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
@@ -238,8 +240,8 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.spi = false;
     mData.angle = 0.0f;
     mData.spin = 0;
-    mData.spin_inc = 0.001;
-    mData.max_spin = 0.08;
+    mData.spin_inc = 0.002;
+    mData.max_spin = 0.1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
@@ -247,6 +249,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.max_rotate = 3.f;
     mData.vel = 0;
     mData.max_vel = 430.0f;
+    mData.real_max_vel = 430.0f;
     mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
@@ -276,8 +279,8 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.spi = false;
     mData.angle = 0.0f;
     mData.spin = 0;
-    mData.spin_inc = 0.001;
-    mData.max_spin = 0.08;
+    mData.spin_inc = 0.002;
+    mData.max_spin = 0.1;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
@@ -285,6 +288,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.max_rotate = 3.f;
     mData.vel = 0;
     mData.max_vel = 430.0f;
+    mData.real_max_vel = 430.0f;
     mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
@@ -337,6 +341,8 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
     if(move == 0)
     {
         mData.isPlayer = true;
+        mData.spin_inc = 0.0005;
+        mData.max_spin = 0.02;
         obj->getComponent<MoveComponent>()->setMovementData(mData);
         //Create input
         InputManager::getInstance().createInputComponent(*obj.get());
@@ -381,7 +387,6 @@ void objectCreated(EventData eData) {
 
 void objectDeleted(EventData eData) {
 
-        std::cout<<"Delete101010101010: "<<eData.Id<<"\n";
     ObjectManager::getInstance().deleteObject(eData.Id);
 
 }

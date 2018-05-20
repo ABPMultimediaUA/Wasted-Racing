@@ -203,6 +203,7 @@ void AIManager::updateScheduling(float dTime, float loopTime) {
                 //Launch effect
                 auto aiDrivingComponent = std::dynamic_pointer_cast<AIDrivingComponent>(a.object).get();
                 updateDriving(aiDrivingComponent);
+                updateAISpeed();
 
                 //<-Timing
                 averageTimeDriving = (samplesDriving > 500) ? averageTimeDriving 
@@ -501,4 +502,28 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     /////////////////////////////////////////////////////////////////////////
     ///////     AJUSTAR EL BEHAVIOUR THREE A QUE SE USE SIEMPRE EL ITEM
     /////////////////////////////////////////////////////////////////////////
+}
+
+void AIManager::updateAISpeed()
+{
+    auto player = GlobalVariables::getInstance().getPlayer();
+    int scorePlayer = player->getComponent<ScoreComponent>()->getPosition();
+
+    for(int i = 0; i < objectsAI.size(); i++)
+    {
+        int scoreAI = objectsAI[i]->getGameObject().getComponent<ScoreComponent>()->getPosition();
+        auto move = objectsAI[i]->getGameObject().getComponent<MoveComponent>();
+        float real_max_vel = move->getMovemententData().real_max_vel;
+
+        move->changeMaxVel(real_max_vel);
+
+        if(scoreAI < scorePlayer)
+        {
+            move->changeMaxVel(real_max_vel*0.9);
+        }
+        else if(scoreAI > scorePlayer)
+        {
+            move->changeMaxVel(real_max_vel*1.1);
+        }
+    }
 }
