@@ -4,8 +4,8 @@
 
 ItemStarComponent::ItemStarComponent(GameObject& newGameObject, GameObject& obj) : IItemComponent(newGameObject), player(obj)
 {
-    speed = 250.f;
-    consTime = 8.f;
+    speed = 550.f;
+    consTime = 5.f;
     decTime = 0.5f;
 }
 

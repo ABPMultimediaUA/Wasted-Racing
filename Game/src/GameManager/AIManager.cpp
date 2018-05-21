@@ -529,16 +529,19 @@ void AIManager::updateAISpeed()
             int scoreAI = objectsAI[i]->getGameObject().getComponent<ScoreComponent>()->getPosition();
             auto move = objectsAI[i]->getGameObject().getComponent<MoveComponent>();
             float real_max_vel = move->getMovemententData().real_max_vel;
-
-            move->changeMaxVel(real_max_vel);
-
-            if(scoreAI < scorePlayer)
+            
+            if(move->getMovemententData().boost == false)
             {
-                move->changeMaxVel(real_max_vel*0.9);
-            }
-            else if(scoreAI > scorePlayer)
-            {
-                move->changeMaxVel(real_max_vel*1.1);
+                move->changeMaxVel(real_max_vel);
+
+                if(scoreAI < scorePlayer)
+                {
+                    move->changeMaxVel(real_max_vel*0.9);
+                }
+                else if(scoreAI > scorePlayer)
+                {
+                    move->changeMaxVel(real_max_vel*1.1);
+                }
             }
         }
     }

@@ -124,7 +124,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     //Get item
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = itemHolder->getItemType();
+    int random = 0;//itemHolder->getItemType();
 
     //-----------------------
     //Generate the right item
@@ -225,8 +225,8 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
 
     //Set object offset position
     //:::> Hardcoded data makes jesus cry
-    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
-                                    pos.y, pos.z-20*sin(obj.getTransformData().rotation.y));
+    transform.position = glm::vec3(pos.x+50*cos(obj.getTransformData().rotation.y),
+                                    pos.y, pos.z-50*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
     transform.scale    = glm::vec3(2,2,2);
 
@@ -252,14 +252,14 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 600.f;
-    mData.max_vel = 600.f;
+    mData.vel = 700.f;
+    mData.max_vel = 700.f;
     mData.brake_vel = 0.f;
-    mData.velY = 600.f;
-    mData.acc = 600.f;
-    mData.max_acc = 600.f;
-    mData.dAcc = 600.f;
-    mData.brake_acc = 600.f;
+    mData.velY = 700.f;
+    mData.acc = 700.f;
+    mData.max_acc = 700.f;
+    mData.dAcc = 700.f;
+    mData.brake_acc = 700.f;
     mData.player = 5;
 
     //Initial component data
@@ -371,14 +371,14 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
-    mData.vel = 600.f;
-    mData.max_vel = 600.f;
+    mData.vel = 700.f;
+    mData.max_vel = 700.f;
     mData.brake_vel = 0.f;
-    mData.velY = 600.f;
-    mData.acc = 600.f;
-    mData.max_acc = 600.f;
-    mData.dAcc = 600.f;
-    mData.brake_acc = 600.f;
+    mData.velY = 700.f;
+    mData.acc = 700.f;
+    mData.max_acc = 700.f;
+    mData.dAcc = 700.f;
+    mData.brake_acc = 700.f;
     mData.player = 5;
 
 

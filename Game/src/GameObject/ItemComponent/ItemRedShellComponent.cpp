@@ -64,7 +64,7 @@ void ItemRedShellComponent::update(float dTime)
 
         float radius = waypoints[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
 
-        if((distancePlayer <= 10000))
+        if((distancePlayer <= 12000))
         {   //When the distance enemy-missile is to small, we change the position of missile to enemy and event collision
 
             if(distancePlayer <= 500)
@@ -88,7 +88,7 @@ void ItemRedShellComponent::update(float dTime)
                 }
                 valueY = 0;
                 distination = objective;
-                nextPos = ((distCover/4000) * (distination - trans.position)) + trans.position;
+                nextPos = ((distCover/3000) * (distination - trans.position)) + trans.position;
             }
         }
         else
@@ -114,11 +114,10 @@ void ItemRedShellComponent::update(float dTime)
             }
              
             distination = waypoints[posVector].get()->getTransformData().position;
-            nextPos = ((distCover/12000) * (distination - trans.position)) + trans.position;
+            nextPos = ((distCover/10000) * (distination - trans.position)) + trans.position;
             
         }
         trans.position = nextPos;
-        trans.position.y += 5;
 
         getGameObject().setNewTransformData(trans);
         RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
