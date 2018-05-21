@@ -342,8 +342,8 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
     if(move == 0)
     {
         mData.isPlayer = true;
-        mData.spin_inc = 0.0005;
-        mData.max_spin = 0.02;
+        mData.spin_inc = 0.001;
+        mData.max_spin = 0.05;
         obj->getComponent<MoveComponent>()->setMovementData(mData);
         //Create input
         InputManager::getInstance().createInputComponent(*obj.get());
