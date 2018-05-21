@@ -2566,28 +2566,28 @@
     <component name="collision" kinetic="false" type="ramp">
         <bbox p1="556.525940,-86.980835,696.038208" p2="576.042664,-86.980835,692.749634" p3="567.397644,-86.980835,641.443481" p4="547.880920,-86.980835,644.732056" friction="0.2" />
     </component>
-    <component name="ramp" vel="300" cTime="1.5" dTime="1" />
+    <component name="ramp" vel="800" cTime="0.5" dTime="1" />
 </object>
 <object id="18001" pos="-553.66992175,-207.295609,637.62207025" rot="0,0,0" sca="10,1,20">
     <component name="render" file="ramp.jpg" type="plane" />
     <component name="collision" kinetic="false" type="ramp">
         <bbox p1="-570.778625,-207.295609,642.946350" p2="-560.279907,-207.295609,654.276306" p3="-536.561218,-207.295609,632.297791" p4="-547.059937,-207.295609,620.967834" friction="0.2" />
     </component>
-    <component name="ramp" vel="300" cTime="1.5" dTime="1" />
+    <component name="ramp" vel="800" cTime="0.5" dTime="1" />
 </object>
 <object id="18002" pos="-1311.8626709999999,-277.187714,478.231079" rot="0,0,0" sca="10,1,20">
     <component name="render" file="ramp.jpg" type="plane" />
     <component name="collision" kinetic="false" type="ramp">
         <bbox p1="-1328.971436,-277.187714,483.555328" p2="-1318.472656,-277.187714,494.885315" p3="-1294.753906,-277.187714,472.906830" p4="-1305.252686,-277.187714,461.576843" friction="0.2" />
     </component>
-    <component name="ramp" vel="300" cTime="1.5" dTime="1" />
+    <component name="ramp" vel="800" cTime="0.5" dTime="1" />
 </object>
 <object id="18003" pos="-2286.9509275,-276.510437,-92.23052999999999" rot="0,0,0" sca="25,1,10">
     <component name="render" file="ramp.jpg" type="plane" />
     <component name="collision" kinetic="false" type="ramp">
         <bbox p1="-2275.871582,-284.394409,-113.112709" p2="-2309.122070,-270.946930,-82.307526" p3="-2298.030273,-268.626465,-71.348351" p4="-2264.779785,-282.073944,-102.153534" friction="0.2" />
     </component>
-    <component name="ramp" vel="300" cTime="1.5" dTime="1" />
+    <component name="ramp" vel="800" cTime="0.5" dTime="1" />
 </object>
 <object id="20000" pos="562.177490,-1.001923,0.000000" rot="0,0,0" sca="1,1,1">
     <component name="render" file="circuit.obj" type="mesh" />

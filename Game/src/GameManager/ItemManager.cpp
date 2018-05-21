@@ -124,7 +124,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     //Get item
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = 0;//itemHolder->getItemType();
+    int random = 4;//itemHolder->getItemType();
 
     //-----------------------
     //Generate the right item
