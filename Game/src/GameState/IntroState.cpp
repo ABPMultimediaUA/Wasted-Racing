@@ -43,7 +43,7 @@ void IntroState::init() {
     
     }
 
-    //Add selection  scene
+        //Add selection  scene
         GameObject::TransformationData tr;
         tr.position = glm::vec3(0,-30,-8);
         tr.rotation = glm::vec3(0,0,0);
@@ -59,7 +59,7 @@ void IntroState::init() {
         GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
 
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 167, 0);
+        RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 167, 0, "Punk/DefaultMaterial_Base_Color.png");
 
         GameObject::TransformationData tr2;
         tr2.position = glm::vec3(-5,-30,-5.5);
@@ -67,7 +67,7 @@ void IntroState::init() {
         tr2.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player2 = ObjectManager::getInstance().createObject(60002, tr2);
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player2.get(),"Crocodile/CharSelect/cocodrilaBonesSelect_000", 91, 0);
+        RenderManager::getInstance().createAnimationRenderComponent(*player2.get(),"Crocodile/CharSelect/cocodrilaBonesSelect_000", 91, 0, "Crocodile/DefaultMaterial_Base_Color.png");
 
         GameObject::TransformationData tr3;
         tr3.position = glm::vec3(-5,-30,-11.5);
@@ -75,7 +75,7 @@ void IntroState::init() {
         tr3.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player3 = ObjectManager::getInstance().createObject(60003, tr3);
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player3.get(),"Cyborg/CharSelect/CyborgFINALAnimation_000", 183, 0);
+        RenderManager::getInstance().createAnimationRenderComponent(*player3.get(),"Cyborg/CharSelect/CyborgFINALAnimation_000", 183, 0, "Cyborg/DefaultMaterial_Base_Color.png");
 
         GameObject::TransformationData tr4;
         tr4.position = glm::vec3(-5,-30,-17.5);
@@ -83,7 +83,7 @@ void IntroState::init() {
         tr4.scale    = glm::vec3(0.15,0.15,0.15);
         GameObject::Pointer player4 = ObjectManager::getInstance().createObject(60004, tr4);
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player4.get(),"Witch/CharSelect/bruja_000", 238, 0);
+        RenderManager::getInstance().createAnimationRenderComponent(*player4.get(),"Witch/CharSelect/bruja_000", 238, 0, "Witch/DefaultMaterial_Base_Color.png");
 
         GameObject::TransformationData tr5;
         tr5.position = glm::vec3(-20,-10,-9);

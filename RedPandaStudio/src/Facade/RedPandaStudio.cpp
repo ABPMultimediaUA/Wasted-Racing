@@ -42,9 +42,8 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 void RedPandaStudio::updateDevice() 
 {
-/*
 	//Update particles
-	updateParticles();
+	//updateParticles();
 
 	//Clean the scene
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -53,6 +52,9 @@ void RedPandaStudio::updateDevice()
 	renderCamera();
 	renderLights();
 
+	//Initalize postProcessing if selected
+	if(postProcessingActive)
+		initDrawPostProcessing();
 
 	//Change shader program for drawing skybox
 	glUseProgram(skyboxID);
@@ -67,28 +69,46 @@ void RedPandaStudio::updateDevice()
 	//Render all the billboards in the scene
 	renderBillboards();
 
-	//Activate the shader used to draw the scene
+	//Draw the scene normally
 	glUseProgram(scene->getEntity()->getProgramID());
-
-
-	//==================
-	//drawShadowMapping();
-	//==================
-
-	//Render our scene
 	renderCamera();
 	renderLights();
 
-	scene->draw();
+	if(silhouetteActivated)
+	{
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(1.0, 10.0);
 
+		glUniform1i(silFlagIdentifier, false);
+
+		scene->draw();
+
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+    	glUniform1i(silFlagIdentifier, true);
+
+		scene->draw();
+
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else
+	{
+		scene->draw();
+	}
 
 	//RenderParticles
-	glUseProgram(particlesID);
+	/*glUseProgram(particlesID);
 	glBindVertexArray(paticlesVertexArray);
 	renderParticles();
 	glUseProgram(scene->getEntity()->getProgramID());
 */
-	drawPostProcessing();
+	//Render the scene in a quad if post processing is selected
+	if(postProcessingActive)
+		quadDrawPostProcessing();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -190,8 +210,8 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 void RedPandaStudio::initOpenGL() {
 
 	#ifndef __APPLE__
-		const char * vertex_file_path = "shaders/cartoon.vert";
-    	const char * fragment_file_path = "shaders/cartoon.frag";
+		const char * vertex_file_path = "shaders/phong.vert";
+    	const char * fragment_file_path = "shaders/phong.frag";
 		const char * geometry_file_path = "shaders/test.gs";
 		const char * skybox_vertex_path = "shaders/skybox.vert";
 		const char * skybox_fragment_path = "shaders/skybox.frag";
@@ -224,7 +244,11 @@ void RedPandaStudio::initOpenGL() {
 	//glEnable( GL_DEBUG_OUTPUT );
     //glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
 
+	//Deactivate Frustum Culling by default
 	setFrustumCulling(false);
+
+	//Set a default value to Line Width for the Silhouette render
+	glLineWidth(4.0);
 
     //Init VBO
     GLuint VertexArrayID;
@@ -414,6 +438,8 @@ void RedPandaStudio::initOpenGL() {
 	GLuint colorTexture = glGetUniformLocation(ProgramID, "colorTexture");
 	GLuint normalTexture = glGetUniformLocation(ProgramID, "normalTexture");
 
+	silFlagIdentifier = glGetUniformLocation(ProgramID, "silhouette");
+
 	glUniform1i(colorTexture, 0);
 	glUniform1i(normalTexture, 1);
 
@@ -467,7 +493,7 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 	}
 }
 
-TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const char* animation, bool loop, int frames, double framerate)
+TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const char* animation, bool loop, int frames, double framerate, const char* texture)
 {
 	
 	//Check parent node is valid
@@ -478,7 +504,7 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 
 		//Create new mesh entity
 		TAnimation* a = new TAnimation();
-		a->setAnimation(resourceManager->getResourceAnimation(animation, frames));
+		a->setAnimation(resourceManager->getResourceAnimation(animation, frames, texture));
 		a->setFrames(frames);
 		a->setLoop(loop);
 		a->setFramerate(framerate);
@@ -757,6 +783,16 @@ TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {
 
 }
 
+
+////////////////////////////////////////////////
+// RESOURCE DESTRUCTORS
+
+
+void RedPandaStudio::deleteAnimation(const char* n)
+{
+	resourceManager->deleteResourceAnimation(n);
+}
+
 /////////////////////////////////////////////////
 //  LIGHTS,CAMERA AND PARTICLES MANAGEMENT
 void RedPandaStudio::renderLights() {
@@ -924,8 +960,6 @@ void RedPandaStudio::initPostProcessing()
 	glBindFramebuffer(GL_RENDERBUFFER, 0); 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	std::cout<<"Buffers y texturas creados"<<std::endl;
-
 	//BASIC STUFFY FOR SHADER CREATION
 	const char *processing_fragment_path = "shaders/postProcessing.frag";
 	const char *processing_vertex_path = "shaders/postProcessing.vert";
@@ -940,7 +974,6 @@ void RedPandaStudio::initPostProcessing()
 	glAttachShader(processingID, processingVertexID);
 	glAttachShader(processingID, processingFragmentID);
 	glLinkProgram(processingID);
-	std::cout << "Linking processingID" << std::endl;
 
 	//Check the program is ok
 	glGetProgramiv(processingID, GL_LINK_STATUS, &Result);
@@ -993,65 +1026,29 @@ void RedPandaStudio::initPostProcessing()
 
 	//Quad texture assignment
 	postprocessing_sampler = glGetUniformLocation(processingID, "screenTexture");
+
+	//Options assignment
+	optionID 	   = glGetUniformLocation(processingID, "option");
+	offsetID 	   = glGetUniformLocation(processingID, "offset");
+	blur_xID 	   = glGetUniformLocation(processingID, "blur_x");
+	blur_yID 	   = glGetUniformLocation(processingID, "blur_y");
+	blur_strengthID= glGetUniformLocation(processingID, "blur_strength");
+	blur_distID    = glGetUniformLocation(processingID, "blur_dist");
+	neonFactorID   = glGetUniformLocation(processingID, "neonFactor");
+
 }
 
-
-void RedPandaStudio::drawPostProcessing()
+void RedPandaStudio::initDrawPostProcessing()
 {
 	//Bind the buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, postProcessingBuffer);     //Binding where we'll store our image
 	glEnable(GL_DEPTH_TEST);						      //Enabling for 3D renders
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); //Cleaning the buffers
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 			      //Clean window
+}
 
-	//Render camera and lights
-	renderCamera();
-	renderLights();
-
-
-	//Change shader program for drawing skybox
-	glUseProgram(skyboxID);
-	glBindVertexArray(skyVertexArray);
-	skybox->draw();
-	glEnable(GL_DEPTH_TEST);
-	
-
-	//Activate the billboard shader
-	glUseProgram(billboardID);
-
-	//Render all the billboards in the scene
-	renderBillboards();
-
-	//Activate the shader used to draw the scene
-	glUseProgram(scene->getEntity()->getProgramID());
- 
-	//Draw the scene normally
-	glUseProgram(scene->getEntity()->getProgramID());
-	renderCamera();
-	renderLights();
-
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(1.0, 10.0);
-
-	glLineWidth(4.0);
-
-	GLuint silID = glGetUniformLocation(TEntity::getProgramID(), "silhouette");
-	glUniform1i(silID, false);
-
-	scene->draw();
-
-	glDisable(GL_POLYGON_OFFSET_FILL);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
-
-    glUniform1i(silID, true);
-
-	scene->draw();
-
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+void RedPandaStudio::quadDrawPostProcessing()
+{
 	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT); //Clean the dirty color
@@ -1059,6 +1056,15 @@ void RedPandaStudio::drawPostProcessing()
 
 	//Use our program and the texture given by the frame buffer
 	glUseProgram(processingID);
+
+	//Set options
+	glUniform1i(optionID, postProcessingOption);
+	glUniform1f(neonFactorID, neonFactor);
+	glUniform1f(offsetID, offset);
+	glUniform1f(blur_xID, blur_x);
+	glUniform1f(blur_yID, blur_y);
+	glUniform1f(blur_strengthID, blur_strength);
+	glUniform1f(blur_distID, blur_dist);
 
 	//Bind array buffer and vertex array of data
     glBindBuffer(GL_ARRAY_BUFFER, processingQuadVBO);

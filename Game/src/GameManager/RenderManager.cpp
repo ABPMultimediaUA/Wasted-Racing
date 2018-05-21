@@ -83,7 +83,7 @@ void RenderManager::init(int engine) {
     RenderManager::getInstance().getRenderFacade()->setClipping(false);
 
     //Init distance Level of Detail 
-    GlobalVariables::getInstance().setDistanceLoD(100);
+    GlobalVariables::getInstance().setDistanceLoD(0);
 
     createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
 
@@ -110,7 +110,13 @@ void RenderManager::update(float dTime) {
 
     //Update camera collision
     //:::>Depends on the player being created, it shouldn't
-    renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
+    
+    //Update camera
+    CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
+    c->update(dTime);
+
+    //Update blur
+    updateBlur();
 
     //Update debug if debug mode activated
     if(debugState){
@@ -150,6 +156,21 @@ void RenderManager::close(){
 void RenderManager::splitQuadTree(){
     //renderComponentTree.init(maxObjPerNode, updateRange, renderComponentList, x0, x1, y0, y1);
     //renderComponentTree.divide();
+}
+
+//==============================================
+// VISUAL EFFECTS
+//============================================== 
+void RenderManager::updateBlur()
+{
+    //Camera pointer
+    CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
+
+    //Update blur
+    renderFacade->setBlurOrigin(0.f, 0.0f);
+    renderFacade->setBlurEffect(c->getBlurActivation());
+    renderFacade->setBlurIntensity(1.5 * c->getBlurFactor());
+    renderFacade->setBlurRadius(0.5);
 }
 
 //==============================================
@@ -263,10 +284,10 @@ IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, Objec
 }
 
 //Create animation
-IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames, int player) {
+IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames, int player, const char* tex) {
 
     //Creating object renderer component
-    IComponent::Pointer component = std::make_shared<AnimationRenderComponent>(newGameObject, newStr, frames, player);
+    IComponent::Pointer component = std::make_shared<AnimationRenderComponent>(newGameObject, newStr, frames, player, tex);
 
     //Adding component to object
     newGameObject.addComponent(component);

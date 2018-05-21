@@ -199,7 +199,7 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
                 //Transitionate 1/8 when not turning
                 if(mData.spin_inc == 0)
                 {
-                    mData.angle += dTime*mData.driftAngleIncr*0.125;
+                    //mData.angle += dTime*mData.driftAngleIncr*0.125;
                     mData.driftWallAngle = mData.angle;
                 }
 
@@ -210,9 +210,18 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
                         mData.angle = mData.driftWallAngle;
                 }
 
-                //Update velocity with 90º vector
-                mData.velocity.x += mData.vel*cos(mData.angle + mData.driftDesplaceAngle)/2;
-                mData.velocity.z += mData.vel*sin(mData.angle + mData.driftDesplaceAngle);
+                //Update velocity with 90º vector (if time drifting is less than 1)
+                if(mData.driftTimeCounter <= 1.0f)
+                {
+                    mData.velocity.x += mData.vel*cos(mData.angle + mData.driftDesplaceAngle) * mData.driftTimeCounter;
+                    mData.velocity.z += mData.vel*sin(mData.angle + mData.driftDesplaceAngle)/2 * mData.driftTimeCounter;
+                }
+                else
+                {
+                    mData.velocity.x += mData.vel*cos(mData.angle + mData.driftDesplaceAngle);
+                    mData.velocity.z += mData.vel*sin(mData.angle + mData.driftDesplaceAngle)/2;
+                }
+
             }
 
             //if true drift is going right and NPC was left
@@ -225,7 +234,7 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
                 //Transitionate 1/8 when not turning
                 if(mData.spin_inc == 0)
                 {
-                    mData.angle -= dTime*mData.driftAngleIncr*0.125;
+                    //mData.angle -= dTime*mData.driftAngleIncr*0.125;
                     mData.driftWallAngle = mData.angle;
                 }
 
@@ -237,8 +246,16 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
                 }
 
                 //Update velocity with 90º vector
-                mData.velocity.x += mData.vel*cos(mData.angle - mData.driftDesplaceAngle)/2;
-                mData.velocity.z += mData.vel*sin(mData.angle - mData.driftDesplaceAngle);
+                if(mData.driftTimeCounter <= 1.0f)
+                {
+                    mData.velocity.x += mData.vel*cos(mData.angle - mData.driftDesplaceAngle) * mData.driftTimeCounter;
+                    mData.velocity.z += mData.vel*sin(mData.angle - mData.driftDesplaceAngle)/2 * mData.driftTimeCounter;
+                }
+                else
+                {
+                    mData.velocity.x += mData.vel*cos(mData.angle - mData.driftDesplaceAngle);
+                    mData.velocity.z += mData.vel*sin(mData.angle - mData.driftDesplaceAngle)/2;
+                }
             }
         }
 
@@ -248,7 +265,7 @@ void LAPAL::updateEllipticMovement( LAPAL::movementData& mData, const float dTim
             mData.driftTimeCounter = 0.f;
             mData.driftDir         = 0.f;
             mData.driftWallAngle   = 0.f;
-            mData.driftAngleIncr   = 0.f;
+            mData.driftAngleIncr   = 0.3f;
             mData.drift            = false;
         }
     //}

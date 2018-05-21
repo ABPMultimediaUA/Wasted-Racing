@@ -15,6 +15,15 @@ std::vector<std::string> TResourceAnimation::split(const std::string& s, const c
 	return v;
 }
 
+TResourceAnimation::~TResourceAnimation()
+{
+    for(unsigned int i = 0; i < objs.size(); i++)
+    {
+        delete objs[i];
+    }
+    objs.clear();
+}
+
 bool TResourceAnimation::loadResource()
 {
 
@@ -75,22 +84,6 @@ void TResourceAnimation::populateTextures()
             {
                 objs[j]->setMaterial(i-1, mat);
             }
-            
-            aiString path;
-            //If the material has a diffuse texture, we get his path
-            if(scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
-            {
-                TResourceTexture* texture = new TResourceTexture();
-                //First we combine the path we just got with the directory path of the obj, and then we just load the texture
-                std::string completePath = route + path.data;
-
-                texture->setName(completePath.c_str());
-                texture->loadResource();
-                for(unsigned int j = 0; j < objs.size(); j++)
-                {
-                    objs[j]->setTexture(i-1, texture);
-                }
-            }
         }
     }
 
@@ -98,6 +91,10 @@ void TResourceAnimation::populateTextures()
 
 void TResourceAnimation::draw()
 {
+    if(texture != NULL)
+    {
+        texture->draw();
+    }
     objs[0]->draw();
 }
 
@@ -105,6 +102,10 @@ void TResourceAnimation::draw(unsigned int i)
 {
     if(i >= 0 && i < objs.size())
     {
+        if(texture != NULL)
+        {
+            texture->draw();
+        }
         objs[i]->draw();
     }
 }

@@ -13,7 +13,7 @@
 class TResourceOBJ : public TResource {
     public:
         TResourceOBJ() {};
-        ~TResourceOBJ() {};
+        virtual ~TResourceOBJ();
 
         //Only loads the meshes in the OBJ provided
         bool loadOnlyMeshes();

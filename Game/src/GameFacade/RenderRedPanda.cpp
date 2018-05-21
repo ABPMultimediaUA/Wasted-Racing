@@ -141,10 +141,10 @@ namespace gui {
 // DELEGATES DECLARATIONS
 //==============================================
 void addMenu(EventData eData);
-void addHUD(EventData eData); 
-void addCityName(EventData eData); 
-void addCountdown(EventData eData); 
-void addPause(EventData eData); 
+void addHUD(EventData eData);
+void addCityName(EventData eData);
+void addCountdown(EventData eData);
+void addPause(EventData eData);
 void addResult(EventData eData);
 void addLoadingScreen(EventData eData);
 void addSelection(EventData eData);
@@ -279,20 +279,14 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             sum += 0.25; 
         }
     }
-    glm::vec3 target(-pos.x, pos.y+15, pos.z);
+
     if(newD > 15)
     {
         if(valueY > 0.4)
         {
             valueY -= 0.02;
         }
-        if(mData.jump == false && mData.asc == false)
-        {
-            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-            position = position;
-            device->updateCamera(position, target);
-        }
-        else
+        if(!(mData.jump == false && mData.asc == false))
         {
             if(sum > 0)
             {
@@ -302,9 +296,6 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             {
                 sum += 0.25; 
             }
-            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-            position = position;
-            device->updateCamera(position, target);
         }
     }
     else
@@ -313,13 +304,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
         {
             valueY += 0.02;
         }
-        if(mData.jump == false && mData.asc == false)
-        {
-            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-            position = position;
-            device->updateCamera(position, target);
-        }
-        else
+        if(!(mData.jump == false && mData.asc == false))
         {
             if(sum > 0)
             {
@@ -329,11 +314,16 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
             {
                 sum += 0.25; 
             }
-            glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
-            position = position;
-            device->updateCamera(position, target);
         }
     }
+
+    //Define position and target
+    glm::vec3 target(-pos.x, pos.y+15, pos.z);
+    glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
+    position = position;
+    
+    //Update camera
+    device->updateCamera(position, target);
 }
 
 void RenderRedPanda::setCameraTarget(glm::vec3 position, glm::vec3 target) {
@@ -407,7 +397,7 @@ void RenderRedPanda::addAnimation(IComponent* ptr) {
     auto sca = obj.getTransformData().scale;
     auto rot = obj.getTransformData().rotation;
     
-    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24.0);
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), cmp->getPath().c_str(), true, cmp->getFrames(), 1/24.0, cmp->getTex().c_str());
 
     rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));
     rps::scaleNode(node, sca);
@@ -421,14 +411,24 @@ void RenderRedPanda::addAnimation(IComponent* ptr) {
 }
 
 //Add an animation to the game
-void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames) {
-    
+void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames, const char* texture) 
+{
     std::string s = std::string("media/anim/") + std::string(mesh);
 
-    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), s.c_str(), true, frames, 1/24.0);
+    std::string t = std::string("media/anim/") + std::string(texture);
+
+    TNode * node = device->createAnimatedNode(device->getSceneRoot(), glm::vec3(0,0,0), s.c_str(), true, frames, 1/24.0, t.c_str());
 
     animationMap.insert(std::pair<uint16_t, TAnimation*>(id, (TAnimation*)node->getEntity()));
 
+}
+
+void RenderRedPanda::deleteAnimation(const char * animation)
+{
+    std::cout << "Delete Animation: " << animation << std::endl;
+    std::string s = std::string("media/anim/") + std::string(animation);
+
+    device->deleteAnimation(s.c_str());
 }
 
 void RenderRedPanda::stopAnimation(uint16_t id) {
@@ -513,6 +513,16 @@ bool RenderRedPanda::isAnimationPLaying(uint16_t id) {
         return t->getPauseState();
 
     return false;
+
+}
+
+void RenderRedPanda::setFramerate(uint16_t id, float framerate) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->setFramerate(framerate);
+    }
 
 }
 
@@ -1382,6 +1392,62 @@ void gui::playAnimation() {
     else {
         currFrame++;
     }
+}
+
+//==============================================================
+// VISUAL EFFECTS
+//==============================================================
+//Set the postprocessing state
+void RenderRedPanda::setPostProcessing(bool b)
+{
+    device->setPPActive(b);
+}
+
+//Set the current postprocessing option to render
+void RenderRedPanda::setPostProcessingOption(int o)
+{
+    device->setPPOption((rps::PPOption) o);
+}
+
+//Set the blur effect
+void RenderRedPanda::setBlurEffect(bool b)
+{
+    if(b)
+    {
+        //Check postprocessing
+        if(!device->getPPActive())
+            setPostProcessing(true);
+
+        //Set blur
+        device->setPPOption(rps::PPOption::BLUR);
+    }
+    else
+    {
+        //Check postprocessing
+        if(device->getPPActive())
+            setPostProcessing(false);
+
+        //Set blur
+        device->setPPOption(rps::PPOption::DEFAULT);
+    }
+}
+
+//Set the blur effect origin
+void RenderRedPanda::setBlurOrigin(float x, float y)
+{
+    device->setPPBlurPos(x, y);
+}
+
+//Set the blur effect effect intensity
+void RenderRedPanda::setBlurIntensity(float i)
+{
+    device->setPPBlurStrength(i);
+}
+
+//Set the blur effect radius
+void RenderRedPanda::setBlurRadius(float r)
+{
+    device->setPPBlurDist(r);
 }
 
 ////////////

@@ -61,8 +61,11 @@ public:
 
     //Add an animation to the game
     virtual void addAnimation(IComponent* ptr) {};
-    virtual void addAnimation(uint16_t id, const char * mesh, int frames) {}
+    virtual void addAnimation(uint16_t id, const char * mesh, int frames, const char* texture) {}
     
+    //Delete an animation from the resource manager
+    virtual void deleteAnimation(const char * animation) {}
+
     //Add a light to the game
     virtual void addLight(IComponent* ptr);
 
@@ -104,6 +107,7 @@ public:
     virtual void resetAnimation(uint16_t id){}
     virtual void changeAnimation(uint16_t id, uint16_t animation){}
     virtual bool isAnimationPLaying(uint16_t){return false;}
+    virtual void setFramerate(uint16_t, float framerate){}
 
     //==============================================================
     //  VISUAL INTERFACE
@@ -212,6 +216,27 @@ public:
 
     virtual void setSubDescriptionText(std::string text);
 
+    //==============================================================
+    // VISUAL EFFECTS
+    //==============================================================
+    //Set the postprocessing state
+    virtual void setPostProcessing(bool b){};
+    
+    //Set the current postprocessing option to render
+    virtual void setPostProcessingOption(int o) {};
+    
+    //Set the blur effect
+    virtual void setBlurEffect(bool b){};
+
+    //Set the blur effect origin
+    virtual void setBlurOrigin(float x, float y){};
+
+    //Set the blur effect effect intensity
+    virtual void setBlurIntensity(float i){};
+
+    //Set the blur effect radius
+    virtual void setBlurRadius(float r){};
+    
 private: 
     //==============================================================
     // PRIVATE FUNCTIONS

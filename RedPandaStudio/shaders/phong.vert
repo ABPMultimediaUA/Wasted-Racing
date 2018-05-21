@@ -133,7 +133,7 @@ void main()
 {
     modelViewMatrix = ViewMatrix * ModelMatrix;
 
-    CamPos = vec4(modelViewMatrix[3][0], modelViewMatrix[3][1], modelViewMatrix[3][2], modelViewMatrix[3][0]);
+    CamPos = vec4(-modelViewMatrix[3][2], -modelViewMatrix[3][1], -modelViewMatrix[3][0], 1.0);
 
     P = vec3(modelViewMatrix * vertexPosition);	          // Posición del vértice
 	N = vec3(modelViewMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice

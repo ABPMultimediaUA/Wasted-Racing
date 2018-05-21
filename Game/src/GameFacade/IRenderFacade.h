@@ -79,7 +79,10 @@ public:
 
     //Add an animation to the game
     virtual void addAnimation(IComponent* ptr) = 0;
-    virtual void addAnimation(uint16_t id, const char * mesh, int frames) = 0;
+    virtual void addAnimation(uint16_t id, const char * mesh, int frames, const char* texture) = 0;
+
+    //Delete an animation from the resource manager
+    virtual void deleteAnimation(const char * animation) = 0;
 
     //Add a light to the game
     virtual void addLight(IComponent* ptr) = 0;
@@ -122,6 +125,7 @@ public:
     virtual void resetAnimation(uint16_t id) = 0;
     virtual void changeAnimation(uint16_t id, uint16_t animation) = 0;
     virtual bool isAnimationPLaying(uint16_t) = 0;
+    virtual void setFramerate(uint16_t, float framerate) = 0;
 
     //==============================================================
     //  VISUAL INTERFACE
@@ -236,6 +240,27 @@ public:
     virtual void createItemIcon(glm::vec2 pos, std::string img)  = 0;
 
     virtual void deleteItemIcon()  = 0;
+
+    //==============================================================
+    // VISUAL EFFECTS
+    //==============================================================
+    //Set the postprocessing state to active or not
+    virtual void setPostProcessing(bool b) = 0;
+
+    //Set the current postprocessing option to render
+    virtual void setPostProcessingOption(int o) = 0;
+
+    //Set the blur effect
+    virtual void setBlurEffect(bool b) = 0;
+
+    //Set the blur effect origin
+    virtual void setBlurOrigin(float x, float y) = 0;
+
+    //Set the blur effect effect intensity
+    virtual void setBlurIntensity(float i) = 0;
+
+    //Set the blur effect radius
+    virtual void setBlurRadius(float r) = 0;
 
     //==============================================================
     // Window Related functions

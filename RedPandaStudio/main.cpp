@@ -24,6 +24,11 @@ int main() {
 
     rps::RedPandaStudio* rps = &rps::RedPandaStudio::createDevice(1280,720,24,60,true,false);
     
+    //Motor options
+   // rps->setPPActive(true);
+   // rps->setPPOption(PPOption::Blur);
+
+
     //TNode* t = rps->createAnimatedNode(rps->getSceneRoot(), glm::vec3(0,-2,0), "media/anim/WitchFINAL_000", true, 60, 60);
    /* 
     //PRUEBAS DE ALEXEI
@@ -56,6 +61,7 @@ int main() {
     rps::scaleNode(t4, glm::vec3(0.25, 0.25, 0.25));
     //rps::rotateNode(t2, glm::vec3(0, 180.0, 0));
     rps->setCulling(false, (GLenum)GL_FRONT);
+    rps->setSilhouette(false);
 
     //TNode* spotlight0 = rps->createSpotlight(rps->getSceneRoot(), glm::vec3(0, 0, 40), glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), 77);
     TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(5, 7, 0), glm::vec3(0.05, 0.05, 0.05));
