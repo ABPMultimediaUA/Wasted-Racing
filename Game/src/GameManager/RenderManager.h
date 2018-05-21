@@ -68,7 +68,7 @@ public:
     //Create skybox
     IComponent::Pointer createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back);
     //Create animation
-    IComponent::Pointer createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames, int player);
+    IComponent::Pointer createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames, int player, const char* newTex);
 
 
     /////////////
@@ -76,6 +76,11 @@ public:
     /////////////
     void LoDmesh();
 
+    //==============================================
+    // VISUAL EFFECTS
+    //==============================================
+    //Update blur effect
+    void updateBlur();
 
     //==============================================
     // VISUAL INTERFACE
@@ -185,9 +190,18 @@ public:
     void setWaitBattle(bool b)                         {          wait = b;                 }
     bool getWaitBattle()                               {          return wait;              }
     bool getLapBattle()                                {          return lapB;              }
-    int getAINumberBattle()                            {          return AIDebugB;         }
+    int getAINumberBattle()                            {          return AIDebugB;          }
     std::vector<GameObject> getAIsBattle()             {          return AIDebugPointB;     }
     
+    //==============================================================
+    // VISUAL EFFECTS
+    //==============================================================
+    void setPostProcessing(bool b);
+    void setBlurEffect(bool b);
+    void setBlurOrigin(float x, float y);
+    void setBlurIntensity(float i);
+    void setBlurRadius(float r);
+
 private:
     //==============================================================
     // PRIVATE DATA

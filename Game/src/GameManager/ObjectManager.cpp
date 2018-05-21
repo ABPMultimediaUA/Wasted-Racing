@@ -214,7 +214,8 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.dAcc = 0.f;
     mData.brake_acc = 120.f;
     mData.player = 1;
-    mData.driftAngleIncrMax = 0.5f;
+    mData.driftAngleIncrMax = 1.2f;
+    mData.driftAngleIncr    = 0.3f;
     mData.driftBoostTime    = 1.f;
     mData.driftSpeedBoost   = 250.f;
     mData.driftConstTime    = 0.1f;
@@ -311,8 +312,8 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, int player)
 {
     //Create representation of the model if there is a model
-    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "", 0, player);
-        RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "");
+    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "", 0, player, "");
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "");
 
 
     //Create collision component
