@@ -45,7 +45,7 @@ int main() {
     rps::scaleNode(t4, glm::vec3(10,0.05,10));
     //rps->setCulling(true, (GLenum)GL_BACK);
 
-    TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(1,1,1), glm::vec3(1.0, 1.0, 1.0));
+    TNode* light0 = rps->createLight(rps->getSceneRoot(), glm::vec3(1,2,1), glm::vec3(1.0, 1.0, 1.0));
     //TNode* light1 = rps->createLight(rps->getSceneRoot(), glm::vec3(0,2,-5), glm::vec3(0.01,0.01,0.3));
     //===================================================================================================
 
@@ -89,9 +89,10 @@ int main() {
         
         //anim->update(30);
     //===================================================================================================
-        rps->updateCamera(glm::vec3(15*glm::cos(i/10), 15, 15*glm::sin(i/10)), glm::vec3(0,0,0));
+        //rps->updateCamera(glm::vec3(15*glm::cos(i/10), 15, 15*glm::sin(i/10)), glm::vec3(0,0,0));
         rps->updateDevice();
         rps::translateNode(t2, glm::vec3(0, 0, 5));
+        rps::translateNode(light0, glm::vec3(2*glm::cos(i/10), 2, 2*glm::sin(i/10)));
         i += 0.1;
         int cont = (int) i;
         switch(cont)
@@ -116,7 +117,7 @@ int main() {
                 rps->setPPOption(rps::PPOption::MEDIAN);
                 break;
             case 80:
-                rps->setPPOption(rps::PPOption::MEDIAN);
+                rps->setPPOption(rps::PPOption::BLUR);
                 break;
         }
         if(i > 100)

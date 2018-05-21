@@ -15,7 +15,7 @@ vec4 color;
 uniform int option = 0;
 
 //Pixel offset for the kernel operations
-uniform float offset = 1.0 / 1200.0;
+uniform float offset = 1.0 / 300.0;
 
 //Neon factor
 uniform float neonFactor = 1;
@@ -57,9 +57,9 @@ void main()
         if(option == 3)
         {
             kernel = float[](
-                -1, -1, -1,
-                -1,  9, -1,
-                -1, -1, -1
+                -2, -2, -2,
+                -2,  18, -2,
+                -2, -2, -2
             );
 
             offsets = vec2[](

@@ -68,11 +68,13 @@ uniform sampler2D shadowMap;
 
 float calculateVisibility()
 {
+    float bias =  0.23;
+
     //Coordinates normalized from the light point of view (in the range of [0,1])
     vec3 projectionCoordinates = (FragLightPos.xyz / FragLightPos.w) * 0.5 + 0.5;
 
     //Get the visibility value depending on what you see first from the light's perspective and compare it with the value in the depth
-    float visibility = (projectionCoordinates.z >  texture(shadowMap, projectionCoordinates.xy).r ) ? 0.5f : 1.0f;
+    float visibility = (projectionCoordinates.z - bias >  texture(shadowMap, projectionCoordinates.xz).r ) ? 0.5f : 1.0f;
 
     return visibility;
 }
@@ -195,11 +197,11 @@ void main()
         //vec3 projectionCoordinates = (FragLightPos.xyz / FragLightPos.w) * 0.5 + 0.5;
 
         //Get the visibility value depending on what you see first from the light's perspective and compare it with the value in the depth
-       // float visibility = (projectionCoordinates.z >  texture(shadowMap, projectionCoordinates.xy).r ) ? 0.5f : 1.0f;
+        //float visibility = (projectionCoordinates.z >  texture(shadowMap, projectionCoordinates.xy).r ) ? 0.5f : 1.0f;
 
-       // FragColor = vec4(projectionCoordinates.y, projectionCoordinates.y, projectionCoordinates.y, 1.0);
+       // FragColor = vec4(projectionCoordinates.x, projectionCoordinates.y, projectionCoordinates.z, 1.0);
         
-       // FragColor = texture(shadowMap, projectionCoordinates.xy);
+        //FragColor = texture(shadowMap, projectionCoordinates.xy);
 
         //FragColor = vec4(visibility, visibility, visibility, 1.0);
     }

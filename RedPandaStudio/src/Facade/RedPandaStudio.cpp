@@ -43,7 +43,7 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 void RedPandaStudio::updateDevice() 
 {
 	//Update particles
-	updateParticles();
+	/*updateParticles();
 
 	//Clean the scene
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -109,8 +109,8 @@ void RedPandaStudio::updateDevice()
 	//Render the scene in a quad if post processing is selected
 	if(postProcessingActive)
 		quadDrawPostProcessing();
-
-	//drawShadowMapping();
+*/
+	drawShadowMapping();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -1113,7 +1113,9 @@ void RedPandaStudio::initShadowMapping()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
 	
 	//Bind created texture to the frame buffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
@@ -1317,8 +1319,8 @@ void RedPandaStudio::drawShadowMapping()
 	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(4);
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
-
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+*/
 	//Restore data
 	scene->getEntity()->setModelID(restoreModel);
 	scene->getEntity()->setProgramID(programID);
