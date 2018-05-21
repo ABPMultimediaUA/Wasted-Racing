@@ -106,6 +106,11 @@ void TResourceAnimation::draw(unsigned int i)
         {
             texture->draw();
         }
+        else
+        {
+            std::cout << "Texture is null" << std::endl;
+        }
+        objs[i]->setTexture(0, texture);
         objs[i]->draw();
     }
 }

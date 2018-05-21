@@ -53,7 +53,6 @@ bool TResourceOBJ::loadOnlyMeshes()
 //Sets a texture for a specified mesh. This is used for the animations.
 void TResourceOBJ::setTexture(unsigned int i, TResourceTexture* t)
 {
-    std::cout << "Entra" << std::endl;
     if(i>=0 && i<meshes.size())
     {
         meshes[i]->setTextActive(true);

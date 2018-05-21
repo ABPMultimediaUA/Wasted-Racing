@@ -6,6 +6,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <iostream>
 
 //This class is only intended to load frame by frame animations, defining each frame in it's own OBJ file.
 //The purpose of this class is not loading skeletical or any other type of animations
@@ -33,7 +34,7 @@ class TResourceAnimation : public TResource {
         //////////////////////////////////////////////////////////////////////
         int getFrames()                                     {   return frames;      };
         void setFrames(int i)                               {   frames = i;         };
-        void setTexture(TResourceTexture* t)                {   texture = t;        };
+        void setTexture(TResourceTexture* t)                {   texture = t;std::cout << "Entra en el setter" << std::endl;        };
 
     private:
         //Maximum number of frames (initially set to 60)
