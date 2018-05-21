@@ -1,4 +1,5 @@
 #include "MoveComponent.h"
+#include "CollisionComponent.h"
 #include "../GameObject.h"
 #include "../../GameManager/RenderManager.h"
 #include <iostream>
@@ -31,13 +32,22 @@ void MoveComponent::update(float dTime) {
     LAPAL::correctYPosition(mData, dTime, terrain, position);
 
     bool animPlaying = RenderManager::getInstance().getRenderFacade()->isAnimationPLaying(getGameObject().getId());
+    bool movement = (abs(mData.vel) > 2.5);
 
+    //Update run animation velocity
+    if(movement && moving && !colliding && !drifting && !itemThrown) {
+        if(mData.vel > 0) {
+            float ratio = mData.vel / mData.max_vel;
+            ratio = 1/(10 + 30 * ratio * ratio);
+            RenderManager::getInstance().getRenderFacade()->setFramerate(getGameObject().getId(), ratio);
+        }
+    }
     //Update animation depending on speed
-    if(mData.mov && !moving && !colliding && !drifting && !itemThrown) {
+    if(movement && !moving && !colliding && !drifting && !itemThrown) {
         moving = true;
         RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 1);
     }
-    else if(!mData.mov && moving && !colliding && !drifting && !itemThrown) {
+    else if(!movement && moving && !colliding && !drifting && !itemThrown) {
         moving = false;
         RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 0);
     }
@@ -46,7 +56,7 @@ void MoveComponent::update(float dTime) {
         RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 2);
         RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
         colliding = true;
-        movingOnCollision = mData.mov;
+        movingOnCollision = (movement);
     }
     else if(colliding && !animPlaying) {
         colliding = false;
@@ -54,6 +64,37 @@ void MoveComponent::update(float dTime) {
         if(movingOnCollision == mData.mov && !itemThrown)
             moving = !moving;
     }
+    //Update animation depending on item
+    auto cmp = getGameObject().getComponent<ItemHolderComponent>();
+    int itemType = -1;
+
+    //Update animation depending on item
+    if(getGameObject().getComponent<ItemHolderComponent>() != nullptr)
+    {
+        int itemType = (getGameObject().getComponent<ItemHolderComponent>()).get()->getItemType();
+        if(itemType == -1 && (item == 0 || item == 1)){
+            itemThrown = true;
+            if(mData.mov){
+                RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 4);
+                RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
+            }
+            else{
+                RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 3);
+                RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
+            }
+                
+            movingOnItem = mData.mov;
+        }
+        else if(itemThrown && !animPlaying) {
+            itemThrown = false;
+            animPlaying = true;
+            if(movingOnItem == mData.mov && !colliding)
+                moving = !moving;
+        }
+
+        item = itemType;
+    }
+        
     //Update animation depending on drift
     if(mData.drift && !drifting) {
         drifting = true;
@@ -64,31 +105,10 @@ void MoveComponent::update(float dTime) {
     }
     else if(!mData.drift && drifting){
         drifting = false;
+        if(!colliding)
+            moving = false;
     }
-    //Update animation depending on item
-    int itemType = (getGameObject().getComponent<ItemHolderComponent>()).get()->getItemType();
-    if(itemType == -1 && (item == 0 || item == 1)){
-        itemThrown = true;
-        if(mData.mov){
-            RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 4);
-            RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
-        }
-        else{
-            RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 3);
-            RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
-        }
-            
-        movingOnItem = mData.mov;
-    }
-    else if(itemThrown && !animPlaying) {
-        itemThrown = false;
-        animPlaying = true;
-        if(movingOnItem == mData.mov && !colliding)
-            moving = !moving;
-    }
-
-    item = itemType;
-
+    
     //Set collision value to false (if it was true it has already been processed)
     mData.coll = false;
 
@@ -175,10 +195,21 @@ void MoveComponent::changeAcc(float a){
 
 void MoveComponent::isDrifting(bool d){
     mData.drift          = mData.spin_inc != 0 ? d : false;              //Drifting is true
-    mData.driftDir       = (d && mData.spin_inc < 0) ? 1.f : -1.f ;      //if it is drifting activation, change direction of drift to the speed one. (negative spin = right turn)
-    mData.driftDir       = mData.spin_inc == 0 ? 0.f : mData.driftDir;   //if spin is 0, then no drift is happening
     mData.driftWallAngle = d ? mData.angle : 0.f;                        //Lock the maximum angle of turn back
-    mData.spin           = d ? mData.spin  : 0.f;                        //Set turning to 0 again to avoid fast rotation after stopping the drift
+    mData.spin           = d ? mData.spin  : mData.spin / 3.f;           //Set turning to a third of the speed to avoid fast rotation after stopping the drift
+
+    //Drift turn preservation
+    if(d)
+    {
+        if(mData.spin_inc < 0)
+            mData.driftDir = 1.f;
+
+        if(mData.spin_inc > 0 )
+            mData.driftDir = -1.f;
+
+        if(mData.spin_inc == 0)
+            mData.driftDir = 0;
+    }
 
     //Speed boost
     if(!d && mData.driftTimeCounter > mData.driftBoostTime)
@@ -196,6 +227,14 @@ void MoveComponent::changeVel(float v){
     mData.vel      = v;
 }
 
+void MoveComponent::changeMaxVel(float v){
+    mData.max_vel      = v;
+}
+
+void MoveComponent::changeInvul(bool i){
+    mData.invul      = i;
+}
+
 //=================================================
 //Functions related with temporal data changes
 //=================================================
@@ -203,9 +242,9 @@ void MoveComponent::changeVel(float v){
 //Activate temporal speed change
 void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, float decTime) {
 
-    auto objectRender = this->getGameObject().getComponent<ObjectRenderComponent>();
+    auto animationRender = this->getGameObject().getComponent<AnimationRenderComponent>();
 
-    if(objectRender!=nullptr &&objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
+    if(animationRender!=nullptr && animationRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
     {
         if(mData.max_vel != maxSpeed){
             auxData.max_vel         = mData.max_vel;
@@ -222,9 +261,9 @@ void MoveComponent::changeMaxSpeedOverTime(float maxSpeed, float constTime, floa
 //Update and interpolate temporal speed change
 void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 
-    auto objectRender = this->getGameObject().getComponent<ObjectRenderComponent>();
+    auto animationRender = this->getGameObject().getComponent<AnimationRenderComponent>();
 
-    if(objectRender!=nullptr && objectRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
+    if(animationRender!=nullptr && animationRender->getPolyMesh() == ObjectRenderComponent::Poly::High)
     {
         if(mData.boost && !mData.coll) {
             if(constantAlteredTime > 0) {
@@ -244,6 +283,7 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
                 if(decrementalAlteredTime < 0) {
                     mData.max_vel = auxData.max_vel;
                     mData.boost   = false;
+                    mData.invul = false;
                 }
                     
             }

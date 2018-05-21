@@ -22,7 +22,7 @@ void ItemBlueShellComponent::init(float actualVector)
     getGameObject().getComponent<PathPlanningComponent>()->setLastPosVector(actualVector);
     waypoints = WaypointManager::getInstance().getWaypoints();
     go = false;
-    getGameObject().getComponent<CollisionComponent>()->setCollisionOn(false);
+    getGameObject().getComponent<MoveComponent>()->changeInvul(true);
 }
 
 //:::> This ALL should be in AIManager since it does calculations using all components
@@ -114,14 +114,11 @@ void ItemBlueShellComponent::update(float dTime)
 
     //Animation missile
     
-    std::cout<<getGameObject().getId()<<" :1 x: "<<trans.position.x<<"\n";
-    std::cout<<getGameObject().getId()<<" :1 y: "<<trans.position.y<<"\n";
-    std::cout<<getGameObject().getId()<<" :1 z: "<<trans.position.z<<"\n";
-
     if(valueY < 60 && go == false)
     {
-        valueY += 5;
+        valueY += 4;
         trans.position.y = trans.position.y + valueY;
+        trans.rotation.z = 180;
     }
     else if(valueY == 60)
     {
@@ -134,13 +131,13 @@ void ItemBlueShellComponent::update(float dTime)
         float yTerrain = LAPAL::calculateExpectedY(terrain, pos);
         trans.position = objective;
         auto length = enemy->getGameObject().getComponent<CollisionComponent>()->getLength();
-        trans.position.y = yTerrain + length + valueY;
+        trans.position.y +=  length+valueY;
         if(valueY == 60)
             valueY = 20;
         else if(valueY > 0)
             valueY -= 1;
 
-        if(valueY == 5)
+        if(valueY == 0)
         {
             EventData data;
             data.Id             = getGameObject().getId();
@@ -154,22 +151,7 @@ void ItemBlueShellComponent::update(float dTime)
 
     //trans.position = objective;
 
-    std::cout<<getGameObject().getId()<<" :2 x: "<<trans.position.x<<"\n";
-    std::cout<<getGameObject().getId()<<" :2 y: "<<trans.position.y<<"\n";
-    std::cout<<getGameObject().getId()<<" :2 z: "<<trans.position.z<<"\n";
-
-        /*
-            EventData data;
-            data.Id             = getGameObject().getId();
-            data.Component      = enemy.get()->getGameObject().getComponent<MoveComponent>();
-            data.CollComponent  = getGameObject().getComponent<CollisionComponent>();
-
-            EventManager::getInstance().addEvent(Event {EventType::BlueShellComponent_Collision, data});
-            */
-           
     getGameObject().setNewTransformData(trans);
-    getGameObject().setOldTransformData(trans);
-    getGameObject().setTransformData(trans);
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
 }

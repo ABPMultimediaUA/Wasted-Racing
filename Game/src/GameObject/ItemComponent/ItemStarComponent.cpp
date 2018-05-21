@@ -17,6 +17,7 @@ ItemStarComponent::~ItemStarComponent()
 void ItemStarComponent::init()
 {
     player.getComponent<MoveComponent>()->changeMaxSpeedOverTime(speed, consTime, decTime);
+    player.getComponent<MoveComponent>()->changeInvul(true);
 }
 
 void ItemStarComponent::update(float dTime)
