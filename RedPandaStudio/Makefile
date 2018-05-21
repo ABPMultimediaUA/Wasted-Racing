@@ -208,4 +208,10 @@ compilePmac: mac
 	cp ./bin/libRedPanda.dylib ../Game/lib/mac
 	cp ./bin/libRedPanda.dylib ../Game/bin
 
+install_mac:
+	brew reinstall sdl2 
+	brew reinstall sfml 
+	brew reinstall assimp 
+	brew reinstall glew
+	
 .PHONY: all clean clean_linux info install win

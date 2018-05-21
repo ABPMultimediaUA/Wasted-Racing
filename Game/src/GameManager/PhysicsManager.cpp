@@ -628,7 +628,6 @@ void collideStartLine(EventData eData) {
     auto line = move->getGameObject().getComponent<StartLineComponent>();
 
     if(line != nullptr) {
-        std::cout<<line->getActive()<<"\n";
         if(line->getActive() == true)
         {
             auto score = move->getGameObject().getComponent<ScoreComponent>();
