@@ -284,7 +284,7 @@ void LAPAL::updateCollisionMovement ( LAPAL::movementData& mData, const float dT
 
         mData.colVel.x -= mData.colVel.x*dTime*cons;
         mData.colVel.z -= mData.colVel.z*dTime*cons;
-
+        mData.invul = false;
     }
     else{
         mData.colVel = { 0, 0, 0};

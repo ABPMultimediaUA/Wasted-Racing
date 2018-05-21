@@ -112,6 +112,7 @@ public:
     virtual void resetAnimation(uint16_t id);
     virtual void changeAnimation(uint16_t id, uint16_t animation);
     virtual bool isAnimationPLaying(uint16_t);
+    virtual void setFramerate(uint16_t, float framerate);
 
     ////////////
     //  Image

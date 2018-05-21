@@ -86,6 +86,9 @@ public:
 
     //Level of Detail
     void calculateLoD(GameObject AI, float dTime);
+    
+    //Update AI speed depending on score
+    void updateAISpeed();
 
 private:
     std::vector<IComponent::Pointer> objectsAI; //AIDrivingComponents to be processed

@@ -504,6 +504,7 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 	//Check parent node is valid
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
 	{
+		std::cout << "Create animated note: " << texture << std::endl;
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, pos);
 
