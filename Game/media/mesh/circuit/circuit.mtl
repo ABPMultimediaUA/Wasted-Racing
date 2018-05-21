@@ -123,12 +123,12 @@ bump Tuberias/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.015
 Ns 1.0
-Ka 1.000000 1.000000 1.000000
-Kd 0.340000 0.340000 0.340000
-Ks 0.500000 0.500000 0.500000
+Ka 0.000000 0.000000 0.000000
+Kd 0.00000 0.00000 0.00000
+Ks 0.10000 0.10000 0.10000
 Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
+Ni 0.000000
+d 0.000000
 illum 2
 map_Kd Baked/Puente.png
 bump Puente/CircuitMaterial_Normal_OpenGL.png
