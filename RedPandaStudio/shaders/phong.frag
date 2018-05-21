@@ -59,9 +59,28 @@ uniform bool silhouette;
 
 out vec4 FragColor;
 
+//================================
+vec4 lightPos = light[0].position;
+
+in vec4 FragLightPos;
+
+uniform sampler2D shadowMap;
+
+float calculateVisibility()
+{
+    //Coordinates normalized from the light point of view (in the range of [0,1])
+    vec3 projectionCoordinates = (FragLightPos.xyz / FragLightPos.w) * 0.5 + 0.5;
+
+    //Get the visibility value depending on what you see first from the light's perspective and compare it with the value in the depth
+    float visibility = (projectionCoordinates.z >  texture(shadowMap, projectionCoordinates.xy).r ) ? 0.5f : 1.0f;
+
+    return visibility;
+}
+//================================
+
 void calculatePointLights()
 {
-
+    float visibility = calculateVisibility();
     for(int i = 0; i < numLights && i < maxLights; i++)
     {
 
@@ -83,6 +102,7 @@ void calculatePointLights()
         
         specular = pow(max(0.0, dot(reflect(-L, normal), mid)), material.ns);
 
+
         v_Color += vec4(light[i].intensity * diffuse) * vec4(material.kd, 1.0);
 
         if(specular > 0.0)
@@ -91,6 +111,8 @@ void calculatePointLights()
         }
 
     }
+    
+    v_Color *= visibility;
 }
 
 void calculateSpotLights()
@@ -156,7 +178,6 @@ void main()
         calculatePointLights();
         calculateSpotLights();
 
-
         float ambient = 0.2;
         v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
 
@@ -168,6 +189,18 @@ void main()
         else
         {
             FragColor = v_Color;
-        }
+        }       
+
+        //Coordinates normalized from the light point of view (in the range of [0,1])
+        //vec3 projectionCoordinates = (FragLightPos.xyz / FragLightPos.w) * 0.5 + 0.5;
+
+        //Get the visibility value depending on what you see first from the light's perspective and compare it with the value in the depth
+       // float visibility = (projectionCoordinates.z >  texture(shadowMap, projectionCoordinates.xy).r ) ? 0.5f : 1.0f;
+
+       // FragColor = vec4(projectionCoordinates.y, projectionCoordinates.y, projectionCoordinates.y, 1.0);
+        
+       // FragColor = texture(shadowMap, projectionCoordinates.xy);
+
+        //FragColor = vec4(visibility, visibility, visibility, 1.0);
     }
 }

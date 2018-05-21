@@ -15,7 +15,7 @@ vec4 color;
 uniform int option = 0;
 
 //Pixel offset for the kernel operations
-uniform float offset = 1.0 / 300.0;
+uniform float offset = 1.0 / 1200.0;
 
 //Neon factor
 uniform float neonFactor = 1;
@@ -102,7 +102,7 @@ void main()
         {
             kernel = float[](
                 1, 1,   1,
-                1, -neonFactor, 1,
+                1, 100, 1,
                 1, 1,   1
             );
             
