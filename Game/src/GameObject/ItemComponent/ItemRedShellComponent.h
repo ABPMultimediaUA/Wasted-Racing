@@ -46,6 +46,8 @@ class ItemRedShellComponent : public IItemComponent
         glm::vec3 objective;               //vec3 indicating the position to which to go
         ScoreComponent::Pointer enemy;     //Pointer to the score of the victim player
         IItemComponent::InstanceType mode; //How the item was instanciated
+        float valueY;                      //Max value to increase Y
+        std::vector<GameObject::Pointer> waypoints;
 
 };
  

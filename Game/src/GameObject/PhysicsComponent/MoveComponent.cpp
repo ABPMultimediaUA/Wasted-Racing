@@ -65,26 +65,36 @@ void MoveComponent::update(float dTime) {
             moving = !moving;
     }
     //Update animation depending on item
-    int itemType = (getGameObject().getComponent<ItemHolderComponent>()).get()->getItemType();
-    if(itemType == -1 && (item == 0 || item == 1)){
-        itemThrown = true;
-        if(movement){
-            RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 4);
-            RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
+    auto cmp = getGameObject().getComponent<ItemHolderComponent>();
+    int itemType = -1;
+
+    //Update animation depending on item
+    if(getGameObject().getComponent<ItemHolderComponent>() != nullptr)
+    {
+        int itemType = (getGameObject().getComponent<ItemHolderComponent>()).get()->getItemType();
+        if(itemType == -1 && (item == 0 || item == 1)){
+            itemThrown = true;
+            if(mData.mov){
+                RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 4);
+                RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
+            }
+            else{
+                RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 3);
+                RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
+            }
+                
+            movingOnItem = mData.mov;
         }
-        else{
-            RenderManager::getInstance().getRenderFacade()->changeAnimation(getGameObject().getId(), 3);
-            RenderManager::getInstance().getRenderFacade()->loopOnceAnimation(getGameObject().getId());
+        else if(itemThrown && !animPlaying) {
+            itemThrown = false;
+            animPlaying = true;
+            if(movingOnItem == mData.mov && !colliding)
+                moving = !moving;
         }
-            
-        movingOnItem = (movement);
+
+        item = itemType;
     }
-    else if(itemThrown && !animPlaying) {
-        itemThrown = false;
-        animPlaying = true;
-        if(movingOnItem == (movement) && !colliding)
-            moving = !moving;
-    }
+        
     //Update animation depending on drift
     if(mData.drift && !drifting) {
         drifting = true;
@@ -98,9 +108,7 @@ void MoveComponent::update(float dTime) {
         if(!colliding)
             moving = false;
     }
-
-    item = itemType;
-
+    
     //Set collision value to false (if it was true it has already been processed)
     mData.coll = false;
 
@@ -206,6 +214,10 @@ void MoveComponent::isBraking(bool b) {
 
 void MoveComponent::changeVel(float v){
     mData.vel      = v;
+}
+
+void MoveComponent::changeMaxVel(float v){
+    mData.max_vel      = v;
 }
 
 void MoveComponent::changeInvul(bool i){

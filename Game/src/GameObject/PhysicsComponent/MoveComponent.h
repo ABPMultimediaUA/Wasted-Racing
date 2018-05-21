@@ -41,6 +41,7 @@ public:
 	void changeSpin(float n);
 	void changeAcc(float n);
 	void changeVel(float v);
+	void changeMaxVel(float v);
 
 	//Checker functions
 	void isMoving(bool m);
@@ -61,12 +62,12 @@ public:
     //==========================================
     // GETTERS AND SETTERS
     //==========================================
-	LAPAL::movementData getMovemententData() 						{ 	return mData; 		}
-	const float 		getMass()									{ 	return mass;  		}
-	LAPAL::plane3f		getTerrain()								{ 	return terrain;  	}
-	void 				setMovementData(LAPAL::movementData data) 	{ 	mData = data;   	}
-	void 				setMass(const float newMass)				{ 	mass = newMass; 	}
-	void				setTerrain(LAPAL::plane3f p) 				{ 	terrain = p;		}
+	LAPAL::movementData getMovemententData() 						{ 	return mData; 			}
+	const float 		getMass()									{ 	return mass;  			}
+	LAPAL::plane3f		getTerrain()								{ 	return terrain;  		}
+	void 				setMovementData(LAPAL::movementData data) 	{ 	mData = data;   		}
+	void 				setMass(const float newMass)				{ 	mass = newMass; 		}
+	void				setTerrain(LAPAL::plane3f p) 				{ 	terrain = p;			}
 
 private:
     //==========================================
