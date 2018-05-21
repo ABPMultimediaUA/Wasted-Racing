@@ -23,56 +23,6 @@ void SelectionState::init()
 
         initialized = true;
 
-        //Add selection  scene
-        GameObject::TransformationData tr;
-        tr.position = glm::vec3(0,-30,-8);
-        tr.rotation = glm::vec3(0,0,0);
-        tr.scale    = glm::vec3(2,2,2);
-        GameObject::Pointer background = ObjectManager::getInstance().createObject(60000, tr);
-
-        RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
-
-        GameObject::TransformationData tr1;
-        tr1.position = glm::vec3(-5,-30,0.5);
-        tr1.rotation = glm::vec3(0,glm::half_pi<float>(),0);
-        tr1.scale    = glm::vec3(0.3,0.3,0.3);
-        GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
-
-
-        RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 167, 0, "Punk/DefaultMaterial_Base_Color.png");
-
-        GameObject::TransformationData tr2;
-        tr2.position = glm::vec3(-5,-30,-5.5);
-        tr2.rotation = glm::vec3(0,glm::half_pi<float>(),0);
-        tr2.scale    = glm::vec3(0.3,0.3,0.3);
-        GameObject::Pointer player2 = ObjectManager::getInstance().createObject(60002, tr2);
-
-        RenderManager::getInstance().createAnimationRenderComponent(*player2.get(),"Crocodile/CharSelect/cocodrilaBonesSelect_000", 91, 0, "Crocodile/DefaultMaterial_Base_Color.png");
-
-        GameObject::TransformationData tr3;
-        tr3.position = glm::vec3(-5,-30,-11.5);
-        tr3.rotation = glm::vec3(0,glm::half_pi<float>(),0);
-        tr3.scale    = glm::vec3(0.3,0.3,0.3);
-        GameObject::Pointer player3 = ObjectManager::getInstance().createObject(60003, tr3);
-
-        RenderManager::getInstance().createAnimationRenderComponent(*player3.get(),"Cyborg/CharSelect/CyborgFINALAnimation_000", 183, 0, "Cyborg/DefaultMaterial_Base_Color.png");
-
-        GameObject::TransformationData tr4;
-        tr4.position = glm::vec3(-5,-30,-17.5);
-        tr4.rotation = glm::vec3(0,glm::half_pi<float>(),0);
-        tr4.scale    = glm::vec3(0.15,0.15,0.15);
-        GameObject::Pointer player4 = ObjectManager::getInstance().createObject(60004, tr4);
-
-        RenderManager::getInstance().createAnimationRenderComponent(*player4.get(),"Witch/CharSelect/bruja_000", 238, 0, "Witch/DefaultMaterial_Base_Color.png");
-
-        GameObject::TransformationData tr5;
-        tr5.position = glm::vec3(-20,-10,-9);
-        tr5.rotation = glm::vec3(0,0,0);
-        tr5.scale    = glm::vec3(1,1,1);
-        GameObject::Pointer light = ObjectManager::getInstance().createObject(60005, tr5);
-
-        RenderManager::getInstance().createLightRenderComponent(*light.get(),LightRenderComponent::Type::Point, 100); 
-
         cameraPositions[4] = glm::vec3(10,-27,0);
         cameraPositions[5] = glm::vec3(0,-30,0);
 

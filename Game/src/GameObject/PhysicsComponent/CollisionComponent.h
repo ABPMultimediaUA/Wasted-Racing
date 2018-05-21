@@ -23,9 +23,9 @@ public:
 
     //Constructor
 	CollisionComponent(GameObject& newGameObject, float newRadius, float newLength, bool isKinetic, Type newType) : IComponent(newGameObject), 
-						radius(newRadius), length(newLength), kinetic(isKinetic), type(newType), collisionOn(true) { shape = Shape::Circle; }
+						radius(newRadius), length(newLength), kinetic(isKinetic), type(newType){ shape = Shape::Circle; }
 	CollisionComponent(GameObject& newGameObject, LAPAL::plane3f newRectangle, float newLength, bool isKinetic, Type newType) : IComponent(newGameObject), 
-						rectangle(newRectangle), length(newLength), kinetic(isKinetic), type(newType), collisionOn(true) { shape = Shape::Rectangle; }
+						rectangle(newRectangle), length(newLength), kinetic(isKinetic), type(newType){ shape = Shape::Rectangle; }
 
 	//Destructor
 	virtual ~CollisionComponent() {};
@@ -46,11 +46,9 @@ public:
 	const Shape 			getShape()				{ return shape;			}
 	const Type 				getType()				{ return type;			}
 	const bool 				getKinetic()			{ return kinetic; 		}
-	const bool 				getCollisionOn()		{ return collisionOn; 	}
 
 	//Setters
 	void 				setKinetic(bool k)				{ 	kinetic = k; 	}
-	void 				setCollisionOn(bool c)			{ 	collisionOn = c; 	}
 
 
 
@@ -62,6 +60,5 @@ private:
 	Shape 			shape;
 	bool 			kinetic;
 	Type			type;
-	bool 			collisionOn;
 
 };
