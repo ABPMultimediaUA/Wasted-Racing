@@ -83,7 +83,7 @@ void RenderManager::init(int engine) {
     RenderManager::getInstance().getRenderFacade()->setClipping(false);
 
     //Init distance Level of Detail 
-    GlobalVariables::getInstance().setDistanceLoD(0);
+    GlobalVariables::getInstance().setDistanceLoD(100);
 
     createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
 
@@ -1125,6 +1125,7 @@ void RenderManager::LoDmesh()
         {
             auto component = RenderManager::getInstance().getComponentList()[i];
             auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
+            auto animationObject = std::dynamic_pointer_cast<AnimationRenderComponent>(component).get();
 
             if(renderObject != nullptr)
             {
@@ -1138,9 +1139,9 @@ void RenderManager::LoDmesh()
                                     (positionObject.y - positionPlayer.y) * (positionObject.y - positionPlayer.y) +
                                     (positionObject.z - positionPlayer.z) * (positionObject.z - positionPlayer.z);
 
-                    auto polyMesh = renderObject->getPolyMesh();
+                    auto polyMesh = animationObject->getPolyMesh();
 
-                    if((distance > distanceLoD*distanceLoD && distance <= (distanceLoD*distanceLoD)*2) && polyMesh != ObjectRenderComponent::Poly::Medium)
+                    if((distance > distanceLoD*distanceLoD && distance <= (distanceLoD*distanceLoD)*2) && polyMesh != AnimationRenderComponent::Poly::Medium)
                     {
                         auto name = renderObject->getName();
                         auto folder = renderObject->getFolder();
@@ -1150,9 +1151,9 @@ void RenderManager::LoDmesh()
                         {
                             renderObject->setMesh(newMesh.c_str());
                         }
-                        renderObject->setPolyMesh(ObjectRenderComponent::Poly::Medium);
+                        animationObject->setPolyMesh(AnimationRenderComponent::Poly::Medium);
                     }  
-                    else if((distance > ((distanceLoD*distanceLoD)*2)) && polyMesh != ObjectRenderComponent::Poly::Low)
+                    else if((distance > ((distanceLoD*distanceLoD)*2)) && polyMesh != AnimationRenderComponent::Poly::Low)
                     {
                         auto name = renderObject->getName();
                         auto folder = renderObject->getFolder();
@@ -1162,9 +1163,9 @@ void RenderManager::LoDmesh()
                         {
                             renderObject->setMesh(newMesh.c_str());
                         }
-                        renderObject->setPolyMesh(ObjectRenderComponent::Poly::Low);
+                        animationObject->setPolyMesh(AnimationRenderComponent::Poly::Low);
                     }  
-                    else if(distance <= distanceLoD*distanceLoD && polyMesh != ObjectRenderComponent::Poly::High)
+                    else if(distance <= distanceLoD*distanceLoD && polyMesh != AnimationRenderComponent::Poly::High)
                     {
                         auto name = renderObject->getName();
                         auto folder = renderObject->getFolder();
@@ -1174,7 +1175,7 @@ void RenderManager::LoDmesh()
                         {
                             renderObject->setMesh(newMesh.c_str());
                         }
-                        renderObject->setPolyMesh(ObjectRenderComponent::Poly::High);
+                        animationObject->setPolyMesh(AnimationRenderComponent::Poly::High);
 
                         //Change to maxSpeed when we return to high poly
                         auto moveComponent = object.getComponent<MoveComponent>();

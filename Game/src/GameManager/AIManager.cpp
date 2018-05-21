@@ -412,8 +412,21 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     auto maxSpeed = AIObject->getComponent<MoveComponent>()->getMovemententData().max_vel;
     AIObject->getComponent<MoveComponent>()->changeVel(0);
 
-    auto distCover = (maxSpeed * maxSpeed)*0.7 * dTime;
+/////////////////////
+    auto player = GlobalVariables::getInstance().getPlayer();
+    int scorePlayer = player->getComponent<ScoreComponent>()->getPosition();
 
+    int scoreAI = AIObject->getComponent<ScoreComponent>()->getPosition();
+    float distCover;
+    if(scoreAI < scorePlayer)
+    {
+        distCover = (maxSpeed * maxSpeed)*0.35 * dTime;
+    }
+    else if(scoreAI > scorePlayer)
+    {
+        distCover = (maxSpeed * maxSpeed)*0.6 * dTime;
+    }
+////////////////////////
     auto waypoints = WaypointManager::getInstance().getWaypoints();
 
     unsigned int posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
@@ -474,12 +487,12 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     ////////////////////////////////////
     /////    ASSIGN RANDOM ITEM    /////
     //////////////////////////////////// 
-    if(posVector%5 == 0 && itemLoD == false)
+    /*if(posVector%5 == 0 && itemLoD == false)
     {
+        srand (time(NULL));
         auto itemHolder = AIObject->getComponent<ItemHolderComponent>();
 
         if(itemHolder->getItemType() == -1){
-            srand (time(NULL));
             int random;
             if(AIObject->getComponent<ScoreComponent>()->getPosition() == 1)
             {
@@ -497,7 +510,7 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     else if (itemLoD == true)
     {
         itemLoD = false;
-    }
+    }*/
     //:::> Fix this
     /////////////////////////////////////////////////////////////////////////
     ///////     AJUSTAR EL BEHAVIOUR THREE A QUE SE USE SIEMPRE EL ITEM
@@ -511,19 +524,22 @@ void AIManager::updateAISpeed()
 
     for(int i = 0; i < objectsAI.size(); i++)
     {
-        int scoreAI = objectsAI[i]->getGameObject().getComponent<ScoreComponent>()->getPosition();
-        auto move = objectsAI[i]->getGameObject().getComponent<MoveComponent>();
-        float real_max_vel = move->getMovemententData().real_max_vel;
-
-        move->changeMaxVel(real_max_vel);
-
-        if(scoreAI < scorePlayer)
+        if(objectsAI[i]->getGameObject().getComponent<ScoreComponent>() != nullptr)
         {
-            move->changeMaxVel(real_max_vel*0.9);
-        }
-        else if(scoreAI > scorePlayer)
-        {
-            move->changeMaxVel(real_max_vel*1.1);
+            int scoreAI = objectsAI[i]->getGameObject().getComponent<ScoreComponent>()->getPosition();
+            auto move = objectsAI[i]->getGameObject().getComponent<MoveComponent>();
+            float real_max_vel = move->getMovemententData().real_max_vel;
+
+            move->changeMaxVel(real_max_vel);
+
+            if(scoreAI < scorePlayer)
+            {
+                move->changeMaxVel(real_max_vel*0.9);
+            }
+            else if(scoreAI > scorePlayer)
+            {
+                move->changeMaxVel(real_max_vel*1.1);
+            }
         }
     }
 }
