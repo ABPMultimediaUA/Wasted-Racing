@@ -516,6 +516,16 @@ bool RenderRedPanda::isAnimationPLaying(uint16_t id) {
 
 }
 
+void RenderRedPanda::setFramerate(uint16_t id, float framerate) {
+
+    TAnimation* t = animationMap[id];
+
+    if(t != nullptr) {
+        t->setFramerate(framerate);
+    }
+
+}
+
 //Add a light to the game
 void RenderRedPanda::addLight(IComponent* ptr) {
     
