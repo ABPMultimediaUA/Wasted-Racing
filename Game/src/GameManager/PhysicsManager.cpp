@@ -225,7 +225,6 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                     }
                     else if(hisColl->getType() == CollisionComponent::Type::StartLine)
                     {
-
                         EventData data;
                         data.Component      = std::static_pointer_cast<IComponent>(move);
                         data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
@@ -629,6 +628,7 @@ void collideStartLine(EventData eData) {
     auto line = move->getGameObject().getComponent<StartLineComponent>();
 
     if(line != nullptr) {
+        std::cout<<line->getActive()<<"\n";
         if(line->getActive() == true)
         {
             auto score = move->getGameObject().getComponent<ScoreComponent>();
