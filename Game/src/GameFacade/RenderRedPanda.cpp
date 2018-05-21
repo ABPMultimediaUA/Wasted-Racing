@@ -230,7 +230,7 @@ void RenderRedPanda::addCamera() {
 
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
     valueY = 0.3;
-    sum = 0;
+    sum = 3;
 }
 
 //Update the current camera
@@ -264,17 +264,17 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     {
         sum += 0.25;
     }
-    else if(posPlayer < -0.25 && posPlayer > -2 && sum > -20)
+    else if(posPlayer < -0.25 && posPlayer > -2 && sum > -10)
     {
         sum -= 0.25;
     }
     else if(posPlayer < 0.25 && posPlayer > -0.25 && vel > maxVel/10)
     {
-        if(sum > 0)
+        if(sum > 5)
         {
             sum -= 0.25;
         }
-        else if(sum < 0)
+        else if(sum < 5)
         {
             sum += 0.25; 
         }
@@ -288,11 +288,11 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
         }
         if(!(mData.jump == false && mData.asc == false))
         {
-            if(sum > 0)
+            if(sum > 5)
             {
                 sum -= 0.25;
             }
-            else if(sum < 0)
+            else if(sum < 5)
             {
                 sum += 0.25; 
             }

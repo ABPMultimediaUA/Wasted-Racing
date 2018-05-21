@@ -485,7 +485,7 @@ IComponent::Pointer ItemManager::createTrap(GameObject& obj, IItemComponent::Ins
     }
 
     //--------------------------
-    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "banana.obj");
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "trap.obj");
     PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, 1, false, CollisionComponent::Type::Trap);
 
     //add item component
