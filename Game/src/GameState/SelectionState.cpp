@@ -179,19 +179,39 @@ void addAI(int selectedPlayer)
 
     if(selectedPlayer == 0) {
         pl1 = 1; pl2 = 2; pl3 = 3;
+
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.1,1.1,1.1));
+        scales.push_back(glm::vec3(0.7,0.7,0.7));
     } else if (selectedPlayer == 1) {
         pl1 = 0; pl2 = 2; pl3 = 3;
+
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.1,1.1,1.1));
+        scales.push_back(glm::vec3(0.7,0.7,0.7));
     } else if (selectedPlayer == 2) {
         pl1 = 0; pl2 = 1; pl3 = 3;
+
+        scales.push_back(glm::vec3(1.1,1.1,1.1));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(0.7,0.7,0.7));
     } else {
         pl1 = 0; pl2 = 1; pl3 = 2;
+
+        scales.push_back(glm::vec3(0.7,0.7,0.7));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.1,1.1,1.1));
     }
 
 
     id = 25000;
     transform.position = glm::vec3(-80,0, -30);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(0.7,0.7,0.7);
+    transform.scale    = scales[0];
     ObjectManager::getInstance().createPlayer(transform, selectedPlayer, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
@@ -199,7 +219,7 @@ void addAI(int selectedPlayer)
     id = 25001;
     transform.position = glm::vec3(-80,0,-0);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1.65,1.65,1.65);
+    transform.scale    = scales[1];
     ObjectManager::getInstance().createPlayer(transform, pl1, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                  PhysicsManager::getInstance().getTerrainFromPos(transform.position));
@@ -207,7 +227,7 @@ void addAI(int selectedPlayer)
     id = 25002;
     transform.position = glm::vec3(-80,0,-15);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1.65,1.65,1.65);
+    transform.scale    = scales[2];
     ObjectManager::getInstance().createPlayer(transform, pl2, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
@@ -215,7 +235,7 @@ void addAI(int selectedPlayer)
     id = 25003;
     transform.position = glm::vec3(-80,0,-45);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1.1,1.1,1.1);
+    transform.scale    = scales[3];
     ObjectManager::getInstance().createPlayer(transform, pl3, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
