@@ -7,7 +7,7 @@
 
 class TMesh : public TEntity{
     public:
-
+        //Constructor and destructor
         TMesh() {}
         ~TMesh() {}
 
@@ -27,6 +27,8 @@ class TMesh : public TEntity{
         void  setMesh(TResource* m)                               {   mesh=m;           };
         void  setMaterial(TResource* m)                           {   material=m;       };
     private:
+        //Resource mesh
         TResource* mesh;
+        //Resource material
         TResource* material;
 };

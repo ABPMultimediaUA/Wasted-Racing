@@ -14,7 +14,7 @@
 #include <vector>
 #include <chrono>
 
-#include "RedPanda.h"
+#include <RedPanda.h>
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -94,7 +94,7 @@ public:
     void quadDrawPostProcessing();
 
     //Initializes all parameters and programs to operate with the shadow mapping
-    void initShadowMappping();
+    void initShadowMapping();
 
     //Draws the shadow mapping
     void drawShadowMapping();

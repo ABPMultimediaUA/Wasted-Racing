@@ -43,7 +43,7 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 void RedPandaStudio::updateDevice() 
 {
 	//Update particles
-	/*updateParticles();
+	updateParticles();
 
 	//Clean the scene
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -109,8 +109,8 @@ void RedPandaStudio::updateDevice()
 	//Render the scene in a quad if post processing is selected
 	if(postProcessingActive)
 		quadDrawPostProcessing();
-*/
-	drawShadowMapping();
+
+	//drawShadowMapping();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -508,11 +508,10 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 	//Check parent node is valid
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
 	{
-		std::cout << "Create animated note: " << texture << std::endl;
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, pos);
 
-		//Create new mesh entity
+		//Create new animation entity
 		TAnimation* a = new TAnimation();
 		a->setAnimation(resourceManager->getResourceAnimation(animation, frames, texture));
 		a->setFrames(frames);
@@ -521,7 +520,7 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 		TNode* animation = new TNode(transformT, a);
 		transformT->addChild(animation);
 
-		//Return mesh
+		//Return animation
 		return animation;
 	}
 	return nullptr;
