@@ -113,7 +113,6 @@ uniform mat4 mvpMatrix;
 out vec2 UV_Coordinates;
 out vec3 P;
 out vec3 N;
-//out vec4 CamPos;
 
 out mat4 modelViewMatrix;
 
@@ -128,8 +127,6 @@ out vec4 FragLightPos;
 void main()
 {
     modelViewMatrix = mvMatrix;
-
-    //CamPos = vec4(-modelViewMatrix[3][2], -modelViewMatrix[3][1], -modelViewMatrix[3][0], 1.0);
 
     P = vec3(modelViewMatrix * vertexPosition);	          // Posición del vértice
 	N = vec3(modelViewMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
