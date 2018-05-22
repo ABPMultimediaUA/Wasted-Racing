@@ -92,7 +92,7 @@ void RenderManager::init(int engine) {
     //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/punk/punk.obj");
     //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
     particleManager = &ParticleManager::getInstance();
-    particleManager->init();
+    //particleManager->init();
 
 }
 
@@ -132,7 +132,7 @@ void RenderManager::update(float dTime) {
 
     renderFacade->updateAnimations(dTime);
 
-    particleManager->update();
+    //particleManager->update();
 }
 
 void RenderManager::draw() {
@@ -169,7 +169,7 @@ void RenderManager::updateBlur()
     //Update blur
     renderFacade->setBlurOrigin(0.f, 0.0f);
     renderFacade->setBlurEffect(c->getBlurActivation());
-    renderFacade->setBlurIntensity(1.5 * c->getBlurFactor());
+    renderFacade->setBlurIntensity(1.3 * c->getBlurFactor());
     renderFacade->setBlurRadius(0.5);
 }
 

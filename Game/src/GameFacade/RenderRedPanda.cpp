@@ -230,7 +230,7 @@ void RenderRedPanda::addCamera() {
 
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
     valueY = 0.3;
-    sum = 3;
+    sum = 5;
 }
 
 //Update the current camera
