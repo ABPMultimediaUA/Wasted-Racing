@@ -94,7 +94,7 @@ public:
     void quadDrawPostProcessing();
 
     //Initializes all parameters and programs to operate with the shadow mapping
-    void initShadowMappping();
+    void initShadowMapping();
 
     //Draws the shadow mapping
     void drawShadowMapping();

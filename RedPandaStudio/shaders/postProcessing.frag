@@ -57,9 +57,9 @@ void main()
         if(option == 3)
         {
             kernel = float[](
-                -1, -1, -1,
-                -1,  9, -1,
-                -1, -1, -1
+                -2, -2, -2,
+                -2,  18, -2,
+                -2, -2, -2
             );
 
             offsets = vec2[](
@@ -102,7 +102,7 @@ void main()
         {
             kernel = float[](
                 1, 1,   1,
-                1, -neonFactor, 1,
+                1, 100, 1,
                 1, 1,   1
             );
             

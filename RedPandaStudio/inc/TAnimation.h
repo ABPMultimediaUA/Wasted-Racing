@@ -6,7 +6,7 @@
 
 class TAnimation : public TEntity{
     public:
-
+        //Constructor and destructor
         TAnimation() {}
         ~TAnimation() {}
 
@@ -41,6 +41,7 @@ class TAnimation : public TEntity{
         
 
     private:
+        //Pointer to the resource of the animation
         TResourceAnimation* animation;
 
         //Maximum number of frames (initially set to 60)

@@ -171,8 +171,6 @@ TResourceAnimation* ResourceManager::getResourceAnimation(const char* n, int fra
     
     TResourceTexture* text = this->getResourceTexture(t);
 
-    std::cout << "Ruta: " << text->getName() << std::endl;
-
     //First we look in memory loaded resources
     for(i=0; i<animations.size() && found == false; i++)
     {
@@ -191,7 +189,6 @@ TResourceAnimation* ResourceManager::getResourceAnimation(const char* n, int fra
         res->setName(n);
         if(res->loadResource())
         {
-            std::cout << "Entra" << std::endl;
             res->setTexture(text);
             animations.push_back(res);
         }
