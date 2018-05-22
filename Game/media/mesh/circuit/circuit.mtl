@@ -13,7 +13,7 @@ illum 2
 map_Kd Baked/EdificiosFuera.png
 bump EdificiosFuera/CircuitMaterial_Normal_OpenGL.png
 
-newmtl Material.000
+newmtl Material.011
 Ns 1.0
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
