@@ -8,7 +8,7 @@ in vec2 UV_Coordinates; //UV del vertex shader
 
 in vec3 P;
 in vec3 N;
-in vec4 CamPos;
+uniform vec3 CamPos;
 
 uniform mat4 ViewMatrix;
 
@@ -174,8 +174,7 @@ void main()
             normal = normalize(TBN * normal);
         }
 
-        P2 = vec4(P.x, P.y, P.z, 1.0);
-        V = vec3(normalize(CamPos - P2));
+        V = normalize(CamPos - P);
 
 
         calculatePointLights();
