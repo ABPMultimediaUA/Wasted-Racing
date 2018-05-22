@@ -435,6 +435,8 @@ void RedPandaStudio::initOpenGL() {
 	GLuint model = glGetUniformLocation(ProgramID, "ModelMatrix");   
     GLuint view  = glGetUniformLocation(ProgramID, "ViewMatrix");
     GLuint projection = glGetUniformLocation(ProgramID, "ProjectionMatrix");
+	GLuint mv = glGetUniformLocation(ProgramID, "mvMatrix");
+	GLuint mvp = glGetUniformLocation(ProgramID, "mvpMatrix");
 	GLuint colorTexture = glGetUniformLocation(ProgramID, "colorTexture");
 	GLuint normalTexture = glGetUniformLocation(ProgramID, "normalTexture");
 
@@ -446,6 +448,8 @@ void RedPandaStudio::initOpenGL() {
 	scene->getEntity()->setModelID(model);
 	scene->getEntity()->setViewID(view);
 	scene->getEntity()->setProjectionID(projection);
+	scene->getEntity()->setModelViewID(mv);
+	scene->getEntity()->setMVPID(mvp);
 
 	GLuint viewSky = glGetUniformLocation(skyboxID, "ViewMatrix");
 	skybox->setView(viewSky);
