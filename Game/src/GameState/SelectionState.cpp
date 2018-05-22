@@ -63,7 +63,7 @@ void SelectionState::update(float &accumulatedTime)
     
             EventManager::getInstance().update();
     
-            std::cout << "Empieza a borrar" << std::endl;
+            //std::cout << "Empieza a borrar" << std::endl;
     
             IRenderFacade* f = RenderManager::getInstance().getRenderFacade();
     
@@ -72,7 +72,7 @@ void SelectionState::update(float &accumulatedTime)
             f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
             f->deleteAnimation("Witch/CharSelect/bruja_000");
     
-            std::cout << "Acaba de borrar" << std::endl;
+            //std::cout << "Acaba de borrar" << std::endl;
 
             //Load map
             Game::getInstance().loadMap();
@@ -173,6 +173,8 @@ void addAI(int selectedPlayer)
     GameObject::TransformationData transform;
     uint16_t id;
 
+    std::vector<glm::vec3> scales;
+
     int pl1, pl2, pl3;
 
     if(selectedPlayer == 0) {
@@ -187,34 +189,33 @@ void addAI(int selectedPlayer)
 
 
     id = 25000;
-    transform.position = glm::vec3(-35,0, -20);
-
+    transform.position = glm::vec3(-80,0, -30);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
+    transform.scale    = glm::vec3(0.7,0.7,0.7);
     ObjectManager::getInstance().createPlayer(transform, selectedPlayer, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25001;
-    transform.position = glm::vec3(-35,0,-10);
+    transform.position = glm::vec3(-80,0,-0);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
+    transform.scale    = glm::vec3(1.65,1.65,1.65);
     ObjectManager::getInstance().createPlayer(transform, pl1, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                  PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25002;
-    transform.position = glm::vec3(-35,0,0);
+    transform.position = glm::vec3(-80,0,-15);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
+    transform.scale    = glm::vec3(1.65,1.65,1.65);
     ObjectManager::getInstance().createPlayer(transform, pl2, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25003;
-    transform.position = glm::vec3(-35,0,10);
+    transform.position = glm::vec3(-80,0,-45);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
+    transform.scale    = glm::vec3(1.1,1.1,1.1);
     ObjectManager::getInstance().createPlayer(transform, pl3, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
@@ -230,7 +231,7 @@ void loadAnimations()
     //f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
     //f->deleteAnimation("Witch/CharSelect/bruja_000");
 
-    std::cout << "Loading animations" << std::endl;
+    //std::cout << "Loading animations" << std::endl;
 
     f->addAnimation(00, "Punk/Idle/punkAnimation_000", 62, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(01, "Punk/Correr/punkAnimation_000", 21, "Punk/DefaultMaterial_Base_Color.png");
@@ -264,7 +265,7 @@ void loadAnimations()
     f->addAnimation(35, "Witch/DerrapeDCHA/bruja_000", 81, "Witch/DefaultMaterial_Base_Color.png");
     f->addAnimation(36, "Witch/DerrapeIZQ/bruja_000", 78, "Witch/DefaultMaterial_Base_Color.png");
 
-    std::cout << "Llega al final" << std::endl;
+    //std::cout << "Llega al final" << std::endl;
     
 }
 

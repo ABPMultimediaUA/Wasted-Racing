@@ -230,7 +230,7 @@ void RenderRedPanda::addCamera() {
 
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
     valueY = 0.3;
-    sum = 3;
+    sum = 5;
 }
 
 //Update the current camera
@@ -425,7 +425,6 @@ void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames, co
 
 void RenderRedPanda::deleteAnimation(const char * animation)
 {
-    std::cout << "Delete Animation: " << animation << std::endl;
     std::string s = std::string("media/anim/") + std::string(animation);
 
     device->deleteAnimation(s.c_str());
@@ -604,12 +603,7 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
             rps::rotateNode(node, glm::vec3(rot.x, -rot.y, rot.z));
         }
         
-        if(id == 25000)
-            rps::scaleNode(node, glm::vec3(0.7,0.7,0.7));
-        else if (id > 25000 && id < 25010)
-            rps::scaleNode(node, glm::vec3(2,2,2));
-        else 
-            rps::scaleNode(node, sca);
+        rps::scaleNode(node, sca);
 
         rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
     }
