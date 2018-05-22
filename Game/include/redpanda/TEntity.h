@@ -47,6 +47,8 @@ public:
     static void setModelID(GLuint m)                {   modelID = m;         }
     static void setViewID(GLuint v)                 {   viewID = v;          }
     static void setProjectionID(GLuint p)           {   projectionID = p;    }
+    static void setModelViewID(GLuint mv)           {   modelViewID = mv;    }
+    static void setMVPID(GLuint mvp)                {   mvpID = mvp;         }
     static void setFrustumCulling(bool b)           {   frustumFlag = b;     }
 
     //Getters
@@ -54,6 +56,8 @@ public:
     static GLuint getModelID()                  {   return modelID;          }
     static GLuint getViewID()                   {   return viewID;           }
     static GLuint getProjectionID()             {   return projectionID;     }
+    static GLuint getModelViewID()              {   return modelViewID;      }
+    static GLuint getMVPID()                    {   return mvpID;            }
     static bool getFrustumCulling()             {   return frustumFlag;      }
 
 protected:
@@ -63,6 +67,8 @@ protected:
     static GLuint modelID;
     static GLuint viewID;
     static GLuint projectionID;
+    static GLuint modelViewID;
+    static GLuint mvpID;
 
     //Graphic variables to control optional techniques
     static bool frustumFlag;

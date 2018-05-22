@@ -108,6 +108,9 @@ uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
+uniform mat4 mvMatrix;
+uniform mat4 mvpMatrix;
+
 out vec2 UV_Coordinates;
 out vec3 P;
 out vec3 N;
@@ -119,19 +122,14 @@ out mat4 modelViewMatrix;
 out mat3 TBN;
 
 //================================
-uniform vec4 lightSpaceView;
+uniform mat4 lightSpaceView;
 
-varying vec4 FragPos;
-varying vec4 FragLightPos;
-varying vec3 Normal;
-
-out vec4 lightPos;
-out vec4 viewPos;
+out vec4 FragLightPos;
 //================================
 
 void main()
 {
-    modelViewMatrix = ViewMatrix * ModelMatrix;
+    modelViewMatrix = mvMatrix;
 
     CamPos = vec4(-modelViewMatrix[3][2], -modelViewMatrix[3][1], -modelViewMatrix[3][0], 1.0);
 
@@ -145,7 +143,11 @@ void main()
     vec3 N = normalize(vec3(ModelMatrix * vec4(vertexNormal, 0.0)));
     TBN = mat3(T, B, N);
 
-    gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
+    gl_Position = mvpMatrix * vertexPosition;
 
     UV_Coordinates = UV;
+
+    //================================
+    FragLightPos = lightSpaceView * ModelMatrix * vertexPosition;
+    //================================
 }
