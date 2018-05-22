@@ -233,28 +233,28 @@ void loadAnimations()
     std::cout << "Loading animations" << std::endl;
 
     f->addAnimation(00, "Punk/Idle/punkAnimation_000", 62, "Punk/DefaultMaterial_Base_Color.png");
-    f->addAnimation(01, "Punk/Correr/punkAnimation_000", 70, "Punk/DefaultMaterial_Base_Color.png");
+    f->addAnimation(01, "Punk/Correr/punkAnimation_000", 21, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(02, "Punk/Choque/punkAnimation_000", 38, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(03, "Punk/LanzarItem/punkAnimation_000", 37, "Punk/DefaultMaterial_Base_Color.png");
-    f->addAnimation(04, "Punk/LanzarItemMovimiento/punkAnimation_000", 38, "Punk/DefaultMaterial_Base_Color.png");
+    f->addAnimation(04, "Punk/LanzarItemMovimiento/punkAnimation_000", 39, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(05, "Punk/DerrapeDCHA/punkAnimation_000", 81, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(06, "Punk/DerrapeIZQ/punkAnimation_000", 78, "Punk/DefaultMaterial_Base_Color.png");
 
     f->addAnimation(10, "Crocodile/Idle/cocodrilaBonesSelect_000", 83, "Crocodile/DefaultMaterial_Base_Color.png");
-    f->addAnimation(11, "Crocodile/Correr/cocodrilaBonesSelect_000", 20, "Crocodile/DefaultMaterial_Base_Color.png");
-    f->addAnimation(12, "Crocodile/Choque/cocodrilaBonesSelect_000", 0, "Crocodile/DefaultMaterial_Base_Color.png");
+    f->addAnimation(11, "Crocodile/Correr/cocodrilaBonesSelect_000", 21, "Crocodile/DefaultMaterial_Base_Color.png");
+    f->addAnimation(12, "Crocodile/Choque/cocodrilaBonesSelect_000", 38, "Crocodile/DefaultMaterial_Base_Color.png");
     f->addAnimation(13, "Crocodile/LanzarItem/cocodrilaBonesSelect_000", 56, "Crocodile/DefaultMaterial_Base_Color.png");
     f->addAnimation(14, "Crocodile/LanzarItemMovimiento/cocodrilaBonesSelect_000", 40, "Crocodile/DefaultMaterial_Base_Color.png");
     f->addAnimation(15, "Crocodile/DerrapeDCHA/cocodrilaBonesSelect_000", 81, "Crocodile/DefaultMaterial_Base_Color.png");
     f->addAnimation(16, "Crocodile/DerrapeIZQ/cocodrilaBonesSelect_000", 78, "Crocodile/DefaultMaterial_Base_Color.png");
 
-    f->addAnimation(20, "Cyborg/Idle/CyborgFINALAnimation_000", 82, "Cyborg/DefaultMaterial_Base_Color.png");
-    f->addAnimation(21, "Cyborg/Correr/CyborgFINALAnimation_000", 28, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(20, "Cyborg/Idle/CyborgFINALAnimation_000", 104, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(21, "Cyborg/Correr/CyborgFINALAnimation_000", 21, "Cyborg/DefaultMaterial_Base_Color.png");
     f->addAnimation(22, "Cyborg/Choque/CyborgFINALAnimation_000", 38, "Cyborg/DefaultMaterial_Base_Color.png");
-    f->addAnimation(23, "Cyborg/LanzarItem/CyborgFINALAnimation_000", 45, "Cyborg/DefaultMaterial_Base_Color.png");
-    f->addAnimation(24, "Cyborg/LanzarItemMovimiento/CyborgFINALAnimation_000", 39, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(23, "Cyborg/LanzarItem/CyborgFINALAnimation_000", 56, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(24, "Cyborg/LanzarItemMovimiento/CyborgFINALAnimation_000", 40, "Cyborg/DefaultMaterial_Base_Color.png");
     f->addAnimation(25, "Cyborg/DerrapeDCHA/CyborgFINALAnimation_000", 81, "Cyborg/DefaultMaterial_Base_Color.png");
-    f->addAnimation(26, "Cyborg/DerrapeIZQ/CyborgFINALAnimation_000", 68, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(26, "Cyborg/DerrapeIZQ/CyborgFINALAnimation_000", 69, "Cyborg/DefaultMaterial_Base_Color.png");
 
     f->addAnimation(30, "Witch/Idle/bruja_000", 53, "Witch/DefaultMaterial_Base_Color.png");
     f->addAnimation(31, "Witch/Correr/bruja_000", 23, "Witch/DefaultMaterial_Base_Color.png");
