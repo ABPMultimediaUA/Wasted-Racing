@@ -7,13 +7,13 @@ TARGET := libRedPanda
 BIN_PATH := bin/
 OBJ_PATH := obj/
 
-
+NDEBUG := ''
 # general compiler settings (might need to be set when compiling the lib, too)
 CPPFLAGS += -I.
 ifndef NDEBUG
 CXXFLAGS += -g -Wall
 else
-CXXFLAGS += -O3
+CXXFLAGS += -O2
 endif
 
 # Instruction to create directories
