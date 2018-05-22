@@ -882,6 +882,16 @@ void drawRPS_GUI_PlayerSelect() {
                 
                 nk_popup_end(GUI);
             }
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.823, h*0.81, w*0.15, h*0.15))) {
+                nk_layout_row_static(GUI, h*0.15, w*0.15, 1);
+                if (nk_button_image(GUI, gui::text_oexit, gui::text_oexitHover)){
+                    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION){
+                        rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                        device->setGUIDrawFunction(drawRPS_GUI_Menu);
+                    }
+                }                
+                nk_popup_end(GUI);
+            }
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
