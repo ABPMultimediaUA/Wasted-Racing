@@ -888,7 +888,7 @@ void NetworkManager::update()
                 break;
 
             default:
-                std::cout << "Mensaje recibido" << std::endl;
+                //std::cout << "Mensaje recibido" << std::endl;
                 break;
         }
 
@@ -914,7 +914,7 @@ void NetworkManager::close() {
 // LOBBY FUNCTIONS
 //============================================== 
 void NetworkManager::initLobby(){
-    std::cout << "Attempting to connect to server" << std::endl;
+    //std::cout << "Attempting to connect to server" << std::endl;
     RakNet::SocketDescriptor socket(0, 	0);
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
@@ -923,7 +923,7 @@ void NetworkManager::initLobby(){
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {
-        std::cout << "Connection Attempt Started Correctly" << std::endl;
+        //std::cout << "Connection Attempt Started Correctly" << std::endl;
     }
 }
 
@@ -936,16 +936,16 @@ void NetworkManager::updateLobby(){
         switch(result->data[0])
         {
             case ID_CONNECTION_REQUEST_ACCEPTED:
-                std::cout << "Connection Accepted" << std::endl;
+                //std::cout << "Connection Accepted" << std::endl;
                 connected = true;
                 stream.Write((unsigned char)ID_GAME_START);
                 peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
                 break;
             case ID_CONNECTION_ATTEMPT_FAILED:
-                std::cout << "Connection Failed" << std::endl;
+                //std::cout << "Connection Failed" << std::endl;
                 break;
             case ID_GAME_START:
-                std::cout << "Game started " << std::endl;
+                //std::cout << "Game started " << std::endl;
                 started = true;
                 break;
             default: 

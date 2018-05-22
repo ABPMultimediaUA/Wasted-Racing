@@ -311,15 +311,15 @@ void DebugManager::cleanDebugNetworkLists()
 //==============================================
 
 void DebugManager::updateDebugAI(){
-    std::cout<<"Todo bien en Philadelphia"<<std::endl;
+    //std::cout<<"Todo bien en Philadelphia"<<std::endl;
 }
 
 void DebugManager::updateDebugBehaviour(){
-    std::cout<<"Todo bien en Memphis"<<std::endl;
+    //std::cout<<"Todo bien en Memphis"<<std::endl;
 }
 
 void DebugManager::updateDebugCamera(){
-    std::cout<<"Todo bien en Toronto"<<std::endl;
+    //std::cout<<"Todo bien en Toronto"<<std::endl;
 }
 
 void DebugManager::updateDebugNetwork(){
@@ -412,7 +412,7 @@ void DebugManager::updateDebugNetwork(){
                         break;
 
                     default:
-                        std::cout << "Mensaje recibido" << std::endl;
+                        //std::cout << "Mensaje recibido" << std::endl;
                         break;
                 }
             }

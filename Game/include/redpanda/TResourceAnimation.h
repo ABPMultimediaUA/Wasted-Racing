@@ -34,7 +34,7 @@ class TResourceAnimation : public TResource {
         //////////////////////////////////////////////////////////////////////
         int getFrames()                                     {   return frames;      };
         void setFrames(int i)                               {   frames = i;         };
-        void setTexture(TResourceTexture* t)                {   texture = t;std::cout << "Entra en el setter" << std::endl;        };
+        void setTexture(TResourceTexture* t)                {   texture = t;        };
 
     private:
         //Maximum number of frames (initially set to 60)

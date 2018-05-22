@@ -59,7 +59,6 @@ void PathPlanningComponent::update(float dTime)
 	{
 		if((distaneActualWay <= radius*radius) || distaneNextWay < distaneActualWay)
 		{
-			std::cout<<"W: "<<lastVector<<"\n";
 			if(lastVector < listNodes.size()-1)
 			{
 				lastVector++;

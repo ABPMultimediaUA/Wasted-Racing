@@ -425,7 +425,6 @@ void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames, co
 
 void RenderRedPanda::deleteAnimation(const char * animation)
 {
-    std::cout << "Delete Animation: " << animation << std::endl;
     std::string s = std::string("media/anim/") + std::string(animation);
 
     device->deleteAnimation(s.c_str());

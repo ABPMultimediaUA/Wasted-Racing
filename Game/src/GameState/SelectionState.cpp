@@ -63,7 +63,7 @@ void SelectionState::update(float &accumulatedTime)
     
             EventManager::getInstance().update();
     
-            std::cout << "Empieza a borrar" << std::endl;
+            //std::cout << "Empieza a borrar" << std::endl;
     
             IRenderFacade* f = RenderManager::getInstance().getRenderFacade();
     
@@ -72,7 +72,7 @@ void SelectionState::update(float &accumulatedTime)
             f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
             f->deleteAnimation("Witch/CharSelect/bruja_000");
     
-            std::cout << "Acaba de borrar" << std::endl;
+            //std::cout << "Acaba de borrar" << std::endl;
 
             //Load map
             Game::getInstance().loadMap();
@@ -232,7 +232,7 @@ void loadAnimations()
     //f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
     //f->deleteAnimation("Witch/CharSelect/bruja_000");
 
-    std::cout << "Loading animations" << std::endl;
+    //std::cout << "Loading animations" << std::endl;
 
     f->addAnimation(00, "Punk/Idle/punkAnimation_000", 62, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(01, "Punk/Correr/punkAnimation_000", 70, "Punk/DefaultMaterial_Base_Color.png");
@@ -266,7 +266,7 @@ void loadAnimations()
     f->addAnimation(35, "Witch/DerrapeDCHA/bruja_000", 81, "Witch/DefaultMaterial_Base_Color.png");
     f->addAnimation(36, "Witch/DerrapeIZQ/bruja_000", 78, "Witch/DefaultMaterial_Base_Color.png");
 
-    std::cout << "Llega al final" << std::endl;
+    //std::cout << "Llega al final" << std::endl;
     
 }
 

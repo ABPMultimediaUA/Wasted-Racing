@@ -14,7 +14,8 @@
 #include <vector>
 #include <chrono>
 
-#include <RedPanda.h>
+#include "RedPanda.h"
+
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
