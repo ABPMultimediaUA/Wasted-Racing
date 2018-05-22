@@ -105,7 +105,6 @@ layout(location = 3) in vec3 tangents;
 layout(location = 4) in vec3 bitangents;
 
 uniform mat4 ModelMatrix;
-uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
 uniform mat4 mvMatrix;
@@ -116,7 +115,6 @@ out vec3 P;
 out vec3 N;
 out vec4 CamPos;
 
-out mat4 view;
 out mat4 modelViewMatrix;
 
 out mat3 TBN;
@@ -135,8 +133,6 @@ void main()
 
     P = vec3(modelViewMatrix * vertexPosition);	          // Posición del vértice
 	N = vec3(modelViewMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
-
-    view = ViewMatrix;
 
     vec3 T = normalize(vec3(ModelMatrix * vec4(tangents, 0.0)));
     vec3 B = normalize(vec3(ModelMatrix * vec4(bitangents, 0.0)));
