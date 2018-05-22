@@ -43,7 +43,7 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 void RedPandaStudio::updateDevice() 
 {
 	//Update particles
-	//updateParticles();
+	/*updateParticles();
 
 	//Clean the scene
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -101,14 +101,16 @@ void RedPandaStudio::updateDevice()
 	}
 
 	//RenderParticles
-	/*glUseProgram(particlesID);
+	glUseProgram(particlesID);
 	glBindVertexArray(paticlesVertexArray);
 	renderParticles();
 	glUseProgram(scene->getEntity()->getProgramID());
-*/
+
 	//Render the scene in a quad if post processing is selected
 	if(postProcessingActive)
 		quadDrawPostProcessing();
+*/
+	drawShadowMapping();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -279,8 +281,11 @@ void RedPandaStudio::initOpenGL() {
 	skybox->initSkybox();
 
 	//=============================
-	//Initialize all parameters needed for the shadow mapping
+	//Initialize all parameters needed for the post processing
 	initPostProcessing();
+
+	//Initialize all parameters needed for the shadow mapping
+	initShadowMapping();
 	//=============================
 
 	//Get main shaders
@@ -1091,7 +1096,7 @@ void RedPandaStudio::quadDrawPostProcessing()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void RedPandaStudio::initShadowMappping()
+void RedPandaStudio::initShadowMapping()
 {
 	//Debugging data
 	GLint Result = GL_FALSE;
@@ -1112,7 +1117,9 @@ void RedPandaStudio::initShadowMappping()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
 	
 	//Bind created texture to the frame buffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
@@ -1241,7 +1248,7 @@ void RedPandaStudio::drawShadowMapping()
 
 	//Secundary sampler2D
 	shadowMap_sampler = glGetUniformLocation(programID, "shadowMap");
-	glUniform1i(shadowMap_sampler, 0);
+	glUniform1i(shadowMap_sampler, 2);
 
 	//Bind the buffer
 	glViewport(0, 0, shadowWidth, shadowHeight);
@@ -1277,7 +1284,7 @@ void RedPandaStudio::drawShadowMapping()
 	GLuint lightModelID = glGetUniformLocation(shadowID, "lightModel");
 	scene->getEntity()->setModelID(lightModelID);
 
-	float near_plane = 0.0000001f, far_plane = 7.5f;
+	float near_plane = -10.f, far_plane = 20.f;
 	glm::mat4 lightProView = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane) * lightView;
 
 	GLuint lightProViewID = glGetUniformLocation(shadowID, "lightProView");
@@ -1316,8 +1323,8 @@ void RedPandaStudio::drawShadowMapping()
 	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(4);
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
-
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+*/
 	//Restore data
 	scene->getEntity()->setModelID(restoreModel);
 	scene->getEntity()->setProgramID(programID);
@@ -1331,8 +1338,8 @@ void RedPandaStudio::drawShadowMapping()
 	GLuint lightSpaceViewID = glGetUniformLocation(programID, "lightSpaceView");
 	glUniformMatrix4fv(lightSpaceViewID, 1, false, &lightProView[0][0]);
 
-	//Texture 0: object, Texture 1: shadow map
-	glActiveTexture(GL_TEXTURE1);
+	//Texture 0: object, Texture 1: Normal map, Texture 2: shadow map
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 
 	glActiveTexture(GL_TEXTURE0);

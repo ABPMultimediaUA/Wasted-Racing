@@ -122,14 +122,9 @@ out mat4 modelViewMatrix;
 out mat3 TBN;
 
 //================================
-uniform vec4 lightSpaceView;
+uniform mat4 lightSpaceView;
 
-varying vec4 FragPos;
-varying vec4 FragLightPos;
-varying vec3 Normal;
-
-out vec4 lightPos;
-out vec4 viewPos;
+out vec4 FragLightPos;
 //================================
 
 void main()
@@ -151,4 +146,8 @@ void main()
     gl_Position = mvpMatrix * vertexPosition;
 
     UV_Coordinates = UV;
+
+    //================================
+    FragLightPos = lightSpaceView * ModelMatrix * vertexPosition;
+    //================================
 }
