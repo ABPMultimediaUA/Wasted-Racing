@@ -47,7 +47,7 @@ void IntroState::init() {
         GameObject::TransformationData tr;
         tr.position = glm::vec3(0,-30,-8);
         tr.rotation = glm::vec3(0,0,0);
-        tr.scale    = glm::vec3(2,2,2);
+        tr.scale    = glm::vec3(1.4,1.4,1.4);
         GameObject::Pointer background = ObjectManager::getInstance().createObject(60000, tr);
 
         RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
@@ -59,7 +59,7 @@ void IntroState::init() {
         GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
 
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 167, 0, "Punk/DefaultMaterial_Base_Color.png");
+        RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 156, 0, "Punk/DefaultMaterial_Base_Color.png");
 
         GameObject::TransformationData tr2;
         tr2.position = glm::vec3(-4,-31,-6);
@@ -83,10 +83,10 @@ void IntroState::init() {
         tr4.scale    = glm::vec3(0.15,0.15,0.15);
         GameObject::Pointer player4 = ObjectManager::getInstance().createObject(60004, tr4);
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player4.get(),"Witch/CharSelect/bruja_000", 238, 0, "Witch/DefaultMaterial_Base_Color.png");
+        RenderManager::getInstance().createAnimationRenderComponent(*player4.get(),"Witch/CharSelect/bruja_000", 169, 0, "Witch/DefaultMaterial_Base_Color.png");
 
         GameObject::TransformationData tr5;
-        tr5.position = glm::vec3(-20,-10,-9);
+        tr5.position = glm::vec3(-100,-10,-9);
         tr5.rotation = glm::vec3(0,0,0);
         tr5.scale    = glm::vec3(1,1,1);
         GameObject::Pointer light = ObjectManager::getInstance().createObject(60005, tr5);
