@@ -604,12 +604,7 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
             rps::rotateNode(node, glm::vec3(rot.x, -rot.y, rot.z));
         }
         
-        if(id == 25000)
-            rps::scaleNode(node, glm::vec3(0.7,0.7,0.7));
-        else if (id > 25000 && id < 25010)
-            rps::scaleNode(node, glm::vec3(2,2,2));
-        else 
-            rps::scaleNode(node, sca);
+        rps::scaleNode(node, sca);
 
         rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
     }

@@ -173,6 +173,8 @@ void addAI(int selectedPlayer)
     GameObject::TransformationData transform;
     uint16_t id;
 
+    std::vector<glm::vec3> scales;
+
     int pl1, pl2, pl3;
 
     if(selectedPlayer == 0) {
