@@ -8,13 +8,13 @@ TARGET_SERVER := Server_XKating
 BIN_PATH := bin/
 OBJ_PATH := obj/
 
-
+NDEBUG := ''
 # general compiler settings (might need to be set when compiling the lib, too)
 CPPFLAGS += -I$(IrrlichtHome)/include -I/usr/X11R6/include -I.
 ifndef NDEBUG
 CXXFLAGS += -g -Wall -std=c++14
 else
-CXXFLAGS += -O3
+CXXFLAGS += -O2
 endif
 
 # Instruction to create directories

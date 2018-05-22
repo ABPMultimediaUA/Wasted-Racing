@@ -444,6 +444,7 @@ void RedPandaStudio::initOpenGL() {
 	GLuint mvp = glGetUniformLocation(ProgramID, "mvpMatrix");
 	GLuint colorTexture = glGetUniformLocation(ProgramID, "colorTexture");
 	GLuint normalTexture = glGetUniformLocation(ProgramID, "normalTexture");
+	GLuint cp = glGetUniformLocation(ProgramID, "CamPos");
 
 	silFlagIdentifier = glGetUniformLocation(ProgramID, "silhouette");
 
@@ -455,6 +456,7 @@ void RedPandaStudio::initOpenGL() {
 	scene->getEntity()->setProjectionID(projection);
 	scene->getEntity()->setModelViewID(mv);
 	scene->getEntity()->setMVPID(mvp);
+	scene->getEntity()->setCamPosition(cp);
 
 	GLuint viewSky = glGetUniformLocation(skyboxID, "ViewMatrix");
 	skybox->setView(viewSky);
@@ -891,8 +893,11 @@ void RedPandaStudio::renderCamera() {
 		glm::mat4& view = scene->getEntity()->viewMatrix();
 		view = mat;
 
+		glm::vec3 p = glm::vec3(-view[3][2], -view[3][1], -view[3][0]);
+
+		glUniform3fv(scene->getEntity()->getCamPosition(), 1, &p[0]);
 		glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
-    	glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
+    	//glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
 	}
 }
 
