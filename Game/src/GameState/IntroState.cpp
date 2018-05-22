@@ -53,7 +53,7 @@ void IntroState::init() {
         RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
 
         GameObject::TransformationData tr1;
-        tr1.position = glm::vec3(-5,-30,0.5);
+        tr1.position = glm::vec3(-4,-30.5,0.5);
         tr1.rotation = glm::vec3(0,glm::half_pi<float>(),0);
         tr1.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player1 = ObjectManager::getInstance().createObject(60001, tr1);
@@ -62,7 +62,7 @@ void IntroState::init() {
         RenderManager::getInstance().createAnimationRenderComponent(*player1.get(),"Punk/CharSelect/punkAnimation_000", 167, 0, "Punk/DefaultMaterial_Base_Color.png");
 
         GameObject::TransformationData tr2;
-        tr2.position = glm::vec3(-5,-30,-5.5);
+        tr2.position = glm::vec3(-4,-31,-6);
         tr2.rotation = glm::vec3(0,glm::half_pi<float>(),0);
         tr2.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player2 = ObjectManager::getInstance().createObject(60002, tr2);
