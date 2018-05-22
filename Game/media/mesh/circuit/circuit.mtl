@@ -11,7 +11,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/EdificiosFuera.png
-bump EdificiosFuera/CircuitMaterial_Normal_OpenGL.png
+// EdificiosFuera/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.011
 Ns 1.0
@@ -23,7 +23,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/Senales.png
-bump Señales/DefaultMaterial_Normal_OpenGL.png
+// Señales/DefaultMaterial_Normal_OpenGL.png
 
 newmtl Material.001
 Ns 1.0
@@ -35,7 +35,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/Suelo.png
-bump NuevasTexturas/Material.001_Normal_OpenGL.png
+// NuevasTexturas/Material.001_Normal_OpenGL.png
 
 newmtl Material.002
 Ns 1.0
@@ -47,7 +47,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/Coche.png
-bump Coche/DefaultMaterial_Normal_OpenGL.png
+// Coche/DefaultMaterial_Normal_OpenGL.png
 
 newmtl Material.005
 Ns 1.0
@@ -59,7 +59,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/PistaBaked.png
-bump NuevasTexturas/MaterialPista_Normal_OpenGL.png
+// NuevasTexturas/MaterialPista_Normal_OpenGL.png
 
 newmtl Material.006
 Ns 1.0
@@ -71,7 +71,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/Farolas.png
-bump Farolas/CircuitMaterial_Normal_OpenGL.png
+// Farolas/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.009
 Ns 1.0
@@ -83,7 +83,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/Bidones.png
-bump Bidones/CircuitMaterial_Normal_OpenGL.png
+// Bidones/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.010
 Ns 1.0
@@ -95,7 +95,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/ObjetosPasillo.png
-bump ObjetosPasillo/DefaultMaterial_Normal_OpenGL.png
+// ObjetosPasillo/DefaultMaterial_Normal_OpenGL.png
 
 newmtl Material.012
 Ns 1.0
@@ -107,7 +107,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/EdificiosIndustrial.png
-bump EdificiosIndustrial/CircuitMaterial_Normal_OpenGL.png
+// EdificiosIndustrial/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.013
 Ns 1.0
@@ -119,7 +119,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/Tuberias.png
-bump Tuberias/CircuitMaterial_Normal_OpenGL.png
+// Tuberias/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.015
 Ns 1.0
@@ -131,7 +131,7 @@ Ni 0.000000
 d 0.000000
 illum 2
 map_Kd Baked/Puente.png
-bump Puente/CircuitMaterial_Normal_OpenGL.png
+// Puente/CircuitMaterial_Normal_OpenGL.png
 
 newmtl MaterialBorde
 Ns 1.0
@@ -143,7 +143,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/Border.png
-bump NuevasTexturas/MaterialBorde_Normal_OpenGL.png
+// NuevasTexturas/MaterialBorde_Normal_OpenGL.png
 
 newmtl MaterialEdifFondo
 Ns 1.0
@@ -155,7 +155,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/EdificiosFuera2.png
-bump NuevasTexturas/MaterialEdifFondo_Normal_OpenGL.png
+// NuevasTexturas/MaterialEdifFondo_Normal_OpenGL.png
 
 newmtl MaterialEdificios
 Ns 1.0
@@ -167,7 +167,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/EdificiosPasillo.png
-bump NuevasTexturas/MaterialEdificios_Normal_OpenGL.png
+// NuevasTexturas/MaterialEdificios_Normal_OpenGL.png
 
 newmtl MaterialVigas
 Ns 1.0
@@ -179,4 +179,4 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd Baked/Vigas.png
-bump NuevasTexturas/MaterialVigas_Normal_OpenGL.png
+// NuevasTexturas/MaterialVigas_Normal_OpenGL.png

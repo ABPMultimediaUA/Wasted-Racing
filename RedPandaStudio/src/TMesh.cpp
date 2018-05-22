@@ -13,6 +13,9 @@ void TMesh::beginDraw()
         m = projectionMatrix() * m;
         //And finally, the MVP Matrix
         glUniformMatrix4fv(TEntity::mvpID, 1, GL_FALSE, &m[0][0]);
+        
+        m = glm::transpose(glm::inverse(modelMatrix()));
+        glUniformMatrix4fv(TEntity::normalID, 1, GL_FALSE, &m[0][0]);
         //And then, at last, we draw the mesh
         mesh->draw();
     }

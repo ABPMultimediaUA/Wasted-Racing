@@ -116,7 +116,7 @@ void RenderManager::update(float dTime) {
     c->update(dTime);
 
     //Update blur
-    updateBlur();
+    //updateBlur();
 
     //Update debug if debug mode activated
     if(debugState){

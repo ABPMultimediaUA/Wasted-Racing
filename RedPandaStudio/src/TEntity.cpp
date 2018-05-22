@@ -3,8 +3,8 @@
 GLuint TEntity::programID;
 GLuint TEntity::modelID;
 GLuint TEntity::viewID;
-GLuint TEntity::projectionID;
 GLuint TEntity::modelViewID;
 GLuint TEntity::mvpID;
+GLuint TEntity::normalID;
 GLuint TEntity::camPosition;
 bool   TEntity::frustumFlag;

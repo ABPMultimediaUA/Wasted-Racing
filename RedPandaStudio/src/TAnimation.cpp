@@ -11,6 +11,10 @@ void TAnimation::beginDraw()
         glUniformMatrix4fv(TEntity::modelViewID, 1, GL_FALSE, &m[0][0]);
         m = projectionMatrix() * m;
         glUniformMatrix4fv(TEntity::mvpID, 1, GL_FALSE, &m[0][0]);
+
+        m = glm::transpose(glm::inverse(modelMatrix()));
+        glUniformMatrix4fv(TEntity::normalID, 1, GL_FALSE, &m[0][0]);
+        
         animation->draw(pointer);
     }
 }
