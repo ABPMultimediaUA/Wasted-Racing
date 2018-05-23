@@ -26,7 +26,7 @@ void ISoundEvent::setVolume(float vol)
 {
     if(vol>=0 && vol<=1)
     {
-        FMOD_Studio_EventInstance_SetVolume(soundInstance, vol);
+        FMOD_Studio_EventInstance_SetVolume(soundInstance, vol * volume);
     }
 } 
 

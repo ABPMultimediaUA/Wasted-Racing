@@ -88,6 +88,7 @@ private:
 	bool movingOnItem = false;
 	bool drifting = false;
 	bool itemThrown = false;
+	bool isAscending = false;
 	int item = -1;
 
 };

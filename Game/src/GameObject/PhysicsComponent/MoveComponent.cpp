@@ -109,6 +109,29 @@ void MoveComponent::update(float dTime) {
             moving = false;
     }
     
+
+    //MUSIC EVENTS RELATED TO PLAYER
+    if(getGameObject().getId() == 25000 && mData.vel > 20 && !mData.drift) {
+        float vel = mData.vel / mData.max_vel;
+        EventData eD;
+        eD.Component = getGameObject().getComponent<MoveComponent>();
+        eD.grade = vel;
+        EventManager::getInstance().addEvent(Event {EventType::Player_Speed, eD});
+    }
+    else if(getGameObject().getId() == 25000 && mData.drift) {
+        EventData eD;
+        eD.Component = getGameObject().getComponent<MoveComponent>();
+        EventManager::getInstance().addEvent(Event {EventType::Player_Slide, eD});
+    }
+
+    if(getGameObject().getId() == 25000 && isAscending && !mData.asc) {
+        EventData eD;
+        eD.Component = getGameObject().getComponent<MoveComponent>();
+        EventManager::getInstance().addEvent(Event {EventType::Player_Jump, eD});
+    }
+
+    isAscending = mData.asc;
+
     //Set collision value to false (if it was true it has already been processed)
     mData.coll = false;
 
