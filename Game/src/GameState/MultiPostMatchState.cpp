@@ -1,6 +1,6 @@
-#include "PostMatchState.h"
+#include "MultiPostMatchState.h"
 
-void PostMatchState::init() {
+void MultiPostMatchState::init() {
     //Bind all managers that are going to be used
     eventManager  = &EventManager::getInstance();
     inputManager  = &InputManager::getInstance();
@@ -28,17 +28,12 @@ void PostMatchState::init() {
     schedulingClock = new Clock();
     schedulingClock->init();
 
-    remainingTime = 20.0;
-
-    EventData data;
-    data.Component      = objectManager->getObject(25000).get()->getComponent<ObjectRenderComponent>();
-
-    EventManager::getInstance().addEvent(Event {EventType::Music_Finish, data});
+    remainingTime = 1.0;
 
 
 }
 
-void PostMatchState::update(float &accumulatedTime) {
+void MultiPostMatchState::update(float &accumulatedTime) {
 
     if(remainingTime < 0) {
         
@@ -79,7 +74,7 @@ void PostMatchState::update(float &accumulatedTime) {
     remainingTime -= accumulatedTime;
 }
 
-void PostMatchState::interpolate(float &accumulatedTime) {
+void MultiPostMatchState::interpolate(float &accumulatedTime) {
     //Interpolate positions
     physicsManager->interpolate(accumulatedTime, 0.03);
 
@@ -96,12 +91,12 @@ void PostMatchState::interpolate(float &accumulatedTime) {
     renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, 0.03);
 }
 
-void PostMatchState::draw() {
+void MultiPostMatchState::draw() {
 
     renderManager->draw();
 }
 
-void PostMatchState::close() {
+void MultiPostMatchState::close() {
     
     delete schedulingClock;
     GameObject::Pointer player = ObjectManager::getInstance().getObject(25000);

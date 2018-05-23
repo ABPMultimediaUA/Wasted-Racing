@@ -13,7 +13,6 @@
 #include "../GameEvent/EventManager.h"
 #include "AIManager.h"
 #include "ObjectManager.h"
-#include "../GlobalVariables.h"
 
 class ObjectManager;
 class ParticleManager;
@@ -41,6 +40,9 @@ public:
 
     //Shutdown
     void close();
+
+    //Fast restart
+    void fastRestart();
 
     //Take the vector and split it in a quadTree
     void splitQuadTree();
@@ -198,13 +200,13 @@ public:
     //==============================================================
     // VISUAL EFFECTS
     //==============================================================
-    void setPostProcessing(bool b);
-    void setBlurEffect(bool b);
-    void setBlurOrigin(float x, float y);
-    void setBlurIntensity(float i);
-    void setBlurRadius(float r);
+    void setPostProcessing(bool b);        //Sets the post processing to true
+    void setBlurEffect(bool b);            //Sets the blur effect to true
+    void setBlurOrigin(float x, float y);  //Sets the blur origin in X-Y coordinates of the screen
+    void setBlurIntensity(float i);        //Sets the blur intensity
+    void setBlurRadius(float r);           //Sets the radius of pixels the blur takes to calculate it
     void setActiveBlur(bool b);
-
+    
 private:
     //==============================================================
     // PRIVATE DATA
@@ -227,15 +229,10 @@ private:
     //==============================================================
     // HUD DATA
     //==============================================================
-    bool HUD_ON;             //Checks if hud was initialized
+    bool HUD_ON;            //Checks if hud was initialized
     int32_t lapHUD_ID;      //Lap text ID
     int32_t positionHUD_ID; //Position text ID
     int32_t itemHUD_ID;     //Item text ID
-
-    //Data for the quadTree
-    //unsigned int maxObjPerNode;
-    //int          updateRange;
-    //int          x0, x1, y0, y1; //Map dimensions
 
     //We store just one camera component, so we can't have more than 1
     IComponent::Pointer cameraComponent;

@@ -29,9 +29,9 @@ class ItemBlueShellComponent : public IItemComponent
 
         GameObject& player;                //Player who've thrown it
         float speed;                       //Speed of the blue shell
-        float consTime;                    //----> no idea
-        float decTime;                     //----> no idea
-        unsigned int lastVector;           //----> no idea
+        float consTime;                    
+        float decTime;                    
+        unsigned int lastVector;           
         glm::vec3 objective;               //Objective position of the enemy
         ScoreComponent::Pointer enemy;     //Score component of the guy you're aiming at
         IItemComponent::InstanceType mode; //How the object was created

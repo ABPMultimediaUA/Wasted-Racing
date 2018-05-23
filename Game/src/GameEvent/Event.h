@@ -105,6 +105,7 @@ enum EventType {
     Game_Close,
     Game_PlayerSelection,
     Game_LoadingScreen,
+    Game_ClientLobby,
     Game_Select,
     State_Change,
     //CHOOSE: Choose game type

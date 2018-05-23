@@ -28,9 +28,6 @@ void WaypointManager::init() {
 }
 
 void WaypointManager::update(float dTime) {
-    //I doubt this method should exist in this manager
-    //I doubt it too
-    //I hope Fran reads this
     auto player = GlobalVariables::getInstance().getPlayer();
     auto posPlayer = player->getTransformData().position;
 
@@ -97,7 +94,6 @@ IComponent::Pointer WaypointManager::createPathPlanningComponent(GameObject::Poi
     newGameObject.get()->addComponent(component);
 
     //add to the list of components
-    //:::>Can be substituted with an event, if schedulingi is added
     pathPlanningComponentList.push_back(component);
 
     return component;

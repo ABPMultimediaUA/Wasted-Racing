@@ -11,7 +11,6 @@
 #include <raknet/BitStream.h>
 
 //Basic info includes
-#include "../GlobalVariables.h"
 #include "../GameServer/CustomIdentifiers.h"
 
 //Component && extra includes
@@ -206,7 +205,7 @@ private:
     //Debug info
     bool debugNetworkState = false;
     std::list<customMessages> lastPackets;
-    std::list<std::string> lastData;
+    std::list<std::string>    lastData;
     std::list<int>            lastSenders;
 
     //List of remotePlayerComponent

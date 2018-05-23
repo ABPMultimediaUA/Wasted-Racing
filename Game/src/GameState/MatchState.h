@@ -40,6 +40,9 @@ public:
     //Interpolate function
     void interpolate(float &accumulatedTime);
     
+    //Manage scheduling
+    void manageScheduling();
+
     //Shutdown
     virtual void close();
 
@@ -52,9 +55,6 @@ public:
     //Game ratio
     void setRatio(float r)          {       ratio = r;      }
     float getRatio()                {       return ratio;   }
-
-    //Scheduling swapper
-    void swapScheduling()           {       schedulingOn = !schedulingOn;      }
 
 private:
     
@@ -92,7 +92,6 @@ private:
 
     //Scheduling checker and clock
     Clock* schedulingClock;
-    bool schedulingOn;
 
     //Variable to check if the match state has already been initialized
     bool initialized = false;

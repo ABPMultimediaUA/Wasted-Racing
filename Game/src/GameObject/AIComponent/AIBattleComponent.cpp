@@ -18,16 +18,11 @@ class UseItemAction : public Behaviour{
                 ItemManager* itemManager = &ItemManager::getInstance();
                 itemManager->createItem(target);
                 
-                //Create event, fill it and send it
-                /*EventData data;
-                data.Object = std::make_shared<GameObject>(target);
-                EventManager::getInstance().addEvent(Event {EventType::Item_Create, data});*/
 
-                //Debug behaviour --- TO BE SENT TO DEBUG MANAGER
+                //Debug behaviour
                 auto player = RenderManager::getInstance().getAIsBattle();
                 if(player.size() > 0 && player[RenderManager::getInstance().getAINumberBattle()].getId() == target.getId())
                 {
-                    //:::> DELETE ALL OF THIS
                     RenderManager::getInstance().setRootBattle(name);
                     RenderManager::getInstance().setEndRootBattle(true);
                     RenderManager::getInstance().setWaitBattle(false);

@@ -90,7 +90,6 @@ IComponent::Pointer InputManager::createInputComponent(GameObject& newGameObject
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::> Useless without the scheduling
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::InputComponent_Create, data});

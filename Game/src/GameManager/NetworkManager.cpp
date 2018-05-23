@@ -1,16 +1,14 @@
 #include "NetworkManager.h"
+#include "../GlobalVariables.h"
 
 
 //////////////////////////////////////////////
-//            THINGS TO DO HERE
-//////////////////////////////////////////////
+//            Possible Upgrades
 //////////////////////////////////////////////
 /*
 +>Add time stamp from server
-DONE>Add ristra de mensajes para las posiciones macho
 >Add Debug callers
 */
-//////////////////////////////////////////////
 //////////////////////////////////////////////
 
 //////////////////////////////////////////////////////
@@ -30,21 +28,9 @@ void destroyBlueShellEvent(EventData eData);
 // PLAYER FUNCTIONS
 //============================================== 
 
-/*void NetworkManager::sendInput(EventType event)
-{
-    //Stream of raknet bits
-    RakNet::BitStream stream;
-
-    stream.Write((unsigned char)ID_INPUT);  //Send message to receive input from the player
-    stream.Write((int)server_id);           //Send Id of the player that created it
-    stream.Write((EventType) event);        //Type of input sent
-
-    peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
-}
-*/
-
 void NetworkManager::createPlayer(RakNet::Packet* packet)
 {
+    //Initial variables
     float x, y, z;
     RakNet::BitStream parser(packet->data, packet->length, false);
     parser.IgnoreBytes(1);
@@ -55,22 +41,29 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     parser.Read(y);
     parser.Read(z);
 
+    //If player exists take its transform data, if not create it
+    if(GlobalVariables::getInstance().getPlayer() == nullptr)
+    {
+        //Set position
+        GameObject::TransformationData t;
+        t.position.x = x;
+        t.position.y = y;
+        t.position.z = z;
+
+        //Creation function
+        ObjectManager::getInstance().createPlayer(t, GlobalVariables::getInstance().getSelectedPlayer(), 0, 25000, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(t.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(t.position));
+    }
+
     auto trans = player.get()->getTransformData();
+
     trans.position.x = x;
     trans.position.y = y;
     trans.position.z = z;
     player.get()->setNewTransformData(trans);
     player.get()->setOldTransformData(trans);
     player.get()->setTransformData(trans);
-
-    ////////////
-    //DEBUG AREA
-    ////////////
-    //If debug state is on
-    if(debugNetworkState){
-        //Server initiated this, so id must be -1 (or the player itself)
-        //lastSenders.push_back(server_id);
-    }
 
 }
 
@@ -111,15 +104,6 @@ void NetworkManager::createRemotePlayer(RakNet::Packet* packet)
         {
             found = true;
             rPlayer.get()->setServerId(id);
-
-            ////////////
-            //DEBUG AREA
-            ////////////
-            //If debug state is on
-            if(debugNetworkState){
-                //Server initiated this, so id must be -1 (or the id of the player)
-                //lastSenders.push_back(id);
-            }
         }
     }
 
@@ -140,7 +124,7 @@ void NetworkManager::createTrap(EventData eData)
     RakNet::BitStream stream;
 
     stream.Write((unsigned char)ID_CREATE_TRAP);  //Send message create trap to server
-    stream.Write((int)server_id);                   //Send Id of the player that created it
+    stream.Write((int)server_id);                 //Send Id of the player that created it
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true);  //Send the message
 }
@@ -153,8 +137,8 @@ void NetworkManager::destroyTrap(EventData eData)
     int s_id = ObjectManager::getInstance().getObject(eData.Id).get()->getComponent<RemoteItemComponent>()->getServerId();//get server id of the object
 
     stream.Write((unsigned char)ID_DESTROY_TRAP); //Send type of event (destroy trap)
-    stream.Write((int) s_id);                       //Send server id of the trap
-    stream.Write((int) server_id);                   //Send Id of the player that collided with it
+    stream.Write((int) s_id);                     //Send server id of the trap
+    stream.Write((int) server_id);                //Send Id of the player that collided with it
 
     peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_RAKNET_GUID, true); //Send the message
 }
@@ -318,10 +302,7 @@ void NetworkManager::remoteCreateRedShell(RakNet::Packet* packet){
     {
         auto object = ItemManager::getInstance().createRedShell(*player.get(), IItemComponent::InstanceType::LOCAL);  //Create object
         std::dynamic_pointer_cast<ItemRedShellComponent>(object)->init();                                             //Initialize object
-        //<___
-        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);                       //Set server id
-        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);                       //Set parent id
-        //___>
+      
     }
 
     ////////////
@@ -446,10 +427,6 @@ void NetworkManager::remoteCreateBlueShell(RakNet::Packet* packet){
     {
         auto object = ItemManager::getInstance().createBlueShell(*player.get(), IItemComponent::InstanceType::LOCAL); //Create object
         std::dynamic_pointer_cast<ItemBlueShellComponent>(object)->init();                        //Initialize object
-        //<___
-        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setServerId(o_id);   //Set server id
-        //object.get()->getGameObject().getComponent<RemoteItemComponent>()->setParentId(s_id);   //Set parent id
-        //___>
     }
 
     ////////////
@@ -569,9 +546,16 @@ void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
 
 void NetworkManager::broadcastPosition()
 {
+    //Stream variable
     RakNet::BitStream stream;
+
+    //Player has to exist to send the position
+    if(player.get() == nullptr)
+        return;
+
     auto trans = player.get()->getTransformData();
 
+    //Send our position to all the other players
     stream.Write((unsigned char)ID_REMOTE_PLAYER_MOVEMENT);
     stream.Write((int)server_id);
     stream.Write((float)trans.position.x);
@@ -619,14 +603,8 @@ void NetworkManager::moveRemotePlayer(RakNet::Packet* packet)
             trans.rotation.z = rz;
             
             rPlayer.get()->getGameObject().setNewTransformData(trans);
-            //<___
             RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
-            //___>
 
-            //If there is debug, update position of the cylinders
-            //if(debugNetworkState){
-                
-            //}
         }
     }
 }
@@ -687,7 +665,6 @@ void NetworkManager::moveRemoteRedShell(RakNet::Packet* packet)
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
             
-            //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
         }
     }
 }
@@ -747,7 +724,6 @@ void NetworkManager::moveRemoteBlueShell(RakNet::Packet* packet)
             trans.rotation.z = rz;
 
             rPlayer.get()->getGameObject().setNewTransformData(trans);
-            //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(rPlayer.get()->getGameObject().getId(), trans);
         }
     }
 }
@@ -771,7 +747,6 @@ void NetworkManager::endGame()
     data.Id = IGameState::stateType::CLIENTLOBBY;
     EventManager::getInstance().addEvent(Event {EventType::State_Change, data});
 
-    //Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
 
 void NetworkManager::remoteEndGame(RakNet::Packet* packet)
@@ -784,7 +759,6 @@ void NetworkManager::remoteEndGame(RakNet::Packet* packet)
     data.Id = IGameState::stateType::CLIENTLOBBY;
     EventManager::getInstance().addEvent(Event {EventType::State_Change, data});
 
-    //Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }
 
 
@@ -888,7 +862,7 @@ void NetworkManager::update()
                 break;
 
             default:
-                //std::cout << "Mensaje recibido" << std::endl;
+                std::cout << "Mensaje recibido" << std::endl;
                 break;
         }
 
@@ -914,7 +888,6 @@ void NetworkManager::close() {
 // LOBBY FUNCTIONS
 //============================================== 
 void NetworkManager::initLobby(){
-    //std::cout << "Attempting to connect to server" << std::endl;
     RakNet::SocketDescriptor socket(0, 	0);
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);
@@ -923,7 +896,7 @@ void NetworkManager::initLobby(){
 
     if(result == RakNet::CONNECTION_ATTEMPT_STARTED)
     {
-        //std::cout << "Connection Attempt Started Correctly" << std::endl;
+        std::cout << "Connection Attempt Started Correctly" << std::endl;
     }
 }
 
@@ -936,16 +909,16 @@ void NetworkManager::updateLobby(){
         switch(result->data[0])
         {
             case ID_CONNECTION_REQUEST_ACCEPTED:
-                //std::cout << "Connection Accepted" << std::endl;
+                std::cout << "Connection Accepted" << std::endl;
                 connected = true;
                 stream.Write((unsigned char)ID_GAME_START);
                 peer->Send(&stream, HIGH_PRIORITY, RELIABLE, 0, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
                 break;
             case ID_CONNECTION_ATTEMPT_FAILED:
-                //std::cout << "Connection Failed" << std::endl;
+                std::cout << "Connection Failed" << std::endl;
                 break;
             case ID_GAME_START:
-                //std::cout << "Game started " << std::endl;
+                std::cout << "Game started " << std::endl;
                 started = true;
                 break;
             default: 

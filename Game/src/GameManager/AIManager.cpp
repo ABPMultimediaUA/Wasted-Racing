@@ -9,6 +9,7 @@
 // DELEGATES DECLARATIONS
 //==============================================
 
+void swapScheduling(EventData data);
 void addAIDrivingComponent(EventData data);
 void objectDeleteAIDriving(EventData data);
 void objectDeleteAIBattle(EventData data);
@@ -33,14 +34,14 @@ AIManager& AIManager::getInstance() {
 }
 
 void AIManager::init() {
-    //___>
-    //changeAI = false;
     updateBattleBehaviour = false;
     
     //Scheduling data
     samplesBattle      = 0;
     samplesDriving     = 0;
     samplesLOD         = 0;
+
+    //Average time from previous experiments (provisional till new calculations are made in the execution)
     averageTimeBattle  = 0.000005;
     averageTimeDriving = 0.0000075;
     averageTimeLOD     = 0.00000005;
@@ -48,6 +49,7 @@ void AIManager::init() {
 
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::AIDrivingComponent_Create, addAIDrivingComponent});
+    EventManager::getInstance().addListener(EventListener {EventType::Key_Scheduling_Down, swapScheduling});
     
     //No delete for the moment
     EventManager::getInstance().addListener(EventListener {EventType::GameObject_Delete, objectDeleteAIDriving});
@@ -55,6 +57,8 @@ void AIManager::init() {
 
     itemLoD = false;
 
+    //Set scheduling to true
+    scheduling_on = true;
 }
 
 
@@ -65,24 +69,27 @@ void AIManager::update(float dTime) {
     //Updating battle AI
     for(unsigned int i=0; i<battleAI.size(); i++)
     {
-        //<___
-        //auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
-        //aiBattleComponent->update(dTime);
+        if(!scheduling_on)
+        {
+            //Normal behaviour calculation
+            auto aiBattleComponent = std::dynamic_pointer_cast<AIBattleComponent>(battleAI[i]).get();
+            aiBattleComponent->update(dTime);
+        }
+        else
+        {
+            //Create battle package processing
+            AIEvent a;
+            a.object    = battleAI[i];
+            a.event     = AIEventType::UPDATE_BATTLE;
+            a.timeStamp = clock->getInitTime();
+            a.average   = averageTimeBattle;
 
-        //Create battle package processing
-        AIEvent a;
-        a.object    = battleAI[i];
-        a.event     = AIEventType::UPDATE_BATTLE;
-        a.timeStamp = clock->getInitTime();
-        a.average   = averageTimeBattle;
+            //Add to list
+            AIQueue.push(a);
 
-        //Add to list
-        AIQueue.push(a);
-
-        //Count accumulated Time
-        accumulatedTimeSchedule += averageTimeBattle;
-
-        //___>
+            //Count accumulated Time
+            accumulatedTimeSchedule += averageTimeBattle;
+        }
     }
     //get position of player to determine the distance to him (LOD)
     auto player = GlobalVariables::getInstance().getPlayer();
@@ -114,10 +121,13 @@ void AIManager::update(float dTime) {
                     AIObject.getComponent<CollisionComponent>()->setKinetic(true);
                 }
 
-                
-                    //<___
-                    //updateDriving(aiDrivingComponent);
-
+                //Normal process
+                if(!scheduling_on)
+                {
+                    updateDriving(aiDrivingComponent);  
+                }
+                else
+                {
                     //Create battle package processing
                     AIEvent a;
                     a.object    = objectsAI[i];
@@ -129,43 +139,50 @@ void AIManager::update(float dTime) {
                     AIQueue.push(a);
 
                     //Count accumulated Time
-                    accumulatedTimeSchedule += averageTimeDriving;
-                    
-                    //___>
+                    accumulatedTimeSchedule += averageTimeDriving;         
+
+                }
             }
             else
             {
-                //<___
-                //calculateLoD(AIObject, dTime);
+                //Normal process
+                if(!scheduling_on)
+                {
+                    calculateLoD(AIObject, dTime);
+                }
+                else
+                {
+                    //Create lod package processing
+                    AIEvent a;
+                    a.object    = objectsAI[i];
+                    a.event     = AIEventType::UPDATE_LOD;
+                    a.timeStamp = clock->getInitTime();
+                    a.average   = averageTimeLOD;
 
-                //Create lod package processing
-                AIEvent a;
-                a.object    = objectsAI[i];
-                a.event     = AIEventType::UPDATE_LOD;
-                a.timeStamp = clock->getInitTime();
-                a.average   = averageTimeLOD;
+                    //Add to list
+                    AIQueue.push(a);
 
-                //Add to list
-                AIQueue.push(a);
-
-                //Count accumulated Time
-                accumulatedTimeSchedule += averageTimeLOD;
-                    
-                //___>
+                    //Count accumulated Time
+                    accumulatedTimeSchedule += averageTimeLOD;
+                }
             }
         }
     }
 }
 
 void AIManager::updateScheduling(float dTime, float loopTime) {
-    //Iterate through the processes
+    //Iterate through the processes with a time counter
     double timeCounter = 0.0;
-    /*std::cout<<"---------------------"<<std::endl;
-    std::cout<<"Scheduling queue size before: "<<AIQueue.size()<<std::endl;*/
+
+    system("clear");
+    std::cout<<"---------------------"<<std::endl;
+    std::cout<<"Scheduling queue size before: "<<AIQueue.size()<<std::endl;
+
+    //Continue till it breaks
     while(!AIQueue.empty())
     {
         //Time checker
-        if(timeCounter > (accumulatedTimeSchedule)/ (loopTime/dTime) ) //loopTime / dTime = number of frames between updates. Acc / frame = time of processing assignated that frame.
+        if(timeCounter > (accumulatedTimeSchedule + AIQueue.size())/ (loopTime/dTime) ) //loopTime / dTime = number of frames between updates. Acc / frame = time of processing assignated that frame.
             break;
 
         //Initialize time passing
@@ -255,16 +272,15 @@ void AIManager::updateScheduling(float dTime, float loopTime) {
         timeCounter += clock_scheduling->getElapsedTime();
     }
 
-    /*std::cout<<"---------------------"<<std::endl;
+    std::cout<<"---------------------"<<std::endl;
     std::cout<<"Scheduling queue size after: "<<AIQueue.size()<<std::endl;
     std::cout<<"Scheduling time accumulated: "<<accumulatedTimeSchedule<<std::endl;
     std::cout<<"Scheduling parameters:  "<<dTime <<std::endl;
     std::cout<<"Scheduling time spent:  "<<timeCounter <<std::endl;
-    std::cout<<"---------------------"<<std::endl;*/
+    std::cout<<"---------------------"<<std::endl;
 
-    //WE SHOW THE DIFFERENCES
+    //THESE SHOW THE DIFFERENCES BETWEEN THE AVERAGE TIME TO PROCESS EACH ONE
     /*
-    system("clear");
     std::cout<<"Average Time for battle: "<<averageTimeBattle<<" with "<<battleAI.size()<<std::endl;
     std::cout<<"Average Time for DRIVING: "<<averageTimeDriving<<" with "<<objectsAI.size()<<std::endl;
     std::cout<<"Average Time for LOD: "<<averageTimeLOD<<" with "<<objectsAI.size()<<std::endl;
@@ -286,8 +302,6 @@ IComponent::Pointer AIManager::createAIDrivingComponent(GameObject& newGameObjec
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::> maybe it can be done without the event since it is only used in this manager
-    //:::> needs scheduling to be useful
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::AIDrivingComponent_Create, data});
@@ -302,8 +316,6 @@ IComponent::Pointer AIManager::createAIBattleComponent(GameObject& newGameObject
 
     //Attach to object
     newGameObject.addComponent(component);
-
-    //:::> needs scheduling to be in event form
 
     //Push to battle AI list
     battleAI.push_back(component);
@@ -348,6 +360,18 @@ void objectDeleteAIBattle(EventData eData) {
     }
 }
 
+void swapScheduling(EventData eData) {
+    if(!AIManager::getInstance().getScheduling())
+    {
+        AIManager::getInstance().setScheduling(true);
+        std::cout<<"SCHEDULING: on" <<std::endl;
+    }
+    else
+    {
+        AIManager::getInstance().setScheduling(false);
+        std::cout<<"SCHEDULING: off" <<std::endl;
+    }
+}
 
 //==============================================
 // UPDATE DRIVING
@@ -465,39 +489,6 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     
     AIObject->setNewTransformData(trans);
     RenderManager::getInstance().getRenderFacade()->updateObjectTransform(AI.getId(), trans);
-
-    ////////////////////////////////////
-    /////    ASSIGN RANDOM ITEM    /////
-    //////////////////////////////////// 
-    /*if(posVector%5 == 0 && itemLoD == false)
-    {
-        srand (time(NULL));
-        auto itemHolder = AIObject->getComponent<ItemHolderComponent>();
-
-        if(itemHolder->getItemType() == -1){
-            int random;
-            if(AIObject->getComponent<ScoreComponent>()->getPosition() == 1)
-            {
-                random = rand() % 3 + 2;
-            }
-            else
-            {
-                random = rand() % 5;
-            }
-
-            itemHolder->setItemType(random);
-            itemLoD = true;
-        }
-    }
-    else if (itemLoD == true)
-    {
-        itemLoD = false;
-    }*/
-    //:::> Fix this
-    /////////////////////////////////////////////////////////////////////////
-    ///////     AJUSTAR EL BEHAVIOUR THREE A QUE SE USE SIEMPRE EL ITEM
-    /////////////////////////////////////////////////////////////////////////
-    
 }
 
 void AIManager::updateAISpeed()

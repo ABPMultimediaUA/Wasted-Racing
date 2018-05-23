@@ -39,10 +39,10 @@ class ItemRedShellComponent : public IItemComponent
         //==============================================================
         GameObject& player;                //Victim player
         float speed;                       //Speed of the red shell
-        float consTime;                    //----no idea
-        float decTime;                     //----no idea
-        unsigned int lastVector;           //----no idea
-        int myPos;                         //----no idea
+        float consTime;                    
+        float decTime;                     
+        unsigned int lastVector;           
+        int myPos;                        
         glm::vec3 objective;               //vec3 indicating the position to which to go
         ScoreComponent::Pointer enemy;     //Pointer to the score of the victim player
         IItemComponent::InstanceType mode; //How the item was instanciated

@@ -93,6 +93,9 @@ public:
     //Draws the post processing on a quad
     void quadDrawPostProcessing();
 
+    //Resize the texture to the actual window size
+    void resizePostProcessing(float x, float y);
+
     //Initializes all parameters and programs to operate with the shadow mapping
     void initShadowMapping();
 
@@ -119,10 +122,12 @@ public:
 
     //////////////////////////////
     //  SETTERS
+    void setAmbient(float v)                            {   glUniform1f(ambientID, v);   }  
     void setWindow(SDL_Window* rw )                     {   window = rw;                 }   
     void setSilhouette(bool b)                          {   silhouetteActivated = b;     }
     void setNLightsForward(int i)                       {   nLightsForward = i;          }
     void setNLightsBack(int i)                          {   nLightsBack = i;             }
+
 
     //  POSTPROCESSING GETTERS & SETTERS
     bool getPPActive()                                  {   return postProcessingActive; }
@@ -173,6 +178,7 @@ private:
     int nLightsBack = 2;
     int nLightsForward = 3;
     int currentLight = 0;
+    GLuint ambientID;
 
     //=========================
     //  BILLBOARDS

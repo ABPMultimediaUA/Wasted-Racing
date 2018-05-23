@@ -451,6 +451,10 @@ void RedPandaStudio::initOpenGL()
 
 	silFlagIdentifier = glGetUniformLocation(ProgramID, "silhouette");
 
+	//Ambient light location
+	ambientID = glGetUniformLocation(ProgramID, "ambient");
+
+
 	glUniform1i(colorTexture, 0);
 	glUniform1i(normalTexture, 1);
 
@@ -1336,7 +1340,21 @@ void RedPandaStudio::quadDrawPostProcessing()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-//Initialices all the variables needed for shadow mapping
+//Resizes the texture of the post processing
+void RedPandaStudio::resizePostProcessing(float x, float y)
+{
+	//Binding the right buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, postProcessingBuffer);
+	
+	//Binding texture and changing its properties
+	glBindTexture(GL_TEXTURE_2D, colorMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	//Bind normal buffer again
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+//Initializes all the variables needed for shadow mapping
 void RedPandaStudio::initShadowMapping()
 {
 	//Debugging data

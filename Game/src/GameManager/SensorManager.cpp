@@ -21,11 +21,13 @@ void SensorManager::init() {
 }
 
 void SensorManager::update() {
-    //This should call every time to all the sensors to update them.
-    //Actually we dont have Environment, so we can't get the objects
-    //from the map to be seen
 
-    auto player = GlobalVariables::getInstance().getPlayer();
+    GameObject* player = GlobalVariables::getInstance().getPlayer();
+    
+    //Player exists guardian
+    if(player == nullptr)
+        return;
+
     auto posPlayer = player->getTransformData().position;
 
     //Clean the list

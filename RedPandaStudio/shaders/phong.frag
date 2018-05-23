@@ -26,6 +26,8 @@ const int maxLights = 25;
 uniform int numLights;
 uniform int numSpotLights;
 
+
+//Light values
 struct Light {
    vec4 position;
    vec4 intensity;
@@ -39,6 +41,9 @@ struct SpotLight
     float cutoff;
 };
 uniform SpotLight spotlight[maxLights];
+
+uniform float ambient = 0.4;
+
 
 struct Material {
     vec3 kd;
@@ -60,13 +65,16 @@ uniform bool silhouette;
 
 out vec4 FragColor;
 
+
 //================================
+//SHADOW MAPPING variables
 vec4 lightPos = light[0].position;
 
 in vec4 FragLightPos;
 
 uniform sampler2D shadowMap;
 
+//Visibility limiter used for the shadow mapping
 float calculateVisibility()
 {
     float bias =  0.23;
@@ -182,7 +190,6 @@ void main()
         calculatePointLights();
         calculateSpotLights();
 
-        float ambient = 0.2;
         v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
 
         if(textActive)

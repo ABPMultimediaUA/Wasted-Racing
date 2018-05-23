@@ -1,15 +1,6 @@
 #include "RenderManager.h"
 #include "ParticleManager.h"
-
-//////////////////////////////////////////////
-//            THINGS TO DO HERE
-//////////////////////////////////////////////
-//////////////////////////////////////////////
-/*
->Transmute everything to debug manager (of the debug part)
-*/
-//////////////////////////////////////////////
-//////////////////////////////////////////////
+#include "../GlobalVariables.h"
 
 //==============================================
 // DELEGATES DECLARATIONS
@@ -45,20 +36,11 @@ void RenderManager::init(int engine) {
     renderFacade->init(1280, 720, false, false);
     renderFacade->openWindow();
     
-    //<___
-    //initHUD();
-    
     //Hud initial state is false
     HUD_ON = false;
-    //___>
 
     //Data init
     debugState = false;
-
-    //QuadTree data init
-    //maxObjPerNode = 2;
-    //updateRange = 2;
-    //x0 = 0; x1 = 10; y0 = 0;  y1 = 10; //Map dimensions
 
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Create, addObjectRenderComponent});
@@ -89,8 +71,6 @@ void RenderManager::init(int engine) {
 
     EventManager::getInstance().update();
 
-    //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/punk/punk.obj");
-    //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
     particleManager = &ParticleManager::getInstance();
     particleManager->init();
 
@@ -99,40 +79,25 @@ void RenderManager::init(int engine) {
 }
 
 void RenderManager::update(float dTime) {
-    //Update HUD
-    updateHUD();
-    if(enter == 200)
+
+    //Update camera if there is a player
+    if(&renderFacade->getCameraTarget() != NULL)
     {
-        //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/punk/punk.obj");
-        //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
-    }
-    enter++;
-    //Check LoD mesh
-    //LoDmeshAnim();  //Not working
+        CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
+        c->update(dTime);
 
-    //Update camera collision
-    //:::>Depends on the player being created, it shouldn't
-    
-    //Update camera
-    CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
-    c->update(dTime);
-
-    //Update blur
-    if(activeBlur == true){
-        updateBlur();
+        //Update blur
+        if(activeBlur == true){
+            updateBlur();
+        }
     }
     
 
     //Update debug if debug mode activated
     if(debugState){
-        //:::>This is hell, it should be in debug manager
         updateAIDebug();
         updateCameraDebug();
         updateBattleDebug(dTime);
-    }else{
-        //:::X>my job
-        //:::>Function should be erased and replaced with another one generated here, doing the same thing
-        renderFacade->updateItemIcon();
     }
 
     renderFacade->updateAnimations(dTime);
@@ -155,12 +120,23 @@ void RenderManager::close(){
     //Clear render component list
     renderComponentList.clear();
 
+    //Close particle manager
+    particleManager->close();
+}
+
+void RenderManager::fastRestart(){
+    //Clear all interface elements
+    renderFacade->cleanInterface();
+
+    //Clear render component list
+    renderComponentList.clear();
+
+    //Close particle manager
     particleManager->close();
 }
 
 void RenderManager::splitQuadTree(){
-    //renderComponentTree.init(maxObjPerNode, updateRange, renderComponentList, x0, x1, y0, y1);
-    //renderComponentTree.divide();
+
 }
 
 //==============================================
@@ -203,12 +179,6 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
     //Attach to game object
     newGameObject.addComponent(component);
 
-    //Send event of creation
-    //:::>Why not adding it directly to the list? That's the only use for this event
-    //EventData data;
-    //data.Component = component;
-    //EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
-
     renderFacade->addObject(component.get());
 
     return component;
@@ -221,17 +191,6 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
 
     //Add component to object
     newGameObject.addComponent(component);
-
-    //Create event data
-    //:::>It is not needed since it only adds it to the list and initalizes the object, which *right now* invocates the init, which does the other render
-    //:::> facade-> addObject, and we don't need that
-    //<___
-    /*
-    EventData data;
-    data.Component = component;
-    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
-    */
-    //___>
 
     //add object to the render and to the component list
     renderComponentList.push_back(component);
@@ -247,15 +206,7 @@ IComponent::Pointer RenderManager::createLightRenderComponent(GameObject& newGam
     //Attach to game object
     newGameObject.addComponent(component);
 
-    //Send event of creation
-    //:::>Same as object render component
-    //EventData data;
-    //data.Component = component;
-    //EventManager::getInstance().addEvent(Event {EventType::LightRenderComponent_Create, data});
-
-    //:::> Initialize here from the render, eliminates dependencies
     renderFacade->addLight(component.get());
-    //:::> renderFacade->addLight(this);
 
     return component;
 }
@@ -268,7 +219,6 @@ IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGa
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::>Idem
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
@@ -285,17 +235,6 @@ IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, Objec
 
     //Adding component to object
     newGameObject.addComponent(component);
-
-    //:::>??? Not sended
-    //<___
-    //EventData data;
-    //data.Component = component;
-    //___>
-
-    //:::>??? not used
-    //<___
-    //auto comp = newGameObject.getComponent<ObjectRenderComponent>();
-    //___>
 
     renderFacade->addSkybox(component.get(), top, bot, left, right, front, back);
 
@@ -321,7 +260,6 @@ IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& ne
 //==============================================
 // DELEGATES
 //==============================================
-//:::>All 3 of them could be just 1 generic function
 void addObjectRenderComponent(EventData data) {
     RenderManager::getInstance().getComponentList().push_back(data.Component);        //add to list of render components
     RenderManager::getInstance().getRenderFacade()->addObject(data.Component.get());  //add object to render engine
@@ -1165,72 +1103,12 @@ void RenderManager::LoDmeshAnim()
         for(unsigned int i = 0; i < animationComponentList.size(); i++)
         {
             auto component = RenderManager::getInstance().getAnimationComponentList()[i];
-            //auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
             auto animationObject = std::dynamic_pointer_cast<AnimationRenderComponent>(component).get();
 
             if(animationObject != nullptr)
             {
-                            std::cout<<"si"<<"\n";
-                //auto shape = renderObject->getObjectShape();
-                //if(shape == ObjectRenderComponent::Shape::Mesh)
-                //{
-                    auto object = animationObject->getGameObject();
-                    auto positionObject = object.getTransformData().position;
-    /*                auto positionPlayer = InputManager::getInstance().getComponent()->getGameObject().getTransformData().position;
-                    auto distance = (positionObject.x - positionPlayer.x) * (positionObject.x - positionPlayer.x) +
-                                    (positionObject.y - positionPlayer.y) * (positionObject.y - positionPlayer.y) +
-                                    (positionObject.z - positionPlayer.z) * (positionObject.z - positionPlayer.z);
-
-                    auto polyMesh = animationObject->getPolyMesh();
-
-                    if((distance > distanceLoD*distanceLoD && distance <= (distanceLoD*distanceLoD)*2) && polyMesh != AnimationRenderComponent::Poly::Medium)
-                    {
-                        /*auto name = renderObject->getName();
-                        auto folder = renderObject->getFolder();
-                        std::string newMesh = "media/mesh/" + folder + "/" + folder + "1.obj";
-                        bool m = renderFacade->changeMesh(object.getId(), newMesh);
-                        if(m == true)
-                        {
-                            renderObject->setMesh(newMesh.c_str());
-                        }*/
- /*                       animationObject->setPolyMesh(AnimationRenderComponent::Poly::Medium);
-                            std::cout<<"1"<<"\n";
-                    }  
-                    /*else*/ /*if((distance > ((distanceLoD*distanceLoD)*2)) && polyMesh != AnimationRenderComponent::Poly::Low)
-                    {
-                        /*auto name = renderObject->getName();
-                        auto folder = renderObject->getFolder();
-                        std::string newMesh = "media/mesh/" + folder + "/" + folder + "2.obj";
-                        bool m = renderFacade->changeMesh(object.getId(), newMesh);
-                        if(m == true)
-                        {
-                            renderObject->setMesh(newMesh.c_str());
-                        }*/
-  /*                      animationObject->setPolyMesh(AnimationRenderComponent::Poly::Low);
-                            std::cout<<"2"<<"\n";
-                    }  
-                    /*else*/ /*if(distance <= distanceLoD*distanceLoD && polyMesh != AnimationRenderComponent::Poly::High)
-                    {
-                        /*auto name = renderObject->getName();
-                        auto folder = renderObject->getFolder();
-                        std::string newMesh = "media/mesh/" + folder + "/" + name;
-                        bool m = renderFacade->changeMesh(object.getId(), newMesh);
-                        if(m == true)
-                        {
-                            renderObject->setMesh(newMesh.c_str());
-                        }*/
-   /*                     animationObject->setPolyMesh(AnimationRenderComponent::Poly::High);
-
-                        //Change to maxSpeed when we return to high poly
-                        auto moveComponent = object.getComponent<MoveComponent>();
-                        if(moveComponent != nullptr)
-                        {
-                            auto maxSpeed = moveComponent->getMovemententData().max_vel;
-                            object.getComponent<MoveComponent>()->changeVel(maxSpeed);
-                            std::cout<<"3"<<"\n";
-                        }
-                    }
-                //}*/
+                auto object = animationObject->getGameObject();
+                auto positionObject = object.getTransformData().position;
             }
         }
     }

@@ -1,6 +1,5 @@
 #include "CollisionComponent.h"
 #include "../../GameManager/ObjectManager.h"
-///:::>Just a type class, could be informative
 
 //Initilizer
 void CollisionComponent::init() {

@@ -34,6 +34,7 @@ void drawRPS_GUI_CityName(); //:::> function that is given as parameter to redpa
 void drawRPS_GUI_Countdown(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_AfterMatch(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_LoadingScreen(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI_ClientLobby(); //:::> function that is given as parameter to redpanda
 
 namespace gui {
 
@@ -171,13 +172,15 @@ namespace gui {
     struct nk_image countdown[4];
     struct nk_image winner;
     struct nk_image looser;
+    struct nk_image clientLobbyBackground;
 
     void init();
     struct nk_image loadTexture(const char* path);
     void playAnimation();
 
     std::vector<GLuint> textures;
-    static size_t volume = 100;   
+    static size_t volume        = 100;   
+    static size_t brightness    = 40;   
 
 }
 
@@ -192,6 +195,7 @@ void addPause(EventData eData);
 void addResult(EventData eData);
 void addLoadingScreen(EventData eData);
 void addSelection(EventData eData);
+void addClientLobby(EventData eData);
 void changeLanguage(EventData eData);
 
 //==============================================================
@@ -213,6 +217,7 @@ void RenderRedPanda::openWindow() {
         SDL_GetCurrentDisplayMode(0, &DM);
         window.size.x = DM.w;
         window.size.y = DM.h;
+        device->resizePostProcessing(DM.w,DM.h);
     }
     if(!window.fullscreen)
     {
@@ -220,6 +225,8 @@ void RenderRedPanda::openWindow() {
         window.size.x = DM.w*0.8;
         window.size.y = DM.h*0.8;
     }
+
+    device->resizePostProcessing(window.size.x,window.size.y);
 
     SDL_Window* w = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice()->getWindow();
     SDL_SetWindowPosition(w, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
@@ -250,10 +257,10 @@ void RenderRedPanda::openWindow() {
     EventManager::getInstance().addListener(EventListener {EventType::Match_Start, addCityName});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Countdown, addCountdown});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
-    EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Race_End, addResult});
     EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeLanguage});
     EventManager::getInstance().addListener(EventListener {EventType::Game_Pause, addPause});
+    EventManager::getInstance().addListener(EventListener {EventType::Game_ClientLobby, addClientLobby});
 
 
 }
@@ -283,7 +290,6 @@ void RenderRedPanda::renderDraw() {
 
 //Add a camera to the game
 void RenderRedPanda::addCamera() {
-
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
     valueY = 0.3;
     sum = 5;
@@ -670,9 +676,16 @@ void RenderRedPanda::updateAnimations(float dTime) {
     
     if(animationMap.find(25000) != animationMap.end()) {
         animationMap[25000]->update(dTime);
-        animationMap[25001]->update(dTime);
-        animationMap[25002]->update(dTime);
-        animationMap[25003]->update(dTime);
+
+        //:::>I made a luis move, because the situation required so
+        if(animationMap.find(25001) != animationMap.end()) 
+            animationMap[25001]->update(dTime);
+
+        if(animationMap.find(25002) != animationMap.end()) 
+            animationMap[25002]->update(dTime);
+
+        if(animationMap.find(25003) != animationMap.end()) 
+            animationMap[25003]->update(dTime);
     }
     else if(animationMap.find(60001) != animationMap.end()) {
         animationMap[60001]->update(dTime);
@@ -740,6 +753,7 @@ void drawRPS_GUI_Menu(){
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
@@ -763,9 +777,13 @@ void drawRPS_GUI_Menu(){
                 nk_layout_row_dynamic(GUI, h*0.07, 1);
                 nk_spacing(GUI, 1);
                 if (nk_button_image(GUI, gui::text_singleplayer, gui::text_singleplayerHover))
+                {
                     EventManager::getInstance().addEvent(Event {EventType::Key_Singleplayer_Down});
+                }
                 if (nk_button_image(GUI, gui::text_multiplayer, gui::text_multiplayerHover))
+                {
                     EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
+                }
                 if (nk_button_image(GUI, gui::text_options, gui::text_optionsHover)){
                     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
                     device->setGUIDrawFunction(drawRPS_GUI_Options);
@@ -783,6 +801,7 @@ void drawRPS_GUI_CityName() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
@@ -803,7 +822,8 @@ void drawRPS_GUI_Countdown() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-    
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+   
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
 
@@ -823,7 +843,8 @@ void drawRPS_GUI_AfterMatch() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-    
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+   
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
 
@@ -848,6 +869,7 @@ void drawRPS_GUI_LoadingScreen() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
@@ -874,7 +896,8 @@ void drawRPS_GUI_PlayerSelect() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+    
     int currPlayer = GlobalVariables::getInstance().getSelectedPlayer();
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
@@ -941,7 +964,8 @@ void drawRPS_GUI_PlayerSelect() {
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.823, h*0.81, w*0.15, h*0.15))) {
                 nk_layout_row_static(GUI, h*0.15, w*0.15, 1);
                 if (nk_button_image(GUI, gui::text_oexit, gui::text_oexitHover)){
-                    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION){
+                    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION ||
+                    GlobalVariables::getInstance().getGameState() == IGameState::stateType::MULTISELECTION  ){
                         rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
                         device->setGUIDrawFunction(drawRPS_GUI_Menu);
                     }
@@ -959,6 +983,7 @@ void drawRPS_GUI_Options(){
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
@@ -1089,6 +1114,20 @@ void drawRPS_GUI_Options(){
                 nk_popup_end(GUI);
             }
             
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.65, h*0.32, w*0.2, w*0.06))) {  
+
+                nk_layout_row_static(GUI, w*0.018, w*0.14, 1);
+
+                if(nk_progress(GUI, &gui::brightness, 100, nk_true)) {
+
+                    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                    device->setAmbient(gui::brightness/100);
+
+                }
+
+                nk_popup_end(GUI);
+            }
+
             //Blur
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.35, w*0.25, w*0.033))) {
                 nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
@@ -1295,7 +1334,8 @@ void drawRPS_GUI_HUD(){
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+   
     GameObject cameraTarget = RenderManager::getInstance().getRenderFacade()->getCameraTarget();
 
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0)) {
@@ -1304,26 +1344,28 @@ void drawRPS_GUI_HUD(){
 
             nk_layout_row_static(GUI, h*0.208, w*0.117, 1);
 
-            int itemID = cameraTarget.getComponent<ItemHolderComponent>().get()->getItemType();
-            switch(itemID){
-                case 0: //RED SHELL
-                        nk_image(GUI, gui::item_red);
-                        break;
-                case 1: //BLUE SHELL
-                        nk_image(GUI, gui::item_blue);
-                        break;
-                case 2: //TRAP
-                        nk_image(GUI, gui::item_banana);
-                        break;
-                case 3: //MUSHROOM
-                        nk_image(GUI, gui::item_mushroom);
-                        break;
-                case 4: //STAR
-                        nk_image(GUI, gui::item_star);
-                        break;
-                default:
-                        nk_image(GUI, gui::item_void);
-                        break;
+            if(&cameraTarget != nullptr){
+                int itemID = cameraTarget.getComponent<ItemHolderComponent>().get()->getItemType();
+                switch(itemID){
+                    case 0: //RED SHELL
+                            nk_image(GUI, gui::item_red);
+                            break;
+                    case 1: //BLUE SHELL
+                            nk_image(GUI, gui::item_blue);
+                            break;
+                    case 2: //TRAP
+                            nk_image(GUI, gui::item_banana);
+                            break;
+                    case 3: //MUSHROOM
+                            nk_image(GUI, gui::item_mushroom);
+                            break;
+                    case 4: //STAR
+                            nk_image(GUI, gui::item_star);
+                            break;
+                    default:
+                            nk_image(GUI, gui::item_void);
+                            break;
+                }
             }
             nk_popup_end(GUI);
 	    }
@@ -1332,22 +1374,25 @@ void drawRPS_GUI_HUD(){
 
             nk_layout_row_static(GUI, h*0.208, w*0.117, 1);
 
-            int position = cameraTarget.getComponent<ScoreComponent>().get()->getPosition();
-            switch(position){
-                case 1: 
-                        nk_image(GUI, gui::number_1);
-                        break;
-                case 2: 
-                        nk_image(GUI, gui::number_2);
-                        break;
-                case 3: 
-                        nk_image(GUI, gui::number_3);
-                        break;
-                case 4: 
-                        nk_image(GUI, gui::number_4);
-                        break;
-                default:
-                        break;
+            if(&cameraTarget != nullptr)
+            {
+                int position = cameraTarget.getComponent<ScoreComponent>().get()->getPosition();
+                switch(position){
+                    case 1: 
+                            nk_image(GUI, gui::number_1);
+                            break;
+                    case 2: 
+                            nk_image(GUI, gui::number_2);
+                            break;
+                    case 3: 
+                            nk_image(GUI, gui::number_3);
+                            break;
+                    case 4: 
+                            nk_image(GUI, gui::number_4);
+                            break;
+                    default:
+                            break;
+                }
             }
             nk_popup_end(GUI);
 	    }
@@ -1356,22 +1401,25 @@ void drawRPS_GUI_HUD(){
 
             nk_layout_row_static(GUI, h*0.175, w*0.084, 1);
 
-            int lap = cameraTarget.getComponent<ScoreComponent>().get()->getLap();
+            if(&cameraTarget != nullptr)
+            {
+                int lap = cameraTarget.getComponent<ScoreComponent>().get()->getLap();
 
-            switch(lap){
-                case 1:
-                        nk_image(GUI, gui::lap_1);
-                        break;
-                case 2:
-                        nk_image(GUI, gui::lap_2);
-                        break;
-                case 3:
-                        nk_image(GUI, gui::lap_3);
-                        break;
-                default:
-                        break;
+                switch(lap){
+                    case 1:
+                            nk_image(GUI, gui::lap_1);
+                            break;
+                    case 2:
+                            nk_image(GUI, gui::lap_2);
+                            break;
+                    case 3:
+                            nk_image(GUI, gui::lap_3);
+                            break;
+                    default:
+                            break;
+                }
             }
-            
+
             nk_popup_end(GUI);
 	    }
 
@@ -1385,20 +1433,22 @@ void drawRPS_GUI_HUD(){
 	    }
 
         for(int i = 3; i >= 0; i--) {
+            if(ObjectManager::getInstance().getObject(25000+i) != nullptr)
+            {
+                glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
 
-            glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
+                if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.89 - pos1.z * h * 0.000175, h*0.66 - pos1.x * h * 0.00017 * 0.5, w*0.2, h*0.5))) {
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.89 - pos1.z * h * 0.000175, h*0.66 - pos1.x * h * 0.00017 * 0.5, w*0.2, h*0.5))) {
+                    nk_layout_row_static(GUI, h*0.021, h*0.021, 1);
 
-                nk_layout_row_static(GUI, h*0.021, h*0.021, 1);
+                    if(i == 0)
+                        nk_image(GUI, gui::dot_player);
+                    else 
+                        nk_image(GUI, gui::dot_enemy);
 
-                if(i == 0)
-                    nk_image(GUI, gui::dot_player);
-                else 
-                    nk_image(GUI, gui::dot_enemy);
-
-                nk_popup_end(GUI);
-	        }
+                    nk_popup_end(GUI);
+                }
+            }
         }
     }
 
@@ -1412,7 +1462,8 @@ void drawRPS_GUI_Pause(){
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+    
         if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
 
@@ -1458,6 +1509,52 @@ void drawRPS_GUI_Pause(){
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
 }
 
+void drawRPS_GUI_ClientLobby(){
+    
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+   
+       if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+
+            GUI->style.window.fixed_background = nk_style_item_hide();
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                nk_image(GUI, gui::pbackground);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.16, h*0.2, w, h))) {
+                nk_layout_row_static(GUI, h*0.35, w*0.65, 1);
+                nk_image(GUI, gui::clientLobbyBackground);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.37, h*0.61, w*0.23, h*0.9))) {
+
+                nk_layout_row_dynamic(GUI, h*0.12, 1);
+                if (nk_button_image(GUI, gui::text_menu, gui::text_menuHover)) {
+                    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                    device->setGUIDrawFunction(drawRPS_GUI_Menu);
+                    EventData eData;
+                    eData.Id = IGameState::stateType::INTRO;
+                    EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
+                }
+                if (nk_button_image(GUI, gui::text_pexit, gui::text_pexitHover))
+                    EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+                nk_popup_end(GUI);
+            }
+            
+		}
+    
+
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
 void gui::init() {
 
     for(unsigned int i = 0; i < textures.size(); i++) {
@@ -1478,6 +1575,12 @@ void gui::init() {
     gui::countdown[1]                   =   gui::loadTexture("media/img/GUI/Other/1.png");
     gui::countdown[2]                   =   gui::loadTexture("media/img/GUI/Other/2.png");
     gui::countdown[3]                   =   gui::loadTexture("media/img/GUI/Other/3.png");
+
+    if(GlobalVariables::getInstance().getLanguage() == 0) {
+        gui::clientLobbyBackground      =   gui::loadTexture("media/img/GUI/Other/infoMultiplayerEN.png");
+    }else{
+        gui::clientLobbyBackground      =   gui::loadTexture("media/img/GUI/Other/infoMultiplayerES.png");
+    }
 
     //==========================================================================================
     //  MAIN MENU
@@ -1985,6 +2088,14 @@ void addSelection(EventData eData) {
     device->setGUIDrawFunction(drawRPS_GUI_PlayerSelect);
 
 }
+
+void addClientLobby(EventData eData) {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_ClientLobby);
+
+}
+
 
 void addPause(EventData eData) {
     IGameState::stateType state = GlobalVariables::getInstance().getGameState();

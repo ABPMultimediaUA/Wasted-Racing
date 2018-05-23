@@ -141,7 +141,6 @@ void PreMatchState::update(float &accumulatedTime) {
     eventManager->update();
 
     //Sets if the game keeps running or not
-    //:::>Change with event that closes the game
     Game::getInstance().setStay(objectManager->getGameRunning());
 }
 

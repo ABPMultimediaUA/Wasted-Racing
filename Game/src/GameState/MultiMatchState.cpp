@@ -19,20 +19,24 @@ void MultiMatchState::init() {
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
     debugManager    = &DebugManager::getInstance();     //Initialize Debug manager
     
-    Game::getInstance().loadMap();
-
     Game::getInstance().setAccumulatedTime(0);
 }
 
 void MultiMatchState::update(float &accumulatedTime) {
+   
+    float maxDTime = GlobalVariables::getInstance().getMaxDTime();
+    if(accumulatedTime > maxDTime)
+    {
+        accumulatedTime = maxDTime;
+    }
+
+    //Render first
+    renderManager->update(accumulatedTime);
 
     //No gelding
     inputManager->update();
-    //___>
+
     debugManager->update();
-    //<___
-    
-    renderManager->update(accumulatedTime);
 
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
@@ -50,11 +54,8 @@ void MultiMatchState::update(float &accumulatedTime) {
 }
 
 void MultiMatchState::updateManagers(float dTime){
+    //Input manager has to be the first to be updated
     physicsManager->update(dTime);
-
-    aiManager->update(dTime);
-
-    waypointManager->update(dTime);
 
     sensorManager->update();
 
@@ -62,15 +63,19 @@ void MultiMatchState::updateManagers(float dTime){
     
     scoreManager->update();
 
-    audioManager->update();    
-    
+    audioManager->update();
+
+    EventData data;
+    data.Component      = AudioManager().getInstance().getListenerComponent();
+
+    EventManager::getInstance().addEvent(Event {EventType::Music_MainTheme, data});
+
     //Event manager has to be the last to be updated
     eventManager->update();
 }
 
 void MultiMatchState::draw() {
     renderManager->draw();
-    //renderManager->drawHUD();
 }
 
 void MultiMatchState::interpolate(float &accumulatedTime) {
@@ -92,5 +97,6 @@ void MultiMatchState::interpolate(float &accumulatedTime) {
 
 
 void MultiMatchState::close() {
-
+    //Game set to no initialized
+    initialized = false;
 }

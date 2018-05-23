@@ -133,10 +133,6 @@ void driftUpI(EventData eData){
 }
 
 void useItemDownI(EventData eData){
-    //:::>Should be an event
-    //<___
-    //EventManager::getInstance().addEvent(Event {EventType::Item_Create, eData});
-    //___>
     auto obj = InputManager::getInstance().getComponent().get()->getGameObject();
     ItemManager::getInstance().createItem(obj);
 }

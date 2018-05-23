@@ -30,23 +30,20 @@ ISensorComponent(newGameObject)
 void VSensorComponent::updateSeenObjects(std::vector<GameObject> objects)
 {
     //initial variables
-    size_t i;                                                                   //Counter
-    VObject::Pointer pvo;                                                       //VPointer included in the end result
+    size_t i;                                  //Counter
+    VObject::Pointer pvo;                      //VPointer included in the end result
     VObject::Pointer ramp; 
     VObject::Pointer box; 
     float distanceBox = -1, distanceRamp = -1;
-    float a = 0.f, b = 0.f;                                                         //initial a and b (left and right sensor, respectively)
-    /*for(int j = 0; j < seenObjects.size(); j++)
-    {
-        std::cout<<"Vistos: "<<seenObjects[i]->getType()<<"\n";
-    }*/
+    float a = 0.f, b = 0.f;                    //initial a and b (left and right sensor, respectively)
+
+
     //Clear seen objects
     seenObjects.clear();
 
     //Iterate through all available objects
     for(i=0; i<objects.size(); i++)
     {
-        //auto ob = objects[i].get();                                                         //get object
         glm::vec3 myPos = getGameObject().getTransformData().position;
         float distance = (objects[i].getTransformData().position.x - myPos.x) * (objects[i].getTransformData().position.x - myPos.x) +
 						(objects[i].getTransformData().position.y - myPos.y) * (objects[i].getTransformData().position.y - myPos.y) +
@@ -118,7 +115,5 @@ void VSensorComponent::calculateAB(glm::vec3 objective, float& a, float& b){
 
     //Do the math
     relativeP = objective - this->getGameObject().getTransformData().position;
-
-    //Satan
     LAPAL::calculateAB(relativeP, sensorLeft, sensorRight, a, b);
 }

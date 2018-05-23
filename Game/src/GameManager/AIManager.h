@@ -50,6 +50,7 @@ public:
     //Destructor
     ~AIManager() {
         delete clock;
+        delete clock_scheduling;
     }
 
     //Initialization
@@ -90,17 +91,20 @@ public:
     //Update AI speed depending on score
     void updateAISpeed();
 
+    //==============================================
+    // GETTERS AND SETTERS
+    //==============================================
+    void setScheduling(bool s){ scheduling_on = s;     }
+    bool getScheduling()      { return scheduling_on;  }
+    bool emptyAIQueue()       { return AIQueue.empty();}
+    void clearAIQueue()       { while(!AIQueue.empty()){ AIQueue.pop();};}
+
 private:
     std::vector<IComponent::Pointer> objectsAI; //AIDrivingComponents to be processed
     std::vector<IComponent::Pointer> battleAI;  //BattleBehaviour componentes to be processed
 
-    //___>
-    //bool changeAI;
-    bool itemLoD;           //variable to know if we took item in this waypoint or not (only for lod)
-    bool updateBattleBehaviour;
-    //<___
-
-    //float distanceLoD;//////   PASAR A VARIABLE GLOBAL, ESTA EN AIMANAGER, WAYPOINTEMANAGER Y SENSORMANAGER
+    bool itemLoD;                   //variable to know if we took item in this waypoint or not (only for lod)
+    bool updateBattleBehaviour;     //Checker of updating battle behaviour or not
 
     //==============================================
     // SCHEDULING
@@ -108,6 +112,7 @@ private:
     std::queue<AIEvent> AIQueue;    //Processing queue
     double maxTimeSchedule;         //Maximum time for all processes per turn
     double accumulatedTimeSchedule; //Time accumulated between all the events
+    bool scheduling_on = true;      //Sets the scheduling to on/off
     
     //Samples to measure the mean value of each average time
     int samplesBattle;

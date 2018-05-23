@@ -50,7 +50,7 @@ void IntroState::init() {
         tr.scale    = glm::vec3(1.6,1.6,1.6);
         GameObject::Pointer background = ObjectManager::getInstance().createObject(60000, tr);
 
-        RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
+    RenderManager::getInstance().createObjectRenderComponent(*background.get(),ObjectRenderComponent::Shape::Mesh, "background.obj");
 
         GameObject::TransformationData tr1;
         tr1.position = glm::vec3(-4,-29.9,0.1);
@@ -67,7 +67,7 @@ void IntroState::init() {
         tr2.scale    = glm::vec3(0.3,0.3,0.3);
         GameObject::Pointer player2 = ObjectManager::getInstance().createObject(60002, tr2);
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player2.get(),"Crocodile/CharSelect/cocodrilaBonesSelect_000", 91, 0, "Crocodile/DefaultMaterial_Base_Color.png");
+    RenderManager::getInstance().createAnimationRenderComponent(*player2.get(),"Crocodile/CharSelect/cocodrilaBonesSelect_000", 91, 0, "Crocodile/DefaultMaterial_Base_Color.png");
 
         GameObject::TransformationData tr3;
         tr3.position = glm::vec3(-4,-29.9,-16.0);
@@ -75,7 +75,7 @@ void IntroState::init() {
         tr3.scale    = glm::vec3(0.22,0.22,0.22);
         GameObject::Pointer player3 = ObjectManager::getInstance().createObject(60003, tr3);
 
-        RenderManager::getInstance().createAnimationRenderComponent(*player3.get(),"Cyborg/CharSelect/CyborgFINALAnimation_000", 183, 0, "Cyborg/DefaultMaterial_Base_Color.png");
+    RenderManager::getInstance().createAnimationRenderComponent(*player3.get(),"Cyborg/CharSelect/CyborgFINALAnimation_000", 183, 0, "Cyborg/DefaultMaterial_Base_Color.png");
 
         GameObject::TransformationData tr4;
         tr4.position = glm::vec3(-5,-29.2,-24.0);
@@ -91,7 +91,7 @@ void IntroState::init() {
         tr5.scale    = glm::vec3(1,1,1);
         GameObject::Pointer light = ObjectManager::getInstance().createObject(60005, tr5);
 
-        RenderManager::getInstance().createLightRenderComponent(*light.get(),LightRenderComponent::Type::Point, 100); 
+    RenderManager::getInstance().createLightRenderComponent(*light.get(),LightRenderComponent::Type::Point, 100); 
     
     Game::getInstance().setAccumulatedTime(0);
 
@@ -114,7 +114,6 @@ void IntroState::update(float &accumulatedTime) {
     eventManager->update();
 
     //Sets if the game keeps running or not
-    //:::>Change with event that closes the game
     Game::getInstance().setStay(objectManager->getGameRunning());
 }
 
@@ -145,16 +144,19 @@ void IntroState::swapToMatch()
 void IntroState::swapToClientLobby()
 {
     //Load server
-    execFileServer();
+    //execFileServer();
 
     //Close this state
-    close();
+    //close();
 
     //Initalize networkManager here
-   NetworkManager::getInstance().init();
+    //NetworkManager::getInstance().init();
 
     //Initialize Server IP
-    NetworkManager::getInstance().setServerIP(ip);
+    //NetworkManager::getInstance().setServerIP(ip);
+
+    //Change GUI value
+    EventManager::getInstance().addEvent(Event {EventType::Game_ClientLobby});
 
     //Initialize client state
     Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
@@ -191,67 +193,3 @@ void singleplayerActivated(EventData eData) {
     //Change to match state
     IntroState::getInstance().swapToMatch();
 }
-
-//-----------------------------------
-//-----------------------------------
-//------------PROVISIONAL------------
-//-----------------------------------
-//-----------------------------------
-/*void introVideo(){
-	//Play intro video
-	double currentSec = 0;
-
-    char part1[] = "ffmpeg -i $PWD/media/video/logo.mp4 -ss 00:00:";
-    char part2[] = " -vframes 1 $PWD/media/video/framelogo.bmp && y && echo";
-
-    
-	//loop for the full size of the video
-	while(currentSec < 17.0){
-        char * numbers = new char[7];   //numbers and decimals to put
-        char * systemCall = new char[std::strlen(part1)+std::strlen(part2)+8];  //entire message
-
-        if(currentSec<10.0){
-            numbers[0] = '0';        //floor to unit
-        }else{
-            numbers = {'1',(char) (((int)currentSec%) % 10)} //obtain unit only
-        }
-
-        //double now = (double) ( (int) (currentSec * 1000) ) / 1000.0; //4 decimals
-
-        std::string str = std::to_string(currentSec);
-        if(currentSec < 10.0){
-            strcat(numbers, "0");
-        }
-        strcat(numbers, str.c_str() );
-
-        
-        strcat(systemCall,part1);
-        strcat(systemCall,numbers);
-        strcat(systemCall,part2);
-        std::cout<<"numbers"<<numbers<<std::endl;
-        std::cout<<"final "<<systemCall<<std::endl;
-		system(systemCall);
-
-        //addcurrentTime
-        currentSec+=1/60.0;
-	}
-}*/
-
-
-/*void IntroState::execLocalServer() {
-    //Initial variables
-    std::array<char, 16> buffer;                                   //Buffer of result of ip (maximum 15 digits, 16 + \n)    
-    std::shared_ptr<FILE> pipe(popen("hostname -I", "r"), pclose); //Initializing run of the program
-
-    //See if order could be open
-    if (!pipe)
-    {
-        throw std::runtime_error("Reading file failed.");
-    }
-
-    //Copy result in ip
-    while (!feof(pipe.get())) {
-        if (fgets(buffer.data(), 16, pipe.get()) != nullptr)
-            ip += buffer.data();
-    }
-}*/

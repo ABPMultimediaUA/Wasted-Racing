@@ -112,7 +112,6 @@ void Game::Run() {
     clock = new Clock();
     clock->init();
 
-    //Start the run
     //execute game while staying
     while(stay){
         
@@ -183,6 +182,21 @@ void Game::setState(IGameState::stateType type){
             case IGameState::stateType::MULTIMATCH:
                 globalVariables->setGameState(MultiMatchState::getInstance().type);
                 state = &MultiMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_Start});
+                break;
+            case IGameState::stateType::MULTISELECTION:
+                globalVariables->setGameState(MultiSelectionState::getInstance().type);
+                state = &MultiSelectionState::getInstance();
+                break;
+            case IGameState::stateType::MULTIPREMATCH:
+                globalVariables->setGameState(MultiPreMatchState::getInstance().type);
+                state = &MultiPreMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Start});
+                break;
+            case IGameState::stateType::MULTIPOSTMATCH:
+                globalVariables->setGameState(MultiPostMatchState::getInstance().type);
+                state = &MultiPostMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_End});
                 break;
             case IGameState::stateType::PAUSE:
                 globalVariables->setGameState(PauseState::getInstance().type);
@@ -414,9 +428,6 @@ void Game::loadMap() {
 	}
 
     //Update every thing that has been created
-    //:::>Can be avoided if objects are treated by their managers at the moment.
-    //:::>By now: CreateObject, createTerrainComponent, createLightRenderComponent, createObjectRenderComponent, createRampComponent, createCollisionComponent
-    //:::>Makes sense when the scheduling is adapted
     EventManager::getInstance().update();
 
     //Loop over terrain components, linking them
@@ -473,7 +484,6 @@ void Game::loadMap() {
     }
 
     //Update every thing that has been created
-    //:::>No need for this one either because it doesn't create any event since the last one
     EventManager::getInstance().update();
 
 }
