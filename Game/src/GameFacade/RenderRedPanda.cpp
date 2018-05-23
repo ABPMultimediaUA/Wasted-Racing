@@ -1118,10 +1118,10 @@ void drawRPS_GUI_Options(){
 
                 nk_layout_row_static(GUI, w*0.018, w*0.14, 1);
 
-                if(nk_progress(GUI, &gui::brightness, 100, nk_true)) {
+                if(nk_progress(GUI, &gui::brightness, 200, nk_true)) {
 
                     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
-                    device->setAmbient(gui::brightness/100);
+                    device->setAmbient(gui::brightness/100.0);
 
                 }
 
