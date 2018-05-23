@@ -111,7 +111,6 @@ void MultiPreMatchState::update(float &accumulatedTime) {
         
     }
 
-
     //Update input manager
     inputManager->update();
     

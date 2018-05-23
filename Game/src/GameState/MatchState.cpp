@@ -54,10 +54,8 @@ void MatchState::update(float &accumulatedTime) {
         accumulatedTime = 0;
     }
 
-    //AI Scheduling and timing
-    double timePassed = schedulingClock->getElapsedTime();
-    schedulingClock->restart();
-    aiManager->updateScheduling(timePassed, loopTime);
+    //Manage scheduling
+    manageScheduling();
 
     //Always interpolate
     interpolate(accumulatedTime);
@@ -113,6 +111,25 @@ void MatchState::interpolate(float &accumulatedTime) {
 
     //Update camera position
     renderManager->getRenderFacade()->interpolateCamera(accumulatedTime, loopTime);
+}
+
+void MatchState::manageScheduling()
+{
+    //AI Scheduling and timing
+    if(aiManager->getScheduling())
+    {
+        double timePassed = schedulingClock->getElapsedTime();
+        schedulingClock->restart();
+        aiManager->updateScheduling(timePassed, loopTime);
+    }
+    else
+    {
+        //Clear if not empty the queue of events
+        if(!aiManager->emptyAIQueue())
+        {   
+            aiManager->clearAIQueue();
+        }
+    }
 }
 
 void MatchState::close() {

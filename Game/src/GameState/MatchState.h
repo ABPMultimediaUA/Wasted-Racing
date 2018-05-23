@@ -40,6 +40,9 @@ public:
     //Interpolate function
     void interpolate(float &accumulatedTime);
     
+    //Manage scheduling
+    void manageScheduling();
+
     //Shutdown
     virtual void close();
 

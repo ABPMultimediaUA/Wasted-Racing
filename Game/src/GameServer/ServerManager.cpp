@@ -190,12 +190,12 @@ void ServerManager::startGame()
 			switch(i)
 			{
 				case 0:
-					x=-35.f;
+					x=-80.f;
 					y=0.f;
-					z=-20.f;
+					z=-30.f;
 					break;
 				case 1:
-					z=-10.f;
+					z=0.f;
 					break;
 				default:
 					break;

@@ -196,7 +196,6 @@ void RenderRedPanda::openWindow() {
     EventManager::getInstance().addListener(EventListener {EventType::Match_Start, addCityName});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Countdown, addCountdown});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
-    EventManager::getInstance().addListener(EventListener {EventType::Match_Race_Start, addHUD});
     EventManager::getInstance().addListener(EventListener {EventType::Match_Race_End, addResult});
     EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeLanguage});
     EventManager::getInstance().addListener(EventListener {EventType::Game_Pause, addPause});
@@ -900,7 +899,8 @@ void drawRPS_GUI_PlayerSelect() {
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.823, h*0.81, w*0.15, h*0.15))) {
                 nk_layout_row_static(GUI, h*0.15, w*0.15, 1);
                 if (nk_button_image(GUI, gui::text_oexit, gui::text_oexitHover)){
-                    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION){
+                    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION ||
+                    GlobalVariables::getInstance().getGameState() == IGameState::stateType::MULTISELECTION  ){
                         rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
                         device->setGUIDrawFunction(drawRPS_GUI_Menu);
                     }
@@ -1036,26 +1036,28 @@ void drawRPS_GUI_HUD(){
 
             nk_layout_row_static(GUI, h*0.208, w*0.117, 1);
 
-            int itemID = cameraTarget.getComponent<ItemHolderComponent>().get()->getItemType();
-            switch(itemID){
-                case 0: //RED SHELL
-                        nk_image(GUI, gui::item_red);
-                        break;
-                case 1: //BLUE SHELL
-                        nk_image(GUI, gui::item_blue);
-                        break;
-                case 2: //TRAP
-                        nk_image(GUI, gui::item_banana);
-                        break;
-                case 3: //MUSHROOM
-                        nk_image(GUI, gui::item_mushroom);
-                        break;
-                case 4: //STAR
-                        nk_image(GUI, gui::item_star);
-                        break;
-                default:
-                        nk_image(GUI, gui::item_void);
-                        break;
+            if(&cameraTarget != nullptr){
+                int itemID = cameraTarget.getComponent<ItemHolderComponent>().get()->getItemType();
+                switch(itemID){
+                    case 0: //RED SHELL
+                            nk_image(GUI, gui::item_red);
+                            break;
+                    case 1: //BLUE SHELL
+                            nk_image(GUI, gui::item_blue);
+                            break;
+                    case 2: //TRAP
+                            nk_image(GUI, gui::item_banana);
+                            break;
+                    case 3: //MUSHROOM
+                            nk_image(GUI, gui::item_mushroom);
+                            break;
+                    case 4: //STAR
+                            nk_image(GUI, gui::item_star);
+                            break;
+                    default:
+                            nk_image(GUI, gui::item_void);
+                            break;
+                }
             }
             nk_popup_end(GUI);
 	    }
@@ -1064,22 +1066,25 @@ void drawRPS_GUI_HUD(){
 
             nk_layout_row_static(GUI, h*0.208, w*0.117, 1);
 
-            int position = cameraTarget.getComponent<ScoreComponent>().get()->getPosition();
-            switch(position){
-                case 1: 
-                        nk_image(GUI, gui::number_1);
-                        break;
-                case 2: 
-                        nk_image(GUI, gui::number_2);
-                        break;
-                case 3: 
-                        nk_image(GUI, gui::number_3);
-                        break;
-                case 4: 
-                        nk_image(GUI, gui::number_4);
-                        break;
-                default:
-                        break;
+            if(&cameraTarget != nullptr)
+            {
+                int position = cameraTarget.getComponent<ScoreComponent>().get()->getPosition();
+                switch(position){
+                    case 1: 
+                            nk_image(GUI, gui::number_1);
+                            break;
+                    case 2: 
+                            nk_image(GUI, gui::number_2);
+                            break;
+                    case 3: 
+                            nk_image(GUI, gui::number_3);
+                            break;
+                    case 4: 
+                            nk_image(GUI, gui::number_4);
+                            break;
+                    default:
+                            break;
+                }
             }
             nk_popup_end(GUI);
 	    }
@@ -1088,22 +1093,25 @@ void drawRPS_GUI_HUD(){
 
             nk_layout_row_static(GUI, h*0.175, w*0.084, 1);
 
-            int lap = cameraTarget.getComponent<ScoreComponent>().get()->getLap();
+            if(&cameraTarget != nullptr)
+            {
+                int lap = cameraTarget.getComponent<ScoreComponent>().get()->getLap();
 
-            switch(lap){
-                case 1:
-                        nk_image(GUI, gui::lap_1);
-                        break;
-                case 2:
-                        nk_image(GUI, gui::lap_2);
-                        break;
-                case 3:
-                        nk_image(GUI, gui::lap_3);
-                        break;
-                default:
-                        break;
+                switch(lap){
+                    case 1:
+                            nk_image(GUI, gui::lap_1);
+                            break;
+                    case 2:
+                            nk_image(GUI, gui::lap_2);
+                            break;
+                    case 3:
+                            nk_image(GUI, gui::lap_3);
+                            break;
+                    default:
+                            break;
+                }
             }
-            
+
             nk_popup_end(GUI);
 	    }
 
@@ -1117,20 +1125,22 @@ void drawRPS_GUI_HUD(){
 	    }
 
         for(int i = 3; i >= 0; i--) {
+            if(ObjectManager::getInstance().getObject(25000+i) != nullptr)
+            {
+                glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
 
-            glm::vec3 pos1 = ObjectManager::getInstance().getObject(25000+i).get()->getTransformData().position;
+                if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.89 - pos1.z * h * 0.000175, h*0.66 - pos1.x * h * 0.00017 * 0.5, w*0.2, h*0.5))) {
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.89 - pos1.z * h * 0.000175, h*0.66 - pos1.x * h * 0.00017 * 0.5, w*0.2, h*0.5))) {
+                    nk_layout_row_static(GUI, h*0.021, h*0.021, 1);
 
-                nk_layout_row_static(GUI, h*0.021, h*0.021, 1);
+                    if(i == 0)
+                        nk_image(GUI, gui::dot_player);
+                    else 
+                        nk_image(GUI, gui::dot_enemy);
 
-                if(i == 0)
-                    nk_image(GUI, gui::dot_player);
-                else 
-                    nk_image(GUI, gui::dot_enemy);
-
-                nk_popup_end(GUI);
-	        }
+                    nk_popup_end(GUI);
+                }
+            }
         }
     }
 

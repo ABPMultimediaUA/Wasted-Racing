@@ -149,6 +149,9 @@ void IntroState::swapToClientLobby()
     //Initialize Server IP
     NetworkManager::getInstance().setServerIP(ip);
 
+    //Change GUI value
+    EventManager::getInstance().addEvent(Event {EventType::Game_ClientLobby});
+
     //Initialize client state
     Game::getInstance().setState(IGameState::stateType::CLIENTLOBBY);
 }

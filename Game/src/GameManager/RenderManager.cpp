@@ -108,7 +108,7 @@ void RenderManager::update(float dTime) {
     }
     enter++;
     //Check LoD mesh
-    LoDmesh();
+    //LoDmesh();
 
     //Update camera collision
     //:::>Depends on the player being created, it shouldn't

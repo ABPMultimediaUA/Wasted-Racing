@@ -38,6 +38,15 @@ void MultiMatchState::update(float &accumulatedTime) {
     // dependiendo de quien haya registrado el evento antes. Esta decisión se puede revocar hasta 1 segundo después si se recibe
     //la llamada adecuada. Hacen falta denominadores comunes a los eventos o que se hagan las llamadas en los diferentes sistemas
     //en el momento en que ocurrió. Pero eso significaría llevar un tracking temporal de cada evento hasta un segundo.
+   
+    float maxDTime = GlobalVariables::getInstance().getMaxDTime();
+    if(accumulatedTime > maxDTime)
+    {
+        accumulatedTime = maxDTime;
+    }
+
+    //Render first
+    renderManager->update(accumulatedTime);
 
     //No gelding
     inputManager->update();
@@ -45,13 +54,8 @@ void MultiMatchState::update(float &accumulatedTime) {
     debugManager->update();
     //<___
 
-    float maxDTime = GlobalVariables::getInstance().getMaxDTime();
-    if(accumulatedTime > maxDTime)
-    {
-        accumulatedTime = maxDTime;
-    }
 
-    renderManager->update(accumulatedTime);
+
 
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
@@ -62,7 +66,7 @@ void MultiMatchState::update(float &accumulatedTime) {
     }
 
     //Do before interpolation, since it receives new positions that break the spot
-    networkManager->update();
+    //networkManager->update();
 
     //Always interpolate
     interpolate(accumulatedTime);
@@ -70,8 +74,6 @@ void MultiMatchState::update(float &accumulatedTime) {
 
 void MultiMatchState::updateManagers(float dTime){
     //Input manager has to be the first to be updated
-    inputManager->update();
-
     physicsManager->update(dTime);
 
     sensorManager->update();
