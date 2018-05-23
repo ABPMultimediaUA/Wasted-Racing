@@ -105,6 +105,7 @@ enum EventType {
     Game_Close,
     Game_PlayerSelection,
     Game_LoadingScreen,
+    Game_ClientLobby,
     State_Change,
     //CHOOSE: Choose game type
     Key_Multiplayer_Down,

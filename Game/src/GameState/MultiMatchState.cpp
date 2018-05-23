@@ -19,19 +19,38 @@ void MultiMatchState::init() {
     networkManager  = &NetworkManager::getInstance();   //Initialize Sensor manager
     debugManager    = &DebugManager::getInstance();     //Initialize Debug manager
     
-    Game::getInstance().loadMap();
-
     Game::getInstance().setAccumulatedTime(0);
 }
 
 void MultiMatchState::update(float &accumulatedTime) {
+
+//::::> La predicción de movimiento consiste en corregir los eventos anteriores por unos nuevos, en base a lo que te ha
+    //llegado de la comunicacion con otros individuos. Cada player se encarga de analizar las físicas y la IA de sus propios objetos.
+    //Se pasa esta información al resto de jugadores y estos actualizan los objetos foráneos y etc. Los problemas llegan con 
+    //el retardo de la linea, y las interacciones físicas entre objetos de diferentes sesiones. Entonces el sistema físico tiene
+    //que calcular lo que un juego normal para todos. Eso hasta ahí. Y la decisión de las IA's se puede calcular particularme, pero
+    //las decisiones físicas tienen que ser individuales.
+
+    //AHORA: el problema es el retardo.
+    //SOLUCION: Cada evento que se manda online también lleva la hora del servidor de cuando se mandó. La hora del servidor
+    //es común a todos los jugadores de la sesión. Con eso se comprueba q llamadas llegan primero. ¿pero q llamadas? Las simultáneas de colisión
+    // y eso. Entonces el juego debe de tener un salvaguardado y q se compruebe con este "lag" de fondo, y diga si algo ha chocado o no,
+    // dependiendo de quien haya registrado el evento antes. Esta decisión se puede revocar hasta 1 segundo después si se recibe
+    //la llamada adecuada. Hacen falta denominadores comunes a los eventos o que se hagan las llamadas en los diferentes sistemas
+    //en el momento en que ocurrió. Pero eso significaría llevar un tracking temporal de cada evento hasta un segundo.
 
     //No gelding
     inputManager->update();
     //___>
     debugManager->update();
     //<___
-    
+
+    float maxDTime = GlobalVariables::getInstance().getMaxDTime();
+    if(accumulatedTime > maxDTime)
+    {
+        accumulatedTime = maxDTime;
+    }
+
     renderManager->update(accumulatedTime);
 
     //If time surpassed the loopTime
@@ -50,11 +69,10 @@ void MultiMatchState::update(float &accumulatedTime) {
 }
 
 void MultiMatchState::updateManagers(float dTime){
+    //Input manager has to be the first to be updated
+    inputManager->update();
+
     physicsManager->update(dTime);
-
-    aiManager->update(dTime);
-
-    waypointManager->update(dTime);
 
     sensorManager->update();
 
@@ -62,8 +80,13 @@ void MultiMatchState::updateManagers(float dTime){
     
     scoreManager->update();
 
-    audioManager->update();    
-    
+    audioManager->update();
+
+    EventData data;
+    data.Component      = AudioManager().getInstance().getListenerComponent();
+
+    EventManager::getInstance().addEvent(Event {EventType::Music_MainTheme, data});
+
     //Event manager has to be the last to be updated
     eventManager->update();
 }
@@ -92,5 +115,6 @@ void MultiMatchState::interpolate(float &accumulatedTime) {
 
 
 void MultiMatchState::close() {
-
+    //Game set to no initialized
+    initialized = false;
 }

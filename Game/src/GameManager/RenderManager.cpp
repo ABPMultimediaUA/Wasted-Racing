@@ -1,5 +1,6 @@
 #include "RenderManager.h"
 #include "ParticleManager.h"
+#include "../GlobalVariables.h"
 
 //////////////////////////////////////////////
 //            THINGS TO DO HERE
@@ -98,7 +99,8 @@ void RenderManager::init(int engine) {
 
 void RenderManager::update(float dTime) {
     //Update HUD
-    updateHUD();
+    //updateHUD();
+
     if(enter == 200)
     {
         //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/punk/punk.obj");
@@ -111,12 +113,15 @@ void RenderManager::update(float dTime) {
     //Update camera collision
     //:::>Depends on the player being created, it shouldn't
     
-    //Update camera
-    CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
-    c->update(dTime);
+    //Update camera if there is a player
+    if(&renderFacade->getCameraTarget() != NULL)
+    {
+        CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
+        c->update(dTime);
 
-    //Update blur
-    updateBlur();
+        //Update blur
+        updateBlur();
+    }
 
     //Update debug if debug mode activated
     if(debugState){
@@ -124,13 +129,9 @@ void RenderManager::update(float dTime) {
         updateAIDebug();
         updateCameraDebug();
         updateBattleDebug(dTime);
-    }else{
-        //:::X>my job
-        //:::>Function should be erased and replaced with another one generated here, doing the same thing
-        renderFacade->updateItemIcon();
     }
 
-    renderFacade->updateAnimations(dTime);
+    //renderFacade->updateAnimations(dTime);
 
     particleManager->update();
 }
@@ -150,7 +151,21 @@ void RenderManager::close(){
     //Clear render component list
     renderComponentList.clear();
 
+    //Close particle manager
     particleManager->close();
+}
+
+void RenderManager::fastRestart(){
+    //Clear all interface elements
+    renderFacade->cleanInterface();
+
+    //Clear render component list
+    renderComponentList.clear();
+
+    //Close particle manager
+    particleManager->close();
+
+    //
 }
 
 void RenderManager::splitQuadTree(){

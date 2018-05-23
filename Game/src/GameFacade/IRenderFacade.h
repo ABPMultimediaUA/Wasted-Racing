@@ -320,8 +320,8 @@ protected:
     //Window declaration
     Window window;
     //InputManager declaration
-    InputManager* inputManager;
+    InputManager* inputManager = nullptr;
     //Camera target
-    GameObject* cameraTarget;
+    GameObject* cameraTarget = nullptr;
 
 };

@@ -34,6 +34,7 @@ void drawRPS_GUI_CityName(); //:::> function that is given as parameter to redpa
 void drawRPS_GUI_Countdown(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_AfterMatch(); //:::> function that is given as parameter to redpanda
 void drawRPS_GUI_LoadingScreen(); //:::> function that is given as parameter to redpanda
+void drawRPS_GUI_ClientLobby(); //:::> function that is given as parameter to redpanda
 
 namespace gui {
 
@@ -148,6 +149,7 @@ void addPause(EventData eData);
 void addResult(EventData eData);
 void addLoadingScreen(EventData eData);
 void addSelection(EventData eData);
+void addClientLobby(EventData eData);
 void changeLanguage(EventData eData);
 
 //==============================================================
@@ -198,6 +200,7 @@ void RenderRedPanda::openWindow() {
     EventManager::getInstance().addListener(EventListener {EventType::Match_Race_End, addResult});
     EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeLanguage});
     EventManager::getInstance().addListener(EventListener {EventType::Game_Pause, addPause});
+    EventManager::getInstance().addListener(EventListener {EventType::Game_ClientLobby, addClientLobby});
 
 
 }
@@ -227,7 +230,7 @@ void RenderRedPanda::renderDraw() {
 
 //Add a camera to the game
 void RenderRedPanda::addCamera() {
-
+    //:::> Crying hard-coded
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
     valueY = 0.3;
     sum = 0;
@@ -318,6 +321,7 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     }
 
     //Define position and target
+    //:::> Hardcode I smell
     glm::vec3 target(-pos.x, pos.y+15, pos.z);
     glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
     position = position;
@@ -620,9 +624,16 @@ void RenderRedPanda::updateAnimations(float dTime) {
     
     if(animationMap.find(25000) != animationMap.end()) {
         animationMap[25000]->update(dTime);
-        animationMap[25001]->update(dTime);
-        animationMap[25002]->update(dTime);
-        animationMap[25003]->update(dTime);
+
+        //:::>I made a luis move, because the situation required so
+        if(animationMap.find(25001) != animationMap.end()) 
+            animationMap[25001]->update(dTime);
+
+        if(animationMap.find(25002) != animationMap.end()) 
+            animationMap[25002]->update(dTime);
+
+        if(animationMap.find(25003) != animationMap.end()) 
+            animationMap[25003]->update(dTime);
     }
     else if(animationMap.find(60001) != animationMap.end()) {
         animationMap[60001]->update(dTime);
@@ -713,9 +724,13 @@ void drawRPS_GUI_Menu(){
                 nk_layout_row_dynamic(GUI, h*0.07, 1);
                 nk_spacing(GUI, 1);
                 if (nk_button_image(GUI, gui::text_singleplayer, gui::text_singleplayerHover))
+                {
                     EventManager::getInstance().addEvent(Event {EventType::Key_Singleplayer_Down});
+                }
                 if (nk_button_image(GUI, gui::text_multiplayer, gui::text_multiplayerHover))
+                {
                     EventManager::getInstance().addEvent(Event {EventType::Key_Multiplayer_Down});
+                }
                 if (nk_button_image(GUI, gui::text_options, gui::text_optionsHover)){
                     rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
                     device->setGUIDrawFunction(drawRPS_GUI_Options);
@@ -1171,6 +1186,51 @@ void drawRPS_GUI_Pause(){
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
 }
 
+void drawRPS_GUI_ClientLobby(){
+    
+    Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
+    int w = window.size.x;
+    int h = window.size.y;
+
+        if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+        {
+
+            GUI->style.window.fixed_background = nk_style_item_hide();
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(-13, -5, w+15, h+6))) {
+                nk_layout_row_static(GUI, h, w, 1);
+                nk_image(GUI, gui::pbackground);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.29, 0, w, h))) {
+                nk_layout_row_static(GUI, h, h*0.75, 1);
+                nk_image(GUI, gui::pauseBase);
+                nk_popup_end(GUI);
+            }
+
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.393, h*0.31, w*0.23, h*0.6))) {
+
+                nk_layout_row_dynamic(GUI, h*0.12, 1);
+                if (nk_button_image(GUI, gui::text_menu, gui::text_menuHover)) {
+                    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                    device->setGUIDrawFunction(drawRPS_GUI_Menu);
+                    EventData eData;
+                    eData.Id = IGameState::stateType::INTRO;
+                    EventManager::getInstance().addEvent(Event {EventType::State_Change, eData});
+                }
+                if (nk_button_image(GUI, gui::text_pexit, gui::text_pexitHover))
+                    EventManager::getInstance().addEvent(Event {EventType::Game_Close});
+                nk_popup_end(GUI);
+            }
+            
+		}
+    
+
+	nk_end(GUI);
+	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
+}
+
 void gui::init() {
 
     for(unsigned int i = 0; i < textures.size(); i++) {
@@ -1591,6 +1651,14 @@ void addSelection(EventData eData) {
     device->setGUIDrawFunction(drawRPS_GUI_PlayerSelect);
 
 }
+
+void addClientLobby(EventData eData) {
+
+    rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+    device->setGUIDrawFunction(drawRPS_GUI_ClientLobby);
+
+}
+
 
 void addPause(EventData eData) {
     IGameState::stateType state = GlobalVariables::getInstance().getGameState();

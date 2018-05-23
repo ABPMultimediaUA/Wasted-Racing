@@ -38,6 +38,9 @@
 #include "GameState/PostMatchState.h"
 #include "GameState/ClientLobbyState.h"
 #include "GameState/MultiMatchState.h"
+#include "GameState/MultiSelectionState.h"
+#include "GameState/MultiPreMatchState.h"
+#include "GameState/MultiPostMatchState.h"
 #include "GameState/PauseState.h"
 
 class IntroState;

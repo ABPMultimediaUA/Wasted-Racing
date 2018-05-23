@@ -14,7 +14,7 @@ void ClientLobbyState::init() {
     eventManager   = &EventManager::getInstance();
 
     //Initialize image
-    text1 = renderManager->createText(std::string("... Conectando ..."), glm::vec2(500,500), 255, 0, 0, 255, glm::vec2(300,300), std::string("media/font/Razor_m.png"));
+    //text1 = renderManager->createText(std::string("... Conectando ..."), glm::vec2(500,500), 255, 0, 0, 255, glm::vec2(300,300), std::string("media/font/Razor_m.png"));
 
     //Initialize lobby
     if(!networkManager->getConnected())
@@ -34,9 +34,12 @@ void ClientLobbyState::update(float &accumulatedTime) {
         //Close
         close();
 
+        //Send drawing event
+        EventManager::getInstance().addEvent(Event {EventType::Game_PlayerSelection});
+
         //Change game to online match
         GlobalVariables::getInstance().setOnline(true);
-        Game::getInstance().setState(IGameState::stateType::MULTIMATCH);
+        Game::getInstance().setState(IGameState::stateType::MULTISELECTION);
     }
 
     //Update event

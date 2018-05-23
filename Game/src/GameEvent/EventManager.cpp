@@ -64,7 +64,7 @@ void EventManager::processEvent(Event event){
 }
 
 void EventManager::addListener(EventListener eventListener){
-
+    //Search if the listener already exists
     auto iterator = EventManager::eventListenerMap.find(eventListener.listenerType);
 
     //Check if there's already a list for our listener and if not, create it

@@ -183,6 +183,21 @@ void Game::setState(IGameState::stateType type){
             case IGameState::stateType::MULTIMATCH:
                 globalVariables->setGameState(MultiMatchState::getInstance().type);
                 state = &MultiMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_Start});
+                break;
+            case IGameState::stateType::MULTISELECTION:
+                globalVariables->setGameState(MultiSelectionState::getInstance().type);
+                state = &MultiSelectionState::getInstance();
+                break;
+            case IGameState::stateType::MULTIPREMATCH:
+                globalVariables->setGameState(MultiPreMatchState::getInstance().type);
+                state = &MultiPreMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Start});
+                break;
+            case IGameState::stateType::MULTIPOSTMATCH:
+                globalVariables->setGameState(MultiPostMatchState::getInstance().type);
+                state = &MultiPostMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_End});
                 break;
             case IGameState::stateType::PAUSE:
                 globalVariables->setGameState(PauseState::getInstance().type);

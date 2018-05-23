@@ -83,4 +83,7 @@ private:
     //Update's server time
     float serverTime;
 
+    //Multimatch first time initialization
+    bool initialized = false;
+
 };

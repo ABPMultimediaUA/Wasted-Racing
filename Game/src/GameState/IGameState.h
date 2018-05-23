@@ -12,6 +12,9 @@ public:
         POSTMATCH,      //State after match
         CLIENTLOBBY,    //Client waiting in the lobby for a match
         MULTIMATCH,     //Inside the multiplayer game
+        MULTISELECTION, //Inside the multiplayer selection
+        MULTIPREMATCH,  //Before multiplayer match
+        MULTIPOSTMATCH, //After multiplayer match
         PAUSE           //For when the game is paused
     };
 

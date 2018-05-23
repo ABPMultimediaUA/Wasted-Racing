@@ -4,11 +4,6 @@
 #include "../GlobalVariables.h"
 
 //==============================================
-// Delegate functions
-//==============================================
-void swapSchedulingDelegate(EventData data);
-
-//==============================================
 // MAN FUNCTIONS
 //==============================================
 void MatchState::init() {
@@ -28,17 +23,11 @@ void MatchState::init() {
         scoreManager    = &ScoreManager::getInstance();     //Initialize Score Manager
 
         //Turn scheduling off initially
-        schedulingOn = false;
         schedulingClock = new Clock();
         schedulingClock->init();
 
-        //Key Bindings
-        EventManager::getInstance().addListener(EventListener {EventType::Key_Scheduling_Down, swapSchedulingDelegate});
-
         //Set as initialized
         initialized = true;
-
-        GameObject::Pointer player = ObjectManager::getInstance().getObject(25000);
     }
 
     Game::getInstance().setAccumulatedTime(0);
@@ -127,12 +116,9 @@ void MatchState::interpolate(float &accumulatedTime) {
 }
 
 void MatchState::close() {
-    delete schedulingClock;
-}
+    //Set to no initalized
+    initialized = false;
 
-//==============================================
-// DELEGATE FUNCTIONS
-//==============================================
-void swapSchedulingDelegate(EventData data){
-    MatchState::getInstance().swapScheduling();
+    //delete variables
+    delete schedulingClock;
 }

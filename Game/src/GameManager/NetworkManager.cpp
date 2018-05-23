@@ -1,4 +1,5 @@
 #include "NetworkManager.h"
+#include "../GlobalVariables.h"
 
 
 //////////////////////////////////////////////
@@ -45,6 +46,7 @@ void destroyBlueShellEvent(EventData eData);
 
 void NetworkManager::createPlayer(RakNet::Packet* packet)
 {
+    //Initial variables
     float x, y, z;
     RakNet::BitStream parser(packet->data, packet->length, false);
     parser.IgnoreBytes(1);
@@ -55,7 +57,26 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
     parser.Read(y);
     parser.Read(z);
 
+    //If player exists take its transform data, if not create it
+    if(GlobalVariables::getInstance().getPlayer() == nullptr)
+    {
+        //Set position
+        GameObject::TransformationData t;
+        t.position.x = x;
+        t.position.y = y;
+        t.position.z = z;
+
+        std::cout<<"Jeje: "<<x<<" - "<<y<< " - "<<z<<std::endl;
+
+        //Creation function
+        //:::> Player should be created with the character the player selects
+        ObjectManager::getInstance().createPlayer(t, GlobalVariables::getInstance().getSelectedPlayer(), 0, 25000, 
+                                                PhysicsManager::getInstance().getTerrainFromPos(t.position).get()->getTerrain(), 
+                                                PhysicsManager::getInstance().getTerrainFromPos(t.position));
+    }
+
     auto trans = player.get()->getTransformData();
+
     trans.position.x = x;
     trans.position.y = y;
     trans.position.z = z;
@@ -569,9 +590,16 @@ void NetworkManager::remoteItemBoxCollision(RakNet::Packet* packet)
 
 void NetworkManager::broadcastPosition()
 {
+    //Stream variable
     RakNet::BitStream stream;
+
+    //Player has to exist to send the position
+    if(player.get() == nullptr)
+        return;
+
     auto trans = player.get()->getTransformData();
 
+    //Send our position to all the other players
     stream.Write((unsigned char)ID_REMOTE_PLAYER_MOVEMENT);
     stream.Write((int)server_id);
     stream.Write((float)trans.position.x);

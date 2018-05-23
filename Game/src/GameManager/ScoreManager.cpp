@@ -69,6 +69,7 @@ IComponent::Pointer ScoreManager::createStartLineComponent(GameObject& newGameOb
 //Thirty programmers have died during the development of this method
 void ScoreManager::update()
 {
+    //Initial variables
     std::vector<ScoreComponent::Pointer> ordered;
     std::vector<ScoreComponent::Pointer> auxiliar;
     uint32_t j, pos;
@@ -76,6 +77,7 @@ void ScoreManager::update()
     bool found;
 
     pos=1;
+    //If there is more than one player
     if(players.size()>0)
     {
         for(unsigned int i=0; i<players.size(); i++)
@@ -110,18 +112,23 @@ void ScoreManager::update()
         players=ordered;
     }
 
-    //Update lap and position events for the player
-    //<___
-    uint16_t id = GlobalVariables::getInstance().getPlayer()->getId();
-    auto scoreC = ObjectManager::getInstance().getObject(id).get()->getComponent<ScoreComponent>().get();
-    //___>
+    //Get player for the update, and there is one guardian
+    GameObject* player = GlobalVariables::getInstance().getPlayer();
+    if(player == nullptr)
+        return;
+    
+    //Score component and there is one guardian
+    ScoreComponent* scoreC = player->getComponent<ScoreComponent>().get();
+    if(scoreC == nullptr)
+        return;
+    
     int position = scoreC->getPosition();
     int lap = scoreC->getLap();
 
     if(position > playerPosition){
 
         EventData data;
-        data.Component      = std::static_pointer_cast<IComponent>(ObjectManager::getInstance().getObject(id).get()->getComponent<MoveComponent>());
+        data.Component      = std::static_pointer_cast<IComponent>(player->getComponent<MoveComponent>());
 
         EventManager::getInstance().addEvent(Event {EventType::Score_OnOvertaken, data});
 
@@ -130,7 +137,7 @@ void ScoreManager::update()
     if(position < playerPosition){
 
         EventData data;
-        data.Component      = std::static_pointer_cast<IComponent>(ObjectManager::getInstance().getObject(id).get()->getComponent<MoveComponent>());
+        data.Component      = std::static_pointer_cast<IComponent>(player->getComponent<MoveComponent>());
 
         EventManager::getInstance().addEvent(Event {EventType::Score_OnOvertake, data});
 
@@ -147,14 +154,17 @@ void ScoreManager::update()
         else
             mID = 2;
 
+        //Send event of new lap
         EventData data;
-        data.Component      = std::static_pointer_cast<IComponent>(ObjectManager::getInstance().getObject(id).get()->getComponent<MoveComponent>());
+        data.Component      = std::static_pointer_cast<IComponent>(player->getComponent<MoveComponent>());
         data.Id             = mID;
-
         EventManager::getInstance().addEvent(Event {EventType::Score_OnNewLap, data});
 
+        //Assign player lap to the player
         playerLap = lap;
         
+        //If final lap, send victory event
+        //:::> NO HARDCODING THE NUMBER OF LAPS, take the info from the map info
         if(lap == 4) {
             Game::getInstance().setState(IGameState::stateType::POSTMATCH);
         }
