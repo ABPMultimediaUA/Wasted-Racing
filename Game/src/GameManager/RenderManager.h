@@ -51,11 +51,12 @@ public:
     //==============================================
     // GETTERS AND SETTERS
     //==============================================
-    std::vector<IComponent::Pointer>& getComponentList() { return renderComponentList; } //Component list getter
-    QuadTree& getComponentTree()                         { return renderComponentTree; } //QuadTree getter
-    IRenderFacade* getRenderFacade()                     { return renderFacade;        } //Get render facade functions
-    IComponent::Pointer getCameraComponent()             { return cameraComponent;     } //Camera component getter 
-    void setCameraComponent( IComponent::Pointer cam )   { cameraComponent = cam;      } //and setter
+    std::vector<IComponent::Pointer>& getComponentList()                    { return renderComponentList;       } //Component list getter
+    std::vector<IComponent::Pointer>& getAnimationComponentList()           { return animationComponentList;    } //Component list getter
+    QuadTree& getComponentTree()                                            { return renderComponentTree;       } //QuadTree getter
+    IRenderFacade* getRenderFacade()                                        { return renderFacade;              } //Get render facade functions
+    IComponent::Pointer getCameraComponent()                                { return cameraComponent;           } //Camera component getter 
+    void setCameraComponent( IComponent::Pointer cam )                      { cameraComponent = cam;            } //and setter
 
     //==============================================
     // COMPONENT CREATORS
@@ -74,7 +75,7 @@ public:
     /////////////
     //  LoD
     /////////////
-    void LoDmesh();
+    void LoDmeshAnim();
 
     //==============================================
     // VISUAL EFFECTS
@@ -215,6 +216,7 @@ private:
     //When we start adding components, we add them in a list,
     //Once we've added them all, we split them in a QuadTree structure
     std::vector<IComponent::Pointer>      renderComponentList;
+    std::vector<IComponent::Pointer>      animationComponentList;
     QuadTree                              renderComponentTree;
 
     //Particle manager
