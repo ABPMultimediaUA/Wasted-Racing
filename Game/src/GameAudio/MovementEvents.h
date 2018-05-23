@@ -35,3 +35,36 @@ public:
     virtual void initalizeSound(AudioFMOD*, const EventData&);
 
 };
+
+//===========================================================
+//      ON COLLISION EVENT
+//===========================================================
+class OnCollisionEvent : public ISoundEvent {
+
+public: 
+
+    virtual void initalizeSound(AudioFMOD*, const EventData&);
+
+};
+
+//===========================================================
+//      ON TRAP EVENT
+//===========================================================
+class OnTrapEvent : public ISoundEvent {
+
+public: 
+
+    virtual void initalizeSound(AudioFMOD*, const EventData&);
+
+};
+
+//===========================================================
+//      ON SHELL EVENT
+//===========================================================
+class OnShellEvent : public ISoundEvent {
+
+public: 
+
+    virtual void initalizeSound(AudioFMOD*, const EventData&);
+
+};

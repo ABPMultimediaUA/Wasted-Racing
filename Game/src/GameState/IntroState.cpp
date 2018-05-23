@@ -99,9 +99,16 @@ void IntroState::init() {
 }
 
 void IntroState::update(float &accumulatedTime) {
+
+    EventData data;
+    data.Component      = objectManager->getObject(60000).get()->getComponent<ObjectRenderComponent>();
+
+    EventManager::getInstance().addEvent(Event {EventType::Music_Menu, data});
     
     //Update input manager
     inputManager->update();
+
+    audioManager->update();
 
     //Event manager has to be the last to be updated
     eventManager->update();
