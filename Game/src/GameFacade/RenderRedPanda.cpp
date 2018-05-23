@@ -1209,12 +1209,12 @@ void gui::init() {
     //==========================================================================================
     //  BACKGROUND & OTHERS
     //==========================================================================================
-    gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck1.png");
-    gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck2.png");
-    gui::background[2]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck3.png");
-    gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck4.png");
-    gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck5.png");
-    gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck6.png");
+    gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck1.bmp");
+    gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck2.bmp");
+    gui::background[2]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck3.bmp");
+    gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck4.bmp");
+    gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck5.bmp");
+    gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck6.bmp");
     gui::cityName                       =   gui::loadTexture("media/img/GUI/Other/cityName.png");
     gui::countdown[1]                   =   gui::loadTexture("media/img/GUI/Other/1.png");
     gui::countdown[2]                   =   gui::loadTexture("media/img/GUI/Other/2.png");
