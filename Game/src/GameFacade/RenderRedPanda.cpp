@@ -1118,12 +1118,10 @@ void drawRPS_GUI_Options(){
                 {
                     if(pPoption == rps::PPOption::BLACK_WHITE)
                     {
-                    std::cout<<"1"<<"\n";
                         RenderManager::getInstance().getRenderFacade()->setBlackAndWhite(false);
                     }
                     else if(pPoption == rps::PPOption::DEFAULT)
                     {
-                    std::cout<<"2"<<"\n";
                         RenderManager::getInstance().getRenderFacade()->setBlackAndWhite(true);
                     }
                 }                

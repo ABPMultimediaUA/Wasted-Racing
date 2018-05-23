@@ -126,6 +126,7 @@ public:
     bool getPPActive()                                  {   return postProcessingActive; }
     void setPPActive(bool b)                            {   postProcessingActive = b;    }
     void setPPOption(PPOption  o)                       {   postProcessingOption = o;    }
+    PPOption getPPOption()                              {   return postProcessingOption; }
     void setPPOffset(int  o)                            {   offset = o;                  }
     void setPPBlurPos(float x, float y)                 {   blur_x = x; blur_y = y;      }
     void setPPBlurStrength(float  s)                    {   blur_strength = s;           }
@@ -142,6 +143,7 @@ private:
     void renderLights();
     void renderAllLights();
     void updateActiveLights();
+    void updateActiveNearLights();
     void renderCamera();
     void renderBillboards();
     void renderParticles();

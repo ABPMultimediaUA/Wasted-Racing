@@ -74,8 +74,8 @@ void RedPandaStudio::updateDevice()
 	//Draw the scene normally
 	glUseProgram(scene->getEntity()->getProgramID());
 	renderCamera();
-	updateActiveLights();
-	renderLights();
+	//updateActiveNearLights();
+	renderAllLights();
 
 	if(silhouetteActivated)
 	{
@@ -445,7 +445,6 @@ void RedPandaStudio::initOpenGL()
     GLuint view  = glGetUniformLocation(ProgramID, "ViewMatrix");
 	GLuint mv = glGetUniformLocation(ProgramID, "mvMatrix");
 	GLuint mvp = glGetUniformLocation(ProgramID, "mvpMatrix");
-	GLuint normal = glGetUniformLocation(ProgramID, "normalMatrix");
 	GLuint colorTexture = glGetUniformLocation(ProgramID, "colorTexture");
 	GLuint normalTexture = glGetUniformLocation(ProgramID, "normalTexture");
 	GLuint cp = glGetUniformLocation(ProgramID, "CamPos");
@@ -459,7 +458,6 @@ void RedPandaStudio::initOpenGL()
 	scene->getEntity()->setViewID(view);
 	scene->getEntity()->setModelViewID(mv);
 	scene->getEntity()->setMVPID(mvp);
-	scene->getEntity()->setNormalID(normal);
 	scene->getEntity()->setCamPosition(cp);
 
 	GLuint viewSky = glGetUniformLocation(skyboxID, "ViewMatrix");
@@ -863,7 +861,7 @@ void RedPandaStudio::updateActiveLights()
 		glm::vec3 p = lightPos - pos;
 
 		//We are not doing the square root because we are comparing all the distances squared, so we don't need it and it's avoidable
-		float distance = (p.x * p.x) + (p.y * p.y) + (p.z * p.z);
+		float distance = (p.x * p.x) + (p.z * p.z);
 		int lowestLight = 0;
 		
 		//Then we repeat the calculations for all the lights
@@ -874,13 +872,69 @@ void RedPandaStudio::updateActiveLights()
 			lightPos = glm::vec3(mat[3][0], mat[3][1], mat[3][2]);
 			p = lightPos - pos;
 			
-			float d = (p.x * p.x) + (p.y * p.y) + (p.z * p.z);
+			float d = (p.x * p.x) + (p.z * p.z);
 			if(d < distance)
 			{
 				lowestLight = i;
 			}
 		}
 		currentLight = lowestLight;
+	}
+}
+
+//Updates the active lights by only looking the next and previous light (assuming they are ordered)
+void RedPandaStudio::updateActiveNearLights()
+{
+	if(lights.size() > 0)
+	{
+		//At first, we initialice the camera position
+		glm::mat4 v = scene->getEntity()->viewMatrix();
+		glm::vec3 pos = glm::vec3(-v[3][2], -v[3][1], -v[3][0]);
+		
+		//And then, we check with the current light light position and save the distance
+		glm::mat4 mat = glm::mat4(1.0);
+		calculateNodeTransform(lights[currentLight], mat);
+		glm::vec3 lightPos = glm::vec3(-mat[3][0], mat[3][1], -mat[3][2]);
+		glm::vec3 p = lightPos - pos;
+
+		std::cout << "LightPos: " << lightPos.x << " - " << lightPos.y << " - " << lightPos.z << std::endl;
+		//We are not doing the square root because we are comparing all the distances squared, so we don't need it and it's avoidable
+		float distance = (p.x * p.x) + (p.z * p.z);
+		int lowestLight = 0;
+
+		int nextLight = currentLight + 1;
+		int prevLight = currentLight - 1;
+		if(prevLight < 0)
+		{
+			prevLight = lights.size() -1;
+		}
+		if(nextLight >= lights.size())
+		{
+			nextLight = 0;
+		}
+		//First we check with previous light
+		mat = glm::mat4(1.0);
+		calculateNodeTransform(lights[prevLight], mat);
+		lightPos = glm::vec3(-mat[3][0], mat[3][1], -mat[3][2]);
+		p = lightPos - pos;
+
+		float d = (p.x * p.x) + (p.z * p.z);
+		if(d < distance)
+		{
+			currentLight = prevLight;
+			distance = d;
+		}
+		//Then we check with next light
+		mat = glm::mat4(1.0);
+		calculateNodeTransform(lights[nextLight], mat);
+		lightPos = glm::vec3(-mat[3][0], mat[3][1], -mat[3][2]);
+		p = lightPos - pos;
+
+		d = (p.x * p.x) + (p.z * p.z);
+		if(d < distance)
+		{
+			currentLight = nextLight;
+		}
 	}
 }
 
@@ -902,6 +956,7 @@ void RedPandaStudio::renderLights()
 	{
 		maxLight = maxLight - lights.size();
 	}
+	std::cout << "CurrentLight: " << currentLight << " maxLight: " << maxLight << " minLight: " << minLight << std::endl;
 	if(minLight > maxLight)
 	{	
 		//And finally, depending of the special cases, we render the scene with 2 fors or one, but always with the same number of lights	

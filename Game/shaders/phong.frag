@@ -110,12 +110,12 @@ void calculatePointLights()
 
         if(specular > 0.0)
         {
-            v_Color += vec4(specular * light[i].intensity) * vec4(material.ks, 1.0);
+            //v_Color += vec4(specular * light[i].intensity) * vec4(material.ks, 1.0);
         }
 
     }
     
-    v_Color *= visibility;
+    //v_Color *= visibility;
 }
 
 void calculateSpotLights()

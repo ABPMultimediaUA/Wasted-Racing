@@ -48,7 +48,6 @@ public:
     static void setViewID(GLuint v)                 {   viewID = v;          }
     static void setModelViewID(GLuint mv)           {   modelViewID = mv;    }
     static void setMVPID(GLuint mvp)                {   mvpID = mvp;         }
-    static void setNormalID(GLuint n)               {   normalID = n;        }
     static void setCamPosition(GLuint c)            {   camPosition = c;     }
     static void setFrustumCulling(bool b)           {   frustumFlag = b;     }
 
@@ -58,7 +57,6 @@ public:
     static GLuint getViewID()                   {   return viewID;           }
     static GLuint getModelViewID()              {   return modelViewID;      }
     static GLuint getMVPID()                    {   return mvpID;            }
-    static GLuint getNormalID()                 {   return normalID;         }
     static GLuint getCamPosition()              {   return camPosition;      }
     static bool getFrustumCulling()             {   return frustumFlag;      }
 
@@ -70,7 +68,6 @@ protected:
     static GLuint viewID;
     static GLuint modelViewID;
     static GLuint mvpID;
-    static GLuint normalID;
     static GLuint camPosition;
 
     //Graphic variables to control optional techniques
