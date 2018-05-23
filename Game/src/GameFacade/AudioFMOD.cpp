@@ -162,16 +162,33 @@ void AudioFMOD::loadBanks() {
 
     if(lang == 0){
 
-        LOAD_EVENT(CharacterES, CharacterES);
-        LOAD_EVENT(Music, Music);
+        LOAD_EVENT(CharacterEN, CharacterEN);
 
     }
     else if (lang == 1){
 
         LOAD_EVENT(CharacterES, CharacterES);
-        LOAD_EVENT(Music, Music);
 
     }
+
+    LOAD_EVENT(Music, Music/Music_Game);
+    LOAD_EVENT(Music, Music/Music_Menu);
+    LOAD_EVENT(Music, Music/Music_Victory);
+    LOAD_EVENT(Music, Music/Music_Defeat);
+    
+    LOAD_EVENT(Items, Items/Item_Trap);
+    LOAD_EVENT(Items, Items/Item_Shell);
+    
+    LOAD_EVENT(Movement, Movement/Jump);
+    LOAD_EVENT(Movement, Movement/Slide);
+    LOAD_EVENT(Movement, Movement/Collision);
+    LOAD_EVENT(Other, Movement/Skate);
+    
+    LOAD_EVENT(Other, Other/Position_Change);
+    LOAD_EVENT(Other, Other/Lap_Last);
+    LOAD_EVENT(Other, Other/Lap_New);
+    LOAD_EVENT(Other, Other/Menu_Selection);
+    LOAD_EVENT(Other, Other/Menu_PlayerSelection);
 
 }
 void AudioFMOD::unloadBanks() {

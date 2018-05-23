@@ -4,9 +4,6 @@
         <property name="uiMaxMarkerTracksVisible">
             <value>16</value>
         </property>
-        <relationship name="selectables">
-            <destination>{8e5e2716-4134-4ef3-b3e2-256f34852122}</destination>
-        </relationship>
         <relationship name="uiLastParameterSelection">
             <destination>{571a0189-591f-491b-bb15-45ceee562748}</destination>
         </relationship>
@@ -27,7 +24,7 @@
     <object class="GroupTrack" id="{be94cdd3-01f8-4164-8c13-a9aa273ec66b}"/>
     <object class="Timeline" id="{571a0189-591f-491b-bb15-45ceee562748}">
         <property name="uiLastRulerScaleRatio">
-            <value>0.022479784366576817</value>
+            <value>0.016981132075471694</value>
         </property>
     </object>
     <object class="ParameterProxy" id="{314016e3-b3f2-40e2-a162-aefa610a155f}">
@@ -35,14 +32,9 @@
             <value>0.0024610336341263331</value>
         </property>
     </object>
-    <object class="ParameterProxy" id="{69fdad7d-0d0c-4035-8635-e5dc6bdf7cae}">
-        <property name="uiLastRulerScaleRatio">
-            <value>0.00082034454470877774</value>
-        </property>
-    </object>
     <object class="ParameterProxy" id="{d5da9c1b-dd65-49a8-85a4-d3b74d3ca35a}">
         <property name="uiLastRulerScaleRatio">
-            <value>0.0073831009023789989</value>
+            <value>0.0065627563576702219</value>
         </property>
     </object>
     <object class="EventMixerMaster" id="{43178f79-72e6-4573-8e52-fb13a91229e3}">
@@ -103,6 +95,7 @@
     <object class="SingleSound" id="{970a5a28-b448-4487-b7be-edebd321f31d}"/>
     <object class="MultiSound" id="{34d95306-dcad-454a-bee9-eb9e152893c2}"/>
     <object class="MultiSound" id="{3b8fc7a0-76a7-42ab-872f-ba77c38b2287}"/>
+    <object class="SingleSound" id="{8887de9c-9523-41ac-a090-c50f59d95024}"/>
     <object class="EventMixerGroup" id="{8cfb75d5-b6f5-4ee5-b120-e770ebad353b}"/>
     <object class="NamedMarker" id="{68e8b05c-f86a-4aa2-9ea0-8066d20d0916}"/>
     <object class="NamedMarker" id="{d169870b-d942-4631-a3dd-2456a4219aae}"/>
