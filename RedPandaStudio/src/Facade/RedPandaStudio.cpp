@@ -884,6 +884,26 @@ void RedPandaStudio::updateActiveLights()
 	}
 }
 
+void RedPandaStudio::updateActiveNearLights()
+{
+	if(lights.size() > 0)
+	{
+		//At first, we initialice the camera position
+		glm::mat4 v = scene->getEntity()->viewMatrix();
+		glm::vec3 pos = glm::vec3(-v[3][2], -v[3][1], -v[3][0]);
+		
+		//And then, we check with the current light light position and save the distance
+		glm::mat4 mat = glm::mat4(1.0);
+		calculateNodeTransform(lights[currentLight], mat);
+		glm::vec3 lightPos = glm::vec3(mat[3][0], mat[3][1], mat[3][2]);
+		glm::vec3 p = lightPos - pos;
+
+		//We are not doing the square root because we are comparing all the distances squared, so we don't need it and it's avoidable
+		float distance = (p.x * p.x) + (p.y * p.y) + (p.z * p.z);
+		int lowestLight = 0;
+	}
+}
+
 //Render a selected number of lights in the scene. For a correct behaviour, we are assuming all the lights in the
 //scene are ordered and are correlative to each other. This kind of optimization is needed because we don't have a quadtree
 void RedPandaStudio::renderLights() 

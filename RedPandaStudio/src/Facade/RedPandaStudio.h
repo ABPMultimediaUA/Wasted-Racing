@@ -142,6 +142,7 @@ private:
     void renderLights();
     void renderAllLights();
     void updateActiveLights();
+    void updateActiveNearLights();
     void renderCamera();
     void renderBillboards();
     void renderParticles();
