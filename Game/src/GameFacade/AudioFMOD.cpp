@@ -192,22 +192,18 @@ void AudioFMOD::loadBanks() {
 
 }
 void AudioFMOD::unloadBanks() {
-
+    
     for(auto event : soundEvents)         
         delete event.second;
-
+        
     soundEvents.clear();
-
-    for(auto description : eventDescriptions)
-        ERRCHECK( FMOD_Studio_EventDescription_ReleaseAllInstances(description.second) );
-
+    
     eventDescriptions.clear();
-
+    
     for(auto bank : banks)
         ERRCHECK( FMOD_Studio_Bank_Unload(bank.second) );
-
+        
     banks.clear();
-    
 }
 
 //Inserts a new event if it doesn't exist
