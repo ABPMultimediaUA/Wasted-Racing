@@ -73,6 +73,8 @@ void RenderManager::init(int engine) {
 
     particleManager = &ParticleManager::getInstance();
     particleManager->init();
+
+    activeBlur = false;
  
 }
 
@@ -85,8 +87,11 @@ void RenderManager::update(float dTime) {
         c->update(dTime);
 
         //Update blur
-        updateBlur();
+        if(activeBlur == true){
+            updateBlur();
+        }
     }
+    
 
     //Update debug if debug mode activated
     if(debugState){
@@ -147,6 +152,20 @@ void RenderManager::updateBlur()
     renderFacade->setBlurEffect(c->getBlurActivation());
     renderFacade->setBlurIntensity(1.3 * c->getBlurFactor());
     renderFacade->setBlurRadius(0.5);
+}
+
+void RenderManager::setActiveBlur(bool b)
+{
+    if(b == false)
+    {
+        renderFacade->setPostProcessingOption(rps::PPOption::DEFAULT);
+        renderFacade->setBlurEffect(false);
+    }
+    else
+    {
+        renderFacade->setPostProcessingOption(rps::PPOption::BLUR);
+    }
+    activeBlur = b;
 }
 
 //==============================================

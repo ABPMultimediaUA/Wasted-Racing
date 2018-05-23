@@ -117,6 +117,8 @@ public:
     TNode* getSceneRoot()                               {   return scene;                }
     ResourceManager* getResourceManager()               {   return resourceManager;      }
     SDL_GLContext* getContext()                         {   return context;              }  
+    bool getSilhouette()                                {   return silhouetteActivated;  }
+
 
     //////////////////////////////
     //  SETTERS
@@ -131,11 +133,13 @@ public:
     bool getPPActive()                                  {   return postProcessingActive; }
     void setPPActive(bool b)                            {   postProcessingActive = b;    }
     void setPPOption(PPOption  o)                       {   postProcessingOption = o;    }
+    PPOption getPPOption()                              {   return postProcessingOption; }
     void setPPOffset(int  o)                            {   offset = o;                  }
     void setPPBlurPos(float x, float y)                 {   blur_x = x; blur_y = y;      }
     void setPPBlurStrength(float  s)                    {   blur_strength = s;           }
     void setPPBlurDist(float  d)                        {   blur_dist = d;               }
-    void setPPNeonFactor(float  n)                      {   neonFactor = n;              }
+    void setPPNeonFactor(float  n)                      {   neonFactor = n;              }   
+    
 
 private: 
 

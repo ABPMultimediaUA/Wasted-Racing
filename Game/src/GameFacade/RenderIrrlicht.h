@@ -225,6 +225,15 @@ public:
     //Set the current postprocessing option to render
     virtual void setPostProcessingOption(int o) {};
     
+    //Set the scene to black and white
+    virtual void setBlackAndWhite(bool b){};
+
+    //Set the scene to neon visual
+    virtual void setNeon(bool b){};
+
+    //Set the neon factor
+    virtual void setNeonFactor(float n){};
+
     //Set the blur effect
     virtual void setBlurEffect(bool b){};
 
@@ -236,6 +245,12 @@ public:
 
     //Set the blur effect radius
     virtual void setBlurRadius(float r){};
+
+    virtual void setBackface(float r){};
+    virtual bool getBackface(){};
+
+    virtual void setFrsutum(float r){};
+    virtual bool getFrustum(){};
     
 private: 
     //==============================================================

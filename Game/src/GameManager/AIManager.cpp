@@ -433,6 +433,12 @@ void AIManager::calculateLoD(GameObject AI, float dTime)
     int scorePlayer = player->getComponent<ScoreComponent>()->getPosition();
     int scoreAI = AIObject->getComponent<ScoreComponent>()->getPosition();
 
+    auto lod = AIObject->getComponent<MoveComponent>()->getLodActive();
+    if(lod == false)
+    {
+        AIObject->getComponent<MoveComponent>()->setLodActive(true);
+    }
+
     auto trans = AIObject->getTransformData();
     AIObject->getComponent<CollisionComponent>()->setKinetic(false);
 
@@ -492,10 +498,21 @@ void AIManager::updateAISpeed()
 
     for(int i = 0; i < objectsAI.size(); i++)
     {
+        auto move = objectsAI[i]->getGameObject().getComponent<MoveComponent>();
+
+        auto lod = move->getLodActive();
+        if(lod == true)
+        {
+            move->setLodActive(false);
+            LAPAL::movementData mData = move->getMovemententData();
+            auto maxSpeed = mData.max_vel;
+            move->changeVel(maxSpeed);
+            move->setLodActive(false);
+        }
+
         if(objectsAI[i]->getGameObject().getComponent<ScoreComponent>() != nullptr)
         {
             int scoreAI = objectsAI[i]->getGameObject().getComponent<ScoreComponent>()->getPosition();
-            auto move = objectsAI[i]->getGameObject().getComponent<MoveComponent>();
             float real_max_vel = move->getMovemententData().real_max_vel;
             
             if(move->getMovemententData().boost == false)

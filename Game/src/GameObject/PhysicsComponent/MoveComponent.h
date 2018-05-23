@@ -68,6 +68,8 @@ public:
 	void 				setMovementData(LAPAL::movementData data) 	{ 	mData = data;   		}
 	void 				setMass(const float newMass)				{ 	mass = newMass; 		}
 	void				setTerrain(LAPAL::plane3f p) 				{ 	terrain = p;			}
+	bool 				getLodActive()								{	return lodActive;		}	
+	void 				setLodActive(bool b)						{	lodActive = b;			}	
 
 private:
     //==========================================
@@ -90,5 +92,6 @@ private:
 	bool itemThrown = false;
 	bool isAscending = false;
 	int item = -1;
+	bool lodActive = false;
 
 };

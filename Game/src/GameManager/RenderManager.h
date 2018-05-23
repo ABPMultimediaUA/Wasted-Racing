@@ -195,6 +195,7 @@ public:
     bool getLapBattle()                                {          return lapB;              }
     int getAINumberBattle()                            {          return AIDebugB;          }
     std::vector<GameObject> getAIsBattle()             {          return AIDebugPointB;     }
+    bool getActiveBlur()                               {          return activeBlur;        }
     
     //==============================================================
     // VISUAL EFFECTS
@@ -204,7 +205,8 @@ public:
     void setBlurOrigin(float x, float y);  //Sets the blur origin in X-Y coordinates of the screen
     void setBlurIntensity(float i);        //Sets the blur intensity
     void setBlurRadius(float r);           //Sets the radius of pixels the blur takes to calculate it
-
+    void setActiveBlur(bool b);
+    
 private:
     //==============================================================
     // PRIVATE DATA
@@ -273,4 +275,7 @@ private:
     bool wait = false;
     
     int enter = 0;
+
+    //Blur active
+    bool activeBlur;
 };
