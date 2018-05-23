@@ -851,7 +851,7 @@ void RedPandaStudio::renderLights()
 	int maxLight = currentLight + nLightsForward;
 	int minLight = currentLight - nLightsBack;
 	int pointer = 0;
-	std::cout << "current: " << currentLight << " max: " << maxLight << " min: " << minLight << std::endl;
+	//std::cout << "current: " << currentLight << " max: " << maxLight << " min: " << minLight << std::endl;
 
 	if(minLight < 0)
 	{

@@ -3,6 +3,16 @@
 #include "IGameState.h"
 #include "../Game.h"
 
+#include <iostream>
+#include <csound/csound.hpp>
+#include <string>
+#include <vector>
+#include <csound/csPerfThread.hpp>
+#include <stdlib.h>  
+#include <time.h>  
+#include <stdio.h>
+#include <climits>
+
 class PreMatchState : public IGameState {
 
 public: 
@@ -33,6 +43,23 @@ public:
 
 private:
 
+    struct track {
+    uint8_t channel;
+    uint8_t program;
+    uint8_t maxTone;
+    uint8_t minTone;
+    uint8_t noteSize;
+    float   probability;
+    float*** notes;
+    };
+
+    struct trackDuration {
+        float currentDuration;
+        float cummulatedDuration;
+        float trackSilence;
+        float trackPlay;
+    };
+
     //==============================================================
     // Private data
     //==============================================================
@@ -46,6 +73,15 @@ private:
     ObjectManager* objectManager;
     //Audio Manager
     AudioManager* audioManager;
+    
+    #ifdef __linux__
+    std::vector<track*> tracks;
+    Csound* csound = nullptr;
+    CsoundPerformanceThread* perfThread = nullptr;
+    #endif
+
+    void getNextNote(const track& newTrack, uint8_t & lastNote, float & duration);
+    void playCsound(const char* path, int duration, int seed);
 
     glm::vec3 cameraPositions[6];   //[0],[1] initial target/position
                                     //[2],[3] final target/position

@@ -55,6 +55,7 @@ void shootOnSlide(EventData e);
 void shootOnJump(EventData e);
 void shootOnTrap(EventData e);
 void shootOnShell(EventData e);
+void shootOnPlayerSelect(EventData e);
 
 
 
@@ -100,6 +101,7 @@ void AudioFMOD::openAudioEngine(int lang) {
     EventManager::getInstance().addListener(EventListener {EventType::Trap_Create, shootOnTrap});
     EventManager::getInstance().addListener(EventListener {EventType::BlueShell_Create, shootOnShell});
     EventManager::getInstance().addListener(EventListener {EventType::RedShell_Create, shootOnShell});
+    EventManager::getInstance().addListener(EventListener {EventType::Player_Select, shootOnPlayerSelect});
 
     //Game veriables
     worldUnits = 0.05;
@@ -232,6 +234,11 @@ bool AudioFMOD::existsSoundEvent(std::string name) {
     if(soundEvents.find(name) == soundEvents.end())
         return false;
     return true;
+}
+
+void AudioFMOD::stop(std::string name) {
+    if(soundEvents.find(name) != soundEvents.end())
+        soundEvents[name]->stop();
 }
 
 //==============================================================================================================================
@@ -368,6 +375,13 @@ void shootOnMusicMenu(EventData e) {
 void shootOnMusicFinish(EventData e) {
     
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "MusicFinishEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootOnPlayerSelect(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnPlayerSelectEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
   

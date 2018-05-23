@@ -139,7 +139,7 @@ int main(int argc, char** argv) {
 
                     //Initial count of notes and durations ocurrences
                     if(l == 0)
-                        prC[j][k][l] = 1;
+                        prC[j][k][l] = 0;
                     else 
                         prC[j][k][l] = 1;
                 }

@@ -12,7 +12,7 @@ void ISoundEvent::start()
 //Stop sound inmediately 
 void ISoundEvent::stop()
 {
-
+    FMOD_Studio_EventInstance_Stop(soundInstance, FMOD_STUDIO_STOP_MODE::FMOD_STUDIO_STOP_IMMEDIATE);
 }
 
 //Pause the sound

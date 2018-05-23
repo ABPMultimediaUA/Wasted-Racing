@@ -68,3 +68,14 @@ public:
     virtual void initalizeSound(AudioFMOD*, const EventData&);
 
 };
+
+//===========================================================
+//      ON PLAYER SELECT EVENT
+//===========================================================
+class OnPlayerSelectEvent : public ISoundEvent {
+
+public: 
+
+    virtual void initalizeSound(AudioFMOD*, const EventData&);
+
+};

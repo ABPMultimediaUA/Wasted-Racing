@@ -72,7 +72,7 @@ void MusicMenuEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event
         emitter = std::weak_ptr<IComponent>(event.Component);
         audioFMOD->insertSoundEvent(name, (ISoundEvent*)this);
 
-        sVolume(0.8);
+        sVolume(0.3);
     }
 
 }
