@@ -124,7 +124,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     //Get item
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = 3;//itemHolder->getItemType();
+    int random = itemHolder->getItemType();
 
     //-----------------------
     //Generate the right item
@@ -134,14 +134,16 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
     {
         //Set item to no item
         itemHolder->setItemType(-1);
-
-        ////Send event of creation
-        EventData eData;
-        EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, eData});
         
         //Create item and initialize it
         auto component = createRedShell(obj, IItemComponent::InstanceType::LOCAL );
         std::dynamic_pointer_cast<ItemRedShellComponent>(component)->init();     
+
+        ////Send event of creation
+        EventData eData;
+        eData.Component = component;
+        EventManager::getInstance().addEvent(Event {EventType::RedShell_Create, eData});
+
         return component;
     }
 
@@ -151,14 +153,16 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         //Set item to no item
         itemHolder->setItemType(-1);
 
-        ////Send event of creation
-        EventData eData;
-        EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, eData});
-
         //Create item and initialize it
         auto component = createBlueShell(obj, IItemComponent::InstanceType::LOCAL);
         float actualVector = obj.getComponent<PathPlanningComponent>()->getLastPosVector();
         std::dynamic_pointer_cast<ItemBlueShellComponent>(component)->init(actualVector);
+
+        ////Send event of creation
+        EventData eData;
+        eData.Component = component;
+        EventManager::getInstance().addEvent(Event {EventType::BlueShell_Create, eData});
+
         return component;
     }
 
@@ -168,12 +172,15 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
         //Set item to no item
         itemHolder->setItemType(-1);
 
-        //Send event of creation
+        auto item = createTrap(obj, IItemComponent::InstanceType::LOCAL);
+
+        ////Send event of creation
         EventData eData;
+        eData.Component = item;
         EventManager::getInstance().addEvent(Event {EventType::Trap_Create, eData});
 
         //Return initialization of item
-        return createTrap(obj, IItemComponent::InstanceType::LOCAL);
+        return item;
     }
 
     //Mushroom item

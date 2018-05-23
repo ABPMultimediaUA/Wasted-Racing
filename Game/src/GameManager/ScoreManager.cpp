@@ -140,8 +140,10 @@ void ScoreManager::update()
 
         uint16_t mID = 0;
 
-        if(lap == 2 || lap == 3)
+        if(lap == 2)
             mID = 0;
+        else if ( lap == 3 )
+            mID = 4;
         else if(lap > 3 && playerPosition < 4)
             mID = 1;
         else

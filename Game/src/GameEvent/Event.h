@@ -105,6 +105,7 @@ enum EventType {
     Game_Close,
     Game_PlayerSelection,
     Game_LoadingScreen,
+    Game_Select,
     State_Change,
     //CHOOSE: Choose game type
     Key_Multiplayer_Down,
@@ -127,6 +128,8 @@ enum EventType {
     Score_OnOvertaken,
     //MUSIC: Music related events
     Music_MainTheme,
+    Music_Menu,
+    Music_Finish,
     //PARTICLES: Particle related events
     Particles_SmokeON,
     Particles_SmokeOFF,
@@ -134,6 +137,11 @@ enum EventType {
     Global_ChangeVolume,
     Global_ChangeLanguage,
     Global_ChangeFullscreen,
+    //PLAYER: Player relared events
+    Player_Speed,
+    Player_Slide,
+    Player_Jump,
+    Player_Select,
     //Idle event
     Idle
 };

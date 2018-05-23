@@ -83,7 +83,7 @@ void RenderManager::init(int engine) {
     RenderManager::getInstance().getRenderFacade()->setClipping(false);
 
     //Init distance Level of Detail 
-    GlobalVariables::getInstance().setDistanceLoD(0);
+    GlobalVariables::getInstance().setDistanceLoD(500);
 
     createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
 
@@ -93,7 +93,7 @@ void RenderManager::init(int engine) {
     //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
     particleManager = &ParticleManager::getInstance();
     //particleManager->init();
-
+ 
 }
 
 void RenderManager::update(float dTime) {
@@ -106,7 +106,7 @@ void RenderManager::update(float dTime) {
     }
     enter++;
     //Check LoD mesh
-    LoDmesh();
+    //LoDmeshAnim();  //Not working
 
     //Update camera collision
     //:::>Depends on the player being created, it shouldn't
@@ -293,6 +293,7 @@ IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& ne
     newGameObject.addComponent(component);
 
     renderFacade->addAnimation(component.get());
+    animationComponentList.push_back(component);
 
     return component;
 }
@@ -1135,27 +1136,28 @@ void RenderManager::cleanVI()
 //  LoD
 /////////////
 
-void RenderManager::LoDmesh()
+void RenderManager::LoDmeshAnim()
 {
 
     float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
 
     if(distanceLoD != 0)
     {
-        for(unsigned int i = 0; i < renderComponentList.size(); i++)
+        for(unsigned int i = 0; i < animationComponentList.size(); i++)
         {
-            auto component = RenderManager::getInstance().getComponentList()[i];
-            auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
+            auto component = RenderManager::getInstance().getAnimationComponentList()[i];
+            //auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
             auto animationObject = std::dynamic_pointer_cast<AnimationRenderComponent>(component).get();
 
-            if(renderObject != nullptr)
+            if(animationObject != nullptr)
             {
-                auto shape = renderObject->getObjectShape();
-                if(shape == ObjectRenderComponent::Shape::Mesh)
-                {
-                    auto object = renderObject->getGameObject();
+                            std::cout<<"si"<<"\n";
+                //auto shape = renderObject->getObjectShape();
+                //if(shape == ObjectRenderComponent::Shape::Mesh)
+                //{
+                    auto object = animationObject->getGameObject();
                     auto positionObject = object.getTransformData().position;
-                    auto positionPlayer = InputManager::getInstance().getComponent()->getGameObject().getTransformData().position;
+    /*                auto positionPlayer = InputManager::getInstance().getComponent()->getGameObject().getTransformData().position;
                     auto distance = (positionObject.x - positionPlayer.x) * (positionObject.x - positionPlayer.x) +
                                     (positionObject.y - positionPlayer.y) * (positionObject.y - positionPlayer.y) +
                                     (positionObject.z - positionPlayer.z) * (positionObject.z - positionPlayer.z);
@@ -1164,39 +1166,41 @@ void RenderManager::LoDmesh()
 
                     if((distance > distanceLoD*distanceLoD && distance <= (distanceLoD*distanceLoD)*2) && polyMesh != AnimationRenderComponent::Poly::Medium)
                     {
-                        auto name = renderObject->getName();
+                        /*auto name = renderObject->getName();
                         auto folder = renderObject->getFolder();
                         std::string newMesh = "media/mesh/" + folder + "/" + folder + "1.obj";
                         bool m = renderFacade->changeMesh(object.getId(), newMesh);
                         if(m == true)
                         {
                             renderObject->setMesh(newMesh.c_str());
-                        }
-                        animationObject->setPolyMesh(AnimationRenderComponent::Poly::Medium);
+                        }*/
+ /*                       animationObject->setPolyMesh(AnimationRenderComponent::Poly::Medium);
+                            std::cout<<"1"<<"\n";
                     }  
-                    else if((distance > ((distanceLoD*distanceLoD)*2)) && polyMesh != AnimationRenderComponent::Poly::Low)
+                    /*else*/ /*if((distance > ((distanceLoD*distanceLoD)*2)) && polyMesh != AnimationRenderComponent::Poly::Low)
                     {
-                        auto name = renderObject->getName();
+                        /*auto name = renderObject->getName();
                         auto folder = renderObject->getFolder();
                         std::string newMesh = "media/mesh/" + folder + "/" + folder + "2.obj";
                         bool m = renderFacade->changeMesh(object.getId(), newMesh);
                         if(m == true)
                         {
                             renderObject->setMesh(newMesh.c_str());
-                        }
-                        animationObject->setPolyMesh(AnimationRenderComponent::Poly::Low);
+                        }*/
+  /*                      animationObject->setPolyMesh(AnimationRenderComponent::Poly::Low);
+                            std::cout<<"2"<<"\n";
                     }  
-                    else if(distance <= distanceLoD*distanceLoD && polyMesh != AnimationRenderComponent::Poly::High)
+                    /*else*/ /*if(distance <= distanceLoD*distanceLoD && polyMesh != AnimationRenderComponent::Poly::High)
                     {
-                        auto name = renderObject->getName();
+                        /*auto name = renderObject->getName();
                         auto folder = renderObject->getFolder();
                         std::string newMesh = "media/mesh/" + folder + "/" + name;
                         bool m = renderFacade->changeMesh(object.getId(), newMesh);
                         if(m == true)
                         {
                             renderObject->setMesh(newMesh.c_str());
-                        }
-                        animationObject->setPolyMesh(AnimationRenderComponent::Poly::High);
+                        }*/
+   /*                     animationObject->setPolyMesh(AnimationRenderComponent::Poly::High);
 
                         //Change to maxSpeed when we return to high poly
                         auto moveComponent = object.getComponent<MoveComponent>();
@@ -1204,9 +1208,10 @@ void RenderManager::LoDmesh()
                         {
                             auto maxSpeed = moveComponent->getMovemententData().max_vel;
                             object.getComponent<MoveComponent>()->changeVel(maxSpeed);
+                            std::cout<<"3"<<"\n";
                         }
                     }
-                }
+                //}*/
             }
         }
     }
