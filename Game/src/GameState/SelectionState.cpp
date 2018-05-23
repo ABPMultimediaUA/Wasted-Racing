@@ -190,6 +190,7 @@ void addAI(int selectedPlayer)
     uint16_t id;
 
     std::vector<glm::vec3> scales;
+    std::vector<glm::vec3> positions;
 
     int pl1, pl2, pl3;
 
@@ -200,6 +201,12 @@ void addAI(int selectedPlayer)
         scales.push_back(glm::vec3(1.65,1.65,1.65));
         scales.push_back(glm::vec3(1.1,1.1,1.1));
         scales.push_back(glm::vec3(0.7,0.7,0.7));
+
+        positions.push_back(glm::vec3(-80,-2.5,-30));
+        positions.push_back(glm::vec3(-80,-2.5,-0));
+        positions.push_back(glm::vec3(-80,-2.5,-15));
+        positions.push_back(glm::vec3(-80,-2.5,-45));
+        
     } else if (selectedPlayer == 1) {
         pl1 = 0; pl2 = 2; pl3 = 3;
 
@@ -207,6 +214,12 @@ void addAI(int selectedPlayer)
         scales.push_back(glm::vec3(1.65,1.65,1.65));
         scales.push_back(glm::vec3(1.1,1.1,1.1));
         scales.push_back(glm::vec3(0.7,0.7,0.7));
+
+        positions.push_back(glm::vec3(-80,-2.5,-30));
+        positions.push_back(glm::vec3(-80,-2.5,-0));
+        positions.push_back(glm::vec3(-80,-2.5,-15));
+        positions.push_back(glm::vec3(-80,-2.5,-45));
+
     } else if (selectedPlayer == 2) {
         pl1 = 0; pl2 = 1; pl3 = 3;
 
@@ -214,6 +227,12 @@ void addAI(int selectedPlayer)
         scales.push_back(glm::vec3(1.65,1.65,1.65));
         scales.push_back(glm::vec3(1.65,1.65,1.65));
         scales.push_back(glm::vec3(0.7,0.7,0.7));
+
+        positions.push_back(glm::vec3(-80,-2.5,-30));
+        positions.push_back(glm::vec3(-80,-2.5,-0));
+        positions.push_back(glm::vec3(-80,-2.5,-15));
+        positions.push_back(glm::vec3(-80,-2.5,-45));
+
     } else {
         pl1 = 0; pl2 = 1; pl3 = 2;
 
@@ -221,11 +240,17 @@ void addAI(int selectedPlayer)
         scales.push_back(glm::vec3(1.65,1.65,1.65));
         scales.push_back(glm::vec3(1.65,1.65,1.65));
         scales.push_back(glm::vec3(1.1,1.1,1.1));
+
+        positions.push_back(glm::vec3(-80,-2.5,-30));
+        positions.push_back(glm::vec3(-80,-2.5,-0));
+        positions.push_back(glm::vec3(-80,-2.5,-15));
+        positions.push_back(glm::vec3(-80,-2.5,-45));
+        
     }
 
 
     id = 25000;
-    transform.position = glm::vec3(-80,0, -30);
+    transform.position = positions[0];
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = scales[0];
     ObjectManager::getInstance().createPlayer(transform, selectedPlayer, 0, id, 
@@ -233,7 +258,7 @@ void addAI(int selectedPlayer)
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25001;
-    transform.position = glm::vec3(-80,0,-0);
+    transform.position = positions[1];
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = scales[1];
     ObjectManager::getInstance().createPlayer(transform, pl1, 1, id, 
@@ -241,7 +266,7 @@ void addAI(int selectedPlayer)
                                                  PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25002;
-    transform.position = glm::vec3(-80,0,-15);
+    transform.position = positions[2];
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = scales[2];
     ObjectManager::getInstance().createPlayer(transform, pl2, 1, id, 
@@ -249,7 +274,7 @@ void addAI(int selectedPlayer)
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25003;
-    transform.position = glm::vec3(-80,0,-45);
+    transform.position = positions[3];
     transform.rotation = glm::vec3(0,90,0);
     transform.scale    = scales[3];
     ObjectManager::getInstance().createPlayer(transform, pl3, 1, id, 

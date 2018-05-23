@@ -124,7 +124,7 @@ IComponent::Pointer ItemManager::createItem(GameObject& obj){
 
     //Get item
     auto itemHolder = obj.getComponent<ItemHolderComponent>();
-    int random = itemHolder->getItemType();
+    int random = 0;//itemHolder->getItemType();
 
     //-----------------------
     //Generate the right item
@@ -235,7 +235,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
     transform.position = glm::vec3(pos.x+50*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z-50*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(2,2,2);
+    transform.scale    = glm::vec3(2.5,2.5,2.5);
 
     //Create object
     auto ob = ObjectManager::getInstance().createObject(id, transform);
@@ -316,7 +316,7 @@ IComponent::Pointer ItemManager::createRedShell(GameObject& obj, IItemComponent:
         RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "tire.obj");
 
         //:::>Better use enumerators rather than hardcoded if's and types
-        std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::RedShell);
+        std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 5, 2, false, CollisionComponent::Type::RedShell);
 
         //Create move component with the movement data
         std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -351,10 +351,10 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
 
     //Set object offset position
     //:::>No hardcode pls
-    transform.position = glm::vec3(pos.x+20*cos(obj.getTransformData().rotation.y),
-                                    pos.y+10, pos.z-20*sin(obj.getTransformData().rotation.y));
+    transform.position = glm::vec3(pos.x+40*cos(obj.getTransformData().rotation.y),
+                                    pos.y+10, pos.z-40*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0,0,180);
-    transform.scale    = glm::vec3(2,2,2);
+    transform.scale    = glm::vec3(1,1,1);
 
     //Create object
     auto ob = ObjectManager::getInstance().createObject(id, transform);
@@ -436,7 +436,7 @@ IComponent::Pointer ItemManager::createBlueShell(GameObject& obj, IItemComponent
         RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "bomb.obj");
 
         //:::>Better use enumerators rather than hardcoded if's and types
-        std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 2, false, CollisionComponent::Type::BlueShell);
+        std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 3, 2, false, CollisionComponent::Type::BlueShell);
 
         //Create move component with the movement data
         std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -472,7 +472,7 @@ IComponent::Pointer ItemManager::createTrap(GameObject& obj, IItemComponent::Ins
     transform.position = glm::vec3(pos.x-10*cos(obj.getTransformData().rotation.y),
                                     pos.y, pos.z+10*sin(obj.getTransformData().rotation.y));
     transform.rotation = glm::vec3(0, 0, 0);
-    transform.scale    = glm::vec3(1, 1, 1);
+    transform.scale    = glm::vec3(1.8, 1.8, 1.8);
 
     //Create object
     auto ob = ObjectManager::getInstance().createObject(id, transform);
@@ -493,7 +493,7 @@ IComponent::Pointer ItemManager::createTrap(GameObject& obj, IItemComponent::Ins
 
     //--------------------------
     RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "trap.obj");
-    PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 1, 1, false, CollisionComponent::Type::Trap);
+    PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 4, 1, false, CollisionComponent::Type::Trap);
 
     //add item component
     ItemComponents.push_back(std::dynamic_pointer_cast<IItemComponent>(component));

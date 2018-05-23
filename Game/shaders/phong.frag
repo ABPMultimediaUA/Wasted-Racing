@@ -182,7 +182,7 @@ void main()
         calculatePointLights();
         calculateSpotLights();
 
-        float ambient = 0.2;
+        float ambient = 0.4;
         v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
 
         if(textActive)

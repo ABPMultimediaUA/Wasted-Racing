@@ -249,7 +249,7 @@ public:
     virtual void setBackface(float r){};
     virtual bool getBackface(){};
 
-    virtual void setFrsutum(float r){};
+    virtual void setFrustum(float r){};
     virtual bool getFrustum(){};
     
 private: 

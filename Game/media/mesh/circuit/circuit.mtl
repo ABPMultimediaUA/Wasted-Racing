@@ -13,18 +13,6 @@ illum 2
 map_Kd Baked/BakeEdifFuera.bmp
 bump EdificiosFuera/CircuitMaterial_Normal_OpenGL.png
 
-newmtl Material.011
-Ns 1.0
-Ka 1.000000 1.000000 1.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 2
-map_Kd Baked/BakeSenales.bmp
-bump Señales/DefaultMaterial_Normal_OpenGL.png
-
 newmtl Material.001
 Ns 1.0
 Ka 1.000000 1.000000 1.000000
@@ -34,7 +22,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd Baked/BaedTerreno.bmp
+map_Kd Baked/BakedTerreno.bmp
 bump NuevasTexturas/Material.001_Normal_OpenGL.png
 
 newmtl Material.002
@@ -49,7 +37,7 @@ illum 2
 map_Kd Baked/BakedCoche.bmp
 bump Coche/DefaultMaterial_Normal_OpenGL.png
 
-newmtl Material.005
+newmtl Material.003
 Ns 1.0
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
@@ -58,7 +46,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd PistaBordillo/BakePista.bmp
+map_Kd Baked/BakePista.bmp
 bump PistaBordillo/DefaultMaterial_Normal_OpenGL_Tiny.png
 
 newmtl Material.006
@@ -97,6 +85,18 @@ illum 2
 map_Kd Baked/BakeObjetos.bmp
 bump ObjetosPasillo/DefaultMaterial_Normal_OpenGL.png
 
+newmtl Material.011
+Ns 1.0
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Baked/BakeSenales.bmp
+bump Senales/DefaultMaterial_Normal_OpenGL.png
+
 newmtl Material.012
 Ns 1.0
 Ka 1.000000 1.000000 1.000000
@@ -123,7 +123,7 @@ bump Tuberias/CircuitMaterial_Normal_OpenGL.png
 
 newmtl Material.015
 Ns 1.0
-Ka 0.000000 0.000000 0.000000
+Ka 1.000000 1.000000 1.000000
 Kd 0.00000 0.00000 0.00000
 Ks 0.10000 0.10000 0.10000
 Ke 0.000000 0.000000 0.000000

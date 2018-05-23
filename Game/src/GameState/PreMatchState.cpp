@@ -64,7 +64,7 @@ void PreMatchState::update(float &accumulatedTime) {
         currTime = maxTime;
 
         //initial camera movement
-        cameraPositions[0] = glm::vec3(-120,50,-0);
+        cameraPositions[0] = glm::vec3(-180,50,-0);
         cameraPositions[1] = glm::vec3(-100,50,-0);
         cameraPositions[2] = glm::vec3(-100,30,-0);
         cameraPositions[3] = glm::vec3(-100,30,-0);
@@ -84,7 +84,7 @@ void PreMatchState::update(float &accumulatedTime) {
         currTime = maxTime - 0.01;
 
         //initial camera movement
-        cameraPositions[0] = glm::vec3(95,12.6469,-20);
+        cameraPositions[0] = glm::vec3(160,12.6469,-20);
         cameraPositions[1] = glm::vec3(65,13.7496,-20);
         cameraPositions[2] = glm::vec3(65,12.6469,-20);
         cameraPositions[3] = glm::vec3(35,13.7496,-20);

@@ -317,7 +317,7 @@ void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terr
 
 
     //Create collision component
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 4, 7.5, true, CollisionComponent::Type::Default);
 
     //Create movement component and locate it on the map
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
