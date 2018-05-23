@@ -1,4 +1,5 @@
 #include "ScoreEvents.h"
+#include "../GlobalVariables.h"
 #include "../GameObject/PhysicsComponent/MoveComponent.h"
 
 //===========================================================
@@ -19,7 +20,10 @@ void OnNewLapEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& event)
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
 
         //Load sound event
-        FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
+        if(GlobalVariables::getInstance().getLanguage() == 0)
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterEN"], &soundInstance);
+        else
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
 
         //Set sound parameters
         FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
@@ -65,7 +69,10 @@ void OnOvertakeEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& even
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
 
         //Load sound event
-        FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
+        if(GlobalVariables::getInstance().getLanguage() == 0)
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterEN"], &soundInstance);
+        else
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
 
         //Set sound parameters
         FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
@@ -102,7 +109,10 @@ void OnOvertakenEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& eve
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
 
         //Load sound event
-        FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
+        if(GlobalVariables::getInstance().getLanguage() == 0)
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterEN"], &soundInstance);
+        else
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
 
         //Set sound parameters
         FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
