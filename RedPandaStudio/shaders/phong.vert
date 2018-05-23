@@ -105,7 +105,6 @@ layout(location = 3) in vec3 tangents;
 layout(location = 4) in vec3 bitangents;
 
 uniform mat4 ModelMatrix;
-uniform mat4 normalMatrix;
 uniform mat4 mvMatrix;
 uniform mat4 mvpMatrix;
 
@@ -127,8 +126,8 @@ void main()
 {
     modelViewMatrix = mvMatrix;
 
-    P = vec3(modelViewMatrix * vertexPosition);	          // Posición del vértice
-	N = vec3(normalMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
+    P = vec3(mvMatrix * vertexPosition);	          // Posición del vértice
+	N = vec3(mvMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
 
     //This matrix is used to convert from tangent space to world space
     //The normal mapping has been based completely in the tutorials provided at learnopengl.com
