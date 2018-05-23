@@ -48,6 +48,8 @@ public:
     //Getters
     virtual float getVolume() = 0;
 
+    virtual void stop(std::string name) = 0;
+
     //Sets the gameObject to be the listener
     void setListener(GameObject& newListener) {
         listener = &newListener;

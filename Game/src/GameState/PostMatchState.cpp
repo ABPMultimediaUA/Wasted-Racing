@@ -28,7 +28,12 @@ void PostMatchState::init() {
     schedulingClock = new Clock();
     schedulingClock->init();
 
-    remainingTime = 1.0;
+    remainingTime = 20.0;
+
+    EventData data;
+    data.Component      = objectManager->getObject(25000).get()->getComponent<ObjectRenderComponent>();
+
+    EventManager::getInstance().addEvent(Event {EventType::Music_Finish, data});
 
 
 }
@@ -69,7 +74,6 @@ void PostMatchState::update(float &accumulatedTime) {
     interpolate(accumulatedTime);
 
     //Sets if the game keeps running or not
-    //:::>Change with event that closes the game
     Game::getInstance().setStay(objectManager->getGameRunning());
 
     remainingTime -= accumulatedTime;

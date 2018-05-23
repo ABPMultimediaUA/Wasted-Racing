@@ -1,14 +1,5 @@
 #include "ObjectManager.h"
 
-//////////////////////////////////////////////
-//            THINGS TO DO HERE
-//////////////////////////////////////////////
-//////////////////////////////////////////////
-/*
->Change the functions that create characters, because it's awful.
->Check if using .txt would be a better idea or just plain encrypted non-accesible data.
-*/
-
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
@@ -49,11 +40,7 @@ GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::Transfo
     //make shared pointer
     GameObject::Pointer object = std::make_shared<GameObject>(id, transform);
    
-    //Launch creation event
-    //:::>No need for it without scheduling
-    //EventData data;
-    //data.Object = object;
-    //EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
+    //Creation
     ObjectManager::getInstance().addObject(object);
 
     return object;
@@ -147,7 +134,6 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
-    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -167,7 +153,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
-    mData.max_acc = 60.f;
+    mData.max_acc = 110.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 120.f;
     mData.player = 0;
@@ -190,7 +176,6 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
-    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -210,7 +195,7 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
-    mData.max_acc = 60.f;
+    mData.max_acc = 110.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 120.f;
     mData.player = 1;
@@ -234,7 +219,6 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
-    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -254,7 +238,7 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
-    mData.max_acc = 60.f;
+    mData.max_acc = 110.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 120.f;
     mData.player = 2;
@@ -273,7 +257,6 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
-    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -293,7 +276,7 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
-    mData.max_acc = 60.f;
+    mData.max_acc = 110.f;
     mData.dAcc = 0.f;
     mData.brake_acc = 120.f;
     mData.player = 3;

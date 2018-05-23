@@ -279,7 +279,7 @@ void AIManager::updateScheduling(float dTime, float loopTime) {
     std::cout<<"Scheduling time spent:  "<<timeCounter <<std::endl;
     std::cout<<"---------------------"<<std::endl;
 
-    //WE SHOW THE DIFFERENCES
+    //THESE SHOW THE DIFFERENCES BETWEEN THE AVERAGE TIME TO PROCESS EACH ONE
     /*
     std::cout<<"Average Time for battle: "<<averageTimeBattle<<" with "<<battleAI.size()<<std::endl;
     std::cout<<"Average Time for DRIVING: "<<averageTimeDriving<<" with "<<objectsAI.size()<<std::endl;
@@ -302,8 +302,6 @@ IComponent::Pointer AIManager::createAIDrivingComponent(GameObject& newGameObjec
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::> maybe it can be done without the event since it is only used in this manager
-    //:::> needs scheduling to be useful
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::AIDrivingComponent_Create, data});
@@ -318,8 +316,6 @@ IComponent::Pointer AIManager::createAIBattleComponent(GameObject& newGameObject
 
     //Attach to object
     newGameObject.addComponent(component);
-
-    //:::> needs scheduling to be in event form
 
     //Push to battle AI list
     battleAI.push_back(component);
@@ -432,36 +428,34 @@ void AIManager::updateDriving(AIDrivingComponent* aiDrivingComponent)
 
 void AIManager::calculateLoD(GameObject AI, float dTime)
 {
-    
     GameObject::Pointer AIObject = ObjectManager::getInstance().getObject(AI.getId());
+    auto player = GlobalVariables::getInstance().getPlayer();
+    int scorePlayer = player->getComponent<ScoreComponent>()->getPosition();
+    int scoreAI = AIObject->getComponent<ScoreComponent>()->getPosition();
+
     auto trans = AIObject->getTransformData();
     AIObject->getComponent<CollisionComponent>()->setKinetic(false);
 
     auto maxSpeed = AIObject->getComponent<MoveComponent>()->getMovemententData().max_vel;
     AIObject->getComponent<MoveComponent>()->changeVel(0);
-
-/////////////////////
-    auto player = GlobalVariables::getInstance().getPlayer();
-    int scorePlayer = player->getComponent<ScoreComponent>()->getPosition();
-
-    int scoreAI = AIObject->getComponent<ScoreComponent>()->getPosition();
     float distCover;
     if(scoreAI < scorePlayer)
     {
         distCover = (maxSpeed * maxSpeed)*0.35 * dTime;
     }
-    else if(scoreAI > scorePlayer)
+    else
     {
         distCover = (maxSpeed * maxSpeed)*0.6 * dTime;
     }
-////////////////////////
+    
+
     auto waypoints = WaypointManager::getInstance().getWaypoints();
 
     unsigned int posVector = AIObject->getComponent<PathPlanningComponent>()->getLastPosVector();
 
     float distaneActualWay = (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) * (waypoints[posVector].get()->getTransformData().position.x - trans.position.x) +
-						     (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
-						     (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
+                            (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) * (waypoints[posVector].get()->getTransformData().position.y - trans.position.y) +
+                            (waypoints[posVector].get()->getTransformData().position.z - trans.position.z) * (waypoints[posVector].get()->getTransformData().position.z - trans.position.z);
 
     glm::vec3 nextPos;
 
@@ -506,15 +500,14 @@ void AIManager::updateAISpeed()
             
             if(move->getMovemententData().boost == false)
             {
-                move->changeMaxVel(real_max_vel);
 
                 if(scoreAI < scorePlayer)
                 {
-                    move->changeMaxVel(real_max_vel*0.9);
+                    move->changeMaxVel(real_max_vel*1);
                 }
                 else if(scoreAI > scorePlayer)
                 {
-                    move->changeMaxVel(real_max_vel*1.1);
+                    move->changeMaxVel(real_max_vel*1.35);
                 }
             }
         }

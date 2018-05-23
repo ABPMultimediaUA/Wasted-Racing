@@ -61,10 +61,6 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Move character
         //==============================================================================
-        //:::> Should collisions be calculated first since they do "imaginary" positionament? 
-        //:::> How it should be: Stationary -> update collision ? no collision (fine) : collision (no moving)
-        //:::> Right now: Move it, calculate collision: if collision happened or you trespassed the wall, then its done.
-        //<___
         ourMove->update(dTime);
         
         //==============================================================================
@@ -76,14 +72,9 @@ void PhysicsManager::update(const float dTime) {
         // Check collisions with terrain limits and terrain change
         //==============================================================================
         calculateTerrainCollision(movingCharacterList[i], ourMove, ourTerr, ourColl, dTime);
-        //___>
 
         gameObject.setNewTransformData(gameObject.getTransformData());
     }
-
-    //Update camera collision
-    //RenderManager::getInstance().getRenderFacade()->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
-
 }
 
 void PhysicsManager::close() {
@@ -115,9 +106,6 @@ void PhysicsManager::interpolate(float accumulatedTime, const float maxTime) {
         currTrans.scale = oldTrans.scale + (accumulatedTime * fTrans.scale)/maxTime;
 
         gameObject.setTransformData(currTrans);
-
-        //auto id = gameObject.getId();
-        //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, currTrans);
 
     }
 
@@ -372,7 +360,6 @@ void PhysicsManager::calculateTerrainCollision(MovingCharacter& movingChar, std:
 }
 
 void PhysicsManager::calculateLineCollision(std::shared_ptr<MoveComponent> move, LAPAL::vec3f p1, LAPAL::vec3f p2) {
-    //:::>Some comments wouldn't harm
     MoveComponent* ourMove = move.get();
     LAPAL::movementData mData = ourMove->getMovemententData();
 
@@ -423,7 +410,6 @@ std::shared_ptr<TerrainComponent> PhysicsManager::getTerrainFromPos(LAPAL::vec3f
         auto terrain = std::dynamic_pointer_cast<TerrainComponent>(terrainComponentList[i]);
 
         //Checks if terrain collides with the object
-        //:::>size 20 to 0 must be a variable somewhere, can't be hardcoded
         if(LAPAL::checkCircleRectangleCollision(terrain.get()->getTerrain(), pos, 20, 0))
             return terrain;
     }
@@ -444,7 +430,6 @@ IComponent::Pointer PhysicsManager::createMoveComponent(GameObject& newGameObjec
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::MoveComponent_Create, data});
@@ -460,7 +445,6 @@ IComponent::Pointer PhysicsManager::createTerrainComponent(GameObject& newGameOb
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::TerrainComponent_Create, data});
@@ -477,7 +461,6 @@ IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGame
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::CollisionComponent_Create, data});
@@ -493,7 +476,6 @@ IComponent::Pointer PhysicsManager::createCollisionComponent(GameObject& newGame
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::>Useless without scheduling, can add to list of components directly
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::CollisionComponent_Create, data});
@@ -521,19 +503,12 @@ IComponent::Pointer PhysicsManager::createRampComponent(GameObject& newGameObjec
     //Attach to object
     newGameObject.addComponent(component);
 
-    //________>Not needed now
-    //:::> Useless without scheduling, and by now has no purpose
-    //EventData data;
-    //data.Component = component;
-    //EventManager::getInstance().addEvent(Event {EventType::RampComponent_Create, data});
-
     return component;
 }
 
 //==============================================
 // DELEGATES
 //==============================================
-//:::>this 3 functions could be changed by a generic component creation one
 void addMoveComponent(EventData data) {
     PhysicsManager::getInstance().getMoveComponentList().push_back(data.Component);
     data.Component.get()->init();
@@ -541,13 +516,11 @@ void addMoveComponent(EventData data) {
 
 void addCollisionComponent(EventData data) {
     PhysicsManager::getInstance().getCollisionComponentList().push_back(data.Component);
-    //:::>No inits here
     data.Component.get()->init();
 }
 
 void addTerrainComponent(EventData data) {
     PhysicsManager::getInstance().getTerrainComponentList().push_back(data.Component);
-    //:::>No inits here
     data.Component.get()->init();
 }
 

@@ -12,7 +12,6 @@ void MoveComponent::init() {
 
 //Update
 void MoveComponent::update(float dTime) {
-    //:::X> Analyze all of this and check if it is right
     //get transform data
     auto position = getGameObject().getTransformData().position;
 
@@ -109,6 +108,29 @@ void MoveComponent::update(float dTime) {
             moving = false;
     }
     
+
+    //MUSIC EVENTS RELATED TO PLAYER
+    if(getGameObject().getId() == 25000 && mData.vel > 20 && !mData.drift) {
+        float vel = mData.vel / mData.max_vel;
+        EventData eD;
+        eD.Component = getGameObject().getComponent<MoveComponent>();
+        eD.grade = vel;
+        EventManager::getInstance().addEvent(Event {EventType::Player_Speed, eD});
+    }
+    else if(getGameObject().getId() == 25000 && mData.drift) {
+        EventData eD;
+        eD.Component = getGameObject().getComponent<MoveComponent>();
+        EventManager::getInstance().addEvent(Event {EventType::Player_Slide, eD});
+    }
+
+    if(getGameObject().getId() == 25000 && isAscending && !mData.asc) {
+        EventData eD;
+        eD.Component = getGameObject().getComponent<MoveComponent>();
+        EventManager::getInstance().addEvent(Event {EventType::Player_Jump, eD});
+    }
+
+    isAscending = mData.asc;
+
     //Set collision value to false (if it was true it has already been processed)
     mData.coll = false;
 
@@ -126,17 +148,13 @@ void MoveComponent::update(float dTime) {
 
     //Set final transform of position
     getGameObject().setTransformData(trans);
-
-
-    //auto id = getGameObject().getId();
-    //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(id, trans);
     
     //===========================================================================================
     // DEBUG
     //if(getGameObject().getId() == 25000){
     //    system("clear");
     //    //std::cout << " GIRO: "<<mData.angX<<","<<mData.angZ<<std::endl;
-    //    std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z << std::endl;
+    //    std::cout << " POS X " << trans.position.x << " POS Z " << trans.position.z <<  " POS Y " << trans.position.y <<std::endl;
     //    //std::cout << " ANG X " << trans.rotation.x << " ANG Y " << trans.rotation.y << " ANG Z " << trans.rotation.z << std::endl;
     //    //std::cout << " POS Y " << trans.position.y << std::endl;
     //    std::cout << " VEL X " << mData.velocity.x << " VEL Z " << mData.velocity.z << std::endl;
@@ -293,12 +311,10 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
             decrementalAlteredTime = 0;
             mData.max_vel = auxData.max_vel;
 
-            //<___ deactive if collided
             if(mData.coll)
             {
                 mData.boost = false;
             }
-            //___>
         }
     }
 }
@@ -306,7 +322,6 @@ void MoveComponent::updateMaxSpeedOverTime(const float dTime) {
 //Control and update jump
 void MoveComponent::updateJump(LAPAL::movementData& mData, glm::vec3& pos, LAPAL::plane3f t){
 
-    //:::>Brah, no hardcoded pls
     float maxJump = 15.0;
     float velJump = 50.0;
 

@@ -28,7 +28,9 @@ namespace rps{
 //  DEVICE CONSTRUCTORS
 //////////////////////////////
 
-RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, int framerate, bool vsync, bool fullscreen){
+//Creates the device, initializing the window, the opengl state and shaders, and the scene
+RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, int framerate, bool vsync, bool fullscreen)
+{
 
     static RedPandaStudio rps;
 
@@ -40,6 +42,7 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 
 }
 
+//Main render loop of the engine
 void RedPandaStudio::updateDevice() 
 {
 	//Update particles
@@ -50,7 +53,6 @@ void RedPandaStudio::updateDevice()
 
 	//Render camera and lights
 	renderCamera();
-	renderLights();
 
 	//Initalize postProcessing if selected
 	if(postProcessingActive)
@@ -72,7 +74,8 @@ void RedPandaStudio::updateDevice()
 	//Draw the scene normally
 	glUseProgram(scene->getEntity()->getProgramID());
 	renderCamera();
-	renderLights();
+	//updateActiveNearLights();
+	renderAllLights();
 
 	if(silhouetteActivated)
 	{
@@ -129,11 +132,15 @@ void RedPandaStudio::updateDevice()
 	}
 }
 
-void RedPandaStudio::setGUIDrawFunction(void (*f)()) {
+//Sets which function is used to draw the GUI
+void RedPandaStudio::setGUIDrawFunction(void (*f)()) 
+{
 	rpsGUI_draw = f;
 }
 
-void RedPandaStudio::dropDevice() {
+//Closes the device
+void RedPandaStudio::dropDevice() 
+{
 	
 	// Delete our OpengL context
 	//::>>SDL_GL_DeleteContext(&context); // probbly this shouldn't be commented, but it fails otherwise
@@ -146,7 +153,9 @@ void RedPandaStudio::dropDevice() {
 
 }
 
-void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen) {
+//Initialices a window using SDL
+void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framerate, bool vsync, bool fullscreen) 
+{
 
     // Initialize SDL 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
@@ -209,12 +218,13 @@ void RedPandaStudio::initSDLWindow(int width, int height, int depth, int framera
 	//=================================================
 }
 
-void RedPandaStudio::initOpenGL() {
+//Initialices all the shaders, and gets the uniforms needed for some objects (for example, TEntity)
+void RedPandaStudio::initOpenGL() 
+{
 
 	#ifndef __APPLE__
 		const char * vertex_file_path = "shaders/phong.vert";
     	const char * fragment_file_path = "shaders/phong.frag";
-		const char * geometry_file_path = "shaders/test.gs";
 		const char * skybox_vertex_path = "shaders/skybox.vert";
 		const char * skybox_fragment_path = "shaders/skybox.frag";
 		const char * particles_vertex_path = "shaders/particles.vert";
@@ -225,7 +235,6 @@ void RedPandaStudio::initOpenGL() {
 	#else 
 		const char * vertex_file_path = "shaders/MAC/test.vert";
     	const char * fragment_file_path = "shaders/MAC/test.frag";
-		const char * geometry_file_path = "shaders/MAC/test.gs";
 		const char * skybox_vertex_path = "shaders/MAC/skybox.vert";
 		const char * skybox_fragment_path = "shaders/MAC/skybox.frag";
 		const char * particles_vertex_path = "shaders/MAC/particles.vert";
@@ -290,12 +299,10 @@ void RedPandaStudio::initOpenGL() {
 
 	//Get main shaders
 	TResourceShader* vertexShader = resourceManager->getResourceShader(vertex_file_path, (GLenum)GL_VERTEX_SHADER);
-	//TResourceShader* geometryShader = resourceManager->getResourceShader(geometry_file_path, (GLenum)GL_GEOMETRY_SHADER);
 	TResourceShader* fragmentShader = resourceManager->getResourceShader(fragment_file_path, (GLenum)GL_FRAGMENT_SHADER);
 
 	//Get main shaders ID
 	GLuint vertexID = vertexShader->getShaderID();
-	//GLuint geometryID = geometryShader->getShaderID();
 	GLuint fragmentID = fragmentShader->getShaderID();
 
 	//Get skybox shaders
@@ -333,7 +340,6 @@ void RedPandaStudio::initOpenGL() {
 	//==============================================================================================
 	GLuint ProgramID = glCreateProgram();
 	glAttachShader(ProgramID, vertexID);
-	//glAttachShader(ProgramID, geometryID);
 	glAttachShader(ProgramID, fragmentID);
 	glLinkProgram(ProgramID);
 
@@ -348,11 +354,9 @@ void RedPandaStudio::initOpenGL() {
 
     //We no longer need the shaders (we have them in the program)
 	glDetachShader(ProgramID, vertexID);
-	//glDetachShader(ProgramID, geometryID);
 	glDetachShader(ProgramID, fragmentID);
 	
 	glDeleteShader(vertexID);
-	//glDeleteShader(geometryID);
 	glDeleteShader(fragmentID);
 
 	//==============================================================================================
@@ -441,7 +445,6 @@ void RedPandaStudio::initOpenGL() {
     GLuint view  = glGetUniformLocation(ProgramID, "ViewMatrix");
 	GLuint mv = glGetUniformLocation(ProgramID, "mvMatrix");
 	GLuint mvp = glGetUniformLocation(ProgramID, "mvpMatrix");
-	GLuint normal = glGetUniformLocation(ProgramID, "normalMatrix");
 	GLuint colorTexture = glGetUniformLocation(ProgramID, "colorTexture");
 	GLuint normalTexture = glGetUniformLocation(ProgramID, "normalTexture");
 	GLuint cp = glGetUniformLocation(ProgramID, "CamPos");
@@ -455,13 +458,13 @@ void RedPandaStudio::initOpenGL() {
 	scene->getEntity()->setViewID(view);
 	scene->getEntity()->setModelViewID(mv);
 	scene->getEntity()->setMVPID(mvp);
-	scene->getEntity()->setNormalID(normal);
 	scene->getEntity()->setCamPosition(cp);
 
 	GLuint viewSky = glGetUniformLocation(skyboxID, "ViewMatrix");
 	skybox->setView(viewSky);
 }
 
+//Initialices the scene, by setting the three main matrices an identity value
 void RedPandaStudio::initScene() {
 
     //Initialize Projection Matrix
@@ -481,6 +484,8 @@ void RedPandaStudio::initScene() {
 
 //////////////////////////////
 //  NODE CONSTRUCTORS
+
+//Creates an Entity with a mesh inside
 TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char* mesh) {
 
 	//Check parent node is valid
@@ -504,6 +509,7 @@ TNode* RedPandaStudio::createObjectNode(TNode* parent, glm::vec3 pos, const char
 	}
 }
 
+//Creates an animated node. Parameters set the route, frames of the animation, framerate, texture (same for all the frames), and activates or deactivates the loop state
 TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const char* animation, bool loop, int frames, double framerate, const char* texture)
 {
 	
@@ -528,10 +534,13 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 	return nullptr;
 }
 
-TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position, glm::vec3 target) {
+//Creates a camera using the position and target provided
+TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position, glm::vec3 target) 
+{
 
 	//Check parent node is valid
-	if(parent != nullptr && parent->getEntity() == nullptr){
+	if(parent != nullptr && parent->getEntity() == nullptr)
+	{
 
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, glm::vec3(0,0,0));
@@ -556,7 +565,9 @@ TNode* RedPandaStudio::createCamera(TNode* parent, glm::vec3 position, glm::vec3
 
 }
 
-void RedPandaStudio::updateCamera(glm::vec3 position, glm::vec3 target) {
+//Updates the camera using the position and target provided
+void RedPandaStudio::updateCamera(glm::vec3 position, glm::vec3 target) 
+{
 	
 	TTransform* rotation = (TTransform*)camera->getFather()->getFather()->getFather()->getEntity();
 	TTransform* translation = (TTransform*)camera->getFather()->getEntity();
@@ -586,11 +597,13 @@ void RedPandaStudio::updateCamera(glm::vec3 position, glm::vec3 target) {
 	translation->setMatrix(trans);
 }
 
+//Creates a light (Point light) in the scene
 TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 intensity) 
 {
 
 	//Check parent node is valid
-	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
+	{
 
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, position);
@@ -599,6 +612,10 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 
 		TLight* l = new TLight(intensity);
 		TNode* light = new TNode(transformT, l);
 		transformT->addChild(light);
+
+		//Set light variables
+		l->setActivated(true);
+		l->setID(lights.size());
 
 		//Register light
 		lights.push_back(light);
@@ -612,6 +629,7 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 
 
 }
 
+//Creates a spotlight (Directional light) in the scene
 TNode* RedPandaStudio::createSpotlight(TNode* parent, glm::vec3 position, glm::vec3 intensity, glm::vec3 direction, float cutoff)
 {
 	//Check parent node is valid
@@ -637,6 +655,7 @@ TNode* RedPandaStudio::createSpotlight(TNode* parent, glm::vec3 position, glm::v
 	}
 }
 
+//Creates a billboard with the texture provided in the first parameter, in the position provided in the second parameter
 TBillboard* RedPandaStudio::createBillboard(const char* n, glm::vec3 p)
 {
 	//Create or get a reference to the texture from the resourceManager
@@ -649,11 +668,14 @@ TBillboard* RedPandaStudio::createBillboard(const char* n, glm::vec3 p)
 	return b;
 }
 
+//Creates a particle emitter
 TNode* RedPandaStudio::createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, 
-        int nBirthrate, float nParticleLife, glm::vec3 nBirthDirection, float nBirthSize, glm::vec4 nBirthColor) {
+        int nBirthrate, float nParticleLife, glm::vec3 nBirthDirection, float nBirthSize, glm::vec4 nBirthColor) 
+{
 
 	//Check parent node is valid
-	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
+	{
 
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, nPosition);
@@ -677,12 +699,15 @@ TNode* RedPandaStudio::createEmitter(TNode* parent, const char* shape, glm::vec3
 
 }
 
+//Creates a particle emitter
 TNode* RedPandaStudio::createEmitter(TNode* parent, const char* shape, glm::vec3 nPosition, float nRadius, int nBirthrate, float nParticleLife,
             glm::vec3 nBirthDirection, glm::vec3 nDeathDirection, float nVariationDirection, float nBirthSize, float nDeathSize, 
-            float nVariationSize, glm::vec4 nBirthColor, glm::vec4 nDeathColor, float nVariationColor) {
+            float nVariationSize, glm::vec4 nBirthColor, glm::vec4 nDeathColor, float nVariationColor) 
+{
 
 	//Check parent node is valid
-	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr)){
+	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
+	{
 
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, nPosition);
@@ -707,17 +732,21 @@ TNode* RedPandaStudio::createEmitter(TNode* parent, const char* shape, glm::vec3
 
 }
 
-void RedPandaStudio::deleteObject(TNode* leaf) {
+//Deletes an entity
+void RedPandaStudio::deleteObject(TNode* leaf) 
+{
 
 	TEntity* t;
 
 	//Unregister camera
-	if(leaf != nullptr && (t = dynamic_cast<TCamera*>(leaf->getEntity())) != nullptr){
+	if(leaf != nullptr && (t = dynamic_cast<TCamera*>(leaf->getEntity())) != nullptr)
+	{
 
 		camera = nullptr;
 
 	} //Unregister lights
-	if(leaf != nullptr && (t = dynamic_cast<TLight*>(leaf->getEntity())) != nullptr){
+	if(leaf != nullptr && (t = dynamic_cast<TLight*>(leaf->getEntity())) != nullptr)
+	{
 
 		for(unsigned int i = 0; i < lights.size(); i++){
 
@@ -725,9 +754,11 @@ void RedPandaStudio::deleteObject(TNode* leaf) {
 				lights.erase(lights.begin() + i);
 		}
 	} //Unregister particles
-	if(leaf != nullptr && (t = dynamic_cast<TEmitter*>(leaf->getEntity())) != nullptr){
+	if(leaf != nullptr && (t = dynamic_cast<TEmitter*>(leaf->getEntity())) != nullptr)
+	{
 
-		for(unsigned int i = 0; i < emitters.size(); i++){
+		for(unsigned int i = 0; i < emitters.size(); i++)
+		{
 
 			if(emitters[i] == leaf)
 				emitters.erase(emitters.begin() + i);
@@ -751,17 +782,21 @@ void RedPandaStudio::deleteObject(TNode* leaf) {
 
 }
 
-void RedPandaStudio::deleteNode(TNode* node) {
-
-	if(node != nullptr){
+//Erases a node from the tree
+void RedPandaStudio::deleteNode(TNode* node) 
+{
+	if(node != nullptr)
+	{
 
 		std::vector<TNode*> children = node->getChild();
 
-		if(children.size() == 0){
+		if(children.size() == 0)
+		{
 			delete node;
 		}
 		else{
-			for(unsigned int i = 0; i < children.size(); i++){
+			for(unsigned int i = 0; i < children.size(); i++)
+			{
 				deleteNode(children[i]);
 			}
 			delete node;
@@ -769,7 +804,10 @@ void RedPandaStudio::deleteNode(TNode* node) {
 	}
 }
 
-TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {
+//Adds three TTransform (in the order rotation - scale - traslation) attached to the tree
+//and returns a pointer to the child
+TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) 
+{
 
 		//Rotation transformation
 		TTransform* tR = new TTransform();
@@ -806,26 +844,209 @@ void RedPandaStudio::deleteAnimation(const char* n)
 
 /////////////////////////////////////////////////
 //  LIGHTS,CAMERA AND PARTICLES MANAGEMENT
-void RedPandaStudio::renderLights() {
 
-	for(unsigned int i = 0; i < lights.size(); i++){
+//Calculates the closest light to the camera position
+void RedPandaStudio::updateActiveLights()
+{
+	if(lights.size() > 0)
+	{
+		//At first, we initialice the camera position
+		glm::mat4 v = scene->getEntity()->viewMatrix();
+		glm::vec3 pos = glm::vec3(-v[3][2], -v[3][1], -v[3][0]);
+		
+		//And then, we check with the first light position and save the distance
+		glm::mat4 mat = glm::mat4(1.0);
+		calculateNodeTransform(lights[0], mat);
+		glm::vec3 lightPos = glm::vec3(mat[3][0], mat[3][1], mat[3][2]);
+		glm::vec3 p = lightPos - pos;
 
+		//We are not doing the square root because we are comparing all the distances squared, so we don't need it and it's avoidable
+		float distance = (p.x * p.x) + (p.z * p.z);
+		int lowestLight = 0;
+		
+		//Then we repeat the calculations for all the lights
+		for(unsigned int i = 1; i < lights.size(); i++)
+		{
+			mat = glm::mat4(1.0);
+			calculateNodeTransform(lights[i], mat);
+			lightPos = glm::vec3(mat[3][0], mat[3][1], mat[3][2]);
+			p = lightPos - pos;
+			
+			float d = (p.x * p.x) + (p.z * p.z);
+			if(d < distance)
+			{
+				lowestLight = i;
+			}
+		}
+		currentLight = lowestLight;
+	}
+}
+
+//Updates the active lights by only looking the next and previous light (assuming they are ordered)
+void RedPandaStudio::updateActiveNearLights()
+{
+	if(lights.size() > 0)
+	{
+		//At first, we initialice the camera position
+		glm::mat4 v = scene->getEntity()->viewMatrix();
+		glm::vec3 pos = glm::vec3(-v[3][2], -v[3][1], -v[3][0]);
+		
+		//And then, we check with the current light light position and save the distance
+		glm::mat4 mat = glm::mat4(1.0);
+		calculateNodeTransform(lights[currentLight], mat);
+		glm::vec3 lightPos = glm::vec3(-mat[3][0], mat[3][1], -mat[3][2]);
+		glm::vec3 p = lightPos - pos;
+
+		std::cout << "LightPos: " << lightPos.x << " - " << lightPos.y << " - " << lightPos.z << std::endl;
+		//We are not doing the square root because we are comparing all the distances squared, so we don't need it and it's avoidable
+		float distance = (p.x * p.x) + (p.z * p.z);
+		int lowestLight = 0;
+
+		int nextLight = currentLight + 1;
+		int prevLight = currentLight - 1;
+		if(prevLight < 0)
+		{
+			prevLight = lights.size() -1;
+		}
+		if(nextLight >= lights.size())
+		{
+			nextLight = 0;
+		}
+		//First we check with previous light
+		mat = glm::mat4(1.0);
+		calculateNodeTransform(lights[prevLight], mat);
+		lightPos = glm::vec3(-mat[3][0], mat[3][1], -mat[3][2]);
+		p = lightPos - pos;
+
+		float d = (p.x * p.x) + (p.z * p.z);
+		if(d < distance)
+		{
+			currentLight = prevLight;
+			distance = d;
+		}
+		//Then we check with next light
+		mat = glm::mat4(1.0);
+		calculateNodeTransform(lights[nextLight], mat);
+		lightPos = glm::vec3(-mat[3][0], mat[3][1], -mat[3][2]);
+		p = lightPos - pos;
+
+		d = (p.x * p.x) + (p.z * p.z);
+		if(d < distance)
+		{
+			currentLight = nextLight;
+		}
+	}
+}
+
+//Render a selected number of lights in the scene. For a correct behaviour, we are assuming all the lights in the
+//scene are ordered and are correlative to each other. This kind of optimization is needed because we don't have a quadtree
+void RedPandaStudio::renderLights() 
+{
+	//First we get the range of lights being rendered
+	int maxLight = currentLight + nLightsForward;
+	int minLight = currentLight - nLightsBack;
+	int pointer = 0;
+
+	//Then we deal with some special cases
+	if(minLight < 0)
+	{
+		minLight = lights.size() + minLight;
+	}
+	if(maxLight >= lights.size())
+	{
+		maxLight = maxLight - lights.size();
+	}
+	std::cout << "CurrentLight: " << currentLight << " maxLight: " << maxLight << " minLight: " << minLight << std::endl;
+	if(minLight > maxLight)
+	{	
+		//And finally, depending of the special cases, we render the scene with 2 fors or one, but always with the same number of lights	
+		for(unsigned int i = minLight; i < lights.size(); i++)
+		{
+			glm::mat4 mat = glm::mat4(1.0);
+			calculateNodeTransform(lights[i], mat);
+
+			glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+
+			std::string lightName = std::string("light[" + std::to_string(pointer) + "].position");
+			GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
+			glUniform4fv(posID, 1, &pos[0]);
+
+			std::string lightName2 = std::string("light[" + std::to_string(pointer) + "].intensity");
+			GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
+			TLight* l = (TLight*)lights[i]->getEntity();
+			glUniform4fv(intID, 1, &l->getIntensity()[0]);
+			pointer++;
+		}
+
+		for(unsigned int i = 0; i < maxLight; i++)
+		{
+			glm::mat4 mat = glm::mat4(1.0);
+			calculateNodeTransform(lights[i], mat);
+
+			glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+
+			std::string lightName = std::string("light[" + std::to_string(pointer) + "].position");
+			GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
+			glUniform4fv(posID, 1, &pos[0]);
+
+			std::string lightName2 = std::string("light[" + std::to_string(pointer) + "].intensity");
+			GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
+			TLight* l = (TLight*)lights[i]->getEntity();
+			glUniform4fv(intID, 1, &l->getIntensity()[0]);
+			pointer++;
+		}
+	}
+	else
+	{
+		for(unsigned int i = minLight; i < maxLight; i++)
+		{
+			glm::mat4 mat = glm::mat4(1.0);
+			calculateNodeTransform(lights[i], mat);
+
+			glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+
+			std::string lightName = std::string("light[" + std::to_string(pointer) + "].position");
+			GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
+			glUniform4fv(posID, 1, &pos[0]);
+
+			std::string lightName2 = std::string("light[" + std::to_string(pointer) + "].intensity");
+			GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
+			TLight* l = (TLight*)lights[i]->getEntity();
+			glUniform4fv(intID, 1, &l->getIntensity()[0]);
+			pointer++;
+		}
+	}
+
+	GLuint numL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numLights");
+	glUniform1i(numL, pointer);
+
+	//We are making sure the spotlights are not being rendered withouth giving data to the shader
+	GLuint numSL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numSpotLights");
+	glUniform1i(numSL, 0);
+}
+
+//Renders all the lights and spotlights of the scene
+void RedPandaStudio::renderAllLights()
+{
+	//In first case, we render all the point lights
+	for(unsigned int i = 0; i < lights.size(); i++)
+	{
 		glm::mat4 mat = glm::mat4(1.0);
 		calculateNodeTransform(lights[i], mat);
-
 		glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
-
+		
 		std::string lightName = std::string("light[" + std::to_string(i) + "].position");
 		GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
 		glUniform4fv(posID, 1, &pos[0]);
-
+		
 		std::string lightName2 = std::string("light[" + std::to_string(i) + "].intensity");
 		GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
 		TLight* l = (TLight*)lights[i]->getEntity();
 		glUniform4fv(intID, 1, &l->getIntensity()[0]);
+		
 	}
 
-	
+	//And then, we render all the spotlights
 	for(unsigned int i = 0; i < spotlights.size(); i++)
 	{
 		glm::mat4 mat = glm::mat4(1.0);
@@ -851,18 +1072,24 @@ void RedPandaStudio::renderLights() {
 		glUniform1f(cutID, l->getCutoff());
 	}
 
+	//Finally, the shaders need the total amount of lights and spotlights in the scene
 	GLuint numL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numLights");
 	glUniform1i(numL, lights.size());
 
 	GLuint numSL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numSpotLights");
 	glUniform1i(numSL, spotlights.size());
 }
-void RedPandaStudio::renderParticles() {
+
+
+//Renders the particles in the scene
+void RedPandaStudio::renderParticles() 
+{
 
 	glEnable (GL_BLEND); 
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	for(unsigned int i = 0; i < emitters.size(); i++){
+	for(unsigned int i = 0; i < emitters.size(); i++)
+	{
 		TEmitter* e = (TEmitter*)emitters[i]->getEntity();
 		e->draw(particlesID);
 	}
@@ -870,19 +1097,26 @@ void RedPandaStudio::renderParticles() {
 	glDisable(GL_BLEND);
 	
 }
-void RedPandaStudio::updateParticles() {
 
-	if(firstUpdate) {
+//Updates the particles in the scene
+void RedPandaStudio::updateParticles() 
+{
+
+	if(firstUpdate) 
+	{
 		fps = 60;
 		firstUpdate = false;
 	}
 
-	for(unsigned int i = 0; i < emitters.size(); i++){
+	for(unsigned int i = 0; i < emitters.size(); i++)
+	{
 		TEmitter* e = (TEmitter*)emitters[i]->getEntity();
 		e->update(1/fps);
 	}
 	
 }
+
+//Renders the camera
 void RedPandaStudio::renderCamera() {
 
 	if(camera != nullptr)
@@ -897,10 +1131,10 @@ void RedPandaStudio::renderCamera() {
 
 		glUniform3fv(scene->getEntity()->getCamPosition(), 1, &p[0]);
 		glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
-    	//glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
 	}
 }
 
+//Renders all the billboards in the scene. Billboard shader is expected to be already activated
 void RedPandaStudio::renderBillboards()
 {
 	glm::mat4 v = scene->getEntity()->viewMatrix();
@@ -938,7 +1172,7 @@ void RedPandaStudio::calculateNodeTransform(TNode* node, glm::mat4& mat)
 //////////////////////////////////////////////
 // GRAPHICS OPTIONS AND PARAMETERS
 
-//================================================= Alexei's magic touch
+//Initialices all the variables needed by the postprocessing
 void RedPandaStudio::initPostProcessing()
 {
 	//Debugging data
@@ -1052,6 +1286,7 @@ void RedPandaStudio::initPostProcessing()
 
 }
 
+//Initialices a frame drawn with postprocessing
 void RedPandaStudio::initDrawPostProcessing()
 {
 	//Bind the buffer
@@ -1061,6 +1296,7 @@ void RedPandaStudio::initDrawPostProcessing()
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 			      //Clean window
 }
 
+//Draws the resulting frame in a texture, applies the postprocessing needed and then draws it in a quad
 void RedPandaStudio::quadDrawPostProcessing()
 {
 	//bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
@@ -1100,6 +1336,21 @@ void RedPandaStudio::quadDrawPostProcessing()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+//Resizes the texture of the post processing
+void RedPandaStudio::resizePostProcessing(float x, float y)
+{
+	//Binding the right buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, postProcessingBuffer);
+	
+	//Binding texture and changing its properties
+	glBindTexture(GL_TEXTURE_2D, colorMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+	//Bind normal buffer again
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+//Initializes all the variables needed for shadow mapping
 void RedPandaStudio::initShadowMapping()
 {
 	//Debugging data
@@ -1241,6 +1492,7 @@ void RedPandaStudio::initShadowMapping()
 	shadow_sampler = glGetUniformLocation(shadowID, "screenTexture");
 }
 
+//Draws the shadowmapping
 void RedPandaStudio::drawShadowMapping()
 {
 	//=========================
@@ -1355,7 +1607,7 @@ void RedPandaStudio::drawShadowMapping()
 }
 //=================================================
 
-
+//Sets the backface culling to true or false, and also sets which type of culling
 void RedPandaStudio::setCulling(bool b, GLenum e)
 {
 	if(b)
@@ -1365,10 +1617,12 @@ void RedPandaStudio::setCulling(bool b, GLenum e)
 	}
 	else
 	{
+		//If we are disabling the culling, we just don't care which face is set
 		glDisable(GL_CULL_FACE);
 	}
 }
 
+//Activates and deactivates the frustum culling (which is done by comparing with a bounding box)
 void RedPandaStudio::setFrustumCulling(bool b)
 {
 	scene->getEntity()->setFrustumCulling(b);
@@ -1402,7 +1656,10 @@ void RedPandaStudio::addMeshLoD(int lvl, const char* mesh)
 
 //////////////////////////////
 //  TRANSFORMATION FACADE
-void translateNode(TNode* node, glm::vec3 position) {
+
+//Traslates the given node with the given position
+void translateNode(TNode* node, glm::vec3 position) 
+{
 
 	TEntity* t;
 
@@ -1410,7 +1667,8 @@ void translateNode(TNode* node, glm::vec3 position) {
 	if(node != nullptr && ((t = dynamic_cast<TMesh*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TCamera*>(node->getEntity())) != nullptr ||
 		(t = dynamic_cast<TAnimation*>(node->getEntity())) != nullptr ||
-		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) {
+		(t = dynamic_cast<TLight*>(node->getEntity())) != nullptr)) 
+	{
 
 		TTransform* tr = (TTransform*)node->getFather()->getEntity();
 
@@ -1418,7 +1676,8 @@ void translateNode(TNode* node, glm::vec3 position) {
 		tr->translate(position.x, position.y, position.z);
 
 	}
-	else if(node != nullptr && (t = dynamic_cast<TEmitter*>(node->getEntity())) != nullptr) {
+	else if(node != nullptr && (t = dynamic_cast<TEmitter*>(node->getEntity())) != nullptr) 
+	{
 
 		TTransform* tr = (TTransform*)node->getFather()->getEntity();
 
@@ -1430,7 +1689,9 @@ void translateNode(TNode* node, glm::vec3 position) {
 
 }
 
-void scaleNode(TNode* node, glm::vec3 scale) {
+//Scales the given node with the given scale
+void scaleNode(TNode* node, glm::vec3 scale) 
+{
 
 	TEntity* t;
 
@@ -1450,6 +1711,7 @@ void scaleNode(TNode* node, glm::vec3 scale) {
 
 }
 
+//Rotates the node with the given rotation
 void rotateNode(TNode* node, glm::vec3 rotation) {
 
 	TEntity* t;

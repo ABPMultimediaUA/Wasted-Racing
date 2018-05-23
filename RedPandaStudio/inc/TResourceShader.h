@@ -8,6 +8,7 @@
 
 class TResourceShader : public TResource {
     public:
+        //Constructor and destructor
         TResourceShader(){};
         ~TResourceShader(){};
 

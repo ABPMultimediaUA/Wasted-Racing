@@ -103,10 +103,8 @@ private:
     std::vector<IComponent::Pointer> objectsAI; //AIDrivingComponents to be processed
     std::vector<IComponent::Pointer> battleAI;  //BattleBehaviour componentes to be processed
 
-    //___>
-    //bool changeAI;
     bool itemLoD;                   //variable to know if we took item in this waypoint or not (only for lod)
-    bool updateBattleBehaviour;
+    bool updateBattleBehaviour;     //Checker of updating battle behaviour or not
 
     //==============================================
     // SCHEDULING

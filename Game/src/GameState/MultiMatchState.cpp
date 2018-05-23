@@ -23,21 +23,6 @@ void MultiMatchState::init() {
 }
 
 void MultiMatchState::update(float &accumulatedTime) {
-
-//::::> La predicción de movimiento consiste en corregir los eventos anteriores por unos nuevos, en base a lo que te ha
-    //llegado de la comunicacion con otros individuos. Cada player se encarga de analizar las físicas y la IA de sus propios objetos.
-    //Se pasa esta información al resto de jugadores y estos actualizan los objetos foráneos y etc. Los problemas llegan con 
-    //el retardo de la linea, y las interacciones físicas entre objetos de diferentes sesiones. Entonces el sistema físico tiene
-    //que calcular lo que un juego normal para todos. Eso hasta ahí. Y la decisión de las IA's se puede calcular particularme, pero
-    //las decisiones físicas tienen que ser individuales.
-
-    //AHORA: el problema es el retardo.
-    //SOLUCION: Cada evento que se manda online también lleva la hora del servidor de cuando se mandó. La hora del servidor
-    //es común a todos los jugadores de la sesión. Con eso se comprueba q llamadas llegan primero. ¿pero q llamadas? Las simultáneas de colisión
-    // y eso. Entonces el juego debe de tener un salvaguardado y q se compruebe con este "lag" de fondo, y diga si algo ha chocado o no,
-    // dependiendo de quien haya registrado el evento antes. Esta decisión se puede revocar hasta 1 segundo después si se recibe
-    //la llamada adecuada. Hacen falta denominadores comunes a los eventos o que se hagan las llamadas en los diferentes sistemas
-    //en el momento en que ocurrió. Pero eso significaría llevar un tracking temporal de cada evento hasta un segundo.
    
     float maxDTime = GlobalVariables::getInstance().getMaxDTime();
     if(accumulatedTime > maxDTime)
@@ -50,12 +35,8 @@ void MultiMatchState::update(float &accumulatedTime) {
 
     //No gelding
     inputManager->update();
-    //___>
+
     debugManager->update();
-    //<___
-
-
-
 
     //If time surpassed the loopTime
     if(accumulatedTime > loopTime){
@@ -66,7 +47,7 @@ void MultiMatchState::update(float &accumulatedTime) {
     }
 
     //Do before interpolation, since it receives new positions that break the spot
-    //networkManager->update();
+    networkManager->update();
 
     //Always interpolate
     interpolate(accumulatedTime);
@@ -95,7 +76,6 @@ void MultiMatchState::updateManagers(float dTime){
 
 void MultiMatchState::draw() {
     renderManager->draw();
-    //renderManager->drawHUD();
 }
 
 void MultiMatchState::interpolate(float &accumulatedTime) {

@@ -14,7 +14,7 @@ void ClientLobbyState::init() {
     eventManager   = &EventManager::getInstance();
 
     //Initialize image
-    //text1 = renderManager->createText(std::string("... Conectando ..."), glm::vec2(500,500), 255, 0, 0, 255, glm::vec2(300,300), std::string("media/font/Razor_m.png"));
+    text1 = renderManager->createText(std::string("... Conectando ..."), glm::vec2(500,500), 255, 0, 0, 255, glm::vec2(300,300), std::string("media/font/Razor_m.png"));
 
     //Initialize lobby
     if(!networkManager->getConnected())

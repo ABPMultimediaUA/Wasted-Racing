@@ -76,8 +76,6 @@ void MultiSelectionState::update(float &accumulatedTime)
             //Load map
             Game::getInstance().loadMap();
 
-            //SO TINY. SO THIN. After we load the map we can positionate it (get Terrain from pos) and after this 
-            //Line it is needed. This game is killing me.
             networkManager->update();
 
             //Add animations to the characters
@@ -85,7 +83,6 @@ void MultiSelectionState::update(float &accumulatedTime)
 
             renderManager->getRenderFacade()->changeAnimation(25000, 0);
 
-            //:::> SOME BAD MOVES but necessary (the network assigns a random number between 0 and 3 to all connected players, whomever did it first)
             if(objectManager->getObject(25001) != nullptr)
                 renderManager->getRenderFacade()->changeAnimation(25001, 0);
 
@@ -162,7 +159,6 @@ void MultiSelectionState::update(float &accumulatedTime)
     eventManager->update();
 
     //Sets if the game keeps running or not
-    //:::>Change with event that closes the game
     Game::getInstance().setStay(objectManager->getGameRunning());
 }
 

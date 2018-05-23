@@ -45,8 +45,17 @@ void shootOnOvertakeEvent(EventData e);
 void shootOnOvertakenEvent(EventData e);
 //MUSIC
 void shootOnMusicMainTheme(EventData e);
+void shootOnMusicMenu(EventData e);
+void shootOnMusicFinish(EventData e);
 //OTHERS
 void changeAudioLanguage(EventData e);
+//Movement
+void shootOnSpeed(EventData e);
+void shootOnSlide(EventData e);
+void shootOnJump(EventData e);
+void shootOnTrap(EventData e);
+void shootOnShell(EventData e);
+void shootOnPlayerSelect(EventData e);
 
 
 
@@ -81,9 +90,18 @@ void AudioFMOD::openAudioEngine(int lang) {
     EventManager::getInstance().addListener(EventListener {EventType::Score_OnOvertaken, shootOnOvertakenEvent});
     //MUSIC
     EventManager::getInstance().addListener(EventListener {EventType::Music_MainTheme, shootOnMusicMainTheme});
+    EventManager::getInstance().addListener(EventListener {EventType::Music_Menu, shootOnMusicMenu});
+    EventManager::getInstance().addListener(EventListener {EventType::Music_Finish, shootOnMusicFinish});
     //OTHERS
     EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeLanguage, changeAudioLanguage});
-    
+    //MOVEMENT
+    EventManager::getInstance().addListener(EventListener {EventType::Player_Speed, shootOnSpeed});
+    EventManager::getInstance().addListener(EventListener {EventType::Player_Slide, shootOnSlide});
+    EventManager::getInstance().addListener(EventListener {EventType::Player_Jump, shootOnJump});
+    EventManager::getInstance().addListener(EventListener {EventType::Trap_Create, shootOnTrap});
+    EventManager::getInstance().addListener(EventListener {EventType::BlueShell_Create, shootOnShell});
+    EventManager::getInstance().addListener(EventListener {EventType::RedShell_Create, shootOnShell});
+    EventManager::getInstance().addListener(EventListener {EventType::Player_Select, shootOnPlayerSelect});
 
     //Game veriables
     worldUnits = 0.05;
@@ -192,22 +210,18 @@ void AudioFMOD::loadBanks() {
 
 }
 void AudioFMOD::unloadBanks() {
-
+    
     for(auto event : soundEvents)         
         delete event.second;
-
+        
     soundEvents.clear();
-
-    for(auto description : eventDescriptions)
-        ERRCHECK( FMOD_Studio_EventDescription_ReleaseAllInstances(description.second) );
-
+    
     eventDescriptions.clear();
-
+    
     for(auto bank : banks)
         ERRCHECK( FMOD_Studio_Bank_Unload(bank.second) );
-
+        
     banks.clear();
-    
 }
 
 //Inserts a new event if it doesn't exist
@@ -222,6 +236,11 @@ bool AudioFMOD::existsSoundEvent(std::string name) {
     return true;
 }
 
+void AudioFMOD::stop(std::string name) {
+    if(soundEvents.find(name) != soundEvents.end())
+        soundEvents[name]->stop();
+}
+
 //==============================================================================================================================
 // DELEGATE FUNCTIONS
 //==============================================================================================================================
@@ -231,6 +250,9 @@ void shootDefaultCollisionEvent(EventData e) {
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "DefaultCollisionEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
+
+    ISoundEvent* sound1 = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnCollisionEvent");
+    sound1->initalizeSound(audioFMOD, e);
   
 }
 void shootRampCollisionEvent(EventData e) {
@@ -245,6 +267,9 @@ void shootItemBoxCollisionEvent(EventData e) {
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "ItemBoxCollisionEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
+
+    ISoundEvent* sound1 = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnJumpEvent");
+    sound1->initalizeSound(audioFMOD, e);
   
 }
 void shootTrapCollisionEvent(EventData e) {
@@ -252,6 +277,9 @@ void shootTrapCollisionEvent(EventData e) {
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "TrapCollisionEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
+
+    ISoundEvent* sound1 = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnTrapEvent");
+    sound1->initalizeSound(audioFMOD, e);
   
 }
 //SCORE
@@ -261,6 +289,9 @@ void shootOnNewLapEvent(EventData e) {
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
 
+    ISoundEvent* sound1 = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnNewLapSoundEvent");
+    sound1->initalizeSound(audioFMOD, e);
+
 }
 void shootOnOvertakeEvent(EventData e) {
 
@@ -268,12 +299,18 @@ void shootOnOvertakeEvent(EventData e) {
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
 
+    ISoundEvent* sound1 = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnOvertakeSoundEvent");
+    sound1->initalizeSound(audioFMOD, e);
+
 }
 void shootOnOvertakenEvent(EventData e) {
 
     ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnOvertakenEvent");
     AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
     sound->initalizeSound(audioFMOD, e);
+
+    ISoundEvent* sound1 = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnOvertakeSoundEvent");
+    sound1->initalizeSound(audioFMOD, e);
 
 }
 
@@ -291,4 +328,61 @@ void changeAudioLanguage(EventData e) {
     audioFMOD->unloadBanks();
     audioFMOD->loadBanks();
 
+}
+//MOVEMENT
+void shootOnSpeed(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnSpeedEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootOnSlide(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnSlideEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootOnJump(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnJumpEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootOnTrap(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnTrapEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootOnShell(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnShellEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootOnMusicMenu(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "MusicMenuEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootOnMusicFinish(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "MusicFinishEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
+}
+void shootOnPlayerSelect(EventData e) {
+    
+    ISoundEvent* sound = ISoundEvent::createSound(ISoundEvent::getFactoryMap(), "OnPlayerSelectEvent");
+    AudioFMOD* audioFMOD = (AudioFMOD*)AudioManager::getInstance().getAudioFacade();
+    sound->initalizeSound(audioFMOD, e);
+  
 }

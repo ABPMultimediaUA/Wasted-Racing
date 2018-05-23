@@ -110,12 +110,12 @@ void calculatePointLights()
 
         if(specular > 0.0)
         {
-            v_Color += vec4(specular * light[i].intensity) * vec4(material.ks, 1.0);
+            //v_Color += vec4(specular * light[i].intensity) * vec4(material.ks, 1.0);
         }
 
     }
     
-    v_Color *= visibility;
+    //v_Color *= visibility;
 }
 
 void calculateSpotLights()
@@ -167,6 +167,8 @@ void main()
 
         normal = N;
 
+        //The normal mapping has been based completely in the tutorials provided at learnopengl.com
+        //Specifically, the tutorial is the following: https://learnopengl.com/Advanced-Lighting/Normal-Mapping
         if(normalActive)
         {
             normal = texture(normalTexture, UV_Coordinates).rgb;

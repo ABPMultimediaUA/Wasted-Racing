@@ -61,6 +61,10 @@ public:
     
     //Sets the volume of the event
     virtual void setVolume(float vol);
+
+    //Sets the volume
+    virtual void sVolume(float vol) { volume = vol;}
+    virtual float getVolume()       { return volume;}
     
     //Sets the gain of the event
     virtual void setGain(float gain);
@@ -100,5 +104,6 @@ protected:
 
     FMOD_STUDIO_EVENTINSTANCE* soundInstance = NULL;
     std::weak_ptr<IComponent> emitter;
+    float volume = 1.0;
 
 };

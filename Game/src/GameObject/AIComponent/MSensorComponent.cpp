@@ -46,42 +46,6 @@ void MSensorComponent::updateMapCollisions()
     auto terrain = terrC->getTerrain();
 
     //-------------------
-    //TERRAIN BACK POINTS
-    //-------------------
-    /*glm::vec3 point1, point2;
-    switch(terrain.direction){
-        case 0:
-            point1 = terrain.p1;
-            point2 = terrain.p4;
-            break;
-
-        case 1:
-            point1 = terrain.p2;
-            point2 = terrain.p1;
-            break;
-
-        case 2:
-            point1 = terrain.p3;
-            point2 = terrain.p2;
-            break;
-
-        case 3:
-            point1 = terrain.p4;
-            point2 = terrain.p3;
-            break;
-    }
-    
-    //Calculate first point
-    calculateABTerrainBack(point1, a_back, b_back);                            //Do the math
-    pvo = std::make_shared<VObject>(point1, a_back, b_back, 1.f, 1, 1.f);  //generate VObject with the data
-    seenObjects.push_back(pvo);                                       //Add to seen objects
-
-    //Calculate second point
-    calculateABTerrainBack(point2, a_back, b_back);                            //Do the math
-    pvo = std::make_shared<VObject>(point2, a_back, b_back, 1.f, 1, 1.f);  //generate VObject with the data
-    seenObjects.push_back(pvo);                                       //Add to seen objects
-*/
-    //-------------------
     //FRONT POINTS CHECK
     //-------------------
     //Collide with walls, and propagate if no collision
@@ -249,9 +213,3 @@ void MSensorComponent::calculateABTerrainBack(glm::vec3& objective, float& a, fl
     LAPAL::calculateAB(relativeP, vsensor->getSensorLeft(), vsensor->getSensorRight(), a, b);
 
 }
-
-//Auxiliar function to calculate the point of collision with a vector given one of the sensors
-//PARAMS: Terrain point 1, terrain point 2, is left = true / is right = false, *pointer boolean if the sensor is touching a surface
-/*glm::vec3 MSensorComponent::calculateSensorCollision(glm::vec3& t1, glm::vec3& t2, bool isLeft, bool* contact){
-        terrain.p3. terrain.p2, L o R, *contact, return glm ve3¡c3
-}*/

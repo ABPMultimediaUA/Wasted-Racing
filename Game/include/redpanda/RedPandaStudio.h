@@ -93,6 +93,9 @@ public:
     //Draws the post processing on a quad
     void quadDrawPostProcessing();
 
+    //Resize the texture to the actual window size
+    void resizePostProcessing(float x, float y);
+
     //Initializes all parameters and programs to operate with the shadow mapping
     void initShadowMapping();
 
@@ -110,25 +113,27 @@ public:
 
     //////////////////////////////
     //  GETTERS
-    SDL_Window* getWindow()                             { return window;           }
-    TNode* getSceneRoot()                               { return scene;            }
-    ResourceManager* getResourceManager()               { return resourceManager;  }
-    SDL_GLContext* getContext()                         { return context;          }  
+    SDL_Window* getWindow()                             {   return window;               }
+    TNode* getSceneRoot()                               {   return scene;                }
+    ResourceManager* getResourceManager()               {   return resourceManager;      }
+    SDL_GLContext* getContext()                         {   return context;              }  
 
     //////////////////////////////
     //  SETTERS
-    void setWindow(SDL_Window* rw )     {   window = rw;              }   
-    void setSilhouette(bool b)          {   silhouetteActivated = b;  }
+    void setWindow(SDL_Window* rw )                     {   window = rw;                 }   
+    void setSilhouette(bool b)                          {   silhouetteActivated = b;     }
+    void setNLightsForward(int i)                       {   nLightsForward = i;          }
+    void setNLightsBack(int i)                          {   nLightsBack = i;             }
 
     //  POSTPROCESSING GETTERS & SETTERS
-    bool getPPActive()                 {   return postProcessingActive; }
-    void setPPActive(bool b)           {   postProcessingActive = b;    }
-    void setPPOption(PPOption  o)      {   postProcessingOption = o;    }
-    void setPPOffset(int  o)           {   offset = o;                  }
-    void setPPBlurPos(float x, float y){   blur_x = x; blur_y = y;      }
-    void setPPBlurStrength(float  s)   {   blur_strength = s;           }
-    void setPPBlurDist(float  d)       {   blur_dist = d;               }
-    void setPPNeonFactor(float  n)     {   neonFactor = n;              }
+    bool getPPActive()                                  {   return postProcessingActive; }
+    void setPPActive(bool b)                            {   postProcessingActive = b;    }
+    void setPPOption(PPOption  o)                       {   postProcessingOption = o;    }
+    void setPPOffset(int  o)                            {   offset = o;                  }
+    void setPPBlurPos(float x, float y)                 {   blur_x = x; blur_y = y;      }
+    void setPPBlurStrength(float  s)                    {   blur_strength = s;           }
+    void setPPBlurDist(float  d)                        {   blur_dist = d;               }
+    void setPPNeonFactor(float  n)                      {   neonFactor = n;              }
 
 private: 
 
@@ -138,6 +143,9 @@ private:
     void initOpenGL();
     void initScene();
     void renderLights();
+    void renderAllLights();
+    void updateActiveLights();
+    void updateActiveNearLights();
     void renderCamera();
     void renderBillboards();
     void renderParticles();
@@ -161,6 +169,9 @@ private:
     TNode *camera;
     std::vector<TNode*> lights;
     std::vector<TNode*> spotlights;
+    int nLightsBack = 2;
+    int nLightsForward = 3;
+    int currentLight = 0;
 
     //=========================
     //  BILLBOARDS

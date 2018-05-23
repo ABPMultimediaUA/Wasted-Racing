@@ -53,11 +53,12 @@ public:
     //==============================================
     // GETTERS AND SETTERS
     //==============================================
-    std::vector<IComponent::Pointer>& getComponentList() { return renderComponentList; } //Component list getter
-    QuadTree& getComponentTree()                         { return renderComponentTree; } //QuadTree getter
-    IRenderFacade* getRenderFacade()                     { return renderFacade;        } //Get render facade functions
-    IComponent::Pointer getCameraComponent()             { return cameraComponent;     } //Camera component getter 
-    void setCameraComponent( IComponent::Pointer cam )   { cameraComponent = cam;      } //and setter
+    std::vector<IComponent::Pointer>& getComponentList()                    { return renderComponentList;       } //Component list getter
+    std::vector<IComponent::Pointer>& getAnimationComponentList()           { return animationComponentList;    } //Component list getter
+    QuadTree& getComponentTree()                                            { return renderComponentTree;       } //QuadTree getter
+    IRenderFacade* getRenderFacade()                                        { return renderFacade;              } //Get render facade functions
+    IComponent::Pointer getCameraComponent()                                { return cameraComponent;           } //Camera component getter 
+    void setCameraComponent( IComponent::Pointer cam )                      { cameraComponent = cam;            } //and setter
 
     //==============================================
     // COMPONENT CREATORS
@@ -76,7 +77,7 @@ public:
     /////////////
     //  LoD
     /////////////
-    void LoDmesh();
+    void LoDmeshAnim();
 
     //==============================================
     // VISUAL EFFECTS
@@ -217,6 +218,7 @@ private:
     //When we start adding components, we add them in a list,
     //Once we've added them all, we split them in a QuadTree structure
     std::vector<IComponent::Pointer>      renderComponentList;
+    std::vector<IComponent::Pointer>      animationComponentList;
     QuadTree                              renderComponentTree;
 
     //Particle manager
@@ -225,15 +227,10 @@ private:
     //==============================================================
     // HUD DATA
     //==============================================================
-    bool HUD_ON;             //Checks if hud was initialized
+    bool HUD_ON;            //Checks if hud was initialized
     int32_t lapHUD_ID;      //Lap text ID
     int32_t positionHUD_ID; //Position text ID
     int32_t itemHUD_ID;     //Item text ID
-
-    //Data for the quadTree
-    //unsigned int maxObjPerNode;
-    //int          updateRange;
-    //int          x0, x1, y0, y1; //Map dimensions
 
     //We store just one camera component, so we can't have more than 1
     IComponent::Pointer cameraComponent;

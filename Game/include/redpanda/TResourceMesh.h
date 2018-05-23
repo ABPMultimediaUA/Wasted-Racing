@@ -14,6 +14,7 @@
 
 class TResourceMesh : public TResource {
     public:
+        //Constructor and destructor
         TResourceMesh() {};
         virtual ~TResourceMesh();
 
@@ -93,7 +94,7 @@ class TResourceMesh : public TResource {
         //Transform of the bounding box
         glm::mat4 bbTransform;
 
-        //Auxiliar functions for generating bounding box and frustum culling
+        //Auxiliar functions for generating bounding box and calculating frustum culling
         void generateBoundingBox();
         void drawBoundingBox();
         bool checkBoundingBox();

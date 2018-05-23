@@ -25,7 +25,6 @@ void ItemBlueShellComponent::init(float actualVector)
     getGameObject().getComponent<MoveComponent>()->changeInvul(true);
 }
 
-//:::> This ALL should be in AIManager since it does calculations using all components
 void ItemBlueShellComponent::update(float dTime)
 {
 

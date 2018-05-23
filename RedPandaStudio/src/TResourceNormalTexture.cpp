@@ -1,10 +1,12 @@
 #include "TResourceNormalTexture.h"
 
+//Destructor of the resource
 TResourceNormalTexture::~TResourceNormalTexture()
 {
     glDeleteTextures(1, &textureID);
 }
 
+//Loader of the resource. We free the memory after giving opengl the data of the texture
 bool TResourceNormalTexture::loadResource()
 {
     //SFML Class to store our texture
@@ -45,6 +47,7 @@ bool TResourceNormalTexture::loadResource()
     return false;
 }
 
+//Draws the texture, restoring the active texture spot after the draw
 void TResourceNormalTexture::draw()
 {
     if(active)
@@ -55,8 +58,4 @@ void TResourceNormalTexture::draw()
 
         glActiveTexture(GL_TEXTURE0);
     }
-}
-
-void TResourceNormalTexture::endDraw()
-{
 }

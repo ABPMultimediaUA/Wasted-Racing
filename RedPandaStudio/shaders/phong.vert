@@ -105,7 +105,6 @@ layout(location = 3) in vec3 tangents;
 layout(location = 4) in vec3 bitangents;
 
 uniform mat4 ModelMatrix;
-uniform mat4 normalMatrix;
 uniform mat4 mvMatrix;
 uniform mat4 mvpMatrix;
 
@@ -127,13 +126,16 @@ void main()
 {
     modelViewMatrix = mvMatrix;
 
-    P = vec3(modelViewMatrix * vertexPosition);	          // Posición del vértice
-	N = vec3(normalMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
+    P = vec3(mvMatrix * vertexPosition);	          // Posición del vértice
+	N = vec3(mvMatrix * vec4(vertexNormal, 0.0));    // Normal del vértice
 
+    //This matrix is used to convert from tangent space to world space
+    //The normal mapping has been based completely in the tutorials provided at learnopengl.com
+    //Specifically, the tutorial is the following: https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     vec3 T = normalize(vec3(ModelMatrix * vec4(tangents, 0.0)));
     vec3 B = normalize(vec3(ModelMatrix * vec4(bitangents, 0.0)));
-    vec3 N = normalize(vec3(ModelMatrix * vec4(vertexNormal, 0.0)));
-    TBN = mat3(T, B, N);
+    vec3 norm = normalize(vec3(ModelMatrix * vec4(vertexNormal, 0.0)));
+    TBN = mat3(T, B, norm);
 
     gl_Position = mvpMatrix * vertexPosition;
 

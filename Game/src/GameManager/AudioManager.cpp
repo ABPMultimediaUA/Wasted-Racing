@@ -49,7 +49,6 @@ IComponent::Pointer AudioManager::createListenerComponent(GameObject& newGameObj
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::>No sense since there isn't scheduling yet
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::ListenerComponent_Create, data});
@@ -61,7 +60,6 @@ IComponent::Pointer AudioManager::createListenerComponent(GameObject& newGameObj
 // DELEGATES
 //============================================== 
 void addListenerComponent(EventData data) {
-    //:::>The init should be done by the audio manager (the inner function, to avoid dependencies)
     AudioManager::getInstance().setListenerComponent(data.Component);
     data.Component.get()->init();
 }

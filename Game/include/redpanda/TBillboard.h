@@ -4,6 +4,10 @@
 #include "TResourceTexture.h"
 #include <iostream>
 
+
+//The technique used for developing the billboards in our engine is based in the tutorials provided by ogldev.atspace.co.uk
+//More precisely, it's based on this tutorial: http://ogldev.atspace.co.uk/www/tutorial27/tutorial27.html
+//This also includes our shaders, used for rendering the billboards
 class TBillboard : public TEntity {
     public:
         TBillboard() {};
@@ -24,10 +28,10 @@ class TBillboard : public TEntity {
     //////////////////////////////////////////////////////////////////////
     ////////////////////// GETTERS & SETTERS /////////////////////////////
     //////////////////////////////////////////////////////////////////////
-        TResourceTexture* getTexture()                      { return texture;       };
-        glm::vec3 getPosition()                             { return position;      };
-        void setTexture(TResourceTexture* text)             { texture = text;       };
-        void setPosition(glm::vec3 p)                       { position = p;         };
+        TResourceTexture* getTexture()                      {   return texture;       };
+        glm::vec3 getPosition()                             {   return position;      };
+        void setTexture(TResourceTexture* text)             {   texture = text;       };
+        void setPosition(glm::vec3 p)                       {   position = p;         };
     private:
         //Texture to be drawn in the billboard
         TResourceTexture*  texture = nullptr;

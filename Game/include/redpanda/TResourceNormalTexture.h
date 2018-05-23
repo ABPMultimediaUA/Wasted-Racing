@@ -4,8 +4,12 @@
 #include <GL/glew.h>
 #include <SFML/Graphics.hpp>
 
+//The functioning of this class should be very similar to the funcioning of TResourceTexture, with the
+//difference that this texture should be drawn in the spot 1 and not the 0, to avoid texture collisions
+//between diffuse maps and normal maps
 class TResourceNormalTexture : public TResource {
     public:
+        //Constructor and destructor
         TResourceNormalTexture() {};
         ~TResourceNormalTexture();
 
@@ -14,9 +18,6 @@ class TResourceNormalTexture : public TResource {
 
         //Draws the texture
         void draw();
-        
-        //Deactivates the current texture
-        void endDraw();
 
     private:
         //OpenGL ID of the texture

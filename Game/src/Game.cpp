@@ -112,7 +112,6 @@ void Game::Run() {
     clock = new Clock();
     clock->init();
 
-    //Start the run
     //execute game while staying
     while(stay){
         
@@ -429,9 +428,6 @@ void Game::loadMap() {
 	}
 
     //Update every thing that has been created
-    //:::>Can be avoided if objects are treated by their managers at the moment.
-    //:::>By now: CreateObject, createTerrainComponent, createLightRenderComponent, createObjectRenderComponent, createRampComponent, createCollisionComponent
-    //:::>Makes sense when the scheduling is adapted
     EventManager::getInstance().update();
 
     //Loop over terrain components, linking them
@@ -488,7 +484,6 @@ void Game::loadMap() {
     }
 
     //Update every thing that has been created
-    //:::>No need for this one either because it doesn't create any event since the last one
     EventManager::getInstance().update();
 
 }
@@ -515,11 +510,12 @@ void changeFullscreen(EventData eData) {
 
         SDL_SetWindowFullscreen(w, 0);
         
-        SDL_SetWindowSize(w, width/1.5, height/1.5);
+        SDL_SetWindowSize(w, width*0.8, height*0.8);
              
+        SDL_SetWindowPosition(w, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
-        RenderManager::getInstance().getRenderFacade()->getWindow().size.x = width/1.5;
-        RenderManager::getInstance().getRenderFacade()->getWindow().size.y = height/1.5;
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.x = width*0.8;
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.y = height*0.8;
 
     }
     else {

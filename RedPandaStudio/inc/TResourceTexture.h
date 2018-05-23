@@ -6,6 +6,7 @@
 
 class TResourceTexture : public TResource {
     public:
+        //Constructor and destructor
         TResourceTexture() {};
         ~TResourceTexture();
 
@@ -17,6 +18,10 @@ class TResourceTexture : public TResource {
         
         //Deactivates the current texture
         void endDraw();
+
+        //////////////////////////////////////////////////////////////////////////
+        ////////////////////////// GETTERS && SETTERS ////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
 
         GLuint getTextureId() { return textureID; }
 

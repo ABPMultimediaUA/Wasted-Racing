@@ -1,11 +1,13 @@
 #include "SelectionState.h"
-
+#include "../GameFacade/IAudioFacade.h"
 //==============================================
 // Additional functions
 //==============================================
 void addAI(int selectedPlayer);
 void loadAnimations();
 void addStateChange(EventData eData);
+
+class ObjectRenderComponent;
 
 void SelectionState::init() 
 {
@@ -23,11 +25,12 @@ void SelectionState::init()
 
         initialized = true;
 
-        cameraPositions[4] = glm::vec3(10,-27,0);
-        cameraPositions[5] = glm::vec3(0,-30,0);
-
-        currPlayer = 0;
     }
+
+    cameraPositions[4] = glm::vec3(10,-27,0);
+    cameraPositions[5] = glm::vec3(0,-30,0);
+
+    currPlayer = 0;
 
     eventManager->addEvent(Event {Game_PlayerSelection});
 
@@ -36,6 +39,11 @@ void SelectionState::init()
     GlobalVariables::getInstance().setIgnoreInput(true);
 
     RenderManager::getInstance().getRenderFacade()->setCameraTarget(cameraPositions[4], cameraPositions[5]);
+
+    EventData ed;
+    ed.Id = 0;
+    ed.Component = ObjectManager::getInstance().getObject(60000).get()->getComponent<ObjectRenderComponent>();
+    EventManager::getInstance().addEvent(Event {EventType::Player_Select, ed});
     
     ongoing = false;
     GlobalVariables::getInstance().setFixedPlayer(false);
@@ -89,6 +97,8 @@ void SelectionState::update(float &accumulatedTime)
             GlobalVariables::getInstance().setGameLoaded(true);
             GlobalVariables::getInstance().setIgnoreInput(false);
 
+            audioManager->getAudioFacade()->stop("MusicMenu");
+
         }
         else if(load && GlobalVariables::getInstance().getGameLoaded()){
             EventManager::getInstance().addEvent(Event {EventType::Game_LoadingScreen});
@@ -104,27 +114,33 @@ void SelectionState::update(float &accumulatedTime)
         if(currPlayer == 0 && selectedPlayer == 3) {
             cameraPositions[0] = glm::vec3(10,-27,0);
             cameraPositions[1] = glm::vec3(0,-30,0);
-            cameraPositions[2] = glm::vec3(10,-27,-18);
-            cameraPositions[3] = glm::vec3(0,-30,-18);
+            cameraPositions[2] = glm::vec3(10,-27,-24);
+            cameraPositions[3] = glm::vec3(0,-30,-24);
         }
         else if (currPlayer == 3 && selectedPlayer == 0) {
-            cameraPositions[0] = glm::vec3(10,-27,-18);
-            cameraPositions[1] = glm::vec3(0,-30,-18);
+            cameraPositions[0] = glm::vec3(10,-27,-24);
+            cameraPositions[1] = glm::vec3(0,-30,-24);
             cameraPositions[2] = glm::vec3(10,-27,0);
             cameraPositions[3] = glm::vec3(0,-30,0); 
         }
         else if (currPlayer > selectedPlayer) {
             cameraPositions[0] = cameraPositions[4];
             cameraPositions[1] = cameraPositions[5];
-            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z + 6);
-            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z + 6);
+            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z + 8);
+            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z + 8);
         }
         else if (currPlayer < selectedPlayer) {
             cameraPositions[0] = cameraPositions[4];
             cameraPositions[1] = cameraPositions[5];
-            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z - 6);
-            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z - 6);
+            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z - 8);
+            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z - 8);
         }
+        
+        audioManager->getAudioFacade()->stop("OnPlayerSelectEvent");
+        EventData ed;
+        ed.Id = selectedPlayer;
+        ed.Component = ObjectManager::getInstance().getObject(60000).get()->getComponent<ObjectRenderComponent>();
+        EventManager::getInstance().addEvent(Event {EventType::Player_Select, ed});
     }
 
     if(ongoing) {
@@ -153,7 +169,6 @@ void SelectionState::update(float &accumulatedTime)
     eventManager->update();
 
     //Sets if the game keeps running or not
-    //:::>Change with event that closes the game
     Game::getInstance().setStay(objectManager->getGameRunning());
 }
 

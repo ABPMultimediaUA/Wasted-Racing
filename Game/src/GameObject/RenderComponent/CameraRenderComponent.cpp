@@ -143,8 +143,6 @@ void CameraRenderComponent::update(float dTime) {
         }
         
     }
-    //if (move.spin == 0)
-        //distance = oldDistance;
 
     //Update camera
     for(int i = 4; i > 0; i--) {

@@ -4,7 +4,6 @@
 
 //Initilizer
 void ListenerComponent::init() {
-    //:::>Shouldn't the manager do this?
     AudioManager::getInstance().getAudioFacade()->setListener(gameObject);
 }
 

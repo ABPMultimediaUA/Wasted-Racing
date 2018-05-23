@@ -3,7 +3,6 @@
 
 ItemRedShellComponent::ItemRedShellComponent(GameObject& newGameObject, GameObject& obj, IItemComponent::InstanceType m) : IItemComponent(newGameObject), player(obj), mode(m)
 {
-    //:::>hardcoded variables
     speed = 1.f;
     consTime = 0.1f;
     decTime = 1.f;
@@ -34,7 +33,6 @@ void ItemRedShellComponent::update(float dTime)
     if(mode == IItemComponent::InstanceType::REMOTE)
         return;
 
-    //:::> PLEASE, COMMENT ALL OF THIS
     auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
 
     if(myPos > 1)

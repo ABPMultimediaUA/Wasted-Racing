@@ -11,7 +11,6 @@ void objectDeleteScore(EventData);
 ScoreManager::ScoreManager()
 {
     //Maximum number of laps
-    //:::> Should be set in menu_state before the game runs
     maxLaps = 3;
 }
 
@@ -46,7 +45,6 @@ IComponent::Pointer ScoreManager::createScoreComponent(GameObject& newGameObject
     newGameObject.addComponent(component);
 
     //Push it into the list of players
-    //:::>Can  be substituted with an event in the future with scheduling
     players.push_back(component);
 
     return component;
@@ -60,7 +58,6 @@ IComponent::Pointer ScoreManager::createStartLineComponent(GameObject& newGameOb
     newGameObject.addComponent(component);
 
     //Push it into the list of start lines
-    //:::>Can  be substituted with an event in the future with scheduling
     startLines.push_back(component);
 
     return component;
@@ -147,8 +144,10 @@ void ScoreManager::update()
 
         uint16_t mID = 0;
 
-        if(lap == 2 || lap == 3)
+        if(lap == 2)
             mID = 0;
+        else if ( lap == 3 )
+            mID = 4;
         else if(lap > 3 && playerPosition < 4)
             mID = 1;
         else
@@ -164,7 +163,6 @@ void ScoreManager::update()
         playerLap = lap;
         
         //If final lap, send victory event
-        //:::> NO HARDCODING THE NUMBER OF LAPS, take the info from the map info
         if(lap == 4) {
             Game::getInstance().setState(IGameState::stateType::POSTMATCH);
         }

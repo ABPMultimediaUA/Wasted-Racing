@@ -129,20 +129,6 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 			obs_right  = obs_right 	/ ((array.size() + walls.size()) - types);
 		}
 
-
-		/*if(array.size()>0){
-			atan_obs = (atan_obs + atan_walls) / 2;
-		}else{
-			atan_obs = atan_walls;
-		}*/
-		
-		//Apply ruleset.
-
-		//New Iteration approach
-		/*steeringLeft = glm::min( glm::max(wp_left, wp_center), glm::max(obs_center, obs_right) );
-		steeringNone = glm::min( glm::max(1-wp_left, wp_center, 1-wp_right), glm::max(obs_left, obs_right) );
-		steeringRight = glm::min( glm::max(wp_right, wp_center), glm::max(obs_center,obs_left) );*/
-
 		auto haveItem = myPos.getComponent<ItemHolderComponent>()->getItemType();
 
 		if(types == 0)
@@ -192,8 +178,6 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 
 	}else{
 		//ruleset
-		//---------------GENERALIZE----conjunction and function result
-
 		steeringLeft = wp_left;
 		steeringNone = wp_center;
 		steeringRight = wp_right;
@@ -201,16 +185,14 @@ float AIDrivingComponent::girar(GameObject& myPos, std::vector<VObject::Pointer>
 
 	//defuzzifier inference
 	//Here we use the centroid point between the defuzzified inferences, to pinpoint the crisp steering value
-	//---------------GENERALIZE---everything
 	float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
-	//std::cout<<
+
 	centroidT(&op1_cx, &op1_cy, &op1_area, steeringNone, ctd_left_r1, ctd_center_r1, ctd_right_r1);
 	centroidT(&op2_cx, &op2_cy, &op2_area, steeringRight, ctd_left_r2, ctd_center_r2, ctd_right_r2);
 	centroidT(&op3_cx, &op3_cy, &op3_area, steeringLeft, ctd_left_r3, ctd_center_r3, ctd_right_r3);
 
 	//adding all the centroids and crisping end result
 	float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
-	//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);
 
 	decision = cx;
 
@@ -231,16 +213,10 @@ float AIDrivingComponent::acelerar_frenar(GameObject& myPos, std::vector<VObject
 	float accelerating, none, braking;
 
 	//fuzzifier and inference
-	//---------------GENERALIZE--v-------v----v
 	//Where am I going
 	float going_left 	= inferL(direction,		s_going_left_min,		s_going_left_c,		s_going_left_max);
 	float going_center 	= inferT(direction,		s_going_center_min,		s_going_center_c,	s_going_center_max);
 	float going_right 	= inferL(direction,		s_going_right_min,		s_going_right_c,	s_going_right_max);
-
-	//Correlation between how much more do I need to rotate to arrive and my current speed
-	/*float more_turn_left = inferT();
-	float no_more_turn = inferT();
-	float more_turn_right = inferT();*/
 
 	//If there are objects to collide with
 	if(array.size()>0 && speed!=0.0f){
@@ -325,7 +301,6 @@ float AIDrivingComponent::acelerar_frenar(GameObject& myPos, std::vector<VObject
 
 	//defuzzifier inference
 	//Here we use the centroid point between the defuzzified inferences, to pinpoint the crisp steering value
-	//---------------GENERALIZE---everything
 	float op1_cx, op1_cy, op1_area, op2_cx, op2_cy, op2_area, op3_cx, op3_cy, op3_area;
 
 	centroidT(&op1_cx, &op1_cy, &op1_area, none,			s_ctd_left_r1,	s_ctd_center_r1,	s_ctd_right_r1);
@@ -334,7 +309,6 @@ float AIDrivingComponent::acelerar_frenar(GameObject& myPos, std::vector<VObject
 
 	//adding all the centroids and crisping end result
 	float cx = (op1_cx * op1_area + op2_cx * op2_area + op3_cx * op3_area ) / (op1_area + op2_area + op3_area);
-	//float cy = (op1_cy * op1_area + op2_cy * op2_area + op3_cy * op3_area ) / (op1_area + op2_area + op3_area);	
 	decision = cx;
 
 	return decision;

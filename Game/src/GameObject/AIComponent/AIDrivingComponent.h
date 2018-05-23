@@ -51,8 +51,6 @@ class AIDrivingComponent : public IComponent{
         //Read AI Speed Values
         void readSpeedValues();
 
-        //setters
-    
     private:
 
         ///////////////////////////

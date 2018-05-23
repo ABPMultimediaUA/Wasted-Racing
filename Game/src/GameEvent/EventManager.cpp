@@ -3,8 +3,7 @@
 
 
 //////////////////////////////////////////////
-//            THINGS TO DO HERE
-//////////////////////////////////////////////
+//             Possible upgrades
 //////////////////////////////////////////////
 /*
 :::>Add event priority queue to events
@@ -12,8 +11,6 @@
 :::>Add scheduling, by now event manager is useless since it only searches for calls already done in that update, so it just adds innecesary cost
 */
 //////////////////////////////////////////////
-//////////////////////////////////////////////
-
 EventManager& EventManager::getInstance() {
     static EventManager instance;
     return instance;
@@ -30,7 +27,6 @@ void EventManager::update() {
         EventManager::eventQueue.pop();
         EventManager::processEvent(e);
     }
-
 }
 
 void EventManager::close() {

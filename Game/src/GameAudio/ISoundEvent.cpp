@@ -12,7 +12,7 @@ void ISoundEvent::start()
 //Stop sound inmediately 
 void ISoundEvent::stop()
 {
-
+    FMOD_Studio_EventInstance_Stop(soundInstance, FMOD_STUDIO_STOP_MODE::FMOD_STUDIO_STOP_IMMEDIATE);
 }
 
 //Pause the sound
@@ -26,7 +26,7 @@ void ISoundEvent::setVolume(float vol)
 {
     if(vol>=0 && vol<=1)
     {
-        FMOD_Studio_EventInstance_SetVolume(soundInstance, vol);
+        FMOD_Studio_EventInstance_SetVolume(soundInstance, vol * volume);
     }
 } 
 

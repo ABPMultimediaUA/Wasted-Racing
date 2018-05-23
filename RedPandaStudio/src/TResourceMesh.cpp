@@ -1,6 +1,6 @@
 #include "TResourceMesh.h"
-#include <iostream>
 
+//Destructor of the mesh
 TResourceMesh::~TResourceMesh()
 {
     glDeleteBuffers(6, vboHandles);
@@ -9,6 +9,7 @@ TResourceMesh::~TResourceMesh()
     glDeleteBuffers(1, &boxVBOVertices);
 }
 
+//Loads a mesh from an already loaded by assimp mesh (usually given by TResourceOBJ)
 bool TResourceMesh::loadMesh(aiMesh* m)
 {
     int nFaces = m->mNumFaces;
@@ -89,63 +90,14 @@ bool TResourceMesh::loadMesh(aiMesh* m)
     //==============================================  
 
 
-
-    //Bind and pass to OpenGL the first array (vertex coordinates)
-   /* glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-    glDisableVertexAttribArray(0);
-    
-    //Bind and pass to OpenGL the second array (vertex normals)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-    glDisableVertexAttribArray(1);
-
-    //Bind and pass to OpenGL the third array (vertex texture coordinates)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-    glDisableVertexAttribArray(2);
-
-    //Bind and pass to OpenGL the fourth array (vertex indices)
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*6*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
-
     //Detach elements
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     //=============================================================================
 
     //Generates the two points needed for a parallel-to-edges bounding box
     generateBoundingBox();
-
-/*
-    //Bind and pass to OpenGL the first array (vertex coordinates)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
-
-    //Bind and pass to OpenGL the second array (vertex normals)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
-
-    //Bind and pass to OpenGL the third array (vertex texture coordinates)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
-
-    //Bind and pass to OpenGL the fourth array (vertex tangent)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[3]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), tangents, GL_STATIC_DRAW);
-
-    //Bind and pass to OpenGL the fifth array (vertex bitangent)
-    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[4]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), bitangents, GL_STATIC_DRAW);
-
-*/
 
     //Bind and pass to OpenGL the fourth array (vertex indices)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[5]);
@@ -154,30 +106,16 @@ bool TResourceMesh::loadMesh(aiMesh* m)
 
     delete[] vertex;
     free(vertexIndices);
-    /*
-    if(m->HasNormals())
-    {
-        free(normals);
-    }
-    if(m->HasTextureCoords(0))
-    {
-        free(textures);
-    }
-    if(m->HasTangentsAndBitangents())
-    {
-        free(tangents);
-        free(bitangents);
-    }
-    */
 
     return true;
 
 }
 
+//Loads a mesh from the route provided. Currently, this method is not in use, and it's deprecated
 bool TResourceMesh::loadResource()
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_FlipUVs );
 
     nTriangles = 0;
 
@@ -226,6 +164,7 @@ bool TResourceMesh::loadResource()
     return false;
 }
 
+//Draw of the mesh. It also checks the frustum culling if it's activated
 void TResourceMesh::draw()
 {
     if((TEntity::getFrustumCulling() && checkBoundingBox()) || !TEntity::getFrustumCulling())
@@ -306,6 +245,7 @@ void TResourceMesh::draw()
     }
 }
 
+//Generates a bounding box for the mesh
 void TResourceMesh::generateBoundingBox()
 {
     //In first case, we initialize all the variables to the first vertex coordinates
@@ -371,6 +311,7 @@ void TResourceMesh::generateBoundingBox()
 
 }
 
+//Draws the bounding box of the mesh. This is only used for debug purposes, and should be disabled in release versions of the game
 void TResourceMesh::drawBoundingBox()
 {
     glm::mat4 m = TEntity::modelMatrix() * bbTransform;
@@ -402,6 +343,7 @@ void TResourceMesh::drawBoundingBox()
 
 }
 
+//Checks the frustum culling with the bounding box, and also checks some special cases if the first test doesn't pass
 bool TResourceMesh::checkBoundingBox()
 {
     //First we set the bounding box's points in the scene
@@ -484,6 +426,8 @@ bool TResourceMesh::checkBoundingBox()
 
 //This functions looks for a specific adjacent vertex for the vertex indices. Due to the computational cost, this should be improved
 //using the half-edge structure, to avoid a massive number of searchs through the mesh
+//In the last version of the engine, silhouette rendering is not done with a geometry shader anymore, so the use of this function is
+//deprecated.
 unsigned int TResourceMesh::getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3)
 {
     for(unsigned int i=0; i < m->mNumFaces; i++)

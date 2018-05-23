@@ -59,6 +59,7 @@ public:
     //Setters
     void insertSoundEvent(std::string name, ISoundEvent* sound);
     bool existsSoundEvent(std::string name);
+    virtual void stop(std::string name);
 
 
 private: 

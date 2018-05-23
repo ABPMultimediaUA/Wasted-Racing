@@ -73,6 +73,8 @@ namespace gui {
     struct nk_image text_volumeHover;
     struct nk_image text_oexit;
     struct nk_image text_oexitHover;
+    struct nk_image text_fullscreen;
+    struct nk_image text_fullscreenHover;
 
     //SELECTION Images
     struct nk_image post_left;
@@ -163,12 +165,27 @@ void RenderRedPanda::openWindow() {
     device = &rps::RedPandaStudio::createDevice(window.size.x,window.size.y,24,60,window.vsync,window.fullscreen);
     InputRedPanda* receiver = new InputRedPanda();
 
+    SDL_DisplayMode DM;
+    SDL_GetCurrentDisplayMode(0, &DM);
+
     if(window.fullscreen){
         SDL_DisplayMode DM;
         SDL_GetCurrentDisplayMode(0, &DM);
         window.size.x = DM.w;
         window.size.y = DM.h;
+        device->resizePostProcessing(DM.w,DM.h);
     }
+    if(!window.fullscreen)
+    {
+        SDL_SetWindowSize(device->getWindow(), DM.w*0.8, DM.h*0.8);
+        window.size.x = DM.w*0.8;
+        window.size.y = DM.h*0.8;
+    }
+
+    device->resizePostProcessing(window.size.x,window.size.y);
+
+    SDL_Window* w = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice()->getWindow();
+    SDL_SetWindowPosition(w, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     uintptr_t aux = reinterpret_cast<uintptr_t>(device->getWindow());
     InputManager::getInstance().setDevice(aux);
@@ -229,7 +246,6 @@ void RenderRedPanda::renderDraw() {
 
 //Add a camera to the game
 void RenderRedPanda::addCamera() {
-    //:::> Crying hard-coded
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
     valueY = 0.3;
     sum = 5;
@@ -320,7 +336,6 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     }
 
     //Define position and target
-    //:::> Hardcode I smell
     glm::vec3 target(-pos.x, pos.y+15, pos.z);
     glm::vec3 position(-pos.x + distance * sin(radianAngle + glm::half_pi<float>()), pos.y+sum + distance * valueY, pos.z - distance * cos(radianAngle + glm::half_pi<float>()));
     position = position;
@@ -1017,6 +1032,16 @@ void drawRPS_GUI_Options(){
                 nk_popup_end(GUI);
             }
             
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.6, h*0.2, w*0.25, w*0.04))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+                if (nk_button_image(GUI, gui::text_fullscreen, gui::text_fullscreenHover)){
+                    
+                    EventManager::getInstance().addEvent(Event {EventType::Global_ChangeFullscreen});
+
+                }                
+                nk_popup_end(GUI);
+            }
+            
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
@@ -1255,12 +1280,12 @@ void gui::init() {
     //==========================================================================================
     //  BACKGROUND & OTHERS
     //==========================================================================================
-    gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck1.png");
-    gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck2.png");
-    gui::background[2]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck3.png");
-    gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck4.png");
-    gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck5.png");
-    gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck6.png");
+    gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck1.bmp");
+    gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck2.bmp");
+    gui::background[2]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck3.bmp");
+    gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck4.bmp");
+    gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck5.bmp");
+    gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck6.bmp");
     gui::cityName                       =   gui::loadTexture("media/img/GUI/Other/cityName.png");
     gui::countdown[1]                   =   gui::loadTexture("media/img/GUI/Other/1.png");
     gui::countdown[2]                   =   gui::loadTexture("media/img/GUI/Other/2.png");
@@ -1351,6 +1376,8 @@ void gui::init() {
         gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolumeHover.png");
         gui::text_oexit                 =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bExit.png");
         gui::text_oexitHover            =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bExitHover.png");
+        gui::text_fullscreen            =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bFullscreen.png");
+        gui::text_fullscreenHover       =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bFullscreenHover.png");
     } 
     else {
         gui::optionsBase                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/opcionesBase.png");
@@ -1364,6 +1391,8 @@ void gui::init() {
         gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bVolumenHover.png");
         gui::text_oexit                 =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalir.png");
         gui::text_oexitHover            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalirHover.png");
+        gui::text_fullscreen            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bPantallaCompleta.png");
+        gui::text_fullscreenHover       =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bPantallaCompletaHover.png");
     }
 
     //==========================================================================================

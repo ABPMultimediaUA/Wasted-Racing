@@ -16,8 +16,13 @@
 
 //This could be improved with an enumerator
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//All this class is based on the skybox example provided in the superbible of OpenGL, and also in the example code provided in the book
 class TResourceSkybox {
     public:
+        //Constructor and destructor
         TResourceSkybox();
         ~TResourceSkybox() {};
 
