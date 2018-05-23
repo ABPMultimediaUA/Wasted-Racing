@@ -1,5 +1,5 @@
 # Blender MTL File: 'circuit.blend'
-# Material Count: 114
+# Material Count: 112
 
 newmtl Material.000
 Ns 96.078431
@@ -941,26 +941,6 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Material.094
-Ns 96.078431
-Ka 1.000000 1.000000 1.000000
-Kd 0.028174 0.028174 0.028174
-Ks 1.000000 1.000000 1.000000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 2
-
-newmtl Material.095
-Ns 96.078431
-Ka 1.000000 1.000000 1.000000
-Kd 0.028174 0.028174 0.028174
-Ks 1.000000 1.000000 1.000000
-Ke 0.000000 0.000000 0.000000
-Ni 1.000000
-d 1.000000
-illum 2
-
 newmtl Material.096
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
@@ -1138,4 +1118,4 @@ Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
-map_Kd /home/luis/WastedHorchata/Wasted-Racing/Game/media/Texturas/Terreno/TexturasExportadas/PistaBordillo/DefaultMaterial_Base_Color.png
+map_Kd /home/pablo/Wasted-Racing/Game/media/Texturas/Terreno/TexturasExportadas/PistaBordillo/DefaultMaterial_Base_Color.png

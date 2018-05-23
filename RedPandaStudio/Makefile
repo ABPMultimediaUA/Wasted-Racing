@@ -7,13 +7,13 @@ TARGET := libRedPanda
 BIN_PATH := bin/
 OBJ_PATH := obj/
 
-
+NDEBUG := ''
 # general compiler settings (might need to be set when compiling the lib, too)
 CPPFLAGS += -I.
 ifndef NDEBUG
 CXXFLAGS += -g -Wall
 else
-CXXFLAGS += -O3
+CXXFLAGS += -O2
 endif
 
 # Instruction to create directories
@@ -208,4 +208,10 @@ compilePmac: mac
 	cp ./bin/libRedPanda.dylib ../Game/lib/mac
 	cp ./bin/libRedPanda.dylib ../Game/bin
 
+install_mac:
+	brew reinstall sdl2 
+	brew reinstall sfml 
+	brew reinstall assimp 
+	brew reinstall glew
+	
 .PHONY: all clean clean_linux info install win

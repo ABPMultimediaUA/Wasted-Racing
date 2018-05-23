@@ -14,7 +14,7 @@
 //At the moment, the route provided should direct to the file, except the final three numbers and the .obj extension. For example:
 //Animation000001.obj ... Animation000999.obj -> Animation000
 //Only supports a maximum of 999 frames
-//Warning: This class doesnt check the existence of all the frames, if you try to load more frames than those that exist, you will cause a segmentation fault
+//Warning: This class doesn't check the existence of all the frames, if you try to load more frames than those that exist, you will cause a segmentation fault
 class TResourceAnimation : public TResource {
     public:
         TResourceAnimation(){};
@@ -34,7 +34,7 @@ class TResourceAnimation : public TResource {
         //////////////////////////////////////////////////////////////////////
         int getFrames()                                     {   return frames;      };
         void setFrames(int i)                               {   frames = i;         };
-        void setTexture(TResourceTexture* t)                {   texture = t;std::cout << "Entra en el setter" << std::endl;        };
+        void setTexture(TResourceTexture* t)                {   texture = t;        };
 
     private:
         //Maximum number of frames (initially set to 60)

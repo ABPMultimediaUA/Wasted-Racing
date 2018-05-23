@@ -43,7 +43,7 @@ RedPandaStudio& RedPandaStudio::createDevice(int width, int height, int depth, i
 void RedPandaStudio::updateDevice() 
 {
 	//Update particles
-	/*updateParticles();
+	updateParticles();
 
 	//Clean the scene
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -109,8 +109,8 @@ void RedPandaStudio::updateDevice()
 	//Render the scene in a quad if post processing is selected
 	if(postProcessingActive)
 		quadDrawPostProcessing();
-*/
-	drawShadowMapping();
+
+	//drawShadowMapping();
 
 	if(rpsGUI_draw != nullptr)
 		rpsGUI_draw();
@@ -439,9 +439,12 @@ void RedPandaStudio::initOpenGL() {
 
 	GLuint model = glGetUniformLocation(ProgramID, "ModelMatrix");   
     GLuint view  = glGetUniformLocation(ProgramID, "ViewMatrix");
-    GLuint projection = glGetUniformLocation(ProgramID, "ProjectionMatrix");
+	GLuint mv = glGetUniformLocation(ProgramID, "mvMatrix");
+	GLuint mvp = glGetUniformLocation(ProgramID, "mvpMatrix");
+	GLuint normal = glGetUniformLocation(ProgramID, "normalMatrix");
 	GLuint colorTexture = glGetUniformLocation(ProgramID, "colorTexture");
 	GLuint normalTexture = glGetUniformLocation(ProgramID, "normalTexture");
+	GLuint cp = glGetUniformLocation(ProgramID, "CamPos");
 
 	silFlagIdentifier = glGetUniformLocation(ProgramID, "silhouette");
 
@@ -450,7 +453,10 @@ void RedPandaStudio::initOpenGL() {
 
 	scene->getEntity()->setModelID(model);
 	scene->getEntity()->setViewID(view);
-	scene->getEntity()->setProjectionID(projection);
+	scene->getEntity()->setModelViewID(mv);
+	scene->getEntity()->setMVPID(mvp);
+	scene->getEntity()->setNormalID(normal);
+	scene->getEntity()->setCamPosition(cp);
 
 	GLuint viewSky = glGetUniformLocation(skyboxID, "ViewMatrix");
 	skybox->setView(viewSky);
@@ -504,11 +510,10 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 	//Check parent node is valid
 	if(parent != nullptr && (parent->getEntity() == nullptr || dynamic_cast<TTransform*>(parent->getEntity()) != nullptr))
 	{
-		std::cout << "Create animated note: " << texture << std::endl;
 		//Create new transformation tree
 		TNode* transformT = addRotScaPos(parent, pos);
 
-		//Create new mesh entity
+		//Create new animation entity
 		TAnimation* a = new TAnimation();
 		a->setAnimation(resourceManager->getResourceAnimation(animation, frames, texture));
 		a->setFrames(frames);
@@ -517,7 +522,7 @@ TNode* RedPandaStudio::createAnimatedNode(TNode* parent, glm::vec3 pos, const ch
 		TNode* animation = new TNode(transformT, a);
 		transformT->addChild(animation);
 
-		//Return mesh
+		//Return animation
 		return animation;
 	}
 	return nullptr;
@@ -888,8 +893,11 @@ void RedPandaStudio::renderCamera() {
 		glm::mat4& view = scene->getEntity()->viewMatrix();
 		view = mat;
 
+		glm::vec3 p = glm::vec3(-view[3][2], -view[3][1], -view[3][0]);
+
+		glUniform3fv(scene->getEntity()->getCamPosition(), 1, &p[0]);
 		glUniformMatrix4fv(scene->getEntity()->getViewID(), 1, GL_FALSE, &scene->getEntity()->viewMatrix()[0][0]);
-    	glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
+    	//glUniformMatrix4fv(scene->getEntity()->getProjectionID(), 1, GL_FALSE, &scene->getEntity()->projectionMatrix()[0][0]);
 	}
 }
 

@@ -129,7 +129,7 @@ void PhysicsManager::interpolate(float accumulatedTime, const float maxTime) {
 
 void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> move, std::shared_ptr<CollisionComponent> coll, const float dTime) {
 
-    if(move != nullptr && coll != nullptr && move->getMovemententData().invul == false)
+    if(move != nullptr && coll != nullptr)
     {
         CollisionComponent* ourColl = coll.get();
 
@@ -137,7 +137,7 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
 
             std::shared_ptr<CollisionComponent> hColl = std::dynamic_pointer_cast<CollisionComponent>(collisionComponentList[j]);
             CollisionComponent* hisColl = hColl.get();
-            if( hisColl != ourColl ) { //If the collider is different to the one of ourselves
+            if( hisColl != ourColl  && move->getMovemententData().invul == false) { //If the collider is different to the one of ourselves
 
                 bool collision;
 
@@ -225,7 +225,6 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                     }
                     else if(hisColl->getType() == CollisionComponent::Type::StartLine)
                     {
-
                         EventData data;
                         data.Component      = std::static_pointer_cast<IComponent>(move);
                         data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
@@ -233,6 +232,14 @@ void PhysicsManager::calculateObjectsCollision(std::shared_ptr<MoveComponent> mo
                         EventManager::getInstance().addEvent(Event {EventType::StartLineComponent_Collision, data});
                     }
                 }
+            }
+            else if(hisColl->getType() == CollisionComponent::Type::StartLine && !hisColl->getKinetic())
+            {
+                EventData data;
+                data.Component      = std::static_pointer_cast<IComponent>(move);
+                data.CollComponent  = std::static_pointer_cast<IComponent>(hColl);
+
+                EventManager::getInstance().addEvent(Event {EventType::StartLineComponent_Collision, data});
             }
         }
     }

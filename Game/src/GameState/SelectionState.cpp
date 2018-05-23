@@ -63,7 +63,7 @@ void SelectionState::update(float &accumulatedTime)
     
             EventManager::getInstance().update();
     
-            std::cout << "Empieza a borrar" << std::endl;
+            //std::cout << "Empieza a borrar" << std::endl;
     
             IRenderFacade* f = RenderManager::getInstance().getRenderFacade();
     
@@ -72,7 +72,7 @@ void SelectionState::update(float &accumulatedTime)
             f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
             f->deleteAnimation("Witch/CharSelect/bruja_000");
     
-            std::cout << "Acaba de borrar" << std::endl;
+            //std::cout << "Acaba de borrar" << std::endl;
 
             //Load map
             Game::getInstance().loadMap();
@@ -173,48 +173,69 @@ void addAI(int selectedPlayer)
     GameObject::TransformationData transform;
     uint16_t id;
 
+    std::vector<glm::vec3> scales;
+
     int pl1, pl2, pl3;
 
     if(selectedPlayer == 0) {
         pl1 = 1; pl2 = 2; pl3 = 3;
+
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.1,1.1,1.1));
+        scales.push_back(glm::vec3(0.7,0.7,0.7));
     } else if (selectedPlayer == 1) {
         pl1 = 0; pl2 = 2; pl3 = 3;
+
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.1,1.1,1.1));
+        scales.push_back(glm::vec3(0.7,0.7,0.7));
     } else if (selectedPlayer == 2) {
         pl1 = 0; pl2 = 1; pl3 = 3;
+
+        scales.push_back(glm::vec3(1.1,1.1,1.1));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(0.7,0.7,0.7));
     } else {
         pl1 = 0; pl2 = 1; pl3 = 2;
+
+        scales.push_back(glm::vec3(0.7,0.7,0.7));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.65,1.65,1.65));
+        scales.push_back(glm::vec3(1.1,1.1,1.1));
     }
 
 
     id = 25000;
-    transform.position = glm::vec3(-35,0, -20);
-
+    transform.position = glm::vec3(-80,0, -30);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
+    transform.scale    = scales[0];
     ObjectManager::getInstance().createPlayer(transform, selectedPlayer, 0, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25001;
-    transform.position = glm::vec3(-35,0,-10);
+    transform.position = glm::vec3(-80,0,-0);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
+    transform.scale    = scales[1];
     ObjectManager::getInstance().createPlayer(transform, pl1, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                  PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25002;
-    transform.position = glm::vec3(-35,0,0);
+    transform.position = glm::vec3(-80,0,-15);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
+    transform.scale    = scales[2];
     ObjectManager::getInstance().createPlayer(transform, pl2, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
 
     id = 25003;
-    transform.position = glm::vec3(-35,0,10);
+    transform.position = glm::vec3(-80,0,-45);
     transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
+    transform.scale    = scales[3];
     ObjectManager::getInstance().createPlayer(transform, pl3, 1, id, 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
                                                 PhysicsManager::getInstance().getTerrainFromPos(transform.position));
@@ -230,31 +251,31 @@ void loadAnimations()
     //f->deleteAnimation("Cyborg/CharSelect/CyborgFINALAnimation_000");
     //f->deleteAnimation("Witch/CharSelect/bruja_000");
 
-    std::cout << "Loading animations" << std::endl;
+    //std::cout << "Loading animations" << std::endl;
 
     f->addAnimation(00, "Punk/Idle/punkAnimation_000", 62, "Punk/DefaultMaterial_Base_Color.png");
-    f->addAnimation(01, "Punk/Correr/punkAnimation_000", 70, "Punk/DefaultMaterial_Base_Color.png");
+    f->addAnimation(01, "Punk/Correr/punkAnimation_000", 21, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(02, "Punk/Choque/punkAnimation_000", 38, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(03, "Punk/LanzarItem/punkAnimation_000", 37, "Punk/DefaultMaterial_Base_Color.png");
-    f->addAnimation(04, "Punk/LanzarItemMovimiento/punkAnimation_000", 38, "Punk/DefaultMaterial_Base_Color.png");
+    f->addAnimation(04, "Punk/LanzarItemMovimiento/punkAnimation_000", 39, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(05, "Punk/DerrapeDCHA/punkAnimation_000", 81, "Punk/DefaultMaterial_Base_Color.png");
     f->addAnimation(06, "Punk/DerrapeIZQ/punkAnimation_000", 78, "Punk/DefaultMaterial_Base_Color.png");
 
     f->addAnimation(10, "Crocodile/Idle/cocodrilaBonesSelect_000", 83, "Crocodile/DefaultMaterial_Base_Color.png");
-    f->addAnimation(11, "Crocodile/Correr/cocodrilaBonesSelect_000", 20, "Crocodile/DefaultMaterial_Base_Color.png");
-    f->addAnimation(12, "Crocodile/Choque/cocodrilaBonesSelect_000", 0, "Crocodile/DefaultMaterial_Base_Color.png");
+    f->addAnimation(11, "Crocodile/Correr/cocodrilaBonesSelect_000", 21, "Crocodile/DefaultMaterial_Base_Color.png");
+    f->addAnimation(12, "Crocodile/Choque/cocodrilaBonesSelect_000", 38, "Crocodile/DefaultMaterial_Base_Color.png");
     f->addAnimation(13, "Crocodile/LanzarItem/cocodrilaBonesSelect_000", 56, "Crocodile/DefaultMaterial_Base_Color.png");
     f->addAnimation(14, "Crocodile/LanzarItemMovimiento/cocodrilaBonesSelect_000", 40, "Crocodile/DefaultMaterial_Base_Color.png");
     f->addAnimation(15, "Crocodile/DerrapeDCHA/cocodrilaBonesSelect_000", 81, "Crocodile/DefaultMaterial_Base_Color.png");
     f->addAnimation(16, "Crocodile/DerrapeIZQ/cocodrilaBonesSelect_000", 78, "Crocodile/DefaultMaterial_Base_Color.png");
 
-    f->addAnimation(20, "Cyborg/Idle/CyborgFINALAnimation_000", 82, "Cyborg/DefaultMaterial_Base_Color.png");
-    f->addAnimation(21, "Cyborg/Correr/CyborgFINALAnimation_000", 28, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(20, "Cyborg/Idle/CyborgFINALAnimation_000", 104, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(21, "Cyborg/Correr/CyborgFINALAnimation_000", 21, "Cyborg/DefaultMaterial_Base_Color.png");
     f->addAnimation(22, "Cyborg/Choque/CyborgFINALAnimation_000", 38, "Cyborg/DefaultMaterial_Base_Color.png");
-    f->addAnimation(23, "Cyborg/LanzarItem/CyborgFINALAnimation_000", 45, "Cyborg/DefaultMaterial_Base_Color.png");
-    f->addAnimation(24, "Cyborg/LanzarItemMovimiento/CyborgFINALAnimation_000", 39, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(23, "Cyborg/LanzarItem/CyborgFINALAnimation_000", 56, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(24, "Cyborg/LanzarItemMovimiento/CyborgFINALAnimation_000", 40, "Cyborg/DefaultMaterial_Base_Color.png");
     f->addAnimation(25, "Cyborg/DerrapeDCHA/CyborgFINALAnimation_000", 81, "Cyborg/DefaultMaterial_Base_Color.png");
-    f->addAnimation(26, "Cyborg/DerrapeIZQ/CyborgFINALAnimation_000", 68, "Cyborg/DefaultMaterial_Base_Color.png");
+    f->addAnimation(26, "Cyborg/DerrapeIZQ/CyborgFINALAnimation_000", 69, "Cyborg/DefaultMaterial_Base_Color.png");
 
     f->addAnimation(30, "Witch/Idle/bruja_000", 53, "Witch/DefaultMaterial_Base_Color.png");
     f->addAnimation(31, "Witch/Correr/bruja_000", 23, "Witch/DefaultMaterial_Base_Color.png");
@@ -264,7 +285,7 @@ void loadAnimations()
     f->addAnimation(35, "Witch/DerrapeDCHA/bruja_000", 81, "Witch/DefaultMaterial_Base_Color.png");
     f->addAnimation(36, "Witch/DerrapeIZQ/bruja_000", 78, "Witch/DefaultMaterial_Base_Color.png");
 
-    std::cout << "Llega al final" << std::endl;
+    //std::cout << "Llega al final" << std::endl;
     
 }
 

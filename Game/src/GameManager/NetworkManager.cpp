@@ -66,8 +66,6 @@ void NetworkManager::createPlayer(RakNet::Packet* packet)
         t.position.y = y;
         t.position.z = z;
 
-        std::cout<<"Jeje: "<<x<<" - "<<y<< " - "<<z<<std::endl;
-
         //Creation function
         //:::> Player should be created with the character the player selects
         ObjectManager::getInstance().createPlayer(t, GlobalVariables::getInstance().getSelectedPlayer(), 0, 25000, 
@@ -942,7 +940,7 @@ void NetworkManager::close() {
 // LOBBY FUNCTIONS
 //============================================== 
 void NetworkManager::initLobby(){
-    std::cout << "Attempting to connect to server" << std::endl;
+    //std::cout << "Attempting to connect to server" << std::endl;
     RakNet::SocketDescriptor socket(0, 	0);
 	socket.socketFamily = AF_INET;
     peer->Startup(1, &socket, 1);

@@ -6,29 +6,29 @@
 
 
 class TMesh : public TEntity{
+    public:
+        //Constructor and destructor
+        TMesh() {}
+        ~TMesh() {}
 
-private:
-    TResource* mesh;
-    TResource* material;
-
-public:
-
-    TMesh() {}
-    ~TMesh() {}
-
-    //Draw Methods
-    void beginDraw();
-    void endDraw() {}
+        //Draw Methods
+        void beginDraw();
+        void endDraw() {}
 
 
 
-    //////////////////////////////////////////////////////////////////////
-    /////////////// GETTERS & SETTERS
-    //////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////
+        /////////////// GETTERS & SETTERS
+        //////////////////////////////////////////////////////////////////////
 
-    TResource* getMesh()                                      {   return mesh;      };
-    TResource* getMaterial()                                  {   return material;  };
+        TResource* getMesh()                                      {   return mesh;      };
+        TResource* getMaterial()                                  {   return material;  };
 
-    void  setMesh(TResource* m)                               {   mesh=m;           };
-    void  setMaterial(TResource* m)                           {   material=m;       };
+        void  setMesh(TResource* m)                               {   mesh=m;           };
+        void  setMaterial(TResource* m)                           {   material=m;       };
+    private:
+        //Resource mesh
+        TResource* mesh;
+        //Resource material
+        TResource* material;
 };

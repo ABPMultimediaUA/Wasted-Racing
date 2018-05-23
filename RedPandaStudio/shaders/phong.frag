@@ -8,9 +8,10 @@ in vec2 UV_Coordinates; //UV del vertex shader
 
 in vec3 P;
 in vec3 N;
-in vec4 CamPos;
+uniform vec3 CamPos;
 
-in mat4 view;
+uniform mat4 ViewMatrix;
+
 in mat4 modelViewMatrix;
 
 //Tangent-Bitangent-Normal Matrix used to convert from tangent space to world space.
@@ -89,7 +90,7 @@ void calculatePointLights()
         float diffuse = 0.0;
         float specular = 0.0;
 
-        vec4 LightPos = view * light[i].position;
+        vec4 LightPos = ViewMatrix * light[i].position;
 
 	    float d = length(LightPos.xyz - P);			        // distancia de la luz
 	    vec3  L = normalize(LightPos.xyz - P);			    // Vector Luz
@@ -124,8 +125,8 @@ void calculateSpotLights()
     {
         float diffuse = 0.0;
 
-        vec4 LightPos = normalize(view * spotlight[i].light.position);
-        vec4 focus = view * vec4(spotlight[i].direction, 1.0);
+        vec4 LightPos = normalize(ViewMatrix * spotlight[i].light.position);
+        vec4 focus = ViewMatrix * vec4(spotlight[i].direction, 1.0);
         vec3  L = normalize(P - LightPos.xyz);
         float spotFactor = dot(L, normalize(focus.xyz - LightPos.xyz));
 
@@ -173,8 +174,7 @@ void main()
             normal = normalize(TBN * normal);
         }
 
-        P2 = vec4(P.x, P.y, P.z, 1.0);
-        V = vec3(normalize(CamPos - P2));
+        V = normalize(CamPos - P);
 
 
         calculatePointLights();

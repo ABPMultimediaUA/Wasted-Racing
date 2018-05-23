@@ -233,7 +233,7 @@ void RenderRedPanda::addCamera() {
     //:::> Crying hard-coded
     device->createCamera(device->getSceneRoot(), glm::vec3(10,3,0), glm::vec3(0,0,0));
     valueY = 0.3;
-    sum = 0;
+    sum = 5;
 }
 
 //Update the current camera
@@ -267,17 +267,17 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
     {
         sum += 0.25;
     }
-    else if(posPlayer < -0.25 && posPlayer > -2 && sum > -20)
+    else if(posPlayer < -0.25 && posPlayer > -2 && sum > -10)
     {
         sum -= 0.25;
     }
     else if(posPlayer < 0.25 && posPlayer > -0.25 && vel > maxVel/10)
     {
-        if(sum > 0)
+        if(sum > 5)
         {
             sum -= 0.25;
         }
-        else if(sum < 0)
+        else if(sum < 5)
         {
             sum += 0.25; 
         }
@@ -291,11 +291,11 @@ void RenderRedPanda::interpolateCamera(float accTime, float maxTime) {
         }
         if(!(mData.jump == false && mData.asc == false))
         {
-            if(sum > 0)
+            if(sum > 5)
             {
                 sum -= 0.25;
             }
-            else if(sum < 0)
+            else if(sum < 5)
             {
                 sum += 0.25; 
             }
@@ -429,7 +429,6 @@ void RenderRedPanda::addAnimation(uint16_t id, const char * mesh, int frames, co
 
 void RenderRedPanda::deleteAnimation(const char * animation)
 {
-    std::cout << "Delete Animation: " << animation << std::endl;
     std::string s = std::string("media/anim/") + std::string(animation);
 
     device->deleteAnimation(s.c_str());
@@ -608,12 +607,7 @@ void RenderRedPanda::updateObjectTransform(uint16_t id, GameObject::Transformati
             rps::rotateNode(node, glm::vec3(rot.x, -rot.y, rot.z));
         }
         
-        if(id == 25000)
-            rps::scaleNode(node, glm::vec3(0.7,0.7,0.7));
-        else if (id > 25000 && id < 25010)
-            rps::scaleNode(node, glm::vec3(2,2,2));
-        else 
-            rps::scaleNode(node, sca);
+        rps::scaleNode(node, sca);
 
         rps::translateNode(node, glm::vec3(-pos.x, pos.y, pos.z));   
     }
@@ -901,6 +895,16 @@ void drawRPS_GUI_PlayerSelect() {
                         GlobalVariables::getInstance().setFixedPlayer(true);
                 }
                 
+                nk_popup_end(GUI);
+            }
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.823, h*0.81, w*0.15, h*0.15))) {
+                nk_layout_row_static(GUI, h*0.15, w*0.15, 1);
+                if (nk_button_image(GUI, gui::text_oexit, gui::text_oexitHover)){
+                    if(GlobalVariables::getInstance().getGameState() == IGameState::stateType::SELECTION){
+                        rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                        device->setGUIDrawFunction(drawRPS_GUI_Menu);
+                    }
+                }                
                 nk_popup_end(GUI);
             }
 		}
@@ -1241,12 +1245,12 @@ void gui::init() {
     //==========================================================================================
     //  BACKGROUND & OTHERS
     //==========================================================================================
-    gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck1.gif");
-    gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck2.gif");
-    gui::background[2]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck3.gif");
-    gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck4.gif");
-    gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck5.gif");
-    gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck6.gif");
+    gui::background[0]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck1.png");
+    gui::background[1]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck2.png");
+    gui::background[2]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck3.png");
+    gui::background[3]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck4.png");
+    gui::background[4]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck5.png");
+    gui::background[5]                  =   gui::loadTexture("media/img/GUI/Background/New/Bck6.png");
     gui::cityName                       =   gui::loadTexture("media/img/GUI/Other/cityName.png");
     gui::countdown[1]                   =   gui::loadTexture("media/img/GUI/Other/1.png");
     gui::countdown[2]                   =   gui::loadTexture("media/img/GUI/Other/2.png");
