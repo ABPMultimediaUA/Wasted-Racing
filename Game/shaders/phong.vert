@@ -132,8 +132,8 @@ void main()
 
     vec3 T = normalize(vec3(ModelMatrix * vec4(tangents, 0.0)));
     vec3 B = normalize(vec3(ModelMatrix * vec4(bitangents, 0.0)));
-    vec3 N = normalize(vec3(ModelMatrix * vec4(vertexNormal, 0.0)));
-    TBN = mat3(T, B, N);
+    vec3 norm = normalize(vec3(ModelMatrix * vec4(vertexNormal, 0.0)));
+    TBN = mat3(T, B, norm);
 
     gl_Position = mvpMatrix * vertexPosition;
 

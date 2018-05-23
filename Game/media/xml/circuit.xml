@@ -2446,10 +2446,10 @@
 <object id="14001" pos="1406.681152,126.346115,-5.485352" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
-<object id="14002" pos="1462.002930,126.346115,251.847809" rot="0,0,0" sca="1,1,1">
+<object id="14002" pos="1468.199341,121.562294,424.733826" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
-<object id="14003" pos="1462.002930,126.346115,468.642548" rot="0,0,0" sca="1,1,1">
+<object id="14003" pos="1452.774780,133.434158,222.125168" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />
 </object>
 <object id="14004" pos="990.832764,126.346115,468.642548" rot="0,0,0" sca="1,1,1">

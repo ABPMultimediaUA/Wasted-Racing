@@ -19,11 +19,17 @@ void DefaultCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData
 
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
 
+        if(player == 3) player = 1;
+        else if(player == 1) player = 3;
+
         //Load sound event
-        FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
+        if(GlobalVariables::getInstance().getLanguage() == 0)
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterEN"], &soundInstance);
+        else
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
 
         //Set sound parameters
-        FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
+        FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (int)player);
         FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "track", (float)5);
 
         //Set sound position
@@ -57,8 +63,14 @@ void RampCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& e
 
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
 
+        if(player == 3) player = 1;
+        else if(player == 1) player = 3;
+
         //Load sound event
-        FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
+        if(GlobalVariables::getInstance().getLanguage() == 0)
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterEN"], &soundInstance);
+        else
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
 
         //Set sound parameters
         FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
@@ -94,8 +106,15 @@ void ItemBoxCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData
     std::string name = "ItemBoxCollision"+std::to_string(event.Component->getGameObject().getId());
 
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
+        
+        if(player == 3) player = 1;
+        else if(player == 1) player = 3;
+
         //Load sound event
-        FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
+        if(GlobalVariables::getInstance().getLanguage() == 0)
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterEN"], &soundInstance);
+        else
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
 
         //Set sound parameters
         FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);
@@ -132,8 +151,14 @@ void TrapCollisionEvent::initalizeSound(AudioFMOD* audioFMOD, const EventData& e
 
     if(player >= 0 && player <= 4 && !audioFMOD->existsSoundEvent(name)){
 
+        if(player == 3) player = 1;
+        else if(player == 1) player = 3;
+
         //Load sound event
-        FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
+        if(GlobalVariables::getInstance().getLanguage() == 0)
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterEN"], &soundInstance);
+        else
+            FMOD_Studio_EventDescription_CreateInstance(audioFMOD->getEventDescriptions()["CharacterES"], &soundInstance);
 
         //Set sound parameters
         FMOD_Studio_EventInstance_SetParameterValue(soundInstance, "player", (float)player);

@@ -134,6 +134,10 @@ enum EventType {
     Global_ChangeVolume,
     Global_ChangeLanguage,
     Global_ChangeFullscreen,
+    //PLAYER: Player relared events
+    Player_Speed,
+    Player_Slide,
+    Player_Jump,
     //Idle event
     Idle
 };
