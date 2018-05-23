@@ -7,6 +7,7 @@
 
 class TResourceMaterial : public TResource {
     public:
+        //Constructor and destructor
         TResourceMaterial() {};
         ~TResourceMaterial() {};
 

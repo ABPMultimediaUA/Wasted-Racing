@@ -140,6 +140,7 @@ private:
     void initOpenGL();
     void initScene();
     void renderLights();
+    void renderAllLights();
     void updateActiveLights();
     void renderCamera();
     void renderBillboards();

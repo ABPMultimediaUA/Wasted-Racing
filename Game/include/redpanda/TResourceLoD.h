@@ -9,10 +9,11 @@
 
 class TResourceLoD : public TResource {
     public:
+        //Constructor and destructor
         TResourceLoD(){};
         ~TResourceLoD(){};
         
-
+        //Method used to insert and obj in the resource, at a particular level of detail
         void insertObj(int lvl, TResourceOBJ* obj);
 
         //Load the resource specified in the route provided

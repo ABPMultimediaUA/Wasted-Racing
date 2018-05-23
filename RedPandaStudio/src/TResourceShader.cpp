@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 
+//Loads the resource
 bool TResourceShader::loadResource()
 {
     std::string shaderCode;
@@ -48,7 +49,7 @@ bool TResourceShader::loadResource()
     return true;
 }
 
-
+//Draw method. It's only here because this class is a child from TResource, and need to implement it
 void TResourceShader::draw ()
 {
     

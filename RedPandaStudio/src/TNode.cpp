@@ -1,12 +1,13 @@
 #include "TNode.h"
 
+//Constructor
 TNode::TNode()
 {
     father = nullptr;
     entity = nullptr;
 }
 
-
+//Destructor
 TNode::~TNode()
 {
     if(entity != nullptr)
@@ -18,6 +19,7 @@ TNode::~TNode()
 /////       METHODS       /////
 ///////////////////////////////
 
+//Adds a child to the node
 bool TNode::addChild(TNode* c)
 {
     //Push_back es una funcion void, siempre insertará el valor que se le pasa
@@ -26,6 +28,7 @@ bool TNode::addChild(TNode* c)
     return true;
 }
 
+//Removes a child from the node
 bool TNode::removeChild(TNode* c)
 {
     for(unsigned int i = 0; i < child.size(); i++)
@@ -41,6 +44,7 @@ bool TNode::removeChild(TNode* c)
     return false;
 }
 
+//Search a child between all the childs of the node
 TNode* TNode::searchChild(unsigned int c)
 {
     if(c > 0 && c < child.size()-1)
@@ -54,6 +58,7 @@ TNode* TNode::searchChild(unsigned int c)
 /////        DRAW         /////
 ///////////////////////////////
 
+//Draws the entity contained by the node
 void TNode::draw()
 {
         
