@@ -50,7 +50,6 @@ void RedPandaStudio::updateDevice()
 
 	//Render camera and lights
 	renderCamera();
-	renderLights();
 
 	//Initalize postProcessing if selected
 	if(postProcessingActive)
@@ -72,6 +71,7 @@ void RedPandaStudio::updateDevice()
 	//Draw the scene normally
 	glUseProgram(scene->getEntity()->getProgramID());
 	renderCamera();
+	updateActiveLights();
 	renderLights();
 
 	if(silhouetteActivated)
@@ -600,6 +600,10 @@ TNode* RedPandaStudio::createLight(TNode* parent, glm::vec3 position, glm::vec3 
 		TNode* light = new TNode(transformT, l);
 		transformT->addChild(light);
 
+		//Set light variables
+		l->setActivated(true);
+		l->setID(lights.size());
+
 		//Register light
 		lights.push_back(light);
 
@@ -751,17 +755,20 @@ void RedPandaStudio::deleteObject(TNode* leaf) {
 
 }
 
-void RedPandaStudio::deleteNode(TNode* node) {
-
-	if(node != nullptr){
+void RedPandaStudio::deleteNode(TNode* node) 
+{
+	if(node != nullptr)
+	{
 
 		std::vector<TNode*> children = node->getChild();
 
-		if(children.size() == 0){
+		if(children.size() == 0)
+		{
 			delete node;
 		}
 		else{
-			for(unsigned int i = 0; i < children.size(); i++){
+			for(unsigned int i = 0; i < children.size(); i++)
+			{
 				deleteNode(children[i]);
 			}
 			delete node;
@@ -769,7 +776,8 @@ void RedPandaStudio::deleteNode(TNode* node) {
 	}
 }
 
-TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) {
+TNode* RedPandaStudio::addRotScaPos(TNode* parent, glm::vec3 pos) 
+{
 
 		//Rotation transformation
 		TTransform* tR = new TTransform();
@@ -806,26 +814,111 @@ void RedPandaStudio::deleteAnimation(const char* n)
 
 /////////////////////////////////////////////////
 //  LIGHTS,CAMERA AND PARTICLES MANAGEMENT
-void RedPandaStudio::renderLights() {
-
-	for(unsigned int i = 0; i < lights.size(); i++){
+void RedPandaStudio::updateActiveLights()
+{
+	if(lights.size() > 0)
+	{
+		glm::mat4 v = scene->getEntity()->viewMatrix();
+		glm::vec3 pos = glm::vec3(-v[3][2], -v[3][1], -v[3][0]);
 
 		glm::mat4 mat = glm::mat4(1.0);
-		calculateNodeTransform(lights[i], mat);
+		calculateNodeTransform(lights[0], mat);
+		glm::vec3 lightPos = glm::vec3(mat[3][0], mat[3][1], mat[3][2]);
+		glm::vec3 p = lightPos - pos;
 
-		glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
-
-		std::string lightName = std::string("light[" + std::to_string(i) + "].position");
-		GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
-		glUniform4fv(posID, 1, &pos[0]);
-
-		std::string lightName2 = std::string("light[" + std::to_string(i) + "].intensity");
-		GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
-		TLight* l = (TLight*)lights[i]->getEntity();
-		glUniform4fv(intID, 1, &l->getIntensity()[0]);
+		float distance = (p.x * p.x) + (p.y * p.y) + (p.z * p.z);
+		int lowestLight = 0;
+		
+		for(unsigned int i = 1; i < lights.size(); i++)
+		{
+			mat = glm::mat4(1.0);
+			calculateNodeTransform(lights[i], mat);
+			lightPos = glm::vec3(mat[3][0], mat[3][1], mat[3][2]);
+			p = lightPos - pos;
+			
+			float d = (p.x * p.x) + (p.y * p.y) + (p.z * p.z);
+			if(d < distance)
+			{
+				lowestLight = i;
+			}
+		}
+		currentLight = lowestLight;
 	}
+}
 
-	
+void RedPandaStudio::renderLights() 
+{
+	int maxLight = currentLight + nLightsForward;
+	int minLight = currentLight - nLightsBack;
+	int pointer = 0;
+	std::cout << "current: " << currentLight << " max: " << maxLight << " min: " << minLight << std::endl;
+
+	if(minLight < 0)
+	{
+		minLight = lights.size() + minLight;
+	}
+	if(maxLight >= lights.size())
+	{
+		maxLight = maxLight - lights.size();
+	}
+	if(minLight > maxLight)
+	{		
+		for(unsigned int i = minLight; i < lights.size(); i++)
+		{
+			glm::mat4 mat = glm::mat4(1.0);
+			calculateNodeTransform(lights[i], mat);
+
+			glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+
+			std::string lightName = std::string("light[" + std::to_string(pointer) + "].position");
+			GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
+			glUniform4fv(posID, 1, &pos[0]);
+
+			std::string lightName2 = std::string("light[" + std::to_string(pointer) + "].intensity");
+			GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
+			TLight* l = (TLight*)lights[i]->getEntity();
+			glUniform4fv(intID, 1, &l->getIntensity()[0]);
+			pointer++;
+		}
+
+		for(unsigned int i = 0; i < maxLight; i++)
+		{
+			glm::mat4 mat = glm::mat4(1.0);
+			calculateNodeTransform(lights[i], mat);
+
+			glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+
+			std::string lightName = std::string("light[" + std::to_string(pointer) + "].position");
+			GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
+			glUniform4fv(posID, 1, &pos[0]);
+
+			std::string lightName2 = std::string("light[" + std::to_string(pointer) + "].intensity");
+			GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
+			TLight* l = (TLight*)lights[i]->getEntity();
+			glUniform4fv(intID, 1, &l->getIntensity()[0]);
+			pointer++;
+		}
+	}
+	else
+	{
+		for(unsigned int i = minLight; i < maxLight; i++)
+		{
+			glm::mat4 mat = glm::mat4(1.0);
+			calculateNodeTransform(lights[i], mat);
+
+			glm::vec4 pos = mat * glm::vec4(0.0, 0.0, 0.0, 1.0);
+
+			std::string lightName = std::string("light[" + std::to_string(pointer) + "].position");
+			GLuint posID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName.c_str());
+			glUniform4fv(posID, 1, &pos[0]);
+
+			std::string lightName2 = std::string("light[" + std::to_string(pointer) + "].intensity");
+			GLuint intID = glGetUniformLocation(scene->getEntity()->getProgramID(), lightName2.c_str());
+			TLight* l = (TLight*)lights[i]->getEntity();
+			glUniform4fv(intID, 1, &l->getIntensity()[0]);
+			pointer++;
+		}
+	}
 	for(unsigned int i = 0; i < spotlights.size(); i++)
 	{
 		glm::mat4 mat = glm::mat4(1.0);
@@ -852,7 +945,7 @@ void RedPandaStudio::renderLights() {
 	}
 
 	GLuint numL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numLights");
-	glUniform1i(numL, lights.size());
+	glUniform1i(numL, pointer);
 
 	GLuint numSL = glGetUniformLocation(scene->getEntity()->getProgramID(), "numSpotLights");
 	glUniform1i(numSL, spotlights.size());
