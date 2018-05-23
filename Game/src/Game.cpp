@@ -500,11 +500,12 @@ void changeFullscreen(EventData eData) {
 
         SDL_SetWindowFullscreen(w, 0);
         
-        SDL_SetWindowSize(w, width/1.5, height/1.5);
+        SDL_SetWindowSize(w, width*0.8, height*0.8);
              
+        SDL_SetWindowPosition(w, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
-        RenderManager::getInstance().getRenderFacade()->getWindow().size.x = width/1.5;
-        RenderManager::getInstance().getRenderFacade()->getWindow().size.y = height/1.5;
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.x = width*0.8;
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.y = height*0.8;
 
     }
     else {

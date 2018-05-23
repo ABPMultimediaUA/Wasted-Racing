@@ -23,11 +23,12 @@ void SelectionState::init()
 
         initialized = true;
 
-        cameraPositions[4] = glm::vec3(10,-27,0);
-        cameraPositions[5] = glm::vec3(0,-30,0);
-
-        currPlayer = 0;
     }
+
+    cameraPositions[4] = glm::vec3(10,-27,0);
+    cameraPositions[5] = glm::vec3(0,-30,0);
+
+    currPlayer = 0;
 
     eventManager->addEvent(Event {Game_PlayerSelection});
 
@@ -104,26 +105,26 @@ void SelectionState::update(float &accumulatedTime)
         if(currPlayer == 0 && selectedPlayer == 3) {
             cameraPositions[0] = glm::vec3(10,-27,0);
             cameraPositions[1] = glm::vec3(0,-30,0);
-            cameraPositions[2] = glm::vec3(10,-27,-18);
-            cameraPositions[3] = glm::vec3(0,-30,-18);
+            cameraPositions[2] = glm::vec3(10,-27,-24);
+            cameraPositions[3] = glm::vec3(0,-30,-24);
         }
         else if (currPlayer == 3 && selectedPlayer == 0) {
-            cameraPositions[0] = glm::vec3(10,-27,-18);
-            cameraPositions[1] = glm::vec3(0,-30,-18);
+            cameraPositions[0] = glm::vec3(10,-27,-24);
+            cameraPositions[1] = glm::vec3(0,-30,-24);
             cameraPositions[2] = glm::vec3(10,-27,0);
             cameraPositions[3] = glm::vec3(0,-30,0); 
         }
         else if (currPlayer > selectedPlayer) {
             cameraPositions[0] = cameraPositions[4];
             cameraPositions[1] = cameraPositions[5];
-            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z + 6);
-            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z + 6);
+            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z + 8);
+            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z + 8);
         }
         else if (currPlayer < selectedPlayer) {
             cameraPositions[0] = cameraPositions[4];
             cameraPositions[1] = cameraPositions[5];
-            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z - 6);
-            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z - 6);
+            cameraPositions[2] = glm::vec3(10,-27,cameraPositions[4].z - 8);
+            cameraPositions[3] = glm::vec3(0,-30,cameraPositions[5].z - 8);
         }
     }
 
