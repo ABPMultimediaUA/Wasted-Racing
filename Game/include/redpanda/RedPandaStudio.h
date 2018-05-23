@@ -14,7 +14,7 @@
 #include <vector>
 #include <chrono>
 
-#include "RedPanda.h"
+#include <RedPanda.h>
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -142,6 +142,7 @@ private:
     void renderLights();
     void renderAllLights();
     void updateActiveLights();
+    void updateActiveNearLights();
     void renderCamera();
     void renderBillboards();
     void renderParticles();
