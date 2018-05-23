@@ -116,16 +116,9 @@ void backUp(EventData eData){
 }
 void advanceDown(EventData eData) {
     //std::cout << "Advance button pressed!" << std::endl;
-    EventData data;
-    data.Id = 25000;
-    data.Vector = glm::vec3(0,1,0);
-    EventManager::getInstance().addEvent(Event {EventType::Particles_SmokeON, data});
 }
 void advanceUp(EventData eData) {
     //std::cout << "Advance button released!" << std::endl;
-    EventData data;
-    data.Id = 25000;
-    EventManager::getInstance().addEvent(Event {EventType::Particles_SmokeOFF, data});
 }
 void brakeDown(EventData eData) {
     //std::cout << "Brake button pressed!" << std::endl;
