@@ -14,7 +14,7 @@
 #include <vector>
 #include <chrono>
 
-#include "RedPanda.h"
+#include <RedPanda.h>
 
 //=========================================================================
 //                        RED PANDA STUDIO CLASS                         //
@@ -120,10 +120,12 @@ public:
 
     //////////////////////////////
     //  SETTERS
+    void setAmbient(float v)                            {   glUniform1f(ambientID, v);   }  
     void setWindow(SDL_Window* rw )                     {   window = rw;                 }   
     void setSilhouette(bool b)                          {   silhouetteActivated = b;     }
     void setNLightsForward(int i)                       {   nLightsForward = i;          }
     void setNLightsBack(int i)                          {   nLightsBack = i;             }
+
 
     //  POSTPROCESSING GETTERS & SETTERS
     bool getPPActive()                                  {   return postProcessingActive; }
@@ -172,6 +174,7 @@ private:
     int nLightsBack = 2;
     int nLightsForward = 3;
     int currentLight = 0;
+    GLuint ambientID;
 
     //=========================
     //  BILLBOARDS
