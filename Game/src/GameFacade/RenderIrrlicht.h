@@ -245,6 +245,12 @@ public:
 
     //Set the blur effect radius
     virtual void setBlurRadius(float r){};
+
+    virtual void setBackface(float r){};
+    virtual bool getBackface(){};
+
+    virtual void setFrsutum(float r){};
+    virtual bool getFrustum(){};
     
 private: 
     //==============================================================

@@ -238,6 +238,12 @@ public:
 
     //Set the blur effect radius
     virtual void setBlurRadius(float r);
+
+    virtual void setBackface(float r)                        {        backface = r;            }
+    bool getBackface()                                       {        return backface;         }
+
+    virtual void setFrustum(float r)                         {        frustum = r;             }
+    bool getFrustum()                                        {        return frustum;          }
     
 private: 
     //Update the logo video
@@ -262,5 +268,8 @@ private:
     float valueY;
 
     float sum;
+
+    bool backface = false;
+    bool frustum = false;
 
 };

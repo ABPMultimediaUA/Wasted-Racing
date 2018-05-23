@@ -92,6 +92,30 @@ namespace gui {
     struct nk_image text_blackwhiteOffHover;
     struct nk_image text_blackwhite;
     struct nk_image text_blackwhiteHover;
+    struct nk_image text_neonOn;
+    struct nk_image text_neonOnHover;
+    struct nk_image text_neonOff;
+    struct nk_image text_neonOffHover;
+    struct nk_image text_neon;
+    struct nk_image text_neonHover;
+    struct nk_image text_silohuetteOn;
+    struct nk_image text_silohuetteOnHover;
+    struct nk_image text_silohuetteOff;
+    struct nk_image text_silohuetteOffHover;
+    struct nk_image text_silohuette;
+    struct nk_image text_silohuetteHover;
+    struct nk_image text_backfaceOn;
+    struct nk_image text_backfaceOnHover;
+    struct nk_image text_backfaceOff;
+    struct nk_image text_backfaceOffHover;
+    struct nk_image text_backface;
+    struct nk_image text_backfaceHover;
+    struct nk_image text_frustumOn;
+    struct nk_image text_frustumOnHover;
+    struct nk_image text_frustumOff;
+    struct nk_image text_frustumOffHover;
+    struct nk_image text_frustum;
+    struct nk_image text_frustumHover;
 
     //SELECTION Images
     struct nk_image post_left;
@@ -1035,7 +1059,7 @@ void drawRPS_GUI_Options(){
             }
 
             //FULL SCREEN
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.20, w*0.25, w*0.033))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.25, w*0.25, w*0.033))) {
                 nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
 
                 bool fullscreen = GlobalVariables::getInstance().getFullscreen();
@@ -1059,14 +1083,14 @@ void drawRPS_GUI_Options(){
             }
 
             //Brightness
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.25, w*0.25, w*0.033))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.30, w*0.25, w*0.033))) {
                 nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
                 nk_button_image(GUI, gui::text_brightness, gui::text_brightnessHover);
                 nk_popup_end(GUI);
             }
             
             //Blur
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.30, w*0.25, w*0.033))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.35, w*0.25, w*0.033))) {
                 nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
 
                 bool blur = RenderManager::getInstance().getActiveBlur();
@@ -1097,7 +1121,7 @@ void drawRPS_GUI_Options(){
             }
             
             //Black and white
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.35, w*0.25, w*0.033))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.40, w*0.25, w*0.033))) {
                 nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
 
                 rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
@@ -1128,6 +1152,139 @@ void drawRPS_GUI_Options(){
                 nk_popup_end(GUI);
             }
 
+            //Neon
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.45, w*0.25, w*0.033))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+
+                rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                rps::PPOption pPoption = device->getPPOption();
+
+                if(pPoption == rps::PPOption::NEON)
+                {
+                    gui::text_neon         =  gui::text_neonOn;
+                    gui::text_neonHover    =  gui::text_neonOnHover;
+                }
+                else if(pPoption == rps::PPOption::DEFAULT)
+                {
+                    gui::text_neon         = gui::text_neonOff;
+                    gui::text_neonHover    = gui::text_neonOffHover;
+                }
+
+                if (nk_button_image(GUI, gui::text_neon, gui::text_neonHover))
+                {
+                    if(pPoption == rps::PPOption::NEON)
+                    {
+                        RenderManager::getInstance().getRenderFacade()->setNeon(false);
+                    }
+                    else if(pPoption == rps::PPOption::DEFAULT)
+                    {
+                        RenderManager::getInstance().getRenderFacade()->setNeon(true);
+                    }
+                }                
+                nk_popup_end(GUI);
+            }
+
+            //Silohuette
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.50, w*0.25, w*0.033))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+
+                rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                bool silhouette = device->getSilhouette();
+
+                if(silhouette == true)
+                {
+                    gui::text_silohuette         =  gui::text_silohuetteOn;
+                    gui::text_silohuetteHover    =  gui::text_silohuetteOnHover;
+                }
+                else if(silhouette == false)
+                {
+                    gui::text_silohuette         = gui::text_silohuetteOff;
+                    gui::text_silohuetteHover    = gui::text_silohuetteOffHover;
+                }
+
+                if (nk_button_image(GUI, gui::text_silohuette, gui::text_silohuetteHover))
+                {
+                    if(silhouette == true)
+                    {
+                        device->setSilhouette(false);
+                    }
+                    else if(silhouette == false)
+                    {
+                        device->setSilhouette(true);
+                    }
+                }                
+                nk_popup_end(GUI);
+            }
+
+            //Backface Culling
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.55, w*0.25, w*0.033))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+
+                rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+
+                bool backface = RenderManager::getInstance().getRenderFacade()->getBackface();
+
+                if(backface == true)
+                {
+                    gui::text_backface         =  gui::text_backfaceOn;
+                    gui::text_backfaceHover    =  gui::text_backfaceOnHover;
+                }
+                else if(backface == false)
+                {
+                    gui::text_backface         = gui::text_backfaceOff;
+                    gui::text_backfaceHover    = gui::text_backfaceOffHover;
+                }
+
+                if (nk_button_image(GUI, gui::text_backface, gui::text_backfaceHover))
+                {
+                    if(backface == true)
+                    {
+                        device->setCulling(false, GL_BACK);
+                        RenderManager::getInstance().getRenderFacade()->setBackface(false);
+                    }
+                    else if(backface == false)
+                    {
+                        device->setCulling(true, GL_BACK);
+                        RenderManager::getInstance().getRenderFacade()->setBackface(true);
+                    }
+                }                
+                nk_popup_end(GUI);
+            }
+
+            //Frustum Culling
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.60, w*0.25, w*0.033))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+
+                rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+
+                bool frustum = RenderManager::getInstance().getRenderFacade()->getFrustum();
+
+                if(frustum == true)
+                {
+                    gui::text_frustum         =  gui::text_frustumOn;
+                    gui::text_frustumHover    =  gui::text_frustumOnHover;
+                }
+                else if(frustum == false)
+                {
+                    gui::text_frustum         = gui::text_frustumOff;
+                    gui::text_frustumHover    = gui::text_frustumOffHover;
+                }
+
+                if (nk_button_image(GUI, gui::text_frustum, gui::text_frustumHover))
+                {
+                    if(frustum == true)
+                    {
+                        device->setFrustumCulling(false);
+                        RenderManager::getInstance().getRenderFacade()->setFrustum(false);
+                    }
+                    else if(frustum == false)
+                    {
+                        device->setFrustumCulling(true);
+                        RenderManager::getInstance().getRenderFacade()->setFrustum(true);
+                    }
+                }                
+                nk_popup_end(GUI);
+            }
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
@@ -1421,6 +1578,18 @@ void gui::init() {
         gui::text_blackwhiteOnHover     =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOnHover.png");
         gui::text_blackwhiteOff         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOff.png");
         gui::text_blackwhiteOffHover    =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOffHover.png");
+        gui::text_neonOn                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bNeonOn.png");
+        gui::text_neonOnHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bNeonOnHover.png");
+        gui::text_neonOff               =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bNeonOff.png");
+        gui::text_neonOffHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bNeonOffHover.png");
+        gui::text_silohuetteOn          =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSilohuetteOn.png");
+        gui::text_silohuetteOnHover     =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSilohuetteOnHover.png");
+        gui::text_silohuetteOff         =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSilohuetteOff.png");
+        gui::text_silohuetteOffHover    =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bSilohuetteOffHover.png");
+        gui::text_backfaceOn            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBackfaceOn.png");
+        gui::text_backfaceOnHover       =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBackfaceOnHover.png");
+        gui::text_backfaceOff           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBackfaceOff.png");
+        gui::text_backfaceOffHover      =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBackfaceOffHover.png");
     } 
     else {
         gui::optionsBase                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/opcionesBase.png");
@@ -1448,6 +1617,22 @@ void gui::init() {
         gui::text_blackwhiteOnHover     =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOnHover.png");
         gui::text_blackwhiteOff         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOff.png");
         gui::text_blackwhiteOffHover    =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOffHover.png");
+        gui::text_neonOn                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bNeonOn.png");
+        gui::text_neonOnHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bNeonOnHover.png");
+        gui::text_neonOff               =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bNeonOff.png");
+        gui::text_neonOffHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bNeonOffHover.png");
+        gui::text_silohuetteOn          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSiluetaOn.png");
+        gui::text_silohuetteOnHover     =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSiluetaOnHover.png");
+        gui::text_silohuetteOff         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSiluetaOff.png");
+        gui::text_silohuetteOffHover    =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSiluetaOffHover.png");
+        gui::text_backfaceOn            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBackfaceOn.png");
+        gui::text_backfaceOnHover       =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBackfaceOnHover.png");
+        gui::text_backfaceOff           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBackfaceOff.png");
+        gui::text_backfaceOffHover      =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBackfaceOffHover.png");
+        gui::text_frustumOn             =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bFrustumOn.png");
+        gui::text_frustumOnHover        =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bFrustumOnHover.png");
+        gui::text_frustumOff            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bFrustumOff.png");
+        gui::text_frustumOffHover       =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bFrustumOffHover.png");
     }
     //==========================================================================================
     //  PAUSE MENU
