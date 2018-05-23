@@ -230,6 +230,7 @@ TResourceLoD* ResourceManager::getResourceLoD(const char* n)
     return res;
 }
 
+//Destroys the OBJ with the route provided, if it's loaded in memory
 void ResourceManager::deleteResourceOBJ(const char* n)
 {
     unsigned int i;
@@ -248,6 +249,7 @@ void ResourceManager::deleteResourceOBJ(const char* n)
     }
 }
 
+//Destroys the animation with the route provided, if it's loaded in memory
 void ResourceManager::deleteResourceAnimation(const char* n)
 {
     unsigned int i;

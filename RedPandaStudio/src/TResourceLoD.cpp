@@ -1,8 +1,6 @@
 #include "TResourceLoD.h"
 
-
-
-
+//Inserts an obj in a particular level of the resource
 void TResourceLoD::insertObj(int lvl, TResourceOBJ* obj)
 {
     if(lvl >= 0 && obj != nullptr)
@@ -20,7 +18,7 @@ void TResourceLoD::insertObj(int lvl, TResourceOBJ* obj)
     }
 }
 
-
+//Getter for a single OBJ of the resource
 TResourceOBJ* TResourceLoD::getResourceObj(int lvl)
 {
     if(lvl > 0)

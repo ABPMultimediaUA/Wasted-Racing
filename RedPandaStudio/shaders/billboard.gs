@@ -9,6 +9,9 @@ uniform vec3 cameraPosition;
 
 out vec2 TextCoord;
 
+//The technique used for developing the billboards in our engine is based in the tutorials provided by ogldev.atspace.co.uk
+//More precisely, it's based on this tutorial: http://ogldev.atspace.co.uk/www/tutorial27/tutorial27.html
+//This also includes our shaders, used for rendering the billboards
 void main()
 {
     
@@ -17,36 +20,25 @@ void main()
     vec3 up = vec3(0.0, 1.0, 0.0);
     vec3 right = cross(toCamera, up);
 
-
-    //p.z = -3.0;
+    //We are emitting the four vertex here in order, assigning the texture coordinates previously
     p -= (0.5 * right);
-    //p -= (right * 0.5);
-    //p = right;
     gl_Position = VPMatrix * vec4(p, 1.0);
     TextCoord = vec2(1.0, 1.0);
     EmitVertex();
 
     p.y += 1.0;
-    //p.y += 20.0;
-    //p.y += 1.0;
     gl_Position = VPMatrix * vec4(p, 1.0);
     TextCoord = vec2(1.0, 0.0);
     EmitVertex();
 
     p.y -= 1.0;
     p += right;
-    //p.y -= 20.0;
-    //p.x += 20.0;
-    //p.y -= 1.0;
-    //p += right;
     gl_Position = VPMatrix * vec4(p, 1.0);
     TextCoord = vec2(0.0, 1.0);
     EmitVertex();
     
 
     p.y += 1.0;
-    //p.y += 20.0;
-    //p.y += 1.0;
     gl_Position = VPMatrix * vec4(p, 1.0);
     TextCoord = vec2(0.0, 0.0);
     EmitVertex();

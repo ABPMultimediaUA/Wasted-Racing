@@ -1,6 +1,6 @@
 #include "TResourceAnimation.h"
-#include <iostream>
 
+//Auxiliar method for spliting character arrays
 std::vector<std::string> TResourceAnimation::split(const std::string& s, const char& c) {
 	std::string buff{""};
 	std::vector<std::string> v;
@@ -15,6 +15,7 @@ std::vector<std::string> TResourceAnimation::split(const std::string& s, const c
 	return v;
 }
 
+//Destructor of the resource
 TResourceAnimation::~TResourceAnimation()
 {
     for(unsigned int i = 0; i < objs.size(); i++)
@@ -24,6 +25,7 @@ TResourceAnimation::~TResourceAnimation()
     objs.clear();
 }
 
+//Loader of the resource. Autocompletes the name to load all the frames
 bool TResourceAnimation::loadResource()
 {
 
@@ -55,6 +57,7 @@ bool TResourceAnimation::loadResource()
     return false;
 }
 
+//Despite the fact of it's name, this method only populates the material to all the frames in the animation
 void TResourceAnimation::populateTextures()
 {
     std::string s = name;
@@ -89,6 +92,7 @@ void TResourceAnimation::populateTextures()
 
 }
 
+//Draw method of the resource for a static animation in the first frame
 void TResourceAnimation::draw()
 {
     if(texture != NULL)
@@ -98,6 +102,7 @@ void TResourceAnimation::draw()
     objs[0]->draw();
 }
 
+//Draw method of the animation given a frame
 void TResourceAnimation::draw(unsigned int i)
 {
     if(i >= 0 && i < objs.size())
