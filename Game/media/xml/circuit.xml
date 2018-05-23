@@ -2441,7 +2441,7 @@
     <component name="waypoint" radius="70" level="68" />
 </object>
 <object id="14000" pos="546.937256,126.346115,-5.485352" rot="0,0,0" sca="1,1,1">
-    <component name="light" radius="100" type="P" />
+    <component name="light" radius="500" type="P" />
 </object>
 <object id="14001" pos="1406.681152,126.346115,-5.485352" rot="0,0,0" sca="1,1,1">
     <component name="light" radius="100" type="P" />

@@ -93,7 +93,10 @@ void RenderManager::init(int engine) {
     //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
     particleManager = &ParticleManager::getInstance();
     //particleManager->init();
+
+    activeBlur = false;
  
+                       // RenderManager::getInstance().getRenderFacade()->setBlackAndWhite(true);
 }
 
 void RenderManager::update(float dTime) {
@@ -116,7 +119,10 @@ void RenderManager::update(float dTime) {
     c->update(dTime);
 
     //Update blur
-    //updateBlur();
+    if(activeBlur == true){
+        updateBlur();
+    }
+    
 
     //Update debug if debug mode activated
     if(debugState){
@@ -171,6 +177,20 @@ void RenderManager::updateBlur()
     renderFacade->setBlurEffect(c->getBlurActivation());
     renderFacade->setBlurIntensity(1.3 * c->getBlurFactor());
     renderFacade->setBlurRadius(0.5);
+}
+
+void RenderManager::setActiveBlur(bool b)
+{
+    if(b == false)
+    {
+        renderFacade->setPostProcessingOption(rps::PPOption::DEFAULT);
+        renderFacade->setBlurEffect(false);
+    }
+    else
+    {
+        renderFacade->setPostProcessingOption(rps::PPOption::BLUR);
+    }
+    activeBlur = b;
 }
 
 //==============================================

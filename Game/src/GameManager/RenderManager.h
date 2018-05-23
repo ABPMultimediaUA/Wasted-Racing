@@ -193,6 +193,7 @@ public:
     bool getLapBattle()                                {          return lapB;              }
     int getAINumberBattle()                            {          return AIDebugB;          }
     std::vector<GameObject> getAIsBattle()             {          return AIDebugPointB;     }
+    bool getActiveBlur()                               {          return activeBlur;        }
     
     //==============================================================
     // VISUAL EFFECTS
@@ -202,6 +203,7 @@ public:
     void setBlurOrigin(float x, float y);
     void setBlurIntensity(float i);
     void setBlurRadius(float r);
+    void setActiveBlur(bool b);
 
 private:
     //==============================================================
@@ -276,4 +278,7 @@ private:
     bool wait = false;
     
     int enter = 0;
+
+    //Blur active
+    bool activeBlur;
 };

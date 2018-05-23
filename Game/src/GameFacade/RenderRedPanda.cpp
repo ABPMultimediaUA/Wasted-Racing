@@ -74,6 +74,24 @@ namespace gui {
     struct nk_image text_oexitHover;
     struct nk_image text_fullscreen;
     struct nk_image text_fullscreenHover;
+    struct nk_image text_fullscreenOn;
+    struct nk_image text_fullscreenOnHover;
+    struct nk_image text_fullscreenOff;
+    struct nk_image text_fullscreenOffHover;
+    struct nk_image text_brightness;
+    struct nk_image text_brightnessHover;
+    struct nk_image text_blurOn;
+    struct nk_image text_blurOnHover;
+    struct nk_image text_blurOff;
+    struct nk_image text_blurOffHover;
+    struct nk_image text_blur;
+    struct nk_image text_blurHover;
+    struct nk_image text_blackwhiteOn;
+    struct nk_image text_blackwhiteOnHover;
+    struct nk_image text_blackwhiteOff;
+    struct nk_image text_blackwhiteOffHover;
+    struct nk_image text_blackwhite;
+    struct nk_image text_blackwhiteHover;
 
     //SELECTION Images
     struct nk_image post_left;
@@ -1015,9 +1033,23 @@ void drawRPS_GUI_Options(){
                 }                
                 nk_popup_end(GUI);
             }
-            
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.6, h*0.2, w*0.25, w*0.04))) {
+
+            //FULL SCREEN
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.20, w*0.25, w*0.033))) {
                 nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+
+                bool fullscreen = GlobalVariables::getInstance().getFullscreen();
+                if(fullscreen == true)
+                {
+                    gui::text_fullscreen         =  gui::text_fullscreenOn;
+                    gui::text_fullscreenHover    =  gui::text_fullscreenOnHover;
+                }
+                else
+                {
+                    gui::text_fullscreen         = gui::text_fullscreenOff;
+                    gui::text_fullscreenHover    = gui::text_fullscreenOffHover;
+                }
+
                 if (nk_button_image(GUI, gui::text_fullscreen, gui::text_fullscreenHover)){
                     
                     EventManager::getInstance().addEvent(Event {EventType::Global_ChangeFullscreen});
@@ -1025,7 +1057,79 @@ void drawRPS_GUI_Options(){
                 }                
                 nk_popup_end(GUI);
             }
+
+            //Brightness
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.25, w*0.25, w*0.033))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+                nk_button_image(GUI, gui::text_brightness, gui::text_brightnessHover);
+                nk_popup_end(GUI);
+            }
             
+            //Blur
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.30, w*0.25, w*0.033))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+
+                bool blur = RenderManager::getInstance().getActiveBlur();
+                if(blur == true)
+                {
+                    gui::text_blur         =  gui::text_blurOn;
+                    gui::text_blurHover    =  gui::text_blurOnHover;
+                }
+                else
+                {
+                    gui::text_blur         = gui::text_blurOff;
+                    gui::text_blurHover    = gui::text_blurOffHover;
+                }
+
+                if (nk_button_image(GUI, gui::text_blur, gui::text_blurHover)){
+                    
+                    if(blur == true)
+                    {
+                        RenderManager::getInstance().setActiveBlur(false);
+                    }
+                    else
+                    {
+                        RenderManager::getInstance().setActiveBlur(true);
+                    }
+
+                }                
+                nk_popup_end(GUI);
+            }
+            
+            //Black and white
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.55, h*0.35, w*0.25, w*0.033))) {
+                nk_layout_row_static(GUI, w*0.04, w*0.25, 1);
+
+                rps::RedPandaStudio *device = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice();
+                rps::PPOption pPoption = device->getPPOption();
+
+                if(pPoption == rps::PPOption::BLACK_WHITE)
+                {
+                    gui::text_blackwhite         =  gui::text_blackwhiteOn;
+                    gui::text_blackwhiteHover    =  gui::text_blackwhiteOnHover;
+                }
+                else if(pPoption == rps::PPOption::DEFAULT)
+                {
+                    gui::text_blackwhite         = gui::text_blackwhiteOff;
+                    gui::text_blackwhiteHover    = gui::text_blackwhiteOffHover;
+                }
+
+                if (nk_button_image(GUI, gui::text_blackwhite, gui::text_blackwhiteHover))
+                {
+                    if(pPoption == rps::PPOption::BLACK_WHITE)
+                    {
+                    std::cout<<"1"<<"\n";
+                        RenderManager::getInstance().getRenderFacade()->setBlackAndWhite(false);
+                    }
+                    else if(pPoption == rps::PPOption::DEFAULT)
+                    {
+                    std::cout<<"2"<<"\n";
+                        RenderManager::getInstance().getRenderFacade()->setBlackAndWhite(true);
+                    }
+                }                
+                nk_popup_end(GUI);
+            }
+
 		}
 	nk_end(GUI);
 	nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
@@ -1305,8 +1409,20 @@ void gui::init() {
         gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bVolumeHover.png");
         gui::text_oexit                 =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bExit.png");
         gui::text_oexitHover            =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bExitHover.png");
-        gui::text_fullscreen            =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bFullscreen.png");
-        gui::text_fullscreenHover       =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bFullscreenHover.png");
+        gui::text_fullscreenOn          =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bFullscreenOn.png");
+        gui::text_fullscreenOnHover     =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bFullscreenOnHover.png");
+        gui::text_fullscreenOff         =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bFullscreenOff.png");
+        gui::text_fullscreenOffHover    =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bFullscreenOffHover.png");
+        gui::text_brightness            =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bBrightness.png");
+        gui::text_brightnessHover       =   gui::loadTexture("media/img/GUI/OptionsMenu/ENG/bBrightnessHover.png");
+        gui::text_blurOn                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlurOn.png");
+        gui::text_blurOnHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlurOnHover.png");
+        gui::text_blurOff               =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlurOff.png");
+        gui::text_blurOffHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlurOffHover.png");
+        gui::text_blackwhiteOn          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOn.png");
+        gui::text_blackwhiteOnHover     =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOnHover.png");
+        gui::text_blackwhiteOff         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOff.png");
+        gui::text_blackwhiteOffHover    =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOffHover.png");
     } 
     else {
         gui::optionsBase                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/opcionesBase.png");
@@ -1320,10 +1436,21 @@ void gui::init() {
         gui::text_volumeHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bVolumenHover.png");
         gui::text_oexit                 =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalir.png");
         gui::text_oexitHover            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bSalirHover.png");
-        gui::text_fullscreen            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bPantallaCompleta.png");
-        gui::text_fullscreenHover       =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bPantallaCompletaHover.png");
+        gui::text_fullscreenOn          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bPantallaCompletaOn.png");
+        gui::text_fullscreenOnHover     =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bPantallaCompletaOnHover.png");
+        gui::text_fullscreenOff         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bPantallaCompletaOff.png");
+        gui::text_fullscreenOffHover    =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bPantallaCompletaOffHover.png");
+        gui::text_brightness            =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bRegularBrillo.png");
+        gui::text_brightnessHover       =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bRegularBrilloHover.png");
+        gui::text_blurOn                =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlurOn.png");
+        gui::text_blurOnHover           =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlurOnHover.png");
+        gui::text_blurOff               =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlurOff.png");
+        gui::text_blurOffHover          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlurOffHover.png");
+        gui::text_blackwhiteOn          =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOn.png");
+        gui::text_blackwhiteOnHover     =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOnHover.png");
+        gui::text_blackwhiteOff         =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOff.png");
+        gui::text_blackwhiteOffHover    =   gui::loadTexture("media/img/GUI/OptionsMenu/SPA/bBlancoNegroOffHover.png");
     }
-
     //==========================================================================================
     //  PAUSE MENU
     //==========================================================================================
@@ -1439,6 +1566,58 @@ void RenderRedPanda::setPostProcessing(bool b)
 void RenderRedPanda::setPostProcessingOption(int o)
 {
     device->setPPOption((rps::PPOption) o);
+}
+
+//Set the scene to black and white
+void RenderRedPanda::setBlackAndWhite(bool b)
+{
+    if(b)
+    {
+        //Check postprocessing
+        if(!device->getPPActive())
+            setPostProcessing(true);
+
+        //Set black and white
+        device->setPPOption(rps::PPOption::BLACK_WHITE);
+    }
+    else
+    {
+        //Check postprocessing
+        if(device->getPPActive())
+            setPostProcessing(false);
+
+        //Set default
+        device->setPPOption(rps::PPOption::DEFAULT);
+    }
+}
+
+//Set the scene to neon visual
+void RenderRedPanda::setNeon(bool b)
+{
+    if(b)
+    {
+        //Check postprocessing
+        if(!device->getPPActive())
+            setPostProcessing(true);
+
+        //Set neon
+        device->setPPOption(rps::PPOption::NEON);
+    }
+    else
+    {
+        //Check postprocessing
+        if(device->getPPActive())
+            setPostProcessing(false);
+
+        //Set default
+        device->setPPOption(rps::PPOption::DEFAULT);
+    }
+}
+
+//Set the neon factor
+void RenderRedPanda::setNeonFactor(float n)
+{
+    device->setPPNeonFactor(n);
 }
 
 //Set the blur effect
