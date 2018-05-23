@@ -67,12 +67,14 @@ out vec4 FragColor;
 
 
 //================================
+//SHADOW MAPPING variables
 vec4 lightPos = light[0].position;
 
 in vec4 FragLightPos;
 
 uniform sampler2D shadowMap;
 
+//Visibility limiter used for the shadow mapping
 float calculateVisibility()
 {
     float bias =  0.23;
