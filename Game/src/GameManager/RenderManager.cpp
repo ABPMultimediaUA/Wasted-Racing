@@ -92,11 +92,10 @@ void RenderManager::init(int engine) {
     //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/punk/punk.obj");
     //RenderManager::getInstance().getRenderFacade()->addMeshLoD(1,"media/mesh/witch/witch.obj");
     particleManager = &ParticleManager::getInstance();
-    //particleManager->init();
+    particleManager->init();
 
     activeBlur = false;
  
-                       // RenderManager::getInstance().getRenderFacade()->setBlackAndWhite(true);
 }
 
 void RenderManager::update(float dTime) {
@@ -138,7 +137,7 @@ void RenderManager::update(float dTime) {
 
     renderFacade->updateAnimations(dTime);
 
-    //particleManager->update();
+    particleManager->update();
 }
 
 void RenderManager::draw() {

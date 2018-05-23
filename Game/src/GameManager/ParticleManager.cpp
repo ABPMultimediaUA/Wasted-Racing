@@ -5,12 +5,6 @@
 #include "ObjectManager.h"
 
 //==============================================
-// DELEGATES DECLARATIONS
-//==============================================
-void createSmokeEvent(EventData eData); 
-void deleteParticleEvent(EventData eData);
-
-//==============================================
 // PARTICLE MANAGER FUNCTIONS
 //============================================== 
 ParticleManager& ParticleManager::getInstance() {
@@ -19,11 +13,9 @@ ParticleManager& ParticleManager::getInstance() {
 }
 
 void ParticleManager::init(){
-
-    //Bind functions
-    EventManager::getInstance().addListener(EventListener {EventType::Particles_SmokeON, createSmokeEvent});
-    EventManager::getInstance().addListener(EventListener {EventType::Particles_SmokeOFF, deleteParticleEvent});
-  
+    createSmokeParticleSystem(glm::vec3(-1746, -278,525));
+    createSmokeParticleSystem(glm::vec3(-2146, -278,192));
+    createDustParticleSystem(glm::vec3(375, -40, 670));
 }
 
 void ParticleManager::close(){
@@ -38,9 +30,16 @@ void ParticleManager::close(){
 void ParticleManager::update(){
 
     for(unsigned int i = 0; i < emitters.size(); i++) {
-        GameObject::TransformationData td = (ObjectManager::getInstance().getObject(emitters[i].idToFollow)).get()->getTransformData();
-        td.position += emitters[i].offset;
-        RenderManager::getInstance().getRenderFacade()->updateObjectTransform(emitters[i].id, td);
+        if(emitters[i].id != 0) {
+            GameObject::TransformationData td = (ObjectManager::getInstance().getObject(emitters[i].idToFollow)).get()->getTransformData();
+            td.position += emitters[i].offset;
+            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(emitters[i].id, td);
+        }
+        else {
+            GameObject::TransformationData td;
+            td.position = emitters[i].offset;
+            RenderManager::getInstance().getRenderFacade()->updateObjectTransform(emitters[i].id, td);
+        }
     }
 
 }
@@ -50,12 +49,38 @@ void ParticleManager::createSmokeParticleSystem(uint16_t idToFollow, glm::vec3 o
     GameObject::TransformationData td = (ObjectManager::getInstance().getObject(idToFollow)).get()->getTransformData();
     td.position += offset;
 
-    RenderManager::getInstance().getRenderFacade()->createParticleSystem(lastId, "media/mesh/smoke/smoke.obj", td.position, 2, 200, 5,
-                                                                        glm::vec3(0,0.2,0), glm::vec3(0,0.1,0), 0.1,        //Direction
-                                                                        0, 2, 0.2,                                          //Size
-                                                                        glm::vec4(1,0,0,1), glm::vec4(0,0,1,0.5), 0.5);    //Color
+    RenderManager::getInstance().getRenderFacade()->createParticleSystem(lastId, "media/mesh/smoke/smoke.obj", td.position, 2, 10, 5,
+                                                                        glm::vec3(0,0.1,0), glm::vec3(0,0.07,0), 0.3,        //Direction
+                                                                        0.5, 4, 0.5,                                          //Size
+                                                                        glm::vec4(0,0,0,1), glm::vec4(1,1,1,1), 0.05);    //Color
 
     emitters.push_back(particleSystem{lastId, idToFollow, offset});
+
+    lastId++;
+
+}
+
+void ParticleManager::createSmokeParticleSystem(glm::vec3 position) {
+
+    RenderManager::getInstance().getRenderFacade()->createParticleSystem(lastId, "media/mesh/smoke/smoke.obj", position, 2, 10, 5,
+                                                                        glm::vec3(0,0.2,0), glm::vec3(0,0.1,0), 0.3,        //Direction
+                                                                        0.5, 2, 0.5,                                          //Size
+                                                                        glm::vec4(0,0,0,1), glm::vec4(1,1,1,1), 0.05);    //Color
+
+    emitters.push_back(particleSystem{lastId, 0, position});
+
+    lastId++;
+
+}
+
+void ParticleManager::createDustParticleSystem(glm::vec3 position) {
+
+    RenderManager::getInstance().getRenderFacade()->createParticleSystem(lastId, "media/mesh/part/part.obj", position, 100, 50, 10,
+                                                                        glm::vec3(0,0.2,0), glm::vec3(0,0.2,0), 0.4,        //Direction
+                                                                        2, 2, 0.5,                                          //Size
+                                                                        glm::vec4(0.5,0,0.5,1), glm::vec4(0.5,0,0.5,1), 0.4);    //Color
+
+    emitters.push_back(particleSystem{lastId, 0, position});
 
     lastId++;
 
@@ -73,19 +98,5 @@ void ParticleManager::deleteParticleSystem(uint16_t idToFollow) {
     }
 
     emitters.erase(emitters.begin()+j);
-
-}
-
-//==============================================
-// DELEGATES
-//==============================================
-void createSmokeEvent(EventData eData) {
-
-    ParticleManager::getInstance().createSmokeParticleSystem(eData.Id, eData.Vector);
-
-}
-void deleteParticleEvent(EventData eData) {
-
-    ParticleManager::getInstance().deleteParticleSystem(eData.Id);
 
 }

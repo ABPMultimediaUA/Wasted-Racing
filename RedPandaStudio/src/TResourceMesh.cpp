@@ -115,7 +115,7 @@ bool TResourceMesh::loadMesh(aiMesh* m)
 bool TResourceMesh::loadResource()
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_FlipUVs );
 
     nTriangles = 0;
 

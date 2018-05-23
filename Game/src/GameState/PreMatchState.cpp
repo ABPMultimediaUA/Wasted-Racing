@@ -13,7 +13,7 @@ void PreMatchState::init() {
     Game::getInstance().setAccumulatedTime(0);
     GlobalVariables::getInstance().setIgnoreInput(true);
 
-    playCsound("media/audio/probabilities.bin", 16, 1200);
+    playCsound("media/audio/probabilities.bin", 14, 1200);
 
 }
 

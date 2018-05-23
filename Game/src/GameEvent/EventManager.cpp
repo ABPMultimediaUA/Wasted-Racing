@@ -30,7 +30,6 @@ void EventManager::update() {
         EventManager::eventQueue.pop();
         EventManager::processEvent(e);
     }
-
 }
 
 void EventManager::close() {

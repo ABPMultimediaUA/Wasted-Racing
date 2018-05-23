@@ -24,6 +24,8 @@ class ParticleManager {
         //      PARTICLE MANAGERS
         //====================================================
         void createSmokeParticleSystem(uint16_t idToFollow, glm::vec3 offset);
+        void createSmokeParticleSystem(glm::vec3 position);
+        void createDustParticleSystem(glm::vec3 position);
         void deleteParticleSystem(uint16_t idToFollow);
 
     private:
