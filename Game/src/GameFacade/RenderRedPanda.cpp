@@ -130,6 +130,7 @@ namespace gui {
     struct nk_image countdown[4];
     struct nk_image winner;
     struct nk_image looser;
+    struct nk_image clientLobbyBackground;
 
     void init();
     struct nk_image loadTexture(const char* path);
@@ -709,6 +710,7 @@ void drawRPS_GUI_Menu(){
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
@@ -756,6 +758,7 @@ void drawRPS_GUI_CityName() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
@@ -776,7 +779,8 @@ void drawRPS_GUI_Countdown() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-    
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+   
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
 
@@ -796,7 +800,8 @@ void drawRPS_GUI_AfterMatch() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-    
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+   
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
 
@@ -821,6 +826,7 @@ void drawRPS_GUI_LoadingScreen() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
@@ -847,7 +853,8 @@ void drawRPS_GUI_PlayerSelect() {
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+    
     int currPlayer = GlobalVariables::getInstance().getSelectedPlayer();
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
@@ -933,6 +940,7 @@ void drawRPS_GUI_Options(){
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
     
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
@@ -1052,7 +1060,8 @@ void drawRPS_GUI_HUD(){
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+   
     GameObject cameraTarget = RenderManager::getInstance().getRenderFacade()->getCameraTarget();
 
     if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0)) {
@@ -1179,7 +1188,8 @@ void drawRPS_GUI_Pause(){
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+    
         if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
 
@@ -1230,8 +1240,9 @@ void drawRPS_GUI_ClientLobby(){
     Window window = RenderManager::getInstance().getRenderFacade()->getWindow();
     int w = window.size.x;
     int h = window.size.y;
-
-        if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
+    ((RenderRedPanda*)RenderManager::getInstance().getRenderFacade())->getDevice()->resizePostProcessing(window.size.x, window.size.y);
+   
+       if (nk_begin(GUI, "Demo", nk_rect(0, 0, window.size.x, window.size.y),0))
         {
 
             GUI->style.window.fixed_background = nk_style_item_hide();
@@ -1242,13 +1253,13 @@ void drawRPS_GUI_ClientLobby(){
                 nk_popup_end(GUI);
             }
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.29, 0, w, h))) {
-                nk_layout_row_static(GUI, h, h*0.75, 1);
-                nk_image(GUI, gui::pauseBase);
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.16, h*0.2, w, h))) {
+                nk_layout_row_static(GUI, h*0.35, w*0.65, 1);
+                nk_image(GUI, gui::clientLobbyBackground);
                 nk_popup_end(GUI);
             }
 
-            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.393, h*0.31, w*0.23, h*0.6))) {
+            if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", 0, nk_rect(w*0.37, h*0.61, w*0.23, h*0.9))) {
 
                 nk_layout_row_dynamic(GUI, h*0.12, 1);
                 if (nk_button_image(GUI, gui::text_menu, gui::text_menuHover)) {
@@ -1290,6 +1301,12 @@ void gui::init() {
     gui::countdown[1]                   =   gui::loadTexture("media/img/GUI/Other/1.png");
     gui::countdown[2]                   =   gui::loadTexture("media/img/GUI/Other/2.png");
     gui::countdown[3]                   =   gui::loadTexture("media/img/GUI/Other/3.png");
+
+    if(GlobalVariables::getInstance().getLanguage() == 0) {
+        gui::clientLobbyBackground      =   gui::loadTexture("media/img/GUI/Other/infoMultiplayerEN.png");
+    }else{
+        gui::clientLobbyBackground      =   gui::loadTexture("media/img/GUI/Other/infoMultiplayerES.png");
+    }
 
     //==========================================================================================
     //  MAIN MENU

@@ -451,6 +451,10 @@ void RedPandaStudio::initOpenGL()
 
 	silFlagIdentifier = glGetUniformLocation(ProgramID, "silhouette");
 
+	//Ambient light location
+	ambientID = glGetUniformLocation(ProgramID, "ambient");
+
+
 	glUniform1i(colorTexture, 0);
 	glUniform1i(normalTexture, 1);
 

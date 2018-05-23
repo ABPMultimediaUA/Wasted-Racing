@@ -144,16 +144,16 @@ void IntroState::swapToMatch()
 void IntroState::swapToClientLobby()
 {
     //Load server
-    execFileServer();
+    //execFileServer();
 
     //Close this state
-    close();
+    //close();
 
     //Initalize networkManager here
-    NetworkManager::getInstance().init();
+    //NetworkManager::getInstance().init();
 
     //Initialize Server IP
-    NetworkManager::getInstance().setServerIP(ip);
+    //NetworkManager::getInstance().setServerIP(ip);
 
     //Change GUI value
     EventManager::getInstance().addEvent(Event {EventType::Game_ClientLobby});
