@@ -221,9 +221,9 @@ void RenderRedPanda::openWindow() {
     }
     if(!window.fullscreen)
     {
-        SDL_SetWindowSize(device->getWindow(), DM.w*0.8, DM.h*0.8);
-        window.size.x = DM.w*0.8;
-        window.size.y = DM.h*0.8;
+        SDL_SetWindowSize(device->getWindow(), DM.w * 0.8, DM.h * 0.8);
+        window.size.x = DM.w * 0.8;
+        window.size.y = DM.h * 0.8;
     }
 
     device->resizePostProcessing(window.size.x,window.size.y);
@@ -767,7 +767,7 @@ void drawRPS_GUI_Menu(){
             }
 
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.16, 0, w, h))) {
-                nk_layout_row_static(GUI, h, h*1.16, 1);
+                nk_layout_row_static(GUI, h, w*0.65, 1);
                 nk_image(GUI, gui::menuBase);
                 nk_popup_end(GUI);
             }
@@ -1000,7 +1000,7 @@ void drawRPS_GUI_Options(){
             }
 
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(h*0.1388, 0, w, h))) {
-                nk_layout_row_static(GUI, h, h*1.5, 1);
+                nk_layout_row_static(GUI, h, w*0.84, 1);
                 nk_image(GUI, gui::optionsBase);
                 nk_popup_end(GUI);
             }
@@ -1476,7 +1476,7 @@ void drawRPS_GUI_Pause(){
             }
 
             if (nk_popup_begin(GUI, NK_POPUP_STATIC, "Image Popup", NK_WINDOW_NO_SCROLLBAR, nk_rect(w*0.29, 0, w, h))) {
-                nk_layout_row_static(GUI, h, h*0.75, 1);
+                nk_layout_row_static(GUI, h, w*0.42, 1);
                 nk_image(GUI, gui::pauseBase);
                 nk_popup_end(GUI);
             }
