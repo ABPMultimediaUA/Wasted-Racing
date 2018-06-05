@@ -31,6 +31,10 @@ public:
     //Closes engine window
     virtual void closeAudioEngine() = 0;
 
+    //Load and unload backs
+    virtual void loadBanks() = 0;
+    virtual void unloadBanks() = 0;
+
     //==============================================================
     // Audio Related functions
     //==============================================================
@@ -44,19 +48,21 @@ public:
     //Getters
     virtual float getVolume() = 0;
 
+    virtual void stop(std::string name) = 0;
+
     //Sets the gameObject to be the listener
     void setListener(GameObject& newListener) {
         listener = &newListener;
     }
 
     //Returns the gameObject that is listening
-    GameObject& getListener() {
-        return *listener;
+    GameObject* getListener() {
+        return listener;
     }
 
 protected:
 
     //Listener
-    GameObject* listener;
+    GameObject* listener = nullptr;
 
 };

@@ -1,4 +1,5 @@
-/*#version 450 core
+/*
+#version 450 core
 
 layout(location = 0) in vec4 vertexPosition;
 layout(location = 1) in vec3 vertexNormal;
@@ -94,6 +95,7 @@ void main()
 }
 */
 
+
 #version 450 core
 
 layout(location = 0) in vec4 vertexPosition;
@@ -109,14 +111,23 @@ mat4 modelViewMatrix;
 varying vec4 v_Color;
 varying vec2 UV_Coordinates;
 
-const int maxLights = 15;
+const int maxLights = 25;
 uniform int numLights;
+uniform int numSpotLights;
 
 struct Light {
    vec4 position;
    vec4 intensity;
 };
 uniform Light light[maxLights];
+
+struct SpotLight
+{
+    Light light;
+    vec3 direction;
+    float cutoff;
+};
+uniform SpotLight spotlight[maxLights];
 
 struct Material {
     vec3 kd;
@@ -126,10 +137,20 @@ struct Material {
 };
 uniform Material material;
 
+//================================
+uniform vec4 lightSpaceView;
+
+varying vec4 FragPos;
+varying vec4 FragLightPos;
+varying vec3 Normal;
+
+out vec4 lightPos;
+out vec4 viewPos;
+//================================
 
 void main()
 {
-    float ambient = 1;                               
+    float ambient = 0.3;                               
 
     v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -167,11 +188,39 @@ void main()
 
     }
 
-    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
+    for(int i = 0; i < numSpotLights && i < maxLights; i++)
+    {
+        float diffuse = 0.0;
 
+        vec4 LightPos = normalize(ViewMatrix * spotlight[i].light.position);
+        vec4 focus = ViewMatrix * vec4(spotlight[i].direction, 1.0);
+        vec3  L = normalize(P - LightPos.xyz);
+        float spotFactor = dot(L, normalize(focus.xyz - LightPos.xyz));
+
+        if(1-spotFactor  < 0.01)
+        {
+            float d = length(LightPos.xyz - P);			        // distancia de la luz
+              L = normalize(LightPos.xyz - P);			    // Vector Luz
+
+            diffuse = max(dot(N, L), 0.0);		            // Cálculo de la int. difusa
+            // Cálculo de la atenuación
+            float attenuation = 80.0/(0.25+(0.1*d)+(0.005*d*d));
+            diffuse = diffuse * attenuation;
+
+            float specular = 2 * attenuation * pow(max(0.0, dot(reflect(-L, N), V)), material.ns);
+
+            v_Color += vec4(spotlight[i].light.intensity * diffuse) * vec4(material.kd, 1.0);
+
+            if(specular > 0)
+            {
+                //v_Color += vec4(specular) * vec4(material.ks, 1.0);
+            }
+        }
+    }
+
+    v_Color += vec4(1.0, 1.0, 1.0, 1.0) * (ambient) * vec4(material.ka, 1.0);
 
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vertexPosition;
 
     UV_Coordinates = UV;
-
 }

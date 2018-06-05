@@ -1,5 +1,6 @@
 #include "ScoreManager.h"
 #include "ObjectManager.h"
+#include "../Game.h"
 
 void objectDeleteScore(EventData);
 
@@ -10,7 +11,6 @@ void objectDeleteScore(EventData);
 ScoreManager::ScoreManager()
 {
     //Maximum number of laps
-    //:::> Should be set in menu_state before the game runs
     maxLaps = 3;
 }
 
@@ -45,7 +45,6 @@ IComponent::Pointer ScoreManager::createScoreComponent(GameObject& newGameObject
     newGameObject.addComponent(component);
 
     //Push it into the list of players
-    //:::>Can  be substituted with an event in the future with scheduling
     players.push_back(component);
 
     return component;
@@ -59,7 +58,6 @@ IComponent::Pointer ScoreManager::createStartLineComponent(GameObject& newGameOb
     newGameObject.addComponent(component);
 
     //Push it into the list of start lines
-    //:::>Can  be substituted with an event in the future with scheduling
     startLines.push_back(component);
 
     return component;
@@ -68,6 +66,7 @@ IComponent::Pointer ScoreManager::createStartLineComponent(GameObject& newGameOb
 //Thirty programmers have died during the development of this method
 void ScoreManager::update()
 {
+    //Initial variables
     std::vector<ScoreComponent::Pointer> ordered;
     std::vector<ScoreComponent::Pointer> auxiliar;
     uint32_t j, pos;
@@ -75,6 +74,7 @@ void ScoreManager::update()
     bool found;
 
     pos=1;
+    //If there is more than one player
     if(players.size()>0)
     {
         for(unsigned int i=0; i<players.size(); i++)
@@ -109,27 +109,32 @@ void ScoreManager::update()
         players=ordered;
     }
 
-    //Update lap and position events for the player
-    //<___
-    uint16_t id = GlobalVariables::getInstance().getPlayer()->getId();
-    auto scoreC = ObjectManager::getInstance().getObject(id).get()->getComponent<ScoreComponent>().get();
-    //___>
+    //Get player for the update, and there is one guardian
+    GameObject* player = GlobalVariables::getInstance().getPlayer();
+    if(player == nullptr)
+        return;
+    
+    //Score component and there is one guardian
+    ScoreComponent* scoreC = player->getComponent<ScoreComponent>().get();
+    if(scoreC == nullptr)
+        return;
+    
     int position = scoreC->getPosition();
     int lap = scoreC->getLap();
 
     if(position > playerPosition){
 
         EventData data;
-        data.Component      = std::static_pointer_cast<IComponent>(ObjectManager::getInstance().getObject(id).get()->getComponent<MoveComponent>());
+        data.Component      = std::static_pointer_cast<IComponent>(player->getComponent<MoveComponent>());
 
         EventManager::getInstance().addEvent(Event {EventType::Score_OnOvertaken, data});
 
         playerPosition = position;
-    }
+    } 
     if(position < playerPosition){
 
         EventData data;
-        data.Component      = std::static_pointer_cast<IComponent>(ObjectManager::getInstance().getObject(id).get()->getComponent<MoveComponent>());
+        data.Component      = std::static_pointer_cast<IComponent>(player->getComponent<MoveComponent>());
 
         EventManager::getInstance().addEvent(Event {EventType::Score_OnOvertake, data});
 
@@ -139,21 +144,29 @@ void ScoreManager::update()
 
         uint16_t mID = 0;
 
-        if(lap == 2 || lap == 3)
+        if(lap == 2)
             mID = 0;
+        else if ( lap == 3 )
+            mID = 4;
         else if(lap > 3 && playerPosition < 4)
             mID = 1;
         else
             mID = 2;
 
+        //Send event of new lap
         EventData data;
-        data.Component      = std::static_pointer_cast<IComponent>(ObjectManager::getInstance().getObject(id).get()->getComponent<MoveComponent>());
+        data.Component      = std::static_pointer_cast<IComponent>(player->getComponent<MoveComponent>());
         data.Id             = mID;
-
         EventManager::getInstance().addEvent(Event {EventType::Score_OnNewLap, data});
 
+        //Assign player lap to the player
         playerLap = lap;
-    }
+        
+        //If final lap, send victory event
+        if(lap == 4) {
+            Game::getInstance().setState(IGameState::stateType::POSTMATCH);
+        }
+    } 
 
 
 }

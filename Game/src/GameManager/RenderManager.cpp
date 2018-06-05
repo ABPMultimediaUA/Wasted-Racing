@@ -1,14 +1,6 @@
 #include "RenderManager.h"
-
-//////////////////////////////////////////////
-//            THINGS TO DO HERE
-//////////////////////////////////////////////
-//////////////////////////////////////////////
-/*
->Transmute everything to debug manager (of the debug part)
-*/
-//////////////////////////////////////////////
-//////////////////////////////////////////////
+#include "ParticleManager.h"
+#include "../GlobalVariables.h"
 
 //==============================================
 // DELEGATES DECLARATIONS
@@ -44,20 +36,11 @@ void RenderManager::init(int engine) {
     renderFacade->init(1280, 720, false, false);
     renderFacade->openWindow();
     
-    //<___
-    //initHUD();
-    
     //Hud initial state is false
     HUD_ON = false;
-    //___>
 
     //Data init
     debugState = false;
-
-    //QuadTree data init
-    //maxObjPerNode = 2;
-    //updateRange = 2;
-    //x0 = 0; x1 = 10; y0 = 0;  y1 = 10; //Map dimensions
 
     //Bind listeners
     EventManager::getInstance().addListener(EventListener {EventType::ObjectRenderComponent_Create, addObjectRenderComponent});
@@ -85,33 +68,41 @@ void RenderManager::init(int engine) {
     GlobalVariables::getInstance().setDistanceLoD(500);
 
     createSkyBox(*sky.get(), ObjectRenderComponent::Shape::Skybox, "darkskies_up.tga", "darkskies_dn.tga", "darkskies_lf.tga", "darkskies_rt.tga", "darkskies_ft.tga", "darkskies_bk.tga");
+
+    EventManager::getInstance().update();
+
+    particleManager = &ParticleManager::getInstance();
+    particleManager->init();
+
+    activeBlur = false;
+ 
 }
 
 void RenderManager::update(float dTime) {
-    //Update HUD
-    updateHUD();
 
-    //Check LoD mesh
-    LoDmesh();
+    //Update camera if there is a player
+    if(&renderFacade->getCameraTarget() != NULL)
+    {
+        CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
+        c->update(dTime);
 
-    //Update camera collision
-    //:::>Depends on the player being created, it shouldn't
-    renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get()->update(dTime);
+        //Update blur
+        if(activeBlur == true){
+            updateBlur();
+        }
+    }
+    
 
     //Update debug if debug mode activated
     if(debugState){
-        //:::>This is hell, it should be in debug manager
         updateAIDebug();
         updateCameraDebug();
         updateBattleDebug(dTime);
-    }else{
-        //:::X>my job
-        //:::>Function should be erased and replaced with another one generated here, doing the same thing
-        renderFacade->updateItemIcon();
     }
 
     renderFacade->updateAnimations(dTime);
 
+    particleManager->update();
 }
 
 void RenderManager::draw() {
@@ -128,11 +119,53 @@ void RenderManager::close(){
 
     //Clear render component list
     renderComponentList.clear();
+
+    //Close particle manager
+    particleManager->close();
+}
+
+void RenderManager::fastRestart(){
+    //Clear all interface elements
+    renderFacade->cleanInterface();
+
+    //Clear render component list
+    renderComponentList.clear();
+
+    //Close particle manager
+    particleManager->close();
 }
 
 void RenderManager::splitQuadTree(){
-    //renderComponentTree.init(maxObjPerNode, updateRange, renderComponentList, x0, x1, y0, y1);
-    //renderComponentTree.divide();
+
+}
+
+//==============================================
+// VISUAL EFFECTS
+//============================================== 
+void RenderManager::updateBlur()
+{
+    //Camera pointer
+    CameraRenderComponent* c = renderFacade->getCameraTarget().getComponent<CameraRenderComponent>().get();
+
+    //Update blur
+    renderFacade->setBlurOrigin(0.f, 0.0f);
+    renderFacade->setBlurEffect(c->getBlurActivation());
+    renderFacade->setBlurIntensity(1.3 * c->getBlurFactor());
+    renderFacade->setBlurRadius(0.5);
+}
+
+void RenderManager::setActiveBlur(bool b)
+{
+    if(b == false)
+    {
+        renderFacade->setPostProcessingOption(rps::PPOption::DEFAULT);
+        renderFacade->setBlurEffect(false);
+    }
+    else
+    {
+        renderFacade->setPostProcessingOption(rps::PPOption::BLUR);
+    }
+    activeBlur = b;
 }
 
 //==============================================
@@ -146,14 +179,7 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
     //Attach to game object
     newGameObject.addComponent(component);
 
-    //Send event of creation
-    //:::>Why not adding it directly to the list? That's the only use for this event
-    EventData data;
-    data.Component = component;
-    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
-
-    //:::> Initialize here from the render, eliminates dependencies
-    //:::> renderFacade->addObject(this);
+    renderFacade->addObject(component.get());
 
     return component;
 }
@@ -165,17 +191,6 @@ IComponent::Pointer RenderManager::createObjectRenderComponent(GameObject& newGa
 
     //Add component to object
     newGameObject.addComponent(component);
-
-    //Create event data
-    //:::>It is not needed since it only adds it to the list and initalizes the object, which *right now* invocates the init, which does the other render
-    //:::> facade-> addObject, and we don't need that
-    //<___
-    /*
-    EventData data;
-    data.Component = component;
-    EventManager::getInstance().addEvent(Event {EventType::ObjectRenderComponent_Create, data});
-    */
-    //___>
 
     //add object to the render and to the component list
     renderComponentList.push_back(component);
@@ -191,14 +206,7 @@ IComponent::Pointer RenderManager::createLightRenderComponent(GameObject& newGam
     //Attach to game object
     newGameObject.addComponent(component);
 
-    //Send event of creation
-    //:::>Same as object render component
-    EventData data;
-    data.Component = component;
-    EventManager::getInstance().addEvent(Event {EventType::LightRenderComponent_Create, data});
-
-    //:::> Initialize here from the render, eliminates dependencies
-    //:::> renderFacade->addLight(this);
+    renderFacade->addLight(component.get());
 
     return component;
 }
@@ -211,7 +219,6 @@ IComponent::Pointer RenderManager::createCameraRenderComponent(GameObject& newGa
     newGameObject.addComponent(component);
 
     //Send event of creation
-    //:::>Idem
     EventData data;
     data.Component = component;
     EventManager::getInstance().addEvent(Event {EventType::CameraRenderComponent_Create, data});
@@ -229,32 +236,22 @@ IComponent::Pointer RenderManager::createSkyBox(GameObject& newGameObject, Objec
     //Adding component to object
     newGameObject.addComponent(component);
 
-    //:::>??? Not sended
-    //<___
-    //EventData data;
-    //data.Component = component;
-    //___>
-
-    //:::>??? not used
-    //<___
-    //auto comp = newGameObject.getComponent<ObjectRenderComponent>();
-    //___>
-
     renderFacade->addSkybox(component.get(), top, bot, left, right, front, back);
 
     return component;
 }
 
 //Create animation
-IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames) {
+IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames, int player, const char* tex) {
 
     //Creating object renderer component
-    IComponent::Pointer component = std::make_shared<AnimationRenderComponent>(newGameObject, newStr, frames);
+    IComponent::Pointer component = std::make_shared<AnimationRenderComponent>(newGameObject, newStr, frames, player, tex);
 
     //Adding component to object
     newGameObject.addComponent(component);
 
     renderFacade->addAnimation(component.get());
+    animationComponentList.push_back(component);
 
     return component;
 }
@@ -263,7 +260,6 @@ IComponent::Pointer RenderManager::createAnimationRenderComponent(GameObject& ne
 //==============================================
 // DELEGATES
 //==============================================
-//:::>All 3 of them could be just 1 generic function
 void addObjectRenderComponent(EventData data) {
     RenderManager::getInstance().getComponentList().push_back(data.Component);        //add to list of render components
     RenderManager::getInstance().getRenderFacade()->addObject(data.Component.get());  //add object to render engine
@@ -1097,63 +1093,22 @@ void RenderManager::cleanVI()
 //  LoD
 /////////////
 
-void RenderManager::LoDmesh()
+void RenderManager::LoDmeshAnim()
 {
-    for(unsigned int i = 0; i < renderComponentList.size(); i++)
+
+    float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
+
+    if(distanceLoD != 0)
     {
-        auto component = RenderManager::getInstance().getComponentList()[i];
-        auto renderObject = std::dynamic_pointer_cast<ObjectRenderComponent>(component).get();
-
-        if(renderObject != nullptr)
+        for(unsigned int i = 0; i < animationComponentList.size(); i++)
         {
-            auto shape = renderObject->getObjectShape();
-            if(shape == ObjectRenderComponent::Shape::Mesh)
+            auto component = RenderManager::getInstance().getAnimationComponentList()[i];
+            auto animationObject = std::dynamic_pointer_cast<AnimationRenderComponent>(component).get();
+
+            if(animationObject != nullptr)
             {
-                float distanceLoD = GlobalVariables::getInstance().getDistanceLoD();
-                auto object = renderObject->getGameObject();
+                auto object = animationObject->getGameObject();
                 auto positionObject = object.getTransformData().position;
-                auto positionPlayer = InputManager::getInstance().getComponent()->getGameObject().getTransformData().position;
-                auto distance = (positionObject.x - positionPlayer.x) * (positionObject.x - positionPlayer.x) +
-                                (positionObject.y - positionPlayer.y) * (positionObject.y - positionPlayer.y) +
-                                (positionObject.z - positionPlayer.z) * (positionObject.z - positionPlayer.z);
-
-                auto polyMesh = renderObject->getPolyMesh();
-
-                if((distance > distanceLoD*distanceLoD && distance <= (distanceLoD*distanceLoD)*2) && polyMesh != ObjectRenderComponent::Poly::Medium)
-                {
-                    auto name = renderObject->getName();
-                    auto folder = renderObject->getFolder();
-                    std::string newMesh = "media/mediumLoD/" + folder + "/" + name;
-                    renderFacade->changeMesh(object.getId(), newMesh);
-                    renderObject->setMesh(newMesh.c_str());
-                    renderObject->setPolyMesh(ObjectRenderComponent::Poly::Medium);
-                }  
-                else if((distance > ((distanceLoD*distanceLoD)*2)) && polyMesh != ObjectRenderComponent::Poly::Low)
-                {
-                    auto name = renderObject->getName();
-                    auto folder = renderObject->getFolder();
-                    std::string newMesh = "media/lowLoD/" + folder + "/" + name;
-                    renderFacade->changeMesh(object.getId(), newMesh);
-                    renderObject->setMesh(newMesh.c_str());
-                    renderObject->setPolyMesh(ObjectRenderComponent::Poly::Low);
-                }  
-                else if(distance <= distanceLoD*distanceLoD && polyMesh != ObjectRenderComponent::Poly::High)
-                {
-                    auto name = renderObject->getName();
-                    auto folder = renderObject->getFolder();
-                    std::string newMesh = "media/mesh/" + folder + "/" + name;
-                    renderFacade->changeMesh(object.getId(), newMesh);
-                    renderObject->setMesh(newMesh.c_str());
-                    renderObject->setPolyMesh(ObjectRenderComponent::Poly::High);
-
-                    //Change to maxSpeed when we return to high poly
-                    auto moveComponent = object.getComponent<MoveComponent>();
-                    if(moveComponent != nullptr)
-                    {
-                        auto maxSpeed = moveComponent->getMovemententData().max_vel;
-                        object.getComponent<MoveComponent>()->changeVel(maxSpeed);
-                    }
-                }
             }
         }
     }

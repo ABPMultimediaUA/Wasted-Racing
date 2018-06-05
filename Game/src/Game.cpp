@@ -4,13 +4,7 @@
 //  DELEGATE DECLARATIONS
 //====================================================
 void setStateEvent(EventData eData);
-
-//====================================================
-//  ADDITIONAL FUNCTIONS
-//====================================================
-void addObjects();
-void loadMap();
-std::vector<std::string> split(const std::string& s, const char& c);
+void changeFullscreen(EventData eData);
 
 //====================================================
 //  GAME INITIALIZATION
@@ -64,14 +58,12 @@ void Game::init() {
     scoreManager->init();
     debugManager->init();
 
-    //Add initial objects
-    addObjects();
-
     //Initial state
     setState(IGameState::stateType::INTRO);
 
     //Change state listener
     EventManager::getInstance().addListener(EventListener {EventType::State_Change, setStateEvent});
+    EventManager::getInstance().addListener(EventListener {EventType::Global_ChangeFullscreen, changeFullscreen});
 }
 
 //====================================================
@@ -120,14 +112,14 @@ void Game::Run() {
     clock = new Clock();
     clock->init();
 
-    //Start the run
     //execute game while staying
     while(stay){
         
         //Measure elapsed time
-        accumulatedTime += (float)clock->getElapsedTime();
+        elapsedTime = (float)clock->getElapsedTime();
+        accumulatedTime += elapsedTime;
         clock->restart();
-
+        
         if(dynamic_cast<MatchState*>(state) != nullptr) 
         {
             //If the state is Match, divide with ratio so we can accelerate or slow down the game
@@ -138,7 +130,7 @@ void Game::Run() {
         else
         {
             //Update the game once every maxTime
-            state->update(accumulatedTime); 
+            state->update(elapsedTime); 
         }
 
         //Always draw the game
@@ -168,54 +160,58 @@ void Game::setState(IGameState::stateType type){
                 globalVariables->setGameState(ClientLobbyState::getInstance().type);
                 state = &ClientLobbyState::getInstance();
                 break;
+            case IGameState::stateType::SELECTION:
+                globalVariables->setGameState(SelectionState::getInstance().type);
+                state = &SelectionState::getInstance();
+                break;
+            case IGameState::stateType::PREMATCH:
+                globalVariables->setGameState(PreMatchState::getInstance().type);
+                state = &PreMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Start});
+                break;
             case IGameState::stateType::MATCH:
                 globalVariables->setGameState(MatchState::getInstance().type);
                 state = &MatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_Start});
+                break;
+            case IGameState::stateType::POSTMATCH:
+                globalVariables->setGameState(PostMatchState::getInstance().type);
+                state = &PostMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_End});
                 break;
             case IGameState::stateType::MULTIMATCH:
                 globalVariables->setGameState(MultiMatchState::getInstance().type);
                 state = &MultiMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_Start});
+                break;
+            case IGameState::stateType::MULTISELECTION:
+                globalVariables->setGameState(MultiSelectionState::getInstance().type);
+                state = &MultiSelectionState::getInstance();
+                break;
+            case IGameState::stateType::MULTIPREMATCH:
+                globalVariables->setGameState(MultiPreMatchState::getInstance().type);
+                state = &MultiPreMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Start});
+                break;
+            case IGameState::stateType::MULTIPOSTMATCH:
+                globalVariables->setGameState(MultiPostMatchState::getInstance().type);
+                state = &MultiPostMatchState::getInstance();
+                EventManager::getInstance().addEvent(Event {EventType::Match_Race_End});
+                break;
+            case IGameState::stateType::PAUSE:
+                globalVariables->setGameState(PauseState::getInstance().type);
+                state = &PauseState::getInstance();
                 break;
             default:
                 globalVariables->setGameState(IntroState::getInstance().type);
                 state = &IntroState::getInstance();
                 break;
         }
-
         //Initialize state here
         state->init();
-    }
-
-//adding minimum objects needed to play the game
-void addObjects(){
-    //===============================================================
-    // add player 
-    //===============================================================
-    loadMap();
-
-    uint16_t id = 25000;
-    GameObject::TransformationData transform;
-    
-    //:::>Needs to be set by the map
-    transform.position = glm::vec3(-35,0, -20);
-    transform.rotation = glm::vec3(0,90,0);
-    transform.scale    = glm::vec3(1,1,1);
-    
-    ObjectManager::getInstance().createPlayer(transform, 0, 0, id, 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position).get()->getTerrain(), 
-                                                PhysicsManager::getInstance().getTerrainFromPos(transform.position));
-
-    //===============================================================
-    // Update to distribute all creation events
-    //===============================================================
-    //:::>Can be avoided if objects are treated by their managers at the moment.
-    //:::>By now: CreateObject, createObjectRenderComponent, createCollisionComponent, createMoveComponent, createInputComponent, createCameraComponent, createListenerComponent
-    //:::>Makes sense if scheduling is will be implemented, hence the need to update the manager
-    EventManager::getInstance().update();
-    
 }
 
-std::vector<std::string> split(const std::string& s, const char& c) {
+std::vector<std::string> Game::split(const std::string& s, const char& c) {
 	std::string buff{""};
 	std::vector<std::string> v;
 	
@@ -229,7 +225,7 @@ std::vector<std::string> split(const std::string& s, const char& c) {
 	return v;
 }
 
-void loadMap() {
+void Game::loadMap() {
 
     using namespace rapidxml;
 
@@ -325,7 +321,7 @@ void loadMap() {
                     type = LightRenderComponent::Type::Directional;
 
                 //Create LIGHT component
-                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,100);
+                RenderManager::getInstance().createLightRenderComponent(*obj.get(),type,radius);
 
             }
 
@@ -432,9 +428,6 @@ void loadMap() {
 	}
 
     //Update every thing that has been created
-    //:::>Can be avoided if objects are treated by their managers at the moment.
-    //:::>By now: CreateObject, createTerrainComponent, createLightRenderComponent, createObjectRenderComponent, createRampComponent, createCollisionComponent
-    //:::>Makes sense when the scheduling is adapted
     EventManager::getInstance().update();
 
     //Loop over terrain components, linking them
@@ -491,7 +484,6 @@ void loadMap() {
     }
 
     //Update every thing that has been created
-    //:::>No need for this one either because it doesn't create any event since the last one
     EventManager::getInstance().update();
 
 }
@@ -503,4 +495,41 @@ void loadMap() {
 void setStateEvent(EventData eData)
 {
     Game::getInstance().setState((IGameState::stateType) eData.Id);
+}
+
+void changeFullscreen(EventData eData) {
+
+    if(GlobalVariables::getInstance().getFullscreen()) {
+
+        GlobalVariables::getInstance().setFullscreen(false);
+        SDL_Window* w = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice()->getWindow();
+
+        int width, height;
+
+        SDL_GetWindowSize(w,&width,&height); 
+
+        SDL_SetWindowFullscreen(w, 0);
+        
+        SDL_SetWindowSize(w, width*0.8, height*0.8);
+             
+        SDL_SetWindowPosition(w, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.x = width*0.8;
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.y = height*0.8;
+
+    }
+    else {
+        
+        GlobalVariables::getInstance().setFullscreen(true);
+        SDL_Window* w = dynamic_cast<RenderRedPanda*>(RenderManager::getInstance().getRenderFacade())->getDevice()->getWindow();
+
+        int width, height;
+        
+        SDL_SetWindowFullscreen(w, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_GetWindowSize(w,&width,&height);      
+
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.x = width;
+        RenderManager::getInstance().getRenderFacade()->getWindow().size.y = height;
+    }
+
 }

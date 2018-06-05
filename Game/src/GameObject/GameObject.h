@@ -5,7 +5,7 @@
 
 #include "IComponent.h"
 #include "../GameEvent/EventManager.h"
-
+#include <iostream>
 class GameObject {
 
 public:
@@ -76,7 +76,6 @@ public:
 	void close();
 
 	//Add component
-	//:::>Needs a method for removing components, either by type or by the whole pointer itself
 	void addComponent(IComponent::Pointer component);
 
 	//Get component
@@ -88,6 +87,18 @@ public:
 			}
 		}
 		return nullptr;
+	}
+
+	//Get component
+	template<typename Component>
+	void deleteComponent() {
+		std::list<std::shared_ptr<IComponent>>::iterator it;
+		for (it = components.begin(); it != components.end(); it++) {
+			if (std::shared_ptr<Component> cmp = std::dynamic_pointer_cast<Component>(*it)) {
+				components.erase(it);
+				return;
+			}
+		}
 	}
 
 

@@ -1,14 +1,5 @@
 #include "ObjectManager.h"
 
-//////////////////////////////////////////////
-//            THINGS TO DO HERE
-//////////////////////////////////////////////
-//////////////////////////////////////////////
-/*
->Change the functions that create characters, because it's awful.
->Check if using .txt would be a better idea or just plain encrypted non-accesible data.
-*/
-
 //==============================================
 // DELEGATES DECLARATIONS
 //==============================================
@@ -48,12 +39,9 @@ void ObjectManager::close() {
 GameObject::Pointer ObjectManager::createObject(uint16_t id, GameObject::TransformationData transform) {
     //make shared pointer
     GameObject::Pointer object = std::make_shared<GameObject>(id, transform);
-
-    //Launch creation event
-    //:::>No need for it without scheduling
-    EventData data;
-    data.Object = object;
-    EventManager::getInstance().addEvent(Event {EventType::GameObject_Create, data});
+   
+    //Creation
+    ObjectManager::getInstance().addObject(object);
 
     return object;
 }
@@ -110,9 +98,9 @@ void ObjectManager::initObjects() {
 //              init pos player
 //  type:       
 //              0 -> Punk
-//              1 -> Witch
+//              1 -> Crocodile
 //              2 -> Cyborg
-//              3 -> Crocodile
+//              3 -> Witch
 //  move:       
 //              0 -> Player (Input)
 //              1 -> IA
@@ -146,7 +134,6 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
-    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -154,20 +141,21 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.angle = 0.0f;
     mData.spin = 0;
     mData.spin_inc = 0.001;
-    mData.max_spin = 0.08;
+    mData.max_spin = 0.09;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 145.0f;
-    mData.brake_vel = 10.f;
+    mData.max_vel = 430.0f;
+    mData.real_max_vel = 430.0f;
+    mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
-    mData.max_acc = 40.f;
+    mData.max_acc = 110.f;
     mData.dAcc = 0.f;
-    mData.brake_acc = 30.f;
+    mData.brake_acc = 120.f;
     mData.player = 0;
     mData.driftAngleIncrMax = 1.f;
     mData.driftBoostTime    = 1.f;
@@ -176,7 +164,7 @@ GameObject::Pointer ObjectManager::createPunk(GameObject::TransformationData tan
     mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
+    createComponents(ob, terrain, terrainComponent, mData, 0);
 
     return ob;
 
@@ -188,7 +176,6 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
-    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -196,29 +183,31 @@ GameObject::Pointer ObjectManager::createWitch(GameObject::TransformationData ta
     mData.angle = 0.0f;
     mData.spin = 0;
     mData.spin_inc = 0.001;
-    mData.max_spin = 0.08;
+    mData.max_spin = 0.09;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f*30;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 135.0f;
-    mData.brake_vel = 10.f;
+    mData.max_vel = 430.0f;
+    mData.real_max_vel = 430.0f;
+    mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
-    mData.max_acc = 40.f;
+    mData.max_acc = 110.f;
     mData.dAcc = 0.f;
-    mData.brake_acc = 30.f;
+    mData.brake_acc = 120.f;
     mData.player = 1;
-    mData.driftAngleIncrMax = 0.5f;
+    mData.driftAngleIncrMax = 1.2f;
+    mData.driftAngleIncr    = 0.3f;
     mData.driftBoostTime    = 1.f;
     mData.driftSpeedBoost   = 250.f;
     mData.driftConstTime    = 0.1f;
     mData.driftDecTime      = 4.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
+    createComponents(ob, terrain, terrainComponent, mData, 3);
 
     return ob;
 
@@ -230,7 +219,6 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
-    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -238,25 +226,26 @@ GameObject::Pointer ObjectManager::createCyborg(GameObject::TransformationData t
     mData.angle = 0.0f;
     mData.spin = 0;
     mData.spin_inc = 0.001;
-    mData.max_spin = 0.08;
+    mData.max_spin = 0.09;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 160.0f;
-    mData.brake_vel = 10.f;
+    mData.max_vel = 430.0f;
+    mData.real_max_vel = 430.0f;
+    mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
-    mData.max_acc = 40.f;
+    mData.max_acc = 110.f;
     mData.dAcc = 0.f;
-    mData.brake_acc = 30.f;
+    mData.brake_acc = 120.f;
     mData.player = 2;
     mData.driftAngleIncrMax = 2.f;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "punk.obj");
+    createComponents(ob, terrain, terrainComponent, mData, 2);
 
     return ob;
 
@@ -268,7 +257,6 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     auto ob = ObjectManager::getInstance().createObject(id, tansform);
     
     //Fill needed data
-    //:::>Read data from text file
     LAPAL::movementData mData;
     mData.mov = false;
     mData.jump = false;
@@ -276,24 +264,25 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
     mData.angle = 0.0f;
     mData.spin = 0;
     mData.spin_inc = 0.001;
-    mData.max_spin = 0.08;
+    mData.max_spin = 0.09;
     mData.brake_spin = 0.2;
     mData.rotateX = 0.f;
     mData.rotateZ = 0.f;
     mData.rotate_inc = 0.15f;
     mData.max_rotate = 3.f;
     mData.vel = 0;
-    mData.max_vel = 160.0f;
-    mData.brake_vel = 10.f;
+    mData.max_vel = 430.0f;
+    mData.real_max_vel = 430.0f;
+    mData.brake_vel = 50.f;
     mData.velY = 10.f;
     mData.acc = 0;
-    mData.max_acc = 40.f;
+    mData.max_acc = 110.f;
     mData.dAcc = 0.f;
-    mData.brake_acc = 30.f;
+    mData.brake_acc = 120.f;
     mData.player = 3;
 
     //Create components needed for its existence
-    createComponents(ob, terrain, terrainComponent, mData, "witch.obj");
+    createComponents(ob, terrain, terrainComponent, mData, 1);
 
     return ob;
 
@@ -303,13 +292,14 @@ GameObject::Pointer ObjectManager::createCrocodile(GameObject::TransformationDat
 // Create player auxiliars
 //============================================== 
 
-void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model)
+void ObjectManager::createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, int player)
 {
     //Create representation of the model if there is a model
-    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "WitchFINAL_000", 60);
+    RenderManager::getInstance().createAnimationRenderComponent(*ob.get(), "", 0, player, "");
+    RenderManager::getInstance().createObjectRenderComponent(*ob.get(), ObjectRenderComponent::Shape::Mesh, "");
 
     //Create collision component
-    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 2, 7.5, true, CollisionComponent::Type::Default);
+    std::shared_ptr<IComponent> collision = PhysicsManager::getInstance().createCollisionComponent(*ob.get(), 4, 7.5, true, CollisionComponent::Type::Default);
 
     //Create movement component and locate it on the map
     std::shared_ptr<IComponent> move = PhysicsManager::getInstance().createMoveComponent(*ob.get(), mData, terrain, 1);
@@ -334,6 +324,8 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
     if(move == 0)
     {
         mData.isPlayer = true;
+        mData.spin_inc = 0.001;
+        mData.max_spin = 0.04;
         obj->getComponent<MoveComponent>()->setMovementData(mData);
         //Create input
         InputManager::getInstance().createInputComponent(*obj.get());
@@ -359,6 +351,7 @@ void ObjectManager::createMove(GameObject::Pointer obj, int move)
         AIManager::getInstance().createAIBattleComponent(*obj.get());
         SensorManager::getInstance().createVSensorComponent(*obj.get(), 55.f, mData.angle, 100.f, 10.f); 
         SensorManager::getInstance().createMSensorComponent(*obj.get(), 30.f, mData.angle);
+        
     }
     //Online player imitator
     else if(move == 2)

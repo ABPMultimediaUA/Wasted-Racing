@@ -1,15 +1,13 @@
 #include "DebugManager.h"
 
 //////////////////////////////////////////////
-//            THINGS TO DO HERE
-//////////////////////////////////////////////
+//            Possible upgrades
 //////////////////////////////////////////////
 /*
 >Add lists of players connected, their server_id and game_id
 >Add lists of functions that each sends and receives
 >Add lists of calls and green in last server call
 */
-//////////////////////////////////////////////
 //////////////////////////////////////////////
 
 //==============================================
@@ -311,23 +309,17 @@ void DebugManager::cleanDebugNetworkLists()
 //==============================================
 
 void DebugManager::updateDebugAI(){
-    std::cout<<"Todo bien en Philadelphia"<<std::endl;
 }
 
 void DebugManager::updateDebugBehaviour(){
-    std::cout<<"Todo bien en Memphis"<<std::endl;
 }
 
 void DebugManager::updateDebugCamera(){
-    std::cout<<"Todo bien en Toronto"<<std::endl;
 }
 
 void DebugManager::updateDebugNetwork(){
     //Checks if player is connected to a server
     if(networkManager->getConnected()){
-        //:::>Pending code
-        //Lobby debug
-
         //Match debug
         if(networkManager->getStarted()){
             //Process all packets
@@ -394,7 +386,6 @@ void DebugManager::updateDebugNetwork(){
                         break;
 
                     case ID_RED_SHELLS_POSITION:
-                        //std::cout<<"Caparazon rojo movido"<<std::endl;
                         break;
 
                     case ID_CREATE_BLUE_SHELL:
@@ -408,11 +399,9 @@ void DebugManager::updateDebugNetwork(){
                         break;
 
                     case ID_BLUE_SHELLS_POSITION:
-                        //std::cout<<"Caparazón azul movido"<<std::endl;
                         break;
 
                     default:
-                        std::cout << "Mensaje recibido" << std::endl;
                         break;
                 }
             }
@@ -443,7 +432,6 @@ void DebugManager::updateCylinderDN(int id){
     //Update the position of the trackers
     for(unsigned int i = 0; i < trackerDNComponentList.size(); i++){
         std::shared_ptr<RemoteItemComponent> cyl = std::dynamic_pointer_cast<RemoteItemComponent>(networkManager->getRemotePlayerComponentList()[i]);
-        //:::>UNFINISHED
     }
 }
 
@@ -497,16 +485,7 @@ void swapDebugAI(EventData eData)
         RenderManager::getInstance().setDebugState(false);
     }
 
-
-    //
-    //
-    //
-    //
-    //
-    //
-    //______________UwU UNTIL PABLO CLEANS IT
     RenderManager::getInstance().renderAIDebug();
-
 }
 
 //Swaps Battle Behaviour debug state
@@ -532,19 +511,6 @@ void swapDebugBehaviour(EventData eData){
         RenderManager::getInstance().setDebugState(false);
     }
 
-
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //______________UwU UNTIL PABLO CLEANS IT
     RenderManager::getInstance().renderBattleDebug();
 }
 
@@ -571,16 +537,6 @@ void swapDebugCamera(EventData eData)
         RenderManager::getInstance().setDebugState(false);
     }
 
-    ///
-    //
-    ///
-    //
-    //
-    //
-    //
-    //
-    ///
-    ///_____________UNTIL PABLO CLEANS IT
     RenderManager::getInstance().renderCameraDebug();
 }
 
@@ -588,7 +544,7 @@ void swapDebugCamera(EventData eData)
 void swapDebugNetwork(EventData eData){
     DebugManager::getInstance().setDebugNetwork(!DebugManager::getInstance().getDebugNetwork());
     
-    //See if it shoulde be initialized or closed
+    //See if it should be initialized or closed
     if(DebugManager::getInstance().getDebugNetwork()){
         //Clean rest of debugs
         DebugManager::getInstance().cleanDebugCamera();

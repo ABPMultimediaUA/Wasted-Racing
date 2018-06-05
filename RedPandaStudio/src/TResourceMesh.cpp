@@ -1,78 +1,121 @@
 #include "TResourceMesh.h"
-#include <iostream>
 
-unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3);
+//Destructor of the mesh
+TResourceMesh::~TResourceMesh()
+{
+    glDeleteBuffers(6, vboHandles);
+    glDeleteVertexArrays(1, &vaoHandles);
+    glDeleteBuffers(1, &boxIBOIndices);
+    glDeleteBuffers(1, &boxVBOVertices);
+}
 
+//Loads a mesh from an already loaded by assimp mesh (usually given by TResourceOBJ)
 bool TResourceMesh::loadMesh(aiMesh* m)
 {
     int nFaces = m->mNumFaces;
     nTriangles = nFaces;
     nVertex = m->mNumVertices;
+
+    //Generate an array of 6 buffer identifiers
+    vboHandles = (unsigned int *)malloc(sizeof(unsigned int) * 6);
+    glGenBuffers(6, vboHandles);
     
-    vertex = (float *)malloc(sizeof(float) * nVertex * 3);
+    vertex = new float[(sizeof(float) * nVertex * 3)];
     memcpy(&vertex[0], m->mVertices, 3 * sizeof(float) * nVertex);
+
+    //Bind and pass to OpenGL the first array (vertex coordinates)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
+    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
 
     if(m->HasNormals())
     {
-        normals = (float *)malloc(sizeof(float) * nVertex * 3);
-        memcpy(&normals[0], m->mNormals, 3 * sizeof(float) * nVertex);
+        //normals = (float *)malloc(sizeof(float) * nVertex * 3);
+        memcpy(&vertex[0], m->mNormals, 3 * sizeof(float) * nVertex);
+
+        //Bind and pass to OpenGL the second array (vertex normals)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
     }
 
     //We assume we are always working with triangles
-    vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 6);
+    vertexIndices = (unsigned int *)malloc(sizeof(unsigned int) * nFaces * 3);
     unsigned int faceIndex = 0;
 
-    for(int j = 0; j<nFaces; j++, faceIndex += 6)
+
+    for(int j = 0; j<nFaces; j++, faceIndex += 3)
     {
         vertexIndices[0+faceIndex] = m->mFaces[j].mIndices[0];
-        vertexIndices[2+faceIndex] = m->mFaces[j].mIndices[1];
-        vertexIndices[4+faceIndex] = m->mFaces[j].mIndices[2];
-        vertexIndices[1+faceIndex] = getAdjacentIndex(m, vertexIndices[0+faceIndex], vertexIndices[2+faceIndex], vertexIndices[4+faceIndex]);
-        vertexIndices[3+faceIndex] = getAdjacentIndex(m, vertexIndices[2+faceIndex], vertexIndices[4+faceIndex], vertexIndices[0+faceIndex]);
-        vertexIndices[5+faceIndex] = getAdjacentIndex(m, vertexIndices[4+faceIndex], vertexIndices[0+faceIndex], vertexIndices[2+faceIndex]);
+        vertexIndices[1+faceIndex] = m->mFaces[j].mIndices[1];
+        vertexIndices[2+faceIndex] = m->mFaces[j].mIndices[2];
     }
 
     if(m->HasTextureCoords(0))
     {
-        textures=(float *)malloc(sizeof(float)*2*nVertex);
+        //textures=(float *)malloc(sizeof(float)*2*nVertex);
         for(unsigned int k = 0; k<nVertex;k++)
         {
-            textures[k*2] = m->mTextureCoords[0][k].x;
-            textures[k*2+1] = m->mTextureCoords[0][k].y;
+            vertex[k*2] = m->mTextureCoords[0][k].x;
+            vertex[k*2+1] = m->mTextureCoords[0][k].y;
         }
+        //Bind and pass to OpenGL the third array (vertex texture coordinates)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), vertex, GL_STATIC_DRAW);
     }
 
-    //Generate an array of 4 buffer identifiers
-    vboHandles = (unsigned int *)malloc(sizeof(unsigned int) *4);
-    glGenBuffers(4, vboHandles);
+    if(m->HasTangentsAndBitangents())
+    {
+        //tangents = (float *)malloc(sizeof(float)*3*nVertex);
+        //bitangents = (float *)malloc(sizeof(float)*3*nVertex);
+        memcpy(&vertex[0], m->mTangents, 3 * sizeof(float) * nVertex);
+
+        //Bind and pass to OpenGL the fourth array (vertex tangent)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[3]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+
+        memcpy(&vertex[0], m->mBitangents, 3 * sizeof(float) * nVertex);
+
+        //Bind and pass to OpenGL the fifth array (vertex bitangent)
+        glBindBuffer(GL_ARRAY_BUFFER, vboHandles[4]);
+        glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
+    }
+    
+    //=============================================================================
+    //Generate an array of a vertex array identifier
+    glGenVertexArrays(1, &vaoHandles);
+    glBindVertexArray(vaoHandles);
+
+    //==============================================
+    //BIND VAO
+    glBindVertexArray(vaoHandles);
+    //==============================================  
+
+
+    //Detach elements
+    glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //=============================================================================
 
     //Generates the two points needed for a parallel-to-edges bounding box
     generateBoundingBox();
 
-/*
+    //Bind and pass to OpenGL the fourth array (vertex indices)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[5]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*3*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
 
-    std::cout << "nVertex: " << nVertex << std::endl;
-    std::cout << "nTriangles: " << nTriangles << std::endl;
 
-    for(int i = 0; i < nTriangles * 6; i++)
-    {
-        std::cout << i << ": " << vertexIndices[i] << std::endl;
-    }
-
-    for(int i = 0; i < nVertex * 3; i++)
-    {
-        std::cout << i << ": " << vertex[i] << std::endl;
-    }
-*/
+    delete[] vertex;
+    free(vertexIndices);
 
     return true;
 
 }
 
+//Loads a mesh from the route provided. Currently, this method is not in use, and it's deprecated
 bool TResourceMesh::loadResource()
 {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_FlipUVs );
 
     nTriangles = 0;
 
@@ -121,60 +164,88 @@ bool TResourceMesh::loadResource()
     return false;
 }
 
+//Draw of the mesh. It also checks the frustum culling if it's activated
 void TResourceMesh::draw()
 {
-    
-    //glEnable(GL_COLOR_MATERIAL);
-
-    GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
-    glUniform1i(id, textActive);
-
-    //First we draw the texture of our mesh
-    if(texture!=NULL && textActive)
+    if((TEntity::getFrustumCulling() && checkBoundingBox()) || !TEntity::getFrustumCulling())
     {
-        texture->draw();
-    }
-    
-    if(material!=NULL)
-    {
-        material->draw();
-    }
+        GLuint id = glGetUniformLocation(TEntity::getProgramID(), "textActive");
+        glUniform1i(id, textActive);
 
+        GLuint normalID = glGetUniformLocation(TEntity::getProgramID(), "normalActive");
+        glUniform1i(normalID, normalActive);
+
+        //First we draw the texture of our mesh
+        if(texture!=NULL && textActive)
+        {
+            texture->draw();
+        }
+        
+        if(material!=NULL)
+        {
+            material->draw();
+        }
+
+        if(normalTexture!=NULL && normalActive)
+        {
+            normalTexture->draw();
+        }
+
+    //==============================================
+    //BIND VAO
+    glBindVertexArray(vaoHandles);
+    //==============================================  
+    
     //Bind and pass to OpenGL the first array (vertex coordinates)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[0]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), vertex, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(0);
-    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
     //Bind and pass to OpenGL the second array (vertex normals)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[1]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*3*sizeof(float), normals, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     //Bind and pass to OpenGL the third array (vertex texture coordinates)
     glBindBuffer(GL_ARRAY_BUFFER, vboHandles[2]);
-    glBufferData(GL_ARRAY_BUFFER, nVertex*2*sizeof(float), textures, GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
     glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+    //Bind and pass to OpenGL the fourth array (vertex tangent)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[3]);
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+    //Bind and pass to OpenGL the fifth array (vertex bitangent)
+    glBindBuffer(GL_ARRAY_BUFFER, vboHandles[4]);
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
     //Bind and pass to OpenGL the fourth array (vertex indices)
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[3]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, nTriangles*6*sizeof(unsigned int), vertexIndices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboHandles[5]);
 
     //We order to draw here
-    glDrawElements(GL_TRIANGLES_ADJACENCY, nTriangles*6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, nTriangles*3, GL_UNSIGNED_INT, 0);
 
-    drawBoundingBox();
-/*
-    if(texture!=NULL && textActive)
-    {
-        texture->endDraw();
+
+    //==============================================    
+    //Detach elements
+    glDisableVertexAttribArray(4);
+    glDisableVertexAttribArray(3);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //==============================================
+
+    //drawBoundingBox();
+
     }
-*/
-
 }
 
+//Generates a bounding box for the mesh
 void TResourceMesh::generateBoundingBox()
 {
     //In first case, we initialize all the variables to the first vertex coordinates
@@ -240,12 +311,17 @@ void TResourceMesh::generateBoundingBox()
 
 }
 
+//Draws the bounding box of the mesh. This is only used for debug purposes, and should be disabled in release versions of the game
 void TResourceMesh::drawBoundingBox()
 {
     glm::mat4 m = TEntity::modelMatrix() * bbTransform;
 
     glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &m[0][0]);
 
+    //========================================
+    //Bind VAO
+    glBindVertexArray(vaoHandles);
+    //========================================
     glBindBuffer(GL_ARRAY_BUFFER, boxVBOVertices);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
@@ -257,15 +333,102 @@ void TResourceMesh::drawBoundingBox()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glDisableVertexAttribArray(0);
+    //========================================
+    //Closing VAO binding
+    glBindVertexArray(0);
+    //========================================
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glUniformMatrix4fv(TEntity::getModelID(), 1, GL_FALSE, &TEntity::modelMatrix()[0][0]);
 
 }
 
+//Checks the frustum culling with the bounding box, and also checks some special cases if the first test doesn't pass
+bool TResourceMesh::checkBoundingBox()
+{
+    //First we set the bounding box's points in the scene
+    glm::mat4 m = TEntity::projectionMatrix() * TEntity::viewMatrix() * TEntity::modelMatrix() * bbTransform;
+    glm::vec4 p1 = m * glm::vec4(-0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p2 = m * glm::vec4(0.5, -0.5, -0.5, 1.0);
+    glm::vec4 p3 = m * glm::vec4(0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p4 = m * glm::vec4(-0.5, 0.5, -0.5, 1.0);
+    glm::vec4 p5 = m * glm::vec4(-0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p6 = m * glm::vec4(0.5, -0.5, 0.5, 1.0);
+    glm::vec4 p7 = m * glm::vec4(0.5, 0.5, 0.5, 1.0);
+    glm::vec4 p8 = m * glm::vec4(-0.5, 0.5, 0.5, 1.0);
+
+
+    //Then we check if atleast one point is inside the view frustum
+    if(p1.x >= -p1.w && p1.x <= p1.w && p1.y >= -p1.w && p1.y <= p1.w && p1.z >= -p1.w && p1.z <= p1.w)
+    {
+        return true;
+    }
+    if(p2.x >= -p2.w && p2.x <= p2.w && p2.y >= -p2.w && p2.y <= p2.w && p2.z >= -p2.w && p2.z <= p2.w)
+    {
+        return true;
+    }
+    if(p3.x >= -p3.w && p3.x <= p3.w && p3.y >= -p3.w && p3.y <= p3.w && p3.z >= -p3.w && p3.z <= p3.w)
+    {
+        return true;
+    }
+    if(p4.x >= -p4.w && p4.x <= p4.w && p4.y >= -p4.w && p4.y <= p4.w && p4.z >= -p4.w && p4.z <= p4.w)
+    {
+        return true;
+    }
+    if(p5.x >= -p5.w && p5.x <= p5.w && p5.y >= -p5.w && p5.y <= p5.w && p5.z >= -p5.w && p5.z <= p5.w)
+    {
+        return true;
+    }
+    if(p6.x >= -p6.w && p6.x <= p6.w && p6.y >= -p6.w && p6.y <= p6.w && p6.z >= -p6.w && p6.z <= p6.w)
+    {
+        return true;
+    }
+    if(p7.x >= -p7.w && p7.x <= p7.w && p7.y >= -p7.w && p7.y <= p7.w && p7.z >= -p7.w && p7.z <= p7.w)
+    {
+        return true;
+    }
+    if(p8.x >= -p8.w && p8.x <= p8.w && p8.y >= -p8.w && p8.y <= p8.w && p8.z >= -p8.w && p8.z <= p8.w)
+    {
+        return true;
+    }
+
+
+    //If not a single point is in the view frustum, we check that all the points are outside at the same time from atleast one
+    //of the planes. This is to fix fake negatives in cases where the bounding volume is higher than the frustum camera (which happens with our map)
+    if(p1.x < -p1.w && p2.x < -p2.w && p3.x < -p3.w && p4.x < -p4.w && p5.x < -p5.w && p6.x < -p6.w && p7.x < -p7.w && p8.x < -p8.w)
+    {
+        return false;
+    }
+    if(p1.x > p1.w && p2.x > p2.w && p3.x > p3.w && p4.x > p4.w && p5.x > p5.w && p6.x > p6.w && p7.x > p7.w && p8.x > p8.w)
+    {
+        return false;
+    }
+    if(p1.y < -p1.w && p2.y < -p2.w && p3.y < -p3.w && p4.y < -p4.w && p5.y < -p5.w && p6.y < -p6.w && p7.y < -p7.w && p8.y < -p8.w)
+    {
+        return false;
+    }
+    if(p1.y > p1.w && p2.y > p2.w && p3.y > p3.w && p4.y > p4.w && p5.y > p5.w && p6.y > p6.w && p7.y > p7.w && p8.y > p8.w)
+    {
+        return false;
+    }
+    if(p1.z < -p1.w && p2.z < -p2.w && p3.z < -p3.w && p4.z < -p4.w && p5.z < -p5.w && p6.z < -p6.w && p7.z < -p7.w && p8.z < -p8.w)
+    {
+        return false;
+    }
+    if(p1.z > p1.w && p2.z > p2.w && p3.z > p3.w && p4.z > p4.w && p5.z > p5.w && p6.z > p6.w && p7.z > p7.w && p8.z > p8.w)
+    {
+        return false;
+    }
+
+
+    return true;
+}
+
 //This functions looks for a specific adjacent vertex for the vertex indices. Due to the computational cost, this should be improved
 //using the half-edge structure, to avoid a massive number of searchs through the mesh
-unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3)
+//In the last version of the engine, silhouette rendering is not done with a geometry shader anymore, so the use of this function is
+//deprecated.
+unsigned int TResourceMesh::getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsigned int index2, const unsigned int index3)
 {
     for(unsigned int i=0; i < m->mNumFaces; i++)
     {
@@ -275,18 +438,15 @@ unsigned int getAdjacentIndex(aiMesh* m, const unsigned int index1, const unsign
             unsigned int v2 = m->mFaces[i].mIndices[(edge+1)%3];
             unsigned int v3 = m->mFaces[i].mIndices[(edge+2)%3];
 
-            if((v1 == index1 && v2 == index2) || (v1 == index2 && v2 == index1))
+            if( ((m->mVertices[v1].x == m->mVertices[index1].x && m->mVertices[v1].y == m->mVertices[index1].y && m->mVertices[v1].z == m->mVertices[index1].z && 
+                m->mVertices[v2].x == m->mVertices[index2].x && m->mVertices[v2].y == m->mVertices[index2].y && m->mVertices[v2].z == m->mVertices[index2].z) ||
+                (m->mVertices[v2].x == m->mVertices[index1].x && m->mVertices[v2].y == m->mVertices[index1].y && m->mVertices[v2].z == m->mVertices[index1].z && 
+                m->mVertices[v1].x == m->mVertices[index2].x && m->mVertices[v1].y == m->mVertices[index2].y && m->mVertices[v1].z == m->mVertices[index2].z)) &&
+                (m->mVertices[v3].x != m->mVertices[index3].x || m->mVertices[v3].y != m->mVertices[index3].y || m->mVertices[v3].z != m->mVertices[index3].z))
             {
-                //std::cout << "Index1: " << index1 << " and index2: " << index2 << std::endl;
-                //std::cout << "Entro aqui: " << v3 << " and index3: " << index3 << std::endl;
-            }
-
-            if(((v1 == index1 && v2 == index2) || (v1 == index2 && v2 == index1)) && (v3 != index3))
-            {
-                //std::cout << "Aqui tambien" << std::endl;
                 return v3;
             }
         }
     }
-    return 0;
+    return -1;
 }

@@ -3,8 +3,7 @@
 
 
 //////////////////////////////////////////////
-//            THINGS TO DO HERE
-//////////////////////////////////////////////
+//             Possible upgrades
 //////////////////////////////////////////////
 /*
 :::>Add event priority queue to events
@@ -12,8 +11,6 @@
 :::>Add scheduling, by now event manager is useless since it only searches for calls already done in that update, so it just adds innecesary cost
 */
 //////////////////////////////////////////////
-//////////////////////////////////////////////
-
 EventManager& EventManager::getInstance() {
     static EventManager instance;
     return instance;
@@ -24,9 +21,11 @@ void EventManager::init() {
 }
 
 void EventManager::update() {
+
     while(EventManager::eventQueue.size() != 0){
-        EventManager::processEvent(EventManager::eventQueue.front());
+        Event e = EventManager::eventQueue.front();
         EventManager::eventQueue.pop();
+        EventManager::processEvent(e);
     }
 }
 
@@ -35,6 +34,12 @@ void EventManager::close() {
         eventQueue.pop();
     }
     eventListenerMap.clear();
+}
+
+void EventManager::clearEvents() {
+    while(!eventQueue.empty()){
+        eventQueue.pop();
+    }
 }
 
 void EventManager::addEvent(Event event) {
@@ -55,7 +60,7 @@ void EventManager::processEvent(Event event){
 }
 
 void EventManager::addListener(EventListener eventListener){
-
+    //Search if the listener already exists
     auto iterator = EventManager::eventListenerMap.find(eventListener.listenerType);
 
     //Check if there's already a list for our listener and if not, create it

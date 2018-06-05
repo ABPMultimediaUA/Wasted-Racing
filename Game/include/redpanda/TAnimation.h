@@ -6,7 +6,7 @@
 
 class TAnimation : public TEntity{
     public:
-
+        //Constructor and destructor
         TAnimation() {}
         ~TAnimation() {}
 
@@ -18,6 +18,7 @@ class TAnimation : public TEntity{
 
         //Plays a no-loop animation that is currently paused
         void playNoLoop();
+        void reset();       //Resets animation state
 
         //Updates the animation
         void update(double eTime);
@@ -36,9 +37,11 @@ class TAnimation : public TEntity{
         void setPause(bool b)                                   {   playing = b;                    };
         void setLoop(bool b)                                    {   loop = b;                       };
         void setFramerate(double s)                             {   framerate = s;                  };
+        void setRender(bool r)                                  {   render = r;                     };
         
 
     private:
+        //Pointer to the resource of the animation
         TResourceAnimation* animation;
 
         //Maximum number of frames (initially set to 60)
@@ -54,5 +57,7 @@ class TAnimation : public TEntity{
         bool playing = true;
         //Controls if the animation is played in loop or not
         bool loop = true;
+        //Controls if animation is drawn
+        bool render = false;
 
 };

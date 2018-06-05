@@ -6,6 +6,7 @@ ItemBoxComponent::ItemBoxComponent(GameObject& newGameObject) : IComponent(newGa
 
     boxTime = 5.f;
     actTime = 5.f;
+    scale = getGameObject().getTransformData().scale;
 
 }
 
@@ -20,14 +21,10 @@ void ItemBoxComponent::update(float dTime){
     trans.rotation.y += 1*3.141592653589793/180;
     getGameObject().setTransformData(trans);
 
-    //____>AÑADIR EVENTO MÁGICO QUE UPDATEE ESTO PA QUE NO HAYAN ERRORES MACHO Q MIRA EH
-    //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
-    //Update the render
     EventData data;
     data.Id = getGameObject().getId();
     data.Vector = trans.rotation;
     EventManager::getInstance().addEvent(Event {EventType::Update_Transform_Rotation, data});
-    //<___
 
 
     if(getGameObject().getTransformData().scale.x == 0){
@@ -41,21 +38,18 @@ void ItemBoxComponent::update(float dTime){
         actTime = boxTime;
         auto trans = getGameObject().getTransformData();
 
-        trans.scale.x = 0.65;
-        trans.scale.y = 0.65;
-        trans.scale.z = 0.65;
+        trans.scale.x = scale.x;
+        trans.scale.y = scale.y;
+        trans.scale.z = scale.z;
 
         getGameObject().setTransformData(trans);
 
         //Update render
-        //___>
         EventData data;
         data.Id = getGameObject().getId();
         data.Vector = trans.scale;
         EventManager::getInstance().addEvent(Event {EventType::Update_Transform_Scale, data});
 
-        //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
-        //<___
     }
 
 }
@@ -81,8 +75,6 @@ void ItemBoxComponent::deactivateBox(){
     data.Id = getGameObject().getId();
     data.Vector = trans.scale;
     EventManager::getInstance().addEvent(Event {EventType::Update_Transform_Scale, data});
-
-    //RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
 }
 

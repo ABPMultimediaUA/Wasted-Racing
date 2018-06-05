@@ -41,6 +41,7 @@ public:
 	void changeSpin(float n);
 	void changeAcc(float n);
 	void changeVel(float v);
+	void changeMaxVel(float v);
 
 	//Checker functions
 	void isMoving(bool m);
@@ -55,15 +56,20 @@ public:
 	void updateMaxSpeedOverTime(const float dTime);
 	void updateJump(LAPAL::movementData& mData, glm::vec3& trans, LAPAL::plane3f t);
 
+	//Invulnerability
+	void changeInvul(bool i);
+
     //==========================================
     // GETTERS AND SETTERS
     //==========================================
-	LAPAL::movementData getMovemententData() 						{ 	return mData; 		}
-	const float 		getMass()									{ 	return mass;  		}
-	LAPAL::plane3f		getTerrain()								{ 	return terrain;  	}
-	void 				setMovementData(LAPAL::movementData data) 	{ 	mData = data;   	}
-	void 				setMass(const float newMass)				{ 	mass = newMass; 	}
-	void				setTerrain(LAPAL::plane3f p) 				{ 	terrain = p;		}
+	LAPAL::movementData getMovemententData() 						{ 	return mData; 			}
+	const float 		getMass()									{ 	return mass;  			}
+	LAPAL::plane3f		getTerrain()								{ 	return terrain;  		}
+	void 				setMovementData(LAPAL::movementData data) 	{ 	mData = data;   		}
+	void 				setMass(const float newMass)				{ 	mass = newMass; 		}
+	void				setTerrain(LAPAL::plane3f p) 				{ 	terrain = p;			}
+	bool 				getLodActive()								{	return lodActive;		}	
+	void 				setLodActive(bool b)						{	lodActive = b;			}	
 
 private:
     //==========================================
@@ -78,5 +84,14 @@ private:
 	float decrementalAlteredTime;	//Time during max_speed is reduced to its former value
 	float maxDecrementalAT;			//Complete time interval whitin speed is reduced constantly
 	LAPAL::movementData auxData;
+	bool moving = false;
+	bool colliding = false;
+	bool movingOnCollision = false;
+	bool movingOnItem = false;
+	bool drifting = false;
+	bool itemThrown = false;
+	bool isAscending = false;
+	int item = -1;
+	bool lodActive = false;
 
 };

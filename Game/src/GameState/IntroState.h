@@ -74,4 +74,6 @@ private:
     //Reads server IP value from file
     void execFileServer();
 
+    bool initialized = false;
+
 };

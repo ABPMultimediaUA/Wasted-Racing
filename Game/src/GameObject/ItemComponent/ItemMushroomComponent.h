@@ -3,6 +3,7 @@
 #include "IItemComponent.h"
 #include "../GameObject.h"
 #include "../PhysicsComponent/MoveComponent.h"
+#include "../PhysicsComponent/CollisionComponent.h"
 
 class ItemMushroomComponent : public IItemComponent
 {

@@ -32,10 +32,16 @@
 
 //State includes
 #include "GameState/IntroState.h"
-#include "GameState/MainState.h"
+#include "GameState/SelectionState.h"
+#include "GameState/PreMatchState.h"
 #include "GameState/MatchState.h"
+#include "GameState/PostMatchState.h"
 #include "GameState/ClientLobbyState.h"
 #include "GameState/MultiMatchState.h"
+#include "GameState/MultiSelectionState.h"
+#include "GameState/MultiPreMatchState.h"
+#include "GameState/MultiPostMatchState.h"
+#include "GameState/PauseState.h"
 
 class IntroState;
 class MultiMatchState;
@@ -81,6 +87,10 @@ public:
     int getInputEngine()       {     return inputEngine;    }//Input getter
     float getAccumulatedTime() {     return accumulatedTime;}//Get accumulated time
     float getRatio()           {     return ratio;          }//Get game ratio
+
+
+    void loadMap();
+    std::vector<std::string> split(const std::string& s, const char& c);
 
     //Static class getter
     static Game& getInstance() {
@@ -152,6 +162,7 @@ private:
 
     //Accumulate time in game
     float accumulatedTime;
+    float elapsedTime;
 
     //Game velocity
     float ratio = 1.0f;

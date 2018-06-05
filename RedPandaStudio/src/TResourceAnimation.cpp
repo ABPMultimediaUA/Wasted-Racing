@@ -1,6 +1,6 @@
 #include "TResourceAnimation.h"
-#include <iostream>
 
+//Auxiliar method for spliting character arrays
 std::vector<std::string> TResourceAnimation::split(const std::string& s, const char& c) {
 	std::string buff{""};
 	std::vector<std::string> v;
@@ -15,6 +15,17 @@ std::vector<std::string> TResourceAnimation::split(const std::string& s, const c
 	return v;
 }
 
+//Destructor of the resource
+TResourceAnimation::~TResourceAnimation()
+{
+    for(unsigned int i = 0; i < objs.size(); i++)
+    {
+        delete objs[i];
+    }
+    objs.clear();
+}
+
+//Loader of the resource. Autocompletes the name to load all the frames
 bool TResourceAnimation::loadResource()
 {
 
@@ -46,10 +57,11 @@ bool TResourceAnimation::loadResource()
     return false;
 }
 
+//Despite the fact of it's name, this method only populates the material to all the frames in the animation
 void TResourceAnimation::populateTextures()
 {
     std::string s = name;
-    s+= "001.obj";
+    s+= "000.obj";
 
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(s, 0);
@@ -75,36 +87,35 @@ void TResourceAnimation::populateTextures()
             {
                 objs[j]->setMaterial(i-1, mat);
             }
-            
-            aiString path;
-            //If the material has a diffuse texture, we get his path
-            if(scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
-            {
-                TResourceTexture* texture = new TResourceTexture();
-                //First we combine the path we just got with the directory path of the obj, and then we just load the texture
-                std::string completePath = route + path.data;
-                std::cout << completePath << std::endl;
-                texture->setName(completePath.c_str());
-                texture->loadResource();
-                for(unsigned int j = 0; j < objs.size(); j++)
-                {
-                    objs[j]->setTexture(i-1, texture);
-                }
-            }
         }
     }
 
 }
 
+//Draw method of the resource for a static animation in the first frame
 void TResourceAnimation::draw()
 {
+    if(texture != NULL)
+    {
+        texture->draw();
+    }
     objs[0]->draw();
 }
 
-void TResourceAnimation::draw(int i)
+//Draw method of the animation given a frame
+void TResourceAnimation::draw(unsigned int i)
 {
     if(i >= 0 && i < objs.size())
     {
+        if(texture != NULL)
+        {
+            texture->draw();
+        }
+        else
+        {
+            std::cout << "Texture is null" << std::endl;
+        }
+        objs[i]->setTexture(0, texture);
         objs[i]->draw();
     }
 }

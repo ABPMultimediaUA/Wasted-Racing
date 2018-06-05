@@ -8,10 +8,12 @@ class TNode{
 
 public:
 
+    //Constructors
     TNode();
     TNode(TNode* f) : father(f) {}
     TNode(TNode* f, TEntity* e) : father(f), entity(e) {}
 
+    //Destructor
     ~TNode();
 
     //Setters
@@ -23,18 +25,20 @@ public:
     TEntity* getEntity()                        {       return entity;      }
     std::vector<TNode*> getChild()              {       return child;       }
 
-    //Methods
+    //Methods for child management
     bool addChild(TNode* c);
     bool removeChild(TNode* c);
     TNode* searchChild(unsigned int c);
 
-    //Draw tree
+    //Draws the tree
     void draw();
 
 private:
-
+    //Father of the node
     TNode* father;
+    //Entity of the node
     TEntity* entity;
+    //Vector of childs of the node
     std::vector<TNode*> child;
         
 };

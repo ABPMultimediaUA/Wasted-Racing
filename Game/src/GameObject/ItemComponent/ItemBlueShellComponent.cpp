@@ -14,75 +14,73 @@ ItemBlueShellComponent::~ItemBlueShellComponent()
 
 }
 
-void ItemBlueShellComponent::init()
+void ItemBlueShellComponent::init(float actualVector)
 {
     lastVector = player.getComponent<PathPlanningComponent>()->getLastPosVector();
     enemy = ScoreManager::getInstance().getPlayers()[0];
-
+    valueY = 0;
+    getGameObject().getComponent<PathPlanningComponent>()->setLastPosVector(actualVector);
+    waypoints = WaypointManager::getInstance().getWaypoints();
+    go = false;
+    getGameObject().getComponent<MoveComponent>()->changeInvul(true);
 }
 
-//:::> This ALL should be in AIManager since it does calculations using all components
 void ItemBlueShellComponent::update(float dTime)
 {
+
     //Return if object was created as a copy of a remote online object
     if(mode == IItemComponent::InstanceType::REMOTE)
         return;
 
-    //:::>Explain all of this code pls
-    auto listNodes = WaypointManager::getInstance().getWaypoints();
-    auto vSensorComponent = getGameObject().getComponent<VSensorComponent>().get();
+
+    auto trans = getGameObject().getTransformData();
+    auto pos = trans.position;
+    auto maxSpeed = getGameObject().getComponent<MoveComponent>()->getMovemententData().max_vel;
+    getGameObject().getComponent<MoveComponent>()->changeVel(0);
+
     auto moveComponent = getGameObject().getComponent<MoveComponent>().get();
-    auto aiDrivingComponent = getGameObject().getComponent<AIDrivingComponent>().get();
-
-    auto pos = getGameObject().getTransformData().position;
-
-    auto posWay = listNodes[lastVector].get()->getTransformData().position;
-
-    float distaneActualWay = (posWay.x - pos.x) * (posWay.x - pos.x) +
-						(posWay.y - pos.y) * (posWay.y - pos.y) +
-						(posWay.z - pos.z) * (posWay.z - pos.z);
-	float radius = listNodes[lastVector].get()->getComponent<WaypointComponent>()->getRadius();
-	
-    if(distaneActualWay <= (radius*radius)/2)
-    {
-        if(lastVector < listNodes.size()-1)
-        {
-            lastVector++;
-        }
-        else if(lastVector == listNodes.size()-1)
-        {
-            lastVector = 0;
-        }
-    }
-	
-    
-    vSensorComponent->setAngleInitial(moveComponent->getMovemententData().angle);
 
     objective = enemy.get()->getGameObject().getTransformData().position; 
-
-    float distancePlayer = (objective.x - pos.x) * (objective.x - pos.x) +
-						(objective.y - pos.y) * (objective.y - pos.y) +
-						(objective.z - pos.z) * (objective.z - pos.z);
-	
-
-    unsigned int posVectorEnemy = enemy.get()->getGameObject().getComponent<PathPlanningComponent>()->getLastPosVector();
-    if(distaneActualWay < distancePlayer || lastVector < posVectorEnemy)
-    {
-        objective = posWay;
-    }
     
-    float a = 0.f,b = 0.f;
-    vSensorComponent->calculateAB(objective, a, b);
-    std::vector<VObject::Pointer> seenObjects;
-    //DECIDE 
-    float turnValue = aiDrivingComponent->girar(getGameObject(), seenObjects, seenObjects, objective, a, b);
 
-    moveComponent->changeSpin(turnValue);
+    //Animation missile
+    
+    if(valueY < 60 && go == false)
+    {
+        valueY += 4;
+        trans.position.y = trans.position.y + valueY;
+        trans.rotation.z = 180;
+    }
+    else if(valueY == 60)
+    {
+        go = true;
+    }
 
-    //Accelerate and brake
-    moveComponent->isMoving(true);
-    moveComponent->changeAcc(1);
-   
+    if(go == true)
+    {
+        auto terrain = moveComponent->getTerrain();
+        float yTerrain = LAPAL::calculateExpectedY(terrain, pos);
+        trans.position = objective;
+        auto length = enemy->getGameObject().getComponent<CollisionComponent>()->getLength();
+        trans.position.y +=  length+valueY;
+        if(valueY == 60)
+            valueY = 20;
+        else if(valueY > 0)
+            valueY -= 1;
+
+        if(valueY == 0)
+        {
+            EventData data;
+            data.Id             = getGameObject().getId();
+            data.Component      = enemy.get()->getGameObject().getComponent<MoveComponent>();
+            data.CollComponent  = getGameObject().getComponent<CollisionComponent>();
+
+            EventManager::getInstance().addEvent(Event {EventType::BlueShellComponent_Collision, data});
+        }
+    }
+
+    getGameObject().setNewTransformData(trans);
+    RenderManager::getInstance().getRenderFacade()->updateObjectTransform(getGameObject().getId(), trans);
 
 }
 

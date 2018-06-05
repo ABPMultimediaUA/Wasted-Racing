@@ -42,8 +42,8 @@ public:
     void                                setTerrain(LAPAL::plane3f p)                    {    terrain = p;           }
     //Connectors
     void connectSiblingFront(uint16_t); //receives as input the id of the prev node
-    void connectSiblingBack(uint16_t); //receives as input the id of the prev node
-    void connectSiblingLeft(uint16_t); //receives as input the id of the left node
+    void connectSiblingBack(uint16_t);  //receives as input the id of the prev node
+    void connectSiblingLeft(uint16_t);  //receives as input the id of the left node
     void connectSiblingRight(uint16_t); //receives as input the id of the left node
 
 

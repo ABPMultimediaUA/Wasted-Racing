@@ -6,10 +6,16 @@ public:
     //Type of states
     enum stateType {
         INTRO,          //Game intro (initial state)
-        MAIN,           //Game main menu
+        SELECTION,      //Choose character and load game
+        PREMATCH,       //State before match
         MATCH,          //Inside the singleplayer game
+        POSTMATCH,      //State after match
         CLIENTLOBBY,    //Client waiting in the lobby for a match
-        MULTIMATCH      //Inside the multiplayer game
+        MULTIMATCH,     //Inside the multiplayer game
+        MULTISELECTION, //Inside the multiplayer selection
+        MULTIPREMATCH,  //Before multiplayer match
+        MULTIPOSTMATCH, //After multiplayer match
+        PAUSE           //For when the game is paused
     };
 
     //Constructor

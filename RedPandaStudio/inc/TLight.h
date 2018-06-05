@@ -4,8 +4,10 @@
 
 class TLight : public TEntity{
 
-private:
+protected:
     glm::vec4 intensity = glm::vec4(1.0,1.0,1.0,1.0);
+    int id;
+    bool activated;
 
 public:
 
@@ -15,11 +17,18 @@ public:
     }
     ~TLight() {}
 
-    //Getter
-    glm::vec4 getIntensity() {  return intensity;   }
-
     //Draw Methods
     void beginDraw();
     void endDraw();
+
+    //////////////////////////////////////////////////////////////////////
+    //////////////////////// GETTERS && SETTERS //////////////////////////
+    //////////////////////////////////////////////////////////////////////
+
+    void setID(int i)                                   {   id = i;            }
+    void setActivated(bool b)                           {   activated = b;     }
+    glm::vec4 getIntensity()                            {   return intensity;  }
+    int getID()                                         {   return id;         }
+    bool getActivated()                                 {   return activated;  }
 
 };

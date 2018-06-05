@@ -5,7 +5,7 @@
 namespace LAPAL{
 
     //Universal constant
-    const float gravity = 50.f;
+    const float gravity = 120.f;
 
     //3d float point
     typedef glm::vec3 vec3f;
@@ -44,6 +44,7 @@ namespace LAPAL{
         //Speed variables
         float vel               = 0.0f;         //Lineal speed
         float max_vel           = 0.0f;         //Maximum lineal speed
+        float real_max_vel      = 0.0f;         //Only to save real max speed, used to change speed according to score
         float brake_vel         = 0.0f;         //Natural braking speed
         float velY              = 0.0f;         //vertical speed
 
@@ -84,6 +85,9 @@ namespace LAPAL{
         //Character type
         int player = -1;         //Type of the character we are playing with
         bool isPlayer = false;   //To distinguish between player and AI
+
+        //Invulnerability
+        bool invul = false;
 
     };
 

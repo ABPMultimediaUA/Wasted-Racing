@@ -58,6 +58,7 @@ enum EventType {
     BlueShellComponent_Collision,
     RedShellComponent_Collision,
     //PLAYER: Basic control keys
+    Key_Pressed,
     Key_Advance_Down,
     Key_Advance_Up,
     Key_Brake_Down,
@@ -98,8 +99,14 @@ enum EventType {
     Key_Scheduling_Down,
     Key_Scheduling_Up,
     //GAME: Game related events
+    Game_Menu,
     Game_Start,
+    Game_Pause,
     Game_Close,
+    Game_PlayerSelection,
+    Game_LoadingScreen,
+    Game_ClientLobby,
+    Game_Select,
     State_Change,
     //CHOOSE: Choose game type
     Key_Multiplayer_Down,
@@ -112,6 +119,7 @@ enum EventType {
     Update_Transform_Scale,
     //MATCH: Match related events
     Match_Start,
+    Match_Countdown,
     Match_Race_Start,
     Match_Race_End,
     Match_End,
@@ -120,7 +128,23 @@ enum EventType {
     Score_OnOvertake,
     Score_OnOvertaken,
     //MUSIC: Music related events
-    Music_MainTheme
+    Music_MainTheme,
+    Music_Menu,
+    Music_Finish,
+    //PARTICLES: Particle related events
+    Particles_SmokeON,
+    Particles_SmokeOFF,
+    //GLOBAL: Global related events
+    Global_ChangeVolume,
+    Global_ChangeLanguage,
+    Global_ChangeFullscreen,
+    //PLAYER: Player relared events
+    Player_Speed,
+    Player_Slide,
+    Player_Jump,
+    Player_Select,
+    //Idle event
+    Idle
 };
 
 //Struct containg diferent types of data

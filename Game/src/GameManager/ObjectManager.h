@@ -26,11 +26,11 @@ public:
 
     enum PlayerType{
             
-        punk            = 0,      
-        witch           = 1,      
-        cyborg          = 2,      
-        crocodile       = 3
-    
+        punk            = 0,   
+        crocodile       = 1,   
+        cyborg          = 2,    
+        witch           = 3        
+        
     };
 
     //Constructor
@@ -82,7 +82,7 @@ public:
     //============================================== 
 
     //Adds the components needed to the character created
-    void createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, const char* model);
+    void createComponents(GameObject::Pointer ob, LAPAL::plane3f terrain, IComponent::Pointer terrainComponent, LAPAL::movementData mData, int player);
 
     //Creates character depending on option selected specified by the int
     void createMove(GameObject::Pointer obj, int move);

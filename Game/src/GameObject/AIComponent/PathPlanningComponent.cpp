@@ -42,7 +42,7 @@ void PathPlanningComponent::update(float dTime)
 
 	if(this->getGameObject().getComponent<AIDrivingComponent>() != nullptr)
 	{
-		if((distaneActualWay <= (radius*radius)) || distaneNextWay < distaneNextWay)
+		if((distaneActualWay <= (radius*radius)/2) || distaneNextWay < distaneActualWay)
 		{
 			if(lastVector < listNodes.size()-1)
 			{
@@ -57,7 +57,7 @@ void PathPlanningComponent::update(float dTime)
 	}
 	else
 	{
-		if((distaneActualWay <= radius*radius) || distaneNextWay < distaneNextWay)
+		if((distaneActualWay <= radius*radius) || distaneNextWay < distaneActualWay)
 		{
 			if(lastVector < listNodes.size()-1)
 			{
@@ -83,68 +83,49 @@ void PathPlanningComponent::update(float dTime)
 
     for (size_t i = lastPosVector; i < listNodes.size(); i++)
 	{
-		/*if(listNodes[listNodes.size()-2]->getComponent<WaypointComponent>()->getLevel() == listNodes[lastPosVector]->getComponent<WaypointComponent>()->getLevel()
-		 && i == listNodes.size()-1)
+		lvl = listNodes[lastPosVector].get()->getComponent<WaypointComponent>()->getLevel();
+		if(listNodes[i].get()->getComponent<WaypointComponent>()->getLevel() >= lvl)
 		{
-			setLastPosVector(0);
-			//i = 0;
-		}
-		else
-		{*/
-			lvl = listNodes[lastPosVector].get()->getComponent<WaypointComponent>()->getLevel();
-			if(listNodes[i].get()->getComponent<WaypointComponent>()->getLevel() >= lvl)
-			{
-				setDistLastWay(listNodes[lastPosVector], pos);
-				distNode = (listNodes[i].get()->getTransformData().position.x - pos.x) * (listNodes[i].get()->getTransformData().position.x - pos.x) +
-						(listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
-						(listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
+			setDistLastWay(listNodes[lastPosVector], pos);
+			distNode = (listNodes[i].get()->getTransformData().position.x - pos.x) * (listNodes[i].get()->getTransformData().position.x - pos.x) +
+					(listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
+					(listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
 
-				
-				if((lvl+1) == listNodes[i].get()->getComponent<WaypointComponent>()->getLevel())
+			
+			if((lvl+1) == listNodes[i].get()->getComponent<WaypointComponent>()->getLevel())
+			{
+				if(tour-distLastWay < 0)
 				{
-					if(tour-distLastWay < 0)
+					nextPos = listNodes[lastPosVector].get()->getTransformData().position;
+					return;
+				}
+				else
+				{
+					if(distNode <= tour)
 					{
-						//nextPos = ((tour/distLastWay) * (listNodes[lastPosVector].get()->getTransformData().position - pos)) + pos;
-						nextPos = listNodes[lastPosVector].get()->getTransformData().position;
-						return;
-					}
-					else
-					{
-						if(distNode <= tour)
-						{
-							lastPosVector = i;
-						}                        
-					}
+						lastPosVector = i;
+					}                        
 				}
 			}
-		//}
+		}
 	}
 		posVector = lastPosVector;
         distanceNextNode  = -1;
 
         for(size_t i = lastPosVector; i < listNodes.size(); i++)
         {  
-			/*if(listNodes[listNodes.size()-2]->getComponent<WaypointComponent>()->getLevel() == listNodes[lastPosVector]->getComponent<WaypointComponent>()->getLevel()
-			&& i == listNodes.size()-1)
+			if(listNodes[i]->getComponent<WaypointComponent>()->getLevel() == listNodes[lastPosVector]->getComponent<WaypointComponent>()->getLevel()+1)
 			{
-				setLastPosVector(0);
-				//i = 0;
-			}
-			else
-			{*/
-				if(listNodes[i]->getComponent<WaypointComponent>()->getLevel() == listNodes[lastPosVector]->getComponent<WaypointComponent>()->getLevel()+1)
-				{
-					distNode = (listNodes[i].get()->getTransformData().position.x - pos.x) * (listNodes[i].get()->getTransformData().position.x - pos.x) +
-							(listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
-							(listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
+				distNode = (listNodes[i].get()->getTransformData().position.x - pos.x) * (listNodes[i].get()->getTransformData().position.x - pos.x) +
+						(listNodes[i].get()->getTransformData().position.y - pos.y) * (listNodes[i].get()->getTransformData().position.y - pos.y) +
+						(listNodes[i].get()->getTransformData().position.z - pos.z) * (listNodes[i].get()->getTransformData().position.z - pos.z);
 
-					if(distanceNextNode == -1)
-					{
-						distanceNextNode = distNode;
-						lastPosVector = i;
-					}
+				if(distanceNextNode == -1)
+				{
+					distanceNextNode = distNode;
+					lastPosVector = i;
 				}
-			//}
+			}
         }
 
         distNode = (pos.x - listNodes[posVector].get()->getTransformData().position.x) * (pos.x - listNodes[posVector]->getTransformData().position.x) +

@@ -69,6 +69,7 @@ public:
 
     //Update the current camera
     virtual void interpolateCamera(float accTime, float maxTime) = 0;
+    virtual void setCameraTarget(glm::vec3 position, glm::vec3 target) = 0;
 
     //Add an object to the game
     virtual void addObject(IComponent* ptr) = 0;
@@ -78,12 +79,17 @@ public:
 
     //Add an animation to the game
     virtual void addAnimation(IComponent* ptr) = 0;
+    virtual void addAnimation(uint16_t id, const char * mesh, int frames, const char* texture) = 0;
+
+    //Delete an animation from the resource manager
+    virtual void deleteAnimation(const char * animation) = 0;
 
     //Add a light to the game
     virtual void addLight(IComponent* ptr) = 0;
 
     //Delete an object or light of the game
     virtual void deleteObject(IComponent* ptr) = 0;
+    virtual void deleteObject(uint16_t id) = 0;
 
     //Change the position of an object in-game
     virtual void updateObjectTransform(uint16_t id, GameObject::TransformationData transform) = 0;
@@ -97,8 +103,29 @@ public:
     //Dont so nothing in irrlicht, only works on rps
     virtual void setClipping(bool b) = 0;
 
+    //add mesh lod
+    virtual void addMeshLoD(int lvl, const char* mesh) = 0;
+
     //Change mesh
-    virtual void changeMesh(int id, std::string newMesh) = 0;
+    virtual bool changeMesh(int id, std::string newMesh) = 0;
+
+    //Particles
+    virtual void createParticleSystem(uint16_t id, const char* shape, glm::vec3 position, float radius, int birthrate, float particleLife,
+                                        glm::vec3 birthDirection, glm::vec3 deathDirection, float variationDirection,
+                                        float birthSize, float deathSize, float variationSize,
+                                        glm::vec4 birthColor, glm::vec4 deathColor, float variationColor) = 0;
+
+    /////////////////////////////////////////
+    // ANIMATIONS
+    /////////////////////////////////////////
+    virtual void stopAnimation(uint16_t id) = 0;
+    virtual void loopOnceAnimation(uint16_t id) = 0;
+    virtual void playAnimation(uint16_t id) = 0;
+    virtual void loopAnimation(uint16_t id) = 0;
+    virtual void resetAnimation(uint16_t id) = 0;
+    virtual void changeAnimation(uint16_t id, uint16_t animation) = 0;
+    virtual bool isAnimationPLaying(uint16_t) = 0;
+    virtual void setFramerate(uint16_t, float framerate) = 0;
 
     //==============================================================
     //  VISUAL INTERFACE
@@ -215,6 +242,42 @@ public:
     virtual void deleteItemIcon()  = 0;
 
     //==============================================================
+    // VISUAL EFFECTS
+    //==============================================================
+    //Set the postprocessing state to active or not
+    virtual void setPostProcessing(bool b) = 0;
+
+    //Set the current postprocessing option to render
+    virtual void setPostProcessingOption(int o) = 0;
+
+    //Set the scene to black and white
+    virtual void setBlackAndWhite(bool b) = 0;
+
+    //Set the scene to neon visual
+    virtual void setNeon(bool b) = 0;
+
+    //Set the neon factor
+    virtual void setNeonFactor(float n) = 0;
+
+    //Set the blur effect
+    virtual void setBlurEffect(bool b) = 0;
+
+    //Set the blur effect origin
+    virtual void setBlurOrigin(float x, float y) = 0;
+
+    //Set the blur effect effect intensity
+    virtual void setBlurIntensity(float i) = 0;
+
+    //Set the blur effect radius
+    virtual void setBlurRadius(float r) = 0;
+
+    virtual void setBackface(float r) = 0;
+    virtual bool getBackface() = 0;
+
+    virtual void setFrustum(float r) = 0;
+    virtual bool getFrustum() = 0;
+
+    //==============================================================
     // Window Related functions
     //==============================================================
 
@@ -272,8 +335,8 @@ protected:
     //Window declaration
     Window window;
     //InputManager declaration
-    InputManager* inputManager;
+    InputManager* inputManager = nullptr;
     //Camera target
-    GameObject* cameraTarget;
+    GameObject* cameraTarget = nullptr;
 
 };

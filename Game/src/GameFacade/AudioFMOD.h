@@ -37,6 +37,10 @@ public:
     //Closes engine related variables
     virtual void closeAudioEngine();
 
+    //Load and unload backs
+    virtual void loadBanks();
+    virtual void unloadBanks();
+
     //==============================================================
     // Audio Related functions
     //==============================================================
@@ -55,6 +59,7 @@ public:
     //Setters
     void insertSoundEvent(std::string name, ISoundEvent* sound);
     bool existsSoundEvent(std::string name);
+    virtual void stop(std::string name);
 
 
 private: 

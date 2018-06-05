@@ -13,9 +13,7 @@ void ObjectRenderComponent::update(float dTime) {
 
 //Closer
 void ObjectRenderComponent::close() {
-
     RenderManager::getInstance().getRenderFacade()->deleteObject(this);
-
 }
   
 //Drawer

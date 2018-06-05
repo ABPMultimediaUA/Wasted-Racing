@@ -13,9 +13,9 @@
 #include "../GameEvent/EventManager.h"
 #include "AIManager.h"
 #include "ObjectManager.h"
-#include "../GlobalVariables.h"
 
 class ObjectManager;
+class ParticleManager;
 
 class RenderManager{
 
@@ -41,6 +41,9 @@ public:
     //Shutdown
     void close();
 
+    //Fast restart
+    void fastRestart();
+
     //Take the vector and split it in a quadTree
     void splitQuadTree();
 
@@ -50,11 +53,12 @@ public:
     //==============================================
     // GETTERS AND SETTERS
     //==============================================
-    std::vector<IComponent::Pointer>& getComponentList() { return renderComponentList; } //Component list getter
-    QuadTree& getComponentTree()                         { return renderComponentTree; } //QuadTree getter
-    IRenderFacade* getRenderFacade()                     { return renderFacade;        } //Get render facade functions
-    IComponent::Pointer getCameraComponent()             { return cameraComponent;     } //Camera component getter 
-    void setCameraComponent( IComponent::Pointer cam )   { cameraComponent = cam;      } //and setter
+    std::vector<IComponent::Pointer>& getComponentList()                    { return renderComponentList;       } //Component list getter
+    std::vector<IComponent::Pointer>& getAnimationComponentList()           { return animationComponentList;    } //Component list getter
+    QuadTree& getComponentTree()                                            { return renderComponentTree;       } //QuadTree getter
+    IRenderFacade* getRenderFacade()                                        { return renderFacade;              } //Get render facade functions
+    IComponent::Pointer getCameraComponent()                                { return cameraComponent;           } //Camera component getter 
+    void setCameraComponent( IComponent::Pointer cam )                      { cameraComponent = cam;            } //and setter
 
     //==============================================
     // COMPONENT CREATORS
@@ -67,14 +71,19 @@ public:
     //Create skybox
     IComponent::Pointer createSkyBox(GameObject& newGameObject, ObjectRenderComponent::Shape newShape, std::string top, std::string bot, std::string left, std::string right, std::string front, std::string back);
     //Create animation
-    IComponent::Pointer createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames);
+    IComponent::Pointer createAnimationRenderComponent(GameObject& newGameObject, const char* newStr, int frames, int player, const char* newTex);
 
 
     /////////////
     //  LoD
     /////////////
-    void LoDmesh();
+    void LoDmeshAnim();
 
+    //==============================================
+    // VISUAL EFFECTS
+    //==============================================
+    //Update blur effect
+    void updateBlur();
 
     //==============================================
     // VISUAL INTERFACE
@@ -184,8 +193,19 @@ public:
     void setWaitBattle(bool b)                         {          wait = b;                 }
     bool getWaitBattle()                               {          return wait;              }
     bool getLapBattle()                                {          return lapB;              }
-    int getAINumberBattle()                            {          return AIDebugB;         }
+    int getAINumberBattle()                            {          return AIDebugB;          }
     std::vector<GameObject> getAIsBattle()             {          return AIDebugPointB;     }
+    bool getActiveBlur()                               {          return activeBlur;        }
+    
+    //==============================================================
+    // VISUAL EFFECTS
+    //==============================================================
+    void setPostProcessing(bool b);        //Sets the post processing to true
+    void setBlurEffect(bool b);            //Sets the blur effect to true
+    void setBlurOrigin(float x, float y);  //Sets the blur origin in X-Y coordinates of the screen
+    void setBlurIntensity(float i);        //Sets the blur intensity
+    void setBlurRadius(float r);           //Sets the radius of pixels the blur takes to calculate it
+    void setActiveBlur(bool b);
     
 private:
     //==============================================================
@@ -200,20 +220,19 @@ private:
     //When we start adding components, we add them in a list,
     //Once we've added them all, we split them in a QuadTree structure
     std::vector<IComponent::Pointer>      renderComponentList;
+    std::vector<IComponent::Pointer>      animationComponentList;
     QuadTree                              renderComponentTree;
+
+    //Particle manager
+    ParticleManager* particleManager;
 
     //==============================================================
     // HUD DATA
     //==============================================================
-    bool HUD_ON;             //Checks if hud was initialized
+    bool HUD_ON;            //Checks if hud was initialized
     int32_t lapHUD_ID;      //Lap text ID
     int32_t positionHUD_ID; //Position text ID
     int32_t itemHUD_ID;     //Item text ID
-
-    //Data for the quadTree
-    //unsigned int maxObjPerNode;
-    //int          updateRange;
-    //int          x0, x1, y0, y1; //Map dimensions
 
     //We store just one camera component, so we can't have more than 1
     IComponent::Pointer cameraComponent;
@@ -255,5 +274,8 @@ private:
     float maxTimeP = 5.0f;
     bool wait = false;
     
+    int enter = 0;
 
+    //Blur active
+    bool activeBlur;
 };

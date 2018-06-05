@@ -6,6 +6,7 @@
 
 class TResourceTexture : public TResource {
     public:
+        //Constructor and destructor
         TResourceTexture() {};
         ~TResourceTexture();
 
@@ -18,14 +19,14 @@ class TResourceTexture : public TResource {
         //Deactivates the current texture
         void endDraw();
 
+        //////////////////////////////////////////////////////////////////////////
+        ////////////////////////// GETTERS && SETTERS ////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
+
         GLuint getTextureId() { return textureID; }
 
 
     private:
-        //SFML Class to store our texture
-        sf::Image texture;
-        //Width and height of the texture
-        int sizeX, sizeY;
         //OpenGL ID of the texture
         GLuint textureID;
         //Defines if we have a loaded texture ready to be drawn

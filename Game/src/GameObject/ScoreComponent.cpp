@@ -13,8 +13,6 @@ int ScoreComponent::getScore()
 {
     auto pComp = this->getGameObject().getComponent<PathPlanningComponent>().get();
 
-    //int id = this->getGameObject().getId();
-
     return (lap*maxWaypoints)+pComp->getActualLevel();
 }
 

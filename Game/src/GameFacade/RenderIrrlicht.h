@@ -51,6 +51,7 @@ public:
 
     //Update the current camera
     virtual void interpolateCamera(float accTime, float maxTime);
+    virtual void setCameraTarget(glm::vec3 position, glm::vec3 target);
 
     //Add an object to the game
     virtual void addObject(IComponent* ptr);
@@ -60,7 +61,11 @@ public:
 
     //Add an animation to the game
     virtual void addAnimation(IComponent* ptr) {};
+    virtual void addAnimation(uint16_t id, const char * mesh, int frames, const char* texture) {}
     
+    //Delete an animation from the resource manager
+    virtual void deleteAnimation(const char * animation) {}
+
     //Add a light to the game
     virtual void addLight(IComponent* ptr);
 
@@ -79,8 +84,30 @@ public:
     //Dont do nothing, only for the facade
     virtual void setClipping(bool b)    {};
 
+    //add mesh lod
+    virtual void addMeshLoD(int lvl, const char* mesh)  {};
+
     //Change mesh
-    virtual void changeMesh(int id, std::string newMesh)   {};
+    virtual bool changeMesh(int id, std::string newMesh)   {return false;};
+
+    virtual void createParticleSystem(uint16_t id, const char* shape, glm::vec3 position, float radius, int birthrate, float particleLife,
+                                        glm::vec3 birthDirection, glm::vec3 deathDirection, float variationDirection,
+                                        float birthSize, float deathSize, float variationSize,
+                                        glm::vec4 birthColor, glm::vec4 deathColor, float variationColor);
+                                        
+    virtual void deleteObject(uint16_t id);
+
+    /////////////////////////////////////////
+    // ANIMATIONS
+    /////////////////////////////////////////
+    virtual void stopAnimation(uint16_t id){}
+    virtual void loopOnceAnimation(uint16_t id){}
+    virtual void playAnimation(uint16_t id){}
+    virtual void loopAnimation(uint16_t id){}
+    virtual void resetAnimation(uint16_t id){}
+    virtual void changeAnimation(uint16_t id, uint16_t animation){}
+    virtual bool isAnimationPLaying(uint16_t){return false;}
+    virtual void setFramerate(uint16_t, float framerate){}
 
     //==============================================================
     //  VISUAL INTERFACE
@@ -189,6 +216,42 @@ public:
 
     virtual void setSubDescriptionText(std::string text);
 
+    //==============================================================
+    // VISUAL EFFECTS
+    //==============================================================
+    //Set the postprocessing state
+    virtual void setPostProcessing(bool b){};
+    
+    //Set the current postprocessing option to render
+    virtual void setPostProcessingOption(int o) {};
+    
+    //Set the scene to black and white
+    virtual void setBlackAndWhite(bool b){};
+
+    //Set the scene to neon visual
+    virtual void setNeon(bool b){};
+
+    //Set the neon factor
+    virtual void setNeonFactor(float n){};
+
+    //Set the blur effect
+    virtual void setBlurEffect(bool b){};
+
+    //Set the blur effect origin
+    virtual void setBlurOrigin(float x, float y){};
+
+    //Set the blur effect effect intensity
+    virtual void setBlurIntensity(float i){};
+
+    //Set the blur effect radius
+    virtual void setBlurRadius(float r){};
+
+    virtual void setBackface(float r){};
+    virtual bool getBackface(){};
+
+    virtual void setFrustum(float r){};
+    virtual bool getFrustum(){};
+    
 private: 
     //==============================================================
     // PRIVATE FUNCTIONS

@@ -84,6 +84,10 @@ void RenderIrrlicht::addCamera() {
     camera->setPosition(irr::core::vector3df(0,0,0));
 }
 
+void RenderIrrlicht::setCameraTarget(glm::vec3 position, glm::vec3 target) {
+
+}
+
 void RenderIrrlicht::interpolateCamera(float accTime, float maxTime) {
     //Get target position
     auto pos = cameraTarget->getTransformData().position;
@@ -371,6 +375,13 @@ void RenderIrrlicht::addSkybox(IComponent* ptr, std::string t, std::string bo, s
         nodeMap.insert(std::pair<uint16_t, irr::scene::ISceneNode*>(obj.getId(), node));
     }
 }
+
+void RenderIrrlicht::createParticleSystem(uint16_t id, const char* shape, glm::vec3 position, float radius, int birthrate, float particleLife,
+                                        glm::vec3 birthDirection, glm::vec3 deathDirection, float variationDirection,
+                                        float birthSize, float deathSize, float variationSize,
+                                        glm::vec4 birthColor, glm::vec4 deathColor, float variationColor) {}
+                                        
+void RenderIrrlicht::deleteObject(uint16_t id) {}
 
     ///////////////////////////////
     ///////      DEBUG      ///////    

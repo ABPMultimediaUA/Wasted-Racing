@@ -1,21 +1,6 @@
 #include "TResourceSkybox.h"
-#include <iostream>
 
-/*
-void MessageCallback( GLenum source,
-                      GLenum type,
-                      GLuint id,
-                      GLenum severity,
-                      GLsizei length,
-                      const GLchar* message,
-                      const void* userParam )
-{
-  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-            type, severity, message );
-}
-*/
-
+//Constructor of the skybox
 TResourceSkybox::TResourceSkybox()
 {
     for(int i = 0; i < 6; i++)
@@ -27,7 +12,8 @@ TResourceSkybox::TResourceSkybox()
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
 }
 
-bool TResourceSkybox::loadResource(char* route, int i)
+//Loads the resource of the skybox
+bool TResourceSkybox::loadResource(const char* route, int i)
 {
     if(i>= 0 && i<6)
     {
@@ -39,6 +25,7 @@ bool TResourceSkybox::loadResource(char* route, int i)
     return false;
 }
 
+//Draws the skybox
 void TResourceSkybox::draw()
 {
     glUniformMatrix4fv(view, 1, GL_FALSE, &TEntity::viewMatrix()[0][0]);
@@ -49,10 +36,9 @@ void TResourceSkybox::draw()
 
 }
 
+//Initialices the skybox
 bool TResourceSkybox::initSkybox()
 {
-    //glEnable( GL_DEBUG_OUTPUT );
-    //glDebugMessageCallback( (GLDEBUGPROC) MessageCallback, 0 );
     glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, GL_RGBA8, textures[0]->getSize().x, textures[0]->getSize().y);
 
     for(int i = 0; i < 6; i++)
