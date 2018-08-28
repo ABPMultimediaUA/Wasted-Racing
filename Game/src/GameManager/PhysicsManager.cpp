@@ -45,6 +45,9 @@ void PhysicsManager::init() {
 
 void PhysicsManager::update(const float dTime) {
 
+    float aux = dTime / 10.f;
+
+    for(int q = 0; q < 10; q++){
     //For every moving character we have, calculate collisions with the others
     for(unsigned int i=0; i<movingCharacterList.size(); ++i){
 
@@ -61,19 +64,20 @@ void PhysicsManager::update(const float dTime) {
         //==============================================================================
         // Move character
         //==============================================================================
-        ourMove->update(dTime);
+        ourMove->update(aux);
         
         //==============================================================================
         // Check collisions with other objects
         //==============================================================================
-        calculateObjectsCollision(ourMove, ourColl, dTime);
+        calculateObjectsCollision(ourMove, ourColl, aux);
 
         //==============================================================================
         // Check collisions with terrain limits and terrain change
         //==============================================================================
-        calculateTerrainCollision(movingCharacterList[i], ourMove, ourTerr, ourColl, dTime);
+        calculateTerrainCollision(movingCharacterList[i], ourMove, ourTerr, ourColl, aux);
 
         gameObject.setNewTransformData(gameObject.getTransformData());
+    }
     }
 }
 
